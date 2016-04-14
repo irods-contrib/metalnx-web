@@ -1,0 +1,15 @@
+<th:block th:fragment="systemHealth">	
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h4>System Health: 
+				<b th:class="'grid-status-title '+${systemStatus}">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-circle fa-stack-2x"></i>
+						<i class="fa fa-sitemap fa-stack-1x fa-inverse" style="color: #fff;"></i>
+					</span>
+					<span th:text="${systemStatus}" style="text-transform: capitalize;"></span>
+				</b>
+			</h4>
+		</div>
+	</div>
+</th:block>

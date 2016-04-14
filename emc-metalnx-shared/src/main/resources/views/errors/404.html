@@ -1,0 +1,49 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org">
+	<head>
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet"
+    	th:href="@{/css/bootstrap.min.css}"/>
+
+    <!-- Custom Fonts -->
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css"
+    	th:href="@{/css/font-awesome.min.css}"/>
+    
+    <link href="../static/css/styles.css" rel="stylesheet"
+    	th:href="@{/css/styles.css}"/>
+    
+	</head>
+	
+	<body>
+		<!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" 
+        	style="margin-bottom: 0;">
+            <div class="navbar-header col-sm-12" style="margin-bottom: 0;">                     
+                <a class="navbar-brand" href="#">
+                	<img  alt="EMC logo" src="../static/images/logo.svg" 
+                		th:src="@{/images/logo.svg}" />
+				</a>  
+			</div>                       
+        </nav>
+        
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-3 col-xs-offset-4" style="margin-top: 5%;">
+					<h1 th:text="#{404.page.title}"></h1>
+					
+					<p>
+						Sorry, we could not process your request.
+					</p>
+					
+					<p>
+						<button class="btn btn-primary" onclick="history.go(-1);">Go back</button>
+					</p>					
+				</div> <!-- End row  -->
+			</div> <!-- End row  -->
+		</div> <!-- End container-fluid  -->
+	</body>
+	
+</html>

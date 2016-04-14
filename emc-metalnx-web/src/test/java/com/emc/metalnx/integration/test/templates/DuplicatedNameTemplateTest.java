@@ -1,0 +1,102 @@
+package com.emc.metalnx.integration.test.templates;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.emc.metalnx.integration.test.utils.TemplateUtils;
+import com.emc.metalnx.test.generic.UITest;
+
+/**
+ * Class created in order to create a template with a name that is already in use by another
+ * template.
+ *
+ */
+public class DuplicatedNameTemplateTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(DuplicatedNameTemplateTest.class);
+
+    private static WebDriver driver = null;
+    private String templateName = null;
+
+    /************************************* TEST SET UP *************************************/
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        UITest.setUpBeforeClass();
+        driver = UITest.getDriver();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
+        UITest.login();
+        TemplateUtils.createTemplateWithNoFields(driver, templateName, TemplateUtils.PRIVATE_TEMPLATE_TYPE);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        TemplateUtils.removeTemplate(templateName, driver);
+        UITest.logout();
+    }
+
+    /**
+     * After all tests are done, the test must quit the driver. This will close every window
+     * associated with the current driver instance.
+     */
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+            UITest.setDriver(null);
+        }
+    }
+
+    /**************************************** TESTS ****************************************/
+
+    /**
+     * Test method for adding a brand new private template with no metadata fields with an existing
+     * name;
+     */
+    @Test
+    public void testAddPrivateTemplateWithDuplicatedName() {
+        logger.info("Testing add a new private template with an existing name");
+        addTemplateWithDuplicatedNameAndCheckErrorMsg(templateName, TemplateUtils.PRIVATE_TEMPLATE_TYPE);
+    }
+
+    /**
+     * Test method for adding a brand new system template with no metadata fields with an existing
+     * name;
+     */
+    @Test
+    public void testAddSystemTemplateWithDuplicatedName() {
+        logger.info("Testing add a new system template with an existing name");
+        addTemplateWithDuplicatedNameAndCheckErrorMsg(templateName, TemplateUtils.SYSTEM_TEMPLATE_TYPE);
+    }
+
+    /**
+     * Generic method used for testing template creation failure message due to
+     * duplicated-template-name error.
+     *
+     * @param type
+     */
+    private void addTemplateWithDuplicatedNameAndCheckErrorMsg(String template, String type) {
+        driver.get(UITest.ADD_TEMPLATES_URL);
+        TemplateUtils.fillInTemplateInformation(template, TemplateUtils.TEMPLATE_TEST_DESC, TemplateUtils.TEMPLATE_USE_INFO, type, driver);
+
+        new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("invalidTemplateNameMsg")));
+
+        Assert.assertTrue(driver.findElement(By.id("invalidTemplateNameMsg")).isDisplayed());
+    }
+}

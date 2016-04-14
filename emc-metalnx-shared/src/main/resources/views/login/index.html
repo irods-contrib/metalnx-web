@@ -1,0 +1,120 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org">
+	<head>
+		<title th:text="#{login.page.title}"></title>
+		<link rel="shortcut icon" href="../static/images/favicon-16.png" th:href="@{/images/favicon-16.png}" type="image/png" />
+		
+	    <!-- Bootstrap Core CSS -->
+	    <link href="../static/css/bootstrap.min.css" rel="stylesheet"
+	    	th:href="@{/css/bootstrap.min.css}"/>
+	
+	    <!-- Custom Fonts -->
+	    <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css"
+	    	th:href="@{/css/font-awesome.min.css}"/>
+	    
+	    <link href="../static/css/styles.css" rel="stylesheet"
+	    	th:href="@{/css/styles.css}"/>
+	    
+	    <!-- jQuery Version 1.11.0 -->
+	    <script src="../static/js/jquery-1.11.0.js" th:src="@{/js/jquery.min.js}"></script>
+	    
+	    <!-- Bootstrap Validator CSS -->
+	    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet"
+	    	th:href="@{/css/bootstrapValidator.min.css}"/>
+	    	
+	    <!-- Bootstrap Validator JS -->
+	    <script src="../static/js/bootstrapValidator.min.js" 
+	    	th:src="@{/js/bootstrapValidator.min.js}"></script>
+			
+		<style>
+			.container-fluid{ height: 90vh; }
+			.container-fluid > .row{ height: 95% }
+			.container-fluid > .row > div{ align-items: center; display: flex; min-height: 100%; }
+			.container-fluid > .row .panel{ border-top: 3px solid #5faee5; border-bottom: none; border-right: none; border-left:none; margin: 0 auto;}
+			.container-fluid > .row .panel .btn-primary{ background-color: #428bca; border-color: #3580bd; }
+			.container-fluid > .row .panel .list-group-item{ border: 1px solid #f2f6f9; }
+			.container-fluid .alert{ margin-bottom: 0px; }
+		</style>
+	</head>
+	
+	<body>
+		<!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" 
+        	style="margin-bottom: 0;">
+            <div class="navbar-header col-sm-12" style="margin-bottom: 0;">                     
+                <a class="navbar-brand" href="#">
+                	<!-- EMC metalnx logo -->
+                	<img  alt="EMC logo" src="../static/images/logo.svg" 
+                		th:src="@{/images/logo.svg}" />
+					<!-- EMC metalnx logo - end -->
+				</a>  
+			</div>                       
+        </nav>
+        
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
+					<!-- Error Message -->
+					<div class="panel panel-default">
+						<ul class="list-group">
+							<li class="list-group-item"><h3>Welcome to Metalnx</h3></li>
+							<li class="list-group-item">
+								<form action="#" th:action="@{/login/authenticate/}" method="POST" class="registerForm row">
+									<div class="form-group col-xs-12"> 
+										<label for="inputUsernameLogin" th:text="#{login.username}"></label>
+										<input type="text" name="username" class="form-control" 
+											id="inputUsernameLogin" />
+									</div>
+									<div class="form-group col-xs-12"> 
+										<label for="inputPasswordLogin" th:text="#{login.password}"></label>
+										<input type="password" name="password" class="form-control" 
+											id="inputPasswordLogin" />
+									</div>
+									
+									<!-- Error Message -->
+									<span class="errorMsg col-xs-10" th:if="${usernameOrPasswordInvalid}">
+										Invalid username or password
+									</span>
+															
+									<div class="pull-right col-xs-2">
+										<input type="submit" value="Sign in" class="btn btn-primary pull-right"/>
+									</div>
+								</form>
+							</li>
+						</ul>
+						<div class="alert alert-danger errorMsg" th:if="${serverNotResponding}">
+							<strong>iCAT not responding.</strong> Please, try logging in later. <br />
+							If this problem persists, please notify your system administrator.
+						</div>
+					</div>
+				</div>
+			</div> <!-- End row  -->
+		</div> <!-- End container-fluid  -->
+		<!-- Footer -->
+        <footer>
+        	&copy; 2015-2016 EMC Corporation. All rights reserved.
+        </footer>
+	</body>
+    
+    <script>
+    /*<![CDATA[*/
+    	$(document).ready(function(e){
+    		var mlxKeys = [];
+    		
+    		for(var i = 0; i < localStorage.length; i++) {
+    			var key = localStorage.key(i);
+    			if(key.indexOf('emc-metalnx-web') > -1) {
+    				mlxKeys.push(key);
+    			}
+    		}
+    		
+    		for(var i = 0; i < mlxKeys.length; i++) {
+    			localStorage.removeItem(mlxKeys[i]);
+    		}
+    	});
+    /*]]>*/
+	</script>
+	
+</html>

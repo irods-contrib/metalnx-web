@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+
+<link rel="shortcut icon" href="../static/images/favicon-16.png" th:href="@{/images/favicon-16.png}" type="image/png" />
+
+<title th:if="${userDetails.isAdmin()}">iRODS Admin UI</title>
+<title th:unless="${userDetails.isAdmin()}">iRODS User Interface</title>
+
+<!-- jQuery Version 1.11.0 -->
+<script src="../static/js/jquery-1.11.0.js"
+    th:src="@{/js/jquery.min.js}"></script>
+
+<!-- Bootstrap Core CSS -->
+<link href="../static/css/bootstrap.min.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.min.css}" />
+
+<!-- Custom Fonts -->
+<link href="../static/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css" th:href="@{/css/font-awesome.min.css}" />
+
+<link href="../static/css/styles.css" rel="stylesheet"
+	th:href="@{/css/styles.css}" />
+
+<!-- Tags input -->
+<link href="../static/css/bootstrap-tagsinput.css" rel="stylesheet"
+	th:href="@{/css/bootstrap-tagsinput.css}"/>
+
+<!-- Tagsinput -->
+<script src="../static/js/bootstrap-tagsinput.min.js" th:src="@{/js/bootstrap-tagsinput.min.js}"></script>
+
+<!-- Typeahead jQuery Plugin -->
+<script src="../static/js/typeahead.js" th:src="@{/js/typeahead.js}"></script>
+
+<!-- Ajax Encapsulation -->
+<script src="../static/js/ajax.js" th:src="@{/js/ajax.js}"></script>
+	
+<!-- Nano scroll -->
+<script src="../static/js/jquery.nanoscroller.min.js" th:src="@{/js/jquery.nanoscroller.min.js}"></script>
+<link href="../static/css/nanoscroller.css" rel="stylesheet"
+	th:href="@{/css/nanoscroller.css}" />
+	
+<!-- Datatables component -->
+<link rel="stylesheet" href="./static/css/jquery.dataTables.min.css" th:href="@{/css/dataTables.bootstrap.min.css}" />
+<script  src="../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script  src="../static/js/jquery.dataTables.min.js" th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+
+<!-- Our customization on datatables jquery plugin -->
+<script src="../static/js/dataTable.customize.js" th:src="@{/js/dataTable.customize.js}"></script>
+	
+</head>
+
+<body>
+
+	<div id="wrapper">
+
+		<!-- Navigation -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0;">
+			<div class="navbar-header col-sm-12" style="margin-bottom: 0;">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+
+				<!-- EMC metalnx logo -->
+				<a class="navbar-brand" th:href="@{ ${urlMap.URL_DASHBOARD} }">
+					<img  alt="EMC logo" src="../static/images/logo.svg" 
+                		th:src="@{/images/logo.svg}" />
+				</a>
+				<!-- EMC metalnx logo - end -->
+
+				<!-- Topbar links -->
+				<ul class="nav navbar-top-links navbar-right pull-right">
+
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
+							<i class="fa fa-user"></i> 
+							<span class="navbar-top-links-text" th:text="${userDetails.getUsername()}"></span> &nbsp; 
+							<i class="fa fa-caret-down white-icon"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-user">
+							<!-- <li><a href="#"><i class="fa fa-user"></i>
+									<span th:text="#{user.profile.label}"></span></a></li> -->
+							<li><a th:href="@{/preferences/}"><i
+									class="fa fa-gear fa-fw"></i> <span
+									th:text="#{user.preferences.label}"></span></a></li>
+							<li class="divider"></li>
+							<li><a href="#" data-toggle="modal"
+								data-target="#aboutModal"><i class="fa fa-info-circle"></i>
+									<span>About</span></a></li>
+							<li class="divider"></li>
+							<li><a th:href="@{/logout/}"><i
+									class="fa fa-sign-out"></i> <span
+									th:text="#{user.logout.label}"></span></a></li>
+						</ul> <!-- /.dropdown-user --></li>
+					<!-- /.dropdown -->
+				</ul>
+				<!-- /.navbar-top-links -->
+
+				<!-- Upload notifications panel -->
+				<ul class="nav navbar-top-links navbar-right pull-right hide"
+					id="uploadStatusIcon">
+					<li class="dropdown"><a class="dropdown-toggle" href="#">
+							<i class="fa fa-tasks white-icon"></i> <span class="badge"></span>
+					</a>
+						<ul class="dropdown-menu" style="width: 35vw; max-height: 80vh; overflow: auto">
+						</ul></li>
+				</ul>
+
+			</div>
+
+			
+			<!-- /.navbar-static-side -->
+		</nav>
+		<!-- /.navbar-header -->
+		<aside class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse nano-content">
+
+					<ul class="nav" id="side-menu">
+
+						<!-- If user typer currently logged in is an admin, the items below are available otherwise the user cannot use them -->
+						<th:block th:if="${userDetails.isAdmin()}">
+							<li>
+								<!-- Dashboard sidebar item--> <a
+								th:href="@{ ${urlMap.URL_DASHBOARD} }">
+									<!-- href="/emc-metalnx-web/dashboard/" --> <i
+									class="fa fa-tachometer"></i> &nbsp; <span
+									th:text="#{dashboard.menu.title}"></span>
+							</a>
+							</li>
+							
+							<!-- Resource sidebar item --> 
+							<li>
+								<a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i class="fa fa-database"></i> &nbsp; 
+									<span th:text="#{resources.menu.title}"></span><!--  <span class="fa arrow"></span> -->
+								</a>
+							</li>
+							
+							<!-- Users sidebar item --> 
+							<li><a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }"> <i
+								class="fa fa-user"></i> &nbsp; <span
+								th:text="#{users.menu.title}"></span>
+								</a>
+							</li>
+							<!-- Group sidebar item --> 
+							<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"> <i
+									class="fa fa-group"></i> &nbsp; <span
+									th:text="#{groups.management.menu.title}"></span></a>
+							</li>
+	
+						</th:block>
+						<!-- Collection sidebar item --> 
+						<li><a th:href="@{ ${urlMap.URL_COLLECTIONS_MANAGEMENT} }"> <i
+								class="fa fa-folder"></i>&nbsp;<span
+								th:text="#{collections.menu.title}"></span></a>
+						</li>
+						<!-- Metadata search sidebar item -->
+						<li><a th:href="@{ ${urlMap.URL_METADATA_SEARCH} }">
+							<span class="fa-stack fa-lg" style="">
+		                      <i class="fa fa-square fa-stack-2x"></i>
+		                      <i class="fa fa-search fa-stack-1x fa-inverse"></i> &nbsp; 
+		                    </span>
+							<span th:text="#{metadata.search.menu.title}"></span></a>
+						</li>
+						<!-- Metadata template sidebar item -->
+						<li><a th:href="@{ ${urlMap.URL_TEMPLATE_MANAGEMENT} }">
+							<span class="fa-stack fa-lg" style="">
+		                      <i class="fa fa-square fa-stack-2x"></i>
+		                      <i class="fa fa-cubes fa-stack-1x fa-inverse"></i> &nbsp; 
+		                    </span>
+							<span th:text="#{metadata.template.management.menu.title}"></span></a>
+						</li>
+						<!-- My Groups sidebar item -->
+                        <!-- <li> 
+                            <a th:href="@{ ${urlMap.URL_GROUPS_BOOKMARKS} }">
+                            	<span class="fa-stack fa-lg" style="">
+			                      <i class="fa fa-folder fa-stack-2x"></i>
+			                      <i class="fa fa-users fa-stack-1x fa-inverse"></i>
+			                    </span>
+                            	&nbsp; <span th:text="#{sidebar.user.groups}"></span>
+                            </a>
+                        </li> -->
+                        <!-- Bookmarks sidebar item -->
+                        <li> 
+                            <a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }">
+                            	<span class="fa-stack fa-lg" style="">
+			                      <i class="fa fa-folder fa-stack-2x"></i>
+			                      <i class="fa fa-share-alt fa-stack-1x fa-inverse"></i>
+			                    </span>
+                            	&nbsp; <span th:text="#{sidebar.user.bookmarks}"></span>
+                            </a>
+                        </li>
+                        <!-- Favorites -->
+                        <li> 
+                            <a th:href="@{ ${urlMap.URL_STARRED_ITEMS} }">
+                            	<span class="fa-stack fa-lg" style="">
+			                      <i class="fa fa-folder fa-stack-2x"></i>
+			                      <i class="fa fa-star fa-stack-1x fa-inverse"></i>
+			                    </span>
+                            	&nbsp; <span th:text="#{sidebar.user.favorites}"></span>
+                            </a>
+                        </li>
+                        <!-- Public sidebar item -->
+                        <li> 
+                            <a th:href="@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }">
+                            	<span class="fa-stack fa-lg" style="">
+			                      <i class="fa fa-folder fa-stack-2x"></i>
+			                      <i class="fa fa-globe fa-stack-1x fa-inverse"></i>
+			                    </span>
+                            	&nbsp; <span th:text="#{sidebar.user.public}"></span>
+                            </a>
+                        </li>
+                        <!-- Trash sidebar item -->
+                        <li> 
+                            <a th:href="@{ ${urlMap.URL_TRASH_COLLECTION_USER} }">
+                            	<span class="fa-stack fa-lg" style="">
+			                      <i class="fa fa-folder fa-stack-2x"></i>
+			                      <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+			                    </span>
+                            	&nbsp; <span th:text="#{sidebar.user.trash}"></span>
+                            </a>
+                        </li>
+
+					</ul>
+				</div>
+				<!-- /.sidebar-collapse -->
+			</aside>
+		<!-- Page Content -->
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-sm-12" layout:fragment="content">
+					<h1 class="page-header">Title here</h1>
+
+				</div>
+				<!-- /.col-sm-12 -->
+			</div>
+			<!-- /.row -->
+		</div>
+		<!-- /#page-wrapper -->
+
+		<!-- Footer -->
+		<footer class="row"> &copy; 2015-2016 EMC Corporation. All rights
+			reserved. </footer>
+	</div>
+
+	<!-- About modal -->
+	<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						About EMC MetaLnx UI <span th:text="${emcmetalnxVersion.VERSION}"></span>-<span
+							th:text="${emcmetalnxVersion.BUILD_NUMBER}"></span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<i> This software contains the intellectual property of EMC
+							Corporation or is licensed to EMC Corporation from third parties.
+							Use of this software and the intellectual property contained
+							therein is expressly limited to the terms and conditions of the
+							License Agreement under which it is provided by or on behalf of
+							EMC. </i>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">
+						Ok</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="../static/js/bootstrap.min.js"
+		th:src="@{/js/bootstrap.min.js}"></script>
+
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="../static/js/metisMenu.min.js"
+		th:src="@{/js/metisMenu.min.js}"></script>
+
+	<!-- Custom Theme JavaScript -->
+	<script src="../static/js/sb-admin-2.js" th:src="@{/js/sb-admin-2.js}"></script>
+
+	<!-- Template switch -->
+	<script src="../static/js/switchTemplate.js"
+		th:src="@{/js/switchTemplate.js}"></script>
+
+	<!-- Upload -->
+	<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		function showAboutModal() {
+			$("#aboutModal").modal("show");
+		}
+		//$(".sidebar").nanoScroller();
+		
+		var current_url = window.location.href;
+		
+		$("#side-menu li a").each(function(){
+	        //making only trash side-menu link active and not collections 
+		    if(current_url.indexOf([[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]) >= 0){
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
+
+	        //making only public colleciton side-menu link active
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }]]) >= 0){
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_PUBLIC_COLLECTION_USER}}]]+"']").addClass("active");
+	        
+	        //making shared links side-menu option active if user is in group bookmarks page
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_GROUPS_BOOKMARKS} }]]) >= 0){
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_USER_BOOKMARKS}}]]+"']").addClass("active");
+	        
+	        //every other link
+		    }else if(current_url.indexOf($(this).attr('href')) >= 0){
+				$(this).addClass("active");
+			} 
+		});
+	/*]]>*/
+	</script>
+
+</body>
+
+</html>
+

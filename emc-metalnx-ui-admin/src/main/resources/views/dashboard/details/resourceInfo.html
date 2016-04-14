@@ -1,0 +1,34 @@
+<th:block th:fragment="resourceInfo">	
+	<div th:if="${resourceNotFound}">
+		Resource not found
+	</div>
+	
+	<div th:if="${resource}">
+		<p>
+			<b>Name</b>
+			<span th:text="${resource.name}"></span>
+		</p>
+		<p>
+			<b>Type</b>
+			<span th:text="${resource.type}"></span>
+		</p>
+		<p>
+			<b>Parent</b>
+			<span th:text="${resource.parent}"></span>
+		</p>
+		<p>
+			<b>Zone</b> <br />
+			<span th:text="${resource.zone}"></span>
+		</p>
+		<p>
+			<b>Path</b> <br />
+			<span th:text="${resource.path}"></span>
+		</p>
+		<p>
+			<b>Children</b>
+			<th:block th:each="child : ${resource.children}">
+				<span th:text="${child}"></span>
+			</th:block>
+		</p>
+	</div>
+</th:block>

@@ -1,0 +1,133 @@
+<th:block th:fragment="treeView">
+
+    <!-- Confirmation modal for the delete operation -->
+    <div class="modal fade" id="deleteReplicaModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Delete Replica</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="path" id="deleteReplicaPath"/>
+                    <input type="hidden" name="fileName" id="deleteReplicaFileName"/>
+                    <input type="hidden" name="replicaNumber" id="deleteReplicaNumber"/>
+                    <p>Are you really sure you want to delete this replica?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteReplica();">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Replica deletion success message -->
+    <div class="alert alert-success" role="alert" th:if="${delReplReturn} == 'success'">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <p class="text-center">Replica successfully deleted.</p>
+    </div>
+    <!-- Replica deletion fail message -->
+    <div class="alert alert-danger" role="alert" th:if="${delReplReturn} == 'failure'">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <p class="text-center">Replica deletion failed.</p>
+    </div>
+
+    <!-- Permission none -->
+    <div th:if="${collectionAndDataObject == null}">
+        <div class="text-center" role="alert">
+            <span>You do not have permissions to access information in the target collection or for the selected object.</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="javascript:goBackHistory('1');">
+                <span>Back</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12" th:unless="${collectionAndDataObject == null}">
+        <h3 class="collection-details">Info</h3>
+        <!-- name -->
+        <div class="collLesserInfo divider">
+            <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+            <i th:unless="${collectionAndDataObject.isCollection()}"
+               th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+            <span><b th:text="${ currentCollection.getName() }"></b></span>
+            <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+        </div>
+
+        <div id="replicaAndChecksumInfo" th:if="${!currentCollection.isCollection()}">
+            <p>
+                <label th:text="#{collections.management.table.owner.label}"></label>:
+                <span th:text="${ currentCollection.getOwner() }"></span><br/>
+
+                <label th:text="#{collections.management.table.created.label}"></label>:
+                <span th:text="${ currentCollection.getCreatedAtFormatted() }"></span><br/>
+
+                <label th:text="#{collections.management.table.modified.label}"></label>:
+                <span th:text="${ currentCollection.getModifiedAtFormatted() }"></span><br/>
+
+                <label>Checksum</label>:
+                <span th:text="${ currentCollection.getChecksum() }"></span>
+            </p>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th th:text="#{collections.management.table.replica.number.label}"></th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Size</th>
+                    <th>Resource</th>
+                    <th>Path</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="replica : ${replicasMap}">
+                    <td><span th:text="${replica.key.replicaNumber}"></span></td>
+                    <td><span th:text="${replica.key.createdAtFormatted}"></span></td>
+                    <td><span th:text="${replica.key.modifiedAtFormatted}"></span></td>
+                    <td><span th:text="${replica.key.displaySize}"></span></td>
+                    <td><span th:text="${replica.value.name}"></span></td>
+                    <td><span th:text="${replica.value.path}"></span></td>
+                    <td th:if="${replicasMap.size() > 1}">
+                        <button class="btn btn-default btn-xs"
+                                th:onclick="'javascript:displayDeleteReplicaModal(\'' + ${currentCollection.getPath()} + '\', \'' + ${currentCollection.getName()} + '\', \'' + ${replica.key.replicaNumber} + '\');'"
+                                type="button">
+                            <span class="glyphicon glyphicon-trash"> </span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+		function displayDeleteReplicaModal(path, fileName, replicaNumber) {
+			$('#deleteReplicaPath').val(path);
+			$('#deleteReplicaFileName').val(fileName);
+			$('#deleteReplicaNumber').val(replicaNumber);
+			$('#deleteReplicaModal').modal('show');
+		}
+
+		function deleteReplica(path, fileName, replicaNumber) {
+			var path = $('#deleteReplicaPath').val();
+			var fileName = $('#deleteReplicaFileName').val();
+			var replicaNumber = $('#deleteReplicaNumber').val();
+			$("#table-loader").show();
+			$("#table-loader").nextAll().remove();
+			$(".nav-tabs a[href='#info-collection']").tab("show");
+			$('#deleteReplicaModal').modal('hide');
+			$('.modal-backdrop.fade.in').remove();
+			ajaxEncapsulation("/emc-metalnx-web/fileOperation/deleteReplica/", "POST", {path: path, fileName: fileName, replicaNumber: replicaNumber}, displayInfoDetails, null, null, null);
+		}
+    </script>
+</th:block>

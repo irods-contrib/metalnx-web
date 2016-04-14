@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorator="template">
+
+	<head>
+		<!-- JQuery UI CSS -->
+	    <link href="../static/css/jquery-ui.min.css" rel="stylesheet"
+	    	th:href="@{/css/jquery-ui.min.css}"/>
+		<!-- JQuery UI Timepicker CSS -->
+	    <link href="../static/css/jquery-ui-timepicker-addon.css" rel="stylesheet"
+	    	th:href="@{/css/jquery-ui-timepicker-addon.css}"/>
+	
+		<!-- jQuery UI Version 1.11.4 -->
+    	<script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
+		<!-- jQuery UI Timepicker -->
+    	<script src="../static/js/jquery-ui-timepicker-addon.js" th:src="@{/js/jquery-ui-timepicker-addon.js}"></script>
+    	
+    	<title th:text="#{tab.title.search}">EMC Metalnx - Search</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="content">
+			<h1 class="page-header pull-left" th:text="#{metadata.search.page.title}"></h1>
+			<a id="search-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+			<div class="header-line"></div>
+			<div class="row metadata">
+				<div class="col-xs-12 tree-view-panel">
+					<div class="tabpanel">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="active" ><a href="#metadata-search" aria-controls="profile" role="tab" data-toggle="tab" >Metadata (AVU)</a></li>
+							<li ><a href="#properties-search" aria-controls="profile" role="tab" data-toggle="tab" >Properties</a></li>
+						</ul>
+						<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
+							<div role="tabpanel" class="tab-pane active" id="metadata-search">
+								<div class="">
+									<div class="col-xs-12"><p>Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
+									<form class="metadataSearchForm col-xs-12">
+										<div class="metadataSearchRow ">
+											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0"/>
+											
+												<select id="" class="metadataOper metadataSearchField form-control" name="operator">
+													<option selected="" value="EQUAL">Is (Equals)</option>
+													<option value="NOT_EQUAL">Is Not (Not Equals)</option>
+													<option value="LIKE">Contains</option>
+													<option value="NOT_LIKE">Does Not Contain</option>
+												</select>
+											
+											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0"/>
+                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0"/>
+											<a role="button" class="btn btn-link btn-xs rmMetadataSearchRow" ><i class="fa fa-minus-circle"></i></a>
+										</div>
+										<div class="">
+											<a role="button" class="btn btn-link btn-xs" id="addMetadataSearchRow" ><i class="fa fa-plus"></i>   <span th:text="#{metadata.search.add.criteria}"></span></a>
+										</div>
+									</form>
+									<div id="metadataSearchActionButtons" class="col-sm-12">
+										<button class="btn btn-primary btn-sm pull-right" id="submitMetadataSearch" type="button">Search</button>
+										<button class="btn btn-default btn-sm pull-right" id="resetMetadataSearch" type="button">Reset Conditions</button>
+									</div>
+								</div>
+							</div>
+							<div role="tabpanel" class="tab-pane" id="properties-search">
+								<div class="">
+									<div class="col-xs-12"><p>Search for files and collections that <b>match all of the conditions</b> below:</p></div>
+									<form class="propertiesSearchForm col-xs-12">
+										<div class="propertiesSearchRow ">
+											<select class="propertiesAttr form-control propertiesSearchField" name="attribute" placeholder="Attribute">
+												<option value="FILE_NAME">Name</option>
+								                <option value="FILE_PATH">Path</option>
+								                <option value="RESC_NAME">Resource Name</option>
+								                <option value="OWNER_NAME">Owner</option>
+								                <option value="CREATION_DATE">Creation Date</option>
+								                <option value="MODIFICATION_DATE">Modification Date</option>
+								                <option value="SIZE">Size In Bytes</option>
+								                <option value="REPLICA_NUMBER">Replica Number</option>
+								                <option value="CHECKSUM">Checksum</option>
+								                <option value="COMMENT">Comment</option>
+											</select>
+											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator">
+												<option selected="" value="EQUAL">Is (Equals)</option>
+												<option value="NOT_EQUAL">Is Not (Not Equals)</option>
+												<option value="LIKE">Contains</option>
+												<option value="NOT_LIKE">Does Not Contain</option>
+											</select>
+											<input type="text" class="propertiesVal form-control propertiesSearchField" name="value" placeholder="Value" />
+											<a role="button" class="btn btn-link btn-xs rmPropertiesSearchRow" ><i class="fa fa-minus-circle"></i></a>
+										</div>
+										<div class="">
+											<a role="button" class="btn btn-link btn-xs" id="addPropertiesSearchRow" ><i class="fa fa-plus"></i>   <span th:text="#{metadata.search.add.criteria}"></span></a>
+										</div>
+									</form>
+									<div id="metadataSearchActionButtons" class="col-sm-12">
+										<button class="btn btn-primary btn-sm pull-right" id="submitPropertiesSearch" type="button">Search</button>
+										<button class="btn btn-default btn-sm pull-right" id="resetPropertiesSearch" type="button">Reset Conditions</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div id="metadataSearchTableResults" class="col-xs-12">
+					<table class="table table-hover" id="treeViewTable"></table>
+				</div>
+			</div>
+			<script type="text/javascript" th:inline="javascript">
+				/*<![CDATA[*/
+				var jsonMetadataSearchString = [[${jsonMetadataSearch}]];
+				var metadataForm = $('.metadataSearchForm').clone();
+				var jsonFilePropertySearchString = [[${jsonFilePropertySearch}]];
+				var propertiesForm = $('.propertiesSearchForm').clone();
+				var metadataSearchRowCount = 1;
+				var datatable;
+				$.fn.serializeObject = function()
+				{
+				    var o = {};
+				    var a = this.serializeArray();
+				    $.each(a, function() {
+				        if (o[this.name] !== undefined) {
+				            if (!o[this.name].push) {
+				                o[this.name] = [o[this.name]];
+				            }
+				            o[this.name].push(this.value || '');
+				        } else {
+				            o[this.name] = [this.value || ''];
+				        }
+				    });
+				    return o;
+				};
+				$(document).ready(function(){
+				 	// Add popover on page title
+				 	$('#search-page-title').popover({
+				 		title:[[#{metadata.search.page.title}]],
+			    		content:[[#{metadata.search.page.title.popover}]],
+				 		trigger: 'hover click',
+			       		placement: 'left',
+			       	});
+					if($('.propertiesSearchRow').length > 1){
+					    $('.rmPropertiesSearchRow').show();
+					}else{
+					    $('.rmPropertiesSearchRow').hide();
+					}
+					if($('.metadataSearchRow').length > 1){
+					    $('.rmMetadataSearchRow').show();
+					}else{
+					    $('.rmMetadataSearchRow').hide();
+					}
+					//this code adds a new line for for the search criteria in metadata
+					$('body').on('click', '#addMetadataSearchRow', function(){
+						if($('.metadataSearchRow').length == 4){
+							$(this).hide();
+						}
+						var metadataSearchRow = metadataForm.find('.metadataSearchRow').clone();
+						metadataSearchRow.find("input[name='attribute']").attr("id", "metadataAttr" + metadataSearchRowCount);
+						metadataSearchRow.find("input[name='value']").attr("id", "metadataValue" + metadataSearchRowCount);
+						metadataSearchRow.find("input[name='unit']").attr("id", "metadataUnit" + metadataSearchRowCount);
+						metadataSearchRowCount++;
+						$('.metadataSearchRow').last().after(metadataSearchRow);
+						$('.rmMetadataSearchRow').show();
+					});
+					
+					//this code adds a new line for for the search criteria in file properties
+					$('body').on('click', '#addPropertiesSearchRow', function(){
+						var propertiesSearchRow = propertiesForm.find('.propertiesSearchRow').clone();
+						$('.propertiesSearchRow').last().after(propertiesSearchRow);
+						$('.rmPropertiesSearchRow').show();
+					});
+					
+					//change operator according to attributes values
+					$('body').on('change', '.propertiesAttr', function(){
+						var attr = $(this).val();
+						$(this).parents('.propertiesSearchRow').find('.propertiesVal').val('');
+						$(this).parents('.propertiesSearchRow').find('.propertiesVal').datetimepicker('destroy');
+						$(this).parents('.propertiesSearchRow').find('.propertiesVal').attr('id', '');
+						if(attr.indexOf('SIZE') >= 0 || attr.indexOf('REPLICA_NUMBER') >= 0){
+							$(this).parents('.propertiesSearchRow').find('.propertiesOper').html(
+								'<option selected="" value="EQUAL">Is (Equals)</option>'+
+								'<option value="NOT_EQUAL">Is Not (Not Equals)</option>'+
+								'<option value="LESS_THAN">Less Than</option>'+
+								'<option value="BIGGER_THAN">Greater Than</option>'
+							);
+						}else if(attr.indexOf('CREATION_DATE') >= 0 || attr.indexOf('MODIFICATION_DATE') >= 0){
+							$(this).parents('.propertiesSearchRow').find('.propertiesOper').html(
+								'<option selected="" value="EQUAL">Is (Equals)</option>'+
+								'<option value="NOT_EQUAL">Is Not (Not Equals)</option>'+
+								'<option value="LESS_THAN">Before</option>'+
+								'<option value="BIGGER_THAN">After</option>'
+							);
+							$(this).parents('.propertiesSearchRow').find('.propertiesVal').datetimepicker({
+								controlType: 'select',
+								oneLine: true,
+								timeFormat: 'hh:mm tt',
+								changeMonth: true,
+								changeYear: true
+							});
+						}else{
+							$(this).parents('.propertiesSearchRow').find('.propertiesOper').html(
+								'<option selected="" value="EQUAL">Is (Equals)</option>'+
+								'<option value="NOT_EQUAL">Is Not (Not Equals)</option>'+
+								'<option value="LIKE">Contains</option>'+
+								'<option value="NOT_LIKE">Does Not Contain</option>'
+							);
+						}
+					});
+					
+					//after submiting search, the table containing the results is created with datatables
+					$('#submitMetadataSearch').click(function(){
+						var totalSearchCriteriaRows = $(".metadataSearchRow").length;
+						var attr = "";
+						var value = "";
+						if($('#metadataSearchTableResults #treeViewTable').html() != ""){
+							datatable.destroy();
+							$('#metadataSearchTableResults #treeViewTable').empty();
+						}
+						$(".metadataSearchRow").each(function(){
+							attr = $(this).find(".metadataAttr").val();
+							value = $(this).find(".metadataVal").val();
+							unit = $(this).find(".metadataUnit").val();
+							if(attr == "" && value == "" && unit == "" && totalSearchCriteriaRows > 1) {
+								$(this).remove();
+								totalSearchCriteriaRows--;
+							}
+						});
+						
+						datatable = $('#treeViewTable').DataTable( {
+			    		    "serverSide": true,
+			    		    "dom": dtPatternForMetadata,
+			    		    "language": i18n,
+			    		    "processing": true,
+			    		    "destroy": true,
+			    		    "ordering": false,
+			    		    "stateSave": true,
+			    		    "autoWidth": false,
+			    		    "stateSaveParams": function (settings, data) {
+			    		    	data.search.search = "";
+			    		    },
+			    		    "ajax": {
+			    		        "url": '/emc-metalnx-web/metadata/search/',
+			    		        "type": "POST",
+			    		        "data": function ( d ) {
+			    		        	//this code adds a new parameter in the request
+			    		            return $.extend( {}, d, {
+			    		              "jsonMetadataSearch": JSON.stringify($('.metadataSearchForm').serializeObject())
+			    		            });
+			    		          }
+			    		    },
+			    		    "initComplete": function(settings){
+			    	            $('#treeViewTable tbody td').each(function () {
+			    	            	$(this).attr('title', $(this).text().trim());
+			    	            });
+			    	        },
+			    	        "drawCallback": function(){
+			    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+			    	            $('.dataTables_paginate.paging_simple_numbers')
+			    	            .css( 'display', this.api().data().length <= 0 ?
+			    	                 'none' :
+			    	                 'block'
+			    	            )
+			    	        },
+			  		    	"columnDefs": [
+			                    {
+			                    	"render": function ( data, type, full, meta ) {
+			    						return full.visibleToCurrentUser ? 
+			    							'<a href="#" onclick="redirectMetadataToCollections(\''+full.path+'\')" name="' + full.path + '"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' : 
+			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
+			    					},
+			    					"title": [[#{collections.management.table.collection.name.label}]],
+			    					"width": "20%", 
+			    					"targets": 0
+			                    },
+			                    {
+			                    	"data": "path",
+			                    	"title": [[#{collections.management.table.collection.path.label}]],
+			                    	"width": "25%", 
+			                    	"targets": 1
+			                    },
+			                    {
+			                    	"data": "owner", 
+			                    	"title": [[#{collections.management.table.owner.label}]],
+			                    	"width": "10%", 
+			                    	"targets": 2
+			                   	},
+			                    {
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+			                    	}, 
+			                    	"title": [[#{collections.management.table.kind.label}]],
+			                    	"width": "10%",
+			                    	"targets": 3
+			                   	},
+			                    {
+			                    	"data": "modifiedAtFormatted", 
+			                    	"title": [[#{collections.management.table.modified.label}]],
+			                    	"width": "15%", 
+			                    	"targets": 4
+			                   	},
+			                    {
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.collection? "-" : full.displaySize
+			                    	}, 
+			                    	"title": [[#{collections.management.table.size.label}]],
+			                    	"width": "10%",
+			                    	"targets": 5
+			                   	},
+			                   	{
+			                   		"render": function ( data, type, full, meta ){
+			                   			var tags = "(" + full.numberOfMatches + ")";
+			                   			for(var i = 0; i < Number(full.numberOfMatches); i++){
+			                   				tags += '<i class="fa fa-check totalMatchesTag"></i>'
+			                   			}
+			                    		return tags;
+			                    	},
+			                   		"title": [[#{collections.management.table.matches.label}]],
+			                   		"width": "10%",
+			                    	"targets": 6
+			                   	}
+			                ]
+			    		} );
+						addGoToPage('treeViewTable', datatable);
+						//Download search results as CSV file
+					    $('div.download_csv').html(
+				    		'<a href="/emc-metalnx-web/metadata/downloadCSVResults/" class="btn btn-default btn-sm">'+
+				    		'<span class="fa fa-download"> </span> CSV'+
+				    		'</a>'
+					    );
+					});
+					
+					$('#submitPropertiesSearch').click(function(){
+					    if($('#metadataSearchTableResults #treeViewTable').html() != ""){
+							datatable.destroy();
+							$('#metadataSearchTableResults #treeViewTable').empty();
+						}
+						datatable = $('#treeViewTable').DataTable( {
+			    		    "serverSide": true,
+			    		    "dom": dtPatternForMetadata,
+			    		    "language": i18n,
+			    		    "processing": true,
+			    		    "destroy": true,
+			    		    "ordering": false,
+			    		    "stateSave": true,
+			    		    "autoWidth": false,
+			    		    "stateSaveParams": function (settings, data) {
+			    		    	data.search.search = "";
+			    		    },
+			    		    "ajax": {
+			    		        "url": '/emc-metalnx-web/fileproperty/search/',
+			    		        "data": function ( d ) {
+			    		            return $.extend( {}, d, {
+			    		            	"jsonFilePropertySearch": JSON.stringify($('.propertiesSearchForm').serializeObject())
+			    		            });
+			    		          }
+			    		    },
+			    		    "initComplete": function(settings){
+			    	            $('#treeViewTable tbody td').each(function () {
+			    	            	$(this).attr('title', $(this).text().trim());
+			    	            });
+			    	        },
+			    	        "drawCallback": function(){
+			    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+			    	            $('.dataTables_paginate.paging_simple_numbers')
+			    	            .css( 'display', this.api().data().length <= 0 ?
+			    	                 'none' :
+			    	                 'block'
+			    	            )
+			    	        },
+			  		    	"columnDefs": [
+			                    {
+			                    	"render": function ( data, type, full, meta ) {
+			    						return full.visibleToCurrentUser ? '<a href="#" onclick="redirectFilePropertiesToCollections(\''+full.path+'\')"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' : 
+			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
+			    					},
+			    					"title": [[#{collections.management.table.collection.name.label}]],
+			    					"width": "20%", 
+			    					"targets": 0
+			                    },
+			                    {
+			                    	"data": "path",
+			                    	"title": [[#{collections.management.table.collection.path.label}]],
+			                    	"width": "30%", 
+			                    	"targets": 1
+			                    },
+			                    {
+			                    	"data": "owner", 
+			                    	"title": [[#{collections.management.table.owner.label}]],
+			                    	"width": "10%", 
+			                    	"targets": 2
+			                   	},
+			                    {
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+			                    	}, 
+			                    	"title": [[#{collections.management.table.kind.label}]],
+			                    	"width": "15%",
+			                    	"targets": 3
+			                   	},
+			                    {
+			                    	"data": "modifiedAtFormatted", 
+			                    	"title": [[#{collections.management.table.modified.label}]],
+			                    	"width": "15%", 
+			                    	"targets": 4
+			                   	},
+			                    {
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.collection? "-" : full.displaySize
+			                    	}, 
+			                    	"title": [[#{collections.management.table.size.label}]],
+			                    	"width": "10%",
+			                    	"targets": 5
+			                   	}
+			                ]
+			    		} );
+						
+						addGoToPage('treeViewTable', datatable);
+						//Download search results as CSV file
+					    $('div.download_csv').html(
+				    		'<a href="/emc-metalnx-web/fileproperty/downloadCSVResults/" class="btn btn-default btn-sm">'+
+				    		'<span class="fa fa-download"> </span> CSV'+
+				    		'</a>'
+					    );
+					});
+					
+					// if jsonMetadataSearch/jsonFilePropertySearch obj is not null, it means that the request came from collections page
+					// and it also means that the user is coming back to the previous search
+					if(jsonMetadataSearchString != null){
+						var jsonMetadataSearch = JSON.parse(jsonMetadataSearchString);
+						var attr = jsonMetadataSearch.attribute;
+						var oper = jsonMetadataSearch.operator;
+						var val = jsonMetadataSearch.value;
+						var unit = jsonMetadataSearch.unit;
+						$('.nav-tabs a[href="#metadata-search"]').tab('show');
+						if(attr.constructor === String){
+							$('.metadataAttr').val(attr);
+							$('.metadataOper').val(oper);
+							$('.metadataVal').val(val);
+							$('.metadataUnit').val(unit);
+						}else if(attr.constructor === Array){
+ 							$.each(attr, function(i){
+								if($('.metadataAttr').length == i){
+									$('#addMetadataSearchRow').click();
+								}
+								$('.metadataSearchRow').last().find('.metadataAttr').val(attr[i]);
+								$('.metadataSearchRow').last().find('.metadataOper').val(oper[i]);
+								$('.metadataSearchRow').last().find('.metadataVal').val(val[i]);
+								$('.metadataSearchRow').last().find('.metadataUnit').val(unit[i]);
+ 							});
+						}
+						$('#submitMetadataSearch').click();
+					}else if(jsonFilePropertySearchString != null){
+						var jsonFilePropertySearch = JSON.parse(jsonFilePropertySearchString);
+						var attr = jsonFilePropertySearch.attribute;
+						var oper = jsonFilePropertySearch.operator;
+						var val = jsonFilePropertySearch.value;
+						$('.nav-tabs a[href="#properties-search"]').tab('show');
+						if(attr.constructor === String){
+							$('.propertiesAttr').val(attr);
+							$('.propertiesAttr').change();
+							$('.propertiesOper').val(oper);
+							$('.propertiesVal').val(val);
+						}else if(attr.constructor === Array){
+ 							$.each(attr, function(i){
+								if($('.propertiesAttr').length == i){
+									$('#addPropertiesSearchRow').click();
+								}
+								$('.propertiesSearchRow').last().find('.propertiesAttr').val(attr[i]);
+								$('.propertiesSearchRow').last().find('.propertiesAttr').change();
+								$('.propertiesSearchRow').last().find('.propertiesOper').val(oper[i]);
+								$('.propertiesSearchRow').last().find('.propertiesVal').val(val[i]);
+ 							});
+						}
+						$('#submitPropertiesSearch').click();
+					}
+					
+					$('.nav-tabs a').click(function (e) {
+						e.preventDefault();
+						$(this).tab('show');
+					});
+					$('#resetMetadataSearch').click(function(){
+						$('.metadataSearchForm').html(metadataForm.html());
+						$('.rmMetadataSearchRow').hide();
+						if($('#metadataSearchTableResults #treeViewTable').html() != ""){
+							datatable.destroy();
+							$('#metadataSearchTableResults #treeViewTable').empty();
+						}
+					});
+					
+					$('body').on('click', '.rmMetadataSearchRow', function(){
+						$(this).parents('.metadataSearchRow').remove();
+						if($('.rmMetadataSearchRow').size()==1){
+							$('.rmMetadataSearchRow').hide();
+						}
+						if($(this).size() < 5 && $('#addMetadataSearchRow').is(":hidden")){
+							$('#addMetadataSearchRow').show();
+						}
+					});
+					
+					$('body').on('click', '.rmPropertiesSearchRow', function(){
+						$(this).parents('.propertiesSearchRow').remove();
+						if($('.rmPropertiesSearchRow').size()==1){
+							$('.rmPropertiesSearchRow').hide();
+						}
+					});
+					
+					$('#resetPropertiesSearch').click(function(){
+						$('.propertiesSearchForm').html(propertiesForm.html());
+						$('.rmPropertiesSearchRow').hide();
+						if($('#metadataSearchTableResults #treeViewTable').html() != ""){
+							datatable.destroy();
+							$('#metadataSearchTableResults #treeViewTable').empty();
+						}
+					});
+					
+					$('body').on('keypress', '.metadataSearchForm input[type="text"]', function(e){
+						if (e.which == 13) {
+							e.preventDefault();
+							$('#submitMetadataSearch').click();
+						}
+					});
+					
+					$('body').on('keypress', '.propertiesSearchForm input[type="text"]', function(e){
+						if (e.which == 13) {
+							e.preventDefault();
+							$('#submitPropertiesSearch').click();
+						}
+					});
+					
+					$('body').on('submit', '.metadataSearchForm', function(e){
+						e.preventDefault();
+						$('#submitMetadataSearch').click();
+					});
+					
+					$('body').on('submit', '.propertiesSearchForm', function(e){
+						e.preventDefault();
+						$('#submitPropertiesSearch').click();
+					});
+				});
+				function redirectMetadataToCollections(path){
+					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromMetadataToCollections/", "POST", {path: path}, 
+						function(){
+							window.location = "/emc-metalnx-web/collections/";
+					}, null, null, null);
+				}
+				
+				function redirectFilePropertiesToCollections(path){
+					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFilePropertiesToCollections/", "POST", {path: path}, 
+						function(){
+							window.location = "/emc-metalnx-web/collections/";
+					}, null, null, null);
+				}
+				/*]]>*/
+			</script>
+		</div>
+	</body>
+</html>

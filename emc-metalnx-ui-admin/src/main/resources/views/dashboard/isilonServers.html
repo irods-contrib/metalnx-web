@@ -1,0 +1,31 @@
+<th:block th:fragment="isilonServersList">	
+	
+	<div th:if="${isilonServers}" class="panel panel-default">
+		<div class="panel-body">
+			<h4 class="">Isilon Devices</h4>
+			<table class="table">
+				<tr th:each="isilon : ${isilonServers}">
+					<!-- <div class="header-line"></div> -->
+					<td>
+						<a th:href="'https://' + ${isilon.ip} + ':8080/'" target="_blank" th:text="${isilon.ip}"></a>
+						<small th:text="${isilon.hostname == isilon.ip ? '' : '['+isilon.hostname+']'}"></small>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div th:if="${isAnyIsilonWithNotWellFormedContextString}" class="panel-footer">
+			<div class="serverIcon">
+				<i class="fa fa-exclamation-triangle"></i>	
+			</div>
+			<p>
+				<span title="Please, verify the context string.">Unreachable Isilon Server(s).</span>
+			</p>
+		</div>
+	</div>
+	<div th:unless="${isilonServers}" class="panel panel-default">
+		<div class="panel-body">
+			<h4 class="">Isilon Devices</h4>
+			<div><p>There are no Isilon devices to be displayed.</p></div>
+		</div>
+	</div>
+</th:block>

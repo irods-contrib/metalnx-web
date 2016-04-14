@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+    lang="en"
+    layout:decorator="template">
+
+<head>
+	<title th:text="#{tab.title.resources}">EMC Metalnx - Resources</title>
+	
+	<!-- D3 Library -->
+    <script th:src="@{/js/d3.min.js}"></script>
+    
+</head>
+
+<body>
+
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left" th:text="#{resources.view.map.page.title}"></h1>
+				<span class="subtitle" th:text="#{resources.management.page.subtitle.map}"></span>
+				<div class="header-line"></div>
+				<!-- Map view and list view for resources -->
+				<div class="row">
+					<div class="col-sm-12">
+						<a id="serverViewBtn" class="btn btn-default btn-sm pull-right" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view}" style="margin-right: 5px;">
+							<span class="fa fa-server"> </span>
+							<span th:text="#{resources.management.server.view.label}"> </span>
+						</a>
+						<a id="mapViewBtn" class="btn btn-default btn-sm pull-right" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view}" style="margin-right: 5px;">
+							<span class="fa fa-sitemap"> </span>
+							<span th:text="#{resources.management.map.view.label}"> </span>
+						</a>
+						<a id="listViewBtn" class="btn btn-default btn-sm pull-right" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view}" style="margin-right: 5px;">
+							<span class="fa fa-list"> </span>
+							<span th:text="#{resources.management.list.view.label}"> </span>
+						</a>
+					</div>
+				</div>
+				<div th:fragment="resourceMapPanel">
+				<div id="resourceMapPanel" >		
+				
+					<script th:inline="javascript">
+					// <![CDATA[
+					    $(document).ready(function(){
+					    	// Add tooltip on Server View button
+					        $('#serverViewBtn').tooltip({
+					   			trigger: 'hover',
+					       		placement:'top',
+					   		});
+					     	// Add tooltip on Map View button
+					        $('#mapViewBtn').tooltip({
+					   			trigger: 'hover',
+					       		placement: 'top',
+					   		}); 
+					     	// Add tooltip on List View button
+					        $('#listViewBtn').tooltip({
+					   			trigger: 'hover',
+					       		placement: 'top',
+					   		}); 
+				    	});
+						var totalHeight = 0;
+						function countTreeData(treeData, h){
+							if(typeof treeData !== 'undefined'){
+								$.each(treeData, function(i, v){
+									//console.log(v);
+									countTreeData(v.children, h+1);
+								});
+							}else{
+								if(totalHeight < h){
+									totalHeight = h;
+								}
+							}
+						}
+						
+						
+				    	// ******************** Data to be displayed on the tree ***************************
+				    	var root;							
+						var i = 0;	
+				        var duration = 750;		    
+				        var resourceName;
+				    	var treeData = $.parseJSON( [[ ${treeData} ]] );
+				    	totalHeight = 0;
+				    	countTreeData(treeData, 0);
+				    					    	
+					 	// ************** Generate the tree diagram	 *****************
+					   /*2306 (w) 1200 (h)*/
+						var margin = {top: 0, right: 10, bottom: 20, left: 120},
+							width = 1500 - margin.right - margin.left,
+							height = 500 - margin.top - margin.bottom;
+					 	
+						var tree = d3.layout.tree()
+							.size([height, width]);
+						
+						var diagonal = d3.svg.diagonal()
+							.projection(function(d) { 
+								return [d.y, d.x]; 
+						});
+						
+						var svg = d3.select("#resourceMapPanel").append("svg")
+							.attr("width", (totalHeight*200) + margin.right + margin.left)
+							.attr("height", height + margin.top + margin.bottom)
+					        .attr("class", "overlay")
+					        .append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+						
+						// Append a group which holds all nodes and which the zoom Listener can act upon.
+					    var svgGroup = svg.append("g");
+						
+						root = treeData[0];
+						  
+						update(root);
+					    
+					 	// Toggle children function
+					    function toggleChildren(d) {
+					        if (d.children) {
+					            d._children = d.children;
+					            d.children = null;
+					        } else if (d._children) {
+					            d.children = d._children;
+					            d._children = null;
+					        }
+					        return d;
+					    }
+
+					    // Toggle children on click.
+					    function click(d) {
+					        if (d3.event.defaultPrevented) return; // click suppressed
+					        var obj = d; 
+					        d = toggleChildren(d);
+					        update(d);
+					        
+					        //code to change svg width
+					        var width = Number(d3.select("svg").attr("width"));
+				        	totalHeight = 0;
+					        if (d._children){
+						    	countTreeData(d._children, 0);
+					        	width = width-(totalHeight*200);
+							}else{
+								countTreeData(d.children, 0);
+								width = width+(totalHeight*200);
+							}
+					        d3.select("svg").attr("width", width);
+					        
+					    }
+						
+						function clickLink(d) {
+							d = d.target;
+					        //if (d3.event.defaultPrevented) return; // click suppressed
+					        d = toggleChildren(d);
+					        update(d);
+					        
+					      	//code to change svg width
+					        var width = Number(d3.select("svg").attr("width"));
+				        	totalHeight = 0;
+					        if (d._children){
+						    	countTreeData(d._children, 0);
+					        	width = width-(totalHeight*200);
+							}else{
+								countTreeData(d.children, 0);
+								width = width+(totalHeight*200);
+							}
+					        d3.select("svg").attr("width", width);
+					    }
+
+						function update(source) {
+
+							// Compute the new tree layout.
+							var nodes = tree.nodes(root).reverse(),
+								links = tree.links(nodes);
+							
+							// Normalize for fixed-depth.
+							nodes.forEach(function(d) { d.y = d.depth * 200; });
+
+							// Declare the nodes…
+							var node = svgGroup.selectAll("g.node")
+								.data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+							// Enter the nodes.
+							var nodeEnter = node.enter().append("g")
+								.attr("class", "node")
+								.attr("transform", function(d) { 
+									return "translate(" + d.y + "," + d.x + ")"; });
+						        //.on('contextmenu', click);
+								
+							nodeEnter.append("image")
+								.attr("xlink:href", function(d) { return d.icon; })
+								.attr("x", "-3%")
+								.attr("y", "-3%")
+								.attr("width", "6%")
+								.attr("height", "6%");
+								
+							nodeEnter.append("text")
+								.attr("x", function(d) { 
+									return d.children || d._children ? -20 : 20; })
+								.attr("dy", ".35em")
+								.attr("text-anchor", function(d) { 
+									return d.children || d._children ? "end" : "start"; })
+								.text(function(d) { return d.name; })
+								.style("fill-opacity", 1);
+							
+							// Update the text to reflect whether node has children or not.
+					        node.select('text')
+					            .attr("x", function(d) {
+					                return d.children || d._children ? -20 : 20;
+					            })
+					            .attr("text-anchor", function(d) {
+					                return d.children || d._children ? "end" : "start";
+					            })
+					            .text(function(d) {
+					            	if (d._children){
+										return d.name + "*";
+									}
+										return d.name;
+					            });
+							
+					     	// Transition nodes to their new position.
+					        var nodeUpdate = node.transition()
+					            .duration(duration)
+					            .attr("transform", function(d) {
+					                return "translate(" + d.y + "," + d.x + ")";
+					            });
+	
+					        // Fade the text in
+					        nodeUpdate.select("text")
+					        	.style("fill-opacity", 1);
+							
+					     	// Transition exiting nodes to the parent's new position.
+					        var nodeExit = node.exit().transition()
+					            .duration(duration)
+					            .attr("transform", function(d) {
+					                return "translate(" + source.y + "," + source.x + ")";
+					            })
+					            .remove();
+
+					        nodeExit.select("text")
+					            .style("fill-opacity", 0);
+
+							// Declare the links…
+							var link = svgGroup.selectAll("path.link")
+								.data(links, function(d) { 
+									return d.target.id; 
+								});
+							
+							// Enter the links.
+							link.enter().insert("path", "g")
+								.attr("class", "link")
+								.attr("d", function(d){
+									var o = {
+										x: source.x0,
+										y: source.y0
+									};
+									return diagonal({
+										source: o,
+										target: o
+									});
+								});
+					            //.on('click', clickLink);
+							
+							// Transition links to their new position.
+					        link.transition()
+					            .duration(duration)
+					            .attr("d", diagonal);
+					        
+					        // Transition exiting nodes to the parent's new position.
+					        link.exit().transition()
+					            .duration(duration)
+					            .attr("d", function(d) {
+					                var o = {
+					                    x: source.x,
+					                    y: source.y
+					                };
+					                return diagonal({
+					                    source: o,
+					                    target: o
+					                });
+					            })
+					            .remove();
+
+					        // Stash the old positions for transition.
+					        nodes.forEach(function(d) {
+					            d.x0 = d.x;
+					            d.y0 = d.y;
+					        });
+						}
+
+						function viewInfo(){
+							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
+							ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
+						}
+						
+						function displayResourceInfo(data){
+							var offset = $("#contextMenu").offset();
+							var json = $.parseJSON(data);
+							
+							$("#contextMenu").hide();
+							$("#resourceInfo").hide();
+
+							if(json["zoneName"]){
+								
+								$("#zoneInfo #zoneName").html(json["zoneName"]);
+								
+								$("#zoneInfo").fadeIn();						
+								$("#zoneInfo").offset({
+									"top": offset.top, 
+									"left": offset.left
+								}); 
+								
+							}
+							else {
+								$("#resourceInfo #name").html(json["name"]);
+								$("#resourceInfo #type").html(json["type"]);
+								$("#resourceInfo #zone").html(json["zone"]);
+								$("#resourceInfo #host").html(json["host"]);
+								$("#resourceInfo #ip").html(json["ip"]);
+								$("#resourceInfo #path").html(json["path"]);
+								$("#resourceInfo #parent").html(json["parent"]);
+								
+								$("#resourceInfo").fadeIn();						
+								$("#resourceInfo").offset({
+									"top": offset.top, 
+									"left": offset.left
+								}); 
+							}
+						}
+						
+						function addChild() {
+							window.location = "/emc-metalnx-web/resources/add/" + resourceName +"/";
+						}
+						
+						$.fn.extend({
+						    disableSelection: function() {
+						        this.each(function() {
+						            this.onselectstart = function() {
+						                return false;
+						            };
+						            this.unselectable = "on";
+						            $(this).css('-moz-user-select', 'none');
+						            $(this).css('-webkit-user-select', 'none');
+						        });
+						    }
+						});
+						
+						window['resourceMapPanel'].oncontextmenu = function() {
+						    return false;
+						};
+						$(document).ready(function(){
+							$('#resourceInfo .close').click(function(){
+								$('#resourceInfo').fadeOut();
+							});
+							$('#zoneInfo .close').click(function(){
+								$('#zoneInfo').fadeOut();
+							});
+							$('#resourceMapPanel').disableSelection();
+							$("#resourceMapPanel g .node").on("click", function(event){
+								$("#resourceInfo").hide();
+								
+								resourceName =  $(this).find("text").text().replace('*', '');
+								
+								$("#contextMenu").fadeIn();
+								$("#contextMenu").offset({
+									"top": event.pageY + 20, 
+									"left": event.pageX
+								}); 
+							});
+						
+							$('#resourceMapPanel .overlay').on("mousedown", function(event){	
+							    if(!$(event.target.parentNode).is('g.node')){
+							        $("#contextMenu").fadeOut();
+									$("#resourceInfo").fadeOut();
+									$("#zoneInfo").fadeOut();
+							    }
+							}); 
+						});
+					// ]]>
+			    </script>
+					
+				</div> <!-- /. col-sm-12 -->
+				<!-- Context Menu -->
+				<div id="contextMenu" class="col-sm-2 hideElement">
+					<ul class="nav nav-stacked">
+						<li role="presentation"><a id="viewInfoMenuItem" onclick="viewInfo();" href="#">View Info</a></li>
+						<li role="presentation"><a id="addChildMenuItem" onclick="addChild();" href="#">Add Child</a></li>
+					</ul>
+				</div>
+				
+				<!-- Zone Info -->
+				<div id="zoneInfo" class="col-sm-3 alert alert-info alert-dismissible hideElement" role="alert">
+					<button type="button" class="close">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<p>
+						<b>Zone: </b>
+						<span id="zoneName"></span>
+					</p>
+				</div>
+				
+				<!-- Resource Info -->
+				<div id="resourceInfo" class="col-xs-6 col-xm-6 col-md-3 alert alert-info alert-dismissible hideElement" role="alert">
+					<button type="button" class="close">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<p>
+						<b>Name: </b>
+						<span id="name"></span>
+					</p>
+					<p>
+						<b>Type: </b>
+						<span id="type"></span>
+					</p>
+					<p>
+						<b>Zone: </b>
+						<span id="zone"></span>
+					</p>
+					<p>
+						<b>Host: </b>
+						<span id="host"></span>
+					</p>
+					<p>
+						<b>IP: </b>
+						<span id="ip"></span>
+					</p>
+					<p>
+						<b>Path: </b>
+						<span id="path"></span>
+					</p>
+					<p>
+						<b>Parent: </b>
+						<span id="parent"></span>
+					</p>
+				</div>
+			 </div>
+			</div> <!-- /. col-sm-12 -->	
+			
+		</div> <!-- /. row -->	
+	
+	</div> <!-- /. Page Content -->
+
+</body>
+
+</html>

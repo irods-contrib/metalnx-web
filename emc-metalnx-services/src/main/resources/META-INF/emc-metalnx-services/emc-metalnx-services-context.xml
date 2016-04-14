@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	">
+
+	<import resource="classpath:META-INF/emc-metalnx-core/emc-metalnx-core-context.xml" />
+	
+	<context:annotation-config />
+	
+	<bean id="irodsConnectionManager" class="org.irods.jargon.core.connection.IRODSSimpleProtocolManager"
+		factory-method="instance" init-method="initialize" destroy-method="destroy" />
+		
+	<bean id="irodsSession" class="org.irods.jargon.core.connection.IRODSSession" factory-method="instance">
+		<constructor-arg type="org.irods.jargon.core.connection.IRODSProtocolManager" ref="irodsConnectionManager" />
+	</bean>
+	
+	<bean id="irodsAccessObjectFactory" class="org.irods.jargon.core.pub.IRODSAccessObjectFactoryImpl" scope="singleton">
+		<constructor-arg ref="irodsSession" />
+	</bean>
+	
+	<context:component-scan base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh com.emc.metalnx.services.machine" />
+	
+
+</beans>

@@ -1,0 +1,19 @@
+<th:block th:fragment="collectionsResourcesForReplica">
+
+	<select class="form-control" name="resourcesForReplication" id="" th:if="${ not #lists.isEmpty(resources) }" style="width:66%">
+		<th:block th:each="resource : ${resources}">
+			<option th:value="${resource.name}"> 
+				<span th:text="${resource.name}"></span> 
+			</option>
+		</th:block>	
+	</select>
+	
+	<!-- Disabling form submission if there is no resource available for replication -->
+	<th:block th:if="${ #lists.isEmpty(resources) }">
+		<p th:text="#{collections.warning.noresources}"></p>
+		<script>
+			$("#replicateButton").prop('disabled', true);
+		</script>
+	</th:block>
+	
+</th:block>

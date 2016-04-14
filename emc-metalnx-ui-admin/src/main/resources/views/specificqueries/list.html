@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<!-- Current Specific Queries Table -->
+	<div th:fragment="specificQueriesList" class="row">
+	
+		<div class="col-sm-12" th:if="${foundSpecificQueries}">
+		
+			<div class="alert" role="alert">
+				<p class="text-center">
+					<b><span th:text="${resultSize}"></span></b> <span th:text="#{specific.queries.table.results.found.label}"></span>.
+				</p>
+			</div>
+	
+			<div class="col-sm-12 scrollable-table">
+				<table class="table table-hover" id="specificQueriesTable">
+					<thead>
+						<tr>
+							<th data-sortable="true" th:text="#{specific.queries.table.alias.name}" style="width:80%;"></th>
+							<th>Action</th>
+						</tr>
+					</thead>
+	
+					<tbody>
+						<tr th:each="specificQuery : ${specificQueries}">
+							<td th:text="${specificQuery.getAlias()}"></td>
+							<td>
+								<a class="btn btn-default btn-xs"
+									th:href="${urlMap.URL_MODIFY_SPECIFIC_QUERY_PAGE} + ${specificQuery.getAlias() + '/'}">
+									<span class="glyphicon glyphicon-pencil"> </span>
+								</a>
+								&nbsp; &nbsp;
+								<button type="button" class="btn btn-default btn-xs"
+									th:onclick="'javascript:confirmSpecificQueryRemoval(\'' + ${specificQuery.getAlias()} + '\');'">
+									<span class="glyphicon glyphicon-trash"> </span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /. col-sm-12 -->
+		</div>
+		
+		<div class="col-sm-12" th:unless="${foundSpecificQueries}">
+			<div class="alert alert-danger" role="alert">
+				<p class="text-center">
+					<span th:text="#{search.results.not.found.label}"></span> "<b><span th:text="${queryString}"></span></b>".
+				</p>
+			</div>
+		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}"></h4>
+					</div>
+					<div class="modal-body">
+						<span th:text="#{confirmation.removal.label}"></span>
+						<span id="elementToBeRemoved" style="font-weight: bold;"></span> 
+						?
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-default" data-dismiss="modal" 
+					  	th:text="#{confirmation.message.no}">
+					  </button>
+					  <button type="button" class="btn btn-primary" onclick="removeElement();" 
+					  	th:text="#{confirmation.message.yes}">
+					  </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
+			
+		<script th:inline="javascript">
+			$(function(){
+				$("#specificQueriesTable").tablesorter(); 
+			});
+			
+			function removeElement() {
+				var alias = $("#elementToBeRemoved").html();
+				window.location = [[${urlMap.URL_DELETE_SPECIFIC_QUERY}]] + alias + "/";
+			} 
+			
+	        function confirmSpecificQueryRemoval(alias) {
+				$("#elementToBeRemoved").html(alias);
+				$("#removalModal").modal("show");
+			}
+		</script>	
+		
+	</div>
+	<!-- /. row Current Specific Queries Table -->
+</body>
+</html>

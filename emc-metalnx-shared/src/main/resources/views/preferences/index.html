@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+	lang="en"
+	layout:decorator="template">
+
+<head>
+
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left" th:text="#{preferences.page.title}"></h1>
+				<div class="header-line"></div>
+			</div>
+			<div class="col-xs-12 col-md-6">
+				<form role="form" class="container-fluid registerForm row" method="POST" th:object="${preferences}" th:action="@{/preferences/action/}">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								<h3 class="panel-title" th:text="#{preferences.panel.title}"></h3>
+							</div>
+						<div class="panel-body" >
+							<div class="form-group">
+								<label for="selectLanguage" th:text="#{preferences.language.label}"></label>
+								<select th:field="*{localeLanguage}" class="form-control" id="selectLanguage">
+									<option value="en">English</option>
+									<option value="pt_br">Portugu&ecirc;s</option>
+									<option value="fr">Fran&ccedil;ais</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="forceFileOverwriting">File Upload</label>
+								<p>
+									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" />
+									<span >  Overwrite duplicate files by default</span> 
+								</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="btn-group pull-right">
+						<button type="submit" class="btn btn-primary" th:text="#{preferences.save.button.label}"></button>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+	</div> 
+
+</body>
+
+</html>

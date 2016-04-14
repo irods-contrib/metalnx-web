@@ -1,0 +1,61 @@
+<th:block th:fragment="systemHealth">
+	<div class="panel panel-default" id="systemHealthPanel">
+		<div class="panel-heading">
+			<h3 class="panel-title">System Health</h3>					
+		</div>
+		<div class="panel-body">
+			<b>Overall Status:</b> <span id="systemHealthSum"></span>
+		</div>
+	</div>
+	<script th:inline="javascript">
+		var servers = [[${ servers }]];
+		var systemHealth = "normal";
+		var numberOfServers = 0;
+		
+		
+		for (var i = servers.length - 1; i >= 0; i--) {
+			var hostname = servers[i].hostname;			
+			console.log("executing rmd serverstatus for " + hostname);
+			$.ajax({
+				url: "http://" + hostname + ":8000/serverstatus", 
+				type: "GET",
+				dataType: "jsonp",
+				success: function(data){
+					numberOfServers++;
+
+					if(data.server == "error"){
+						systemHealth = data.server;
+					} else if (data.server == "warning") {
+						if(systemHealth != "error") {
+							systemHealth = data.server;
+						}
+					}
+					
+					if(numberOfServers == servers.length){							
+						$("#systemHealthPanel").removeClass("panel-success");
+						$("#systemHealthPanel").removeClass("panel-warning");
+						$("#systemHealthPanel").removeClass("panel-success");	
+					
+						if(systemHealth == "error") {
+							$("#systemHealthPanel").addClass("panel-danger");
+						}
+						else if (systemHealth == "warning") {
+							$("#systemHealthPanel").addClass("panel-warning");			
+						} 
+						else {
+							$("#systemHealthPanel").addClass("panel-success");				
+						}
+						
+						$("#systemHealthSum").html(systemHealth);
+					}
+				},
+				error: function (data) {
+					numberOfServers++;
+					console.log("Error when calling RMD for " + hostname);
+				}
+			});
+		}
+			
+		
+	</script>
+</th:block>

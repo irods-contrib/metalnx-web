@@ -1,0 +1,23 @@
+<!-- Current Collections Table -->
+<ul th:fragment="oldTreeView">		
+	<th:block th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
+		
+		<!-- Collection name -->
+		<li>
+			<p>
+				<a href="#" 
+					th:name="${ collectionAndDataObject.getPath() }" 
+					th:title="${ collectionAndDataObject.getPath() }"
+					th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${collectionAndDataObject.getName()} + '\', \'' + ${collectionAndDataObject.getPath()} + '\');'">
+				
+	            	<img alt="" class="folder-icon"
+	            		th:src="@{ /images/folder-16.png }"
+	            		th:name="${ collectionAndDataObject.getPath() }" />  
+				      
+					<span th:text="${ collectionAndDataObject.getName() }"></span>
+				
+				</a>
+			</p>
+		</li>
+	</th:block>					
+</ul>

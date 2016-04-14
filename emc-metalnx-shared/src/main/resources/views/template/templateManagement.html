@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorator="template" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+<title th:text="#{tab.title.templates}">EMC Metalnx - Templates</title>
+</head>
+
+<body>
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
+				<a id="templates-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+				<div class="header-line"></div>		
+				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }" 
+					class="alert alert-success alert-dismissible text-center" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:if="${ templateAddedSuccessfully }" th:text="${ templateAddedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ templateModifiedSuccessfully }" th:text="${ templateModifiedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ templateRemovedSuccessfully }" class="text-center">Template(s)</span></b>
+				  	
+					<span th:if="${ templateAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
+					<span th:if="${ templateModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
+					<span th:if="${ templateRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
+				</div>
+				
+				<div th:if="${templateNotModifiedSuccessfully}">
+					<div class="alert alert-danger alert-dismissible text-center" role="alert" >
+						<button type="button" class="close" data-dismiss="alert">
+					  		<span aria-hidden="true">&times;</span>
+					  		<span class="sr-only">Close</span>
+					  	</button>
+						<span>Sorry. The template could not be modified.</span>
+					</div>
+				</div>
+				
+				<div class="alert alert-success alert-dismissible text-center hideElement" role="alert" id="importSuccessful">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:text="#{ templates.metadata.success.import.label }" class="text-center"></span></b>
+					<span th:text="#{ templates.metadata.success.import.message }"></span>
+				</div>
+				
+				<div class="alert alert-warning alert-dismissible text-center hideElement" role="alert" id="partialImportWarning">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:text="#{ templates.metadata.partial.import.label }" class="text-center"></span></b>
+					<span th:text="#{ templates.metadata.partial.import.message }"></span>
+				</div>
+				
+				<div class="alert alert-danger alert-dismissible text-center hideElement" role="alert" id="importError">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:text="#{ templates.metadata.error.import.label }" class="text-center"></span></b>
+					<span th:text="#{ templates.metadata.error.import.message }"></span>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="btn-group pull-right">
+						 	<a type="button" th:href="@{ ${urlMap.URL_ADD_TEMPLATE} }" class="btn btn-primary">Add Template</a>
+						 	<a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								<span class="caret"></span>
+						    	<span class="sr-only">Toggle Dropdown</span>
+						  	</a>
+						  	<ul class="dropdown-menu" role="menu">
+						    	<li><a href="#" data-toggle="modal" data-target="#uploadModal">Import XML template</a></li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+
+				<!-- Table loader Ajax Gif -->
+				<div id="table-loader" class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.table.label}"></p>
+				</div>
+
+				<!-- Current Templates Table -->
+				<div id="templateListAsync"></div>
+				
+				<!-- Upload Modal -->
+				<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+								</button>
+								<h4 class="modal-title" th:text="#{upload.label}"></h4>
+							</div>
+							<div class="modal-body">	
+							
+								<div class="hideElement" id="uploadMinMessage">
+									<div class="alert alert-warning alert-dismissible text-center" role="alert">
+									  	<button type="button" class="close" data-dismiss="alert">
+									  		<span aria-hidden="true">&times;</span>
+									  		<span class="sr-only">Close</span>
+									  	</button>
+									  	<span>Select at least one file</span>
+									</div>
+								</div>
+							
+								<!-- Form submitted as soon as the user selects all files to be uploaded -->			
+								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >	
+									<div class="form-group">
+										<span>Select files for upload &nbsp;</span>	
+										<button type="button" class="btn btn-primary" id="templateBrowseButton">
+											<span th:text="#{browse.label}"></span>
+										</button>
+										<input type="file" name="file" id="inputFiles"
+											class="form-control" />
+									</div>
+									<div class="well hideElement" id="fileListDiv">
+										<div id="filesList"></div>
+									</div>
+									
+									<div id="uploadControlOptions" class="hideElement">
+										<div class="row">
+											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
+												<label>
+													<input type="checkbox" id="addPrefixCheckbox" name="addPrefix" value="1" /> Add prefix to template
+				       							</label>
+											</div>
+											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
+												<input type="text" class="form-control hideElement " name="prefix" id="prefixInput" />
+											</div>
+										</div>
+	
+										<div class="row">
+											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
+												<label>
+													<input type="checkbox" id="addSuffixCheckbox" name="addSuffix" value="1" /> Add suffix to template
+				       							</label>
+											</div>
+											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
+												<input type="text" class="form-control hideElement " name="suffix" id="suffixInput" />
+											</div>
+										</div>
+									</div>
+									
+								</form>
+								
+								
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}">
+								</button>
+								<button type="button" class="btn btn-primary" id="templateUploadButton">
+									<i class="fa fa-upload"></i>
+									<span th:text="#{upload.label}"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<script type="text/javascript" th:inline="javascript">
+					$(document).ready(function(){
+				        // Add popover on page title
+				        $('#templates-page-title').popover({
+				    		title:[[#{metadata.template.management.page.title}]],
+				    		content:[[#{metadata.template.management.page.title.popover}]],
+				   			trigger: 'hover click',
+				       		placement: 'left',
+				   		});
+				    });
+					var files;
+				
+					$(function() {
+						function populateTemplateTableDiv(data) {
+							$("#templateListAsync").html(data);
+							$("#table-loader").hide();
+							$("#templateListAsync").show();
+						}
+
+						// Loads results in user management page
+						function loadTemplateResults() {
+							var url = "/emc-metalnx-web/templates/findAll/";
+							ajaxEncapsulation(url, "GET", "", populateTemplateTableDiv, null, null);
+						}
+
+						// When the user arrives to this page
+						loadTemplateResults();
+						
+						$("#templateBrowseButton").click(function(){
+							$("input[name='file']").click();
+						});
+						
+						$("input[name='file']").change(function () {
+				        	files = $("input[name='file']").prop("files");
+							$('#fileListDiv').show();
+				        	
+				        	$.each(files, function(index, file){
+				        		$("#filesList").append(
+				        			'<p>' +
+				        				file.name +
+				        			'</p>'
+				        		);
+				        	});
+				        	
+				        	$('#uploadControlOptions').show();
+						});
+						
+						$("#templateUploadButton").click(function(){
+				        	if($("input[name='file']").prop("files").length == 0 ){
+				        		$('#uploadMinMessage').show();
+				        		return;
+				        	}
+				        	
+				        	var formData = new FormData();
+				        	$.each(files, function(index, file){
+				        		formData.append('file', file);
+				        	});
+				        	formData.append('prefix', $("#prefixInput").val());
+				        	formData.append('suffix', $("#suffixInput").val());
+				        	
+				        	$.ajax({
+				        		url:'/emc-metalnx-web/templates/import/',
+				        		type:'POST',
+								//Ajax events
+								success:  function(data) {
+									if (data == "ok") {
+										$("#importSuccessful").show();
+									}
+									else if (data == "partial") {
+										$("#partialImportWarning").show();
+									}
+									else if (data == "error") {
+										$("#importError").show();
+									}
+									$('#uploadModal').modal('hide');
+									$('#filesList').html('');
+									$('#fileListDiv').hide();
+									$('#uploadControlOptions').hide();
+									loadTemplateResults();
+								},
+								data: formData,
+								cache: false,
+								contentType: false,
+								processData: false,
+								statusCode: {
+									500: function(response){
+										alert("internal error");
+									},
+									408: function(response){
+										window.location= "/emc-metalnx-web/login/";
+									},
+									403: function(response){
+										window.location= "/emc-metalnx-web/login/";
+									}
+								}
+				        	});
+						});
+						
+						$('#uploadModal').on('hidden.bs.modal', function(){
+							$('#uploadForm').each(function(){
+								this.reset();
+							});
+							$('#fileList').html('');
+							$('#fileListDiv').hide();
+							$('#uploadControlOptions').hide();
+							$("#suffixInput").hide();
+							$("#prefixInput").hide();
+						});
+						
+						$("#addPrefixCheckbox").change(function () {
+				        	if($(this).is(":checked")) {
+				                $("#prefixInput").show();
+				            }
+				        	else {
+				                $("#prefixInput").hide();	        		
+				        	}
+						});
+						
+						$("#addSuffixCheckbox").change(function () {
+				        	if($(this).is(":checked")) {
+				                $("#suffixInput").show();
+				            }
+				        	else {
+				                $("#suffixInput").hide();	        		
+				        	}
+						});
+					
+					});
+					
+				</script>
+
+			</div>
+		</div>
+
+	</div>
+	<!-- /.layout:content -->
+
+</body>
+
+</html>
+

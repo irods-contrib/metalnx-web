@@ -1,0 +1,97 @@
+<div th:fragment="templateList" class="row templates-content templates" id="templateList">	
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myCopyModalLabel">Step 1 - Select Template(s)</h4>
+			</div>
+			
+			<div class="modal-body">
+				<div class="" th:if="${foundTemplates}">
+					<table class="table" id="templatesListTable" >
+						<thead>
+							<tr>
+								<th><input type="checkbox" name="" /></th>
+								<th th:text="#{templates.management.table.name.label}"></th>
+								<th th:text="#{templates.management.table.owner.label}"></th>
+								<th th:text="#{templates.management.table.description.label}"></th>
+							</tr>
+						</thead>
+		
+						<tbody id="">
+							<tr th:each="template : ${templates}">
+								<td class="">
+									<input type="checkbox" name="templateCheckboxes" th:value="${template.id}" th:id="${template.templateName}"/>
+								</td>
+								<td><span th:text="${template.templateName}"></span></td>
+								<td><span th:text="${template.owner}"></span></td>
+								<td><span th:text="${template.description}"></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<div class="modal-footer">	
+				<div class="row">
+					<div class="col-xs-6">
+						<button type="button" class="btn btn-default pull-left cancelBtn" th:text="#{forms.cancel.action.button}" data-dismiss="modal" ></button>
+					</div>
+					<div class="col-xs-6">
+						<div class="pull-right">
+							<button type="button" class="btn btn-primary" id="listTemplateFieldsBtn" onclick="listTemplateFields();" disabled="disabled">
+								Next &nbsp; <i class="fa fa-chevron-right"></i> 
+							</button>		
+						</div>	
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+	/*<![CDATA[*/
+		$(document).ready(function(){
+			var templatesListTable = $("#templatesListTable").DataTable({
+				"dom": dtPatternMlxStandard,
+			    "language": i18n,
+				"stateSave": true,
+				"autoWidth": false,
+			    "stateSaveParams": function (settings, data) {
+			    	data.search.search = "";
+			    },	    	        
+			    "initComplete": function(settings){
+		            $('#templatesListTable tbody td').each(function () {
+		            	$(this).attr('title', $(this).text().trim());
+		            });
+		        },
+		        "drawCallback": function(){
+		            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+		            $('.dataTables_paginate.paging_simple_numbers')
+    	            .css( 'display', this.api().data().length <= 0 ?
+    	                 'none' :
+    	                 'block'
+    	            )
+		        },
+		        "columnDefs": [
+	                {"width": "2%","orderable": false, "targets": 0},
+	                {"width": "15%", "targets": [1, 2]},
+	                {"width": "68%", "targets": 3}
+	            ]
+			});
+			addGoToPage('templatesListTable', templatesListTable);
+			
+			$("input[name='templateCheckboxes']").change(function() {
+				var totalCheckboxesChecked = $("input[name='templateCheckboxes']:checked").length;
+				if(0 >= totalCheckboxesChecked) {
+			    	$("#listTemplateFieldsBtn").prop("disabled", true);
+				}else{
+			    	$("#listTemplateFieldsBtn").prop("disabled", false);
+				}
+		    });
+		});
+	/*]]>*/
+	</script>
+</div>
