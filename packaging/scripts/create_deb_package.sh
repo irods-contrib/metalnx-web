@@ -9,7 +9,7 @@ rm -rf $TMP_DIR
 
 mkdir -p $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/tmp/emc-tmp
 
-cp $WORKSPACE/emc-metalnx/emc-metalnx-web/target/emc-metalnx-web.war $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/tmp/emc-tmp/
+cp $WORKSPACE/src/emc-metalnx-web/target/emc-metalnx-web.war $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/tmp/emc-tmp/
 cp $WORKSPACE/packaging/scripts/config_metalnx.sh $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/
 cp $WORKSPACE/packaging/scripts/usage_information.sh $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/
 cp -r $WORKSPACE/packaging/deb/DEBIAN $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/
