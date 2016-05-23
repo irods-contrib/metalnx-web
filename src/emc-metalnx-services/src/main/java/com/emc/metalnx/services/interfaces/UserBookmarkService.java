@@ -106,4 +106,15 @@ public interface UserBookmarkService {
      */
     public List<DataGridUserBookmark> findBookmarksPaginated(DataGridUser user, int start, int length, String searchString, List<String> orderBy,
             List<String> orderDir, boolean onlyCollections);
+
+    /**
+     * Updates an existing bookmark path to a new one.
+     * 
+     * @param oldPath
+     * 			old path to be updated
+     * @param newPath
+     * 			new path value
+     * @return True, if oldPath was successfully set to newPath. False, otherwise.
+     */
+	boolean updateBookmark(String oldPath, String newPath);
 }

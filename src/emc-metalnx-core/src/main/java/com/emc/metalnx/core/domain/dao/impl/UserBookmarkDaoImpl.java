@@ -209,4 +209,27 @@ public class UserBookmarkDaoImpl extends GenericDaoImpl<DataGridUserBookmark, Lo
 
         return operationResult;
     }
+
+	@Override
+	public boolean updateBookmark(String oldPath, String newPath) {
+		logger.debug("Updating bookmark");
+		
+		if (oldPath == null || newPath == null) {
+			logger.debug("Could not update bookmark. Null values provided");
+			return false;
+		}
+		
+		if (oldPath.equals(newPath)) {
+			logger.debug("Old bookmark is the same as the new one. No need for an update.");
+			return false;
+		}
+		
+		String newBookmarkName = newPath.substring(newPath.lastIndexOf("/") + 1, newPath.length());
+        
+        Query q = sessionFactory.getCurrentSession().createQuery("update DataGridUserBookmark set path = :newPath, name = :name where path = :oldPath");
+        q.setString("newPath", newPath);
+        q.setString("name", newBookmarkName);
+        q.setString("oldPath", oldPath);
+        return q.executeUpdate() > 0;		
+	}
 }

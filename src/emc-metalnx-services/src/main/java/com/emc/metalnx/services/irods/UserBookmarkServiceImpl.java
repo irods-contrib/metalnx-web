@@ -115,5 +115,10 @@ public class UserBookmarkServiceImpl implements UserBookmarkService {
     public boolean removeBookmarkBasedOnUser(DataGridUser user) {
         return userBookmarkDao.removeByUser(user);
     }
+    
+    @Override
+    public boolean updateBookmark(String oldPath, String newPath) {
+    	return userBookmarkDao.updateBookmark(oldPath, newPath);
+    }
 
 }

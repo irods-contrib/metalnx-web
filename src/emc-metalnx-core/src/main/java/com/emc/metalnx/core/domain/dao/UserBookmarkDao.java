@@ -130,5 +130,15 @@ public interface UserBookmarkDao extends GenericDao<DataGridUserBookmark, Long> 
      */
     public List<DataGridUserBookmark> findByUserPaginated(DataGridUser user, int start, int length, String searchString, List<String> orderBy,
             List<String> orderDir, boolean onlyCollections);
-
+    
+    /**
+     * Changes an existing bookmark to a new value.
+     * 
+     * @param oldPath
+     * 			existing path that will be updated
+     * @param newPath
+     * 			new path
+     * @return True, if oldePath was successfully changed to newPath. False, otherwise.
+     */
+	boolean updateBookmark(String oldPath, String newPath);
 }
