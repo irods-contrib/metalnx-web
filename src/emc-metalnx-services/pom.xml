@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.emc.metalnx</groupId>
     <artifactId>emc-metalnx</artifactId>
-    <version>0.7</version>
+    <version>1.0</version>
   </parent>
   <artifactId>emc-metalnx-services</artifactId>
   <dependencies>
