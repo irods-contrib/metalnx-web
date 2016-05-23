@@ -721,10 +721,14 @@ public class CollectionController {
 
         logger.info("Modify action for " + targetPath + "/" + newPath);
         modificationSuccessful = collectionService.modifyCollectionAndDataObject(targetPath, newPath, collectionForm.getInheritOption());
+        
         if (modificationSuccessful) {
-        	userBookmarkService.updateBookmark(targetPath, newPath);
-            redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collectionForm.getCollectionName());
             logger.debug("Collection/Data Object {} modified to {}", targetPath, newPath);
+            
+        	userBookmarkService.updateBookmark(targetPath, newPath);
+        	groupBookmarkService.updateBookmark(targetPath, newPath);
+        	
+            redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collectionForm.getCollectionName());
         }
 
         return "redirect:/collections/";

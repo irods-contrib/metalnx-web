@@ -91,4 +91,16 @@ public interface GroupBookmarkService {
     public Integer countTotalGroupBookmarks(String user, String additionalInfo) throws DataGridConnectionRefusedException, DataNotFoundException,
             JargonException;
 
+    
+    /**
+     * Changes an existing bookmark to a new value.
+     * 
+     * @param oldPath
+     * 			existing path that will be updated
+     * @param newPath
+     * 			new path
+     * @return True, if oldePath was successfully changed to newPath. False, otherwise.
+     */
+	public boolean updateBookmark(String oldPath, String newPath);
+
 }

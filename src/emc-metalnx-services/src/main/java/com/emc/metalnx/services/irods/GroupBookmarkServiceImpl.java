@@ -186,5 +186,10 @@ public class GroupBookmarkServiceImpl implements GroupBookmarkService {
     public boolean removeBookmarkBasedOnGroup(DataGridGroup group) {
         return groupBookmarkDao.removeByGroup(group);
     }
+    
+    @Override
+    public boolean updateBookmark(String oldPath, String newPath) {
+    	return groupBookmarkDao.updateBookmark(oldPath, newPath);
+    }
 
 }

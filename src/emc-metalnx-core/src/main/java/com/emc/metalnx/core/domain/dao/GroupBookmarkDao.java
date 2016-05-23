@@ -97,4 +97,15 @@ public interface GroupBookmarkDao extends GenericDao<DataGridGroupBookmark, Long
      * @return
      */
     public Long countGroupBookmarksByGroupsIds(String[] groupIds);
+
+    /**
+     * Changes an existing bookmark to a new value.
+     * 
+     * @param oldPath
+     * 			existing path that will be updated
+     * @param newPath
+     * 			new path
+     * @return True, if oldePath was successfully changed to newPath. False, otherwise.
+     */
+	boolean updateBookmark(String oldPath, String newPath);
 }

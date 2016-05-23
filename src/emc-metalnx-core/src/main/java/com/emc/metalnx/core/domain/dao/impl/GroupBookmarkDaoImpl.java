@@ -195,6 +195,27 @@ public class GroupBookmarkDaoImpl extends GenericDaoImpl<DataGridGroupBookmark, 
         return (long) 0;
     }
 
+	@Override
+	public boolean updateBookmark(String oldPath, String newPath) {
+		logger.debug("Updating bookmark");
+		
+		if (oldPath == null || newPath == null) {
+			logger.debug("Could not update bookmark. Null values provided");
+			return false;
+		}
+		
+		if (oldPath.equals(newPath)) {
+			logger.debug("Old bookmark is the same as the new one. No need for an update.");
+			return false;
+		}
+		
+        Query q = sessionFactory.getCurrentSession().createQuery("update DataGridGroupBookmark set path = :newPath where path = :oldPath");
+        q.setString("newPath", newPath);
+        q.setString("oldPath", oldPath);
+        
+        return q.executeUpdate() > 0;		
+	}
+
     /**
      * Converts an array of strings into an array of longs.
      *
