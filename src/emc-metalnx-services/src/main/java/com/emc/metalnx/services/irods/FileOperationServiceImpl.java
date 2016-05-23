@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -42,6 +43,7 @@ import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.UserBookmarkService;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 
@@ -64,11 +66,17 @@ public class FileOperationServiceImpl implements FileOperationService {
     @Autowired
     FavoritesService favoritesService;
 
+    @Autowired
+    ResourceService resourceService;
+
     @Value("${populate.msi.enabled}")
     private boolean populateMsiEnabled;
 
     @Value("${illumina.msi.enabled}")
     private boolean illuminaMsiEnabled;
+
+    @Value("${irods.host}")
+    private String iCATHost;
 
     private static final int MEGABYTE = 1 * 1024 * 1024;
     private static final String CONTENT_TYPE = "application/octet-stream";
@@ -465,16 +473,27 @@ public class FileOperationServiceImpl implements FileOperationService {
                 deleteDataObject(tmpFileName, false);
             }
 
+            String remoteHeader = "";
+            String remoteFooter = "";
+
+            DataGridResource destResc = resourceService.find(destinationResource);
+
+            if (!iCATHost.startsWith(destResc.getHost())) {
+                String remoteHost = destResc.getHost();
+                remoteHeader = String.format("remote( \"%s\", \"\" ) {\n", remoteHost);
+                remoteFooter = "}\n";
+            }
+
             try {
-                // TODO: Jargon has to trigger the acPostProcForPut rule by
-                // itself. This part of the code is temporary.
                 StringBuilder ruleString = new StringBuilder();
                 String objPath = targetFile.getCanonicalPath();
                 String filePath = resourceMap.get(destinationResource) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
                 if (objPath.endsWith(".cram") || objPath.endsWith(".bam")) {
                     ruleString.append("automaticBamMetadataExtraction {\n");
+                    ruleString.append(remoteHeader);
                     ruleString.append(" msiobjput_mdbam(\"" + objPath + "\", \"" + filePath + "\");\n");
+                    ruleString.append(remoteFooter);
                     ruleString.append("}\n");
                     ruleString.append("OUTPUT ruleExecOut");
                     ruleProcessingAO.executeRule(ruleString.toString());
@@ -482,7 +501,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 
                 if (isVCFFile(objPath)) {
                     ruleString.append("automaticVcfMetadataExtraction {\n");
+                    ruleString.append(remoteHeader);
                     ruleString.append(" msiobjput_mdvcf(\"" + objPath + "\", \"" + filePath + "\");\n");
+                    ruleString.append(remoteFooter);
                     ruleString.append("}\n");
                     ruleString.append("OUTPUT ruleExecOut");
                     ruleProcessingAO.executeRule(ruleString.toString());
@@ -490,7 +511,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 
                 if (isImageFile(objPath)) {
                     ruleString.append("automaticJpgMetadataExtraction {\n");
+                    ruleString.append(remoteHeader);
                     ruleString.append(" msiobjjpeg_extract(\"" + objPath + "\", \"" + filePath + "\");\n");
+                    ruleString.append(remoteFooter);
                     ruleString.append("}\n");
                     ruleString.append("OUTPUT ruleExecOut");
                     ruleProcessingAO.executeRule(ruleString.toString());
@@ -505,8 +528,10 @@ public class FileOperationServiceImpl implements FileOperationService {
 
                         logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, objPath);
                         xmlManifestFileRule.append("automaticExtractMetadataFromXMLManifest {\n");
+                        ruleString.append(remoteHeader);
                         xmlManifestFileRule.append("  msiobjput_mdmanifest(\'" + objPathToApplyMetadata + "\', \'" + filePath + "\', \'" + filePath
                                 + "\');\n");
+                        ruleString.append(remoteFooter);
                         xmlManifestFileRule.append("}\n");
                         xmlManifestFileRule.append("OUTPUT ruleExecOut");
                         ruleProcessingAO.executeRule(xmlManifestFileRule.toString());
@@ -518,7 +543,9 @@ public class FileOperationServiceImpl implements FileOperationService {
                 if (populateMsiEnabled) {
                     ruleString = new StringBuilder();
                     ruleString.append("populateMetadataForFile {\n");
+                    ruleString.append(remoteHeader);
                     ruleString.append(" msiobjput_populate(\"" + objPath + "\");\n");
+                    ruleString.append(remoteFooter);
                     ruleString.append("}\n");
                     ruleString.append("OUTPUT ruleExecOut");
                     ruleProcessingAO.executeRule(ruleString.toString());
@@ -527,8 +554,10 @@ public class FileOperationServiceImpl implements FileOperationService {
                 if (illuminaMsiEnabled && objPath.endsWith("_SSU.tar")) {
                     ruleString = new StringBuilder();
                     ruleString.append("illuminaMetadataForFile {\n");
-                    ruleString.append(String.format("msiTarFileExtract(\"%s\", \"%s\", \"%s\", *Status);", objPath, targetPath, destinationResource));
+                    ruleString.append(remoteHeader);
+                    ruleString.append(String.format("msiTarFileExtract(\"%s\", \"%s\", \"%s\", *Status);\n", objPath, targetPath, destinationResource));
                     ruleString.append(String.format("msiget_illumina_meta(\"%s\", \"%s\");", objPath, destinationResource));
+                    ruleString.append(remoteFooter);
                     ruleString.append("}\n");
                     ruleString.append("OUTPUT ruleExecOut");
                     ruleProcessingAO.executeRule(ruleString.toString());
