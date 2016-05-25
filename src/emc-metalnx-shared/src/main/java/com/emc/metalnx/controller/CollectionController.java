@@ -1199,4 +1199,18 @@ public class CollectionController {
     public String getParentPath() {
         return parentPath;
     }
+    
+    /**
+     * Removes a path from the user's navigation history
+     * @param path
+     * 			path to be removed
+     */
+    public void removePathFromHistory(String path) {
+    	if (path == null || path.isEmpty()) {
+    		return;
+    	}
+    	
+    	collectionHistoryBack.remove(path);
+    	collectionHistoryForward.remove(path);
+    }
 }

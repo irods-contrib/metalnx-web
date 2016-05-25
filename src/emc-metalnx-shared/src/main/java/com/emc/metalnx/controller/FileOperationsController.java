@@ -365,12 +365,16 @@ public class FileOperationsController {
 
         for (String path : sourcePaths) {
             forceRemove = path.startsWith(TRASH_PATH);
+            
             if (!fileOperationService.deleteItem(path, forceRemove)) {
                 String item = path.substring(path.lastIndexOf("/") + 1, path.length());
                 failedDeletions.add(item);
-            } else if (sourcePaths.size() == 1) {
+            } 
+            else if (sourcePaths.size() == 1) {
                 fileDeleted = path.substring(path.lastIndexOf("/") + 1, path.length());
             }
+            
+            collectionController.removePathFromHistory(path);
         }
 
         sourcePaths.clear();
@@ -382,6 +386,7 @@ public class FileOperationsController {
         model.addAttribute("failedDeletions", failedDeletions);
         model.addAttribute("currentPath", collectionController.getCurrentPath());
         model.addAttribute("parentPath", collectionController.getParentPath());
+        
         return collectionController.getSubDirectories(model, collectionController.getCurrentPath());
     }
 
