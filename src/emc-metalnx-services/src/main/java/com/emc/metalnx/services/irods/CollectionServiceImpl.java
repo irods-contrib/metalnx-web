@@ -58,7 +58,9 @@ import com.emc.metalnx.services.machine.util.DataGridUtils;
 @Transactional
 public class CollectionServiceImpl implements CollectionService {
 
-    @Autowired
+    private static final String IRODS_PATH_SEPARATOR = "/";
+
+	@Autowired
     AdminServices adminServices;
 
     @Autowired
@@ -229,8 +231,8 @@ public class CollectionServiceImpl implements CollectionService {
             return 0;
         }
 
-        String parentPath = path.substring(0, path.lastIndexOf("/"));
-        String dataObjectName = path.substring(path.lastIndexOf("/"), path.length());
+        String parentPath = path.substring(0, path.lastIndexOf(IRODS_PATH_SEPARATOR));
+        String dataObjectName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR), path.length());
 
         DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
 
@@ -257,8 +259,8 @@ public class CollectionServiceImpl implements CollectionService {
         DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
 
         try {
-            collectionAbsPath = path.substring(0, path.lastIndexOf("/"));
-            fileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+            collectionAbsPath = path.substring(0, path.lastIndexOf(IRODS_PATH_SEPARATOR));
+            fileName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
             List<DataObject> replicas = dataObjectAO.listReplicationsForFile(collectionAbsPath, fileName);
 
             for (DataObject replica : replicas) {
@@ -538,7 +540,7 @@ public class CollectionServiceImpl implements CollectionService {
         CollectionAO collectionAO = irodsServices.getCollectionAO();
 
         try {
-            return collectionAO.countAllFilesUnderneathTheGivenCollection("/");
+            return collectionAO.countAllFilesUnderneathTheGivenCollection(IRODS_PATH_SEPARATOR);
         }
         catch (JargonException e) {
             logger.error("Could not count all files in the data grid: ", e);
@@ -588,9 +590,9 @@ public class CollectionServiceImpl implements CollectionService {
 
         Date currentDate = new Date();
         String tempCollectionName = "mlx_download_" + System.currentTimeMillis();
-        String tempCollectionPath = getHomeDirectyForCurrentUser() + "/" + tempCollectionName;
+        String tempCollectionPath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName;
         String filePathToBeBundled = tempCollectionPath;
-        String compressedFilePath = getHomeDirectyForCurrentUser() + "/" + tempCollectionName + ".tar";
+        String compressedFilePath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName + ".tar";
         String path = "";
 
         // if a single file was selected, it will be transferred directly
@@ -706,9 +708,9 @@ public class CollectionServiceImpl implements CollectionService {
             entryPath = entry.getPathOrName();
         }
         else {
-            entryPath = entry.getParentPath() + "/" + entry.getPathOrName();
-            if (entry.getParentPath().compareTo("/") == 0) {
-                entryPath = "/" + entry.getPathOrName();
+            entryPath = entry.getParentPath() + IRODS_PATH_SEPARATOR + entry.getPathOrName();
+            if (entry.getParentPath().compareTo(IRODS_PATH_SEPARATOR) == 0) {
+                entryPath = IRODS_PATH_SEPARATOR + entry.getPathOrName();
             }
         }
 
@@ -743,7 +745,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public String getHomeDirectyForPublic() {
         logger.debug("Getting public directory");
-        return "/" + irodsServices.getCurrentUserZone() + "/home/public";
+        return IRODS_PATH_SEPARATOR + irodsServices.getCurrentUserZone() + "/home/public";
     }
 
     @Override
@@ -900,9 +902,10 @@ public class CollectionServiceImpl implements CollectionService {
 
             // Executing specific query
             String zone = irodsServices.getCurrentUserZone();
-
+            
             List<String> args = new ArrayList<String>();
-            args.add(parentPath + "/" + "%" + searchText + "%");
+            String collNameParam = IRODS_PATH_SEPARATOR.equals(parentPath) ? String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText) : String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+            args.add(collNameParam);
             args.add(parentPath);
             args.add(String.valueOf(offset));
             args.add(String.valueOf(limit));
@@ -1085,7 +1088,8 @@ public class CollectionServiceImpl implements CollectionService {
         String zone = irodsServices.getCurrentUserZone();
 
         List<String> args = new ArrayList<String>();
-        args.add(parentPath + "/" + "%" + searchText + "%");
+        String collNameParam = IRODS_PATH_SEPARATOR.equals(parentPath) ? String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText) : String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+        args.add(collNameParam);
         args.add(parentPath);
 
         SpecificQuery specQuery = SpecificQuery.instanceArguments(sqlQueryAlias, args, 0, zone);
@@ -1236,8 +1240,8 @@ public class CollectionServiceImpl implements CollectionService {
                     filePath = collEntry.getPathOrName();
                 }
                 else {
-                    filePath = collEntry.getParentPath() + "/" + collEntry.getPathOrName();
-                    if (collEntry.getParentPath().compareTo("/") == 0) {
+                    filePath = collEntry.getParentPath() + IRODS_PATH_SEPARATOR + collEntry.getPathOrName();
+                    if (collEntry.getParentPath().compareTo(IRODS_PATH_SEPARATOR) == 0) {
                         filePath = collEntry.getParentPath() + collEntry.getPathOrName();
                     }
                 }

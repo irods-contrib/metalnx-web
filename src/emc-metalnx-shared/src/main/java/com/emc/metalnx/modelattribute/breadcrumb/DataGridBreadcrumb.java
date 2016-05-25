@@ -14,10 +14,15 @@ public class DataGridBreadcrumb {
     public static final String PATH_SEPARATOR = "/";
 
     public DataGridBreadcrumb(String path) {
+    	items = new ArrayList<>();
+    	
+    	if (PATH_SEPARATOR.equals(path)) {
+    		items.add(new DataGridBreadcrumbItem(PATH_SEPARATOR));
+    		return;
+    	}
+    	
         List<String> pathItems = Arrays.asList(path.split(PATH_SEPARATOR));
         pathItems = pathItems.subList(1, pathItems.size());
-
-        items = new ArrayList<>();
 
         // Create intermediate items for current path
         for (int i = 0; i < pathItems.size(); i++) {
