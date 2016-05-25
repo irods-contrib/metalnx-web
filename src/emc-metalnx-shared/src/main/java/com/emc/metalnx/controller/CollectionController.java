@@ -1101,10 +1101,6 @@ public class CollectionController {
                 dataGridObj.setReplicaNumber(String.valueOf(collectionService.getReplicationNumber(path)));
             }
         }
-        catch (DataGridConnectionRefusedException e) {
-            logger.error("Could not connect to the data grid", e);
-            throw e;
-        }
         catch (DataGridException e) {
             dataGridObj.setPath(path);
             dataGridObj.setCollection(false);

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DataGridCollectionAndDataObject implements Serializable {
 
+    private static final String DATE_FORMAT_STR = "MMM dd yyyy HH:mm";
+	
     private String name;
     private String path;
     private String parentPath;
@@ -251,7 +253,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
      * @return String in the format MM/DD/YYYY HH:MM
      */
     public String getModifiedAtFormatted() {
-        return new SimpleDateFormat("MMM dd yyyy, HH:mm").format(modifiedAt);
+        return new SimpleDateFormat(DATE_FORMAT_STR).format(modifiedAt);
     }
 
     /**
@@ -270,7 +272,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
      */
     @JsonIgnore
     public String getCreatedAtFormatted() {
-        return new SimpleDateFormat("MMM dd, yyyy HH:mm").format(createdAt);
+        return new SimpleDateFormat(DATE_FORMAT_STR).format(createdAt);
     }
 
     /**
