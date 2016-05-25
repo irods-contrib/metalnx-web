@@ -398,8 +398,11 @@ public class DataGridUtils {
             entryPath = entry.getParentPath() + "/" + entry.getPathOrName();
         }
 
+        String nodeLabelDisplayValue = entry.getNodeLabelDisplayValue();
+        String entryName = nodeLabelDisplayValue == null || nodeLabelDisplayValue.isEmpty() ? entryPath : nodeLabelDisplayValue;
+        
         DataGridCollectionAndDataObject dataGridCollectionAndDataObject = new DataGridCollectionAndDataObject(entryPath,
-                entry.getNodeLabelDisplayValue(), entry.getParentPath(), entry.isCollection());
+        		entryName, entry.getParentPath(), entry.isCollection());
 
         dataGridCollectionAndDataObject.setCreatedAt(entry.getCreatedAt());
         dataGridCollectionAndDataObject.setModifiedAt(entry.getModifiedAt());
