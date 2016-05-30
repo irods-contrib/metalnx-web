@@ -19,7 +19,7 @@ Metalnx depends on Java 1.8 or higher and Maven 3.1 or higher. Before starting, 
  
  ## Metalnx Repository
  
-Also, make sure you have the Metalnx git repository in your environment. The Metalnx repository should be as follows:
+Also, make sure you have the Metalnx source code checked out in your environment. The Metalnx directory should be as follows:
 
 * src
 * packaging
@@ -33,7 +33,7 @@ The *src* folder is where the Metalnx application code is located. *Src* contain
 
 ## Metalnx Compilation Pipeline
 
-Assuming you have successfully installed Maven (you can run a *mvn --version* to double check that), it is time to actually build Metalnx. As a Java, Web-based application, Metalnx will be available as a [war] file at the end of the compilation process. Browse to the Metalnx *src* folder in the repository you cloned from our github. Listing the *src* folder content you should see:
+Assuming you have successfully installed Maven (you can run a *mvn --version* to double check that), it is time to actually build Metalnx. As a Java, Web-based application, Metalnx will be available as a [war] file at the end of the compilation process. Browse to the Metalnx *src* folder (*metalnx-web/src*). Listing the *src* folder content you should see:
 
 * emc-metalnx-core
 * emc-metalnx-services
@@ -43,17 +43,19 @@ Assuming you have successfully installed Maven (you can run a *mvn --version* to
 * emc-metalnx-web
 * pom.xml
 
-Under the source folder run the following command for a quickstart:
+> Note that Maven will work only if you are under the src directory (with the files listed above). Maven requires the **pom.xml** file to start the building process. If you are able to see this file, you are on the right place to build Metalnx.
+
+Now that you are under the *src* folder, run the following command:
 
 ```sh
-$ mvn clean generate-sources package -Ppreprod -Dmaven.test.skip=true 
+$ mvn generate-sources package -Dmaven.test.skip=true
 ```
 
 ### Understanding the *mvn* command:
 
 Maven is based around the central concept of a [build lifecycle]. The *clean* phase cleans the project's working directory, *generate-sources* generates source code for inclusion in compilation, *package* takes the compiled code and package it in its distributable format, in this case the format is WAR.
 
-Any other package that Metalnx requires will be download from the [Maven repository]. After downloading all dependencies, Maven will build all Metalnx subprojects in the following order: *emc-metalnx-core*, *emc-metalnx-services*, *emc-metalnx-shared*, *emc-metalnx-ui-admin*, *emc-metalnx-ui-user* and *emc-metalnx-web*.
+Any other package that Metalnx requires will be downloaded from the [Maven repository]. After downloading all dependencies, Maven will build all Metalnx subprojects in the following order: *emc-metalnx-core*, *emc-metalnx-services*, *emc-metalnx-shared*, *emc-metalnx-ui-admin*, *emc-metalnx-ui-user* and *emc-metalnx-web*.
 
 ### Finding the WAR file
 
@@ -61,7 +63,7 @@ When the build is completed, you will get a "BUILD SUCCESS" message. Now, the Me
 
 ### Deploying the Metalnx WAR file
 
-With the *emc-metalnx-web.war* file in hands, it is easy to deploy it in a [Tomcat] server. There are few different ways to deploy WAR files in a Tomcat instance that you can check on [Deploy a new application from a local path]. In this tutorial, we are going to deploy Metalnx through the Tomcat Manager App (available on *http://{your-tomcat-host}:{your-tomcat-port}/manager/html*).
+With the *emc-metalnx-web.war* file in hand, it is easy to deploy it in a [Tomcat] server. There are few different ways to deploy WAR files in a Tomcat instance that you can check on [Deploy a new application from a local path]. In this tutorial, we are going to deploy Metalnx via Tomcat Manager App (available on *http://{your-tomcat-host}:{your-tomcat-port}/manager/html*).
 
 ![Tomcat Manager app]
 
@@ -69,7 +71,7 @@ Once on this page, you can select the WAR file to deploy (under the *Deploy*) se
 
 ## Building the RPM and DEB packages
 
-Going back to the root of the Metalnx repository, you will see a folder called *packaging*. This folder contains all scripts and configuration files necessary to create both RPM and DEB packages.
+Going back to the root of the Metalnx project directory, you will see a folder called *packaging*. This folder contains all scripts and configuration files necessary to create both RPM and DEB packages.
 
 Metalnx provides a script for RPM package creation and another script for DEB package creation. Both scripts take two input parameters. The first parameter specifies which version of Metalnx the RPM package refers, currently it should be 1.0. The second parameter specifies the number of the current build. If you are building Metalnx for the first time, it should be 1.
 
@@ -81,7 +83,7 @@ Under *metalnx-web/packaging/rpm* you can check the *emc-metalnx-webapp.spec* fi
 $ ./packaging/scripts/create_rpm_package.sh 1.0 1
 ```
 
-After the script is done, you will have a *emc-metalnx-webapp-1.0-1.noarch.rpm* file ready for deploy.
+After the script is done, you will have a *emc-metalnx-webapp-1.0-1.noarch.rpm* file ready to be installed.
 
 ### DEB
 
@@ -91,7 +93,7 @@ Under *metalnx-web/packaging/deb/DEBIAN* you can check the *control* file. This 
 $ ./packaging/scripts/create_rpm_package.sh 1.0 1
 ```
 
-After the script is done, you will have a *emc-metalnx-webapp-1.0-1.deb* file ready for deploy.
+After the script is done, you will have a *emc-metalnx-webapp-1.0-1.deb* file ready to be installed.
 
    [war]: <https://docs.oracle.com/cd/E19316-01/820-3748/aduvz/index.html>
    [build lifecycle]: <https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html>
