@@ -286,8 +286,12 @@ function sendFilePart(files, index, currPart, currFilePos){
 					}
 				},
 				error: function(data){
-					alert(JSON.stringify(data));
-					$('#'+index+' .progressWrapper').html('<p style="color:red; text-align:center;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Failed.</p>');
+					var errorHtml = '<p style="color:red; text-align:center;">';
+						errorHtml += 	'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>';
+						errorHtml += 	'Upload failed. Please, check if all resources are available.';
+						errorHtml += '</p>';
+						
+					$('#'+index+' .progressWrapper').html(errorHtml);
 					$('#'+index+' .progressAction').hide();
 					unsetOperationInProgress();
 					$('#uploadFailMessage').show();

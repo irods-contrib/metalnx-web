@@ -249,7 +249,7 @@ public class FileOperationsController {
             }
             if (!error.isEmpty()) {
                 File tmpSessionDir = new File(fileForUpload.getUser(), fileForUpload.getPathToParts());
-                FileUtils.forceDelete(tmpSessionDir);
+                FileUtils.deleteQuietly(tmpSessionDir);
             }
         }
 
