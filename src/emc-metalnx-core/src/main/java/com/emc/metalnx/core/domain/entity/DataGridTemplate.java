@@ -62,8 +62,8 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
     @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
     private Set<DataGridTemplateField> fields;
 
-    private final int TEMPLATE_NAME_MAX_LENGTH = 100;
-    private final int TEMPLATE_DESC_MAX_LENGTH = 100;
+    private static final int TEMPLATE_NAME_MAX_LENGTH = 100;
+    private static final int TEMPLATE_DESC_MAX_LENGTH = 100;
 
     private boolean isModified = false;
 
