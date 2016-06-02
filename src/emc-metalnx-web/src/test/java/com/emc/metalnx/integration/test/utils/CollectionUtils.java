@@ -2,6 +2,8 @@ package com.emc.metalnx.integration.test.utils;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -486,4 +488,81 @@ public class CollectionUtils {
             driver.findElement(applyRecursionMsgYes).click();
         }
     }
+
+    /**
+     * Replicates a file to a resource.
+     * @param driver
+     * @param file
+     * 			file path that will be replicated
+     * @param resource
+     * 			resource where the file will be replicated
+     */
+	public static void replicateFile(WebDriver driver, String resource, String file) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		By fileCheckBox = By.id(file);
+		By selectActionBtn = By.cssSelector("#actions .btn-group button.btn-default");
+		By replicateBtn = By.id("replicateBtn");
+		By resourceSelectBox = By.id("selectResourceForReplication");
+		By resourceOption = By.cssSelector("option[value=" + resource + "]");
+		By replicateModalBtn = By.id("replicateButton");
+		By replicateModal = By.id("replicateModal");
+		
+		driver.get(UITest.COLLECTIONS_URL);
+		wait.until(ExpectedConditions.elementToBeClickable(fileCheckBox));
+		driver.findElement(fileCheckBox).click();
+		wait.until(ExpectedConditions.elementToBeClickable(selectActionBtn));
+		driver.findElement(selectActionBtn).click();
+		wait.until(ExpectedConditions.elementToBeClickable(replicateBtn));
+		driver.findElement(replicateBtn).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(resourceSelectBox));
+		driver.findElement(resourceSelectBox).click();
+		wait.until(ExpectedConditions.elementToBeClickable(resourceOption));
+		driver.findElement(resourceOption).click();
+		wait.until(ExpectedConditions.elementToBeClickable(replicateModalBtn));
+		driver.findElement(replicateModalBtn).click();
+		driver.findElement(replicateModalBtn).click();
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(replicateModal));
+		wait.until(ExpectedConditions.elementToBeClickable(fileCheckBox));
+	}
+
+	/**
+	 * Trim the replicas of a file down to one.
+	 * @param driver
+	 * @param string
+	 */
+	public static void deleteFileReplicas(WebDriver driver, String irodsFileAbsolutePath) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		By file = By.cssSelector("a[name=\"" + irodsFileAbsolutePath +"\"]");
+		By deleteReplicaBtn = By.cssSelector("#deleteReplicaModal button.btn-primary");
+		
+		driver.get(UITest.COLLECTIONS_URL);
+		wait.until(ExpectedConditions.elementToBeClickable(file));
+		driver.findElement(file).click();
+		
+		waitForReplicasTable(driver);		
+		
+		List<WebElement> replicaBtns = driver.findElements(By.cssSelector("#replicaAndChecksumInfo table tbody tr td button"));
+		replicaBtns.remove(0);
+		for (WebElement btn : replicaBtns) {
+			btn.click();
+			wait.until(ExpectedConditions.elementToBeClickable(deleteReplicaBtn));
+			driver.findElement(deleteReplicaBtn).click();
+			waitForSuccessMessage(driver);
+		}
+	}
+
+	public static void waitForSuccessMessage(WebDriver driver) {
+		new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.alert-success")));
+	}
+
+	public static void waitForReplicasTable(WebDriver driver) {
+		By replicasTable = By.id("replicaAndChecksumInfo");
+		new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(replicasTable));
+	}
+
+	public static void goToHomeCollection(WebDriver driver) {
+		By userHomeBtn = By.id("breadcrumbHome");
+		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(userHomeBtn));
+        driver.findElement(userHomeBtn).click();
+	}
 }

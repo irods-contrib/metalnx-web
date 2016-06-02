@@ -13,6 +13,7 @@ import org.irods.jargon.core.connection.IRODSSimpleProtocolManager;
 import org.irods.jargon.core.connection.auth.AuthResponse;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.JargonFileOrCollAlreadyExistsException;
+import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactoryImpl;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
@@ -46,7 +47,21 @@ public class FileUtils {
 
     /**************************************************************************************/
     /**************************** UPLOAD METHODS SECTION **********************************/
-    /**************************************************************************************/
+    /**
+     * @return ************************************************************************************/
+    
+    public static DataObjectAO getDataObjectAO(String user, String pwd) {
+    	try {
+    		IRODSAccount account = authenticateUser(user, pwd);
+			return irodsAccessObjectFactory.getDataObjectAO(account);
+		} catch (JargonException e) {
+			e.printStackTrace();
+		} catch (DataGridException e) {
+			e.printStackTrace();
+		}
+    	
+		return null;
+    }
 
     /**
      * Uploads a file to the data grid through the Metalnx UI.
