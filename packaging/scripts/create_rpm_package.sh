@@ -37,10 +37,11 @@ cp $WORKSPACE/packaging/rpm/emc-metalnx-webapp.spec $RPMBUILD_DIR/SPECS/emc-meta
 echo "Creating RPMBUILD directory tree structure..."
 cd $RPMBUILD_DIR/SOURCES
 mkdir -p $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp
-mkdir -p $PROJECT_NAME-$PROJECT_VERSION/opt/emc
+mkdir -p $PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap
 cp $WORKSPACE/src/emc-metalnx-web/target/emc-metalnx-web.war $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp/
 cp $WORKSPACE/packaging/scripts/config_metalnx.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/config_metalnx.sh
 cp $WORKSPACE/packaging/scripts/usage_information.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/usage_information.sh
+cp $WORKSPACE/contrib/ldap/* $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap/
 
 echo "Creating tarball of the sources..."
 cd $RPMBUILD_DIR/SOURCES

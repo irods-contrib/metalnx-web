@@ -27,8 +27,8 @@ echo
 echo "The EMC MetaLnx webapp has been successfully installed!"
 echo "In order to deploy it on your Tomcat instance, execute /opt/emc/config_metalnx.sh"
 
-chmod 755 /opt/emc/config_metalnx.sh
-chmod 755 /opt/emc/usage_information.sh
+chmod 755 /opt/emc/*
+chmod 755 /opt/emc/ldap/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -38,3 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 /tmp/emc-tmp/emc-metalnx-web.war
 /opt/emc/config_metalnx.sh
 /opt/emc/usage_information.sh
+/opt/emc/ldap/import_ldap.conf
+/opt/emc/ldap/import_ldap.sh
+/opt/emc/ldap/populate.data.csv
+/opt/emc/ldap/populate.template
+/opt/emc/ldap/populate_ldap.conf
+/opt/emc/ldap/populate_ldap.sh
