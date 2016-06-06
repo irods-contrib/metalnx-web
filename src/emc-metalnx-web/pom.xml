@@ -60,12 +60,14 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-firefox-driver</artifactId>
+			<scope>test</scope>
 		</dependency>
 			
 		<!-- Selenium Support UI -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
+			<scope>test</scope>
 		</dependency>
 
         <dependency>
