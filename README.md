@@ -1,5 +1,5 @@
 ![alt text] [1]
-[1]: IMAGES/emc_metalnx_logo.png 
+[1]: docs/IMAGES/emc_metalnx_logo.png 
 
 Metalnx is a web application designed to work alongside the iRODS (integrated Rule-Oriented Data System) [ [irods.org](http://www.irods.org)]. It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
