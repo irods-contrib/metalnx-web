@@ -44,7 +44,7 @@ public class ReplicateFileTest {
     private static final String TEST_FILE = "1SeleniumTestMetadataSearch.png" ;
     private static String irodsCollectionAbsolutePath = String.format("/%s/home/%s/", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
     private static String irodsFileAbsolutePath = String.format("%s%s", irodsCollectionAbsolutePath, TEST_FILE);
-    private static String targetResource = "tpa-eld6419Resource";
+    private static String targetResource = "targetResource";
     private static WebDriverWait wait;
 
     @BeforeClass

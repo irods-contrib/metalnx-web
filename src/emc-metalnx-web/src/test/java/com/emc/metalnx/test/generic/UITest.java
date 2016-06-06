@@ -41,7 +41,7 @@ public class UITest {
 
     // Metalnx URL Connection parts
     public static final String http = "http://";
-    public static final String HOST = isDevEnv ? "localhost" : "tpa-eld6700";
+    public static final String HOST = isDevEnv ? "localhost" : "metalnx.localdomain";
     public static final String PORT = "8080";
     public static final String URL_PREFIX = http + HOST + ":" + PORT;
 
@@ -49,7 +49,7 @@ public class UITest {
     public static String RODS_USERNAME = "rods";
     public static String RODS_PASSWORD = "irods@1234";
     public static String IRODS_ZONE = isDevEnv ? "tempZone" : "testZone";
-    public static String IRODS_HOST = isDevEnv ? "tpa-eld6017.tpa-eld.localdomain" : "tpa-eld6000.tpa-eld.localdomain";
+    public static String IRODS_HOST = isDevEnv ? "icat.localdomain" : "icat.prod.localdomain";
     public static String DEFAULT_RESC = "demoResc";
     public static int IRODS_PORT = 1247;
 
