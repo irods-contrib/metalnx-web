@@ -70,7 +70,7 @@ The Metalnx container is hosted on DockerHub under the **henriquenogueira** acco
     -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
-    henriquenogueira/metalnx
+    henriquenogueira/metalnx:1.0-latest
 
 ## Building and Running the Container Locally
 In order to build the Metalnx container, you need to **cd** to your `packaging/docker` directory:
