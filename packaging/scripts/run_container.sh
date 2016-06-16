@@ -1,7 +1,7 @@
 #!/bin/sh
-#Copyright (c) 2015-2016, EMC Corporation
+#	Copyright (c) 2015-2016, EMC Corporation
 #
-#Licensed under the Apache License, Version 2.0 (the "License");
+#	Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -13,15 +13,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-
-
 #=-=-=-=-=-=-=-=-=-=-=-=-=-
 # iRODS connection params
-IRODS_HOST="tpa-eld6418.tpa-eld.localdomain"
-IRODS_PORT=1247
-IRODS_ZONE="test418Zone"
-IRODS_USER="rods"
-IRODS_PASS="irods@1234"
+IRODS_HOST="<irods-host>"
+IRODS_PORT=<irods-port>
+IRODS_ZONE="<irods-zone>"
+IRODS_USER="<irods-user>"    # must be a rods admin
+IRODS_PASS="<irods-password>"
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Web Server connection params

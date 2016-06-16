@@ -1,7 +1,7 @@
 #!/bin/bash
-#Copyright (c) 2015-2016, EMC Corporation
+#	Copyright (c) 2015-2016, EMC Corporation
 #
-#Licensed under the Apache License, Version 2.0 (the "License");
+#	Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -13,14 +13,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-
-
 # Global variables
 current_time=$(date +"%Y_%m_%d_%H_%M_%S")
 conf_tmp_dir=/tmp/metalnx.conf.$current_time
 existing_installation=0
 keystore_path=$HOME/.metalnx_keystore
-keystore_password="M3t4LnX@2o15#"
+keystore_password="password" #must be changed in production
 protocol="http"
 port="8080"
 
