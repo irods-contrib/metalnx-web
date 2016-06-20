@@ -1,7 +1,7 @@
 <font color="#3892CF"> EMC METALNX
 ===================================
 
-<font color="#3892CF"> Installation Guide
+<font color="#3892CF"> Metalnx Web Installation Guide
 =========================================
 
 <font color="#A6A6A6"> <font size=+2> Revision 1.0 
@@ -26,18 +26,16 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 <font size=+1> 
 
 1. [Introduction](#introduction)
-3. [Overview](#metalnx_overview)
-3. [Metalnx Installation](#metalnx_installation)
-4. [Metalnx Installation Process](#metalnx_installation_process)
-5. [Metalnx RMD Installation](#metalnx_RMD_installation)
-6. [Metalnx RMD Commands](#metalnx_RMD_commands)
-7. [Apache Tomcat Installation](#apache_tomcat_installation)
-8. [Install the Metalnx Application](#install_metalnx)
-9. [Configure the Metalnx Database](#config_metalnx_database)
-10. [Setup Metalnx](#setup_metalnx)
-11. [Installing The Metalnx Micro Services](#install_metalnx_microservices)
-12. [Using Metalnx Micro Services](#using_metalnx_microservices)
-12. [Accessing Metalnx](#accessing_metalnx)
+2. [Overview](#metalnx_overview)
+3. [Metalnx Web Installation](#metalnx_installation)
+4. [Metalnx Web Installation Process](#metalnx_installation_process)
+5. [Apache Tomcat Installation](#apache_tomcat_installation)
+6. [Install the Metalnx Web Application](#install_metalnx)
+7. [Configure the Metalnx Database](#config_metalnx_database)
+8. [Setup Metalnx](#setup_metalnx)
+9. [Accessing Metalnx](#accessing_metalnx)
+10. [Metalnx Install Checklist](#metalnx_checklist)
+11. [Integration With LDAP](#LDAP)
 
 </font>
 
@@ -66,9 +64,7 @@ In this installation guide, to fully install Metalnx, we will:
 - Assume that iRODS is installed and that an ICAT server is operational (**Note:** If you need help with installing iRODS please check the documentation for the current release at [docs.irods.org](https://docs.irods.org/) .)
 - Assume that the Java runtime and API packages are installed
 - Show how to install Tomcat and configure a basic setup (Tomcat version 7 & 8 have been tested.)
-- Show how to install Metalnx and configure it work with the iRODS ICAT and use a local MySQL or PostgreSQL RDBMS for holding its information.
-- Show how to install the _Metalnx Remote Monitor Daemon (RMD)_ packages on the ICAT and resource servers.  Metalnx uses these packages to monitor and report the active status of the iRODS grid.
-- Show how to install the _Metalnx micro services package_ which provides automated metadata extraction for .jpeg, .bam, .cram, .vcf, and some __Illumnia__ manifest files
+- Show how to install Metalnx and configure it work with the iRODS ICAT and use a local MySQL or PostgreSQL RDBMS for holding its information
 
 Metalnx has been tested on the following Linux distributions as indicated:
 
@@ -120,7 +116,7 @@ The iRODS Consortium [www.irods.org](http://www.irods.org) provides a short tech
 
 Metalnx is a web application designed to work alongside iRODS (Integrated Rule-Oriented Data System).  It provides an intuitive graphical interface that supports iRODS administrative actions, collection management, and metadata management without requiring the iRODS administrator or user to memorize individual icommands. The application allows administrators to monitor system health, manage users, storage resources, and content.  It allows users to manage content and metadata associated with content.
 
-*****Key features of Meatalnx include:*****
+*****Key features of Metalnx include:*****
 
 For **rodsadmin** users:
 
@@ -141,9 +137,9 @@ For **rodsuser** users:
 *****Metalnx Components:***** 
 
 - Metalnx relies on Apache Tomcat to provide the necessary Java servlet environment to run the application.
-- *Metalnx*- the application.  Metalnx is a Java based application.  The application is provided in an .rpm package or .deb package which requires that Apache Tomcat be installed first.  The application can be installed as a `.war` file manually if so desired.
--	*Metalnx Remote Monitor Daemons (RMD).*  The Metalnx RMD is a small, lightweight daemon which is installed (via .rpm or .deb package) on each iCAT and resource server in the grid.  Metalnx RMD provides, on demand, basic availability information of each server in the iRODS grid which allows Metalnx to report on the overall health of the grid.  
-- *Metalnx micro services.*  Metalnx (optional) provides a collection of iRODS micro services which, if installed, will automatically extract and add to the ICAT embedded metadata in files uploaded to iRODS via Metalnx.  The micro services are provided as an .rpm file.  The micro service package must be installed in the micro services directory on each iRODS server in the grid in order for the functionality to work.
+- *Metalnx Web* - the application.  Metalnx is a Java based application.  The application is provided in an .rpm package or .deb package which requires that Apache Tomcat be installed first.  The application can be installed as a `.war` file manually if so desired.
+-	*[Metalnx Remote Monitor Daemons (RMD).][RMD_github_repo]*  The Metalnx RMD is a small, lightweight daemon which is installed (via .rpm or .deb package) on each iCAT and resource server in the grid.  Metalnx RMD provides, on demand, basic availability information of each server in the iRODS grid which allows Metalnx to report on the overall health of the grid.  
+- *[Metalnx micro services][MSI_github_repo].*  Metalnx (optional) provides a collection of iRODS micro services which, if installed, will automatically extract and add to the ICAT embedded metadata in files uploaded to iRODS via Metalnx.  The micro services are provided as an .rpm file.  The micro service package must be installed in the micro services directory on each iRODS server in the grid in order for the functionality to work.
 
 Figure 2 (below) illustrates an iRODS grid with Metalnx deployed:
 
@@ -168,7 +164,7 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 
 ----------
 <br>
-<font color="#0066CC"> <font size=+2> __METALNX INSTALLATION__ </font> <a name="metalnx_installation"></a>
+<font color="#0066CC"> <font size=+2> __METALNX WEB INSTALLATION__ </font> <a name="metalnx_installation"></a>
 
 <font color="#000000">
 
@@ -181,12 +177,11 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 
 - Verify the minimum system requirements for the ICAT server and iRODS resource servers are met.  This may include installing one or more of Java, Tomcat, PostgreSQL, MySQL, or Python.
 -	Verify that iRODS is installed and operational prior to installing Metalnx.
--	Install the appropriate version of the Metalnx remote monitor daemon (RMD) on the ICAT server and each iRODS resource server.
--	Configure RMD on each server if the default configuration does not meet the requirements of your environment.
+-	Install the appropriate version of the Metalnx remote monitor daemon (RMD) on the ICAT server and each iRODS resource server. For further information on how to install [RMD][RMD_github_repo], refer to [RMD Installation Guide][RMD_installation_guide].
 -	Install the Metalnx application on a server running Tomcat.  (**Note:**  Metalnx requires Java, Python, Tomcat, and either MySQL or PostgreSQL to be installed on the server where Metalnx runs in order to operate.  Also, the iRODS ICAT server must be operational in order for Metalnx configuration to complete successfully.)
 -	Configure Metalnx as needed to conform to your iRODS environment.
 -	Restart Tomcat in order to engage the configuration changes made in Tomcat.
--	Add the Metalnx micro services to the ICAT server and each iRODS resource server to leverage automated metadata extraction.
+-	Add the Metalnx micro services to the ICAT server and each iRODS resource server to leverage automated metadata extraction. For further information on how to install the Metalnx micro services, refer to the [Metalnx MSI Installation Guide][MSI_installation_guide].
 
 ### System Requirements ###
 
@@ -200,12 +195,6 @@ Figure 3 shows the relationship between iRODS and Metalnx components.
 Metalnx has been tested with iRODS version 4.1 or later. 
 
 For information on how to install iRODS, please see: [http://www.irods.org/download/](http://www.irods.org/download) and [docs.irods.org](https://docs.irods.org/)
-
-##### Python #####
-
-Python 2.6 or later version is required to run the RMD service and must be installed on the ICAT and each iRODS Resource server that will run RMD.
-
-For information on how to install Python, refer to:  [https://www.python.org/](https://www.python.org)
 
 ##### Java Devel #####
 
@@ -248,111 +237,9 @@ Metalnx works with:
 
 ##### Metalnx RMD Background #####
 
-The Metalnx interface contains a dashboard that provides real-time information about the machines on the grid. For the UI to retrieve all this information, it uses the RMD (Remote Monitoring Daemon) which should be installed on each server in the iRODS grid.
-
-RMD is a lightweight webserver that accepts limited HTTP requests and responds with JSON data. There are a few pre-defined requests to which RMD is programmed to respond to. It runs as a Linux-service with the server name:  **rmd**.
-
-RMD requires Python (version 2.6 or later) be installed on the ICAT and each iRODS resource server.  Please, note that iRODS should be setup on the server prior to RMD installation.
+The Metalnx interface contains a dashboard that provides real-time information about the machines on the grid. For the UI to retrieve all this information, it uses the [RMD (Remote Monitoring Daemon)][RMD_github_repo] which should be installed on each server in the iRODS grid.
 
 Metalnx will run without the RMD package. However, RMD is necessary to allow for complete dashboard and server detail page functions in Metalnx. With this package installed disk, memory, and CPU usage data of each server will be available. 
-
-[[Back to: Table of Contents](#TOC)]
-
-<br>
-<a name="metalnx_RMD_installation"></a>
-##### Metalnx RMD Installation #####
-
-RMD can be built as distribution-specific installation packages using the build instructions. 
-
-Install the RMD package on CentOS as root via the command:
-
- 	# rpm -ivh emc-metalnx-rmd-1.0-1.noarch.rpm
-
-Install the RMD package on a Debian distribution as root via the command:
-
-	 # dpkg -i emc-metalnx-rmd-1.0-1.deb
-
-##### Controlling Metalnx RMD #####
-
-By default, the RMD runs on port 8000. This property is editable in the configuration file of the daemon, located at <span style="font-family: Courier New;">  /etc/rmd/rmd.conf: </span> 
-
-     [daemon]
-     ip=0.0.0.0
-     port=8000
-    
-     [irods]
-     server_logs_dir=/var/lib/irods/iRODS/server/log
-     log_lines_to_show=20
-
-The lines in this file correspond as follows:
-
-- `ip:` The IP address should not be changed. The value <span style="font-family: Courier New'"> 0.0.0.0 </span> is set for the machine to be visible by outside requests.
-- `port:` the port on where RMD should listen to requests. This can be changed to meet any firewall or security needs of your environment.
--  `server_logs_dir:` the directory where iRODS server logs are kept.
--  `log_lines_to_show:` the number of lines to get from the end of the iRODS server log to show in the Metalnx UI on the server details page. This is set initially to the last 20 lines
-
-**NOTE:** If you change the port number for RMD in the file <span style="font-family: Courier New;">  /etc/rmd/rmd.conf </span> you must ALSO change the port number that Metalnx knows to communicate with RMD at.  This must be done after Metalnx is installed.  We describe how to do this in the **[Setup Metalnx](#setup_metalnx)** section.
-
-[[Back to: Table of Contents](#TOC)]
-
-<br>
-<a name="metalnx_RMD_commands"></a>
-##### Metalnx RMD Commands #####
-
-Metalnx RMD responds to the following commands sent to is over the listen port.
-
-
-<table>
-	<tr>
-		<td><h4>Request</td><td><h4>Result</td>
-	<tr>
-		<td><span style="font-family: Courier New;"> / </span></td>
-		<td> Returns all the other commands in a single JSON-like object. For development purposes, this call should be avoided due to its long response time. </td>
-	<tr>
-		<td><span style="font-family: Courier New;"> /cpu </span></td>
-		<td> CPU related information. </td>
-	<tr>
-		<td><span style="font-family: Courier New;">/cpustat</span></td>
-		<td> CPU usage statistics. </td>
-	<tr>
-		<td><span style="font-family: Courier New;">/disk </span></td>
-		<td> Disk and partition information of the system. </td>
-	<tr>
-		<td> <span style="font-family: Courier New;">/irodslogs </span></td>
-		<td> The last pre-defined number of lines of the iRODS server log. This number is set in the RMD configuration file. (see Controlling section above) </td>
-	<tr>
-		<td> <span style="font-family: Courier New;">/irodsstatus </span></td>
-		<td> Status of the iRODS process. </td>
-	<tr>
-		<td><span style="font-family: Courier New;">/memory </span></td>
-		<td> Memory-related data. </td>
-	<tr>
-		<td> <span style="font-family: Courier New;">/mounts </span></td>
-		<td> Lists all the file systems mounted on the current machine. </td>
-	<tr>
-		<td> <span style="font-family: Courier New;">/serverstatus </span></td>
-		<td> System-wide status, taking into consideration all the others specific status listed above. </td>
-	<tr>
-		<td> <span style="font-family: Courier New;">/version </span></td>
-		<td> Returns a JSON-like object containing the version and release numbers for the current instance of RMD. </td>
-</table>
-
-##### Confirm RMD Acccess #####
-
-Once RMD is installed and configured, a quick test can be done to ensure that RMD is correctly working. 
-
-Open a browser window and access: `http://<IP_OF_THE_RMD_MACHINE>:<PORT>/disk`
-It should list all the disk-related information of your machine in JSON format.  For example:
-
-    http://192.168.1.157:8000/disk
-
-##### RMD Troubleshooting #####
-
-If a firewall is set up on the iRODS server, make sure that the port where RMD listens is opened. On IPTables it can be done by adding the following line to the `iptables.conf` file for port 8000 and reloading iptables:
-
- 	-A INPUT -m state --state NEW -m tcp -p tcp --dport 8000 -j ACCEPT
-
-If the RMD process get stuck, remove the PID file located at `/var/run/rmd.pid` and kill the process.
 
 [[Back to: Table of Contents](#TOC)]
 
@@ -668,148 +555,9 @@ to read:
 
     # systemctl start tomcat
 
-##### Adjusting the RDM Port Number #####
-
-If you chose to change the RMD port number in the file <span style="font-family: Courier New;">  /etc/rmd/rmd.conf </span> you must also adjust the port number that Metalnx knows to communicate with the RMD daemon at.  To make this change perform the following steps:
-
-**1)** Stop the tomcat service.
-
-    # systemctl stop tomcat
-
-**2)** Change your directory to the Metalnx configuration parameters directory.  It is located under the tomcat directory tree.  The example below shows the location assuming a standard Tomcat installation on CentOS.  If you manually installed Tomcat adjust the pathnames accordingly.
-
-    # cd /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes
-
-**3)** Using an editor such as `vi` edit the file `irods.environment.properties` to change the line which reads: 
-
-    rmd.connection.port=8000
-
-to read:
-
-    rmd.connection.port=(xxxx)
-
-where (xxxx) is the port number you changed the RMD access port to in the file <span style="font-family: Courier New;">  /etc/rmd/rmd.conf </span>.
-
 [[Back to: Table of Contents](#TOC)]
 
 -------------- 
-
-<br>
-<font color="#0066CC"> <font size=+2> __Installing The Metalnx Micro Services__ </font> <a name="install_metalnx_microservices"></a>
-
-<font color="#000000">
-
-The process for installing the Metalnx micro services differs depending on the systems employed in your iRODS data grid.  Just as it was for the Metalnx Remote Monitor Daemon you must install the micro service package on the iCAT server and each resource server in the iRODS grid.
-
-**Install on CentOS system**
-
-As root, use the following command to install the Metalnx micro services
-
-    # rpm -i emc-metalnx-msi-1.0-1.x86_64.rpm
-
-This step will copy the micro service libraries into the proper plugin directory in the iRODS directory tree. 
-
-
-**Install on a Debian-based system**
-
-At present, we do not have a deb package version of the Metalnx Micro Services.  To install the files on a Debian-like system it is necessary to do one of:
-
-- Copy the micro service libraries from a system where they are already installed to the Debian system
-- Unzip the micro service .rpm file to obtain the libraries and copy them to the Debian system
-
-**Method 1: Copy from an Existing System**
-
-On a system where the micro service package is installed first become the user irods and then go to the iRODS micro services directory.  (Remember as the user irods you will be put into the directory `/var/lib/irods`.)
-
-    $ cd plugins/microservices
-
-In this directory make a tar file containing the micro service libraries:
-
-    $ tar -cvf metalnx_microservices.tar libmsiobjjpeg_extract.so libmsiobjput_mdbam.so libmsiobjput_mdmanifest.so libmsiobjput_mdvcf.so
-
-Copy the resulting .tar file out of the micro services directory and delete it:
- 
-    cp -v metalnx_microservices.tar /tmp/.
-    $ rm -v metalnx_microservices.tar
-
-Now copy the micro services tar file from `/tmp/metalnx_microservices.tar` to the Debian system using whatever technique is suitable for your environment.
-
-Now on the Debian system become the user irods and copy the micro services to the iRODS micro service directory on the Debian system.  Assuming the micro service tar file is copied to the `/tmp` directory on the Debian system the commands will look like:
-
-    $  cd plugins/microservices
-    $  tar –xvf /tmp/metalnx_microservices.tar
-
-Following this step, as root, on the Debian system restart the iRODS service in order for the micro services to be registered:
-
-    # systemctl restart irods
-
-
-**Method 2: Extract from the Micro Service .rpm File**
-
-There are two techniques to accomplish this extraction.  The commands involved will vary based on your environment, but we will outline the steps:
-
-Technique 1:
-
-- Make a copy of the .rpm file  (`emc-metalnx-msi-1.0-1.x86_64.rpm`)
-- Use a decompression tool which can crack an .rpm file, such as 7Zip, to open the archive and extract the micro service library files (ending in .so)
-- Create an archive of the extracted files into format which can be read on Linux (.tar preferred)
-- Copy this extracted archive to the Debian system
-- Copy the files in the archive to `/var/lib/irods/plugins/microservices`
-- Change the ownership on the copied files to the user irods 
-- Change the group ownership on the copied files to the group irods   (`# chown -R irods:irods *`)
-- Change the permissions on the copied files to 755 (`chmod -R 755 *`)
-- Restart the iRODS service
-
-Technique 2:
-
-The second method can be executed on a Linux server.  However, to work it requires the use of a tool called `rpm2cpio` which may or may not be installed on the Linux system were you will do the extraction. In general you will find `rpm2cpio` installed on CentOS and RHEL systems.  By default it usually is not included on Debian systems.  However, the tool is general available and can often be obtained via the apt-get command:
-
-    # apt-get install rpm2cpio
-
-We outline the steps for extraction assuming we are root, we have made a copy of the .rpm file into the system root directory (/), and that the tool `rpm2cpio` is installed on the system.
-
-First extract the micro services and copy them into the iRODS micro services directory:
-
-    # rpm2cpio emc-metalnx-msi-1.0-1.x86_64.rpm | cpio -idmv
-
-Next change to the iRODS micro services directory and change permissions as necessary:
-
-    # cd /var/lib/irods/plugins/microservices
-    # chown irods:irods *
-    # chmod 755 *
-
-Finally remove the copy of the micro services .rpm file and restart the iRODS service:
-
-    # rm –v / emc-metalnx-msi-1.0-1.x86_64.rpm
-    # service irods restart
-
-[[Back to: Table of Contents](#TOC)]
-
---------------- 
-<br>
-<font color="#0066CC"> <font size=+2> __Using Metalnx Micro Services__ </font> <a name="using_metalnx_microservices"></a>
-<font color="#000000">
-
-The Metalnx micro services described in this document are not anything unique or special.  They are iRODS micro services and a few iRODS rules that were created to assist Metalnx users with automated extraction of metadata during file ingest into iRODS.
-
-These micro services can be modified, extended, or changed as one sees fit via modification of the rule or micro service source, recompilation, and installation of the modifed rule using the iRODS rule system.  
-
-Details on the iRODS rule engine and rules language can be found in the iRODS documentation at [docs.irods.org](http://docs.irods.org) 
-
-The micro services provided with Metalnx, during a file upload operation (an iRODS "iput" action) will open certain file based on suffix type and use related libraries to extract metadata tags which are then fed to the iRODS ICAT using equivalent calls to the "imeta" operation. This will attach the extracted metadata to the object stored in iRODS.  
-
-The micro services provided will extract meta data from  files ending with `.jpeg`, `.bam`, `.cram`, and `.vcf`.  It should be noted that `.vcf` files do not have a regular metadata format.  The micro service attempts to make educated guesses about which unstructured elements are attributes, values, and units.  Given the irregularity of `.vcf` elements it is possible that tag classifications may not match individual desires.
-
-##### Working with Ilumina Sample Sheets #####
-
-The provided micro services will process Ilumina manifest files (sample sheet files) extracting all the data in the sample sheet and applying all the tags across every object stored in iRODS.  In order for this work specific rules must be observed:
-
-1. The manifest file (`manifest.csv`) must be included with a collection of files to be upload via the Metalnx upload capability.
-2. The manifest file, along with the genome sample files in the file structure desired, must be collected into a `.tar` file with the filename structure: `<filename>_SSU.tar`.  For example: `example_project_SSU.tar`.
-
-Using the Metalnx upload feature upload the `.tar` file.  During the upload process the micros service will find the `manifest.csv` file, open it, extract all the sample sheet information into iRODS metadata tags (AVU tage in iRODS parlance), and apply this full set of tags onto each file in the `.tar` file as it is copied from the `.tar` image into the iRODS collection.  Note, the file system structure of the `.tar` file will be maintained as the files are copied into iRODS.
-
-[[Back to: Table of Contents](#TOC)]
 
 <br>
 <font color="#0066CC"> <font size=+2> __Accessing Metalnx__ </font> <a name="accessing_metalnx"></a>
@@ -860,13 +608,13 @@ Log in with the default iRODS admin username and password setup when iRODS was i
    <tr>
       <td> </td> <td> 3 </td> <td> Install Java 1.8 or later on the MetaLnx execution server </td>
    <tr>
-      <td> </td> <td> 4 </td> <td> Install Apache Tomcat 7, or 8 on the MetaLnx execution server </td>
+      <td> </td> <td> 4 </td> <td> Install Apache Tomcat 7 or 8 on the MetaLnx execution server </td>
    <tr>
       <td> </td> <td> 5 </td> <td> Install the package java-devel on the MetaLnx execution server </td>
    <tr>
       <td> </td> <td> 6 </td> <td> Install and/or verify that either PostgreSQL or MySQL is installed, initialized, and operational on the MetaLnx execution server </td>
    <tr>
-      <td> </td> <td> 7 </td> <td> Install the MetaLnx RMD package on the iCAT and each iRODS resource server </td>
+      <td> </td> <td> 7 </td> <td> Install the [MetaLnx RMD package][RMD_github_repo] on the iCAT and each iRODS resource server </td>
    <tr>
       <td> </td> <td> 8 </td> <td> Confirm RMD is operational on each iRODS server via remote connection </td>
    <tr>
@@ -880,7 +628,7 @@ Log in with the default iRODS admin username and password setup when iRODS was i
    <tr>
       <td> </td> <td> 13 </td> <td> Setup MetaLnx using the setup script (config_metalnx.sh) </td>
    <tr>
-      <td> </td> <td> 14 </td> <td> Install MetaLnx Micro Services on each server in the iRODS grid </td>
+      <td> </td> <td> 14 </td> <td> Install [MetaLnx Micro Services][MSI_github_repo] on each server in the iRODS grid </td>
 	<tr>
       <td> </td> <td> 15 </td> <td> Verify access to the MetaLnx application </td>
    </tr>
@@ -986,9 +734,7 @@ An example of configuration is:
 
 #####PAM-LDAP Authentication Tool Belt#####
 
-
-
-
-
-
-
+[RMD_github_repo]: https://github.com/sgworth/metalnx-rmd/
+[RMD_installation_guide]: https://github.com/sgworth/metalnx-rmd/blob/master/docs/INSTALL.md
+[MSI_github_repo]: https://github.com/sgworth/metalnx-msi/
+[MSI_installation_guide]: https://github.com/sgworth/metalnx-msi/blob/master/docs/INSTALL.md
