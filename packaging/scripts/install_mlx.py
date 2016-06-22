@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import platform
 import sys
+import getpass
 from os import path, stat, system
 
 import MySQLdb as mysql
@@ -69,14 +70,16 @@ class MetalnxContext:
         """It will configure database access"""
 
         self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
-        self.db_type = raw_input('Enter the Metalnx Database type [{}] mysql or postgres: '.format(self.db_type))
+        self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
         self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
         self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
-        self.db_pwd = raw_input('Enter the Metalnx Database Password [{}]: '.format(self.db_pwd))
+        self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
 
         print 'Testing database connection...'
         self._test_database_connection(self.db_type, self.db_host, self.db_user, self.db_pwd, self.db_name)
         print 'Database connection successful.'
+
+        print 'Metalnx Database configuration done.'
 
     def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
         db_connect_dict = {
