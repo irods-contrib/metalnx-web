@@ -1,6 +1,8 @@
 #!/usr/bin/python
+import getpass
 import sys
-from os import path, stat, listdir, rename
+from os import listdir, rename
+from os import path, stat
 from tempfile import mkdtemp
 
 import MySQLdb as mysql
@@ -42,11 +44,13 @@ class MetalnxContext:
         self.db_pwd = ''
         pass
 
+    @Ignore
     def config_java_devel(self):
         '''It will make sure the java-devel package is correctly installed'''
         stat(self.jar_path)
         return True
 
+    @Ignore
     def config_tomcat_home(self):
         '''It will ask for your tomcat home directory and checks if it is a valid one'''
         self.tomcat_home = raw_input('Enter your Tomcat home directory [{}]: '.format(self.tomcat_home))
@@ -95,14 +99,16 @@ class MetalnxContext:
         """It will configure database access"""
 
         self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
-        self.db_type = raw_input('Enter the Metalnx Database type [{}] mysql or postgres: '.format(self.db_type))
+        self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
         self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
         self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
-        self.db_pwd = raw_input('Enter the Metalnx Database Password [{}]: '.format(self.db_pwd))
+        self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
 
         print 'Testing database connection...'
         self._test_database_connection(self.db_type, self.db_host, self.db_user, self.db_pwd, self.db_name)
         print 'Database connection successful.'
+
+        print 'Metalnx Database configuration done.'
 
     def run(self):
         '''
