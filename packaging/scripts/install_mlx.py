@@ -3,6 +3,25 @@ import sys
 from os import path, stat
 
 
+class Ignore:
+    '''
+    Annotation for ignoring method execution
+    Usage:
+
+    ...
+        @Ignore
+        def my_method(self):
+            pass
+    ...
+    '''
+
+    def __init__(self, m):
+        self._method = m
+
+    def __call__(self):
+        print 'Ignoring {}'.format(self._method.__name__)
+
+
 class MetalnxContext:
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
@@ -29,10 +48,11 @@ class MetalnxContext:
 
         raise Exception('Tomcat directory is not valid. Please check the path and try again.')
 
-    def run(self):
+    def run(self, *args, **kwargs):
         '''
         Runs Metalnx configuration
         '''
+
         print self._banner()
 
         # Filtering out method that does not start with 'config_'
