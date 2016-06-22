@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import platform
 import sys
-from os import path, stat, system
+from os import path, stat, listdir, rename
+from tempfile import mkdtemp
 
 import MySQLdb as mysql
 import psycopg2 as postgres
@@ -42,13 +42,11 @@ class MetalnxContext:
         self.db_pwd = ''
         pass
 
-    @Ignore
     def config_java_devel(self):
         '''It will make sure the java-devel package is correctly installed'''
         stat(self.jar_path)
         return True
 
-    @Ignore
     def config_tomcat_home(self):
         '''It will ask for your tomcat home directory and checks if it is a valid one'''
         self.tomcat_home = raw_input('Enter your Tomcat home directory [{}]: '.format(self.tomcat_home))
@@ -65,6 +63,34 @@ class MetalnxContext:
 
         raise Exception('Tomcat directory is not valid. Please check the path and try again.')
 
+    def config_metalnx_package(self):
+        '''It will check if the Metalnx package has been correctly installed'''
+        if self._is_file_valid(self.metalnx_war_path):
+            return True
+
+        raise Exception('Could not find Metalnx WAR file. Check if emc-metalnx-web package is installed.')
+
+    def config_exisiting_setup(self):
+        '''It will save your current installed of metalnx and will restore them after update'''
+
+        metalnx_path = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
+
+        if self._is_dir_valid(metalnx_path):
+            print '  Detected current installation of Metalnx. Saving current configuration for further restoring.'
+
+            # Listing properties files on current Metalnx installation directory
+            properties_path = path.join(metalnx_path, 'WEB-INF', 'classes')
+            files_in_dir = listdir(properties_path)
+
+            # Creating temporary directory for backup
+            self.tmp_dir = mkdtemp()
+
+            for file in files_in_dir:
+                if file.endswith('.properties'):
+                    rename(path.join(properties_path, file), path.join(self.tmp_dir, file))
+
+        return True
+
     def config_database(self):
         """It will configure database access"""
 
@@ -77,21 +103,6 @@ class MetalnxContext:
         print 'Testing database connection...'
         self._test_database_connection(self.db_type, self.db_host, self.db_user, self.db_pwd, self.db_name)
         print 'Database connection successful.'
-
-    def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
-        db_connect_dict = {
-            'mysql': self._connect_mysql,
-            'postgres': self._connect_postgres
-        }
-
-        db_connect_dict[db_type](db_host, db_user, db_pwd, db_name)
-        return True
-
-    def _connect_mysql(self, db_host, db_user, db_pwd, db_name):
-        mysql.connect(db_host, db_user, db_pwd, db_name).close()
-
-    def _connect_postgres(self, db_host, db_user, db_pwd, db_name):
-        postgres.connect(host=db_host, user=db_user, password=db_pwd, database=db_name).close()
 
     def run(self):
         '''
@@ -116,8 +127,38 @@ class MetalnxContext:
         sys.exit(0)
 
     def _banner(self):
+        '''
+        Returns banner string for the configuration script
+        '''
         main_line = '#          Metalnx Installation Script        #'
         return '#' * len(main_line) + '\n' + main_line + '\n' + '#' * len(main_line)
+
+    def _is_dir_valid(self, d):
+        '''
+        Checks if a path is a valid directory
+        '''
+        return path.exists(d) and path.isdir(d)
+
+    def _is_file_valid(self, d):
+        '''
+        Checks if a path is a valid file
+        '''
+        return path.exists(d) and path.isfile(d)
+
+    def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
+        db_connect_dict = {
+            'mysql': self._connect_mysql,
+            'postgres': self._connect_postgres
+        }
+
+        db_connect_dict[db_type](db_host, db_user, db_pwd, db_name)
+        return True
+
+    def _connect_mysql(self, db_host, db_user, db_pwd, db_name):
+        mysql.connect(db_host, db_user, db_pwd, db_name).close()
+
+    def _connect_postgres(self, db_host, db_user, db_pwd, db_name):
+        postgres.connect(host=db_host, user=db_user, password=db_pwd, database=db_name).close()
 
 
 def main():
