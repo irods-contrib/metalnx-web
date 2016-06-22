@@ -1,8 +1,21 @@
 import os
+import platform
+import psycopg2 as postgres
+import MySQLdb as mysql
 
+
+# MySQLdb lib
+# Windows: exe
+# yum install mysql-python
+# apt-get install python-mysqldb
 
 class MetalnxContext:
     def __init__(self):
+        self.db_type = ''
+        self.db_host = ''
+        self.db_name = ''
+        self.db_user = ''
+        self.db_pwd = ''
         pass
 
     def banner(self):
@@ -13,6 +26,32 @@ class MetalnxContext:
         '''The installation process will make sure the java-devel package is correctly installed'''
         os.stat('/usr/bin/jar')
         return True
+
+    def config_database(self):
+        """It will configure database access"""
+
+        self._is_host_reachable(self.db_host)
+        self._test_database_connection(self, self.db_type, self.db_host, self.db_user, self.db_pwd, self.db_name)
+
+    def _is_host_reachable(self, host):
+        ping_str = "-n 1" if platform.system().lower() == "windows" else "-c 1"
+        return os.system("ping " + ping_str + " " + host) == 0
+
+    def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
+        db_connect_dict = {
+            'mysql': self._connect_mysql,
+            'postgres': self._connect_postgres
+        }
+
+        db_connect_dict[db_type](db_host, db_user, db_pwd, db_name)
+        return True
+
+    def _connect_mysql(self, db_host, db_user, db_pwd, db_name):
+        mysql.connect(db_host, db_user, db_pwd, db_name).close()
+
+    def _connect_postgres(self, db_host, db_user, db_pwd, db_name):
+        postgres.connect(host=db_host, user=db_user, password=db_pwd, database=db_name).close()
+
 
     def run(self):
         '''
