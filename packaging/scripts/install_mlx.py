@@ -2,7 +2,7 @@
 import getpass
 import sys
 from os import listdir, rename
-from os import path, stat
+from os import path
 from tempfile import mkdtemp
 
 import MySQLdb as mysql
@@ -37,6 +37,7 @@ class MetalnxContext:
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
         self.tomcat_home = '/usr/share/tomcat'
+        self.metalnx_war_path = '/tmp/emc-temp/emc-metalnx-web.war'
         self.db_type = ''
         self.db_host = ''
         self.db_name = ''
@@ -44,13 +45,13 @@ class MetalnxContext:
         self.db_pwd = ''
         pass
 
-    @Ignore
     def config_java_devel(self):
         '''It will make sure the java-devel package is correctly installed'''
-        stat(self.jar_path)
-        return True
+        if self._is_file_valid(self.jar_path):
+            return True
 
-    @Ignore
+        raise Exception('Could not find java-devel package.')
+
     def config_tomcat_home(self):
         '''It will ask for your tomcat home directory and checks if it is a valid one'''
         self.tomcat_home = raw_input('Enter your Tomcat home directory [{}]: '.format(self.tomcat_home))
@@ -60,9 +61,8 @@ class MetalnxContext:
         self.tomcat_webapps_dir = path.join(self.tomcat_home, 'webapps')
 
         # If all paths are valid, then this is a valid tomcat directory
-        if path.exists(self.tomcat_home) and path.isdir(self.tomcat_home) \
-                and path.exists(self.tomcat_bin_dir) and path.isdir(self.tomcat_bin_dir) \
-                and path.exists(self.tomcat_webapps_dir) and path.isdir(self.tomcat_webapps_dir):
+        if self._is_dir_valid(self.tomcat_home) and self._is_dir_valid(self.tomcat_bin_dir) \
+                and self._is_dir_valid(self.tomcat_webapps_dir):
             return True
 
         raise Exception('Tomcat directory is not valid. Please check the path and try again.')
@@ -110,6 +110,15 @@ class MetalnxContext:
 
         print 'Metalnx Database configuration done.'
 
+    def run_order(self):
+        return [
+            "config_java_devel",
+            "config_tomcat_home",
+            "config_metalnx_package",
+            "config_exisiting_setup",
+            "config_database"
+        ]
+
     def run(self):
         '''
         Runs Metalnx configuration
@@ -117,12 +126,10 @@ class MetalnxContext:
 
         print self._banner()
 
-        # Filtering out method that does not start with 'config_'
-        methods_to_run = [m for m in dir(self) if m.startswith('config_')]
-
-        for step, method in enumerate(methods_to_run):
+        for step, method in enumerate(self.run_order()):
             invokable = getattr(self, method)
-            print '[*] Executing {} ({}/{})\n   - {}'.format(method, step + 1, len(methods_to_run), invokable.__doc__)
+            print '[*] Executing {} ({}/{})\n   - {}' \
+                .format(method, step + 1, len(self.run_order()), invokable.__doc__)
 
             try:
                 invokable()
@@ -145,11 +152,11 @@ class MetalnxContext:
         '''
         return path.exists(d) and path.isdir(d)
 
-    def _is_file_valid(self, d):
+    def _is_file_valid(self, f):
         '''
         Checks if a path is a valid file
         '''
-        return path.exists(d) and path.isfile(d)
+        return path.exists(f) and path.isfile(f)
 
     def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
         db_connect_dict = {
