@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import ConfigParser
 import getpass
 import subprocess
 import sys
@@ -9,9 +10,17 @@ from tempfile import mkdtemp
 import MySQLdb as mysql
 import psycopg2 as postgres
 
-IRODS_CONNECTION_MSG = "PING\n"
-TEST_CONNECTION_JAR = "test-connection.jar"
+TEST_CONNECTION_JAR = 'test-connection.jar'
 IRODS_VERSION_PING_RESPONSE_REGEX = r'<relVersion>(.*)</relVersion>'
+MYSQL_DRIVER_CLASS_NAME = 'com.mysql.jdbc.Driver'
+POSTGRES_DRIVER_CLASS_NAME = 'org.postgresql.Driver'
+MYSQL_HIBERNATE_DIALECT = 'org.hibernate.dialect.MySQL5Dialect'
+POSTGRES_HIBERNATE_DIALECT = 'org.hibernate.dialect.PostgreSQLDialect'
+HIBERNATE_SHOW_SQL = 'false'
+HIBERNATE_FORMAR_SQL = 'false'
+HIBERNATE_HBM2DDL_AUTO = 'update'
+CONNECTION_POOL_SIZE = '10'
+ENCODED_PROPERTIES = 'db.password,jobs.irods.password'
 
 
 class MetalnxContext:
@@ -20,6 +29,8 @@ class MetalnxContext:
         self.tomcat_home = '/usr/share/tomcat'
 
         self.metalnx_war_path = '/tmp/emc-temp/emc-metalnx-web.war'
+        self.metalnx_db_properties_path = 'database.properties'
+        self.metalnx_irods_properties_path = 'irods.environment.properties'
 
         self.db_type = ''
         self.db_host = ''
@@ -124,10 +135,10 @@ class MetalnxContext:
     def run_order(self):
         """Defines configuration steps order"""
         return [
-            "config_java_devel",
-            "config_tomcat_home",
-            "config_metalnx_package",
-            "config_exisiting_setup",
+            # "config_java_devel",
+            # "config_tomcat_home",
+            # "config_metalnx_package",
+            # "config_exisiting_setup",
             "config_database",
             "config_irods"
         ]
@@ -184,7 +195,8 @@ class MetalnxContext:
 
     def _connect_mysql(self):
         """Connects to a MySQL database"""
-        mysql.connect(self.db_host, self.db_port, self.db_user, self.db_pwd, self.db_name).close()
+        mysql.connect(host=self.db_host, port=int(self.db_port), user=self.db_user, passwd=self.db_pwd,
+                      db=self.db_name).close()
 
     def _connect_postgres(self):
         """Connects to a PostgreSQL database"""
@@ -205,7 +217,10 @@ class MetalnxContext:
 
     def _write_db_properties_to_file(self):
         """Write database properties into a file"""
-        pass
+        cp = ConfigParser.RawConfigParser(allow_no_value=True)
+
+        with open(self.metalnx_db_properties_path) as dbf:
+            cp.write(dbf)
 
     def _write_irods_properties_to_file(self):
         """Write iRODS properties into a file"""
