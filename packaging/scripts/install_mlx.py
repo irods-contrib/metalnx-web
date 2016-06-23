@@ -4,7 +4,8 @@ import getpass
 import subprocess
 import sys
 from base64 import b64encode
-from os import listdir, rename, path, devnull
+from os import listdir, rename, path, devnull, mkdir, getcwd, chdir, remove
+from shutil import rmtree, copyfile
 from tempfile import mkdtemp
 
 import MySQLdb as mysql
@@ -24,12 +25,15 @@ ENCODED_PROPERTIES = 'db.password,jobs.irods.password'
 
 
 def log(msg):
-    print '   - {}'.format(msg)
+    print '    * {}'.format(msg)
+
 
 class MetalnxContext:
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
         self.tomcat_home = '/usr/share/tomcat'
+
+        self.existing_conf = False
 
         self.metalnx_war_path = '/tmp/emc-tmp/emc-metalnx-web.war'
         self.metalnx_db_properties_path = 'database.properties'
@@ -85,53 +89,87 @@ class MetalnxContext:
         '''Looks for existing Metalnx installation on your environment'''
 
         metalnx_path = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
-        classes_path = path.join(metalnx_path, 'WEB-INF', 'classes')
+        self.classes_path = path.join(metalnx_path, 'WEB-INF', 'classes')
 
-        if self._is_dir_valid(metalnx_path) and self._is_dir_valid(classes_path):
+        if self._is_dir_valid(metalnx_path) and self._is_dir_valid(self.classes_path):
             log('Detected current installation of Metalnx. Saving current configuration for further restoring.')
 
             # Creating temporary directory for backup
             self.tmp_dir = mkdtemp()
-
-            # Listing properties files on current Metalnx installation directory
-            files_in_dir = listdir(classes_path)
-
-            for file in files_in_dir:
-                if file.endswith('.properties'):
-                    rename(path.join(classes_path, file), path.join(self.tmp_dir, file))
+            self.existing_conf = True
+            self._move_properties_files(self.classes_path, self.tmp_dir)
         else:
             log('No environment detected. Setting up a new Metalnx instance.')
 
         return True
 
+    def config_war_file(self):
+        """Copying the war file to your Tomcat webapps directory"""
+        metalnx_web_dir = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
+
+        log('Removing current Metalnx installation directory')
+        rmtree(metalnx_web_dir)
+
+        log('Creating new Metalnx directory')
+        mkdir(metalnx_web_dir)
+
+        log('Copying WAR file to the new destination')
+        copyfile(self.metalnx_war_path, path.join(metalnx_web_dir, 'emc-metalnx-web.war'))
+
+        log('Entering WAR file directory')
+        curr_path = getcwd()
+        chdir(metalnx_web_dir)
+
+        log('Extracting new WAR file on the target destination')
+        os_devnull = open(devnull, 'w')
+        irods_auth_params = ['jar', '-xf', path.join(metalnx_web_dir, 'emc-metalnx-web.war')]
+        subprocess.check_call(irods_auth_params)
+
+        log('Going back to the previous working directory')
+        chdir(curr_path)
+
+        log('Removing temporary WAR file')
+        remove(path.join(metalnx_web_dir, 'emc-metalnx-web.war'))
+
     def config_irods(self):
         """It will configure iRODS access"""
-        self.irods_host = raw_input('Enter the iRODS Host [{}]: '.format(self.irods_host))
-        self.irods_port = raw_input('Enter the iRODS Port [{}]: '.format(self.irods_port))
-        self.irods_auth_schema = raw_input(
-            'Enter the iRODS Authentication Schema (STANDARD, PAM, GSI or KERBEROS) [{}]: '.format(
-                self.irods_auth_schema))
-        self.irods_zone = raw_input('Enter the iRODS Zone [{}]: '.format(self.irods_zone))
-        self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
-        self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
 
-        log('Testing iRODS connection...')
-        self._test_irods_connection()
-        log('iRODS connection successful.')
+        if not self.existing_conf:
+            self.irods_host = raw_input('Enter the iRODS Host [{}]: '.format(self.irods_host))
+            self.irods_port = raw_input('Enter the iRODS Port [{}]: '.format(self.irods_port))
+            self.irods_auth_schema = raw_input(
+                'Enter the iRODS Authentication Schema (STANDARD, PAM, GSI or KERBEROS) [{}]: '.format(
+                    self.irods_auth_schema))
+            self.irods_zone = raw_input('Enter the iRODS Zone [{}]: '.format(self.irods_zone))
+            self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
+            self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
+
+            log('Testing iRODS connection...')
+            self._test_irods_connection()
+            log('iRODS connection successful.')
 
     def config_database(self):
         """It will configure database access"""
 
-        self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
-        self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
-        self.db_port = raw_input('Enter the Metalnx Database port [{}]: '.format(self.db_port))
-        self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
-        self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
-        self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
+        if not self.existing_conf:
+            self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
+            self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
+            self.db_port = raw_input('Enter the Metalnx Database port [{}]: '.format(self.db_port))
+            self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
+            self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
+            self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
 
-        log('Testing {} database connection...'.format(self.db_type))
-        self._test_database_connection()
-        log('Database connection successful.')
+            log('Testing {} database connection...'.format(self.db_type))
+            self._test_database_connection()
+            log('Database connection successful.')
+
+    def config_restore_conf(self):
+        """Restoring existing Metalnx configuration"""
+        if self.existing_conf:
+            self._move_properties_files(self.tmp_dir, self.classes_path)
+
+            # Removign temp directory
+            rmtree(self.tmp_dir)
 
     def run_order(self):
         """Defines configuration steps order"""
@@ -140,8 +178,10 @@ class MetalnxContext:
             "config_tomcat_home",
             "config_metalnx_package",
             "config_exisiting_setup",
+            "config_war_file",
             "config_database",
-            "config_irods"
+            "config_irods",
+            "config_restore_conf"
         ]
 
     def run(self):
@@ -215,6 +255,12 @@ class MetalnxContext:
     def _encode_password(self, pwd):
         """Encodes the given password"""
         return b64encode(pwd)
+
+    def _move_properties_files(self, origin, to):
+        files_in_dir = listdir(origin)
+        for f in files_in_dir:
+            if f.endswith('.properties'):
+                rename(path.join(origin, f), path.join(to, f))
 
     def _write_db_properties_to_file(self):
         """Write database properties into a file"""
