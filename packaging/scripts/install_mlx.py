@@ -14,12 +14,14 @@ TEST_CONNECTION_JAR = "test-connection.jar"
 IRODS_VERSION_PING_RESPONSE_REGEX = r'<relVersion>(.*)</relVersion>'
 
 
+def log(msg):
+    print '   - {}'.format(msg)
+
 class MetalnxContext:
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
         self.tomcat_home = '/usr/share/tomcat'
-
-        self.metalnx_war_path = '/tmp/emc-temp/emc-metalnx-web.war'
+        self.metalnx_war_path = '/tmp/emc-tmp/emc-metalnx-web.war'
 
         self.db_type = ''
         self.db_host = ''
@@ -68,23 +70,25 @@ class MetalnxContext:
         raise Exception('Could not find Metalnx WAR file. Check if emc-metalnx-web package is installed.')
 
     def config_exisiting_setup(self):
-        '''It will save your current installed of metalnx and will restore them after update'''
+        '''Looks for existing Metalnx installation on your environment'''
 
         metalnx_path = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
+        classes_path = path.join(metalnx_path, 'WEB-INF', 'classes')
 
-        if self._is_dir_valid(metalnx_path):
-            print '  Detected current installation of Metalnx. Saving current configuration for further restoring.'
-
-            # Listing properties files on current Metalnx installation directory
-            properties_path = path.join(metalnx_path, 'WEB-INF', 'classes')
-            files_in_dir = listdir(properties_path)
+        if self._is_dir_valid(metalnx_path) and self._is_dir_valid(classes_path):
+            log('Detected current installation of Metalnx. Saving current configuration for further restoring.')
 
             # Creating temporary directory for backup
             self.tmp_dir = mkdtemp()
 
+            # Listing properties files on current Metalnx installation directory
+            files_in_dir = listdir(classes_path)
+
             for file in files_in_dir:
                 if file.endswith('.properties'):
-                    rename(path.join(properties_path, file), path.join(self.tmp_dir, file))
+                    rename(path.join(classes_path, file), path.join(self.tmp_dir, file))
+        else:
+            log('No environment detected. Setting up a new Metalnx instance.')
 
         return True
 
@@ -99,11 +103,9 @@ class MetalnxContext:
         self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
         self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
 
-        print 'Testing iRODS connection...'
+        log('Testing iRODS connection...')
         self._test_irods_connection()
-        print 'iRODS connection successful.'
-
-        print 'iRODS Configuration done.'
+        log('iRODS connection successful.')
 
     def config_database(self):
         """It will configure database access"""
@@ -115,11 +117,9 @@ class MetalnxContext:
         self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
         self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
 
-        print 'Testing database connection...'
+        log('Testing {} database connection...'.format(self.db_type))
         self._test_database_connection()
-        print 'Database connection successful.'
-
-        print 'Metalnx Database configuration done.'
+        log('Database connection successful.')
 
     def run_order(self):
         """Defines configuration steps order"""
@@ -184,10 +184,12 @@ class MetalnxContext:
 
     def _connect_mysql(self):
         """Connects to a MySQL database"""
-        mysql.connect(self.db_host, self.db_port, self.db_user, self.db_pwd, self.db_name).close()
+        log('Attempting to connect to MySQL server running on {}:{}'.format(self.db_host, self.db_port))
+        mysql.connect(self.db_host, self.db_user, self.db_pwd, self.db_name).close()
 
     def _connect_postgres(self):
         """Connects to a PostgreSQL database"""
+        log('Attempting to connect to PostgreSQL server running on {}:{}'.format(self.db_host, self.db_port))
         postgres.connect(host=self.db_host, port=self.db_port, user=self.db_user, password=self.db_pwd,
                          database=self.db_name).close()
 
