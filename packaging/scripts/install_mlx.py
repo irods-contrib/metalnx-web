@@ -104,7 +104,7 @@ class MetalnxContext:
         return True
 
     def config_war_file(self):
-        """Copying the war file to your Tomcat webapps directory"""
+        """The installation process will now handle your new WAR file"""
         metalnx_web_dir = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
 
         log('Removing current Metalnx installation directory')
@@ -121,15 +121,15 @@ class MetalnxContext:
         chdir(metalnx_web_dir)
 
         log('Extracting new WAR file on the target destination')
-        os_devnull = open(devnull, 'w')
-        irods_auth_params = ['jar', '-xf', path.join(metalnx_web_dir, 'emc-metalnx-web.war')]
+        war_path = path.join(metalnx_web_dir, 'emc-metalnx-web.war')
+        irods_auth_params = ['jar', '-xf', war_path]
         subprocess.check_call(irods_auth_params)
 
         log('Going back to the previous working directory')
         chdir(curr_path)
 
         log('Removing temporary WAR file')
-        remove(path.join(metalnx_web_dir, 'emc-metalnx-web.war'))
+        remove(war_path)
 
     def config_irods(self):
         """It will configure iRODS access"""
