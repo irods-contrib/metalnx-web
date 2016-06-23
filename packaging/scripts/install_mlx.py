@@ -1,38 +1,17 @@
 #!/usr/bin/python
-import platform
-import sys
 import getpass
+import subprocess
 import sys
-from os import listdir, rename
-from os import path
+from base64 import b64encode
+from os import listdir, rename, path, devnull
 from tempfile import mkdtemp
 
 import MySQLdb as mysql
 import psycopg2 as postgres
 
-
-# MySQLdb lib
-# Windows: exe
-# yum install mysql-python
-# apt-get install python-mysqldb
-
-class Ignore:
-    '''
-    Annotation for ignoring method execution
-    Usage:
-
-    ...
-        @Ignore
-        def my_method(self):
-            pass
-    ...
-    '''
-
-    def __init__(self, m):
-        self._method = m
-
-    def __call__(self):
-        print 'Ignoring {}'.format(self._method.__name__)
+IRODS_CONNECTION_MSG = "PING\n"
+TEST_CONNECTION_JAR = "test-connection.jar"
+IRODS_VERSION_PING_RESPONSE_REGEX = r'<relVersion>(.*)</relVersion>'
 
 
 class MetalnxContext:
@@ -41,14 +20,17 @@ class MetalnxContext:
         self.tomcat_home = '/usr/share/tomcat'
 
         self.metalnx_war_path = '/tmp/emc-temp/emc-metalnx-web.war'
+
         self.db_type = ''
         self.db_host = ''
+        self.db_port = ''
         self.db_name = ''
         self.db_user = ''
         self.db_pwd = ''
 
         self.irods_host = ''
-        self.irods_port = ''
+        self.irods_port = 1247
+        self.irods_auth_schema = 'STANDARD'
         self.irods_db_name = 'ICAT'
         self.irods_zone = ''
         self.irods_user = ''
@@ -56,7 +38,6 @@ class MetalnxContext:
 
         pass
 
-    @Ignore
     def config_java_devel(self):
         '''It will make sure the java-devel package is correctly installed'''
         if self._is_file_valid(self.jar_path):
@@ -111,12 +92,15 @@ class MetalnxContext:
         """It will configure iRODS access"""
         self.irods_host = raw_input('Enter the iRODS Host [{}]: '.format(self.irods_host))
         self.irods_port = raw_input('Enter the iRODS Port [{}]: '.format(self.irods_port))
+        self.irods_auth_schema = raw_input(
+            'Enter the iRODS Authentication Schema (STANDARD, PAM, GSI or KERBEROS) [{}]: '.format(
+                self.irods_auth_schema))
         self.irods_zone = raw_input('Enter the iRODS Zone [{}]: '.format(self.irods_zone))
         self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
         self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
 
         print 'Testing iRODS connection...'
-        self._test_database_connection('postgres', self.irods_host, self.irods_user, self.irods_pwd, self.irods_db_name)
+        self._test_irods_connection()
         print 'iRODS connection successful.'
 
         print 'iRODS Configuration done.'
@@ -126,23 +110,26 @@ class MetalnxContext:
 
         self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
         self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
+        self.db_port = raw_input('Enter the Metalnx Database port [{}]: '.format(self.db_port))
         self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
         self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
         self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
 
         print 'Testing database connection...'
-        self._test_database_connection(self.db_type, self.db_host, self.db_user, self.db_pwd, self.db_name)
+        self._test_database_connection()
         print 'Database connection successful.'
 
         print 'Metalnx Database configuration done.'
 
     def run_order(self):
+        """Defines configuration steps order"""
         return [
             "config_java_devel",
             "config_tomcat_home",
             "config_metalnx_package",
             "config_exisiting_setup",
-            "config_database"
+            "config_database",
+            "config_irods"
         ]
 
     def run(self):
@@ -184,20 +171,45 @@ class MetalnxContext:
         '''
         return path.exists(f) and path.isfile(f)
 
-    def _test_database_connection(self, db_type, db_host, db_user, db_pwd, db_name):
+    def _test_database_connection(self):
+        """Tests database connectivity based on the database type"""
+
         db_connect_dict = {
             'mysql': self._connect_mysql,
             'postgres': self._connect_postgres
         }
 
-        db_connect_dict[db_type](db_host, db_user, db_pwd, db_name)
+        db_connect_dict[self.db_type]()
         return True
 
-    def _connect_mysql(self, db_host, db_user, db_pwd, db_name):
-        mysql.connect(db_host, db_user, db_pwd, db_name).close()
+    def _connect_mysql(self):
+        """Connects to a MySQL database"""
+        mysql.connect(self.db_host, self.db_port, self.db_user, self.db_pwd, self.db_name).close()
 
-    def _connect_postgres(self, db_host, db_user, db_pwd, db_name):
-        postgres.connect(host=db_host, user=db_user, password=db_pwd, database=db_name).close()
+    def _connect_postgres(self):
+        """Connects to a PostgreSQL database"""
+        postgres.connect(host=self.db_host, port=self.db_port, user=self.db_user, password=self.db_pwd,
+                         database=self.db_name).close()
+
+    def _test_irods_connection(self):
+        """Authenticates against iRODS"""
+        os_devnull = open(devnull, 'w')
+        irods_auth_params = ['java', '-jar', TEST_CONNECTION_JAR, self.irods_host, self.irods_port, self.irods_user,
+                             self.irods_pwd, self.irods_zone, self.irods_auth_schema]
+        subprocess.check_call(irods_auth_params, stdout=os_devnull)
+        return True
+
+    def _encode_password(self, pwd):
+        """Encodes the given password"""
+        return b64encode(pwd)
+
+    def _write_db_properties_to_file(self):
+        """Write database properties into a file"""
+        pass
+
+    def _write_irods_properties_to_file(self):
+        """Write iRODS properties into a file"""
+        pass
 
 
 def main():
