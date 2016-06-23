@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import platform
+import sys
 import getpass
 import sys
 from os import listdir, rename
@@ -37,14 +39,24 @@ class MetalnxContext:
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
         self.tomcat_home = '/usr/share/tomcat'
+
         self.metalnx_war_path = '/tmp/emc-temp/emc-metalnx-web.war'
         self.db_type = ''
         self.db_host = ''
         self.db_name = ''
         self.db_user = ''
         self.db_pwd = ''
+
+        self.irods_host = ''
+        self.irods_port = ''
+        self.irods_db_name = 'ICAT'
+        self.irods_zone = ''
+        self.irods_user = ''
+        self.irods_pwd = ''
+
         pass
 
+    @Ignore
     def config_java_devel(self):
         '''It will make sure the java-devel package is correctly installed'''
         if self._is_file_valid(self.jar_path):
@@ -94,6 +106,20 @@ class MetalnxContext:
                     rename(path.join(properties_path, file), path.join(self.tmp_dir, file))
 
         return True
+
+    def config_irods(self):
+        """It will configure iRODS access"""
+        self.irods_host = raw_input('Enter the iRODS Host [{}]: '.format(self.irods_host))
+        self.irods_port = raw_input('Enter the iRODS Port [{}]: '.format(self.irods_port))
+        self.irods_zone = raw_input('Enter the iRODS Zone [{}]: '.format(self.irods_zone))
+        self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
+        self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
+
+        print 'Testing iRODS connection...'
+        self._test_database_connection('postgres', self.irods_host, self.irods_user, self.irods_pwd, self.irods_db_name)
+        print 'iRODS connection successful.'
+
+        print 'iRODS Configuration done.'
 
     def config_database(self):
         """It will configure database access"""
