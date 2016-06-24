@@ -1,64 +1,15 @@
 #!/usr/bin/python
 import getpass
-import re
-import subprocess
 import sys
-from base64 import b64encode
-from os import listdir, rename, path, devnull, mkdir, getcwd, chdir, remove
+from os import mkdir, getcwd, chdir, remove
 from shutil import rmtree, copyfile
 from tempfile import mkdtemp
+from xml.etree import ElementTree as ET
 
-import MySQLdb as mysql
-import psycopg2 as postgres
-
-TEST_CONNECTION_JAR = 'test-connection.jar'
-
-POSTGRESQL = 'postgresql'
-MYSQL = 'mysql'
-
-HIBERNATE_CONFIG = {
-    MYSQL: {
-        'db.driverClassName': 'com.mysql.jdbc.Driver',
-        'hibernate.dialect': 'org.hibernate.dialect.MySQL5Dialect',
-    },
-    POSTGRESQL: {
-        'db.driverClassName': 'org.postgresql.Driver',
-        'hibernate.dialect': 'org.hibernate.dialect.PostgreSQLDialect'
-    },
-    'options': {
-        'hibernate.show_sql': 'false',
-        'hibernate.format_sql': 'false',
-        'hibernate.hbm2ddl.auto': 'update',
-        'connection.pool_size': '10'
-    }
-}
+from utils import *
 
 
-class MetalnxConfigParser(object):
-    def __init__(self, db_type, fp):
-        self.fp = fp
-        self.prop_file_content = self.fp.read()
-        self.fp.seek(0)
-
-        self.options_dict = HIBERNATE_CONFIG[db_type]
-        self.options_dict.update(HIBERNATE_CONFIG['options'])
-
-    def set(self, option, value):
-        self.options_dict[option] = value
-
-    def write(self):
-        for option, value in self.options_dict.iteritems():
-            find_option_regex = re.escape(option) + r'\s*=\s*\S*'
-            self.prop_file_content = re.sub(find_option_regex, '{}={}'.format(option, value), self.prop_file_content)
-
-        self.fp.write(self.prop_file_content)
-
-
-def log(msg):
-    print '    * {}'.format(msg)
-
-
-class MetalnxContext:
+class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipulationMixin):
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
         self.tomcat_home = '/usr/share/tomcat'
@@ -174,14 +125,15 @@ class MetalnxContext:
 
         print 'Testing iRODS connection...'
         self._test_irods_connection()
-        print 'iRODS connection successful.'
+        log('iRODS connection successful.')
 
     def config_database(self):
         """It will configure database access"""
 
         if not self.existing_conf:
             self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
-            self.db_type = raw_input('Enter the Metalnx Database type (mysql or postgres) [{}]: '.format(self.db_type))
+            self.db_type = raw_input(
+                'Enter the Metalnx Database type (mysql or postgresql) [{}]: '.format(self.db_type))
             self.db_port = raw_input('Enter the Metalnx Database port [{}]: '.format(self.db_port))
             self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
             self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
@@ -201,28 +153,44 @@ class MetalnxContext:
             # Removign temp directory
             rmtree(self.tmp_dir)
 
-    def run_order(self):
-        """Defines configuration steps order"""
-        return [
-            "config_java_devel",
-            "config_tomcat_home",
-            "config_metalnx_package",
-            "config_existing_setup",
-            "config_war_file",
-            "config_database",
-            "config_irods",
-            "config_restore_conf"
-        ]
+    def config_set_https(self):
+        """Sets HTTPS protocol in Tomcat and Metanlx"""
+        metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'classes', 'web.xml')
+        tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
+
+        server_conf = ET.parse(tomcat_server_xml).getroot()
+
+        is_https = False
+        for c in server_conf.getroot().find('Service').findall('Connector'):
+            if c.get('scheme') is not None and c.get('scheme') == 'https':
+                is_https = True
+
+        use_https = 'n'
+        if not is_https:
+            log('No HTTPS configuration (Connector) found on Tomcat.')
+            use_https = raw_input('Would you like Metalnx to be used in HTTPS protocol? [y/N]').lower()
+
+        if use_https == 'y':
+            log('Creating keystore for Metalnx...')
+            log('Changing server.xml in Tomcat configuration files...')
+
+        if is_https:
+            log('Setting <security-contraint> in Metalnx...')
+            mlx_web = ET.parse(metalnx_web_xml)
+            r = mlx_web.getroot()
+            r.find('security-constraint').find('user-data-constraint') \
+                .find('transport-guarantee').text = 'CONFIDENTIAL'
+            mlx_web.write(metalnx_web_xml)
 
     def run(self):
         """Runs Metalnx configuration"""
 
-        print self._banner()
+        print banner()
 
-        for step, method in enumerate(self.run_order()):
+        for step, method in enumerate(INSTALL_STEPS):
             invokable = getattr(self, method)
-            print '[*] Executing {} ({}/{})\n   - {}' \
-                .format(method, step + 1, len(self.run_order()), invokable.__doc__)
+            print '[*] Executing {} ({}/{})'.format(method, step + 1, len(INSTALL_STEPS))
+            print '   - {}'.format(invokable.__doc__)
 
             try:
                 invokable()
@@ -231,78 +199,6 @@ class MetalnxContext:
                 sys.exit(-1)
 
         sys.exit(0)
-
-    def _banner(self):
-        """Returns banner string for the configuration script"""
-        main_line = '#          Metalnx Installation Script        #'
-        return '#' * len(main_line) + '\n' + main_line + '\n' + '#' * len(main_line)
-
-    def _is_dir_valid(self, d):
-        """Checks if a path is a valid directory"""
-        return path.exists(d) and path.isdir(d)
-
-    def _is_file_valid(self, f):
-        """Checks if a path is a valid file"""
-        return path.exists(f) and path.isfile(f)
-
-    def _test_database_connection(self):
-        """Tests database connectivity based on the database type"""
-
-        print 'Testing database connection...'
-        getattr(self, '_connect_{}'.format(self.db_type))()
-        print 'Database connection successful.'
-        return True
-
-    def _connect_mysql(self):
-        """Connects to a MySQL database"""
-        mysql.connect(host=self.db_host, port=int(self.db_port), user=self.db_user, passwd=self.db_pwd,
-                      db=self.db_name).close()
-
-    def _connect_postgresql(self):
-        """Connects to a PostgreSQL database"""
-        postgres.connect(host=self.db_host, port=self.db_port, user=self.db_user, password=self.db_pwd,
-                         database=self.db_name).close()
-
-    def _test_irods_connection(self):
-        """Authenticates against iRODS"""
-        os_devnull = open(devnull, 'w')
-        irods_auth_params = ['java', '-jar', TEST_CONNECTION_JAR, self.irods_host, self.irods_port, self.irods_user,
-                             self.irods_pwd, self.irods_zone, self.irods_auth_schema]
-        subprocess.check_call(irods_auth_params, stdout=os_devnull)
-        return True
-
-    def _encode_password(self, pwd):
-        """Encodes the given password"""
-        return b64encode(pwd)
-
-    def _move_properties_files(self, origin, to):
-        files_in_dir = listdir(origin)
-        for f in files_in_dir:
-            if f.endswith('.properties'):
-                rename(path.join(origin, f), path.join(to, f))
-
-    def _write_db_properties_to_file(self):
-        """Write database properties into a file"""
-
-        print 'Creating Database properties file...'
-
-        with open(self.metalnx_db_properties_path, 'r+') as dbpf:
-            mcp = MetalnxConfigParser(self.db_type, dbpf)
-            mcp.set('db.username', self.db_user)
-            mcp.set('db.password', MetalnxContext._encode_password(self.db_pwd))
-            mcp.set('db.url', 'jdbc:{}://{}:{}/{}'.format(self.db_type, self.db_host, self.db_port, self.db_name))
-            mcp.write()
-
-        print 'Database properties file created.'
-
-    def _write_irods_properties_to_file(self):
-        """Write iRODS properties into a file"""
-        pass
-
-    @staticmethod
-    def _encode_password(pwd):
-        """Encodes the given password"""
-        return b64encode(pwd)
 
 
 def main():
