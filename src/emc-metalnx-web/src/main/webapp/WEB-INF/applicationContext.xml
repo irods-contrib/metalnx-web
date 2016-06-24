@@ -34,6 +34,7 @@
 				<value>classpath:irods.environment.properties</value>
 				<value>classpath:database.properties</value>
 				<value>classpath:msi.properties</value>
+				<value>classpath:security.properties</value>
 			</list>
 		</property>
 	</bean>
