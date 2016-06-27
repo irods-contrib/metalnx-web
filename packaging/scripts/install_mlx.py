@@ -165,14 +165,55 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             if c.get('scheme') is not None and c.get('scheme') == 'https':
                 is_https = True
 
-        use_https = 'n'
         if not is_https:
             log('No HTTPS configuration (Connector) found on Tomcat.')
-            use_https = raw_input('Would you like Metalnx to be used in HTTPS protocol? [y/N]').lower()
+            use_https = raw_input('Would you like Metalnx to configure HTTPS on your Tomcat server? [y/n]').lower()
 
-        if use_https == 'y':
-            log('Creating keystore for Metalnx...')
-            log('Changing server.xml in Tomcat configuration files...')
+            if use_https == 'y':
+                log('Creating keystore for Metalnx...')
+
+                keystore_path = path.join(self.tomcat_webapps_dir, '.metlanx.keystore.')
+                keystore_password = 'abcde1234'
+
+                subprocess.check_call([
+                    "keytool",
+                    "-genkey",
+                    "-keysize", "2048",
+                    "-noprompt",
+                    "-alias", "metalnx-tomcat",
+                    "-dname", "CN=MetaLnx Tester, OU=home, O=home, L=Campinas, ST=SP, C=BR",
+                    "-keyalg", "RSA",
+                    "-keystore", keystore_path,
+                    "-storepass", keystore_password,
+                    "-keypass", keystore_password
+                ])
+
+                log('Changing server.xml in Tomcat configuration files...')
+                connector_spec = """
+                    <Connector
+                        port=\"8443\"
+                        accceptCount=\"100\"
+                        protocol=\"org.apache.coyote.http11.Http11Protocol\"
+                        disableUploadTiemout=\"true\"
+                        enableLookups=\"true\"
+                        keystoreFile=\"{}\"
+                        maxThreads=\"150\"
+                        SSLEnabled=\"true\"
+                        scheme=\"https\"
+                        secure=\"true\"
+                        keystorePass=\"{}\"
+                        clientAuth=\"false\"
+                        sslProtocol=\"TLS\"
+                        ciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA\" />
+                """.format(keystore_path, keystore_password)
+
+                subprocess.check_call([
+                    'sed', '-i',
+                    's|<Connector.*port=\"8443\".*|-->{}<\!--|'.format(connector_spec.replace('\n', ' ')),
+                    tomcat_server_xml
+                ])
+
+                is_https = True
 
         if is_https:
             log('Setting <security-contraint> in Metalnx...')
