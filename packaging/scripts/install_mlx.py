@@ -23,6 +23,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.metalnx_db_properties_path = ''
         self.metalnx_irods_properties_path = ''
         self.tmp_dir = None
+        self.is_https = False
 
         # Metalnx properties
         self.irods_props = {}
@@ -52,6 +53,12 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             raise Exception('Tomcat directory is not valid. Please check the path and try again.')
 
         return True
+
+    def config_tomcat_shutdown(self):
+        """Shuts tomcat down before configuration"""
+        subprocess.check_call([
+            'service', 'tomcat', 'stop'
+        ])
 
     def config_metalnx_package(self):
         """It will check if the Metalnx package has been correctly installed"""
@@ -179,34 +186,26 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_set_https(self):
         """Sets HTTPS protocol in Tomcat and Metalnx"""
-        metalnx_web_xml = path.join(self.classes_path, 'web.xml')
+        metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'web.xml')
         tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
-
-        log('[DEBUG] Metalnx WEB file: {}'.format(metalnx_web_xml))
-        log('[DEBUG] Tomcat server.xml file: {}'.format(tomcat_server_xml))
 
         server_conf = ET.parse(tomcat_server_xml).getroot()
 
-        is_https = False
         for c in server_conf.find('Service').findall('Connector'):
             if c.get('scheme') is not None and c.get('scheme') == 'https':
-                is_https = True
-                log('[DEBUG] Found HTTPS connector!')
+                self.is_https = True
 
-        if not is_https:
+        if not self.is_https:
             log('No HTTPS configuration (Connector) found on Tomcat.')
             use_https = read_input('Set HTTPS on your Tomcat server', default='no', choices=['yes', 'no'])
 
             if use_https == 'yes':
-                log('[DEBUG] User wants to setup HTTPS')
                 log('Creating keystore for Metalnx...')
 
                 log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
                 keystore_path = read_input(
                     'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, '.metlanx.keystore.'))
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
-
-                log('[DEBUG] Path: [{}] Password: [{}]'.format(keystore_path, keystore_password))
 
                 subprocess.check_call([
                     "keytool",
@@ -240,24 +239,39 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                         ciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA\" />
                 """.format(keystore_path, keystore_password)
 
-                self._backup_files(tomcat_server_xml)
+                new_path = path.join(self.tomcat_home, 'conf', 'server.xml')
+                self._backup_files(new_path)
                 subprocess.check_call([
                     'sed', '-i',
                     's|<Connector.*port=\"8443\".*|-->{}<\!--|'.format(connector_spec.replace('\n', ' ')),
-                    tomcat_server_xml
+                    new_path
                 ])
 
-                is_https = True
+                self.is_https = True
 
-        if is_https:
+        if self.is_https:
             log('Setting <security-contraint> in Metalnx...')
-            mlx_web = ET.parse(metalnx_web_xml)
-            r = mlx_web.getroot()
-            r.find('security-constraint').find('user-data-constraint') \
-                .find('transport-guarantee').text = 'CONFIDENTIAL'
-
             self._backup_files(metalnx_web_xml)
-            mlx_web.write(metalnx_web_xml)
+            subprocess.check_call([
+                'sed', '-i',
+                's|>NONE<|>CONFIDENTIAL<|', metalnx_web_xml
+            ])
+
+    def config_tomcat_startup(self):
+        """Starting tomcat back again"""
+        subprocess.check_call([
+            'service', 'tomcat', 'start'
+        ])
+
+    def config_displays_summary(self):
+        """Metalnx configuration finished"""
+        bar = '#' * 100
+        print
+        print bar
+        print '# Metalnx configuration finished successfully!'
+        print '# You can access your Metalnx instance at {}'.format(MLX_URL)
+        print '# For further information and help, refer to {}'.format(GITHUB_URL)
+        print bar
 
     def run(self):
         """Runs Metalnx configuration"""
