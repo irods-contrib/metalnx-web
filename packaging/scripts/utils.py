@@ -24,7 +24,7 @@ def encode_password(pwd):
     return base64.b64encode(pwd)
 
 
-class MetalnxConfigParser:
+class MetalnxConfigParser(object):
     def __init__(self, fp):
         self.fp = fp
         self.prop_file_content = self.fp.read()
