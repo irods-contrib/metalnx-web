@@ -71,7 +71,8 @@ def read_input(question, default=None, hidden=False, choices=None, allow_empty=F
         else:
             if choices and user_input not in choices:
                 log('Invalid input: unknown option. Check the options and try again.')
-            return user_input
+            else:
+                return user_input
         max_iterations += 1
 
     raise Exception('Too many tries. Please restart the configuration script.')

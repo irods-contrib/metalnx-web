@@ -11,6 +11,7 @@ from utils import *
 class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipulationMixin):
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
+        self.keytool_path = '/usr/bin/keytool'
 
         # Tomcat config params
         self.tomcat_home = '/usr/share/tomcat'
@@ -200,12 +201,34 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             use_https = read_input('Set HTTPS on your Tomcat server', default='no', choices=['yes', 'no'])
 
             if use_https == 'yes':
+
+                if not self._is_file_valid(self.keytool_path):
+                    raise Exception(
+                        'Java devel package is not installed correctly. ' \
+                        'Metalnx could not find the \'keytool\' binary.'
+                    )
+
                 log('Creating keystore for Metalnx...')
 
                 log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
                 keystore_path = read_input(
-                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, '.metlanx.keystore.'))
+                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, 'metlanx.keystore'))
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
+
+                log('[DEBUG] {} {}'.format(keystore_path, keystore_password))
+
+                log('[DEBUG] {}'.format([
+                    "keytool",
+                    "-genkey",
+                    "-keysize", "2048",
+                    "-noprompt",
+                    "-alias", "metalnx-tomcat",
+                    "-dname", "CN=MetaLnx Tester, OU=home, O=home, L=Campinas, ST=SP, C=BR",
+                    "-keyalg", "RSA",
+                    "-keystore", keystore_path,
+                    "-storepass", keystore_password,
+                    "-keypass", keystore_password
+                ]))
 
                 subprocess.check_call([
                     "keytool",
@@ -219,6 +242,8 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                     "-storepass", keystore_password,
                     "-keypass", keystore_password
                 ])
+
+                log('EXECUTOU')
 
                 log('Changing server.xml in Tomcat configuration files...')
                 connector_spec = """

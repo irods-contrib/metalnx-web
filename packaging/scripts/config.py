@@ -17,7 +17,7 @@ POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
 
 GITHUB_URL = 'https://github.com/sgworth/metalnx-web'
-MLX_URL = 'http://{}:8080/emc-metalnx-web/login'.format(gethostname())
+MLX_URL = 'http://{}:8080/emc-metalnx-web/login/'.format(gethostname())
 
 HIBERNATE_CONFIG = {
     MYSQL: {
