@@ -184,24 +184,31 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         metalnx_web_xml = path.join(self.classes_path, 'web.xml')
         tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
 
+        log('[DEBUG] Metalnx WEB file: {}'.format(metalnx_web_xml))
+        log('[DEBUG] Tomcat server.xml file: {}'.format(tomcat_server_xml))
+
         server_conf = ET.parse(tomcat_server_xml).getroot()
 
         is_https = False
-        for c in server_conf.getroot().find('Service').findall('Connector'):
+        for c in server_conf.find('Service').findall('Connector'):
             if c.get('scheme') is not None and c.get('scheme') == 'https':
                 is_https = True
+                log('[DEBUG] Found HTTPS connector!')
 
         if not is_https:
             log('No HTTPS configuration (Connector) found on Tomcat.')
             use_https = read_input('Set HTTPS on your Tomcat server', default='no', choices=['yes', 'no'])
 
             if use_https == 'yes':
+                log('[DEBUG] User wants to setup HTTPS')
                 log('Creating keystore for Metalnx...')
 
                 log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
                 keystore_path = read_input(
                     'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, '.metlanx.keystore.'))
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
+
+                log('[DEBUG] Path: [{}] Password: [{}]'.format(keystore_path, keystore_password))
 
                 subprocess.check_call([
                     "keytool",

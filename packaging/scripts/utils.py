@@ -53,7 +53,7 @@ def read_input(question, default=None, hidden=False, choices=None, allow_empty=F
     read_method = raw_input
     if hidden:
         read_method = getpass.getpass
-        hidden_alert = '(it will not be displayled)'
+        hidden_alert = '(it will not be displayed)'
         question = '{} {}'.format(question, hidden_alert)
 
     question += ': '
@@ -69,10 +69,9 @@ def read_input(question, default=None, hidden=False, choices=None, allow_empty=F
             else:
                 log('Invalid input: There is no default value defined for this parameter. Try again.')
         else:
-            if choices and user_input in choices:
-                return user_input
-            else:
+            if choices and user_input not in choices:
                 log('Invalid input: unknown option. Check the options and try again.')
+            return user_input
         max_iterations += 1
 
     raise Exception('Too many tries. Please restart the configuration script.')
