@@ -18,7 +18,7 @@ def log(msg):
 
 def banner():
     """Returns banner string for the configuration script"""
-    main_line = '                     Metalnx Installation Script                   '
+    main_line = ' ' * 21 + 'Metalnx Installation Script v{}-{}'.format(RELEASE_VERSION, BUILD_NUMBER) + ' ' * 21
     return '\033[44m' + ' ' * len(main_line) + '\n' + main_line + '\n' + ' ' * len(main_line) + '\033[0m'
 
 
