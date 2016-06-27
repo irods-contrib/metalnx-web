@@ -146,7 +146,10 @@ class IRODSConnectionTestMixin:
             self.irods_props[IRODS_PROPS_SPEC['auth_scheme']['name']]
         ]
 
-        subprocess.check_call(irods_auth_params, stdout=os_devnull)
+        try:
+            subprocess.check_call(irods_auth_params, stdout=os_devnull)
+        except:
+            raise Exception('Metalnx was not able to contact iRODS server. Check your parameters and try again.')
 
         log('iRODS connection successful.')
 
