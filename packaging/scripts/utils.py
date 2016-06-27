@@ -1,6 +1,6 @@
+import base64
 import re
 import subprocess
-from base64 import b64encode
 from os import path, listdir, rename
 from os.path import devnull
 
@@ -20,14 +20,16 @@ def banner():
     return '#' * len(main_line) + '\n' + main_line + '\n' + '#' * len(main_line)
 
 
+def encode_password(pwd):
+    return base64.b64encode(pwd)
+
+
 class MetalnxConfigParser(object):
-    def __init__(self, db_type, fp):
+    def __init__(self, fp):
         self.fp = fp
         self.prop_file_content = self.fp.read()
         self.fp.seek(0)
-
-        self.options_dict = HIBERNATE_CONFIG[db_type]
-        self.options_dict.update(HIBERNATE_CONFIG['options'])
+        self.options_dict = {}
 
     def set(self, option, value):
         self.options_dict[option] = value
@@ -41,42 +43,61 @@ class MetalnxConfigParser(object):
 
 
 class DBConnectionTestMixin:
-    def _test_database_connection(self):
+    def _test_database_connection(self, db_type):
         """Tests database connectivity based on the database type"""
 
         log('Testing database connection...')
-        getattr(self, '_connect_{}'.format(self.db_type))()
+
+        getattr(self, '_connect_{}'.format(db_type))()
+
         log('Database connection successful.')
+
         return True
 
     def _connect_mysql(self):
         """Connects to a MySQL database"""
-        mysql.connect(host=self.db_host, port=int(self.db_port), user=self.db_user, passwd=self.db_pwd,
-                      db=self.db_name).close()
+        mysql.connect(
+            host=self.db_props[DB_PROPS_SPEC['host']['name']],
+            port=int(self.db_props[DB_PROPS_SPEC['port']['name']]),
+            user=self.db_props[DB_PROPS_SPEC['user']['name']],
+            passwd=self.db_props[DB_PROPS_SPEC['password']['name']],
+            db=self.db_props[DB_PROPS_SPEC['db_name']['name']]
+        ).close()
 
     def _connect_postgresql(self):
         """Connects to a PostgreSQL database"""
-        postgres.connect(host=self.db_host, port=self.db_port, user=self.db_user, password=self.db_pwd,
-                         database=self.db_name).close()
+
+        postgres.connect(
+            host=self.db_props[DB_PROPS_SPEC['host']['name']],
+            port=self.db_props[DB_PROPS_SPEC['port']['name']],
+            user=self.db_props[DB_PROPS_SPEC['user']['name']],
+            password=self.db_props[DB_PROPS_SPEC['password']['name']],
+            database=self.db_props[DB_PROPS_SPEC['db_name']['name']]
+        ).close()
 
 
 class IRODSConnectionTestMixin:
     def _test_irods_connection(self):
         """Authenticates against iRODS"""
+        log('Testing iRODS connection...')
+
         os_devnull = open(devnull, 'w')
-        irods_auth_params = ['java', '-jar', TEST_CONNECTION_JAR, self.irods_host, self.irods_port, self.irods_user,
-                             self.irods_pwd, self.irods_zone, self.irods_auth_schema]
+
+        irods_auth_params = [
+            'java', '-jar', TEST_CONNECTION_JAR,
+            self.irods_props[IRODS_PROPS_SPEC['host']['name']],
+            self.irods_props[IRODS_PROPS_SPEC['port']['name']],
+            self.irods_props[IRODS_PROPS_SPEC['user']['name']],
+            self.irods_props[IRODS_PROPS_SPEC['password']['name']],
+            self.irods_props[IRODS_PROPS_SPEC['zone']['name']],
+            self.irods_props[IRODS_PROPS_SPEC['auth_scheme']['name']]
+        ]
+
         subprocess.check_call(irods_auth_params, stdout=os_devnull)
+
+        log('iRODS connection successful.')
+
         return True
-
-    def _encode_password(self, pwd):
-        """Encodes the given password"""
-        return b64encode(pwd)
-
-    @staticmethod
-    def _encode_password(pwd):
-        """Encodes the given password"""
-        return b64encode(pwd)
 
 
 class FileManipulationMixin:
@@ -94,20 +115,43 @@ class FileManipulationMixin:
             if f.endswith('.properties'):
                 rename(path.join(origin, f), path.join(to, f))
 
+    def _write_properties_to_file(self, path, props):
+        """Write properties into a file"""
+
+        log('Creating properties file...')
+
+        with open(path, 'r+') as pf:
+            mcp = MetalnxConfigParser(self.db_type, pf)
+
+        log('Properties file created.')
+
     def _write_db_properties_to_file(self):
         """Write database properties into a file"""
 
         log('Creating Database properties file...')
 
-        with open(self.metalnx_db_properties_path, 'r+') as dbpf:
-            mcp = MetalnxConfigParser(self.db_type, dbpf)
-            mcp.set('db.username', self.db_user)
-            mcp.set('db.password', IRODSConnectionTestMixin._encode_password(self.db_pwd))
-            mcp.set('db.url', 'jdbc:{}://{}:{}/{}'.format(self.db_type, self.db_host, self.db_port, self.db_name))
+        with open(path.join(self.classes_path, DATABASE_PROPS_FILENAME), 'r+') as dbpf:
+            mcp = MetalnxConfigParser(dbpf)
+
+            for prop_name, prop_val in self.db_props.items():
+                mcp.set(prop_name, prop_val)
+                log('\tProp {} = {} written.'.format(prop_name, prop_val))
+
             mcp.write()
 
         log('Database properties file created.')
 
     def _write_irods_properties_to_file(self):
         """Write iRODS properties into a file"""
-        pass
+        log('Creating iRODS properties file...')
+
+        with open(path.join(self.classes_path, IRODS_PROPS_FILENAME), 'r+') as ipf:
+            mcp = MetalnxConfigParser(ipf)
+
+            for prop_name, prop_val in self.irods_props.items():
+                mcp.set(prop_name, prop_val)
+                log('\tProp {} = {} written.'.format(prop_name, prop_val))
+
+            mcp.write()
+
+        log('iRODS properties file created.')

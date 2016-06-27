@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import getpass
 import sys
 from os import mkdir, getcwd, chdir, remove
 from shutil import rmtree, copyfile
@@ -12,28 +11,25 @@ from utils import *
 class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipulationMixin):
     def __init__(self):
         self.jar_path = '/usr/bin/jar'
+
+        # Tomcat config params
         self.tomcat_home = '/usr/share/tomcat'
+        self.tomcat_bin_dir = ''
+        self.tomcat_webapps_dir = ''
+        self.classes_path = ''
 
-        self.existing_conf = False
-
+        # Metalnx config params
         self.metalnx_war_path = '/tmp/emc-tmp/emc-metalnx-web.war'
-        self.metalnx_db_properties_path = 'database.properties'
-        self.metalnx_irods_properties_path = 'irods.environment.properties'
+        self.metalnx_db_properties_path = ''
+        self.metalnx_irods_properties_path = ''
+        self.tmp_dir = None
 
-        self.db_type = ''
-        self.db_host = ''
-        self.db_port = ''
-        self.db_name = ''
-        self.db_user = ''
-        self.db_pwd = ''
+        # Metalnx properties
+        self.irods_props = {}
+        self.db_props = {}
 
-        self.irods_host = ''
-        self.irods_port = 1247
-        self.irods_auth_schema = 'STANDARD'
-        self.irods_db_name = 'ICAT'
-        self.irods_zone = ''
-        self.irods_user = ''
-        self.irods_pwd = ''
+        # Existing Metalnx configuration flag
+        self.existing_conf = False
 
     def config_java_devel(self):
         """It will make sure the java-devel package is correctly installed"""
@@ -51,18 +47,22 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.tomcat_webapps_dir = path.join(self.tomcat_home, 'webapps')
 
         # If all paths are valid, then this is a valid tomcat directory
-        if self._is_dir_valid(self.tomcat_home) and self._is_dir_valid(self.tomcat_bin_dir) \
-                and self._is_dir_valid(self.tomcat_webapps_dir):
-            return True
+        if not self._is_dir_valid(self.tomcat_home) or not self._is_dir_valid(self.tomcat_bin_dir) \
+                or not self._is_dir_valid(self.tomcat_webapps_dir):
+            raise Exception('Tomcat directory is not valid. Please check the path and try again.')
 
-        raise Exception('Tomcat directory is not valid. Please check the path and try again.')
+        return True
 
     def config_metalnx_package(self):
         """It will check if the Metalnx package has been correctly installed"""
-        if self._is_file_valid(self.metalnx_war_path):
-            return True
 
-        raise Exception('Could not find Metalnx WAR file. Check if emc-metalnx-web package is installed.')
+        print self.metalnx_war_path
+        print self._is_file_valid(self.metalnx_war_path)
+
+        if not self._is_file_valid(self.metalnx_war_path):
+            raise Exception('Could not find Metalnx WAR file. Check if emc-metalnx-web package is installed.')
+
+        return True
 
     def config_existing_setup(self):
         """It will save your current installed of metalnx and will restore them after update"""
@@ -86,8 +86,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """The installation process will now handle your new WAR file"""
         metalnx_web_dir = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web')
 
-        log('Removing current Metalnx installation directory')
-        rmtree(metalnx_web_dir)
+        if self.existing_conf:
+            log('Removing current Metalnx installation directory')
+            rmtree(metalnx_web_dir)
 
         log('Creating new Metalnx directory')
         mkdir(metalnx_web_dir)
@@ -114,47 +115,77 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """It will configure iRODS access"""
 
         if not self.existing_conf:
-            self.irods_host = raw_input('Enter the iRODS Host [{}]: '.format(self.irods_host))
-            self.irods_port = raw_input('Enter the iRODS Port [{}]: '.format(self.irods_port))
-            self.irods_auth_schema = raw_input(
-                'Enter the iRODS Authentication Schema (STANDARD, PAM, GSI or KERBEROS) [{}]: '.format(
-                    self.irods_auth_schema))
-            self.irods_zone = raw_input('Enter the iRODS Zone [{}]: '.format(self.irods_zone))
-            self.irods_user = raw_input('Enter the iRODS Admin User [{}]: '.format(self.irods_user))
-            self.irods_pwd = getpass.getpass('Enter the iRODS Admin Password (it will not be displayed): ')
+            for _, spec in IRODS_PROPS_SPEC.items():
 
-        print 'Testing iRODS connection...'
+                input_method = spec.get('input_method', raw_input)
+                response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
+                response = response if response else spec['default']
+
+                if 'values' in spec and response not in spec['values']:
+                    raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
+
+                self.irods_props[spec['name']] = response
+
         self._test_irods_connection()
-        log('iRODS connection successful.')
+
+        self.irods_props[IRODS_PROPS_SPEC['password']['name']] = IRODS_PROPS_SPEC['password']['cast'](
+            self.irods_props[IRODS_PROPS_SPEC['password']['name']])
+
+        self._write_irods_properties_to_file()
 
     def config_database(self):
         """It will configure database access"""
 
         if not self.existing_conf:
-            self.db_host = raw_input('Enter the Metalnx Database Host [{}]: '.format(self.db_host))
-            self.db_type = raw_input(
-                'Enter the Metalnx Database type (mysql or postgresql) [{}]: '.format(self.db_type))
-            self.db_port = raw_input('Enter the Metalnx Database port [{}]: '.format(self.db_port))
-            self.db_name = raw_input('Enter the Metalnx Database Name [{}]: '.format(self.db_name))
-            self.db_user = raw_input('Enter the Metalnx Database User [{}]: '.format(self.db_user))
-            self.db_pwd = getpass.getpass('Enter the Metalnx Database Password (it will not be displayed): ')
+            db_type = raw_input('Enter the Metalnx Database type (mysql or postgresql): ')
 
-            log('Testing {} database connection...'.format(self.db_type))
-            self._test_database_connection()
-            log('Database connection successful.')
+            for _, spec in DB_PROPS_SPEC.items():
+                input_method = spec.get('input_method', raw_input)
+                response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
+                response = response if response else spec['default']
 
-            self._write_db_properties_to_file()
+                if 'values' in spec and response not in spec['values']:
+                    raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
+
+                self.db_props[spec['name']] = response
+
+        # Database URL connection
+        db_url = DB_TYPE_SPEC['url']['cast'](
+            db_type,
+            self.db_props[DB_PROPS_SPEC['host']['name']],
+            self.db_props[DB_PROPS_SPEC['port']['name']],
+            self.db_props[DB_PROPS_SPEC['db_name']['name']]
+        )
+
+        self.db_props[DB_TYPE_SPEC['url']['name']] = db_url
+        self.db_props.update(DB_TYPE_SPEC[db_type])
+
+        # Hibernate config params
+        self.db_props.update(HIBERNATE_CONFIG[db_type])
+        self.db_props.update(HIBERNATE_CONFIG['options'])
+
+        self._test_database_connection(db_type)
+
+        # props used to build the DB url connection but do not exist in the database properties file
+        del self.db_props[DB_PROPS_SPEC['host']['name']]
+        del self.db_props[DB_PROPS_SPEC['port']['name']]
+        del self.db_props[DB_PROPS_SPEC['db_name']['name']]
+
+        self.db_props[DB_PROPS_SPEC['password']['name']] = DB_PROPS_SPEC['password']['cast'](
+            self.db_props[DB_PROPS_SPEC['password']['name']])
+
+        self._write_db_properties_to_file()
 
     def config_restore_conf(self):
         """Restoring existing Metalnx configuration"""
         if self.existing_conf:
             self._move_properties_files(self.tmp_dir, self.classes_path)
 
-            # Removign temp directory
+            # Removing temp directory
             rmtree(self.tmp_dir)
 
     def config_set_https(self):
-        """Sets HTTPS protocol in Tomcat and Metanlx"""
+        """Sets HTTPS protocol in Tomcat and Metalnx"""
         metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'classes', 'web.xml')
         tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
 
@@ -230,7 +261,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         for step, method in enumerate(INSTALL_STEPS):
             invokable = getattr(self, method)
-            print '[*] Executing {} ({}/{})'.format(method, step + 1, len(INSTALL_STEPS))
+            print '\n[*] Executing {} ({}/{})'.format(method, step + 1, len(INSTALL_STEPS))
             print '   - {}'.format(invokable.__doc__)
 
             try:
