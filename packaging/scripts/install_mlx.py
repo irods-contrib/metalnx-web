@@ -40,7 +40,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_tomcat_home(self):
         """It will ask for your tomcat home directory and checks if it is a valid one"""
-        self.tomcat_home = raw_input('Enter your Tomcat home directory [{}]: '.format(self.tomcat_home))
+        self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
 
         # Getting bin/ and webapps/ dirs for current installation of Tomcat
         self.tomcat_bin_dir = path.join(self.tomcat_home, 'bin')
@@ -55,10 +55,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_metalnx_package(self):
         """It will check if the Metalnx package has been correctly installed"""
-
-        print self.metalnx_war_path
-        print self._is_file_valid(self.metalnx_war_path)
-
         if not self._is_file_valid(self.metalnx_war_path):
             raise Exception('Could not find Metalnx WAR file. Check if emc-metalnx-web package is installed.')
 
@@ -116,7 +112,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         if not self.existing_conf:
             for _, spec in IRODS_PROPS_SPEC.items():
-
                 input_method = spec.get('input_method', raw_input)
                 response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
                 response = response if response else spec['default']
@@ -126,18 +121,18 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
                 self.irods_props[spec['name']] = response
 
-        self._test_irods_connection()
+            self._test_irods_connection()
 
-        self.irods_props[IRODS_PROPS_SPEC['password']['name']] = IRODS_PROPS_SPEC['password']['cast'](
-            self.irods_props[IRODS_PROPS_SPEC['password']['name']])
+            self.irods_props[IRODS_PROPS_SPEC['password']['name']] = IRODS_PROPS_SPEC['password']['cast'](
+                self.irods_props[IRODS_PROPS_SPEC['password']['name']])
 
-        self._write_irods_properties_to_file()
+            self._write_irods_properties_to_file()
 
     def config_database(self):
         """It will configure database access"""
 
         if not self.existing_conf:
-            db_type = raw_input('Enter the Metalnx Database type (mysql or postgresql): ')
+            db_type = read_input('Enter the Metalnx Database type', default='mysql', choices=['mysql', 'postgresql'])
 
             for _, spec in DB_PROPS_SPEC.items():
                 input_method = spec.get('input_method', raw_input)
@@ -149,32 +144,32 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
                 self.db_props[spec['name']] = response
 
-        # Database URL connection
-        db_url = DB_TYPE_SPEC['url']['cast'](
-            db_type,
-            self.db_props[DB_PROPS_SPEC['host']['name']],
-            self.db_props[DB_PROPS_SPEC['port']['name']],
-            self.db_props[DB_PROPS_SPEC['db_name']['name']]
-        )
+            # Database URL connection
+            db_url = DB_TYPE_SPEC['url']['cast'](
+                db_type,
+                self.db_props[DB_PROPS_SPEC['host']['name']],
+                self.db_props[DB_PROPS_SPEC['port']['name']],
+                self.db_props[DB_PROPS_SPEC['db_name']['name']]
+            )
 
-        self.db_props[DB_TYPE_SPEC['url']['name']] = db_url
-        self.db_props.update(DB_TYPE_SPEC[db_type])
+            self.db_props[DB_TYPE_SPEC['url']['name']] = db_url
+            self.db_props.update(DB_TYPE_SPEC[db_type])
 
-        # Hibernate config params
-        self.db_props.update(HIBERNATE_CONFIG[db_type])
-        self.db_props.update(HIBERNATE_CONFIG['options'])
+            # Hibernate config params
+            self.db_props.update(HIBERNATE_CONFIG[db_type])
+            self.db_props.update(HIBERNATE_CONFIG['options'])
 
-        self._test_database_connection(db_type)
+            self._test_database_connection(db_type)
 
-        # props used to build the DB url connection but do not exist in the database properties file
-        del self.db_props[DB_PROPS_SPEC['host']['name']]
-        del self.db_props[DB_PROPS_SPEC['port']['name']]
-        del self.db_props[DB_PROPS_SPEC['db_name']['name']]
+            # props used to build the DB url connection but do not exist in the database properties file
+            del self.db_props[DB_PROPS_SPEC['host']['name']]
+            del self.db_props[DB_PROPS_SPEC['port']['name']]
+            del self.db_props[DB_PROPS_SPEC['db_name']['name']]
 
-        self.db_props[DB_PROPS_SPEC['password']['name']] = DB_PROPS_SPEC['password']['cast'](
-            self.db_props[DB_PROPS_SPEC['password']['name']])
+            self.db_props[DB_PROPS_SPEC['password']['name']] = DB_PROPS_SPEC['password']['cast'](
+                self.db_props[DB_PROPS_SPEC['password']['name']])
 
-        self._write_db_properties_to_file()
+            self._write_db_properties_to_file()
 
     def config_restore_conf(self):
         """Restoring existing Metalnx configuration"""
@@ -186,7 +181,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_set_https(self):
         """Sets HTTPS protocol in Tomcat and Metalnx"""
-        metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'classes', 'web.xml')
+        metalnx_web_xml = path.join(self.classes_path, 'web.xml')
         tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
 
         server_conf = ET.parse(tomcat_server_xml).getroot()
@@ -198,13 +193,15 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         if not is_https:
             log('No HTTPS configuration (Connector) found on Tomcat.')
-            use_https = raw_input('Would you like Metalnx to configure HTTPS on your Tomcat server? [y/n]').lower()
+            use_https = read_input('Set HTTPS on your Tomcat server', default='no', choices=['yes', 'no'])
 
-            if use_https == 'y':
+            if use_https == 'yes':
                 log('Creating keystore for Metalnx...')
 
-                keystore_path = path.join(self.tomcat_webapps_dir, '.metlanx.keystore.')
-                keystore_password = 'abcde1234'
+                log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
+                keystore_path = read_input(
+                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, '.metlanx.keystore.'))
+                keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
 
                 subprocess.check_call([
                     "keytool",
@@ -238,6 +235,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                         ciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA\" />
                 """.format(keystore_path, keystore_password)
 
+                self._backup_files(tomcat_server_xml)
                 subprocess.check_call([
                     'sed', '-i',
                     's|<Connector.*port=\"8443\".*|-->{}<\!--|'.format(connector_spec.replace('\n', ' ')),
@@ -252,6 +250,8 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             r = mlx_web.getroot()
             r.find('security-constraint').find('user-data-constraint') \
                 .find('transport-guarantee').text = 'CONFIDENTIAL'
+
+            self._backup_files(metalnx_web_xml)
             mlx_web.write(metalnx_web_xml)
 
     def run(self):

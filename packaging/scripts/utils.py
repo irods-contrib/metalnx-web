@@ -1,8 +1,10 @@
 import base64
 import re
 import subprocess
+from datetime import datetime
 from os import path, listdir, rename
 from os.path import devnull
+from shutil import copy
 
 import MySQLdb as mysql
 import psycopg2 as postgres
@@ -22,6 +24,58 @@ def banner():
 
 def encode_password(pwd):
     return base64.b64encode(pwd)
+
+
+def read_input(question, default=None, hidden=False, choices=None, allow_empty=False, max_iterations=2):
+    """
+    Auxiliary function to wrap the input capture and validate it against
+    specified parameters.
+    """
+
+    if hidden and choices:
+        raise Exception('Cannot set choices with hidden inputs.')
+
+    if choices is not None and not isinstance(choices, list):
+        raise Exception('The \'choices\' parameter must be a list.')
+
+    if default and allow_empty:
+        raise Exception('Cannot allow empty and set a default value.')
+
+    if default and choices and default not in choices:
+        raise Exception('Default value must be among choices')
+
+    if choices:
+        question = '{} ({})'.format(question, ', '.join(choices))
+
+    if default:
+        question = '{} [{}]'.format(question, default)
+
+    read_method = raw_input
+    if hidden:
+        read_method = getpass.getpass
+        hidden_alert = '(it will not be displayled)'
+        question = '{} {}'.format(question, hidden_alert)
+
+    question += ': '
+
+    iter = 0
+    while iter < max_iterations:
+        user_input = read_method(question)
+        if not user_input:
+            if default:
+                return default
+            elif allow_empty:
+                return user_input
+            else:
+                log('Invalid input: There is no default value defined for this parameter. Try again.')
+        else:
+            if choices and user_input in choices:
+                return user_input
+            else:
+                log('Invalid input: unknown option. Check the options and try again.')
+        max_iterations += 1
+
+    raise Exception('Too many tries. Please restart the configuration script.')
 
 
 class MetalnxConfigParser(object):
@@ -110,10 +164,32 @@ class FileManipulationMixin:
         return path.exists(f) and path.isfile(f)
 
     def _move_properties_files(self, origin, to):
+        """Move properties files to specified dir"""
         files_in_dir = listdir(origin)
         for f in files_in_dir:
             if f.endswith('.properties'):
                 rename(path.join(origin, f), path.join(to, f))
+
+    def _backup_files(self, files):
+        """Adds a timestamp to the file name"""
+
+        def backup_file(file):
+            """
+            Auxiliary function that creates a new copy of the fiven file
+            with the timestamp appended to it.
+            """
+            log('Backing up file [{}]'.format(file))
+            d = path.dirname(file)
+            file_name = path.basename(file)
+            new_file_name = '{}.{}'.format(file_name, datetime.now().strftime('%Y%m%d-%H%M%S'))
+            new_path = path.join(d, new_file_name)
+            copy(file, new_path)
+
+        if isinstance(files, list):
+            for f in files:
+                backup_file(f)
+        else:
+            backup_file(file)
 
     def _write_properties_to_file(self, path, props):
         """Write properties into a file"""
