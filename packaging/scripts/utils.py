@@ -214,7 +214,6 @@ class FileManipulationMixin:
 
             for prop_name, prop_val in self.db_props.items():
                 mcp.set(prop_name, prop_val)
-                log('\tProp {} = {} written.'.format(prop_name, prop_val))
 
             mcp.write()
 
@@ -229,7 +228,6 @@ class FileManipulationMixin:
 
             for prop_name, prop_val in self.irods_props.items():
                 mcp.set(prop_name, prop_val)
-                log('\tProp {} = {} written.'.format(prop_name, prop_val))
 
             mcp.write()
 
