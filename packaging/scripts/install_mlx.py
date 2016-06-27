@@ -111,15 +111,14 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """It will configure iRODS access"""
 
         if not self.existing_conf:
-            for _, spec in IRODS_PROPS_SPEC.items():
-                input_method = spec.get('input_method', raw_input)
-                response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
-                response = response if response else spec['default']
-
-                if 'values' in spec and response not in spec['values']:
-                    raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
-
-                self.irods_props[spec['name']] = response
+            for key, spec in sorted(IRODS_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
+                self.irods_props[spec['name']] = read_input(
+                    'Enter {}'.format(spec['desc']),
+                    default=spec.get('default', None),
+                    hidden='password' == key,
+                    choices=spec.get('values', None),
+                    allow_empty='password' == key
+                )
 
             self._test_irods_connection()
 
@@ -134,23 +133,14 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         if not self.existing_conf:
             db_type = read_input('Enter the Metalnx Database type', default='mysql', choices=['mysql', 'postgresql'])
 
-            for key, spec in DB_PROPS_SPEC.items():
+            for key, spec in sorted(DB_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
                 self.db_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec['default'],
-                    hidden=True if 'password' == key else False,
-                    choices=spec['values'] if 'values' in spec else None,
-                    allow_empty=True if 'password' == key else False
+                    default=spec.get('default', None),
+                    hidden='password' == key,
+                    choices=spec.get('values', None),
+                    allow_empty='password' == key
                 )
-
-                # input_method = spec.get('input_method', raw_input)
-                # response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
-                # response = response if response else spec['default']
-
-                # if 'values' in spec and response not in spec['values']:
-                # raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
-
-                #self.db_props[spec['name']] = response
 
             # Database URL connection
             db_url = DB_TYPE_SPEC['url']['cast'](

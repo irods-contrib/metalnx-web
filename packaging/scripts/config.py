@@ -36,35 +36,41 @@ IRODS_PROPS_SPEC = {
     'host': {
         'name': 'irods.host',
         'desc': 'iRODS Host',
-        'default': 'localhost'
+        'default': 'localhost',
+        'order': 1
     },
     'port': {
         'name': 'irods.port',
         'desc': 'iRODS Port',
-        'default': '1247'
+        'default': '1247',
+        'order': 2
     },
     'zone': {
         'name': 'irods.zoneName',
         'desc': 'iRODS Zone',
-        'default': 'tempZone'
+        'default': 'tempZone',
+        'order': 3
     },
     'auth_scheme': {
         'name': 'irods.auth.scheme',
         'values': ['STANDARD', 'GSI', 'PAM', 'KERBEROS'],
         'desc': 'Authentication Schema',
-        'default': 'STANDARD'
+        'default': 'STANDARD',
+        'order': 4
     },
     'user': {
         'name': 'jobs.irods.username',
         'desc': 'iRODS Admin User',
-        'default': 'rods'
+        'default': 'rods',
+        'order': 5
     },
     'password': {
         'name': 'jobs.irods.password',
-        'desc': 'iRODS Admin Password (it will not be displayed)',
+        'desc': 'iRODS Admin Password',
         'default': '',
         'input_method': getpass.getpass,
-        'cast': encode_password
+        'cast': encode_password,
+        'order': 6
     }
 }
 
@@ -87,29 +93,34 @@ DB_PROPS_SPEC = {
     'host': {
         'name': 'db.host',
         'desc': 'Metalnx Database Host',
-        'default': 'localhost'
+        'default': 'localhost',
+        'order': 1
     },
     'port': {
         'name': 'db.port',
         'desc': 'Metalnx Database Port',
-        'default': '3306'
+        'default': '3306',
+        'order': 2
     },
     'db_name': {
         'name': 'db.db_name',
         'desc': 'Metalnx Database Name',
-        'default': 'metalnx'
+        'default': 'metalnx',
+        'order': 3
     },
     'user': {
         'name': 'db.username',
         'desc': 'Metalnx Database User',
-        'default': 'metalnx'
+        'default': 'metalnx',
+        'order': 4
     },
     'password': {
         'name': 'db.password',
-        'desc': 'Metalnx Database Password (it will not be displayed)',
+        'desc': 'Metalnx Database Password',
         'default': '',
         'input_method': getpass.getpass,
-        'cast': encode_password
+        'cast': encode_password,
+        'order': 5
     }
 }
 
