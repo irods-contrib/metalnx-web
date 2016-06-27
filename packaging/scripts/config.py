@@ -1,5 +1,6 @@
 import getpass
 from base64 import b64encode
+from socket import gethostname
 
 
 def encode_password(pwd):
@@ -14,6 +15,9 @@ DATABASE_PROPS_FILENAME = 'database.properties'
 
 POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
+
+GITHUB_URL = 'https://github.com/sgworth/metalnx-web'
+MLX_URL = 'http://{}:8080/emc-metalnx-web/login'.format(gethostname())
 
 HIBERNATE_CONFIG = {
     MYSQL: {
@@ -116,11 +120,14 @@ DB_PROPS_SPEC = {
 INSTALL_STEPS = [
     'config_java_devel',
     'config_tomcat_home',
+    'config_tomcat_shutdown',
     'config_metalnx_package',
     'config_existing_setup',
     'config_war_file',
     'config_database',
     'config_irods',
     'config_restore_conf',
-    'config_set_https'
+    'config_set_https',
+    'config_tomcat_startup',
+    'config_displays_summary',
 ]
