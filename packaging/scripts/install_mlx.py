@@ -215,21 +215,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                     'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, 'metlanx.keystore'))
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
 
-                log('[DEBUG] {} {}'.format(keystore_path, keystore_password))
-
-                log('[DEBUG] {}'.format([
-                    "keytool",
-                    "-genkey",
-                    "-keysize", "2048",
-                    "-noprompt",
-                    "-alias", "metalnx-tomcat",
-                    "-dname", "CN=MetaLnx Tester, OU=home, O=home, L=Campinas, ST=SP, C=BR",
-                    "-keyalg", "RSA",
-                    "-keystore", keystore_path,
-                    "-storepass", keystore_password,
-                    "-keypass", keystore_password
-                ]))
-
                 subprocess.check_call([
                     "keytool",
                     "-genkey",
@@ -242,8 +227,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                     "-storepass", keystore_password,
                     "-keypass", keystore_password
                 ])
-
-                log('EXECUTOU')
 
                 log('Changing server.xml in Tomcat configuration files...')
                 connector_spec = """
