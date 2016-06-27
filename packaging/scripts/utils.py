@@ -1,3 +1,4 @@
+import base64
 import re
 import subprocess
 from os import path, listdir, rename
@@ -19,14 +20,16 @@ def banner():
     return '#' * len(main_line) + '\n' + main_line + '\n' + '#' * len(main_line)
 
 
-class MetalnxConfigParser(object):
-    def __init__(self, db_type, fp):
+def encode_password(pwd):
+    return base64.b64encode(pwd)
+
+
+class MetalnxConfigParser:
+    def __init__(self, fp):
         self.fp = fp
         self.prop_file_content = self.fp.read()
         self.fp.seek(0)
-
-        self.options_dict = HIBERNATE_CONFIG[db_type]
-        self.options_dict.update(HIBERNATE_CONFIG['options'])
+        self.options_dict = {}
 
     def set(self, option, value):
         self.options_dict[option] = value
@@ -127,11 +130,13 @@ class FileManipulationMixin:
 
         log('Creating Database properties file...')
 
-        with open(self.metalnx_db_properties_path, 'r+') as dbpf:
-            mcp = MetalnxConfigParser(self.db_type, dbpf)
-            mcp.set('db.username', self.db_user)
-            mcp.set('db.password', IRODSConnectionTestMixin._encode_password(self.db_pwd))
-            mcp.set('db.url', 'jdbc:{}://{}:{}/{}'.format(self.db_type, self.db_host, self.db_port, self.db_name))
+        with open(path.join(self.classes_path, DATABASE_PROPS_FILENAME), 'r+') as dbpf:
+            mcp = MetalnxConfigParser(dbpf)
+
+            for prop_name, prop_val in self.db_props.items():
+                mcp.set(prop_name, prop_val)
+                log('\tProp {} = {} written.'.format(prop_name, prop_val))
+
             mcp.write()
 
         log('Database properties file created.')
@@ -140,12 +145,12 @@ class FileManipulationMixin:
         """Write iRODS properties into a file"""
         log('Creating iRODS properties file...')
 
-        with open(self.metalnx_irods_properties_path, 'r+') as ipf:
-            mcp = MetalnxConfigParser(POSTGRESQL, ipf)
+        with open(path.join(self.classes_path, IRODS_PROPS_FILENAME), 'r+') as ipf:
+            mcp = MetalnxConfigParser(ipf)
 
-            for k, spec in IRODS_PROPS_SPEC.items():
-                prop_val = spec.get('cast', str)(self.irods_props[spec['name']])
-                mcp.set(spec['name'], prop_val)
+            for prop_name, prop_val in self.irods_props.items():
+                mcp.set(prop_name, prop_val)
+                log('\tProp {} = {} written.'.format(prop_name, prop_val))
 
             mcp.write()
 

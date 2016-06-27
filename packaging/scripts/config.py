@@ -9,6 +9,9 @@ def encode_password(pwd):
 
 TEST_CONNECTION_JAR = 'test-connection.jar'
 
+IRODS_PROPS_FILENAME = 'irods.environment.properties'
+DATABASE_PROPS_FILENAME = 'database.properties'
+
 POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
 
@@ -111,12 +114,12 @@ DB_PROPS_SPEC = {
 }
 
 INSTALL_STEPS = [
-    # "config_java_devel",
-    # "config_tomcat_home",
-    # "config_metalnx_package",
-    # "config_existing_setup",
-    # "config_war_file",
-    "config_database"
-    # "config_irods",
-    # "config_restore_conf"
+    "config_java_devel",
+    "config_tomcat_home",
+    "config_metalnx_package",
+    "config_existing_setup",
+    "config_war_file",
+    "config_database",
+    "config_irods",
+    "config_restore_conf"
 ]
