@@ -172,23 +172,23 @@ class FileManipulationMixin:
     def _backup_files(self, files):
         """Adds a timestamp to the file name"""
 
-        def backup_file(file):
+        def backup_file(file_path):
             """
             Auxiliary function that creates a new copy of the fiven file
             with the timestamp appended to it.
             """
-            log('Backing up file [{}]'.format(file))
-            d = path.dirname(file)
-            file_name = path.basename(file)
+            log('Backing up file [{}]'.format(file_path))
+            d = path.dirname(file_path)
+            file_name = path.basename(file_path)
             new_file_name = '{}.{}'.format(file_name, datetime.now().strftime('%Y%m%d-%H%M%S'))
             new_path = path.join(d, new_file_name)
-            copy(file, new_path)
+            copy(file_path, new_path)
 
         if isinstance(files, list):
             for f in files:
                 backup_file(f)
         else:
-            backup_file(file)
+            backup_file(files)
 
     def _write_properties_to_file(self, path, props):
         """Write properties into a file"""

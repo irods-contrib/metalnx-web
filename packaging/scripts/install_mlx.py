@@ -181,7 +181,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_set_https(self):
         """Sets HTTPS protocol in Tomcat and Metalnx"""
-        metalnx_web_xml = path.join(self.classes_path, 'web.xml')
+        metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'web.xml')
         tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
 
         log('[DEBUG] Metalnx WEB file: {}'.format(metalnx_web_xml))
@@ -242,24 +242,23 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                         ciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA\" />
                 """.format(keystore_path, keystore_password)
 
-                self._backup_files(tomcat_server_xml)
+                new_path = path.join(self.tomcat_home, 'conf', 'server.xml')
+                self._backup_files(new_path)
                 subprocess.check_call([
                     'sed', '-i',
                     's|<Connector.*port=\"8443\".*|-->{}<\!--|'.format(connector_spec.replace('\n', ' ')),
-                    tomcat_server_xml
+                    new_path
                 ])
 
                 is_https = True
 
         if is_https:
             log('Setting <security-contraint> in Metalnx...')
-            mlx_web = ET.parse(metalnx_web_xml)
-            r = mlx_web.getroot()
-            r.find('security-constraint').find('user-data-constraint') \
-                .find('transport-guarantee').text = 'CONFIDENTIAL'
-
             self._backup_files(metalnx_web_xml)
-            mlx_web.write(metalnx_web_xml)
+            subprocess.check_call([
+                'sed', '-i',
+                's|>NONE<|>CONFIDENTIAL<|', metalnx_web_xml
+            ])
 
     def run(self):
         """Runs Metalnx configuration"""
