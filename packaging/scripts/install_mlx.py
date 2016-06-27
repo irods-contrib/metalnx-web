@@ -274,9 +274,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
     def config_displays_summary(self):
         """Metalnx configuration finished"""
         print
-        print '\033[44mMetalnx configuration finished successfully!\033[0m'
-        print 'You can access your Metalnx instance at {}'.format(MLX_URL)
-        print 'For further information and help, refer to {}'.format(GITHUB_URL)
+        print '\033[92mMetalnx configuration finished successfully!\033[0m'
+        print 'You can access your Metalnx instance at:\n    \033[4m{}\033[0m\n'.format(MLX_URL)
+        print 'For further information and help, refer to:\n    \033[4m{}\033[0m\n'.format(GITHUB_URL)
         print
 
     def run(self):
@@ -296,6 +296,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                 print '\033[31m[ERROR]: {}\033[0m'.format(e)
                 sys.exit(-1)
 
+        print '\033[44m               Copyright 2015-16 EMC Corporation               \033[0m'
         sys.exit(0)
 
 
