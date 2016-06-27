@@ -273,13 +273,11 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_displays_summary(self):
         """Metalnx configuration finished"""
-        bar = '#' * 100
         print
-        print bar
-        print '# Metalnx configuration finished successfully!'
-        print '# You can access your Metalnx instance at {}'.format(MLX_URL)
-        print '# For further information and help, refer to {}'.format(GITHUB_URL)
-        print bar
+        print '\033[44mMetalnx configuration finished successfully!\033[0m'
+        print 'You can access your Metalnx instance at {}'.format(MLX_URL)
+        print 'For further information and help, refer to {}'.format(GITHUB_URL)
+        print
 
     def run(self):
         """Runs Metalnx configuration"""
@@ -288,13 +286,14 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         for step, method in enumerate(INSTALL_STEPS):
             invokable = getattr(self, method)
-            print '\n[*] Executing {} ({}/{})'.format(method, step + 1, len(INSTALL_STEPS))
+            print '\n\033[1m[*] Executing \033[32m{}\033[0m\033[1m ({}/{})\033[0m'.format(method, step + 1,
+                                                                                          len(INSTALL_STEPS))
             print '   - {}'.format(invokable.__doc__)
 
             try:
                 invokable()
             except Exception as e:
-                print '[ERROR]: {}'.format(e)
+                print '\033[31m[ERROR]: {}\033[0m'.format(e)
                 sys.exit(-1)
 
         sys.exit(0)

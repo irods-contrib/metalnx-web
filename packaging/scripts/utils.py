@@ -18,8 +18,8 @@ def log(msg):
 
 def banner():
     """Returns banner string for the configuration script"""
-    main_line = '#          Metalnx Installation Script        #'
-    return '#' * len(main_line) + '\n' + main_line + '\n' + '#' * len(main_line)
+    main_line = '                     Metalnx Installation Script                   '
+    return '\033[44m' + ' ' * len(main_line) + '\n' + main_line + '\n' + ' ' * len(main_line) + '\033[0m'
 
 
 def encode_password(pwd):
