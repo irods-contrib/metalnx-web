@@ -134,15 +134,23 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         if not self.existing_conf:
             db_type = read_input('Enter the Metalnx Database type', default='mysql', choices=['mysql', 'postgresql'])
 
-            for _, spec in DB_PROPS_SPEC.items():
-                input_method = spec.get('input_method', raw_input)
-                response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
-                response = response if response else spec['default']
+            for key, spec in DB_PROPS_SPEC.items():
+                self.db_props[spec['name']] = read_input(
+                    'Enter {}'.format(spec['desc']),
+                    default=spec['default'],
+                    hidden=True if 'password' == key else False,
+                    choices=spec['values'] if 'values' in spec else None,
+                    allow_empty=True if 'password' == key else False
+                )
 
-                if 'values' in spec and response not in spec['values']:
-                    raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
+                # input_method = spec.get('input_method', raw_input)
+                # response = input_method('Enter {} [{}]: '.format(spec['desc'], spec['default']))
+                # response = response if response else spec['default']
 
-                self.db_props[spec['name']] = response
+                # if 'values' in spec and response not in spec['values']:
+                # raise Exception('The {} must be {}'.format(spec['desc'], ', '.join(spec['values'])))
+
+                #self.db_props[spec['name']] = response
 
             # Database URL connection
             db_url = DB_TYPE_SPEC['url']['cast'](
