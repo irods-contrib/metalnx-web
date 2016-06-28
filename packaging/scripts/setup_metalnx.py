@@ -1,11 +1,24 @@
 #!/usr/bin/python
+#	Copyright (c) 2015-2016, EMC Corporation
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 import sys
 from os import mkdir, getcwd, chdir, remove
 from shutil import rmtree, copyfile
 from tempfile import mkdtemp
 from xml.etree import ElementTree as ET
 
-from utils import *
+from lib.utils import *
 
 
 class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipulationMixin):
@@ -204,7 +217,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
                 if not self._is_file_valid(self.keytool_path):
                     raise Exception(
-                        'Java devel package is not installed correctly. ' \
+                        'Java devel package is not installed correctly. '
                         'Metalnx could not find the \'keytool\' binary.'
                     )
 
