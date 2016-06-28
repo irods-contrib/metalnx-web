@@ -17,6 +17,18 @@
 
 package com.emc.metalnx.context;
 
+import java.io.UnsupportedEncodingException;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Properties;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -24,12 +36,11 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.util.Base64Utils;
 
-import java.util.*;
-
 public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
 
     private static final String PROPERTIES_TO_BE_DECODED = "encoded.properties";
     private static final String DEFAULT_ENCODED_FIELDS = "db.password,jobs.irods.password";
+    private static final String PWD_SALT = "!M3t4Lnx@1234";
 
     private static final Logger logger = LoggerFactory.getLogger(EncodedPropertiesConfigurer.class);
 
@@ -50,11 +61,46 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
      *
      * @param currentValue the current password value
      * @return {@link String} decoded password
+     * @throws UnsupportedEncodingException 
      */
     private String decodePassword(String currentValue) {
         logger.debug("Decoding value [{}]", currentValue);
-        return new String(Base64Utils.decodeFromString(currentValue));
+        
+        String pwd = "";
+        
+        try {
+			Integer key = getKey();
+			
+			String encodedString = new String(Base64Utils.decodeFromString(currentValue), "US-ASCII");
+			
+			for(byte b: encodedString.getBytes()) { 
+			    pwd += (char) ((b ^ key) & 0xFF);
+			}
+			
+		} catch (UnknownHostException e) {
+			logger.error("Could not get machine's hostname at start up.");
+		} catch (NoSuchAlgorithmException e) {
+			logger.error("Could not get a MD5 algorithm at start up.");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Encoding not supported (US_ASCII).");
+		}
+        
+        return pwd;
     }
+
+	private Integer getKey() throws UnknownHostException,
+			NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		String s = PWD_SALT + Inet4Address.getLocalHost().getHostName();
+		
+		Integer key = 0;
+		byte[] digestedBytes = md5.digest(s.getBytes());
+		for (byte b : digestedBytes) {
+			key += Integer.valueOf(b & 0xFF);
+		}
+		
+		return key;
+	}
 
     /**
      * Returns the name of the encoded properties on the configuration
@@ -72,7 +118,7 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
 
         // Filtering out all the invalid property names
         Set<String> propertyNames = props.stringPropertyNames();
-        ListIterator lit = properties.listIterator();
+        ListIterator<String> lit = properties.listIterator();
 
         while (lit.hasNext()) {
             String currentPropName = (String) lit.next();
