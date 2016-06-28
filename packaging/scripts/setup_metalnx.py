@@ -307,8 +307,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             except Exception as e:
                 print '\033[31m[ERROR]: {}\033[0m'.format(e)
                 sys.exit(-1)
-
-        print '\033[44m               Copyright 2015-16 EMC Corporation               \033[0m'
         sys.exit(0)
 
 

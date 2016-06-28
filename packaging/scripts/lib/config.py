@@ -12,13 +12,18 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import getpass
+from base64 import b64encode
 from hashlib import md5
 from socket import gethostname
 
+SALT = '!M3t4Lnx@1234'
+
 
 def encode_password(pwd):
-    def pick_key():
-        s = md5(u'{}{}'.format('!M3t4Lnx@1234', gethostname()).encode('utf8')).digest()
+    """Encodes password"""
+
+    def pick_key(hostname):
+        s = md5(u'{}{}'.format(SALT, hostname)).digest()
         return sum([ord(c) for c in s])
 
     def encode(s, k):
@@ -27,7 +32,7 @@ def encode_password(pwd):
             r += chr((ord(c) ^ k) % 256)
         return r
 
-    return encode(pwd, pick_key())
+    return b64encode(encode(pwd, pick_key(gethostname())))
 
 
 RELEASE_VERSION = '1.0'
