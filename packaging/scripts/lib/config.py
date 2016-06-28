@@ -12,13 +12,22 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import getpass
-from base64 import b64encode
+from hashlib import md5
 from socket import gethostname
 
 
 def encode_password(pwd):
-    """Encodes the given password"""
-    return b64encode(pwd)
+    def pick_key():
+        s = md5(u'{}{}'.format('!M3t4Lnx@1234', gethostname()).encode('utf8')).digest()
+        return sum([ord(c) for c in s])
+
+    def encode(s, k):
+        r = ''
+        for c in s:
+            r += chr((ord(c) ^ k) % 256)
+        return r
+
+    return encode(pwd, pick_key())
 
 
 RELEASE_VERSION = '1.0'
@@ -56,38 +65,38 @@ IRODS_PROPS_SPEC = {
     'host': {
         'name': 'irods.host',
         'desc': 'iRODS Host',
-        'default': 'localhost',
+        'default': lambda c: 'localhost',
         'order': 1
     },
     'port': {
         'name': 'irods.port',
         'desc': 'iRODS Port',
-        'default': '1247',
+        'default': lambda c: '1247',
         'order': 2
     },
     'zone': {
         'name': 'irods.zoneName',
         'desc': 'iRODS Zone',
-        'default': 'tempZone',
+        'default': lambda c: 'tempZone',
         'order': 3
     },
     'auth_scheme': {
         'name': 'irods.auth.scheme',
         'values': ['STANDARD', 'GSI', 'PAM', 'KERBEROS'],
         'desc': 'Authentication Schema',
-        'default': 'STANDARD',
+        'default': lambda c: 'STANDARD',
         'order': 4
     },
     'user': {
         'name': 'jobs.irods.username',
         'desc': 'iRODS Admin User',
-        'default': 'rods',
+        'default': lambda c: 'rods',
         'order': 5
     },
     'password': {
         'name': 'jobs.irods.password',
         'desc': 'iRODS Admin Password',
-        'default': '',
+        'default': lambda c: '',
         'input_method': getpass.getpass,
         'cast': encode_password,
         'order': 6
@@ -113,31 +122,31 @@ DB_PROPS_SPEC = {
     'host': {
         'name': 'db.host',
         'desc': 'Metalnx Database Host',
-        'default': 'localhost',
+        'default': lambda c: 'localhost',
         'order': 1
     },
     'port': {
         'name': 'db.port',
         'desc': 'Metalnx Database Port',
-        'default': '3306',
+        'default': lambda c: '3306' if c == 'mysql' else '5432',
         'order': 2
     },
     'db_name': {
         'name': 'db.db_name',
         'desc': 'Metalnx Database Name',
-        'default': 'metalnx',
+        'default': lambda c: 'metalnx',
         'order': 3
     },
     'user': {
         'name': 'db.username',
         'desc': 'Metalnx Database User',
-        'default': 'metalnx',
+        'default': lambda c: 'metalnx',
         'order': 4
     },
     'password': {
         'name': 'db.password',
         'desc': 'Metalnx Database Password',
-        'default': '',
+        'default': lambda c: '',
         'input_method': getpass.getpass,
         'cast': encode_password,
         'order': 5

@@ -135,7 +135,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             for key, spec in sorted(IRODS_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
                 self.irods_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec.get('default', None),
+                    default=spec.get('default', None)(None),
                     hidden='password' == key,
                     choices=spec.get('values', None),
                     allow_empty='password' == key
@@ -153,11 +153,10 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         if not self.existing_conf:
             db_type = read_input('Enter the Metalnx Database type', default='mysql', choices=['mysql', 'postgresql'])
-
             for key, spec in sorted(DB_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
                 self.db_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec.get('default', None),
+                    default=spec.get('default', None)(db_type),
                     hidden='password' == key,
                     choices=spec.get('values', None),
                     allow_empty='password' == key

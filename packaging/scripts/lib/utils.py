@@ -11,7 +11,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-import base64
 import re
 import subprocess
 from datetime import datetime
@@ -33,10 +32,6 @@ def banner():
     """Returns banner string for the configuration script"""
     main_line = ' ' * 21 + 'Metalnx Installation Script v{}-{}'.format(RELEASE_VERSION, BUILD_NUMBER) + ' ' * 21
     return '\033[44m' + ' ' * len(main_line) + '\n' + main_line + '\n' + ' ' * len(main_line) + '\033[0m'
-
-
-def encode_password(pwd):
-    return base64.b64encode(pwd)
 
 
 def read_input(question, default=None, hidden=False, choices=None, allow_empty=False, max_iterations=2):
