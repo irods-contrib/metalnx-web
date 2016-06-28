@@ -88,11 +88,23 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.classes_path = path.join(metalnx_path, 'WEB-INF', 'classes')
 
         if self._is_dir_valid(metalnx_path) and self._is_dir_valid(self.classes_path):
-            log('Detected current installation of Metalnx. Saving current configuration for further restoring.')
+            log('Detected current installation of Metalnx.')
+
+            # Asking user if he wants to keep the current configuration
+            conf = read_input(
+                'Do you wish to use the current setup instead of creating a new one?',
+                choices=['yes', 'no'],
+                default='yes'
+            )
+
+            if conf == 'no':
+                rmtree(path.join(self.tomcat_webapps_dir, 'emc-metalnx-web'))
+                return True
+
+            self.existing_conf = True
 
             # Creating temporary directory for backup
             self.tmp_dir = mkdtemp()
-            self.existing_conf = True
             self._move_properties_files(self.classes_path, self.tmp_dir)
         else:
             log('No environment detected. Setting up a new Metalnx instance.')
