@@ -20,6 +20,7 @@ package com.emc.metalnx.context;
 import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -61,19 +62,19 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
      *
      * @param currentValue the current password value
      * @return {@link String} decoded password
-     * @throws UnsupportedEncodingException 
      */
     private String decodePassword(String currentValue) {
         logger.debug("Decoding value [{}]", currentValue);
         
         String pwd = "";
-        
+        Integer key = 0;
+
         try {
-			Integer key = getKey();
+			key = getKey();
 			
-			String encodedString = new String(Base64Utils.decodeFromString(currentValue), "US-ASCII");
-			
-			for(byte b: encodedString.getBytes()) { 
+			String encodedString = new String(Base64Utils.decodeFromString(currentValue), StandardCharsets.US_ASCII);
+
+			for(byte b: encodedString.getBytes(StandardCharsets.US_ASCII)) {
 			    pwd += (char) ((b ^ key) & 0xFF);
 			}
 			
@@ -84,19 +85,27 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Encoding not supported (US_ASCII).");
 		}
-        
+
         return pwd;
     }
 
 	private Integer getKey() throws UnknownHostException,
 			NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md5 = MessageDigest.getInstance("MD5");
-		String s = PWD_SALT + Inet4Address.getLocalHost().getHostName();
+
+        String hostname = Inet4Address.getLocalHost().getHostName();
+
+        // Using only FQDN
+        if (hostname.contains(".")) {
+            hostname = hostname.substring(0, hostname.indexOf("."));
+        }
+
+        String s = PWD_SALT + hostname;
 		
 		Integer key = 0;
 		byte[] digestedBytes = md5.digest(s.getBytes());
 		for (byte b : digestedBytes) {
-			key += Integer.valueOf(b & 0xFF);
+			key += b & 0xFF;
 		}
 		
 		return key;

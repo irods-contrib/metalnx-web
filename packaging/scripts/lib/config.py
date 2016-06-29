@@ -23,14 +23,12 @@ def encode_password(pwd):
     """Encodes password"""
 
     def pick_key(hostname):
+        hostname = hostname.split('.')[0]
         s = md5(u'{}{}'.format(SALT, hostname)).digest()
         return sum([ord(c) for c in s])
 
     def encode(s, k):
-        r = ''
-        for c in s:
-            r += chr((ord(c) ^ k) % 256)
-        return r
+        return ''.join([chr((ord(c) ^ k) % 256) for c in s])
 
     return b64encode(encode(pwd, pick_key(gethostname())))
 
@@ -46,7 +44,7 @@ DATABASE_PROPS_FILENAME = 'database.properties'
 POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
 
-GITHUB_URL = 'https://github.com/sgworth/metalnx-web'
+GITHUB_URL = 'https://github.com/Metalnx/metalnx-web'
 MLX_URL = 'http://{}:8080/emc-metalnx-web/login/'.format(gethostname())
 
 HIBERNATE_CONFIG = {
