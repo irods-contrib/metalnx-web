@@ -31,6 +31,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.tomcat_bin_dir = ''
         self.tomcat_webapps_dir = ''
         self.classes_path = ''
+        self.db_type = MYSQL
 
         # Metalnx config params
         self.metalnx_war_path = '/tmp/emc-tmp/emc-metalnx-web.war'
@@ -143,20 +144,16 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
             self._test_irods_connection()
 
-            self.irods_props[IRODS_PROPS_SPEC['password']['name']] = IRODS_PROPS_SPEC['password']['cast'](
-                self.irods_props[IRODS_PROPS_SPEC['password']['name']])
-
-            self._write_irods_properties_to_file()
-
     def config_database(self):
         """It will configure database access"""
 
         if not self.existing_conf:
-            db_type = read_input('Enter the Metalnx Database type', default='mysql', choices=['mysql', 'postgresql'])
+            self.db_type = read_input('Enter the Metalnx Database type', default='mysql',
+                                      choices=['mysql', 'postgresql'])
             for key, spec in sorted(DB_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
                 self.db_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec.get('default', None)(db_type),
+                    default=spec.get('default', None)(self.db_type),
                     hidden='password' == key,
                     choices=spec.get('values', None),
                     allow_empty='password' == key
@@ -164,30 +161,20 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
             # Database URL connection
             db_url = DB_TYPE_SPEC['url']['cast'](
-                db_type,
+                self.db_type,
                 self.db_props[DB_PROPS_SPEC['host']['name']],
                 self.db_props[DB_PROPS_SPEC['port']['name']],
                 self.db_props[DB_PROPS_SPEC['db_name']['name']]
             )
 
             self.db_props[DB_TYPE_SPEC['url']['name']] = db_url
-            self.db_props.update(DB_TYPE_SPEC[db_type])
+            self.db_props.update(DB_TYPE_SPEC[self.db_type])
 
             # Hibernate config params
-            self.db_props.update(HIBERNATE_CONFIG[db_type])
+            self.db_props.update(HIBERNATE_CONFIG[self.db_type])
             self.db_props.update(HIBERNATE_CONFIG['options'])
 
-            self._test_database_connection(db_type)
-
-            # props used to build the DB url connection but do not exist in the database properties file
-            del self.db_props[DB_PROPS_SPEC['host']['name']]
-            del self.db_props[DB_PROPS_SPEC['port']['name']]
-            del self.db_props[DB_PROPS_SPEC['db_name']['name']]
-
-            self.db_props[DB_PROPS_SPEC['password']['name']] = DB_PROPS_SPEC['password']['cast'](
-                self.db_props[DB_PROPS_SPEC['password']['name']])
-
-            self._write_db_properties_to_file()
+            self._test_database_connection(self.db_type)
 
     def config_restore_conf(self):
         """Restoring existing Metalnx configuration"""
@@ -224,7 +211,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
                 log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
                 keystore_path = read_input(
-                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, 'metlanx.keystore'))
+                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, 'metalnx.keystore'))
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
 
                 subprocess.check_call([
@@ -276,6 +263,53 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                 'sed', '-i',
                 's|>NONE<|>CONFIDENTIAL<|', metalnx_web_xml
             ])
+
+    def config_confirm_props(self):
+        """Confirm configuration parameters"""
+
+        if self.existing_conf:
+            return True
+
+        print '\n\033[1mMetalnx Database Parameters:\033[0m'
+        log('db.type = {}'.format(self.db_type))
+
+        for prop_name, prop_val in self.db_props.items():
+            if prop_name != DB_PROPS_SPEC['password']['name'] \
+                    and prop_name != DB_TYPE_SPEC['url']['name'] \
+                    and prop_name not in DB_TYPE_SPEC[self.db_type].keys() \
+                    and prop_name not in HIBERNATE_CONFIG['options'].keys():
+                log('{} = {}'.format(prop_name, prop_val))
+
+        print
+
+        print '\033[1miRODS Paramaters:\033[0m'
+
+        for prop_name, prop_val in self.irods_props.items():
+            if prop_name != IRODS_PROPS_SPEC['password']['name']:
+                log('{} = {}'.format(prop_name, prop_val))
+
+        setup_conf = read_input(
+            '\n\033[1mDo you accept these configuration paramaters?\033[0m',
+            default='yes',
+            choices=['yes', 'no']
+        )
+
+        if setup_conf == 'no':
+            raise Exception('Metalnx Configuration Setup Aborted.')
+
+        # props used to build the DB url connection but do not exist in the database properties file
+        del self.db_props[DB_PROPS_SPEC['host']['name']]
+        del self.db_props[DB_PROPS_SPEC['port']['name']]
+        del self.db_props[DB_PROPS_SPEC['db_name']['name']]
+
+        self.db_props[DB_PROPS_SPEC['password']['name']] = DB_PROPS_SPEC['password']['cast'](
+            self.db_props[DB_PROPS_SPEC['password']['name']])
+
+        self.irods_props[IRODS_PROPS_SPEC['password']['name']] = IRODS_PROPS_SPEC['password']['cast'](
+            self.irods_props[IRODS_PROPS_SPEC['password']['name']])
+
+        self._write_db_properties_to_file()
+        self._write_irods_properties_to_file()
 
     def config_tomcat_startup(self):
         """Starting tomcat back again"""
