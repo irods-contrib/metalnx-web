@@ -167,6 +167,7 @@ INSTALL_STEPS = [
     'config_irods',
     'config_restore_conf',
     'config_set_https',
+    'config_confirm_props',
     'config_tomcat_startup',
     'config_displays_summary',
 ]
