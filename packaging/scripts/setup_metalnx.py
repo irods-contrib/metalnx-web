@@ -13,6 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import sys
+from argparse import ArgumentParser
 from os import mkdir, getcwd, chdir, remove
 from shutil import rmtree, copyfile
 from tempfile import mkdtemp
@@ -22,7 +23,7 @@ from lib.utils import *
 
 
 class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipulationMixin):
-    def __init__(self):
+    def __init__(self, conf):
         self.jar_path = '/usr/bin/jar'
         self.keytool_path = '/usr/bin/keytool'
 
@@ -38,6 +39,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.metalnx_irods_properties_path = ''
         self.tmp_dir = None
         self.is_https = False
+        self.override_conf = conf.override
 
         # Metalnx properties
         self.irods_props = {}
@@ -90,14 +92,16 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         if self._is_dir_valid(metalnx_path) and self._is_dir_valid(self.classes_path):
             log('Detected current installation of Metalnx.')
 
-            # Asking user if he wants to keep the current configuration
-            conf = read_input(
-                'Do you wish to use the current setup instead of creating a new one?',
-                choices=['yes', 'no'],
-                default='yes'
-            )
+            conf = 'yes'
+            if not self.override_conf:
+                # Asking user if he wants to keep the current configuration
+                conf = read_input(
+                    'Do you wish to use the current setup instead of creating a new one?',
+                    choices=['yes', 'no'],
+                    default='yes'
+                )
 
-            if conf == 'no':
+            if self.override_conf or conf == 'no':
                 rmtree(path.join(self.tomcat_webapps_dir, 'emc-metalnx-web'))
                 return True
 
@@ -322,9 +326,15 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         sys.exit(0)
 
 
-def main():
-    MetalnxContext().run()
+def main(args):
+    MetalnxContext(args).run()
 
 
 if __name__ == '__main__':
-    main()
+    parser = ArgumentParser(description='Installs and configures Metalnx on Tomcat')
+    parser.add_argument(
+        '--override-conf', dest='override', action='store_true', default=False,
+        help='Overrides existing configuration and setup a new profile based on user inputs'
+    )
+    args = parser.parse_args()
+    main(args)
