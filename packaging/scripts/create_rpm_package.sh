@@ -37,7 +37,7 @@ cd $RPMBUILD_DIR/SOURCES
 mkdir -p $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp
 mkdir -p $PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap
 cp $WORKSPACE/src/emc-metalnx-web/target/emc-metalnx-web.war $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp/
-cp $WORKSPACE/packaging/scripts/setup_metalnx.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/setup_metalnx.py
+cp $WORKSPACE/packaging/scripts/setup_metalnx.py $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/setup_metalnx.py
 cp -r $WORKSPACE/packaging/scripts/lib $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
 cp $WORKSPACE/packaging/scripts/usage_information.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/usage_information.sh
 cp $WORKSPACE/contrib/ldap/* $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap/
