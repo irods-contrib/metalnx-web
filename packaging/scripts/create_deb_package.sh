@@ -32,6 +32,11 @@ cp -r $WORKSPACE/packaging/deb/DEBIAN $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$P
 rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_rpm_package.sh
 rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_deb_package.sh
 
+cd $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/
+wget https://tpa-eld1102/job/metalnx-irods-conn-test/lastSuccessfulBuild/artifact/target/metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar
+mv metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar test-connection.jar
+cd -
+
 chmod -R 755 $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/DEBIAN
 sed -i "s/{{VERSION-NUMBER}}/$PROJECT_VERSION/" $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/DEBIAN/control
 sed -i "s/{{BUILD-NUMBER}}/$PROJECT_RELEASE/" $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/DEBIAN/control
