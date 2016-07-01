@@ -52,9 +52,10 @@ ADD ./postgresql.conf /var/lib/pgsql/data/postgresql.conf
 RUN chown -v postgres.postgres /var/lib/pgsql/data/postgresql.conf \
 	&& sed -i "s|ident|trust|g" /var/lib/pgsql/data/pg_hba.conf 
 
-RUN mkdir /usr/share/tomcat/webapps/emc-metalnx-web \
-	&& wget <path-to-metalnx-WAR-file> --no-check-certificate -O /usr/share/tomcat/webapps/emc-metalnx-web/emc-metalnx-web.war \
-	&& cd /usr/share/tomcat/webapps/emc-metalnx-web; jar xvf emc-metalnx-web.war; rm -f emc-metalnx-web.war \
+RUN mkdir /usr/share/tomcat/webapps/emc-metalnx-web
+ADD ./emc-metalnx-web.war /usr/share/tomcat/webapps/emc-metalnx-web/emc-metalnx-web.war
+
+RUN cd /usr/share/tomcat/webapps/emc-metalnx-web; jar xvf emc-metalnx-web.war; rm -f emc-metalnx-web.war \
 	&& cd /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/; rm database.properties; mv postgresql.properties database.properties
 
 EXPOSE 8080
