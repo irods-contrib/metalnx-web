@@ -56,7 +56,7 @@ ADD ./emc-metalnx-web.war /usr/share/tomcat/webapps/emc-metalnx-web/emc-metalnx-
 
 RUN cd /usr/share/tomcat/webapps/emc-metalnx-web; jar xvf emc-metalnx-web.war; rm -f emc-metalnx-web.war \
 	&& cd /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/; rm database.properties; mv postgresql.properties database.properties \
-	&& sed -i "s|db.url=.*|db.url=jdbc:postgresql://localhost:<5432/metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
+	&& sed -i "s|db.url=.*|db.url=jdbc:postgresql://localhost:5432/metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
 	&& sed -i "s|db.username=.*|db.username=metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
 	&& sed -i "s|db.password=.*|db.password=metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
 	&& sed -i "s|encoded.properties=.*|encoded.properties=|" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/security.properties
