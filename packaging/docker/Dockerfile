@@ -1,6 +1,6 @@
-#Copyright (c) 2015-2016, EMC Corporation
+#   Copyright (c) 2015-2016, EMC Corporation
 #
-#Licensed under the Apache License, Version 2.0 (the "License");
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -11,7 +11,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
 
 #############################
 # EMC MetaLnx Web container #
@@ -56,7 +55,11 @@ RUN mkdir /usr/share/tomcat/webapps/emc-metalnx-web
 ADD ./emc-metalnx-web.war /usr/share/tomcat/webapps/emc-metalnx-web/emc-metalnx-web.war
 
 RUN cd /usr/share/tomcat/webapps/emc-metalnx-web; jar xvf emc-metalnx-web.war; rm -f emc-metalnx-web.war \
-	&& cd /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/; rm database.properties; mv postgresql.properties database.properties
+	&& cd /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/; rm database.properties; mv postgresql.properties database.properties \
+	&& sed -i "s|db.url=.*|db.url=jdbc:postgresql://localhost:<5432/metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
+	&& sed -i "s|db.username=.*|db.username=metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
+	&& sed -i "s|db.password=.*|db.password=metalnx" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/database.properties \
+	&& sed -i "s|encoded.properties=.*|encoded.properties=|" /usr/share/tomcat/webapps/emc-metalnx-web/WEB-INF/classes/security.properties
 
 EXPOSE 8080
 
