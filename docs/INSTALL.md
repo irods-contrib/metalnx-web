@@ -446,43 +446,111 @@ The command to setup the database will vary between whether you will use MySQL o
 
 The Metalnx installation package comes with a setup script.  The script setup the Metalnx environment on a CentOS server using MySQL as the Metalnx database (default) or using PostgreSQL (a script option).   The script will help to setup the Metalnx in other environments, but additional manual configuration changes may be needed.
 
-**1)** Prior to running the setup script stop the Tomcat sever.  This can be done with the command (run as root):
+#TODO 
+Run the Metalnx setup script, as root:
 
-    # systemctl stop tomcat
+    # python /<metalnx-script-dir>/setup_metalnx.py
 
-**2)** Run the Metalnx setup script, as root:
+The script is organized in steps, so you can easily identify what is changed during its execution. The script will request several pieces of information and it will make sure all dependencies required by Metalnx are met. Details below:
 
-    # /opt/emc/config_metalnx.sh
+     Executing config_java_devel (1/13)   
 
-This script will request several pieces of information. Details below:
+The first step checks if the packakge java_devel exists in your system. If it does, the script goes to step two:
 
-    Enter the Tomcat Home Directory:   
+      Executing config_tomcat_home (2/13)   
 
-(Provide the full pathname to the Tomcat home directory, likely: `/usr/share/tomcat` )
+It will ask for the tomcat home directory. Provide the full pathname to the Tomcat home directory, by default it is `/usr/share/tomcat` ). The steps 3 to 6 are automatic, there is no input requried. You can follow what is happenning by reading the output messages.
 
-    Shutting Tomcat down... 
-    Done!
-    Checking if /usr/share/tomcat is an actual tomcat installation... Ok!
-    Looking for the Metalnx WAR file... Ok!
-    No existing installation has been found. Creating a new profile...
-    Enter the iCAT hostname:
+      Executing config_tomcat_shutdown (3/13)   # Shutdown the tomcat service
+      Executing config_metalnx_package (4/13)   # Checks if any Metalnx package already exists in your environment
+      Executing config_existing_setup (5/13)    # Saves current installed Metalnx configuration, if any
+      Executing config_war_file (6/13)          # Installs the Metalnx WAR file into Tomcat
 
-(Fully qualified hostname of the iCAT server,     hostname.domainname)
+The step 7 will ask you all the Metalnx Database configuration parameters, as follows:
 
-    Enter the iCAT port:
-(port number used to communicate with the iCAT,   usually the port number is 1247)
+     Executing config_database (7/13)                                      # Configures database access
+     Enter the Metalnx Database type (mysql, postgresql) [mysql]: mysql    # Metalnx database type. By default, it is MySQL
+     Enter Metalnx Database Host [localhost]:                              # Database hostname. By default, it is localhost.
+     Enter Metalnx Database Port [3306]:                                   # Database port. The default port is 3306 for MySQL and 5432 for PostgreSQL
+     Enter Metalnx Database Name [metalnx]:                                # Database name. By default, it is "metalnx".
+     Enter Metalnx Database User [metalnx]:                                # Database user. By default, it is "metalnx"
+     Enter Metalnx Database Password (it will not be displayed):           # Database password. We do not provide any default value for that.     
+       
+     
+After the Metalnx database configuration, the script tests whether or not the credentials are valid by connecting to the database. If it is successful, the following message is shown:
 
-    Enter the Zone Name:
-(The iRODS zone name, the default iRODS zone name is `tempZone`)
+    * Testing database connection...
+    * Database connection successful.
 
-    Enter the iRODS administrator username:
-(The iRODS administrator username, the default name provide by iRODS is “rods”)
+Now, you will be configuring the iRODS parameters to allow Metalnx connect to the grid.
 
-    Enter the iRODS administrator password (it won’t be displayed): 
-(The iRODS administrator password, this is the password used to setup the iRODS administrator)
+    Enter iRODS Host [localhost]:                                             # iRODS machine's hostname. By default, it is localhost
+    Enter iRODS Port [1247]:                                                  # port number used to communicate with the iCAT. By default, it is 1247
+    Enter iRODS Zone [tempZone]:                                              # iRODS Zone Name. By default, it is tempZone
+    Enter Authentication Schema (STANDARD, GSI, PAM, KERBEROS) [STANDARD]:    # iRODS authentication mechanism. By default, it is STANDARD
+    Enter iRODS Admin User [rods]:                                            # iRODS Admin Username. By default, it is rods.
+    Enter iRODS Admin Password (it will not be displayed):                    # iRODS Admin Passoword. We do not provide any default value for that.
+    
+The iRODS credentials are tested to make sure Metalnx is able to connect to the grid. If the connection is successful, the following message is shown:
 
-    By default, Metalnx uses MySQL as database.  Would you like to use PostgreSQL instead [y/N] 
+    * Testing iRODS connection...
+    * iRODS connection successful.
 
+After the iRODS configuration step, the script will check if it necessary to restore any previous configuration files.
+
+    Executing config_restore_conf (9/13)
+ 
+The next step is related to HTTPS configuration. 
+ 
+    Executing config_set_https (10/13)
+ 
+The 11th step will ask you to confirm if the params you set for both iRODS and the Metalnx database are correct.
+
+    Executing config_confirm_props (11/13)
+        - Confirm configuration parameters
+
+    Metalnx Database Parameters:
+        * db.type = mysql
+        * db.db_name = metalnx
+        * db.port = 3306
+        * db.host = localhsost
+        * db.username = metalnx
+
+    iRODS Paramaters:
+        * irods.port = 1247
+        * irods.auth.scheme = STANDARD
+        * irods.zoneName = tempZone
+        * jobs.irods.username = rods
+        * irods.host = icat.localdomain
+    
+    Do you accept these configuration paramaters? (yes, no) [yes]:
+
+By saying no, the execution of the script is aborted. By saying yes, the script will create the configuration files necessary for the Metalnx Web application to run.
+
+    * Creating Database properties file...
+    * Database properties file created.
+    * Creating iRODS properties file...
+    * iRODS properties file created.
+
+The following steps are the two last steps for configuring Metalnx.
+
+    [*] Executing config_tomcat_startup (12/13)
+       - Starting tomcat back again
+    Redirecting to /bin/systemctl start  tomcat.service
+
+    [*] Executing config_displays_summary (13/13)
+       - Metalnx configuration finished
+
+If everything is successfull, the script will show you where to access Metalnx:
+
+    Metalnx configuration finished successfully!
+    You can access your Metalnx instance at:
+        http://tpa-eld6421.tpa-eld.localdomain:8080/emc-metalnx-web/login/
+    
+    For further information and help, refer to:
+        https://github.com/Metalnx/metalnx-web
+
+# TODO - No longer applicable
 My default, Metalnx creates the `database.properties` file structured to interface with a MySQL database.  Selecting `y` to this question will change the settings to use PosgreSQL.  
 
 Following these answers the script will install the application on the Tomcat server and setup the base configuration files. (in this example we answered '`y`'. 

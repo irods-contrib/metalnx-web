@@ -37,9 +37,15 @@ cd $RPMBUILD_DIR/SOURCES
 mkdir -p $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp
 mkdir -p $PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap
 cp $WORKSPACE/src/emc-metalnx-web/target/emc-metalnx-web.war $PROJECT_NAME-$PROJECT_VERSION/tmp/emc-tmp/
-cp $WORKSPACE/packaging/scripts/config_metalnx.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/config_metalnx.sh
+cp $WORKSPACE/packaging/scripts/setup_metalnx.py $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/setup_metalnx.py
+cp -r $WORKSPACE/packaging/scripts/lib $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
 cp $WORKSPACE/packaging/scripts/usage_information.sh $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/usage_information.sh
 cp $WORKSPACE/contrib/ldap/* $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap/
+
+cd $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
+wget https://tpa-eld1102/job/metalnx-irods-conn-test/lastSuccessfulBuild/artifact/target/metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar
+mv metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar test-connection.jar
+cd -
 
 echo "Creating tarball of the sources..."
 cd $RPMBUILD_DIR/SOURCES

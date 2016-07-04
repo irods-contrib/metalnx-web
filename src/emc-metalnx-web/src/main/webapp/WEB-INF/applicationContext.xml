@@ -16,27 +16,25 @@
   ~
   -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:sec="http://www.springframework.org/schema/security"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 	
 	<import resource="classpath:META-INF/emc-metalnx-ui-admin/emc-metalnx-ui-admin-context.xml" />
 	<import resource="classpath:META-INF/emc-metalnx-ui-user/emc-metalnx-ui-user-context.xml" />
-	
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+	<bean class="com.emc.metalnx.context.EncodedPropertiesConfigurer">
 		<property name="ignoreUnresolvablePlaceholders" value="false" />
 		<property name="locations">
 			<list merge="true">
 				<value>classpath:irods.environment.properties</value>
 				<value>classpath:database.properties</value>
 				<value>classpath:msi.properties</value>
+				<value>classpath:security.properties</value>
 			</list>
 		</property>
 	</bean>

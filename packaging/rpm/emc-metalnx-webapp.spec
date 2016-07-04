@@ -25,9 +25,10 @@ cp -R * "$RPM_BUILD_ROOT"
 
 echo
 echo "The EMC MetaLnx webapp has been successfully installed!"
-echo "In order to deploy it on your Tomcat instance, execute /opt/emc/config_metalnx.sh"
+echo "In order to deploy it on your Tomcat instance, execute 'python /opt/emc/setup_metalnx.py'"
 
 chmod 755 /opt/emc/*
+chmod 755 /opt/emc/lib/*
 chmod 755 /opt/emc/ldap/*
 
 %clean
@@ -36,7 +37,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 /tmp/emc-tmp/emc-metalnx-web.war
-/opt/emc/config_metalnx.sh
+/opt/emc/setup_metalnx.py
+/opt/emc/test-connection.jar
+/opt/emc/lib/__init__.py
+/opt/emc/lib/config.py
+/opt/emc/lib/utils.py
 /opt/emc/usage_information.sh
 /opt/emc/ldap/import_ldap.conf
 /opt/emc/ldap/import_ldap.sh
