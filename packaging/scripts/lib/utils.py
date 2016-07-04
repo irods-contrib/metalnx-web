@@ -18,8 +18,13 @@ from os import path, listdir, rename
 from os.path import devnull
 from shutil import copy
 
-import MySQLdb as mysql
-import psycopg2 as postgres
+try:
+    import MySQLdb as mysql
+    import psycopg2 as postgres
+
+    db_test_modules = True
+except ImportError as e:
+    db_test_modules = False
 
 from config import *
 
@@ -109,11 +114,14 @@ class DBConnectionTestMixin:
     def _test_database_connection(self, db_type):
         """Tests database connectivity based on the database type"""
 
-        log('Testing database connection...')
-
-        getattr(self, '_connect_{}'.format(db_type))()
-
-        log('Database connection successful.')
+        if db_test_modules:
+            log('Testing database connection...')
+            getattr(self, '_connect_{}'.format(db_type))()
+            log('Database connection successful.')
+        else:
+            log('No DB connection test modules detected. Skiping DB connection test.')
+            log('\033[1mNotice that if your DB params are incorrect, Metalnx will not work as expected.\033[0m')
+            log('\033[1mTo change these parameters, execute the configuration script again.\033[0m')
 
         return True
 
