@@ -43,7 +43,7 @@ cp $WORKSPACE/packaging/scripts/usage_information.sh $RPMBUILD_DIR/SOURCES/$PROJ
 cp $WORKSPACE/contrib/ldap/* $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/ldap/
 
 cd $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
-wget https://tpa-eld1102/job/metalnx-irods-conn-test/lastSuccessfulBuild/artifact/target/metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar
+wget https://tpa-eld1102/job/metalnx-irods-conn-test/lastSuccessfulBuild/artifact/target/metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar --no-check-certificate
 mv metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar test-connection.jar
 cd -
 

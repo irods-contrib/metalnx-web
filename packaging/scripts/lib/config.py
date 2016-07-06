@@ -36,7 +36,7 @@ def encode_password(pwd):
 RELEASE_VERSION = '1.0'
 BUILD_NUMBER = '100'
 
-TEST_CONNECTION_JAR = 'test-connection.jar'
+TEST_CONNECTION_JAR = '/opt/emc/test-connection.jar'
 
 IRODS_PROPS_FILENAME = 'irods.environment.properties'
 DATABASE_PROPS_FILENAME = 'database.properties'
