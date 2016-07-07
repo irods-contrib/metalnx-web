@@ -86,6 +86,7 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
 			logger.error("Encoding not supported (US_ASCII).");
 		}
 
+        logger.debug("Decoded value [{}]", pwd);
         return pwd;
     }
 
