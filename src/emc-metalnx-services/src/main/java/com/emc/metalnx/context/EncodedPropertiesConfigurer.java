@@ -72,9 +72,8 @@ public class EncodedPropertiesConfigurer extends PropertyPlaceholderConfigurer {
         try {
 			key = getKey();
 			
-			String encodedString = new String(Base64Utils.decodeFromString(currentValue), StandardCharsets.US_ASCII);
-
-			for(byte b: encodedString.getBytes(StandardCharsets.US_ASCII)) {
+            byte[] encodedBytes = Base64Utils.decodeFromString(currentValue);
+			for(byte b: encodedBytes) {
 			    pwd += (char) ((b ^ key) & 0xFF);
 			}
 			
