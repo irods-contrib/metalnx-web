@@ -60,7 +60,7 @@ In order to allow Metalnx to access and manipulate your data grid, you have to g
 These items must be passed to the container in order to allow Metalnx to contact your data grid and execute commands on it through the *Jargon API*. 
 
 ## Running Metalnx container from DockerHub
-The Metalnx container is hosted on DockerHub under the **henriquenogueira** account. You can launch your container using the following command:
+The Metalnx container is hosted on DockerHub under the **metalnx** account. You can launch your container using the following command:
 
 
     docker run -d \
@@ -70,7 +70,7 @@ The Metalnx container is hosted on DockerHub under the **henriquenogueira** acco
     -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
-    henriquenogueira/metalnx:1.0-latest
+    metalnx/metalnx-web:1.0-latest
 
 ## Building and Running the Container Locally
 In order to build the Metalnx container, you need to **cd** to your `packaging/docker` directory:
@@ -105,4 +105,4 @@ The **Dockerfile** file is a script that describes the steps for how to build th
 [docker]: https://www.docker.com/
 [dockerhub]: https://hub.docker.com/
 [dockerfile]: https://docs.docker.com/engine/reference/builder/
-[dockerhub-metalnx]: https://hub.docker.com/r/henriquenogueira/metalnx/
+[dockerhub-metalnx]: https://hub.docker.com/r/metalnx/metalnx-web/
