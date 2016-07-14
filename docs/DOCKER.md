@@ -116,7 +116,7 @@ Example:
     -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
-    --add-host=icat:192.168.1.123
+    --add-host=icat:192.168.1.123 \
     metalnx/metalnx-web:1.0-latest
 
 If you are running multiple iRODS grid servers, you must add one `--add-host` mapping per mechine, as follows:
@@ -128,9 +128,9 @@ If you are running multiple iRODS grid servers, you must add one `--add-host` ma
     -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
-    --add-host=icat:192.168.1.123
-    --add-host=resource1:192.168.1.124
-    --add-host=resource2:192.168.1.125
+    --add-host=icat:192.168.1.123 \
+    --add-host=resource1:192.168.1.124 \
+    --add-host=resource2:192.168.1.125 \
     metalnx/metalnx-web:1.0-latest
 
 ## References
