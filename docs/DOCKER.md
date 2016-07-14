@@ -71,6 +71,9 @@ The Metalnx container is hosted on DockerHub under the **metalnx** account. You 
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
     metalnx/metalnx-web:1.0-latest
+    
+
+> __Note__: The command line above assumes your Docker container in running in an environment which supports DNS.  If you are running in an environment without DNS see the “Troubleshooting” section below for instructions on how to add custom hostnames to this command.
 
 ## Building and Running the Container Locally
 In order to build the Metalnx container, you need to **cd** to your `packaging/docker` directory:
@@ -91,6 +94,8 @@ The '.' character at the end of the commands tells Docker where the **Dockerfile
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
     metalnx
+    
+> __Note__:  The command line above assumes your Docker container in running in an environment which supports DNS.  If you are running in an environment without DNS see the “Troubleshooting” section below for instructions on how to add custom hostnames to this command.
 
 Keep in mind that the **-p** parameter maps a port from the host machine to the container. You can replace the host port with any port you want, but the container port must be *8080*, unless you customize the image (refer to the next section for instruction on how to do this).
 
