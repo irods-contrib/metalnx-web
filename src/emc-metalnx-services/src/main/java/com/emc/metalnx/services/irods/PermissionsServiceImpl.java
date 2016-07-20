@@ -31,10 +31,12 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.DataObjectAO;
+import org.irods.jargon.core.pub.IRODSFileSystemAO;
 import org.irods.jargon.core.pub.domain.Collection;
 import org.irods.jargon.core.pub.domain.UserFilePermission;
 import org.irods.jargon.core.pub.domain.UserGroup;
 import org.irods.jargon.core.pub.io.IRODSFile;
+import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,12 +102,23 @@ public class PermissionsServiceImpl implements PermissionsService {
     public boolean canLoggedUserModifyPermissionOnPath(String path) throws JargonException, DataGridConnectionRefusedException {
 
         String userName = irodsServices.getCurrentUser();
-        List<UserFilePermission> filePermissionList = this.getFilePermissionListForObject(path);
+        final IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
+        final IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
 
-        for (UserFilePermission ufp : filePermissionList) {
-            if (ufp.getUserName().compareTo(userName) == 0 && ufp.getFilePermissionEnum() == FilePermissionEnum.OWN) {
-                return true;
+        try {
+            int resultingPermission;
+            final IRODSFile fileObj = irodsFileFactory.instanceIRODSFile(path);
+
+            if (irodsFileSystemAO.isDirectory(fileObj)) {
+                resultingPermission = irodsFileSystemAO.getDirectoryPermissionsForGivenUser(fileObj, userName);
+            } else {
+                resultingPermission = irodsFileSystemAO.getFilePermissionsForGivenUser(fileObj, userName);
             }
+
+            return resultingPermission > FilePermissionEnum.READ.getPermissionNumericValue();
+
+        } catch (final Exception e) {
+            logger.error("Could not get permissions for current user: {}", e.getMessage());
         }
 
         return false;

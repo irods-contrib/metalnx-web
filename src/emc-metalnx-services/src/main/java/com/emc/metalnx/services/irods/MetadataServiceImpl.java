@@ -25,11 +25,15 @@ import java.util.Set;
 
 import com.emc.metalnx.core.domain.entity.*;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.protovalues.FilePermissionEnum;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
+import org.irods.jargon.core.pub.IRODSFileSystemAO;
 import org.irods.jargon.core.pub.domain.AvuData;
 import org.irods.jargon.core.pub.domain.DataObject;
+import org.irods.jargon.core.pub.io.IRODSFile;
+import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.query.JargonQueryException;
 import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.core.query.SpecificQueryResultSet;
@@ -286,29 +290,34 @@ public class MetadataServiceImpl implements MetadataService {
      *            list of data objects/collections
      * @throws DataGridConnectionRefusedException
      */
-    public void populateVisibilityForCurrentUser(List<DataGridCollectionAndDataObject> objectList) throws DataGridConnectionRefusedException {
+    public void populateVisibilityForCurrentUser(List<DataGridCollectionAndDataObject> objectList)
+            throws DataGridConnectionRefusedException {
 
         if (objectList == null || objectList.isEmpty()) {
             return;
         }
 
-        String currentUser = getLoggedDataGridUser().getUsername();
+        final String currentUser = getLoggedDataGridUser().getUsername();
+        final IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
+        final IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
 
-        for (DataGridCollectionAndDataObject obj : objectList) {
-            obj.setVisibleToCurrentUser(false);
+        for (final DataGridCollectionAndDataObject obj : objectList) {
             try {
-                // if the user does not have access to an object an exception is thrown
-                List<DataGridFilePermission> permissions = permissionsService.getPathPermissionDetails(obj.getPath(), currentUser);
-                for (DataGridFilePermission perm : permissions) {
-                    if (perm.getUsername().compareToIgnoreCase(currentUser) == 0) {
-                        obj.setVisibleToCurrentUser(true);
-                    }
+                int resultingPermission;
+                final IRODSFile fileObj = irodsFileFactory.instanceIRODSFile(obj.getPath());
+
+                if (obj.isCollection()) {
+                    resultingPermission = irodsFileSystemAO.getDirectoryPermissionsForGivenUser(fileObj, currentUser);
+                } else {
+                    resultingPermission = irodsFileSystemAO.getFilePermissionsForGivenUser(fileObj, currentUser);
                 }
-            }
-            catch (Exception e) {
+
+                // By default, the visibility of a user over an object is set to false
+                obj.setVisibleToCurrentUser(resultingPermission != FilePermissionEnum.NONE.getPermissionNumericValue());
+
+            } catch (final Exception e) {
                 logger.error("Could not get permissions for current user: {}", e.getMessage());
             }
-
         }
     }
 
