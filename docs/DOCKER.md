@@ -71,6 +71,9 @@ The Metalnx container is hosted on DockerHub under the **metalnx** account. You 
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
     metalnx/metalnx-web:1.0-latest
+    
+
+> __Note__: The command line above assumes your Docker container in running in an environment which supports DNS.  If you are running in an environment without DNS see the “Troubleshooting” section below for instructions on how to add custom hostnames to this command.
 
 ## Building and Running the Container Locally
 In order to build the Metalnx container, you need to **cd** to your `packaging/docker` directory:
@@ -83,7 +86,7 @@ Finally, execute the build
 
 The '.' character at the end of the commands tells Docker where the **Dockerfile** is. Then, you need to execute **run** on the docker container specifying the following paramenters
 
-    docker run -d \
+    $ docker run -d \
     -p 8080:8080 \
     -e IRODS_HOST="<IRODS_HOST_NAME>" \
     -e IRODS_PORT=<IRODS_PORT> \
@@ -91,11 +94,44 @@ The '.' character at the end of the commands tells Docker where the **Dockerfile
     -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
     -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
     metalnx
+    
+> __Note__:  The command line above assumes your Docker container in running in an environment which supports DNS.  If you are running in an environment without DNS see the “Troubleshooting” section below for instructions on how to add custom hostnames to this command.
 
 Keep in mind that the **-p** parameter maps a port from the host machine to the container. You can replace the host port with any port you want, but the container port must be *8080*, unless you customize the image (refer to the next section for instruction on how to do this).
 
 ## Modifying MetaLnx container
 The **Dockerfile** file is a script that describes the steps for how to build the container. You can adapt this file to your needs (change base operating system, modifying database manager, etc). If you need to execute any command on  container startup, please modify the `start_metalnx.sh` script under your `<Metalnx_source_root>/packaging/docker` directory.
+
+## Troubleshooting
+
+### Running custom hostnames without a DNS server on your network
+If you don't have a DNS server installed and configured in your infrastructure and would like to use hostname to reference your grid's machines, then you will have to use the `--add-host` option alongside the `docker run` command. It is necessary because the docker image creation does not allow modifications to the `/etc/hosts` file of the container OS, so any host:ip mapping should be done on command line.
+
+Example:
+
+    $ docker run -d \
+    -p 8080:8080 \
+    -e IRODS_HOST="<IRODS_HOST_NAME>" \
+    -e IRODS_PORT=<IRODS_PORT> \
+    -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
+    -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
+    -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
+    --add-host=icat:192.168.1.123 \
+    metalnx/metalnx-web:1.0-latest
+
+If you are running multiple iRODS grid servers, you must add one `--add-host` mapping per mechine, as follows:
+
+    $ docker run -d \
+    -p 8080:8080 \
+    -e IRODS_HOST="<IRODS_HOST_NAME>" \
+    -e IRODS_PORT=<IRODS_PORT> \
+    -e IRODS_ZONE="<IRODS_ZONE_NAME>" \
+    -e IRODS_USER="<IRODS_ADMIN_USERNAME>" \
+    -e IRODS_PASS="<IRODS_ADMIN_PASSWORD>" \
+    --add-host=icat:192.168.1.123 \
+    --add-host=resource1:192.168.1.124 \
+    --add-host=resource2:192.168.1.125 \
+    metalnx/metalnx-web:1.0-latest
 
 ## References
 * [Docker][docker]
