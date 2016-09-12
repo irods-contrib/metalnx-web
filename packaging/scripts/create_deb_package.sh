@@ -33,8 +33,7 @@ rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_rpm_p
 rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_deb_package.sh
 
 cd $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/
-wget https://bintray.com/metalnx/generic/download_file?file_path=metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar --no-check-certificate
-mv metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar test-connection.jar
+wget https://bintray.com/metalnx/generic/download_file?file_path=metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar -O test-connection.jar --no-check-certificate
 cd -
 
 chmod -R 755 $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/DEBIAN
