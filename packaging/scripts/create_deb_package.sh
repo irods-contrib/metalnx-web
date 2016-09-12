@@ -33,8 +33,8 @@ rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_rpm_p
 rm $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/create_deb_package.sh
 
 cd $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/opt/emc/
-wget https://tpa-eld1102/job/metalnx-irods-conn-test/lastSuccessfulBuild/artifact/target/metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar
-mv metalnx-connection-test-0.1-SNAPSHOT-jar-with-dependencies.jar test-connection.jar
+wget https://bintray.com/metalnx/generic/download_file?file_path=metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar --no-check-certificate
+mv metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar test-connection.jar
 cd -
 
 chmod -R 755 $TMP_DIR/$PROJECT_NAME-$PROJECT_VERSION-$PROJECT_RELEASE/DEBIAN
