@@ -47,13 +47,13 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 <font color="#000000">
 
 
-Metalnx is a web application designed to work alongside the iRODS (integrated Rule-Oriented Data System) [ [irods.org](http://www.irods.org)]. It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
+Metalnx is a web application designed to work alongside the [iRODS (integrated Rule-Oriented Data System)](http://www.irods.org). It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
 This installation guide will provide information on how to install the components necessary to run Metalnx along with installation the application. 
 
 At a high level Metalnx is dependent on the following software components being available:
 
-- The Metalnx application, the Metalnx Remote Monitor Daemon (RMD), and the Metalnx iRODS msi (micro service) files all being built and available as either .rpm or .deb files.
+- The Metalnx application, the Metalnx Remote Monitor Daemon (RMD), and the Metalnx iRODS MSI (microservice) files all being built and available as either .rpm or .deb files.
 - Apache Tomcat (for running EMC Metalnx which is a Java servlet)
 - iRODS runtime API
 - MySQL or PostgreSQL (we use a database to hold Metalnx operational information)
@@ -63,7 +63,7 @@ __Assumptions__
 
 In this installation guide, to fully install Metalnx, we will:
 
-- Assume that iRODS is installed and that an ICAT server is operational (**Note:** If you need help with installing iRODS please check the documentation for the current release at [docs.irods.org](https://docs.irods.org/) .)
+- Assume that iRODS is installed and that an ICAT server is operational (**Note:** If you need help with installing iRODS please check the documentation for the current release at [docs.irods.org](https://docs.irods.org/))
 - Assume that the Java runtime and API packages are installed
 - Show how to install Tomcat and configure a basic setup (Tomcat version 7 & 8 have been tested.)
 - Show how to install Metalnx and configure it work with the iRODS ICAT and use a local MySQL or PostgreSQL RDBMS for holding its information
@@ -82,7 +82,7 @@ iRODS is best described as middleware. It is a software framework that provides 
 
 - Storing and managing information (files, objects, etc.) across multiple servers in a data grid using uniform commands across the grid.
 - Supporting extensive user defined metadata tagging of objects placed under iRODS management.
-- A rules/policy engine which can be adapted via user defined rules and micro services to perform any computer actionable activity on data.
+- A rules/policy engine which can be adapted via user defined rules and microservices to perform any computer actionable activity on data.
 - Federation of independent iRODS data grids allowing sharing of resources between grids.
 
 An iRODS data grid consists of three elements:
@@ -140,8 +140,8 @@ For **rodsuser** users:
 
 - Metalnx relies on Apache Tomcat to provide the necessary Java servlet environment to run the application.
 - *Metalnx Web* - the application.  Metalnx is a Java based application.  The application is provided in an .rpm package or .deb package which requires that Apache Tomcat be installed first.  The application can be installed as a `.war` file manually if so desired.
--	*[Metalnx Remote Monitor Daemons (RMD).][RMD_github_repo]*  The Metalnx RMD is a small, lightweight daemon which is installed (via .rpm or .deb package) on each iCAT and resource server in the grid.  Metalnx RMD provides, on demand, basic availability information of each server in the iRODS grid which allows Metalnx to report on the overall health of the grid.  
-- *[Metalnx micro services][MSI_github_repo].*  Metalnx (optional) provides a collection of iRODS micro services which, if installed, will automatically extract and add to the ICAT embedded metadata in files uploaded to iRODS via Metalnx.  The micro services are provided as an .rpm file.  The micro service package must be installed in the micro services directory on each iRODS server in the grid in order for the functionality to work.
+- *[Metalnx Remote Monitor Daemons (RMD)][RMD_github_repo]*  The Metalnx RMD is a small, lightweight daemon which is installed (via .rpm or .deb package) on each iCAT and resource server in the grid.  Metalnx RMD provides, on demand, basic availability information of each server in the iRODS grid which allows Metalnx to report on the overall health of the grid.  
+- *[Metalnx microservices][MSI_github_repo]*  Metalnx (optional) provides a collection of iRODS microservices which, if installed, will automatically extract and add to the ICAT embedded metadata in files uploaded to iRODS via Metalnx.  The microservices are provided as an .rpm file.  The microservice package must be installed in the microservices directory on each iRODS server in the grid in order for the functionality to work.
 
 Figure 2 (below) illustrates an iRODS grid with Metalnx deployed:
 
@@ -158,7 +158,7 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 <br>
 <li> Metalnx Remote Monitor Daemons (RMD).   Metalnx Remote Monitor Daemons are installed on the ICAT server and each iRODS resource server.  The RMD is a small daemon which runs as the user iRODS and listens for a request on a port of the customer’s choosing via a configuration file (port 8000 is the default).  When a Metalnx user views the dashboard page it issues update requests to the RMD daemons in the grid which will report memory, disk, and iRODS application status via JSON packets back to Metalnx.  The Metalnx application parses the information to build the dashboard and drill down pages.  (<strong> Note: </strong> Metalnx RMD is not required for the application to work, but without the Dashboard page will have incomplete information and show each iRODS server without RMD to be in a <em> Warning </em> state.) </li>
 <br>
-<li> (NOT SHOWN IN FIGURE)  Metalnx Micro Services.  Metalnx micro services is a collection of iRODS micro services which, if installed on each server in the iRODS grid, will automatically extract metadata from .jpg, .bam, .cram, and .vcf files and add the metadata into the ICAT as part of a file upload from the Metalnx collections interface. The micro service file also contain a tool for extracting all metadata in a <strong> Ilumina </strong> sample sheet provided the sample sheet is setup properly and ingested with the sequencer data into iRODS. 
+<li> (NOT SHOWN IN FIGURE)  Metalnx Micro Services.  Metalnx microservices is a collection of iRODS microservices which, if installed on each server in the iRODS grid, will automatically extract metadata from .jpg, .bam, .cram, and .vcf files and add the metadata into the ICAT as part of a file upload from the Metalnx collections interface. The microservice file also contain a tool for extracting all metadata in a <strong> Ilumina </strong> sample sheet provided the sample sheet is setup properly and ingested with the sequencer data into iRODS. 
 </li>
 </ol>
  
@@ -183,7 +183,7 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 -	Install the Metalnx application on a server running Tomcat.  (**Note:**  Metalnx requires Java, Python, Tomcat, and either MySQL or PostgreSQL to be installed on the server where Metalnx runs in order to operate.  Also, the iRODS ICAT server must be operational in order for Metalnx configuration to complete successfully.)
 -	Configure Metalnx as needed to conform to your iRODS environment.
 -	Restart Tomcat in order to engage the configuration changes made in Tomcat.
--	Add the Metalnx micro services to the ICAT server and each iRODS resource server to leverage automated metadata extraction. For further information on how to install the Metalnx micro services, refer to the [Metalnx MSI Installation Guide][MSI_installation_guide].
+-	Add the Metalnx microservices to the ICAT server and each iRODS resource server to leverage automated metadata extraction. For further information on how to install the Metalnx microservices, refer to the [Metalnx MSI Installation Guide][MSI_installation_guide].
 
 ### System Requirements ###
 
@@ -196,11 +196,11 @@ Figure 3 shows the relationship between iRODS and Metalnx components.
 
 Metalnx has been tested with iRODS version 4.1 or later. 
 
-For information on how to install iRODS, please see: [http://www.irods.org/download/](http://www.irods.org/download) and [docs.irods.org](https://docs.irods.org/)
+For information on how to install iRODS, please see the [iRODS website](http://www.irods.org/download) and the [iRODS documentation](https://docs.irods.org/).
 
 ##### Java Devel #####
 
-The Java development environment is required by Metalnx.    The appropriate library can be installed using the yum installation utility (CentOS & Suse) or apt-get (Debian).  For example:
+The Java development environment is required by Metalnx. The appropriate library can be installed using the yum installation utility (CentOS & Suse) or apt-get (Debian).  For example:
 
 	yum install java-devel
  
@@ -690,15 +690,15 @@ Log in with the default iRODS admin username and password setup when iRODS was i
    <tr>
       <td> </td> <td> 2 </td> <td> Install Python 2.6 or later on the iCAT and resource servers </td>
    <tr>
-      <td> </td> <td> 3 </td> <td> Install Java 1.8 or later on the MetaLnx execution server </td>
+      <td> </td> <td> 3 </td> <td> Install Java 1.8 or later on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 4 </td> <td> Install Apache Tomcat 7 or 8 on the MetaLnx execution server </td>
+      <td> </td> <td> 4 </td> <td> Install Apache Tomcat 7 or 8 on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 5 </td> <td> Install the package java-devel on the MetaLnx execution server </td>
+      <td> </td> <td> 5 </td> <td> Install the package java-devel on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 6 </td> <td> Install and/or verify that either PostgreSQL or MySQL is installed, initialized, and operational on the MetaLnx execution server </td>
+      <td> </td> <td> 6 </td> <td> Install and/or verify that either PostgreSQL or MySQL is installed, initialized, and operational on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 7 </td> <td> Install the [MetaLnx RMD package][RMD_github_repo] on the iCAT and each iRODS resource server </td>
+      <td> </td> <td> 7 </td> <td> Install the <a href="https://github.com/sgworth/metalnx-rmd/">Metalnx RMD package</a> on the iCAT and each iRODS resource server </td>
    <tr>
       <td> </td> <td> 8 </td> <td> Confirm RMD is operational on each iRODS server via remote connection </td>
    <tr>
@@ -706,15 +706,15 @@ Log in with the default iRODS admin username and password setup when iRODS was i
    <tr>
       <td> </td> <td> 10 </td> <td> Verify that ports 8080 (and 8443 if appropriate) are opened to receive web traffic. </td>
    <tr>
-      <td> </td> <td> 11 </td> <td> Install the MetaLnx application on the MetaLnx execution server </td>
+      <td> </td> <td> 11 </td> <td> Install the Metalnx application on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 12 </td> <td> Configure the MetaLnx database on the MetaLnx execution server </td>
+      <td> </td> <td> 12 </td> <td> Configure the Metalnx database on the Metalnx execution server </td>
    <tr>
-      <td> </td> <td> 13 </td> <td> Setup MetaLnx using the setup script (config_metalnx.sh) </td>
+      <td> </td> <td> 13 </td> <td> Setup Metalnx using the setup script (config_metalnx.sh) </td>
    <tr>
-      <td> </td> <td> 14 </td> <td> Install [MetaLnx Micro Services][MSI_github_repo] on each server in the iRODS grid </td>
+      <td> </td> <td> 14 </td> <td> Install <a href="https://github.com/sgworth/metalnx-msi/">Metalnx Microservices</a> on each server in the iRODS grid </td>
 	<tr>
-      <td> </td> <td> 15 </td> <td> Verify access to the MetaLnx application </td>
+      <td> </td> <td> 15 </td> <td> Verify access to the Metalnx application </td>
    </tr>
 </table>
 
@@ -723,32 +723,32 @@ Use & Enjoy Metalnx!
 [[Back to: Table of Contents](#TOC)]
 
 <br>
-<font color="#0066CC"> <font size=+2> __Integration With LDAP__ </font> <a name="LDAP"></a>
+<font color="#0066CC"> <font size=+2> __Integration with LDAP__ </font> <a name="LDAP"></a>
 <font color="#000000">
 
 ##### Authentication using LDAP (Lightweight Directory Access Protocol) #####
 
-The diagram below illustrates how MetaLnx syncs user information with LDAP (Lightweight Directory Access Protocol): 
+The diagram below illustrates how Metalnx syncs user information with LDAP (Lightweight Directory Access Protocol): 
 
 ![alt text] [8]
 [8]: IMAGES/ldap_sync_diagram.png "Figure 8 - LDAP Syncing With Metalnx"
 
-1.	In the LDAP server, MetaLnx users must be members of a unique group that will be imported into iRODS.
+1.	In the LDAP server, Metalnx users must be members of a unique group that will be imported into iRODS.
 2.	In iRODS, authentication must be set to PAM (Pluggable Authentication Modules). Refer to iRODS documentation for more information. 
-3.	MetaLnx must be set to work with PAM authentication.  
+3.	Metalnx must be set to work with PAM authentication.  
 4.	New users will be created in iRODS server based on information retrieved from group. 
-5.	New users will be created in MetaLnx based on information retrieved from iRODS.
+5.	New users will be created in Metalnx based on information retrieved from iRODS.
 
 ##### Setting PAM Authentication #####
 
-MetaLnx supports PAM authentication, as iRODS does. To setup the PAM authentication on the UI, there are two required steps:
+Metalnx supports PAM authentication, as iRODS does. To setup the PAM authentication on the UI, there are two required steps:
 
 1.	Configure the Tomcat JVM to handle SSL requests. This is required because iRODS needs a SSL connection in order to authenticate users via PAM.
-2.	Change the configuration files on your instance of MetaLnx.	
+2.	Change the configuration files on your instance of Metalnx.	
 
 ##### Configuring your JVM(Java Virtual Machine) to handle SSL connections #####
 
-For the MetaLnx UI to authenticate users via PAM, it is necessary to include the iRODS server certificate into the JVM keystore of your running Tomcat instance. The `keytool` utility provides the functionality needed to manipulate the keystore.
+For the Metalnx UI to authenticate users via PAM, it is necessary to include the iRODS server certificate into the JVM keystore of your running Tomcat instance. The `keytool` utility provides the functionality needed to manipulate the keystore.
 
 The first thing you is to put the iRODS server certificate into the machine running the Tomcat instance. Then, you'll need to locate your JRE environment files, that is, generally, located underneath `/usr/lib/jvm/`.
 
@@ -776,7 +776,7 @@ Once the certificate is added to keystore, the JVM will be ready to handle SSL c
 
 ##### Editing Authentication Properties on Metalnx #####
 
-In order to configure MetaLnx to use PAM authentication, edit the file `irods.environment.properties` which can be found on the `webapps/emc-metalnx-web/WEB-INF/classes` directory, under the Tomcat root installation folder. 
+In order to configure Metalnx to use PAM authentication, edit the file `irods.environment.properties` which can be found on the `webapps/emc-metalnx-web/WEB-INF/classes` directory, under the Tomcat root installation folder. 
 
     # iRODS parameters
 	irods.host=<hostname>
@@ -790,7 +790,7 @@ In order to configure MetaLnx to use PAM authentication, edit the file `irods.en
 	jobs.irods.auth.scheme=STANDARD
 	runSyncJobs=true
 
-The parameters below set the authentication scheme used by MetaLnx:
+The parameters below set the authentication scheme used by Metalnx:
 
 	irods.auth.scheme
 	jobs.irods.auth.scheme
