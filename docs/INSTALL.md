@@ -289,7 +289,9 @@ Will perform the same function.
 
 **NOTE:** Depending on the repository structure you may find that you also need to install the package `tomcat-admin-webapps` in order to obtain the Tomcat administrative GUI.
 
-**2)** The Tomcat Manager is a web application that can be used interactively (via an HTML GUI) or programmatically (via a URL-based API) to deploy and manage web applications. In order to connect to the Tomcat server remotely, it is necessary to edit parameters in the Linux firewall to allow this. This is best done by modifying the iptable rules in the base firewall configuration.  
+**2)** The Tomcat Manager is a web application that can be used interactively (via an HTML GUI) or programmatically (via a URL-based API) to deploy and manage web applications. In order to connect to the Tomcat server remotely, it is necessary to edit parameters in the Linux firewall to allow this. This is best done by modifying the firewall configuration.  
+
+#### Iptables ####
 
 Using an editor, such as vi, and as root edit the file `/etc/sysconfig/iptables` .  Comment out the line: 
 
@@ -307,9 +309,23 @@ If you plan to allow https also add the line:
 
 **NOTE:** If you will use ONLY SSL encryption on your Web connections to Metalnx (https: ) on the first of these added lines substitute port number 8443 where you see port 8080 above. This operation will open the secure https port for use under Tomcat. There is no need for the second line.
 
-**NOTE:**  If you use a graphical firewall editor make your changes with this tool and do not modify the iptables file directly.  The GUI changes will override manual edits.
+**NOTE:**  If you use a graphical firewall editor make your changes with this tool and do not modify the `iptables` file directly.  The GUI changes will override manual edits.
 
-<font size=+1> **NOTE:** If your environment has special network security needs please consult your Network Administrator prior to making ipTable changes to ensure the necessary ports are allowed for use on your network and will NOT intefer with other critical network traffic or security policies.
+#### Firewall-cmd (CentOS 7) ####
+
+If the `firewall-cmd` command is available on your command line interface, the configuration changes can be achieved by typing the following commands in your terminal:
+    
+    firewall-cmd --zone=public --add-port=1247/tcp --permanent          # iRODS configuration
+    firewall-cmd --zone=public --add-port=1248/tcp --permanent          # iRODS configuration
+    firewall-cmd --zone=public --permanent --add-port=20000-20199/tcp   # iRODS configuration
+    firewall-cmd --zone=public --permanent --add-port=20000-20199/udp   # iRODS configuration
+    firewall-cmd --zone=public --add-port=5432/tcp --permanent          # For PostgreSQL
+    firewall-cmd --zone=public --add-port=3306/tcp --permanent          # For MySQL
+    firewall-cmd --zone=public --add-service=http --permanent           # Web server (HTTPS disabled, refer to the configuration section)
+    firewall-cmd --zone=public --add-service=https --permanent          # Web server
+    firewall-cmd –reload
+
+<font size=+1> **NOTE:** If your environment has special network security needs please consult your Network Administrator prior to making firewall changes to ensure the necessary ports are allowed for use on your network and will NOT intefer with other critical network traffic or security policies.
 </font>
 
 **4)** In the Tomcat configuration directory (likely in `/usr/share/tomcat/conf`) and add the following lines to the file `tomcat-users.xml` between the tags `<tomcat-users> </tomcat-users>`. This will create a manager user in Tomcat to support remote application management. **NOTE: Take care not to add these lines in sections that are commented out.**
