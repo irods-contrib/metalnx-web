@@ -45,6 +45,8 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 <font color="#0066CC"> <font size=+2> __INTRODUCTION (Read First!)__ </font> <a name="introduction"></a>
 
 <font color="#000000">
+
+
 Metalnx is a web application designed to work alongside the iRODS (integrated Rule-Oriented Data System) [ [irods.org](http://www.irods.org)]. It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
 This installation guide will provide information on how to install the components necessary to run Metalnx along with installation the application. 
@@ -446,8 +448,7 @@ The command to setup the database will vary between whether you will use MySQL o
 
 The Metalnx installation package comes with a setup script.  The script setup the Metalnx environment on a CentOS server using MySQL as the Metalnx database (default) or using PostgreSQL (a script option).   The script will help to setup the Metalnx in other environments, but additional manual configuration changes may be needed.
 
-#TODO 
-Run the Metalnx setup script, as root:
+Once the RPM package is installed, run the Metalnx setup script, as root:
 
     # python /<metalnx-script-dir>/setup_metalnx.py
 
@@ -545,15 +546,14 @@ If everything is successfull, the script will show you where to access Metalnx:
 
     Metalnx configuration finished successfully!
     You can access your Metalnx instance at:
-        http://tpa-eld6421.tpa-eld.localdomain:8080/emc-metalnx-web/login/
+        http://<hostname>:8080/emc-metalnx-web/login/
     
     For further information and help, refer to:
         https://github.com/Metalnx/metalnx-web
 
-# TODO - No longer applicable
-My default, Metalnx creates the `database.properties` file structured to interface with a MySQL database.  Selecting `y` to this question will change the settings to use PosgreSQL.  
+By default, Metalnx creates the `database.properties` file structured to interface with a MySQL database.  Selecting `y` to this question will change the settings to use PostgreSQL.  
 
-Following these answers the script will install the application on the Tomcat server and setup the base configuration files. (in this example we answered '`y`'. 
+Following these answers the script will install the application on the Tomcat server and setup the base configuration files. (in this example we answered '`y`'). 
 
     Using postgresql.
     Removing old instances of Metalnx Web application...Done!
@@ -702,7 +702,7 @@ Log in with the default iRODS admin username and password setup when iRODS was i
    </tr>
 </table>
 
-Use & Enjoy MetaLnx!
+Use & Enjoy Metalnx!
 
 [[Back to: Table of Contents](#TOC)]
 
@@ -710,7 +710,7 @@ Use & Enjoy MetaLnx!
 <font color="#0066CC"> <font size=+2> __Integration With LDAP__ </font> <a name="LDAP"></a>
 <font color="#000000">
 
-#####Authentication using LDAP (Lightweight Directory Access Protocol)#####
+##### Authentication using LDAP (Lightweight Directory Access Protocol) #####
 
 The diagram below illustrates how MetaLnx syncs user information with LDAP (Lightweight Directory Access Protocol): 
 
@@ -730,7 +730,7 @@ MetaLnx supports PAM authentication, as iRODS does. To setup the PAM authenticat
 1.	Configure the Tomcat JVM to handle SSL requests. This is required because iRODS needs a SSL connection in order to authenticate users via PAM.
 2.	Change the configuration files on your instance of MetaLnx.	
 
-##### Configuring your JVM(Java Virtual Machine) to handle SSL connections#####
+##### Configuring your JVM(Java Virtual Machine) to handle SSL connections #####
 
 For the MetaLnx UI to authenticate users via PAM, it is necessary to include the iRODS server certificate into the JVM keystore of your running Tomcat instance. The `keytool` utility provides the functionality needed to manipulate the keystore.
 
@@ -758,7 +758,7 @@ Notice that it asks for a password to view or modify the `cacerts` file. On the 
 
 Once the certificate is added to keystore, the JVM will be ready to handle SSL connections with the iRODS server.
 
-#####Editing Authentication Properties on Metalnx#####
+##### Editing Authentication Properties on Metalnx #####
 
 In order to configure MetaLnx to use PAM authentication, edit the file `irods.environment.properties` which can be found on the `webapps/emc-metalnx-web/WEB-INF/classes` directory, under the Tomcat root installation folder. 
 
@@ -799,8 +799,6 @@ An example of configuration is:
 	runSyncJobs=true
 
 **NOTE:** Always check the new line format in your properties files. Avoid Windows-editors to eliminate new line characters being inserted to prevent errors on Linux environments. 
-
-#####PAM-LDAP Authentication Tool Belt#####
 
 [RMD_github_repo]: https://github.com/sgworth/metalnx-rmd/
 [RMD_installation_guide]: https://github.com/sgworth/metalnx-rmd/blob/master/docs/INSTALL.md
