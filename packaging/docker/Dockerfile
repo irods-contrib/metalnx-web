@@ -16,7 +16,7 @@
 # EMC MetaLnx Web container #
 #############################
 FROM centos:centos7
-MAINTAINER Henrique Nogueira <henrique.nogueira@emc.com>
+MAINTAINER Arthur Guerra <arthur.guerra@emc.com>
 
 RUN yum -y update \
 	&& yum -y install sudo epel-release

@@ -61,7 +61,7 @@ $DOCKER_PATH run -d \
 	-e IRODS_ZONE=$IRODS_ZONE \
 	-e IRODS_USER=$IRODS_USER \
 	-e IRODS_PASS=$IRODS_PASS \
-	henriquenogueira/metalnx
+	arthurguerra/metalnx
 	
 echo "   [Container specification]                               "
 echo "   URL: http://$HOSTNAME:$LISTEN_PORT/emc-metalnx-web/login"

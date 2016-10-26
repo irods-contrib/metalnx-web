@@ -29,8 +29,8 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         # Tomcat config params
         self.tomcat_home = '/usr/share/tomcat'
-        self.tomcat_bin_dir = ''
         self.tomcat_webapps_dir = ''
+        self.tomcat_conf_dir = ''
         self.classes_path = ''
         self.db_type = MYSQL
 
@@ -60,22 +60,36 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """It will ask for your tomcat home directory and checks if it is a valid one"""
         self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
 
-        # Getting bin/ and webapps/ dirs for current installation of Tomcat
-        self.tomcat_bin_dir = path.join(self.tomcat_home, 'bin')
+        # Check if Tomcat home path is valid
+        if not self._is_dir_valid(self.tomcat_home):
+            raise Exception('Tomcat directory is not valid. Please check the path and try again.')
+
+        # Getting webapps/ dir for current installation of Tomcat
         self.tomcat_webapps_dir = path.join(self.tomcat_home, 'webapps')
 
-        # If all paths are valid, then this is a valid tomcat directory
-        if not self._is_dir_valid(self.tomcat_home) or not self._is_dir_valid(self.tomcat_bin_dir) \
-                or not self._is_dir_valid(self.tomcat_webapps_dir):
-            raise Exception('Tomcat directory is not valid. Please check the path and try again.')
+        # Check if the webapps directory exists inside Tomcat home dir, if not, we ask the user to type it in
+        if not self._is_dir_valid(self.tomcat_webapps_dir):
+            self.tomcat_webapps_dir = read_input('Enter your Tomcat webapps directory')
+
+            if not self._is_dir_valid(self.tomcat_webapps_dir):
+                raise Exception('Tomcat webapps directory [{}] is not valid. Please check the path and try again.'.format(self.tomcat_webapps_dir))
+
+        # Check if the conf/server.xml directory exists inside Tomcat home dir, if not, we ask the user to type it in
+        self.tomcat_conf_dir = path.join(self.tomcat_home, 'conf')
+
+        if not self._is_dir_valid(self.tomcat_conf_dir):
+            self.tomcat_conf_dir = read_input('Enter your Tomcat conf directory')
+
+            if not self._is_dir_valid(self.tomcat_conf_dir):
+                raise Exception(
+                    'Tomcat conf directory [{}] is not valid. Please check the path and try again.'.format(
+                        self.tomcat_conf_dir))
 
         return True
 
     def config_tomcat_shutdown(self):
         """Shuts tomcat down before configuration"""
-        subprocess.check_call([
-            'service', 'tomcat', 'stop'
-        ])
+        subprocess.call(['service', 'tomcat', 'stop'])
 
     def config_metalnx_package(self):
         """It will check if the Metalnx package has been correctly installed"""
@@ -203,7 +217,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
     def config_set_https(self):
         """Sets HTTPS protocol in Tomcat and Metalnx"""
         metalnx_web_xml = path.join(self.tomcat_webapps_dir, 'emc-metalnx-web', 'WEB-INF', 'web.xml')
-        tomcat_server_xml = path.join(self.tomcat_home, 'conf', 'server.xml')
+        tomcat_server_xml = path.join(self.tomcat_conf_dir, 'server.xml')
 
         server_conf = ET.parse(tomcat_server_xml).getroot()
 
@@ -329,14 +343,13 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_tomcat_startup(self):
         """Starting tomcat back again"""
-        subprocess.check_call([
-            'service', 'tomcat', 'start'
-        ])
+        subprocess.call(['service', 'tomcat', 'start'])
 
     def config_displays_summary(self):
         """Metalnx configuration finished"""
         print
         print '\033[92mMetalnx configuration finished successfully!\033[0m'
+        print '\033[4m\nPlease, restart your Tomcat for the changes to be applied\n\033[0m\n'
         print 'You can access your Metalnx instance at:\n    \033[4m{}\033[0m\n'.format(MLX_URL)
         print 'For further information and help, refer to:\n    \033[4m{}\033[0m\n'.format(GITHUB_URL)
         print

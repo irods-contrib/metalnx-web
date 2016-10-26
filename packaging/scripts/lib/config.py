@@ -159,7 +159,7 @@ DB_PROPS_SPEC = {
 INSTALL_STEPS = [
     'config_java_devel',
     'config_tomcat_home',
-    'config_tomcat_shutdown',
+    #'config_tomcat_shutdown',
     'config_metalnx_package',
     'config_existing_setup',
     'config_war_file',
@@ -168,6 +168,6 @@ INSTALL_STEPS = [
     'config_restore_conf',
     'config_set_https',
     'config_confirm_props',
-    'config_tomcat_startup',
+    #'config_tomcat_startup',
     'config_displays_summary',
 ]

@@ -3,5 +3,5 @@ Version: {{VERSION-NUMBER}}-{{BUILD-NUMBER}}
 Section: misc
 Priority: optional
 Architecture: all
-Maintainer: Henrique Nogueira <henrique.nogueira@emc.com>
+Maintainer: Arthur Guerra <arthur.guerras@emc.com>
 Description: EMC MetaLnx Web Application
