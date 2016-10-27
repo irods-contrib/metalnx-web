@@ -677,6 +677,46 @@ Log in with the default iRODS admin username and password setup when iRODS was i
 
 [[Back to: Table of Contents](#TOC)]
 
+-------------- 
+
+<br>
+**Modifing properties files directly**
+
+*NOTICE: If you already run the script and you are able to access the Metalnx UI, this section can be skipped. This is troubleshooting section in case an Authentication Error happens in the UI.*
+
+Metalnx uses configuration files to keep the correct parameters for your environment. Although it is strongly recommended that you use the Metalnx setup script for any configuration changes, you can directly modify these files to set up the parameters you prefer.
+
+There are 7 configuration files in total and they are located under `<your-tomcat-directory>/webapps/emc-metalnx-web/WEB-INF/classes`.
+
+* **database.properties**: database connection and authentication parameters
+* **irods.environment.properties**: iRODS connection and authentication parameters
+* **security.properties**: security parameters (tells Metalnx which credentials are encoded)
+* **log4j.properties**: set the log levels for all frameworks used by Metalnx
+* **msi.properties**: enable/disable the illumina and photo-metadata-extraction microservices
+* **mysql.properties**: basically has the same structure as database.properties, but specific for MySQL databases
+* **postgresql.properties**: basically has the same structure as database.properties, but specific for PostgreSQL databases
+                               
+If an Authentication Error is shown on the UI, it is likely that there is a misconfiguration in database.properties, irods.environment.properties or security.properties.
+
+First of all, make sure the credentials shown in all these files are actually correct, the Metalnx database exists and the user in *database.properties* file (`db.username`) has rights to modify it (Refer to: [Configure the Metalnx Database](#config_metalnx_database)) and the iRODS credentials belong to a rodsadmin user.
+
+Second, make sure there are no spaces between configuration parameters and their values.
+
+	db.driverClassName = com.mysql.jdbc.Driver   # WRONG
+	db.driverClassName= com.mysql.jdbc.Driver    # WRONG
+	db.driverClassName =com.mysql.jdbc.Driver    # WRONG
+	db.driverClassName=com.mysql.jdbc.Driver     # CORRECT
+                
+Finally, modify the **security.properties** file. For security reasons, during the installation process, some configuration parameters (passwords) are encoded. This file tells Metalnx which parameters were encoded and need to be decoded when the application starts. 
+
+However, those parameters are encoded only if the Metalnx setup script is used. Since we are modifing *properties* files directly, they will be plain text. Then, Metalnx needs to know that it is no longer necessary to decode them. We do so by either removing *db.password,jobs.irods.password* or commenting the entire line out:
+
+	encoded.properties=                                         # CORRECT
+	# encoded.properties=db.password,jobs.irods.password        # CORRECT
+
+
+[[Back to: Table of Contents](#TOC)]
+
 
 <br>
 <font color="#0066CC"> <font size=+2> __Metalnx Install Checklist__ </font> <a name="metalnx_checklist"></a>
