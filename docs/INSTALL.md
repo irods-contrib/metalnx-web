@@ -315,6 +315,7 @@ If you plan to allow https also add the line:
 
 If the `firewall-cmd` command is available on your command line interface, the configuration changes can be achieved by typing the following commands in your terminal:
     
+    firewall-cmd --zone=public --add-port=8080/tcp --permanent          # Tomcat configuration
     firewall-cmd --zone=public --add-port=1247/tcp --permanent          # iRODS configuration
     firewall-cmd --zone=public --add-port=1248/tcp --permanent          # iRODS configuration
     firewall-cmd --zone=public --permanent --add-port=20000-20199/tcp   # iRODS configuration
