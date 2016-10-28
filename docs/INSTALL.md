@@ -490,6 +490,13 @@ Once the RPM package is installed, run the Metalnx setup script, as root:
 
     # python /<metalnx-script-dir>/setup_metalnx.py
 
+In case `setup_metalnx.py` cannot find the `pyscopg2` or `MySQL` modules, please run the following commands to install the required dependencies according to your database (MySQL or Postgres) and your OS distribuition:
+
+	# apt-get install python-psycopg2    # Ubuntu - PostgreSQL
+	# apt-get install python-mysqldb     # Ubuntu - MySQL
+	# yum install python-psycopg2	     # CentOS - PostgreSQL
+	# yum install MySQL-python           # CentOS - MySQL
+
 The script is organized in steps, so you can easily identify what is changed during its execution. The script will request several pieces of information and it will make sure all dependencies required by Metalnx are met. Details below:
 
      Executing config_java_devel (1/13)   
