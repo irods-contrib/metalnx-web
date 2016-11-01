@@ -74,8 +74,6 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             self.tomcat_conf_dir = dirs['conf']
             return True
 
-        self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
-
         default_tomcat_home = config('TOMCAT_HOME_DIR', default='/usr/share/tomcat')
         self.tomcat_home = read_input('Enter your Tomcat directory', default=default_tomcat_home)
         config.set('TOMCAT_HOME_DIR', self.tomcat_home)
