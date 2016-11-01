@@ -258,7 +258,7 @@ class FileManipulationMixin:
         if user wants to install in directories found
         """
 
-        valid_pre_defined_tomcat = {}
+        dirs = {}
         for version in tomcat_dirs['versions']:
             is_tomcat_dirs_valid = True
             tomcat_home = '{}{}'.format(tomcat_dirs['home'], version)
@@ -270,9 +270,9 @@ class FileManipulationMixin:
             is_tomcat_dirs_valid &= self._is_dir_valid(tomcat_webapps)
 
             if is_tomcat_dirs_valid:
-                valid_pre_defined_tomcat['home'] = tomcat_home
-                valid_pre_defined_tomcat['conf'] = tomcat_conf
-                valid_pre_defined_tomcat['webapps'] = tomcat_webapps
-                return valid_pre_defined_tomcat
+                dirs['home'] = tomcat_home
+                dirs['conf'] = tomcat_conf
+                dirs['webapps'] = tomcat_webapps
+                break
 
-        return valid_pre_defined_tomcat
+        return dirs

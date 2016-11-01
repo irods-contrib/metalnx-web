@@ -60,18 +60,18 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """It will ask for your tomcat home directory and checks if it is a valid one"""
 
         conf = 'no'
-        valid_pre_defined_tomcat = self._find_valid_tomcat_dirs()
-        if valid_pre_defined_tomcat:
+        dirs = self._find_valid_tomcat_dirs()
+        if dirs:
             # Asking user if he wants to keep the current configuration
             conf = read_input(
-                'A Tomcat installation was detected in your system. Do you want to use Tomcat located at: [{}]?'.format(valid_pre_defined_tomcat['home']),
+                'A Tomcat installation was detected in your system. Do you want to use Tomcat located at: [{}]?'.format(dirs['home']),
                 choices=['yes', 'no'],
                 default='yes'
             )
         if conf == 'yes':
-            self.tomcat_home = valid_pre_defined_tomcat['home']
-            self.tomcat_webapps_dir = valid_pre_defined_tomcat['webapps']
-            self.tomcat_conf_dir = valid_pre_defined_tomcat['conf']
+            self.tomcat_home = dirs['home']
+            self.tomcat_webapps_dir = dirs['webapps']
+            self.tomcat_conf_dir = dirs['conf']
             return True
 
         self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
