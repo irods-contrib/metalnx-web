@@ -288,7 +288,8 @@ INSTALL_STEPS = [
 ]
 
 tomcat_dirs = {
-    'bin': '/usr/share/tomcat',
+    'versions': ['', '6', '7', '8', '9'],
+    'home': '/usr/share/tomcat',
     'conf': '/etc/tomcat',
-    'webapps': '/var/lib/tomcat/webapps'
+    'webapps': '/var/lib/tomcat'
 }

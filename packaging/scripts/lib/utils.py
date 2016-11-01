@@ -251,19 +251,28 @@ class FileManipulationMixin:
 
         log('iRODS properties file created.')
 
-    def _is_tomcat_dirs_valid(self):
+    def _find_valid_tomcat_dirs(self):
         """
         If all of the directories below exists,
         then the installation should proceed asking
         if user wants to install in directories found
         """
-        if not self._is_dir_valid(tomcat_dirs['bin']):
-            log('Checking if tomcat/bin directory created by package manager exists...')
-            return False
-        if not self._is_dir_valid(tomcat_dirs['conf']):
-            log('Checking if tomcat/conf directory created by package manager exists...')
-            return False
-        if not self._is_dir_valid(tomcat_dirs['webapps']):
-            log('Checking if tomcat/webapps directory created by package manager exists...')
-            return False
-        return True
+
+        valid_pre_defined_tomcat = {}
+        for version in tomcat_dirs['versions']:
+            is_tomcat_dirs_valid = True
+            tomcat_home = '{}{}'.format(tomcat_dirs['home'], version)
+            tomcat_conf = '{}{}'.format(tomcat_dirs['conf'], version)
+            tomcat_webapps = '{}{}/webapps'.format(tomcat_dirs['webapps'], version)
+
+            is_tomcat_dirs_valid &= self._is_dir_valid(tomcat_home)
+            is_tomcat_dirs_valid &= self._is_dir_valid(tomcat_conf)
+            is_tomcat_dirs_valid &= self._is_dir_valid(tomcat_webapps)
+
+            if is_tomcat_dirs_valid:
+                valid_pre_defined_tomcat['home'] = tomcat_home
+                valid_pre_defined_tomcat['conf'] = tomcat_conf
+                valid_pre_defined_tomcat['webapps'] = tomcat_webapps
+                return valid_pre_defined_tomcat
+
+        return valid_pre_defined_tomcat
