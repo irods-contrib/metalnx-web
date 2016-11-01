@@ -147,6 +147,7 @@ class DBConnectionTestMixin:
         ).close()
 
 
+
 class IRODSConnectionTestMixin:
     def _test_irods_connection(self):
         """Authenticates against iRODS"""
@@ -249,3 +250,20 @@ class FileManipulationMixin:
             mcp.write()
 
         log('iRODS properties file created.')
+
+    def _is_tomcat_dirs_valid(self):
+        """
+        If all of the directories below exists,
+        then the installation should proceed asking
+        if user wants to install in directories found
+        """
+        if not self._is_dir_valid(tomcat_dirs['bin']):
+            log('Checking if tomcat/bin directory created by package manager exists...')
+            return False
+        if not self._is_dir_valid(tomcat_dirs['conf']):
+            log('Checking if tomcat/conf directory created by package manager exists...')
+            return False
+        if not self._is_dir_valid(tomcat_dirs['webapps']):
+            log('Checking if tomcat/webapps directory created by package manager exists...')
+            return False
+        return True

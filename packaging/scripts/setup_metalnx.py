@@ -57,6 +57,20 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         raise Exception('Could not find java-devel package.')
 
     def config_tomcat_home(self):
+        conf = 'no'
+        if self._is_tomcat_dirs_valid():
+            # Asking user if he wants to keep the current configuration
+            conf = read_input(
+                'A Tomcat installation was detected in your system. Do you want to use Tomcat located at: [{}]?'.format(tomcat_dirs['bin']),
+                choices=['yes', 'no'],
+                default='yes'
+            )
+        if conf == 'yes':
+            self.tomcat_home = tomcat_dirs['bin']
+            self.tomcat_webapps_dir = tomcat_dirs['webapps']
+            self.tomcat_conf_dir = tomcat_dirs['conf']
+            return True
+
         """It will ask for your tomcat home directory and checks if it is a valid one"""
         self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
 

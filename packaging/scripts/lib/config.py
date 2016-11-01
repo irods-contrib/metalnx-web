@@ -171,3 +171,9 @@ INSTALL_STEPS = [
     #'config_tomcat_startup',
     'config_displays_summary',
 ]
+
+tomcat_dirs = {
+    'bin': '/usr/share/tomcat',
+    'conf': '/etc/tomcat',
+    'webapps': '/var/lib/tomcat/webapps'
+}
