@@ -15,8 +15,112 @@ import getpass
 from base64 import b64encode
 from hashlib import md5
 from socket import gethostname
+from os import path
+
+KEY_VAL_SEPARATOR = '='
 
 SALT = '!M3t4Lnx@1234'
+
+SETUP_FILE = '.env'
+
+
+def read_env_file(file_path):
+    """
+    Function that parses a .env file and return a key-value dictionary
+    :param file_path:
+    :return: dictionary
+    """
+    if not file_path or not path.isfile(file_path):
+        return None
+
+    data = {}
+
+    with open(file_path, 'r') as f:
+        for line in f:
+            c = line.split(KEY_VAL_SEPARATOR)
+            if len(c) < 2:
+                return
+            else:
+                data[c[0]] = c[1].strip()
+
+    return data
+
+
+class MetalnxConfigEnv(object):
+    def __init__(self, source):
+        self.data = read_env_file(source)
+        self.data_cache = {}
+
+    def get(self, key):
+        return self.data[key] if self.data and key in self.data else ''
+
+    def set(self, option, value):
+        """
+        Saves all key, values params into memory to be dumped into a file later
+        :param kwargs:
+        :return: None
+        """
+        if not option or not value:
+            return
+
+        self.data_cache[option] = value
+
+    def dump(self):
+        """
+        Dumps new configuration params into the setup file
+        :return: None
+        """
+        if not self.data_cache:
+            return
+
+        # keeping existing params that were not set this time
+        if self.data:
+            for k, v in self.data.iteritems():
+                if k not in self.data_cache and v != '':
+                    self.data_cache[k] = v
+
+        # writing all params to file
+        with open(SETUP_FILE, 'w+') as f:
+            for k, v in self.data_cache.iteritems():
+                param = '{}={}\n'.format(k, v)
+                f.write(param)
+
+
+class MetalnxConfig(object):
+
+    def __init__(self):
+        self.setup = MetalnxConfigEnv(SETUP_FILE)
+
+    def __call__(self, *args, **kwargs):
+        """
+        Shortcut to get
+        """
+        return self.get(*args, **kwargs)
+
+    def get(self, option, default=None):
+        if not self.setup:
+            return None
+
+        value = self.setup.get(option) or default
+        return value if value is not None else ''
+
+    def set(self, option, value):
+        """
+        Sets a new value for an option
+        :param option: config param to be kept
+        :param value: config param value to be kept
+        :return: None
+        """
+        self.setup.set(option, value)
+
+    def save(self):
+        """
+        Saves all config params to .env file
+        :return:
+        """
+        self.setup.dump()
+
+config = MetalnxConfig()
 
 
 def encode_password(pwd):
@@ -68,37 +172,43 @@ IRODS_PROPS_SPEC = {
     'host': {
         'name': 'irods.host',
         'desc': 'iRODS Host',
-        'default': lambda c: 'localhost',
+        'env_param': 'IRODS_HOST',
+        'default': lambda c: config('IRODS_HOST', default='localhost'),
         'order': 1
     },
     'port': {
         'name': 'irods.port',
         'desc': 'iRODS Port',
-        'default': lambda c: '1247',
+        'env_param': 'IRODS_PORT',
+        'default': lambda c: config('IRODS_PORT', default='1247'),
         'order': 2
     },
     'zone': {
         'name': 'irods.zoneName',
         'desc': 'iRODS Zone',
-        'default': lambda c: 'tempZone',
+        'env_param': 'IRODS_ZONE',
+        'default': lambda c: config('IRODS_ZONE', default='tempZone'),
         'order': 3
     },
     'auth_scheme': {
         'name': 'irods.auth.scheme',
         'values': ['STANDARD', 'GSI', 'PAM', 'KERBEROS'],
         'desc': 'Authentication Schema',
-        'default': lambda c: 'STANDARD',
+        'env_param': 'IRODS_AUTH_SCHEME',
+        'default': lambda c: config('IRODS_AUTH_SCHEME', default='STANDARD'),
         'order': 4
     },
     'user': {
         'name': 'jobs.irods.username',
         'desc': 'iRODS Admin User',
-        'default': lambda c: 'rods',
+        'env_param': 'IRODS_USER',
+        'default': lambda c: config('IRODS_USER', default='rods'),
         'order': 5
     },
     'password': {
         'name': 'jobs.irods.password',
         'desc': 'iRODS Admin Password',
+        'env_param': None,
         'default': lambda c: '',
         'input_method': getpass.getpass,
         'cast': encode_password,
@@ -125,30 +235,35 @@ DB_PROPS_SPEC = {
     'host': {
         'name': 'db.host',
         'desc': 'Metalnx Database Host',
-        'default': lambda c: 'localhost',
+        'env_param': 'DB_HOST',
+        'default': lambda c: config('DB_HOST', default='localhost'),
         'order': 1
     },
     'port': {
         'name': 'db.port',
         'desc': 'Metalnx Database Port',
-        'default': lambda c: '3306' if c == 'mysql' else '5432',
+        'env_param': 'DB_PORT',
+        'default': lambda c: config('DB_PORT', default='3306' if c == 'mysql' else '5432'),
         'order': 2
     },
     'db_name': {
         'name': 'db.db_name',
         'desc': 'Metalnx Database Name',
-        'default': lambda c: 'metalnx',
+        'env_param': 'DB_NAME',
+        'default': lambda c: config('DB_NAME', default='metalnx'),
         'order': 3
     },
     'user': {
         'name': 'db.username',
         'desc': 'Metalnx Database User',
-        'default': lambda c: 'metalnx',
+        'env_param': 'DB_USER',
+        'default': lambda c: config('DB_USER', default='metalnx'),
         'order': 4
     },
     'password': {
         'name': 'db.password',
         'desc': 'Metalnx Database Password',
+        'env_param': None,
         'default': lambda c: '',
         'input_method': getpass.getpass,
         'cast': encode_password,

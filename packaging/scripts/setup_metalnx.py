@@ -28,7 +28,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.keytool_path = '/usr/bin/keytool'
 
         # Tomcat config params
-        self.tomcat_home = '/usr/share/tomcat'
+        self.tomcat_home = ''
         self.tomcat_webapps_dir = ''
         self.tomcat_conf_dir = ''
         self.classes_path = ''
@@ -72,7 +72,10 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
             return True
 
         """It will ask for your tomcat home directory and checks if it is a valid one"""
-        self.tomcat_home = read_input('Enter your Tomcat directory', default=self.tomcat_home)
+
+        default_tomcat_home = config('TOMCAT_HOME_DIR', default='/usr/share/tomcat')
+        self.tomcat_home = read_input('Enter your Tomcat directory', default=default_tomcat_home)
+        config.set('TOMCAT_HOME_DIR', self.tomcat_home)
 
         # Check if Tomcat home path is valid
         if not self._is_dir_valid(self.tomcat_home):
@@ -83,7 +86,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         # Check if the webapps directory exists inside Tomcat home dir, if not, we ask the user to type it in
         if not self._is_dir_valid(self.tomcat_webapps_dir):
-            self.tomcat_webapps_dir = read_input('Enter your Tomcat webapps directory')
+            default_webapps_dir = config('TOMCAT_WEBAPPS_DIR')
+            self.tomcat_webapps_dir = read_input('Enter your Tomcat webapps directory', default=default_webapps_dir)
+            config.set('TOMCAT_WEBAPPS_DIR', self.tomcat_webapps_dir)
 
             if not self._is_dir_valid(self.tomcat_webapps_dir):
                 raise Exception('Tomcat webapps directory [{}] is not valid. Please check the path and try again.'.format(self.tomcat_webapps_dir))
@@ -92,7 +97,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         self.tomcat_conf_dir = path.join(self.tomcat_home, 'conf')
 
         if not self._is_dir_valid(self.tomcat_conf_dir):
-            self.tomcat_conf_dir = read_input('Enter your Tomcat conf directory')
+            default_conf_dir = config('TOMCAT_CONF_DIR')
+            self.tomcat_conf_dir = read_input('Enter your Tomcat conf directory', default=default_conf_dir)
+            config.set('TOMCAT_CONF_DIR', self.tomcat_conf_dir)
 
             if not self._is_dir_valid(self.tomcat_conf_dir):
                 raise Exception(
@@ -121,14 +128,17 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         if self._is_dir_valid(metalnx_path) and self._is_dir_valid(self.classes_path):
             log('Detected current installation of Metalnx.')
 
-            conf = 'yes'
+            conf = config('CREATE_NEW_SETUP', default='yes')
+
             if not self.override_conf:
                 # Asking user if he wants to keep the current configuration
                 conf = read_input(
                     'Do you wish to use the current setup instead of creating a new one?',
                     choices=['yes', 'no'],
-                    default='yes'
+                    default=conf
                 )
+
+                config.set('CREATE_NEW_SETUP', conf)
 
             if self.override_conf or conf == 'no':
                 rmtree(path.join(self.tomcat_webapps_dir, 'emc-metalnx-web'))
@@ -178,13 +188,18 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         if not self.existing_conf:
             for key, spec in sorted(IRODS_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
+                curr_default = config(spec['env_param'], default=spec.get('default', None)(None))
+
                 self.irods_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec.get('default', None)(None),
+                    default=curr_default,
                     hidden='password' == key,
                     choices=spec.get('values', None),
                     allow_empty='password' == key
                 )
+
+                if spec['env_param']:
+                    config.set(spec['env_param'], self.irods_props[spec['name']])
 
             self._test_irods_connection()
 
@@ -192,16 +207,23 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
         """It will configure database access"""
 
         if not self.existing_conf:
-            self.db_type = read_input('Enter the Metalnx Database type', default='mysql',
-                                      choices=['mysql', 'postgresql'])
+            default_db_type = config('DB_TYPE', default='mysql')
+            self.db_type = read_input('Enter the Metalnx Database type', default=default_db_type, choices=['mysql', 'postgresql'])
+            config.set('DB_TYPE', self.db_type)
+
             for key, spec in sorted(DB_PROPS_SPEC.items(), key=lambda e: e[1]['order']):
+                curr_default = config(spec['env_param'], default=spec.get('default', None)(self.db_type))
+
                 self.db_props[spec['name']] = read_input(
                     'Enter {}'.format(spec['desc']),
-                    default=spec.get('default', None)(self.db_type),
+                    default=curr_default,
                     hidden='password' == key,
                     choices=spec.get('values', None),
                     allow_empty='password' == key
                 )
+
+                if spec['env_param']:
+                    config.set(spec['env_param'], self.db_props[spec['name']])
 
             # Database URL connection
             db_url = DB_TYPE_SPEC['url']['cast'](
@@ -241,7 +263,10 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
         if not self.is_https:
             log('No HTTPS configuration (Connector) found on Tomcat.')
-            use_https = read_input('Set HTTPS on your Tomcat server', default='no', choices=['yes', 'no'])
+
+            default_use_https = config('HTTPS_ENABLED', default='no')
+            use_https = read_input('Set HTTPS on your Tomcat server', default=default_use_https, choices=['yes', 'no'])
+            config.set('HTTPS_ENABLED', use_https)
 
             if use_https == 'yes':
 
@@ -254,8 +279,14 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                 log('Creating keystore for Metalnx...')
 
                 log('A new self-signed certificate will be created in order to enable HTTPS on Tomcat.')
-                keystore_path = read_input(
-                    'Enter the path for the keystore', default=path.join(self.tomcat_webapps_dir, 'metalnx.keystore'))
+
+                default_keystore_path = config('KEYSTORE_PATH',
+                                               default=path.join(self.tomcat_webapps_dir, 'metalnx.keystore'))
+
+                keystore_path = read_input('Enter the path for the keystore', default_keystore_path)
+
+                config.set('KEYSTORE_PATH', keystore_path)
+
                 keystore_password = read_input('Enter the password for the keystore', hidden=True, allow_empty=False)
 
                 subprocess.check_call([
@@ -381,8 +412,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
             try:
                 invokable()
+                config.save()  # saving config params entered into a file
             except Exception as e:
-                print '\033[31m[ERROR]: {}\033[0m'.format(e)
+                print '\033[31m[ERROR]: {}\n\033[0m'.format(e)
                 sys.exit(-1)
         sys.exit(0)
 
