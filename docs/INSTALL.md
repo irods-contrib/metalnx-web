@@ -27,15 +27,16 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 
 1. [Introduction](#introduction)
 2. [Overview](#metalnx_overview)
-3. [Metalnx Web Installation](#metalnx_installation)
-4. [Metalnx Web Installation Process](#metalnx_installation_process)
-5. [Apache Tomcat Installation](#apache_tomcat_installation)
-6. [Install the Metalnx Web Application](#install_metalnx)
-7. [Configure the Metalnx Database](#config_metalnx_database)
-8. [Setup Metalnx](#setup_metalnx)
-9. [Accessing Metalnx](#accessing_metalnx)
-10. [Metalnx Install Checklist](#metalnx_checklist)
-11. [Integration With LDAP](#LDAP)
+3. [Metalnx Packages](#metalnx_packages)
+4. [Metalnx Web Installation](#metalnx_installation)
+5. [Metalnx Web Installation Process](#metalnx_installation_process)
+6. [Apache Tomcat Installation](#apache_tomcat_installation)
+7. [Install the Metalnx Web Application](#install_metalnx)
+8. [Configure the Metalnx Database](#config_metalnx_database)
+9. [Setup Metalnx](#setup_metalnx)
+10. [Accessing Metalnx](#accessing_metalnx)
+11. [Metalnx Install Checklist](#metalnx_checklist)
+12. [Integration With LDAP](#LDAP)
 
 </font>
 
@@ -162,6 +163,26 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 </li>
 </ol>
  
+[[Back to: Table of Contents](#TOC)]
+
+----------
+<br>
+<font color="#0066CC"> <font size=+2> __Metalnx Packages__ </font></font> <a name="metalnx_packages"></a>
+
+### JFrog Bintray ###
+
+You do not need to build Metalnx from scratch unless you want to. We already provide all packages needed to run Metalnx in your environment. The packages are available on our [Bintray repository](https://bintray.com/metalnx).
+
+You can download each package from the following links:
+
+- Metalnx Web: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-web#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-web#files)
+- Metalnx MSI: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-msi#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-msi#files)
+- Metalnx RMD: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-rmd#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-rmd#files)
+
+### Docker ###
+
+Metalnx also has a Docker image that is ready for you to deploy in your environment. For more information about this image, please check [Metalnx Docker](DOCKER.md).
+
 [[Back to: Table of Contents](#TOC)]
 
 ----------
