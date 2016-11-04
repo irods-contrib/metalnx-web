@@ -27,15 +27,16 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 
 1. [Introduction](#introduction)
 2. [Overview](#metalnx_overview)
-3. [Metalnx Web Installation](#metalnx_installation)
-4. [Metalnx Web Installation Process](#metalnx_installation_process)
-5. [Apache Tomcat Installation](#apache_tomcat_installation)
-6. [Install the Metalnx Web Application](#install_metalnx)
-7. [Configure the Metalnx Database](#config_metalnx_database)
-8. [Setup Metalnx](#setup_metalnx)
-9. [Accessing Metalnx](#accessing_metalnx)
-10. [Metalnx Install Checklist](#metalnx_checklist)
-11. [Integration With LDAP](#LDAP)
+3. [Metalnx Packages](#metalnx_packages)
+4. [Metalnx Web Installation](#metalnx_installation)
+5. [Metalnx Web Installation Process](#metalnx_installation_process)
+6. [Apache Tomcat Installation](#apache_tomcat_installation)
+7. [Install the Metalnx Web Application](#install_metalnx)
+8. [Configure the Metalnx Database](#config_metalnx_database)
+9. [Setup Metalnx](#setup_metalnx)
+10. [Accessing Metalnx](#accessing_metalnx)
+11. [Metalnx Install Checklist](#metalnx_checklist)
+12. [Integration With LDAP](#LDAP)
 
 </font>
 
@@ -162,6 +163,26 @@ The Metalnx RDMBS.  Metalnx requires its own small database.  The database manag
 </li>
 </ol>
  
+[[Back to: Table of Contents](#TOC)]
+
+----------
+<br>
+<font color="#0066CC"> <font size=+2> __Metalnx Packages__ </font></font> <a name="metalnx_packages"></a>
+
+### JFrog Bintray ###
+
+You do not need to build Metalnx from scratch unless you want to. We already provide all packages needed to run Metalnx in your environment. The packages are available on our [Bintray repository](https://bintray.com/metalnx).
+
+You can download each package from the following links:
+
+- Metalnx Web: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-web#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-web#files/emc-metalnx-web/1.0/pool/main/e/emc-metalnx-web)
+- Metalnx MSI: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-msi#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-msi#files)
+- Metalnx RMD: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-rmd#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-rmd#files)
+
+### Docker ###
+
+Metalnx also has a Docker image that is ready for you to deploy in your environment. For more information about this image, please check [Metalnx Docker](DOCKER.md).
+
 [[Back to: Table of Contents](#TOC)]
 
 ----------
@@ -315,6 +336,7 @@ If you plan to allow https also add the line:
 
 If the `firewall-cmd` command is available on your command line interface, the configuration changes can be achieved by typing the following commands in your terminal:
     
+    firewall-cmd --zone=public --add-port=8080/tcp --permanent          # Tomcat configuration
     firewall-cmd --zone=public --add-port=1247/tcp --permanent          # iRODS configuration
     firewall-cmd --zone=public --add-port=1248/tcp --permanent          # iRODS configuration
     firewall-cmd --zone=public --permanent --add-port=20000-20199/tcp   # iRODS configuration
@@ -425,6 +447,27 @@ The command to setup the database will vary between whether you will use MySQL o
 
     Postgres=# \q
 
+Some extra configuration may be needed for Metalnx to be able to authenticate correctly against Postgres.
+
+Open the Postgres HBA configuration file:
+
+	# vim /var/lib/pgsql/data/pg_hba.conf
+	
+Find the lines that look like this, near the bottom of the file:
+
+	host    all             all             127.0.0.1/32            ident
+	host    all             all             ::1/128                 ident
+
+Replace *ident* with *md5* or *trust*:
+
+	host    all             all             127.0.0.1/32            md5
+	host    all             all             ::1/128                 md5
+
+Then, start and enable Postgres:
+
+	# systemctl start postgresql
+	# systemctl enable postgresql
+
 **Configure using MySQL**
 
 **1)** Become the user mysql root user using the command:
@@ -467,6 +510,13 @@ The Metalnx installation package comes with a setup script.  The script setup th
 Once the RPM package is installed, run the Metalnx setup script, as root:
 
     # python /<metalnx-script-dir>/setup_metalnx.py
+
+In case `setup_metalnx.py` cannot find the `pyscopg2` or `MySQL` modules, please run the following commands to install the required dependencies according to your database (MySQL or Postgres) and your OS distribuition:
+
+	# apt-get install python-psycopg2    # Ubuntu - PostgreSQL
+	# apt-get install python-mysqldb     # Ubuntu - MySQL
+	# yum install python-psycopg2	     # CentOS - PostgreSQL
+	# yum install MySQL-python           # CentOS - MySQL
 
 The script is organized in steps, so you can easily identify what is changed during its execution. The script will request several pieces of information and it will make sure all dependencies required by Metalnx are met. Details below:
 
@@ -674,6 +724,46 @@ Log in with the default iRODS admin username and password setup when iRODS was i
 
 ![alt text] [7]
 [7]: IMAGES/Install_figure_7_metalnx_dashboard.png "Figure 7 - Metalnx Dashboard"
+
+[[Back to: Table of Contents](#TOC)]
+
+-------------- 
+
+<br>
+**Modifing properties files directly**
+
+*NOTICE: If you already run the script and you are able to access the Metalnx UI, this section can be skipped. This is troubleshooting section in case an Authentication Error happens in the UI.*
+
+Metalnx uses configuration files to keep the correct parameters for your environment. Although it is strongly recommended that you use the Metalnx setup script for any configuration changes, you can directly modify these files to set up the parameters you prefer.
+
+There are 7 configuration files in total and they are located under `<your-tomcat-directory>/webapps/emc-metalnx-web/WEB-INF/classes`.
+
+* **database.properties**: database connection and authentication parameters
+* **irods.environment.properties**: iRODS connection and authentication parameters
+* **security.properties**: security parameters (tells Metalnx which credentials are encoded)
+* **log4j.properties**: set the log levels for all frameworks used by Metalnx
+* **msi.properties**: enable/disable the illumina and photo-metadata-extraction microservices
+* **mysql.properties**: basically has the same structure as database.properties, but specific for MySQL databases
+* **postgresql.properties**: basically has the same structure as database.properties, but specific for PostgreSQL databases
+                               
+If an Authentication Error is shown on the UI, it is likely that there is a misconfiguration in database.properties, irods.environment.properties or security.properties.
+
+First of all, make sure the credentials shown in all these files are actually correct, the Metalnx database exists and the user in *database.properties* file (`db.username`) has rights to modify it (Refer to: [Configure the Metalnx Database](#config_metalnx_database)) and the iRODS credentials belong to a rodsadmin user.
+
+Second, make sure there are no spaces between configuration parameters and their values.
+
+	db.driverClassName = com.mysql.jdbc.Driver   # WRONG
+	db.driverClassName= com.mysql.jdbc.Driver    # WRONG
+	db.driverClassName =com.mysql.jdbc.Driver    # WRONG
+	db.driverClassName=com.mysql.jdbc.Driver     # CORRECT
+                
+Finally, modify the **security.properties** file. For security reasons, during the installation process, some configuration parameters (passwords) are encoded. This file tells Metalnx which parameters were encoded and need to be decoded when the application starts. 
+
+However, those parameters are encoded only if the Metalnx setup script is used. Since we are modifing *properties* files directly, they will be plain text. Then, Metalnx needs to know that it is no longer necessary to decode them. We do so by either removing *db.password,jobs.irods.password* or commenting the entire line out:
+
+	encoded.properties=                                         # CORRECT
+	# encoded.properties=db.password,jobs.irods.password        # CORRECT
+
 
 [[Back to: Table of Contents](#TOC)]
 
