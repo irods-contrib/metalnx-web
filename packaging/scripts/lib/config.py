@@ -138,8 +138,8 @@ def encode_password(pwd):
 
 def get_mlx_url(is_https):
     if is_https:
-        return MLX_URL_REGEX.format('https', gethostname(), '8443')
-    return MLX_URL_REGEX.format('http', gethostname(), '8080')
+        return MLX_URL_FORMAT.format('https', gethostname(), '8443')
+    return MLX_URL_FORMAT.format('http', gethostname(), '8080')
 
 RELEASE_VERSION = '1.0'
 BUILD_NUMBER = '100'
@@ -153,7 +153,7 @@ POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
 
 GITHUB_URL = 'https://github.com/Metalnx/metalnx-web'
-MLX_URL_REGEX = '{}://{}:{}/emc-metalnx-web/login/'
+MLX_URL_FORMAT = '{}://{}:{}/emc-metalnx-web/login/'
 
 HIBERNATE_CONFIG = {
     MYSQL: {
