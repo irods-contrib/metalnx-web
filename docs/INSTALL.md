@@ -175,7 +175,7 @@ You do not need to build Metalnx from scratch unless you want to. We already pro
 
 You can download each package from the following links:
 
-- Metalnx Web: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-web#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-web#files)
+- Metalnx Web: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-web#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-web#files/emc-metalnx-web/1.0/pool/main/e/emc-metalnx-web)
 - Metalnx MSI: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-msi#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-msi#files)
 - Metalnx RMD: [RPM](https://bintray.com/metalnx/rpm/emc-metalnx-rmd#files) and [DEB](https://bintray.com/metalnx/deb/emc-metalnx-rmd#files)
 
