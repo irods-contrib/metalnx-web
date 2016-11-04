@@ -326,7 +326,7 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                         ciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA\" />
                 """.format(keystore_path, keystore_password)
 
-                new_path = path.join(self.tomcat_home, 'conf', 'server.xml')
+                new_path = path.join(self.tomcat_conf_dir, 'conf', 'server.xml')
                 self._backup_files(new_path)
                 subprocess.check_call([
                     'sed', '-i',
