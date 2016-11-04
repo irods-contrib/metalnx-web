@@ -136,6 +136,10 @@ def encode_password(pwd):
 
     return b64encode(encode(pwd, pick_key(gethostname())))
 
+def get_mlx_url(is_https):
+    if is_https:
+        return MLX_URL_REGEX.format('https', gethostname(), '8443')
+    return MLX_URL_REGEX.format('http', gethostname(), '8080')
 
 RELEASE_VERSION = '1.0'
 BUILD_NUMBER = '100'
@@ -149,7 +153,7 @@ POSTGRESQL = 'postgresql'
 MYSQL = 'mysql'
 
 GITHUB_URL = 'https://github.com/Metalnx/metalnx-web'
-MLX_URL = 'http://{}:8080/emc-metalnx-web/login/'.format(gethostname())
+MLX_URL_REGEX = '{}://{}:{}/emc-metalnx-web/login/'
 
 HIBERNATE_CONFIG = {
     MYSQL: {
@@ -274,7 +278,7 @@ DB_PROPS_SPEC = {
 INSTALL_STEPS = [
     'config_java_devel',
     'config_tomcat_home',
-    #'config_tomcat_shutdown',
+    'config_tomcat_shutdown',
     'config_metalnx_package',
     'config_existing_setup',
     'config_war_file',
@@ -283,7 +287,7 @@ INSTALL_STEPS = [
     'config_restore_conf',
     'config_set_https',
     'config_confirm_props',
-    #'config_tomcat_startup',
+    'config_tomcat_startup',
     'config_displays_summary',
 ]
 

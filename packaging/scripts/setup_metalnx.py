@@ -68,6 +68,9 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
                 choices=['yes', 'no'],
                 default='yes'
             )
+        else:
+            print 'A Tomcat installation could not be automatically found in your system.'
+
         if conf == 'yes':
             self.tomcat_home = dirs['home']
             self.tomcat_webapps_dir = dirs['webapps']
@@ -111,7 +114,8 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_tomcat_shutdown(self):
         """Shuts tomcat down before configuration"""
-        subprocess.call(['service', 'tomcat', 'stop'])
+        tomcat = self.tomcat_home[self.tomcat_home.rfind('/')+1:]
+        subprocess.call(['service', tomcat, 'stop'])
 
     def config_metalnx_package(self):
         """It will check if the Metalnx package has been correctly installed"""
@@ -389,14 +393,15 @@ class MetalnxContext(DBConnectionTestMixin, IRODSConnectionTestMixin, FileManipu
 
     def config_tomcat_startup(self):
         """Starting tomcat back again"""
-        subprocess.call(['service', 'tomcat', 'start'])
+        tomcat = self.tomcat_home[self.tomcat_home.rfind('/')+1:]
+        subprocess.call(['service', tomcat, 'start'])
 
     def config_displays_summary(self):
         """Metalnx configuration finished"""
         print
         print '\033[92mMetalnx configuration finished successfully!\033[0m'
-        print '\033[4m\nPlease, restart your Tomcat for the changes to be applied\n\033[0m\n'
-        print 'You can access your Metalnx instance at:\n    \033[4m{}\033[0m\n'.format(MLX_URL)
+        #print '\033[4m\nPlease, restart your Tomcat for the changes to be applied\n\033[0m\n'
+        print 'You can access your Metalnx instance at:\n    \033[4m{}\033[0m\n'.format(get_mlx_url(self.is_https))
         print 'For further information and help, refer to:\n    \033[4m{}\033[0m\n'.format(GITHUB_URL)
         print
 

@@ -91,7 +91,6 @@ def read_input(question, default=None, hidden=False, choices=None, allow_empty=F
 
     raise Exception('Too many tries. Please restart the configuration script.')
 
-
 class MetalnxConfigParser(object):
     def __init__(self, fp):
         self.fp = fp
