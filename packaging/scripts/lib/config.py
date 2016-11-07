@@ -15,7 +15,7 @@ import getpass
 from base64 import b64encode
 from hashlib import md5
 from socket import gethostname
-from os import path
+from os import path, getenv
 
 KEY_VAL_SEPARATOR = '='
 
@@ -57,7 +57,8 @@ class MetalnxConfigEnv(object):
     def set(self, option, value):
         """
         Saves all key, values params into memory to be dumped into a file later
-        :param kwargs:
+        :param option: config param name
+        :param value: value for config param
         :return: None
         """
         if not option or not value:
@@ -136,13 +137,14 @@ def encode_password(pwd):
 
     return b64encode(encode(pwd, pick_key(gethostname())))
 
+
 def get_mlx_url(is_https):
     if is_https:
         return MLX_URL_FORMAT('https', gethostname(), '8443')
     return MLX_URL_FORMAT('http', gethostname(), '8080')
 
 RELEASE_VERSION = '1.0'
-BUILD_NUMBER = '246'
+BUILD_NUMBER = getenv('BUILD_NUMBER', default='DEV')
 
 TEST_CONNECTION_JAR = '/opt/emc/test-connection.jar'
 
