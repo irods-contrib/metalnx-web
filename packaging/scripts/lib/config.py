@@ -144,7 +144,7 @@ def get_mlx_url(is_https):
     return MLX_URL_FORMAT('http', gethostname(), '8080')
 
 RELEASE_VERSION = '1.0'
-BUILD_NUMBER = getenv('BUILD_NUMBER', default='DEV')
+BUILD_NUMBER = '251'
 
 TEST_CONNECTION_JAR = '/opt/emc/test-connection.jar'
 
