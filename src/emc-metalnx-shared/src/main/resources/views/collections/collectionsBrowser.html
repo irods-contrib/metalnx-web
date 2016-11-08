@@ -186,7 +186,7 @@
 <div id="directoryPath" class="col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">		
 </div>
 
-<div class="col-xs-12" th:if="${permissionType != 'none'}">
+<div class="col-xs-12" th:if="${permissionType != 'none' or user.isAdmin()}">
 
 	<!-- Apply templates activity indicator -->
 	<div id="actionApplyTemplates" class="col-xs-12 hideElement">
@@ -364,7 +364,7 @@
 </div>
 
 <!-- Some items were not deleted -->
-<div class="col-xs-12" th:unless="${permissionType != 'none'}">
+<div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
     <div class="text-center" role="alert">
         <span>You do not have permissions to access information in the target collection or for the selected object.</span>
         &nbsp;&nbsp;&nbsp;&nbsp;

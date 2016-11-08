@@ -17,20 +17,16 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
+import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
+import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
+import com.emc.metalnx.services.interfaces.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,42 +35,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
 
-import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
-import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
-import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FavoritesService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
-import com.emc.metalnx.services.interfaces.GroupService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MetadataService;
-import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.TemplateService;
-import com.emc.metalnx.services.interfaces.UserBookmarkService;
-import com.emc.metalnx.services.interfaces.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -332,7 +300,7 @@ public class CollectionController {
      * @throws DataGridException
      */
     @RequestMapping(value = "/getSubDirectories/", method = RequestMethod.POST)
-    public String getSubDirectories(Model model, @RequestParam("path") String path) throws DataGridException, JargonException {
+    public String getSubDirectories(Model model, @RequestParam("path") String path) throws DataGridException {
 
         // removes all ocurrences of "/" at the end of the path string
         while (path.endsWith("/") && !"/".equals(path)) {
@@ -349,7 +317,7 @@ public class CollectionController {
             isDataObj = collectionService.isDataObject(path);
         }
         catch (DataGridException e) {
-            logger.error("Path {} doesn't exist", path);
+            logger.error("Path {} doesn't exist or user does not have access permission", path);
         }
         if (obj == null && !isCollection && !isDataObj) {
             model.addAttribute("invalidPath", path);
@@ -1090,7 +1058,7 @@ public class CollectionController {
      * @return collections browser template that renders all items of certain path (parent)
      * @throws DataGridConnectionRefusedException
      */
-    private String getCollectionsAndDataObjsUnderPath(Model model, String path) throws DataGridException, JargonException {
+    private String getCollectionsAndDataObjsUnderPath(Model model, String path) throws DataGridException {
         String permissionType = "none";
         Boolean isCurrentPathCollection = false;
 
@@ -1126,12 +1094,14 @@ public class CollectionController {
             logger.error("Could not get file info for {}", path, e);
         }
 
-        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, loggedUserUtils.getLoggedDataGridUser());
+        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
 
         model.addAttribute("collectionAndDataObject", dataGridObj);
         model.addAttribute("permissionType", permissionType);
         model.addAttribute("currentPath", currentPath);
         model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
+        model.addAttribute("user", user);
 
         return "collections/collectionsBrowser";
     }
