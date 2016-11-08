@@ -311,6 +311,7 @@ public class CollectionController {
         DataGridCollectionAndDataObject obj = null;
         boolean isCollection = false;
         boolean isDataObj = false;
+
         try {
             obj = collectionService.findByName(path);
             isCollection = collectionService.isCollection(path);
@@ -341,7 +342,7 @@ public class CollectionController {
 
         model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(path));
 
-        return getCollectionsAndDataObjsUnderPath(model, path);
+        return getCollBrowserView(model, path);
     }
 
     /**
@@ -357,7 +358,7 @@ public class CollectionController {
         if (collectionHistoryBack.size() < steps || steps < 1) {
             model.addAttribute("invalidStepsBackwards", steps);
             logger.info("It is not possible to go back {} steps, current stack size is {}", steps, collectionHistoryBack.size());
-            return getCollectionsAndDataObjsUnderPath(model, currentPath);
+            return getCollBrowserView(model, currentPath);
         }
 
         logger.info("Going back {} steps in collection history", steps);
@@ -376,7 +377,7 @@ public class CollectionController {
         }
 
         model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryBack.peek()));
-        return getCollectionsAndDataObjsUnderPath(model, collectionHistoryBack.pop());
+        return getCollBrowserView(model, collectionHistoryBack.pop());
     }
 
     /**
@@ -391,7 +392,7 @@ public class CollectionController {
     public String goForwardHistory(Model model, @RequestParam("steps") int steps) throws DataGridException, JargonException {
         if (collectionHistoryForward.size() < steps || steps < 1) {
             model.addAttribute("invalidStepsForward", steps);
-            return getCollectionsAndDataObjsUnderPath(model, currentPath);
+            return getCollBrowserView(model, currentPath);
         }
 
         logger.info("Going {} steps forward in collection history", steps);
@@ -410,7 +411,7 @@ public class CollectionController {
         }
 
         model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryForward.peek()));
-        return getCollectionsAndDataObjsUnderPath(model, collectionHistoryForward.pop());
+        return getCollBrowserView(model, collectionHistoryForward.pop());
     }
 
     /**
@@ -992,120 +993,6 @@ public class CollectionController {
         return mostRestrictivePermission;
     }
 
-    /*
-     * **************************************************************************
-     * **************************** PRIVATE METHODS *****************************
-     * **************************************************************************
-     */
-
-    /**
-     * Sets the current path and parent path based on a given path.
-     *
-     * @param path
-     *            new path to update current path and parent path
-     */
-    private void assignNewValuesToCurrentAndParentPath(String path) {
-        if (path == null || path.isEmpty()) {
-            return;
-        }
-
-        currentPath = path;
-        parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
-    }
-
-    /**
-     * Creates the breadcrumb based on a given path.
-     *
-     * @param model
-     *            Model attribute to set variables to be used in the view
-     * @param path
-     *            path that will be displayed in the breadcrumb
-     */
-    private void setBreadcrumbToModel(Model model, String path) {
-
-        DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
-        try {
-            obj = collectionService.findByName(path);
-        }
-        catch (DataGridException e) {
-            obj.setPath(path);
-            obj.setCollection(false);
-            obj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
-            obj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
-            logger.error("Could not find DataGridCollectionAndDataObject by path: {}", e.getMessage());
-        }
-
-        ArrayList<String> listHistoryBack = new ArrayList<String>(collectionHistoryBack);
-        Collections.reverse(listHistoryBack);
-
-        model.addAttribute("collectionPastHistory", listHistoryBack);
-        model.addAttribute("collectionPastHistoryEmpty", collectionHistoryBack.isEmpty());
-        model.addAttribute("collectionForwardHistory", collectionHistoryForward);
-        model.addAttribute("collectionForwardHistoryEmpty", collectionHistoryForward.isEmpty());
-        model.addAttribute("collectionForwardHistory", collectionHistoryForward);
-        model.addAttribute("collectionAndDataObject", obj);
-        model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
-        model.addAttribute("starredPath", favoritesService.isPathFavoriteForUser(loggedUserUtils.getLoggedDataGridUser(), path));
-        model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
-    }
-
-    /**
-     * Finds all collections and data objects existing under a certain path
-     *
-     * @param model
-     * @param path
-     *            path to get all directories from
-     * @return collections browser template that renders all items of certain path (parent)
-     * @throws DataGridConnectionRefusedException
-     */
-    private String getCollectionsAndDataObjsUnderPath(Model model, String path) throws DataGridException {
-        String permissionType = "none";
-        Boolean isCurrentPathCollection = false;
-
-        permissionType = collectionService.getPermissionsForPath(path);
-        isCurrentPathCollection = collectionService.isCollection(path);
-
-        if (path.isEmpty()) {
-            path = currentPath;
-        }
-        else {
-            if (path.endsWith("/") && path.compareTo("/") != 0) {
-                path = path.substring(0, path.length() - 1);
-            }
-            currentPath = path;
-        }
-
-        setBreadcrumbToModel(model, path);
-
-        DataGridCollectionAndDataObject dataGridObj = new DataGridCollectionAndDataObject();
-        try {
-            dataGridObj = collectionService.findByName(path);
-            if (dataGridObj != null && !dataGridObj.isCollection()) {
-                dataGridObj.setChecksum(collectionService.getChecksum(path));
-                dataGridObj.setNumberOfReplicas(collectionService.getTotalNumberOfReplsForDataObject(path));
-                dataGridObj.setReplicaNumber(String.valueOf(collectionService.getReplicationNumber(path)));
-            }
-        }
-        catch (DataGridException e) {
-            dataGridObj.setPath(path);
-            dataGridObj.setCollection(false);
-            dataGridObj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
-            dataGridObj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
-            logger.error("Could not get file info for {}", path, e);
-        }
-
-        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
-        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
-
-        model.addAttribute("collectionAndDataObject", dataGridObj);
-        model.addAttribute("permissionType", permissionType);
-        model.addAttribute("currentPath", currentPath);
-        model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
-        model.addAttribute("user", user);
-
-        return "collections/collectionsBrowser";
-    }
-
     /**
      * Finds all collections and data objects existing under a certain path
      *
@@ -1195,5 +1082,119 @@ public class CollectionController {
     	
     	collectionHistoryBack.remove(path);
     	collectionHistoryForward.remove(path);
+    }
+
+    /*
+     * **************************************************************************
+     * **************************** PRIVATE METHODS *****************************
+     * **************************************************************************
+     */
+
+    /**
+     * Sets the current path and parent path based on a given path.
+     *
+     * @param path
+     *            new path to update current path and parent path
+     */
+    private void assignNewValuesToCurrentAndParentPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return;
+        }
+
+        currentPath = path;
+        parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * Creates the breadcrumb based on a given path.
+     *
+     * @param model
+     *            Model attribute to set variables to be used in the view
+     * @param path
+     *            path that will be displayed in the breadcrumb
+     */
+    private void setBreadcrumbToModel(Model model, String path) {
+
+        DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
+        try {
+            obj = collectionService.findByName(path);
+        }
+        catch (DataGridException e) {
+            obj.setPath(path);
+            obj.setCollection(false);
+            obj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
+            obj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
+            logger.error("Could not find DataGridCollectionAndDataObject by path: {}", e.getMessage());
+        }
+
+        ArrayList<String> listHistoryBack = new ArrayList<String>(collectionHistoryBack);
+        Collections.reverse(listHistoryBack);
+
+        model.addAttribute("collectionPastHistory", listHistoryBack);
+        model.addAttribute("collectionPastHistoryEmpty", collectionHistoryBack.isEmpty());
+        model.addAttribute("collectionForwardHistory", collectionHistoryForward);
+        model.addAttribute("collectionForwardHistoryEmpty", collectionHistoryForward.isEmpty());
+        model.addAttribute("collectionForwardHistory", collectionHistoryForward);
+        model.addAttribute("collectionAndDataObject", obj);
+        model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
+        model.addAttribute("starredPath", favoritesService.isPathFavoriteForUser(loggedUserUtils.getLoggedDataGridUser(), path));
+        model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
+    }
+
+    /**
+     * Finds all collections and data objects existing under a certain path
+     *
+     * @param model
+     * @param path
+     *            path to get all directories from
+     * @return collections browser template that renders all items of certain path (parent)
+     * @throws DataGridConnectionRefusedException
+     */
+    private String getCollBrowserView(Model model, String path) throws DataGridException {
+        String permissionType = "none";
+        Boolean isCurrentPathCollection = false;
+
+        permissionType = collectionService.getPermissionsForPath(path);
+        isCurrentPathCollection = collectionService.isCollection(path);
+
+        if (path.isEmpty()) {
+            path = currentPath;
+        }
+        else {
+            if (path.endsWith("/") && path.compareTo("/") != 0) {
+                path = path.substring(0, path.length() - 1);
+            }
+            currentPath = path;
+        }
+
+        setBreadcrumbToModel(model, path);
+
+        DataGridCollectionAndDataObject dataGridObj = new DataGridCollectionAndDataObject();
+        try {
+            dataGridObj = collectionService.findByName(path);
+            if (dataGridObj != null && !dataGridObj.isCollection()) {
+                dataGridObj.setChecksum(collectionService.getChecksum(path));
+                dataGridObj.setNumberOfReplicas(collectionService.getTotalNumberOfReplsForDataObject(path));
+                dataGridObj.setReplicaNumber(String.valueOf(collectionService.getReplicationNumber(path)));
+            }
+        }
+        catch (DataGridException e) {
+            dataGridObj.setPath(path);
+            dataGridObj.setCollection(false);
+            dataGridObj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
+            dataGridObj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
+            logger.error("Could not get file info for {}", path, e);
+        }
+
+        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
+
+        model.addAttribute("collectionAndDataObject", dataGridObj);
+        model.addAttribute("permissionType", permissionType);
+        model.addAttribute("currentPath", currentPath);
+        model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
+        model.addAttribute("user", user);
+
+        return "collections/collectionsBrowser";
     }
 }

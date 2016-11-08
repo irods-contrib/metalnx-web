@@ -590,8 +590,6 @@
 					});
 					$('#filesList').html('');
 					$('#numberFilesUpload').html('No');
-					/* $('#uploadForm > .text-right').hide(); */
-					/* $('#uploadForm > .well').hide(); */
 					$('#uploadControlOptions').hide();
 					$('#browseButton').show();
 					
@@ -621,17 +619,15 @@
 			});
 
 			function getSubDirectories(path) {	
-				//$(".alert").hide();		
-				
 				$("#table-loader").show();
-				$("#tree-view-panel-body").hide();	
+				$("#tree-view-panel-body").hide();
 				
 				setTimeout(function () {
 					ajaxEncapsulation("/emc-metalnx-web/collections/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
 					currentPath = path;
 				}, 400);
-				
-			}	
+			}
+
 			function displaySubDirectories(data) {
 			    resetDataTablesStart();
 				$("#table-loader").hide();

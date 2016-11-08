@@ -20,7 +20,7 @@
 	<div class="alert alert-danger" role="alert"
 		th:if="${invalidPath != null}">
 		<p class="text-center">
-			The provided path "<b th:text="${invalidPath}"></b>" is not a valid one.
+			<b th:text="${invalidPath}"></b> does not exist or user lacks access permission.
 		</p>
 	</div>
 </div>
