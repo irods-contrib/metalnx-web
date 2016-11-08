@@ -17,13 +17,9 @@
 
 package com.emc.metalnx.services.machine.util;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.services.auth.UserTokenDetails;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.DataObject;
 import org.irods.jargon.core.pub.domain.Resource;
@@ -39,9 +35,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.services.auth.UserTokenDetails;
+import java.util.*;
 
 public class DataGridUtils {
     private static final Logger logger = LoggerFactory.getLogger(DataGridUtils.class);
@@ -387,8 +381,8 @@ public class DataGridUtils {
         List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
 
         for (CollectionAndDataObjectListingEntry entry : entries) {
+            if("/".equals(entry.getPathOrName())) continue;
             DataGridCollectionAndDataObject dataGridCollectionAndDataObject = mapListingEntryToDataGridCollectionAndDataObject(entry);
-
             dataGridCollectionAndDataObjects.add(dataGridCollectionAndDataObject);
         }
 

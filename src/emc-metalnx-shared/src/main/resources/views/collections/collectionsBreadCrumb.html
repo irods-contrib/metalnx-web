@@ -43,8 +43,7 @@
 
 	<th:block th:each="breadcrumbItem, eachLoop: ${breadcrumb.items}">
 		<li th:if="${ eachLoop.last == false }">
-			<a
-				href="#"
+			<a  href="#"
 				th:text="${breadcrumbItem.name}"
 				th:title="${breadcrumbItem.path}"
 				th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
@@ -54,7 +53,9 @@
 	</th:block>
 		
 	<li>
-		<span th:text="${ collectionAndDataObject.name }" th:title="${ collectionAndDataObject.path }">
+		<span th:if="${collectionAndDataObject.path != '/'}"
+			  th:text="${ collectionAndDataObject.name }"
+			  th:title="${ collectionAndDataObject.path }">
 		</span>
 	</li>
 	

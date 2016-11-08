@@ -17,26 +17,16 @@
 
 package com.emc.metalnx.services.irods;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.services.interfaces.*;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
-import org.irods.jargon.core.pub.BulkFileOperationsAO;
-import org.irods.jargon.core.pub.CollectionAO;
-import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
-import org.irods.jargon.core.pub.DataObjectAO;
-import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.SpecificQueryAO;
+import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.domain.Collection;
 import org.irods.jargon.core.pub.domain.DataObject;
 import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
@@ -52,24 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridFilePermission;
-import com.emc.metalnx.core.domain.entity.DataGridGroupPermission;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridUserPermission;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
-import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
-import com.emc.metalnx.services.interfaces.AdminServices;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FileOperationService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @Transactional
@@ -141,7 +115,7 @@ public class CollectionServiceImpl implements CollectionService {
             String searchText, int pageNum, int pageSize, DataGridPageContext pageContext) throws DataGridDataNotFoundException,
             DataGridQueryException, DataGridException {
 
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
 
         List<DataGridCollectionAndDataObject> dataGridCollections = null;
         List<DataGridCollectionAndDataObject> dataGridObjects = null;
@@ -720,6 +694,8 @@ public class CollectionServiceImpl implements CollectionService {
         logger.debug("Mapping a CollectionAndDataObjectListingEntry into a " + "DataGridCollectionAndDataObject");
 
         String entryPath = "";
+        String entryName = "";
+        DataGridCollectionAndDataObject dgObj = null;
 
         if (entry.isCollection()) {
             entryPath = entry.getPathOrName();
@@ -731,14 +707,17 @@ public class CollectionServiceImpl implements CollectionService {
             }
         }
 
-        DataGridCollectionAndDataObject dataGridCollectionAndDataObject = new DataGridCollectionAndDataObject(entryPath,
-                entry.getNodeLabelDisplayValue(), entry.getParentPath(), entry.isCollection());
+        entryName = entry.getNodeLabelDisplayValue();
+        if(entryName == null || entryName.isEmpty()) {
+            entryName = entryPath;
+        }
 
-        dataGridCollectionAndDataObject.setCreatedAt(entry.getCreatedAt());
-        dataGridCollectionAndDataObject.setModifiedAt(entry.getModifiedAt());
-        dataGridCollectionAndDataObject.setOwner(entry.getOwnerName());
+        dgObj = new DataGridCollectionAndDataObject(entryPath, entryName, entry.getParentPath(), entry.isCollection());
+        dgObj.setCreatedAt(entry.getCreatedAt());
+        dgObj.setModifiedAt(entry.getModifiedAt());
+        dgObj.setOwner(entry.getOwnerName());
 
-        return dataGridCollectionAndDataObject;
+        return dgObj;
     }
 
     @Override
