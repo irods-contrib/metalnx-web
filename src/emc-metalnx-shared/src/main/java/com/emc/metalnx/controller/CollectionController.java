@@ -135,7 +135,7 @@ public class CollectionController {
 
         homePath = collectionService.getHomeDirectyForCurrentUser();
 
-        sourcePaths = new ArrayList<String>();
+        sourcePaths = new ArrayList<>();
         parentPath = "";
         currentPath = "";
         TRASH_PATH = String.format("/%s/trash", irodsServices.getCurrentUserZone());
@@ -342,8 +342,6 @@ public class CollectionController {
             }
         }
 
-        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(path));
-
         return getCollBrowserView(model, path);
     }
 
@@ -378,7 +376,6 @@ public class CollectionController {
             collectionHistoryForward.push(elementHistory);
         }
 
-        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryBack.peek()));
         return getCollBrowserView(model, collectionHistoryBack.pop());
     }
 
@@ -412,7 +409,6 @@ public class CollectionController {
             collectionHistoryBack.push(elementHistory);
         }
 
-        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryForward.peek()));
         return getCollBrowserView(model, collectionHistoryForward.pop());
     }
 
@@ -1154,8 +1150,8 @@ public class CollectionController {
      */
     private String getCollBrowserView(Model model, String path) throws DataGridException {
         String permissionType = "none";
-        Boolean isCurrentPathCollection = false;
-        Boolean isTrash = false;
+        boolean isCurrentPathCollection = false;
+        boolean isTrash = false;
 
         permissionType = collectionService.getPermissionsForPath(path);
         isCurrentPathCollection = collectionService.isCollection(path);
