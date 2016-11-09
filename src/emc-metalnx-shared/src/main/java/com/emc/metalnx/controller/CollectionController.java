@@ -111,6 +111,7 @@ public class CollectionController {
     public static final String UI_USER_MODE = "user";
     public static final String UI_ADMIN_MODE = "admin";
     private static String TRASH_PATH;
+    private static String USER_TRASH_PATH;
 
     public static final int MAX_HISTORY_SIZE = 10;
 
@@ -137,7 +138,8 @@ public class CollectionController {
         sourcePaths = new ArrayList<String>();
         parentPath = "";
         currentPath = "";
-        TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
+        TRASH_PATH = String.format("/%s/trash", irodsServices.getCurrentUserZone());
+        USER_TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
     }
 
     /**
@@ -340,7 +342,7 @@ public class CollectionController {
             }
         }
 
-        model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(path));
+        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(path));
 
         return getCollBrowserView(model, path);
     }
@@ -376,7 +378,7 @@ public class CollectionController {
             collectionHistoryForward.push(elementHistory);
         }
 
-        model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryBack.peek()));
+        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryBack.peek()));
         return getCollBrowserView(model, collectionHistoryBack.pop());
     }
 
@@ -410,7 +412,7 @@ public class CollectionController {
             collectionHistoryBack.push(elementHistory);
         }
 
-        model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryForward.peek()));
+        //model.addAttribute("isTrash", TRASH_PATH.equalsIgnoreCase(collectionHistoryForward.peek()));
         return getCollBrowserView(model, collectionHistoryForward.pop());
     }
 
@@ -811,7 +813,7 @@ public class CollectionController {
         // cleaning session variables
         sourcePaths.clear();
 
-        currentPath = TRASH_PATH;
+        currentPath = USER_TRASH_PATH;
         parentPath = currentPath;
 
         model.addAttribute("currentPath", currentPath);
@@ -1153,6 +1155,7 @@ public class CollectionController {
     private String getCollBrowserView(Model model, String path) throws DataGridException {
         String permissionType = "none";
         Boolean isCurrentPathCollection = false;
+        Boolean isTrash = false;
 
         permissionType = collectionService.getPermissionsForPath(path);
         isCurrentPathCollection = collectionService.isCollection(path);
@@ -1188,12 +1191,14 @@ public class CollectionController {
 
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
         permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
+        isTrash = path.contains(TRASH_PATH) && ("own".equals(permissionType) || user.isAdmin());
 
         model.addAttribute("collectionAndDataObject", dataGridObj);
         model.addAttribute("permissionType", permissionType);
         model.addAttribute("currentPath", currentPath);
         model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
         model.addAttribute("user", user);
+        model.addAttribute("isTrash", isTrash);
 
         return "collections/collectionsBrowser";
     }
