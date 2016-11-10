@@ -69,11 +69,11 @@
             	<button class="btn btn-primary btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-plus"></i>  Permission  <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
-                    <li><a href="#" th:if="${userCanModify}" data-toggle="modal" data-target="#newUserPermissionModal">
+                <ul class="dropdown-menu" th:if="${userCanModify}">
+                    <li><a href="#" data-toggle="modal" data-target="#newUserPermissionModal">
                     	<span><i class="fa fa-user"></i></span>  <span th:text="#{permissions.page.user.add.button}"></span></a>
                     </li>
-                    <li><a href="#" th:if="${userCanModify}" data-toggle="modal" data-target="#newGroupPermissionModal">
+                    <li><a href="#" data-toggle="modal" data-target="#newGroupPermissionModal">
                     	<span><i class="fa fa-group"></i></span>  <span th:text="#{permissions.page.group.add.button}"></span></a>
                     </li>
                 </ul>

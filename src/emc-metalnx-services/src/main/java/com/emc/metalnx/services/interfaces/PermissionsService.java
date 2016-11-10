@@ -17,14 +17,13 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import java.util.List;
-
 import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import java.util.List;
 
 public interface PermissionsService {
 
@@ -39,7 +38,7 @@ public interface PermissionsService {
      *            user name to check permissions on the given path
      * @return list of {@link DataGridFilePermission} instances
      */
-    public List<DataGridFilePermission> getPathPermissionDetails(String path, String username) throws JargonException,
+    List<DataGridFilePermission> getPathPermissionDetails(String path, String username) throws JargonException,
             DataGridConnectionRefusedException;
 
     /**
@@ -50,7 +49,7 @@ public interface PermissionsService {
      * @param path
      * @return list of {@link DataGridFilePermission} instances
      */
-    public List<DataGridFilePermission> getPathPermissionDetails(String path) throws JargonException,
+    List<DataGridFilePermission> getPathPermissionDetails(String path) throws JargonException,
             DataGridConnectionRefusedException;
 
     /**
@@ -59,7 +58,7 @@ public interface PermissionsService {
      * @param ufps
      * @return list of {@link DataGridGroupPermission}
      */
-    public List<DataGridGroupPermission> getGroupsWithPermissions(List<DataGridFilePermission> ufps);
+    List<DataGridGroupPermission> getGroupsWithPermissions(List<DataGridFilePermission> ufps);
 
     /**
      * Gets all the users (not including groups) with some kind of permission on the list
@@ -67,39 +66,41 @@ public interface PermissionsService {
      * @param ufps
      * @return list of {@link DataGridUserPermission}
      */
-    public List<DataGridUserPermission> getUsersWithPermissions(List<DataGridFilePermission> ufps);
+    List<DataGridUserPermission> getUsersWithPermissions(List<DataGridFilePermission> ufps);
 
     /**
      * Checks if the logged user can modify a given path
      *
      * @param path
      * @return boolean
+     * @throws DataGridConnectionRefusedException
      */
-    public boolean canLoggedUserModifyPermissionOnPath(String path) throws JargonException, DataGridConnectionRefusedException;
+    boolean canLoggedUserModifyPermissionOnPath(String path) throws DataGridConnectionRefusedException;
 
     /**
      * Updates permission on the given path for the given user or group.
      *
-     * @param permission
+     * @param permType
      * @param userOrGroupName
      *            user or group name to give permissions
      * @param path
      *            that can be a collection or a data object
      * @param recursive
      *            flag that says whether or not the given permission should be applied recursively
+     * @param inAdminMode
+     *          if true, tries to set permission in admin mode (-M option)
+     *          if false, tries to set permission normally (no additional options)
      * @return a {@link boolean} indicating the status of the request
-     * @throws FileNotFoundException
-     * @throws JargonException
      * @throws DataGridConnectionRefusedException
      */
-    public boolean setPermissionOnPath(String permission, String userOrGroupName, String path, boolean recursive) throws
-            JargonException, DataGridConnectionRefusedException;
+    boolean setPermissionOnPath(DataGridPermType permType, String userOrGroupName, String path, boolean recursive, boolean inAdminMode)
+            throws DataGridConnectionRefusedException;
 
     /**
      * Finds resulting most permissive permission for a given user
      * @param obj
      * @param user
      */
-    public void resolveMostPermissiveAccessForUser(DataGridCollectionAndDataObject obj, DataGridUser user) throws
+    void resolveMostPermissiveAccessForUser(DataGridCollectionAndDataObject obj, DataGridUser user) throws
             DataGridException;
 }
