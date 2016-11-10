@@ -19,6 +19,7 @@ package com.emc.metalnx.controller;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
@@ -51,7 +52,7 @@ import java.util.*;
 public class CollectionController {
 
     @Autowired
-    CollectionService collectionService;
+    CollectionService cs;
 
     @Autowired
     ResourceService resourceService;
@@ -132,7 +133,7 @@ public class CollectionController {
         cameFromFilePropertiesSearch = false;
         cameFromBookmarks = false;
 
-        homePath = collectionService.getHomeDirectyForCurrentUser();
+        homePath = cs.getHomeDirectyForCurrentUser();
 
         sourcePaths = new ArrayList<String>();
         parentPath = "";
@@ -153,11 +154,11 @@ public class CollectionController {
         try {
             sourcePaths.clear();
 
-            if (!collectionService.isPathValid(currentPath)) {
+            if (!cs.isPathValid(currentPath)) {
                 currentPath = homePath;
                 parentPath = currentPath;
             }
-            else if (collectionService.isDataObject(currentPath)) {
+            else if (cs.isDataObject(currentPath)) {
                 parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
             }
 
@@ -176,7 +177,7 @@ public class CollectionController {
 
             if (uiMode.equals(UI_USER_MODE)) {
                 model.addAttribute("homePath", homePath);
-                model.addAttribute("publicPath", collectionService.getHomeDirectyForPublic());
+                model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
             }
             if (uploadNewTab) {
                 model.addAttribute("uploadNewTab", uploadNewTab);
@@ -254,7 +255,7 @@ public class CollectionController {
         }
         else {
             for (String path : sourcePaths) {
-                replicasMap = collectionService.listReplicasByResource(path);
+                replicasMap = cs.listReplicasByResource(path);
                 for (DataGridResource resc : replicasMap.values()) {
                     if (resources.contains(resc)) {
                         resources.remove(resc);
@@ -313,9 +314,9 @@ public class CollectionController {
         boolean isDataObj = false;
 
         try {
-            obj = collectionService.findByName(path);
-            isCollection = collectionService.isCollection(path);
-            isDataObj = collectionService.isDataObject(path);
+            obj = cs.findByName(path);
+            isCollection = cs.isCollection(path);
+            isDataObj = cs.isDataObject(path);
         }
         catch (DataGridException e) {
             logger.error("Path {} doesn't exist or user does not have access permission", path);
@@ -436,7 +437,7 @@ public class CollectionController {
         }
 
         // The line below was modified so that only collection would be retrieved
-        model.addAttribute("dataGridCollectionAndDataObjectList", collectionService.getSubCollectionsUnderPath(path));
+        model.addAttribute("dataGridCollectionAndDataObjectList", cs.getSubCollectionsUnderPath(path));
 
         return "collections/oldTreeView :: oldTreeView";
     }
@@ -458,13 +459,13 @@ public class CollectionController {
         Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
         try {
-            dataGridObj = collectionService.findByName(path);
+            dataGridObj = cs.findByName(path);
 
             if (dataGridObj != null && !dataGridObj.isCollection()) {
-                replicasMap = collectionService.listReplicasByResource(path);
-                dataGridObj.setChecksum(collectionService.getChecksum(path));
-                dataGridObj.setNumberOfReplicas(collectionService.getTotalNumberOfReplsForDataObject(path));
-                dataGridObj.setReplicaNumber(String.valueOf(collectionService.getReplicationNumber(path)));
+                replicasMap = cs.listReplicasByResource(path);
+                dataGridObj.setChecksum(cs.getChecksum(path));
+                dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
+                dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
                 permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, loggedUserUtils.getLoggedDataGridUser());
             }
 
@@ -503,7 +504,7 @@ public class CollectionController {
         }
 
         List<DataGridCollectionAndDataObject> list = null;
-        list = collectionService.getSubCollectionsAndDataObjetsUnderPath(path);
+        list = cs.getSubCollectionsAndDataObjetsUnderPath(path);
 
         Set<String> readPermissions = null;
         Set<String> writePermissions = null;
@@ -511,10 +512,10 @@ public class CollectionController {
         Set<String> inheritPermissions = null;
 
         if (retrievePermissions) {
-            readPermissions = collectionService.listReadPermissionsForPathAndGroup(path, groupName);
-            writePermissions = collectionService.listWritePermissionsForPathAndGroup(path, groupName);
-            ownershipPermissions = collectionService.listOwnershipForPathAndGroup(path, groupName);
-            inheritPermissions = collectionService.listInheritanceForPath(path);
+            readPermissions = cs.listReadPermissionsForPathAndGroup(path, groupName);
+            writePermissions = cs.listWritePermissionsForPathAndGroup(path, groupName);
+            ownershipPermissions = cs.listOwnershipForPathAndGroup(path, groupName);
+            inheritPermissions = cs.listInheritanceForPath(path);
         }
         else {
             readPermissions = new HashSet<String>();
@@ -571,14 +572,14 @@ public class CollectionController {
         if (!isPathEmpty) {
             // When adding a user (there is no username), we still need to be
             // able to walk through the iRODS tree
-            list = collectionService.getSubCollectionsAndDataObjetsUnderPath(path);
+            list = cs.getSubCollectionsAndDataObjetsUnderPath(path);
 
             if (!isUsernameEmpty) {
                 if (retrievePermissions) {
-                    readPermissions = collectionService.listReadPermissionsForPathAndUser(path, username);
-                    writePermissions = collectionService.listWritePermissionsForPathAndUser(path, username);
-                    ownershipPermissions = collectionService.listOwnershipForPathAndUser(path, username);
-                    inheritPermissions = collectionService.listInheritanceForPath(path);
+                    readPermissions = cs.listReadPermissionsForPathAndUser(path, username);
+                    writePermissions = cs.listWritePermissionsForPathAndUser(path, username);
+                    ownershipPermissions = cs.listOwnershipForPathAndUser(path, username);
+                    inheritPermissions = cs.listInheritanceForPath(path);
                 }
 
                 List<DataGridUser> users = userService.findByUsername(username);
@@ -616,7 +617,7 @@ public class CollectionController {
         logger.info("Finding collections or data objects that match " + name);
 
         // Find collections and data objects
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = collectionService.searchCollectionAndDataObjectsByName(name + "%");
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = cs.searchCollectionAndDataObjectsByName(name + "%");
         model.addAttribute("dataGridCollectionAndDataObjects", dataGridCollectionAndDataObjects);
         return "collections/collectionsBrowser :: treeView";
     }
@@ -631,8 +632,8 @@ public class CollectionController {
     @RequestMapping(value = "add/")
     public String showAddCollection(Model model) throws DataGridConnectionRefusedException {
         CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
-        String permission = collectionService.getPermissionsForPath(currentPath);
-        boolean inheritance = collectionService.getInheritanceOptionForCollection(currentPath);
+        String permission = cs.getPermissionsForPath(currentPath);
+        boolean inheritance = cs.getInheritanceOptionForCollection(currentPath);
         if (inheritance) {
             collectionForm.setInheritOption(true);
         }
@@ -671,7 +672,7 @@ public class CollectionController {
 
         boolean creationSucessful;
         try {
-            creationSucessful = collectionService.createCollection(newCollection);
+            creationSucessful = cs.createCollection(newCollection);
 
             if (creationSucessful) {
                 redirectAttributes.addFlashAttribute("collectionAddedSuccessfully", collection.getCollectionName());
@@ -706,7 +707,7 @@ public class CollectionController {
         String newPath = String.format("%s/%s", path, collectionForm.getCollectionName());
 
         logger.info("Modify action for " + targetPath + "/" + newPath);
-        modificationSuccessful = collectionService.modifyCollectionAndDataObject(targetPath, newPath, collectionForm.getInheritOption());
+        modificationSuccessful = cs.modifyCollectionAndDataObject(targetPath, newPath, collectionForm.getInheritOption());
         
         if (modificationSuccessful) {
             logger.debug("Collection/Data Object {} modified to {}", targetPath, newPath);
@@ -771,7 +772,7 @@ public class CollectionController {
     public String homeCollection(Model model) throws DataGridConnectionRefusedException, DataGridException {
         // cleaning session variables
         sourcePaths.clear();
-        currentPath = collectionService.getHomeDirectyForCurrentUser();
+        currentPath = cs.getHomeDirectyForCurrentUser();
         parentPath = currentPath;
         return "redirect:/collections/";
     }
@@ -787,13 +788,13 @@ public class CollectionController {
         // cleaning session variables
         sourcePaths.clear();
 
-        currentPath = collectionService.getHomeDirectyForPublic();
+        currentPath = cs.getHomeDirectyForPublic();
         parentPath = currentPath;
 
         model.addAttribute("publicPath", currentPath);
         model.addAttribute("currentPath", currentPath);
         model.addAttribute("parentPath", parentPath);
-        model.addAttribute("homePath", collectionService.getHomeDirectyForCurrentUser());
+        model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
         model.addAttribute("resources", resourceService.findAll());
 
         return "collections/collectionManagement";
@@ -816,8 +817,8 @@ public class CollectionController {
 
         model.addAttribute("currentPath", currentPath);
         model.addAttribute("parentPath", parentPath);
-        model.addAttribute("publicPath", collectionService.getHomeDirectyForPublic());
-        model.addAttribute("homePath", collectionService.getHomeDirectyForCurrentUser());
+        model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
+        model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
         model.addAttribute("resources", resourceService.findAll());
 
         return "collections/collectionManagement";
@@ -930,7 +931,7 @@ public class CollectionController {
         String newPath = String.format("%s/%s", currentPath, newObjectName);
 
         try {
-            collectionService.findByName(newPath);
+            cs.findByName(newPath);
             rc = "false";
         }
         catch (DataGridException e) {
@@ -953,13 +954,13 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     synchronized private String getMostRestrictivePermission() throws DataGridConnectionRefusedException {
-        String mostRestrictivePermission = "none";
+        DataGridPermType mostRestrictivePermission = DataGridPermType.NONE;
         String currPermission = "";
-        List<String> srcPathsPermissions = new ArrayList<String>();
+        List<String> srcPathsPermissions = new ArrayList<>();
 
         try {
             for (String path : sourcePaths) {
-                currPermission = collectionService.getPermissionsForPath(path);
+                currPermission = cs.getPermissionsForPath(path);
 
                 if (!srcPathsPermissions.contains(currPermission)) {
                     srcPathsPermissions.add(currPermission);
@@ -970,16 +971,16 @@ public class CollectionController {
             }
 
             if (srcPathsPermissions.contains("none")) {
-                mostRestrictivePermission = "none";
+                mostRestrictivePermission = DataGridPermType.NONE;
             }
             else if (srcPathsPermissions.contains("read")) {
-                mostRestrictivePermission = "read";
+                mostRestrictivePermission = DataGridPermType.READ;
             }
             else if (srcPathsPermissions.contains("write")) {
-                mostRestrictivePermission = "write";
+                mostRestrictivePermission = DataGridPermType.WRITE;
             }
-            else {
-                mostRestrictivePermission = "own";
+            else if(srcPathsPermissions.contains("own")){
+                mostRestrictivePermission = DataGridPermType.OWN;
             }
         }
         catch (DataGridConnectionRefusedException e) {
@@ -990,7 +991,12 @@ public class CollectionController {
             logger.error("Could not get the most restrictive permission. Setting it to 'none'. {}", e.getMessage());
         }
 
-        return mostRestrictivePermission;
+        boolean isAdmin = loggedUserUtils.getLoggedDataGridUser().isAdmin();
+        boolean isPermNone = mostRestrictivePermission.equals(DataGridPermType.NONE);
+
+        if (isPermNone && isAdmin) mostRestrictivePermission = DataGridPermType.IRODS_ADMIN;
+
+        return mostRestrictivePermission.toString().toLowerCase();
     }
 
     /**
@@ -1026,7 +1032,7 @@ public class CollectionController {
 
         try {
             Double startPage = Math.floor(start / length) + 1;
-            dataGridCollectionAndDataObjects = collectionService.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(currentPath,
+            dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(currentPath,
                     searchString, startPage.intValue(), length, pageContext);
             totalObjsForCurrentSearch = pageContext.getTotalNumberOfItems();
             totalObjsForCurrentPath = pageContext.getTotalNumberOfItems();
@@ -1117,7 +1123,7 @@ public class CollectionController {
 
         DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
         try {
-            obj = collectionService.findByName(path);
+            obj = cs.findByName(path);
         }
         catch (DataGridException e) {
             obj.setPath(path);
@@ -1154,8 +1160,8 @@ public class CollectionController {
         String permissionType = "none";
         Boolean isCurrentPathCollection = false;
 
-        permissionType = collectionService.getPermissionsForPath(path);
-        isCurrentPathCollection = collectionService.isCollection(path);
+        permissionType = cs.getPermissionsForPath(path);
+        isCurrentPathCollection = cs.isCollection(path);
 
         if (path.isEmpty()) {
             path = currentPath;
@@ -1171,11 +1177,11 @@ public class CollectionController {
 
         DataGridCollectionAndDataObject dataGridObj = new DataGridCollectionAndDataObject();
         try {
-            dataGridObj = collectionService.findByName(path);
+            dataGridObj = cs.findByName(path);
             if (dataGridObj != null && !dataGridObj.isCollection()) {
-                dataGridObj.setChecksum(collectionService.getChecksum(path));
-                dataGridObj.setNumberOfReplicas(collectionService.getTotalNumberOfReplsForDataObject(path));
-                dataGridObj.setReplicaNumber(String.valueOf(collectionService.getReplicationNumber(path)));
+                dataGridObj.setChecksum(cs.getChecksum(path));
+                dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
+                dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
             }
         }
         catch (DataGridException e) {

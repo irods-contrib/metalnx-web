@@ -17,15 +17,14 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 public interface FileOperationService {
 
@@ -37,7 +36,7 @@ public interface FileOperationService {
      * @return True, if file or collection was moved. False, otherwise.
      * @throws DataGridConnectionRefusedException
      */
-    public boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException;
+    boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException;
 
     /**
      * Copy a set of files or collections between two locations in the data grid.
@@ -60,7 +59,7 @@ public interface FileOperationService {
      *            delete collection/data object with force flag set
      * @throws DataGridConnectionRefusedException
      */
-    public boolean deleteItem(String path, boolean force) throws DataGridConnectionRefusedException;
+    boolean deleteItem(String path, boolean force) throws DataGridConnectionRefusedException;
 
     /**
      * Delete a collection in iRODS
@@ -73,7 +72,7 @@ public interface FileOperationService {
      *            force
      * @throws DataGridException
      */
-    public boolean deleteCollection(String collectionPath, boolean forceFlag) throws DataGridException;
+    boolean deleteCollection(String collectionPath, boolean forceFlag) throws DataGridException;
 
     /**
      * Delete a data object in iRODS
@@ -86,21 +85,21 @@ public interface FileOperationService {
      *            force
      * @throws DataGridException
      */
-    public boolean deleteDataObject(String dataObjectPath, boolean forceFlag) throws DataGridException;
+    boolean deleteDataObject(String dataObjectPath, boolean forceFlag) throws DataGridException;
 
     /**
      * Delete a replica of a data object
      *
      * @param path
      *            path to the parent of the data object to be deleted
-     * @param filename
-     *            name of the data object to be deleted
      * @param replicaNumber
      *            number of the replica that is going to be deleted
+     * @param inAdminMode
+     *          run the command as admin (-M option)
      * @return true if the operation was successfull and false otherwise
      * @throws DataGridConnectionRefusedException
      */
-    boolean deleteReplica(String path, String fileName, int replicaNumber) throws DataGridConnectionRefusedException;
+    boolean deleteReplica(String path, String fileName, int replicaNumber, boolean inAdminMode) throws DataGridConnectionRefusedException;
 
     /**
      * Download a file or collection from the data grid.
@@ -117,7 +116,7 @@ public interface FileOperationService {
      * @throws DataGridException
      * @throws IOException
      */
-    public boolean download(String path, HttpServletResponse httpResponse, boolean removeTempCollection) throws DataGridException, IOException;
+    boolean download(String path, HttpServletResponse httpResponse, boolean removeTempCollection) throws DataGridException, IOException;
 
     /**
      * Removes all items existing in the trash folder of a given user.
@@ -127,7 +126,7 @@ public interface FileOperationService {
      * @return True, if all trash items were removed. False, otherwise.
      * @throws DataGridConnectionRefusedException
      */
-    public boolean emptyTrash(DataGridUser user) throws DataGridConnectionRefusedException;
+    boolean emptyTrash(DataGridUser user) throws DataGridConnectionRefusedException;
 
     /**
      * Move a file or collection between two locations in the data grid.
@@ -137,7 +136,7 @@ public interface FileOperationService {
      * @return True, if file or collection was moved. False, otherwise.
      * @throws DataGridException
      */
-    public boolean move(String sourcePath, String targetPath) throws DataGridException;
+    boolean move(String sourcePath, String targetPath) throws DataGridException;
 
     /**
      * Replicates a file into another resource.
@@ -146,21 +145,23 @@ public interface FileOperationService {
      *            path to the file to be replicated
      * @param targetResource
      *            resource where the replica will be stored
+     * @param inAdminMode
+     *          replicate object in admin mode (-M option)
      * @return true, if file was successfully replicated
      *         false, otherwise.
      * @throws DataGridConnectionRefusedException
      */
-    public boolean replicateDataObject(String path, String targetResource) throws DataGridConnectionRefusedException;
+    boolean replicateDataObject(String path, String targetResource, boolean inAdminMode)
+            throws DataGridConnectionRefusedException;
 
     /**
      * Transfer a file to the data grid.
      *
-     * @param sourcePath
      * @param fileForUpload
      *            file that will be transferred
      * @return True, if file or collection was uploaded. False, otherwise.
      * @throws DataGridException
      */
-    public boolean transferFileToDataGrid(DataGridFileForUpload fileForUpload) throws DataGridException;
+    boolean transferFileToDataGrid(DataGridFileForUpload fileForUpload) throws DataGridException;
 
 }

@@ -17,27 +17,18 @@
 
 package com.emc.metalnx.services.irods;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.service.utils.DataGridFileForUpload;
+import com.emc.metalnx.services.interfaces.*;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.DataObjectAO;
-import org.irods.jargon.core.pub.DataTransferOperations;
-import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.ResourceAO;
-import org.irods.jargon.core.pub.RuleProcessingAO;
-import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
@@ -49,20 +40,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.service.utils.DataGridFileForUpload;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FavoritesService;
-import com.emc.metalnx.services.interfaces.FileOperationService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.UserBookmarkService;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -239,12 +222,12 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean deleteReplica(String path, String fileName, int replicaNumber) throws DataGridConnectionRefusedException {
+    public boolean deleteReplica(String path, String fileName, int replicaNumber, boolean inAdminMode) throws DataGridConnectionRefusedException {
 
         boolean deleteSuccess = false;
         try {
             String parentPath = path.substring(0, path.lastIndexOf("/"));
-            irodsServices.getDataObjectAO().trimDataObjectReplicas(parentPath, fileName, "", -1, replicaNumber, true);
+            irodsServices.getDataObjectAO().trimDataObjectReplicas(parentPath, fileName, "", -1, replicaNumber, inAdminMode);
             deleteSuccess = true;
         }
         catch (DataNotFoundException e) {
@@ -363,20 +346,46 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean replicateDataObject(String path, String targetResource) throws DataGridConnectionRefusedException {
+    public boolean replicateDataObject(String path, String targetResource, boolean inAdminMode) throws
+            DataGridConnectionRefusedException {
 
-        logger.debug("Replicating " + path + " into the resource " + targetResource);
-        DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
+        logger.info("Replicating {} into the resource {} [admin mode: {}]", path, targetResource, inAdminMode);
+        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
+        boolean isObjReplicated = false;
         try {
-            dataObjectAO.replicateIrodsDataObject(path, targetResource);
-            return true;
+            String remoteHeader = "";
+            String remoteFooter = "";
+
+            DataGridResource destResc = resourceService.find(targetResource);
+
+            if (!iCATHost.startsWith(destResc.getHost())) {
+                String remoteHost = destResc.getHost();
+                remoteHeader = String.format("remote( \"%s\", \"\" ) {\n", remoteHost);
+                remoteFooter = "}\n";
+            }
+
+            String flags = String.format("destRescName=%s++++%s", targetResource, inAdminMode ? "irodsAdmin=" : "");
+            String params = String.format("\"%s\", \"%s\", \"%s\"", path, flags, "null");
+
+            StringBuffer ruleString = new StringBuffer();
+            ruleString.append("replicateDataObjInAdminMode {\n");
+            ruleString.append(remoteHeader);
+            ruleString.append(" msiDataObjRepl(");
+            ruleString.append(params);
+            ruleString.append(");\n");
+            ruleString.append(remoteFooter);
+            ruleString.append("}\n");
+            ruleString.append("OUTPUT ruleExecOut");
+            ruleProcessingAO.executeRule(ruleString.toString());
+
+            isObjReplicated = true;
         }
         catch (JargonException e) {
             logger.error("Could not replicate " + path, e.getMessage());
         }
 
-        return false;
+        return isObjReplicated;
     }
 
     @Override

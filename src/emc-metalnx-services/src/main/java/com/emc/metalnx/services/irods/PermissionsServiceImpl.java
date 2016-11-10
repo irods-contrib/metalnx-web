@@ -20,12 +20,11 @@ package com.emc.metalnx.services.irods;
 import com.emc.metalnx.core.domain.dao.GroupBookmarkDao;
 import com.emc.metalnx.core.domain.dao.GroupDao;
 import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.UserService;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
@@ -56,12 +55,6 @@ public class PermissionsServiceImpl implements PermissionsService {
      * WRITE: Download, Copy, Replicate, Metadata (templates)
      * OWN: Download, Copy, Replicate, Metadata (templates), Move, Edit, and Delete
      */
-
-    @Autowired
-    GroupService groupService;
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     IRODSServices irodsServices;
@@ -99,7 +92,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean canLoggedUserModifyPermissionOnPath(String path) throws JargonException, DataGridConnectionRefusedException {
+    public boolean canLoggedUserModifyPermissionOnPath(String path) throws DataGridConnectionRefusedException {
 
         String userName = irodsServices.getCurrentUser();
         final IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
@@ -115,7 +108,7 @@ public class PermissionsServiceImpl implements PermissionsService {
                 resultingPermission = irodsFileSystemAO.getFilePermissionsForGivenUser(fileObj, userName);
             }
 
-            return resultingPermission > FilePermissionEnum.READ.getPermissionNumericValue();
+            return resultingPermission > FilePermissionEnum.WRITE.getPermissionNumericValue();
 
         } catch (final Exception e) {
             logger.error("Could not get permissions for current user: {}", e.getMessage());
@@ -125,7 +118,6 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     /***********************************************************************************/
-
     /************************* PERMISSIONS/GROUPS PROCESSING ***************************/
     /***********************************************************************************/
 
@@ -200,40 +192,29 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean setPermissionOnPath(String permission, String uName, String path, boolean recursive) throws DataGridConnectionRefusedException,
-            JargonException {
+    public boolean setPermissionOnPath(DataGridPermType permType, String uName, String path, boolean recursive, boolean inAdminMode)
+            throws DataGridConnectionRefusedException {
 
-        logger.info("Attempting to set {} permission on path {} for user/group {}", permission, path, uName);
+        logger.info("Attempting to set {} permission on path {} for user/group {}", permType, path, uName);
 
         boolean operationResult = true;
 
         try {
-
-            // Setting basic info for permission modification
-            String currentZone = irodsServices.getCurrentUserZone();
-            FilePermissionEnum filePermission = FilePermissionEnum.valueOf(permission);
             IRODSFile irodsFilePath = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
 
-            logger.debug("Detecting if {} is either a collection or a data object", path);
             if (irodsFilePath.isDirectory()) {
                 logger.debug("{} is a collection", path);
-                CollectionAO collectionAO = irodsServices.getCollectionAO();
-
-                logger.debug("Setting {} permission on collection {} for user/group {}", permission, path, uName);
-                collectionAO.setAccessPermission(currentZone, path, uName, recursive, filePermission);
+                operationResult = chmodCollection(permType, path, recursive, uName, inAdminMode);
             } else {
                 logger.debug("{} is a data object", path);
-                DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
-
-                logger.debug("Setting {} permission on data object {} for user/group {}", permission, path, uName);
-                dataObjectAO.setAccessPermission(currentZone, path, uName, filePermission);
+                operationResult = chmodDataObject(permType, path, uName, inAdminMode);
             }
 
             // If the permissions is set to NONE, remove all the bookmarks associated to the group
             // and the path
-            if (permission.compareTo("NONE") == 0) {
-
+            if (permType.equals(DataGridPermType.NONE)) {
                 // Making sure we are dealing with a group
+                String currentZone = irodsServices.getCurrentUserZone();
                 DataGridGroup group = groupDao.findByGroupnameAndZone(uName, currentZone);
                 if (group != null) {
                     groupBookmarkDao.removeByGroupAndPath(group, path);
@@ -241,15 +222,78 @@ public class PermissionsServiceImpl implements PermissionsService {
             }
 
         } catch (JargonException e) {
-            logger.error("Could not set {} permission on path {} for user/group {}", permission, path, uName, e);
+            logger.error("Could not set {} permission on path {} for user/group {}", permType, path, uName, e);
             operationResult = false;
         }
 
         if (operationResult) {
-            logger.info("Successfully set the permission {} for user {} on path {}", permission, uName, path);
+            logger.info("Successfully set the permission {} for user {} on path {}", permType, uName, path);
         }
 
         return operationResult;
+    }
+
+    private boolean chmodCollection(DataGridPermType permType, String path, boolean recursive, String uName, boolean inAdminMode) throws DataGridConnectionRefusedException {
+        String currentZone = irodsServices.getCurrentUserZone();
+        CollectionAO collectionAO = irodsServices.getCollectionAO();
+        boolean isPermissionSet = false;
+
+        try {
+            logger.debug("Setting {} permission on collection {} for user/group as ADMIN{}", permType, path, uName);
+
+            if(!inAdminMode) {
+                FilePermissionEnum filePermission = FilePermissionEnum.valueOf(permType.toString());
+                collectionAO.setAccessPermission(currentZone, path, uName, recursive, filePermission);
+            }
+            else if(permType.equals(DataGridPermType.READ))
+                collectionAO.setAccessPermissionReadAsAdmin(currentZone, path, uName, recursive);
+
+            else if(permType.equals(DataGridPermType.WRITE))
+                collectionAO.setAccessPermissionWriteAsAdmin(currentZone, path, uName, recursive);
+
+            else if(permType.equals(DataGridPermType.OWN))
+                collectionAO.setAccessPermissionOwnAsAdmin(currentZone, path, uName, recursive);
+
+            else collectionAO.removeAccessPermissionForUserAsAdmin(currentZone, path, uName, recursive);
+
+            isPermissionSet = true;
+        } catch (JargonException e) {
+            logger.error("Could not set {} permission on path {} for user/group {}", permType, path, uName, e);
+        }
+
+        return isPermissionSet;
+    }
+
+    private boolean chmodDataObject(DataGridPermType permType, String path, String uName, boolean inAdminMode) throws DataGridConnectionRefusedException {
+        String currentZone = irodsServices.getCurrentUserZone();
+        DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
+
+        logger.debug("Setting {} permission on data object {} for user/group {}", permType, path, uName);
+
+        boolean isPermissionSet = false;
+
+        try {
+            if(!inAdminMode) {
+                FilePermissionEnum filePermission = FilePermissionEnum.valueOf(permType.toString());
+                dataObjectAO.setAccessPermission(currentZone, path, uName, filePermission);
+            }
+            else if(permType.equals(DataGridPermType.READ))
+                dataObjectAO.setAccessPermissionReadInAdminMode(currentZone, path, uName);
+
+            else if(permType.equals(DataGridPermType.WRITE))
+                dataObjectAO.setAccessPermissionWriteInAdminMode(currentZone, path, uName);
+
+            else if(permType.equals(DataGridPermType.OWN))
+                dataObjectAO.setAccessPermissionOwnInAdminMode(currentZone, path, uName);
+
+            else dataObjectAO.removeAccessPermissionsForUserInAdminMode(currentZone, path, uName);
+
+            isPermissionSet = true;
+        } catch (JargonException e) {
+            logger.error("Could not set {} permission on path {} for user/group {}", permType, path, uName, e);
+        }
+
+        return isPermissionSet;
     }
 
     @Override
