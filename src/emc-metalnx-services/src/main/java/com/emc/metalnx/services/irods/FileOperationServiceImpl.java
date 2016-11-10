@@ -298,17 +298,17 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean emptyTrash(DataGridUser user) throws DataGridConnectionRefusedException {
+    public boolean emptyTrash(DataGridUser user, String currentPath) throws DataGridConnectionRefusedException {
         if (user == null) {
             return false;
         }
 
         boolean itemsDeleted = true;
-        String trashDirectory = "/" + user.getAdditionalInfo() + "/trash/home/" + user.getUsername();
+        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
+
         List<DataGridCollectionAndDataObject> trashItems = null;
 
-        try {
-            trashItems = collectionService.getSubCollectionsAndDataObjetsUnderPath(trashDirectory);
+            trashItems = collectionService.getSubCollectionsAndDataObjetsUnderPath(currentPath);
 
             // trash is already empty
             if (trashItems == null || trashItems.isEmpty()) {
@@ -316,21 +316,19 @@ public class FileOperationServiceImpl implements FileOperationService {
             }
 
             for (DataGridCollectionAndDataObject item : trashItems) {
-                if (item.isCollection()) {
-                    deleteCollection(item.getPath(), true);
-                }
-                else {
-                    deleteDataObject(item.getPath(), true);
+                try{
+                    StringBuilder ruleString = new StringBuilder();
+                    ruleString.append("mlxEmptyTrash {\n");
+                    if(user.isAdmin()) ruleString.append(" msiRmColl(\"" + item.getPath() + "\",\"irodsAdminRmTrash=\",\"null\");");
+                    else ruleString.append(" msiRmColl(\"" + item.getPath() + "\",\"irodsRmTrash=\",\"null\");");
+                    ruleString.append("}\n");
+                    ruleString.append("OUTPUT ruleExecOut");
+                    ruleProcessingAO.executeRule(ruleString.toString());
+                }catch(Exception e){
+                    logger.error("Could not execute rule on path {}: ", item.getPath(), e.getMessage());
                 }
             }
-        }
-        catch (DataGridConnectionRefusedException e) {
-            throw e;
-        }
-        catch (DataGridException e) {
-            logger.error("Could not delete items from the trash.");
-            itemsDeleted = false;
-        }
+
 
         return itemsDeleted;
     }

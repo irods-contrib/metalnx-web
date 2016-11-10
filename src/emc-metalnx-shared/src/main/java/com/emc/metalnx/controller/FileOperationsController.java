@@ -409,18 +409,17 @@ public class FileOperationsController {
 
     @RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
     public ResponseEntity<String> emptyTrash(Model model) throws DataGridConnectionRefusedException {
-        if (fileOperationService.emptyTrash(loggedUserUtils.getLoggedDataGridUser())) {
-            return new ResponseEntity<String>(HttpStatus.OK);
+        if (fileOperationService.emptyTrash(loggedUserUtils.getLoggedDataGridUser(), collectionController.getCurrentPath())) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     /**
      * Displays the modify user form with all fields set to the selected collection
      *
      * @param model
-     * @param path
      * @return collectionForm with fields set
      * @throws DataGridConnectionRefusedException
      */

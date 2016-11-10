@@ -127,7 +127,7 @@ public interface FileOperationService {
      * @return True, if all trash items were removed. False, otherwise.
      * @throws DataGridConnectionRefusedException
      */
-    public boolean emptyTrash(DataGridUser user) throws DataGridConnectionRefusedException;
+    public boolean emptyTrash(DataGridUser user, String currentPath) throws DataGridConnectionRefusedException;
 
     /**
      * Move a file or collection between two locations in the data grid.
