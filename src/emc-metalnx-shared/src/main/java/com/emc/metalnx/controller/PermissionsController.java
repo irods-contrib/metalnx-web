@@ -17,13 +17,11 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.*;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
@@ -36,22 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridFilePermission;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
-import com.emc.metalnx.core.domain.entity.DataGridGroupBookmark;
-import com.emc.metalnx.core.domain.entity.DataGridGroupPermission;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.DataGridUserBookmark;
-import com.emc.metalnx.core.domain.entity.DataGridUserPermission;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
-import com.emc.metalnx.services.interfaces.GroupService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.UserBookmarkService;
-import com.emc.metalnx.services.interfaces.UserService;
+import java.util.*;
 
 @Controller
 @SessionAttributes({ "currentPath", "groupsToAdd", "usersToAdd" })
@@ -59,28 +42,27 @@ import com.emc.metalnx.services.interfaces.UserService;
 public class PermissionsController {
 
     @Autowired
-    UserService userService;
+    UserService us;
 
     @Autowired
-    GroupService groupService;
+    GroupService gs;
 
     @Autowired
-    GroupBookmarkService groupBookmarkService;
+    GroupBookmarkService gBMS;
 
     @Autowired
-    UserBookmarkService userBookmarkService;
+    UserBookmarkService uBMS;
 
     @Autowired
-    PermissionsService permissionsService;
+    PermissionsService ps;
 
     @Autowired
-    LoggedUserUtils loggedUserUtils;
+    LoggedUserUtils luu;
 
     @Autowired
-    IRODSServices irodsServices;
+    CollectionService cs;
 
-    @Autowired
-    CollectionService collectionService;
+    private DataGridUser loggedUser;
 
     private HashMap<String, String> usersToAdd;
     private HashMap<String, String> groupsToAdd;
@@ -103,9 +85,7 @@ public class PermissionsController {
      * @throws FileNotFoundException
      */
     @RequestMapping(value = "/getPermissionDetails/")
-    public String getPermissionDetails(Model model, @RequestParam("path") String path) throws DataGridConnectionRefusedException,
-            FileNotFoundException, JargonException {
-
+    public String getPermissionDetails(Model model, @RequestParam("path") String path) {
         logger.debug("Getting permission info for {}", path);
 
         DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
@@ -120,34 +100,36 @@ public class PermissionsController {
         boolean isCollection = false;
 
         try {
-            permissions = permissionsService.getPathPermissionDetails(path);
-            groupPermissions = permissionsService.getGroupsWithPermissions(permissions);
-            userPermissions = permissionsService.getUsersWithPermissions(permissions);
+            loggedUser = luu.getLoggedDataGridUser();
 
-            bookmarks = groupBookmarkService.findBookmarksOnPath(path);
-            userBookmarks = userBookmarkService.findBookmarksOnPath(path);
-            userCanModify = permissionsService.canLoggedUserModifyPermissionOnPath(path);
+            permissions = ps.getPathPermissionDetails(path);
+            groupPermissions = ps.getGroupsWithPermissions(permissions);
+            userPermissions = ps.getUsersWithPermissions(permissions);
 
-            groupsWithBookmarks = new HashSet<String>();
+            bookmarks = gBMS.findBookmarksOnPath(path);
+            userBookmarks = uBMS.findBookmarksOnPath(path);
+            userCanModify = loggedUser.isAdmin() || ps.canLoggedUserModifyPermissionOnPath(path);
+
+            groupsWithBookmarks = new HashSet<>();
             for (DataGridGroupBookmark bookmark : bookmarks) {
                 groupsWithBookmarks.add(bookmark.getGroup().getGroupname());
             }
 
-            usersWithBookmarks = new HashSet<String>();
+            usersWithBookmarks = new HashSet<>();
             for (DataGridUserBookmark userBookmark : userBookmarks) {
                 usersWithBookmarks.add(userBookmark.getUser().getUsername());
             }
 
-            obj = collectionService.findByName(path);
-            permissionsService.resolveMostPermissiveAccessForUser(obj, loggedUserUtils.getLoggedDataGridUser());
+            obj = cs.findByName(path);
+            ps.resolveMostPermissiveAccessForUser(obj, loggedUser);
         }
         catch (Exception e) {
             logger.error("Could not get permission details {}: {}", path, e.getMessage());
 
-            groupPermissions = new ArrayList<DataGridGroupPermission>();
-            userPermissions = new ArrayList<DataGridUserPermission>();
-            groupsWithBookmarks = new HashSet<String>();
-            usersWithBookmarks = new HashSet<String>();
+            groupPermissions = new ArrayList<>();
+            userPermissions = new ArrayList<>();
+            groupsWithBookmarks = new HashSet<>();
+            usersWithBookmarks = new HashSet<>();
         }
 
         model.addAttribute("usersWithBookmarks", usersWithBookmarks);
@@ -185,7 +167,7 @@ public class PermissionsController {
      */
     @RequestMapping(value = "/getListOfGroupsForPermissionsCreation/")
     public String getListOfGroupsForPermissionsCreation(Model model) {
-        List<DataGridGroup> groups = groupService.findAll();
+        List<DataGridGroup> groups = gs.findAll();
 
         model.addAttribute("groups", groups);
         model.addAttribute("groupsToAdd", groupsToAdd);
@@ -202,7 +184,7 @@ public class PermissionsController {
      */
     @RequestMapping(value = "/getListOfUsersForPermissionsCreation/")
     public String getListOfUsersForPermissionsCreation(Model model) {
-        List<DataGridUser> users = userService.findAll();
+        List<DataGridUser> users = us.findAll();
 
         model.addAttribute("users", users);
         model.addAttribute("usersToAdd", usersToAdd);
@@ -213,15 +195,22 @@ public class PermissionsController {
 
     @RequestMapping(value = "/addGroupPermissions/")
     @ResponseBody
-    public String addGroupToCreationList(@RequestParam("permission") String permission, @RequestParam("groups") String groups,
-            @RequestParam("path") String path, @RequestParam("bookmark") boolean bookmark, @RequestParam("recursive") boolean recursive)
-            throws FileNotFoundException, JargonException, DataGridConnectionRefusedException {
+    public String addGroupToCreationList(
+            @RequestParam("permission") String permission,
+            @RequestParam("groups") String groups,
+            @RequestParam("path") String path,
+            @RequestParam("bookmark") boolean bookmark,
+            @RequestParam("recursive") boolean recursive)
+            throws DataGridConnectionRefusedException {
 
         boolean operationResult = true;
         String[] groupParts = groups.split(",");
+        DataGridPermType permType = DataGridPermType.valueOf(permission);
+
+        loggedUser = luu.getLoggedDataGridUser();
 
         for (String group : groupParts) {
-            operationResult &= permissionsService.setPermissionOnPath(permission, group, path, recursive);
+            operationResult &= ps.setPermissionOnPath(permType, group, path, recursive, loggedUser.isAdmin());
         }
 
         // Updating bookmarks for the recently-created permissions
@@ -230,9 +219,9 @@ public class PermissionsController {
             bookmarks.add(path);
 
             // Getting list of groups and updating bookmarks
-            List<DataGridGroup> groupObjects = groupService.findByGroupNameList(groupParts);
+            List<DataGridGroup> groupObjects = gs.findByGroupNameList(groupParts);
             for (DataGridGroup g : groupObjects) {
-                groupBookmarkService.updateBookmarks(g, bookmarks, null);
+                gBMS.updateBookmarks(g, bookmarks, null);
             }
         }
 
@@ -241,15 +230,22 @@ public class PermissionsController {
 
     @RequestMapping(value = "/addUserPermissions/")
     @ResponseBody
-    public String addUserToCreationList(@RequestParam("permission") String permission, @RequestParam("users") String users,
-            @RequestParam("path") String path, @RequestParam("bookmark") boolean bookmark, @RequestParam("recursive") boolean recursive)
-            throws FileNotFoundException, JargonException, DataGridConnectionRefusedException {
+    public String addUserToCreationList(
+            @RequestParam("permission") String permission,
+            @RequestParam("users") String users,
+            @RequestParam("path") String path,
+            @RequestParam("bookmark") boolean bookmark,
+            @RequestParam("recursive") boolean recursive)
+            throws DataGridConnectionRefusedException {
 
         boolean operationResult = true;
         String[] usernames = users.split(",");
+        DataGridPermType permType = DataGridPermType.valueOf(permission);
+
+        loggedUser = luu.getLoggedDataGridUser();
 
         for (String username : usernames) {
-            operationResult &= permissionsService.setPermissionOnPath(permission, username, path, recursive);
+            operationResult &= ps.setPermissionOnPath(permType, username, path, recursive, loggedUser.isAdmin());
 
             // Updating bookmarks for the recently-created permissions
             if (bookmark) {
@@ -257,9 +253,9 @@ public class PermissionsController {
                 bookmarks.add(path);
 
                 // Getting list of users and updating bookmarks
-                List<DataGridUser> dataGridUsers = userService.findByUsername(username);
+                List<DataGridUser> dataGridUsers = us.findByUsername(username);
                 if (dataGridUsers != null && !dataGridUsers.isEmpty()) {
-                    userBookmarkService.updateBookmarks(dataGridUsers.get(0), bookmarks, null);
+                    uBMS.updateBookmarks(dataGridUsers.get(0), bookmarks, null);
                 }
             }
         }
@@ -282,20 +278,21 @@ public class PermissionsController {
      * @throws JargonException
      * @throws DataGridConnectionRefusedException
      */
-    private String changePermissionForUserOrGroupOnPath(String permissionData, boolean recursive) throws FileNotFoundException, JargonException,
-            DataGridConnectionRefusedException {
+    private String changePermissionForUserOrGroupOnPath(String permissionData, boolean recursive)
+            throws DataGridConnectionRefusedException {
 
         // Getting information about the new permission to be applied and the path
         // of the current object (collection or data object)
         String[] permissionParts = permissionData.split("#");
-        String newPermission = permissionParts[0];
+        DataGridPermType newPermission = DataGridPermType.valueOf(permissionParts[0]);
         String path = permissionParts[1];
         String userOrGroupName = permissionParts[2];
 
-        // Trying to apply modifications on the data grid
-        boolean operationResult = permissionsService.setPermissionOnPath(newPermission, userOrGroupName, path, recursive);
+        loggedUser = luu.getLoggedDataGridUser();
 
-        return operationResult ? REQUEST_OK : REQUEST_ERROR;
+        boolean permChanged = ps.setPermissionOnPath(newPermission, userOrGroupName, path, recursive, loggedUser.isAdmin());
+
+        return permChanged ? REQUEST_OK : REQUEST_ERROR;
     }
 
 }

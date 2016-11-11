@@ -176,7 +176,9 @@ public class FileOperationsController {
     public String deleteReplica(Model model, @RequestParam("path") String path, @RequestParam("fileName") String fileName,
                                 @RequestParam String replicaNumber) throws DataGridConnectionRefusedException {
 
-        if (fileOperationService.deleteReplica(path, fileName, Integer.parseInt(replicaNumber))) {
+        boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
+
+        if (fileOperationService.deleteReplica(path, fileName, Integer.parseInt(replicaNumber), inAdminMode)) {
             model.addAttribute("delReplReturn", "success");
         } else {
             model.addAttribute("delReplReturn", "failure");
@@ -185,7 +187,7 @@ public class FileOperationsController {
     }
 
     @RequestMapping(value = "/replicate", method = RequestMethod.POST)
-    public String replicate(Model model, HttpServletRequest request) throws DataGridConnectionRefusedException, DataGridException {
+    public String replicate(Model model, HttpServletRequest request) throws DataGridConnectionRefusedException {
 
         List<String> sourcePaths = collectionController.getSourcePaths();
         String[] resources = (String[]) request.getParameterMap().get("resourcesForReplication");
@@ -193,8 +195,9 @@ public class FileOperationsController {
 
         if (resources != null) {
             String targetResource = resources[0];
+            boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
             for (String sourcePathItem : sourcePaths) {
-                if (!fileOperationService.replicateDataObject(sourcePathItem, targetResource)) {
+                if (!fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode)) {
                     String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
                     failedReplicas.add(item);
                 }
@@ -420,7 +423,6 @@ public class FileOperationsController {
      * Displays the modify user form with all fields set to the selected collection
      *
      * @param model
-     * @param path
      * @return collectionForm with fields set
      * @throws DataGridConnectionRefusedException
      */

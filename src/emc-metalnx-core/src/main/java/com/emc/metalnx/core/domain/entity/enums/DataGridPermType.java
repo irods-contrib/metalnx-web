@@ -16,14 +16,18 @@
  */
 package com.emc.metalnx.core.domain.entity.enums;
 
-public enum DataGridResourceTypeEnum {
+/*
+ * Defines all permission types that exist in the data grid.
+ * */
 
-    IRODS_COORDINATING("COORDINATING"), IRODS_STORAGE("STORAGE");
+public enum DataGridPermType {
+
+    OWN("OWN"), WRITE("WRITE"), READ("READ"), IRODS_ADMIN("ADMIN"), NONE("NONE");
 
     private String stringType;
 
-    DataGridResourceTypeEnum(String type) {
-        this.stringType = type;
+    DataGridPermType(String type) {
+        this.stringType = type.toUpperCase();
     }
 
     @Override
