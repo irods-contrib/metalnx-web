@@ -19,6 +19,7 @@ package com.emc.metalnx.controller;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
@@ -412,11 +413,13 @@ public class FileOperationsController {
 
     @RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
     public ResponseEntity<String> emptyTrash(Model model) throws DataGridConnectionRefusedException {
-        if (fileOperationService.emptyTrash(loggedUserUtils.getLoggedDataGridUser())) {
-            return new ResponseEntity<String>(HttpStatus.OK);
+        String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
+        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+        if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     /**
