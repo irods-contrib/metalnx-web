@@ -386,7 +386,7 @@
 				<h4 class="modal-title" th:text="${'Empty Trash'}"></h4>
 			</div>
 			<div class="modal-body">
-				<span th:text="${'Are you sure you want to permanently delete all items in the trash?'}"></span>
+				<span th:utext="#{trash.deletion.confirmation(${trashColl})}"></span>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"
@@ -778,7 +778,8 @@
 		function emptyTrashSuccess() {
 			$("#trashNotEmptiedSuccessfully").addClass("hideElement");
 			$("#trashEmptiedSuccessfully").removeClass("hideElement");
-			getSubDirectories([[${ currentPath }]]);
+			//getSubDirectories([[${ currentPath }]]);
+			getSubDirectories([[${ trashColl }]]);
 		}
 
 		function emptyTrashFailure() {

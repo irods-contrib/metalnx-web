@@ -306,28 +306,18 @@ public class FileOperationServiceImpl implements FileOperationService {
         boolean itemsDeleted = true;
         RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
-        List<DataGridCollectionAndDataObject> trashItems = null;
 
-            trashItems = collectionService.getSubCollectionsAndDataObjetsUnderPath(currentPath);
-
-            // trash is already empty
-            if (trashItems == null || trashItems.isEmpty()) {
-                return false;
-            }
-
-            for (DataGridCollectionAndDataObject item : trashItems) {
-                try{
-                    StringBuilder ruleString = new StringBuilder();
-                    ruleString.append("mlxEmptyTrash {\n");
-                    if(user.isAdmin()) ruleString.append(" msiRmColl(\"" + item.getPath() + "\",\"irodsAdminRmTrash=\",\"null\");");
-                    else ruleString.append(" msiRmColl(\"" + item.getPath() + "\",\"irodsRmTrash=\",\"null\");");
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }catch(Exception e){
-                    logger.error("Could not execute rule on path {}: ", item.getPath(), e.getMessage());
-                }
-            }
+        try{
+            StringBuilder ruleString = new StringBuilder();
+            ruleString.append("mlxEmptyTrash {\n");
+            if(user.isAdmin()) ruleString.append(" msiRmColl(\"" + currentPath + "\",\"irodsAdminRmTrash=\",\"null\");");
+            else ruleString.append(" msiRmColl(\"" + currentPath + "\",\"irodsRmTrash=\",\"null\");");
+            ruleString.append("}\n");
+            ruleString.append("OUTPUT ruleExecOut");
+            ruleProcessingAO.executeRule(ruleString.toString());
+        }catch(Exception e){
+            logger.error("Could not execute rule on path {}: ", currentPath, e.getMessage());
+        }
 
 
         return itemsDeleted;

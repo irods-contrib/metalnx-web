@@ -409,7 +409,7 @@ public class FileOperationsController {
 
     @RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
     public ResponseEntity<String> emptyTrash(Model model) throws DataGridConnectionRefusedException {
-        if (fileOperationService.emptyTrash(loggedUserUtils.getLoggedDataGridUser(), collectionController.getCurrentPath())) {
+        if (fileOperationService.emptyTrash(loggedUserUtils.getLoggedDataGridUser(), collectionController.getTrashForCurrentPath())) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
