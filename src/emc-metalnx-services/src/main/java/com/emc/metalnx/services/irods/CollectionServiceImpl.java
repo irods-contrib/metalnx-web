@@ -44,6 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -1274,5 +1276,16 @@ public class CollectionServiceImpl implements CollectionService {
             logger.error("Could not get permissions: ", e);
         }
         return collections;
+    }
+
+    public String getTrashForPath(String path){
+        Pattern pattern = Pattern.compile("^/(\\w+)/trash/home/(\\w+)");
+        Matcher matcher = pattern.matcher(path);
+        if(matcher.find()){
+            return matcher.group(0);
+        }
+        
+        //if trash for path above is not found, user trash collection is used instead
+        return String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
     }
 }

@@ -44,6 +44,8 @@ import org.thymeleaf.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -1201,6 +1203,7 @@ public class CollectionController {
         model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
         model.addAttribute("user", user);
         model.addAttribute("isTrash", isTrash);
+        model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
 
         return "collections/collectionsBrowser";
     }

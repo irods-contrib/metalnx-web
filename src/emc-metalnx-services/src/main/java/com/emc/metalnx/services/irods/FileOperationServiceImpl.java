@@ -281,39 +281,26 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean emptyTrash(DataGridUser user) throws DataGridConnectionRefusedException {
+    public boolean emptyTrash(DataGridUser user, String currentPath) throws DataGridConnectionRefusedException {
         if (user == null) {
             return false;
         }
 
         boolean itemsDeleted = true;
-        String trashDirectory = "/" + user.getAdditionalInfo() + "/trash/home/" + user.getUsername();
-        List<DataGridCollectionAndDataObject> trashItems = null;
+        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
-        try {
-            trashItems = collectionService.getSubCollectionsAndDataObjetsUnderPath(trashDirectory);
 
-            // trash is already empty
-            if (trashItems == null || trashItems.isEmpty()) {
-                return false;
-            }
+        try{
+            StringBuilder ruleString = new StringBuilder();
+            ruleString.append("mlxEmptyTrash {\n");
+            ruleString.append(String.format(" msiRmColl(\"%s\",\"%s\",\"null\");", currentPath, user.isAdmin() ? "irodsAdminRmTrash=" : "irodsRmTrash="));
+            ruleString.append("}\n");
+            ruleString.append("OUTPUT ruleExecOut");
+            ruleProcessingAO.executeRule(ruleString.toString());
+        }catch(Exception e){
+            logger.error("Could not execute rule on path {}: ", currentPath, e.getMessage());
+        }
 
-            for (DataGridCollectionAndDataObject item : trashItems) {
-                if (item.isCollection()) {
-                    deleteCollection(item.getPath(), true);
-                }
-                else {
-                    deleteDataObject(item.getPath(), true);
-                }
-            }
-        }
-        catch (DataGridConnectionRefusedException e) {
-            throw e;
-        }
-        catch (DataGridException e) {
-            logger.error("Could not delete items from the trash.");
-            itemsDeleted = false;
-        }
 
         return itemsDeleted;
     }

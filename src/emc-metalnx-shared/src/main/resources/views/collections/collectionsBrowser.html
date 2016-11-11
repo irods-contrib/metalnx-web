@@ -374,6 +374,30 @@
     </div>
 </div>
 
+<!-- Empty Trash Modal -->
+<div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
+	 aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" th:text="${'Empty Trash'}"></h4>
+			</div>
+			<div class="modal-body">
+				<span th:utext="#{trash.deletion.confirmation(${trashColl})}"></span>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+						th:text="#{confirmation.message.no}"></button>
+				<button id= "emptyTrashConfBtn" onclick="emptyTrash();" type="button" class="btn btn-primary"
+						data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
@@ -754,6 +778,23 @@
         function displayReplicateModal(data){
         	$('#selectResourceForReplication').html(data);
         }
-        
+
+		function emptyTrash() {
+			var url ="/emc-metalnx-web/fileOperation/emptyTrash/";
+			ajaxEncapsulation(url, "POST", null, emptyTrashSuccess, emptyTrashFailure, null, null);
+		}
+
+		function emptyTrashSuccess() {
+			$("#trashNotEmptiedSuccessfully").addClass("hideElement");
+			$("#trashEmptiedSuccessfully").removeClass("hideElement");
+			getSubDirectories([[${ trashColl }]]);
+		}
+
+		function emptyTrashFailure() {
+			$("#trashEmptiedSuccessfully").addClass("hideElement");
+			$("#trashNotEmptiedSuccessfully").removeClass("hideElement");
+			getSubDirectories([[${ currentPath }]]);
+		}
+
     /*]]>*/
 	</script>
