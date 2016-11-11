@@ -1084,18 +1084,6 @@ public class CollectionController {
     	collectionHistoryForward.remove(path);
     }
 
-    /**
-     * Get trash path related to the current path
-     * */
-    public String getTrashForCurrentPath(){
-        Pattern pattern = Pattern.compile("^/(\\w+)/trash/home/(\\w+)");
-        Matcher matcher = pattern.matcher(currentPath);
-        if(matcher.find()){
-            return matcher.group(0);
-        }
-        return USER_TRASH_PATH;
-    }
-
     /*
      * **************************************************************************
      * **************************** PRIVATE METHODS *****************************
@@ -1209,7 +1197,7 @@ public class CollectionController {
         model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
         model.addAttribute("user", user);
         model.addAttribute("isTrash", isTrash);
-        model.addAttribute("trashColl", getTrashForCurrentPath());
+        model.addAttribute("trashColl", collectionService.getTrashForPath(currentPath));
 
         return "collections/collectionsBrowser";
     }

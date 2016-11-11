@@ -310,8 +310,7 @@ public class FileOperationServiceImpl implements FileOperationService {
         try{
             StringBuilder ruleString = new StringBuilder();
             ruleString.append("mlxEmptyTrash {\n");
-            if(user.isAdmin()) ruleString.append(" msiRmColl(\"" + currentPath + "\",\"irodsAdminRmTrash=\",\"null\");");
-            else ruleString.append(" msiRmColl(\"" + currentPath + "\",\"irodsRmTrash=\",\"null\");");
+            ruleString.append(String.format(" msiRmColl(\"%s\",\"%s\",\"null\");", currentPath, user.isAdmin() ? "irodsAdminRmTrash=" : "irodsRmTrash="));
             ruleString.append("}\n");
             ruleString.append("OUTPUT ruleExecOut");
             ruleProcessingAO.executeRule(ruleString.toString());
