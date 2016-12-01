@@ -17,13 +17,9 @@
 
 package com.emc.metalnx.core.domain.exceptions;
 
-public class DataGridFileNotFoundException extends Exception {
+public class DataGridFileNotFoundException extends DataGridException {
 
     private static final long serialVersionUID = 1L;
-
-    public DataGridFileNotFoundException() {
-        super();
-    }
 
     public DataGridFileNotFoundException(String msg) {
         super(msg);

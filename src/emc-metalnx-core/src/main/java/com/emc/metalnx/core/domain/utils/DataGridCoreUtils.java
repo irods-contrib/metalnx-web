@@ -17,6 +17,9 @@
 
 package com.emc.metalnx.core.domain.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Helper class for common operations with core classes.
  *
@@ -24,10 +27,84 @@ package com.emc.metalnx.core.domain.utils;
 public class DataGridCoreUtils {
 
     /**
+     * Checks whether or not a given path refers to a BAM or CRAM file.
+     * @param path file path
+     * @return True, if file is BAM/CRAM. False, otherwise.
+     */
+    public static boolean isBamOrCram(String path) {
+        return path.endsWith(".cram") || path.endsWith(".bam");
+    }
+
+    /**
+     * Auxiliary method to determine wether a file is an image file
+     *
+     * @param path file path
+     * @return bool True, if the given path is an image. False, otherwise.
+     */
+    public static boolean isImageFile(String path) {
+        Set<String> extensions = new HashSet<String>();
+        extensions.add("png");
+        extensions.add("PNG");
+        extensions.add("jpg");
+        extensions.add("JPG");
+        extensions.add("jpeg");
+        extensions.add("JPEG");
+        extensions.add("bmp");
+        extensions.add("BMP");
+
+        String fileExtension = "";
+
+        int i = path.lastIndexOf('.');
+        if (i > 0) fileExtension = path.substring(i + 1);
+
+        return extensions.contains(fileExtension);
+    }
+
+    /**
+     * Auxiliary method to determine wether a file is a VCF file
+     *
+     * @param path file path
+     * @return bool True, if the given path is a VCF file. False, otherwise.
+     */
+    public static boolean isVCFFile(String path) {
+        Set<String> extensions = new HashSet<>();
+        extensions.add("vcf");
+        extensions.add("VCF");
+
+        String fileExtension = "";
+
+        int i = path.lastIndexOf('.');
+        if (i > 0) {
+            fileExtension = path.substring(i + 1);
+        }
+
+        return extensions.contains(fileExtension);
+    }
+
+    /**
+     * Auxiliary method to determine wether a file is a VCF file
+     *
+     * @param path file path
+     * @return bool True, if the given path is a manifest file. False, otherwise.
+     */
+    public static boolean isPrideXMLManifestFile(String path) {
+        Set<String> extensions = new HashSet<String>();
+        extensions.add("xml");
+
+        String fileExtension = "";
+
+        int i = path.lastIndexOf('.');
+        if (i > 0) {
+            fileExtension = path.substring(i + 1);
+        }
+
+        return extensions.contains(fileExtension);
+    }
+
+    /**
      * Gets the icon type that will be shown on the UI.
      *
-     * @param filePath
-     *            path to the file
+     * @param filePath path to the file
      * @return the icon type as String
      */
     public static String getIconToDisplay(String filePath) {

@@ -17,23 +17,30 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
-
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
+import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface CollectionService {
+
+    /**
+     * Verifies whether or not a file already exists in a collection
+     * @param filename name of the file to be checked
+     * @param collectionPath path to the collection where the file may or may not exist
+     * @return True, if a file with the exact same name is found in the collection. False, otherwise.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid.
+     */
+    boolean isFileInCollection(String filename, String collectionPath) throws DataGridConnectionRefusedException;
 
     /**
      * Checks whether a path is valid in the grid or not.
@@ -99,27 +106,6 @@ public interface CollectionService {
      * @throws DataGridConnectionRefusedException
      */
     String getPermissionsForPath(String path) throws DataGridConnectionRefusedException;
-
-    /**
-     * Gets the total number of collections existing under a specific path
-     *
-     * @param path
-     * @return the total number of items under path
-     * @throws DataGridFileNotFoundException
-     * @throws DataGridConnectionRefusedException
-     * @throws DataGridException
-     */
-    int getTotalNumberOfCollectionsUnderPath(String path) throws DataGridFileNotFoundException, DataGridException;
-
-    /**
-     * Gets the total number of data objects existing under a specific path
-     *
-     * @param path
-     * @return the total number of items under path
-     * @throws DataGridFileNotFoundException
-     * @throws DataGridException
-     */
-    int getTotalNumberOfDataObjectsUnderPath(String path) throws DataGridFileNotFoundException, DataGridException;
 
     /**
      * Gets the total number of replicas for a specific data object

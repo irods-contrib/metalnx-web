@@ -22,22 +22,13 @@ import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
-import com.emc.metalnx.service.utils.DataGridFileForUpload;
-import com.emc.metalnx.services.exceptions.DataGridCorruptedPartException;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FileOperationService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.UserService;
-import org.apache.commons.io.FileUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.emc.metalnx.services.interfaces.*;
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,63 +36,42 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/fileOperation")
 public class FileOperationsController {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
+    private static String TRASH_PATH;
     @Autowired
-    CollectionController collectionController;
-
+    private CollectionController collectionController;
     @Autowired
-    CollectionService collectionService;
-
+    private CollectionService collectionService;
     @Autowired
-    IRODSServices irodsServices;
-
+    private IRODSServices irodsServices;
     @Autowired
-    UserService userService;
-
+    private UserService userService;
     @Autowired
-    FileOperationService fileOperationService;
-
+    private FileOperationService fileOperationService;
     @Autowired
-    LoggedUserUtils loggedUserUtils;
-
-    @Value("${irods.zoneName}")
-    private String zoneName;
-
+    private LoggedUserUtils loggedUserUtils;
+    @Autowired
+    private UploadService us;
     // contains the path to the file that will be downloaded
     private String filePathToDownload;
-
     // checks if it's necessary to remove any temporary collections created for downloading
     private boolean removeTempCollection;
 
-    // contains the file name, DataGridForUpload map containing all files that will be uploaded
-    private Map<String, DataGridFileForUpload> filesForUploadMap;
-
-    private static String TRASH_PATH;
-
-    private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
-
     @PostConstruct
     public void init() {
-        filesForUploadMap = new HashMap<String, DataGridFileForUpload>();
         TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
     }
 
@@ -110,7 +80,7 @@ public class FileOperationsController {
     public String move(Model model, @RequestParam("targetPath") String targetPath) throws DataGridException, JargonException {
 
         List<String> sourcePaths = collectionController.getSourcePaths();
-        List<String> failedMoves = new ArrayList<String>();
+        List<String> failedMoves = new ArrayList<>();
         String fileMoved = "";
 
         try {
@@ -126,9 +96,7 @@ public class FileOperationsController {
             logger.error("Could not move item to {}: {}", targetPath, e.getMessage());
         }
 
-        if (fileMoved != "") {
-            model.addAttribute("fileMoved", fileMoved);
-        }
+        if (!fileMoved.isEmpty()) model.addAttribute("fileMoved", fileMoved);
 
         model.addAttribute("failedMoves", failedMoves);
         sourcePaths.clear();
@@ -141,7 +109,7 @@ public class FileOperationsController {
     public String copy(Model model, @RequestParam("targetPath") String targetPath) throws DataGridException, JargonException {
 
         List<String> sourcePaths = collectionController.getSourcePaths();
-        List<String> failedCopies = new ArrayList<String>();
+        List<String> failedCopies = new ArrayList<>();
         String fileCopied = "";
 
         for (String sourcePathItem : sourcePaths) {
@@ -153,9 +121,7 @@ public class FileOperationsController {
             }
         }
 
-        if (fileCopied != "") {
-            model.addAttribute("fileCopied", fileCopied);
-        }
+        if (!fileCopied.isEmpty()) model.addAttribute("fileCopied", fileCopied);
 
         model.addAttribute("failedCopies", failedCopies);
         sourcePaths.clear();
@@ -166,12 +132,12 @@ public class FileOperationsController {
     /**
      * Delete a replica of a data object
      *
-     * @param model
-     * @param path    path to the parent of the data object to be deleted
-     * @param fileName      name of the data object to be deleted
+     * @param model MVC model
+     * @param path path to the parent of the data object to be deleted
+     * @param fileName name of the data object to be deleted
      * @param replicaNumber number of the replica that is going to be deleted
      * @return the template that shows the data object information with the replica table refreshed
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
     @RequestMapping(value = "deleteReplica", method = RequestMethod.POST)
     public String deleteReplica(Model model, @RequestParam("path") String path, @RequestParam("fileName") String fileName,
@@ -192,13 +158,15 @@ public class FileOperationsController {
 
         List<String> sourcePaths = collectionController.getSourcePaths();
         String[] resources = (String[]) request.getParameterMap().get("resourcesForReplication");
-        List<String> failedReplicas = new ArrayList<String>();
+        List<String> failedReplicas = new ArrayList<>();
 
         if (resources != null) {
             String targetResource = resources[0];
             boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
             for (String sourcePathItem : sourcePaths) {
-                if (!fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode)) {
+                try {
+                    fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode);
+                } catch (DataGridReplicateException e) {
                     String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
                     failedReplicas.add(item);
                 }
@@ -211,124 +179,6 @@ public class FileOperationsController {
         }
 
         return collectionController.index(model, request, false);
-    }
-
-    @RequestMapping(value = "/upload/", method = RequestMethod.POST, produces = {"text/plain"})
-    @ResponseBody
-    public String upload(Model model, HttpServletRequest request, RedirectAttributes redirectAttr) throws DataGridConnectionRefusedException,
-            IOException {
-        logger.debug("Uploading files ...");
-
-        boolean isFileTransferringComplete = false;
-        String error = "";
-
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-            MultipartFile multipartFileChunk = multipartRequest.getFile("fileChunk");
-
-            String[] chunkNumberParam = (String[]) request.getParameterMap().get("chunkNumber");
-            String[] filePartParam = (String[]) request.getParameterMap().get("filePart");
-            String[] fileName = (String[]) request.getParameterMap().get("fileName");
-            String[] partCRC32Param = (String[]) request.getParameterMap().get("partCRC32");
-            DataGridFileForUpload fileForUpload = null;
-
-            logger.debug("Uploading file {} ", fileName[0]);
-
-            synchronized (filesForUploadMap) {
-                fileForUpload = filesForUploadMap.get(fileName[0]);
-            }
-
-            try {
-
-                int chunkNumber = Integer.valueOf(chunkNumberParam[0]);
-                int partNumber = Integer.valueOf(filePartParam[0]);
-                long partCRC32 = Long.valueOf(partCRC32Param[0]);
-
-                isFileTransferringComplete = fileForUpload.writeChunkToFile(multipartFileChunk, partNumber, chunkNumber, partCRC32);
-
-                // transfer file to data grid when all its parts were sent to
-                // server and there is no parts corrupted
-                if (isFileTransferringComplete && !fileForUpload.isFileCorrupted()) {
-                    logger.info("File transferring complete. Sending it to the data grid.");
-                    fileOperationService.transferFileToDataGrid(fileForUpload);
-
-                    // removing the file uploaded from server map
-                    synchronized (filesForUploadMap) {
-                        filesForUploadMap.remove(fileForUpload.getFileName());
-                    }
-                }
-            } catch (NullPointerException e) {
-                logger.error("Could not upload file. {}", e.getMessage());
-                error = ":nullpointer";
-            } catch (DataGridCorruptedPartException e) {
-                logger.error("Corrupted part in file {}", fileName[0], e.getMessage());
-                error = ":corruptedfile";
-            } catch (DataGridException e) {
-                logger.error("Could not transfer file to IRODS resource. {}", e.getMessage());
-                fileOperationService.deleteItem(fileForUpload.getTargetPath() + "/" + fileForUpload.getFileName(), true);
-                error = ":transfererror";
-            }
-            if (!error.isEmpty()) {
-                File tmpSessionDir = new File(fileForUpload.getUser(), fileForUpload.getPathToParts());
-                FileUtils.deleteQuietly(tmpSessionDir);
-            }
-        }
-
-        return collectionController.getCurrentPath() + error;
-    }
-
-    @RequestMapping(value = "/prepareFilesForUpload", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void prepareFilesForUpload(HttpServletRequest request, @RequestParam("fileName") String fileName, @RequestParam("fileSize") long fileSize,
-                                      @RequestParam("partSize") long partSize, @RequestParam("totalParts") int totalParts, @RequestParam("chunkSize") int chunkSize,
-                                      @RequestParam("totalChunksPerPart") int totalChunksPerPart, @RequestParam("totalChunks") int totalChunks,
-                                      @RequestParam("checksum") boolean checksum, @RequestParam("replica") boolean replica, @RequestParam("resources") String resources,
-                                      @RequestParam("resourcesToUpload") String resourcesToUpload, @RequestParam("overwriteDuplicateFiles") boolean overwriteDuplicateFiles)
-            throws FileNotFoundException {
-
-        logger.debug("Preparing {} for upload.", fileName);
-
-        String user = irodsServices.getCurrentUser();
-        DataGridFileForUpload fileForUpload = new DataGridFileForUpload(fileName, fileSize, partSize, totalParts, chunkSize, totalChunksPerPart,
-                totalChunks, resourcesToUpload, collectionController.getCurrentPath(), user);
-
-        fileForUpload.setDataGridComputeChecksum(checksum);
-        fileForUpload.setDataGridOverwriteDuplicatedFiles(overwriteDuplicateFiles);
-        fileForUpload.setReplicateFile(replica);
-        fileForUpload.setDataGridReplicationResource(resources);
-
-        synchronized (filesForUploadMap) {
-            filesForUploadMap.put(fileName, fileForUpload);
-        }
-    }
-
-    @RequestMapping(value = "/resumeUpload/", method = RequestMethod.POST, produces = {"text/plain"})
-    @ResponseBody
-    public String resumeUpload(HttpServletResponse response, @RequestParam("fileName") String fileName) {
-
-        JSONObject resumeUploadJSON = new JSONObject();
-        JSONArray listOfChunksUploadedJSON = null;
-        DataGridFileForUpload resumeFileUpload = null;
-
-        try {
-            resumeFileUpload = filesForUploadMap.get(fileName);
-            resumeUploadJSON.append("fileName", resumeFileUpload.getFileName());
-            resumeUploadJSON.append("lastPartUploaded", resumeFileUpload.getLastPartUploaded());
-
-            listOfChunksUploadedJSON = new JSONArray();
-            List<Integer> chunks = resumeFileUpload.getChunksUploadedFromLastPartUploaded();
-            for (Integer chunk : chunks) {
-                listOfChunksUploadedJSON.put(chunk);
-            }
-
-            resumeUploadJSON.append("listOfChunksUploaded", listOfChunksUploadedJSON);
-        } catch (JSONException e) {
-            logger.error("Could not resume upload for file: {} {}", fileName, e.getMessage());
-        } catch (NullPointerException e) {
-            logger.error("Could not resume upload for file: {} {}", fileName, e.getMessage());
-        }
-
-        return resumeUploadJSON.toString();
     }
 
     @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET, produces = {"text/plain"})
@@ -379,9 +229,9 @@ public class FileOperationsController {
     @RequestMapping(value = "delete/", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public String deleteCollectionAndDataObject(Model model) throws DataGridException, JargonException {
-        boolean forceRemove = false;
+        boolean forceRemove;
         List<String> sourcePaths = collectionController.getSourcePaths();
-        List<String> failedDeletions = new ArrayList<String>();
+        List<String> failedDeletions = new ArrayList<>();
         String fileDeleted = null;
 
         for (String path : sourcePaths) {
@@ -412,7 +262,7 @@ public class FileOperationsController {
     }
 
     @RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
-    public ResponseEntity<String> emptyTrash(Model model) throws DataGridConnectionRefusedException {
+    public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException {
         String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
         DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
         if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {
@@ -425,9 +275,9 @@ public class FileOperationsController {
     /**
      * Displays the modify user form with all fields set to the selected collection
      *
-     * @param model
+     * @param model MVC model
      * @return collectionForm with fields set
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridException if item cannot be modified
      */
     @RequestMapping(value = "modify/", method = RequestMethod.GET)
     public String showModifyForm(Model model) throws DataGridException {
@@ -463,5 +313,4 @@ public class FileOperationsController {
 
         return String.format("collections/%s", formType);
     }
-
 }

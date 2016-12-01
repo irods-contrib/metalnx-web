@@ -17,26 +17,21 @@
 
 package com.emc.metalnx.service.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.CRC32;
-
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.services.exceptions.DataGridCorruptedFileException;
+import com.emc.metalnx.services.exceptions.DataGridCorruptedPartException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.emc.metalnx.services.exceptions.DataGridCorruptedFileException;
-import com.emc.metalnx.services.exceptions.DataGridCorruptedPartException;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.CRC32;
 
 /**
  * Class that defines a Data Grid File object used for uploading purposes. It
@@ -45,100 +40,70 @@ import com.emc.metalnx.services.exceptions.DataGridCorruptedPartException;
  */
 
 public final class DataGridFileForUpload {
+    private static final Logger logger = LoggerFactory.getLogger(DataGridFileForUpload.class);
+    private static final String FILE_PART_NUM_FORMAT = "00000";
     // file instance being uploaded
     private File finalFile;
-
     // file dir being uploaded
     private File fileDir;
-
     // name of the file being uploaded
     private String fileName;
-
     // size of the file
     private long fileSize;
-
     // size of the part
     private long partSize;
-
     // total number of parts ("big chunks")
     private int totalParts;
-
     // total number of chunks per part after splitting up a file part
     private int totalChunksPerPart;
-
     // size of each chunk
     private int chunkSize;
-
     // property used for checking if the file was uploaded to
     private boolean isFileCorrupted;
-
+    // used to check whether or not the file can be transferred to the data grid
+    private boolean isFileReady;
     // counts how many bytes were transferred
     private int currentTransferredChunks;
-
     // total number of chunks this part has
     private int totalChunks;
-
     // map for all parts that will be uploaded until the file transferring gets
     // completed
     private Map<String, DataGridPartForUpload> filePartsMap;
 
+    // DataGrid upload variables
     // user who is doing the upload
     private String user;
-
-    // time stamp when the upload started
-    private long timeStamp;
-
     // path where the parts will be placed under the user upload dir
     private String pathToParts;
-
-    // DataGrid upload variables
-
     // Whether or not it's needed to compute checksum on the data grid
     private boolean dataGridComputeChecksum;
-
     // Whether or not it's needed to overwrite existing files with the same name
     // in the data grid
     private boolean dataGridOverwriteDuplicatedFiles;
-
     // Whether or not this file should be replicated in another resource
     private boolean replicateFile;
-
     // destination resource on the data grid the file will be sent
-    private String dataGridDestinationResource;
-
+    private String destinationResource;
     // data grid resource where the file will be replicated
-    private String dataGridReplicationResource;
-
+    private String replResc;
     // path this file will uploaded into the data grid
     private String targetPath;
-
-    private static final Logger logger = LoggerFactory.getLogger(DataGridFileForUpload.class);
-
-    public static final String FILE_PART_NUM_FORMAT = "00000";
 
     /**
      * Creates a file instance for chucking upload.
      *
-     * @param fileName
-     *            name of the file that will be uploaded
-     * @param fileSize
-     *            size of the file that will be uploaded
-     * @param partSize
-     *            part size of the file
-     * @param totalParts
-     *            number of parts that will be uploaded
-     * @param chunkSize
-     *            size of each chunk from a part
-     * @param totalChunksPerPart
-     *            max number of chunks that will be sent for each part
-     * @param totalChunks
-     *            max number of chunks sent in total
-     * @param destResource
-     *            where this file has to live in the data grid
-     * @throws FileNotFoundException
+     * @param fileName name of the file that will be uploaded
+     * @param fileSize size of the file that will be uploaded
+     * @param partSize part size of the file
+     * @param totalParts number of parts that will be uploaded
+     * @param chunkSize size of each chunk from a part
+     * @param totalChunksPerPart max number of chunks that will be sent for each part
+     * @param totalChunks max number of chunks sent in total
+     * @param destResource where this file has to live in the data grid
      */
-    public DataGridFileForUpload(String fileName, long fileSize, long partSize, int totalParts, int chunkSize, int totalChunksPerPart,
-            int totalChunks, String destResource, String targetPath, String user) throws FileNotFoundException {
+    public DataGridFileForUpload(String fileName, long fileSize, long partSize, int totalParts, int chunkSize,
+                                 int totalChunksPerPart, int totalChunks, String destResource, String targetPath,
+                                 String user) {
 
         this.fileName = fileName;
         this.fileSize = fileSize;
@@ -148,12 +113,12 @@ public final class DataGridFileForUpload {
         this.totalChunksPerPart = totalChunksPerPart;
         this.totalChunks = totalChunks;
         this.isFileCorrupted = false;
+        this.isFileReady = false;
         this.currentTransferredChunks = 0;
-        this.dataGridDestinationResource = destResource;
+        this.destinationResource = destResource;
         this.targetPath = targetPath;
         this.user = user;
-        this.timeStamp = System.currentTimeMillis();
-        this.pathToParts = fileName + "_" + this.timeStamp;
+        this.pathToParts = fileName + "_" + System.currentTimeMillis();
 
         // creating the user temp directory
         File userDirForUpload = new File(user);
@@ -163,93 +128,87 @@ public final class DataGridFileForUpload {
 
         // creating directory where the parts will stay (under the user temp
         // directory)
-        this.fileDir = new File(user, this.pathToParts);
-        this.fileDir.mkdir();
+        fileDir = new File(user, this.pathToParts);
+        fileDir.mkdir();
 
         // creating hash map for file partss
-        this.filePartsMap = new HashMap<String, DataGridPartForUpload>();
-
+        this.filePartsMap = new HashMap<>();
     }
 
     /**
-     * Method that will get a chunk and write this chunk to its corresponding
-     * file part.
+     * Checks whether or not the file is ready to be sent to the data grid
      *
-     * @param multipartFileChunk
-     *            chunk of a part
-     * @param partNumber
-     *            number of the part that the chunk belongs to
-     * @param chunkNumber
-     *            chunk sequence number
-     * @throws DataGridCorruptedPartException
-     *             Exception thrown when a chunk it's smaller or greater than
-     *             it's supposed to
-     * @return True, if the file was completely transferred to the server (all
-     *         its parts were joined). False, otherwise.
+     * @return True, if the file is ready for transferring. False, otherwise.
      */
-    synchronized public boolean writeChunkToFile(MultipartFile multipartFileChunk, int partNumber, int chunkNumber, long partCRC32) {
+    synchronized public boolean isFileReadyForDataGrid() {
+        return this.isFileReady && !this.isFileCorrupted();
+    }
 
-        // validating both part and chunk to avoid part or chunk with a sequence
-        // number that
-        // exceeds the total number of parts and total chunks per part agreed in
-        // the handshake
+    /**
+     * Writes a file chunk into its corresponding part.
+     *
+     * @param chunk piece of a file
+     */
+    synchronized public void writeChunk(DataGridChunkForUpload chunk) throws DataGridException {
+        this.writeChunk(chunk.getChunk(), chunk.getPartNumber(), chunk.getChunkNumber(), chunk.getCrc());
+    }
+
+    /**
+     * Method that will get a chunk and write this chunk to its corresponding file part.
+     *
+     * @param multipartFileChunk chunk of a part
+     * @param partNumber         number of the part that the chunk belongs to
+     * @param chunkNumber        chunk sequence number
+     * @throws DataGridCorruptedPartException is thrown when a chunk it's smaller or greater than it is supposed to
+     */
+    synchronized private void writeChunk(MultipartFile multipartFileChunk, int partNumber, int chunkNumber, long partCRC32) throws DataGridException {
+
+        // validating both part and chunk to avoid part or chunk with a sequence number that exceeds the total number of
+        // parts and total chunks per part agreed in the handshake
         if (partNumber >= this.totalParts || partNumber < 0 || chunkNumber < 0 || chunkNumber >= this.totalChunksPerPart) {
             logger.error("Invalid {} part {} and chunk {}. Dropping chunk.", this.fileName, partNumber, chunkNumber);
-            return false;
+            return;
         }
 
-        DataGridPartForUpload currentDataGridPartForUpload = null;
-        boolean isFileTransferredSuccessfully = false;
+        DataGridPartForUpload part = null;
 
         try {
-            String tempFilePartName = this.fileName + "." + new DecimalFormat(FILE_PART_NUM_FORMAT).format(partNumber);
+            String decimalFormat = new DecimalFormat(FILE_PART_NUM_FORMAT).format(partNumber);
+            String tempFilePartName = String.format("%s.%s", this.fileName, decimalFormat);
 
-            // another chunk of that part was already sent, the part already
-            // exists
-            if (this.filePartsMap.containsKey(tempFilePartName)) {
-                currentDataGridPartForUpload = this.filePartsMap.get(tempFilePartName);
+            // another chunk of that part was already sent, the part already exists
+            if (filePartsMap.containsKey(tempFilePartName)) {
+                part = filePartsMap.get(tempFilePartName);
             } else {
                 // if file part doesn't exist, create it and put it into the map
-                currentDataGridPartForUpload = new DataGridPartForUpload(this.fileName, this.fileSize, partNumber, this.partSize,
-                        this.totalChunksPerPart, this.chunkSize, this.fileDir.getPath(), partCRC32);
-
-                this.filePartsMap.put(tempFilePartName, currentDataGridPartForUpload);
+                part = new DataGridPartForUpload(fileName, fileSize, partNumber, partSize, totalChunksPerPart, chunkSize, fileDir.getPath(), partCRC32);
+                filePartsMap.put(tempFilePartName, part);
             }
 
-            // delegate the function of really writing the chunk to the file to
-            // its corresponding part
-            currentDataGridPartForUpload.writeChunkToFilePart(multipartFileChunk, chunkNumber);
+            // delegate the function of really writing the chunk to the file to its corresponding part
+            part.writeChunkToFilePart(multipartFileChunk, chunkNumber);
             this.currentTransferredChunks++;
 
             logger.info("Chunk {} written to {} part {}", chunkNumber, this.fileName, partNumber);
 
-            // end of file transferring - all parts were uploaded to the server.
-            // Time to join them.
-            if (this.currentTransferredChunks == this.totalChunks) {
-                logger.info("Current Total Chunks: {} - Total chunks : {}", this.currentTransferredChunks, this.totalChunks);
-
+            if (currentTransferredChunks == this.totalChunks) {
+                logger.info("Current Total Chunks: {} - Total chunks : {}", currentTransferredChunks, this.totalChunks);
                 logger.info("Last chunk of the last part. Time to join the parts.");
-                isFileTransferredSuccessfully = this.joinFileParts();
-                this.currentTransferredChunks = 0;
+
+                isFileReady = this.joinFileParts();
+                currentTransferredChunks = 0;
             }
 
-        }
-        catch (DataGridCorruptedPartException e) {
+        } catch (DataGridException e) {
             logger.error("Corrupted part in file {}", this.fileName, e.getMessage());
-            isFileTransferredSuccessfully = false;
-            this.currentTransferredChunks = this.currentTransferredChunks - currentDataGridPartForUpload.getListOfChunksReceived().size();
+            this.currentTransferredChunks = this.currentTransferredChunks - part.getListOfChunksReceived().size();
             throw e;
-        }
-        catch (IOException e) {
-            logger.error("Could not write chunk into file {}", this.fileName, e);
-            isFileTransferredSuccessfully = false;
-        }
-        catch (NullPointerException e) {
+        } catch (IOException e) {
+            logger.error("Could write junk to part: ", e.getMessage());
+            throw new DataGridFileNotFoundException("Could not file part to write chunk");
+        } catch (NullPointerException e) {
             logger.error("Could not join parts.", this.fileName, e.getMessage());
-            isFileTransferredSuccessfully = false;
         }
-
-        return isFileTransferredSuccessfully;
     }
 
     /**
@@ -258,16 +217,16 @@ public final class DataGridFileForUpload {
      *
      * @return True, if all parts were joined successfully. False, otherwise.
      * @throws DataGridCorruptedFileException
-     *             Exception thrown when one or more parts of the file are
-     *             corrupted.
+     *             Exception thrown when one or more parts of the file are corrupted.
      */
-    synchronized public boolean joinFileParts() throws DataGridCorruptedFileException {
+    synchronized private boolean joinFileParts() throws DataGridException {
         logger.info("Asseblying file parts to a single file");
+
         BufferedOutputStream bos = null;
         BufferedInputStream bis = null;
-        String currentFilePartName = "";
-        CRC32 crc32 = new CRC32();
         DataGridPartForUpload dataGridPartForUpload = null;
+        String currentFilePartName;
+        CRC32 crc32 = new CRC32();
 
         try {
             this.finalFile = new File(this.fileDir.getPath(), this.fileName);
@@ -279,7 +238,7 @@ public final class DataGridFileForUpload {
                 crc32.reset();
 
                 if (dataGridPartForUpload.isPartCorrupted()) {
-                    StringBuffer errMsg = new StringBuffer();
+                    StringBuilder errMsg = new StringBuilder();
                     errMsg.append("Part ");
                     errMsg.append(dataGridPartForUpload.getPartNumber());
                     errMsg.append(" of ");
@@ -329,24 +288,15 @@ public final class DataGridFileForUpload {
             }
 
         }
-        catch (FileNotFoundException e) {
-            logger.error("Could not join file parts for {}", e);
-            this.isFileCorrupted = true;
-        }
         catch (IOException e) {
             logger.error("Could not join file parts for {}", e);
             this.isFileCorrupted = true;
         }
         finally {
             try {
-                if (bis != null) {
-                    bis.close();
-                }
-
-                bos.close();
-                if (dataGridPartForUpload != null) {
-                    dataGridPartForUpload.removeTempFilePart();
-                }
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+                if (dataGridPartForUpload != null) dataGridPartForUpload.removeTempFilePart();
             }
             catch (Exception e) {
                 logger.error("Could not close buffers: {}", e);
@@ -363,12 +313,13 @@ public final class DataGridFileForUpload {
      * file is completely transferred to the data grid.
      */
     public void removeTempFile() {
-        logger.info("Deleting temp directory {}", this.fileDir.getPath());
+        logger.info("Removing temporary files from Tomcat. Deleting temp directory {}", this.fileDir.getPath());
 
         if (this.fileDir.exists()) {
             try {
                 logger.info("Force delete {}", this.fileDir);
                 FileUtils.forceDelete(this.fileDir);
+                logger.info("Temporary file removed from Tomcat.");
             }
             catch (IOException e) {
                 logger.error("Could not delete directory {}", this.fileDir.getPath());
@@ -406,14 +357,6 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param isFileCorrupted
-     *            the isFileCorrupted to set
-     */
-    public void setFileCorrupted(boolean isFileCorrupted) {
-        this.isFileCorrupted = isFileCorrupted;
-    }
-
-    /**
      * @return the fileName
      */
     public String getFileName() {
@@ -429,126 +372,6 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @return the fileSize
-     */
-    public long getFileSize() {
-        return this.fileSize;
-    }
-
-    /**
-     * @param fileSize
-     *            the fileSize to set
-     */
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    /**
-     * @return the chunkSize
-     */
-    public long getChunkSize() {
-        return this.chunkSize;
-    }
-
-    /**
-     * @param chunkSize
-     *            the chunkSize to set
-     */
-    public void setChunkSize(int chunkSize) {
-        this.chunkSize = chunkSize;
-    }
-
-    /**
-     * @return the totalChunksPerPart
-     */
-    public int getTotalChunksPerPart() {
-        return this.totalChunksPerPart;
-    }
-
-    /**
-     * @param totalChunks
-     *            the totalChunksPerPart to set
-     */
-    public void setTotalChunksPerPart(int totalChunksPerPart) {
-        this.totalChunksPerPart = totalChunksPerPart;
-    }
-
-    /**
-     * @return the totalParts
-     */
-    public int getTotalParts() {
-        return this.totalParts;
-    }
-
-    /**
-     * @param totalParts
-     *            the totalParts to set
-     */
-    public void setTotalParts(int totalParts) {
-        this.totalParts = totalParts;
-    }
-
-    /**
-     * @return the totalChunks
-     */
-    public int getTotalChunks() {
-        return this.totalChunks;
-    }
-
-    /**
-     * @param totalChunks
-     *            the totalChunks to set
-     */
-    public void setTotalChunks(int totalChunks) {
-        this.totalChunks = totalChunks;
-    }
-
-    /**
-     * @return the fileParts
-     */
-    public Map<String, DataGridPartForUpload> getFilePartsMap() {
-        return this.filePartsMap;
-    }
-
-    /**
-     * @param fileParts
-     *            the fileParts to set
-     */
-    public void setFilePartsMap(Map<String, DataGridPartForUpload> filePartsMap) {
-        this.filePartsMap = filePartsMap;
-    }
-
-    /**
-     * @return the currentTransferredChunks
-     */
-    public int getCurrentTransferredChunks() {
-        return this.currentTransferredChunks;
-    }
-
-    /**
-     * @param currentTransferredChunks
-     *            the currentTransferredChunks to set
-     */
-    public void setCurrentTransferredChunks(int currentTransferredChunks) {
-        this.currentTransferredChunks = currentTransferredChunks;
-    }
-
-    /**
-     * @return the partSize
-     */
-    public long getPartSize() {
-        return this.partSize;
-    }
-
-    /**
-     * @param partSize
-     *            the partSize to set
-     */
-    public void setPartSize(long partSize) {
-        this.partSize = partSize;
-    }
-
-    /**
      * @return the file
      */
     public File getFile() {
@@ -556,8 +379,7 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param file
-     *            the file to set
+     * @param finalFile the file to set
      */
     public void setFile(File finalFile) {
         this.finalFile = finalFile;
@@ -571,8 +393,7 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param dataGridComputeChecksum
-     *            the dataGridComputeChecksum to set
+     * @param dataGridComputeChecksum the dataGridComputeChecksum to set
      */
     public void setDataGridComputeChecksum(boolean dataGridComputeChecksum) {
         this.dataGridComputeChecksum = dataGridComputeChecksum;
@@ -586,41 +407,33 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param dataGridOverwriteExistingFiles
-     *            the dataGridOverwriteExistingFiles to set
+     * @param dataGridOverwriteDuplicatedFiles the dataGridOverwriteDuplicatedFiles to set
      */
     public void setDataGridOverwriteDuplicatedFiles(boolean dataGridOverwriteDuplicatedFiles) {
         this.dataGridOverwriteDuplicatedFiles = dataGridOverwriteDuplicatedFiles;
     }
 
     /**
-     * @return the dataGridDestinationResource
+     * @return the destinationResource
      */
-    public String getDataGridDestinationResource() {
-        return this.dataGridDestinationResource;
+    public String getDestResc() {
+        return this.destinationResource;
     }
 
     /**
-     * @param dataGridDestinationResource
-     *            the dataGridDestinationResource to set
+     * Get the replication resource name
+     * @return the name of the resource for replication
      */
-    public void setDataGridDestinationResource(String dataGridDestinationResource) {
-        this.dataGridDestinationResource = dataGridDestinationResource;
+    public String getReplResc() {
+        return this.replResc;
     }
 
     /**
-     * @return the dataGridReplicationResource
+     * Sets the resource to replicate the file
+     * @param replResc resource name for replication
      */
-    public String getDataGridReplicationResource() {
-        return this.dataGridReplicationResource;
-    }
-
-    /**
-     * @param dataGridReplicationResource
-     *            the dataGridReplicationResource to set
-     */
-    public void setDataGridReplicationResource(String dataGridReplicationResource) {
-        this.dataGridReplicationResource = dataGridReplicationResource;
+    public void setReplResc(String replResc) {
+        this.replResc = replResc;
     }
 
     /**
@@ -646,11 +459,10 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param targetPath
-     *            the targetPath to set
+     * @return the full file path (/full/path/to/file/nameofthefile)
      */
-    public void setTargetPath(String targetPath) {
-        this.targetPath = targetPath;
+    public String getPath() {
+        return String.format("%s/%s", getTargetPath(), fileName);
     }
 
     /**
@@ -661,26 +473,10 @@ public final class DataGridFileForUpload {
     }
 
     /**
-     * @param userSessionID
-     *            the userSessionID to set
+     * @param user the user to set
      */
     public void setUser(String user) {
         this.user = user;
-    }
-
-    /**
-     * @return the timeStamp
-     */
-    public long getTimeStamp() {
-        return this.timeStamp;
-    }
-
-    /**
-     * @param timeStamp
-     *            the timeStamp to set
-     */
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     /**
@@ -689,13 +485,4 @@ public final class DataGridFileForUpload {
     public String getPathToParts() {
         return this.pathToParts;
     }
-
-    /**
-     * @param pathToParts
-     *            the pathToParts to set
-     */
-    public void setPathToParts(String pathToParts) {
-        this.pathToParts = pathToParts;
-    }
-
 }

@@ -17,14 +17,12 @@
 
 package com.emc.metalnx.services.exceptions;
 
-public class DataGridCorruptedPartException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+
+public class DataGridCorruptedPartException extends DataGridException {
+    private static final long serialVersionUID = 1L;
 
 	public DataGridCorruptedPartException(String msg) {
 		super(msg);
-	}
-
-	public DataGridCorruptedPartException(String msg, Throwable t) {
-		super(msg, t);
 	}
 }

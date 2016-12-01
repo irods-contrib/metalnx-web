@@ -17,72 +17,51 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.service.utils.DataGridFileForUpload;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.*;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.*;
+import org.irods.jargon.core.pub.DataObjectAO;
+import org.irods.jargon.core.pub.DataTransferOperations;
+import org.irods.jargon.core.pub.IRODSFileSystemAO;
+import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
 public class FileOperationServiceImpl implements FileOperationService {
 
-    @Autowired
-    IRODSServices irodsServices;
-
-    @Autowired
-    CollectionService collectionService;
-
-    @Autowired
-    UserBookmarkService userBookmarkService;
-
-    @Autowired
-    GroupBookmarkService groupBookmarkService;
-
-    @Autowired
-    FavoritesService favoritesService;
-
-    @Autowired
-    ResourceService resourceService;
-
-    @Value("${populate.msi.enabled}")
-    private boolean populateMsiEnabled;
-
-    @Value("${illumina.msi.enabled}")
-    private boolean illuminaMsiEnabled;
-
-    @Value("${irods.host}")
-    private String iCATHost;
-
-    private static final int MEGABYTE = 1 * 1024 * 1024;
     private static final String CONTENT_TYPE = "application/octet-stream";
     private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
-
     private static final Logger logger = LoggerFactory.getLogger(FileOperationServiceImpl.class);
+    @Autowired
+    IRODSServices irodsServices;
+    @Autowired
+    CollectionService collectionService;
+    @Autowired
+    UserBookmarkService userBookmarkService;
+    @Autowired
+    GroupBookmarkService groupBookmarkService;
+    @Autowired
+    FavoritesService favoritesService;
+    @Autowired
+    ResourceService resourceService;
+    @Autowired
+    RuleService rs;
 
     @Override
     public boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException {
@@ -113,9 +92,7 @@ public class FileOperationServiceImpl implements FileOperationService {
         boolean isCopied = true;
 
         for (String sourcePath : sourcePaths) {
-            if (this.copy(sourcePath, targetPath) == false) {
-                isCopied = false;
-            }
+            if (!this.copy(sourcePath, targetPath)) isCopied = false;
         }
 
         return isCopied;
@@ -248,11 +225,9 @@ public class FileOperationServiceImpl implements FileOperationService {
             return false;
         }
 
-        boolean isDownloadSuccesful = true;
-
         logger.debug("Copying file into the HTTP response");
 
-        isDownloadSuccesful = copyFileIntoHttpResponse(path, response);
+        boolean isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
 
         String fileName = path.substring(path.lastIndexOf("/"), path.length());
 
@@ -277,7 +252,7 @@ public class FileOperationServiceImpl implements FileOperationService {
             deleteCollection(tempColl, removeTempCollection);
         }
 
-        return isDownloadSuccesful;
+        return isDownloadSuccessful;
     }
 
     @Override
@@ -286,7 +261,7 @@ public class FileOperationServiceImpl implements FileOperationService {
             return false;
         }
 
-        boolean itemsDeleted = true;
+        boolean itemsDeleted = false;
         RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
 
@@ -297,6 +272,7 @@ public class FileOperationServiceImpl implements FileOperationService {
             ruleString.append("}\n");
             ruleString.append("OUTPUT ruleExecOut");
             ruleProcessingAO.executeRule(ruleString.toString());
+            itemsDeleted = true;
         }catch(Exception e){
             logger.error("Could not execute rule on path {}: ", currentPath, e.getMessage());
         }
@@ -333,267 +309,35 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean replicateDataObject(String path, String targetResource, boolean inAdminMode) throws
-            DataGridConnectionRefusedException {
-
+    public void replicateDataObject(String path, String targetResource, boolean inAdminMode) throws DataGridReplicateException, DataGridConnectionRefusedException {
         logger.info("Replicating {} into the resource {} [admin mode: {}]", path, targetResource, inAdminMode);
-        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
-        boolean isObjReplicated = false;
         try {
-            String remoteHeader = "";
-            String remoteFooter = "";
-
-            DataGridResource destResc = resourceService.find(targetResource);
-
-            if (!iCATHost.startsWith(destResc.getHost())) {
-                String remoteHost = destResc.getHost();
-                remoteHeader = String.format("remote( \"%s\", \"\" ) {\n", remoteHost);
-                remoteFooter = "}\n";
-            }
-
-            String flags = String.format("destRescName=%s++++%s", targetResource, inAdminMode ? "irodsAdmin=" : "");
-            String params = String.format("\"%s\", \"%s\", \"%s\"", path, flags, "null");
-
-            StringBuffer ruleString = new StringBuffer();
-            ruleString.append("replicateDataObjInAdminMode {\n");
-            ruleString.append(remoteHeader);
-            ruleString.append(" msiDataObjRepl(");
-            ruleString.append(params);
-            ruleString.append(");\n");
-            ruleString.append(remoteFooter);
-            ruleString.append("}\n");
-            ruleString.append("OUTPUT ruleExecOut");
-            ruleProcessingAO.executeRule(ruleString.toString());
-
-            isObjReplicated = true;
+            rs.execReplDataObjRule(targetResource, path, inAdminMode);
+        } catch (DataGridRuleException e) {
+            logger.info("File replication failed ({}) into the resource {} [admin mode: {}]", path, targetResource, inAdminMode);
+            throw new DataGridReplicateException("File replication failed.");
         }
-        catch (JargonException e) {
-            logger.error("Could not replicate " + path, e.getMessage());
-        }
-
-        return isObjReplicated;
     }
 
     @Override
-    public boolean transferFileToDataGrid(DataGridFileForUpload fileForUpload) throws DataGridException {
+    public void computeChecksum(String path, String filename) throws DataGridChecksumException, DataGridConnectionRefusedException {
+        if (path == null || path.isEmpty() || filename == null || filename.isEmpty())
+            throw new DataGridChecksumException("Could not calculate checksum. File path is invalid.");
 
-        if (fileForUpload == null || fileForUpload.getFile() == null || fileForUpload.isFileCorrupted() || fileForUpload.getTargetPath().isEmpty()
-                || fileForUpload.getDataGridDestinationResource().isEmpty()) {
+        logger.info("Computing checksum for {} ({})", filename, path);
 
-            logger.error("File could not be sent to the data grid.");
-            return false;
-        }
-
-        String defaultStorageResource = irodsServices.getDefaultStorageResource();
-        String targetPath = fileForUpload.getTargetPath();
-        String destinationResource = fileForUpload.getDataGridDestinationResource();
-        String replicationResource = fileForUpload.getDataGridReplicationResource();
-        boolean computeCheckSum = fileForUpload.isDataGridComputeChecksum();
-        boolean replicateFile = fileForUpload.isReplicateFile();
-
-        logger.info("Setting default resource to {}", destinationResource);
-
-        // Setting temporarily the defaultStorageResource for the logged user
-        irodsServices.setDefaultStorageResource(destinationResource);
-
-        // Getting DataObjectAO in order to create the new file
         IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
         DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
-        String originalFilename = "";
-
-        // Creating set of filenames on the current collection
-        List<DataGridCollectionAndDataObject> filesInColl = collectionService.getSubCollectionsAndDataObjetsUnderPath(targetPath);
-
-        Set<String> setOfFilesInColl = new HashSet<String>();
-        for (DataGridCollectionAndDataObject dataObj : filesInColl) {
-            if (!dataObj.isCollection()) {
-                setOfFilesInColl.add(dataObj.getName());
-            }
-        }
-
-        IRODSFile targetFile = null;
-        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
-        Stream2StreamAO stream2StreamA0 = irodsServices.getStream2StreamAO();
-
-        // Getting list of resources for upload - TODO
-        HashMap<String, String> resourceMap = null;
-        try {
-            ResourceAO resourceAO = irodsServices.getResourceAO();
-            resourceMap = DataGridUtils.buildMapForResourcesNamesAndMountPoints(resourceAO.findAll());
-        }
-        catch (JargonException e) {
-            logger.error("Could not build Resource map for upload", e);
-        }
-
-        File file = fileForUpload.getFile();
-        boolean isFileUploaded = false;
-        boolean fileIsAlreadyInCollection = setOfFilesInColl.contains(file.getName());
-
-        // If file already exists and we do not want to overwrite it, the
-        // transferring is aborted.
-        if (fileIsAlreadyInCollection && !fileForUpload.isDataGridOverwriteDuplicatedFiles()) {
-            logger.info("File already exists. Not overwriting it.");
-            return true;
-        }
+        IRODSFile file;
 
         try {
-            originalFilename = file.getName();
-            targetFile = irodsFileFactory.instanceIRODSFile(targetPath, originalFilename);
-            targetFile.setResource(destinationResource);
-
-            String tmpFileName = null;
-
-            if (fileIsAlreadyInCollection) {
-                tmpFileName = targetFile.getAbsolutePath() + ".tmp_for_upload";
-                move(targetFile.getAbsolutePath(), tmpFileName);
-            }
-
-            logger.info("Creating input stream for {} to be transferred", fileForUpload.getFileName());
-
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-            logger.info("Transferring file to iRODS.");
-
-            // Transfering file to iRODS filesystem
-            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
-
-            logger.info("Transferring done. Removing files from Tomcat");
-
-            // removing temporary files from the server after they get
-            // transferred to iRODS
-            fileForUpload.removeTempFile();
-
-            logger.info("Files removed from Tomcat");
-
-            // Computing a check sum for this file just uploaded to iRODS
-            if (computeCheckSum) {
-                logger.info("Computing checksum for {}", targetFile.getAbsoluteFile());
-                dataObjectAO.computeMD5ChecksumOnDataObject(targetFile);
-            }
-
-            // Replicating file into desired resource
-            if (replicateFile) {
-                logger.info("Replicating data object into {}", replicationResource);
-                dataObjectAO.replicateIrodsDataObject(targetFile.getPath(), replicationResource);
-            }
-
-            // Closing streams opened
-            inputStream.close();
-
-            if (fileIsAlreadyInCollection) {
-                logger.info("Deleting file {} ", tmpFileName);
-                deleteDataObject(tmpFileName, false);
-            }
-
-            String remoteHeader = "";
-            String remoteFooter = "";
-
-            DataGridResource destResc = resourceService.find(destinationResource);
-
-            if (!iCATHost.startsWith(destResc.getHost())) {
-                String remoteHost = destResc.getHost();
-                remoteHeader = String.format("remote( \"%s\", \"\" ) {\n", remoteHost);
-                remoteFooter = "}\n";
-            }
-
-            try {
-                StringBuilder ruleString = new StringBuilder();
-                String objPath = targetFile.getCanonicalPath();
-                String filePath = resourceMap.get(destinationResource) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
-
-                if (objPath.endsWith(".cram") || objPath.endsWith(".bam")) {
-                    ruleString.append("automaticBamMetadataExtraction {\n");
-                    ruleString.append(remoteHeader);
-                    ruleString.append(" msiobjput_mdbam(\"" + objPath + "\", \"" + filePath + "\");\n");
-                    ruleString.append(remoteFooter);
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }
-
-                if (isVCFFile(objPath)) {
-                    ruleString.append("automaticVcfMetadataExtraction {\n");
-                    ruleString.append(remoteHeader);
-                    ruleString.append(" msiobjput_mdvcf(\"" + objPath + "\", \"" + filePath + "\");\n");
-                    ruleString.append(remoteFooter);
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }
-
-                if (isImageFile(objPath)) {
-                    ruleString.append("automaticJpgMetadataExtraction {\n");
-                    ruleString.append(remoteHeader);
-                    ruleString.append(" msiobjjpeg_extract(\"" + objPath + "\", \"" + filePath + "\");\n");
-                    ruleString.append(remoteFooter);
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }
-
-                if (isPrideXMLManifestFile(objPath)) {
-                    StringBuilder xmlManifestFileRule = new StringBuilder();
-                    List<DataGridCollectionAndDataObject> objectsToApplyMetadata = collectionService
-                            .getSubCollectionsAndDataObjetsUnderPath(targetPath);
-                    for (DataGridCollectionAndDataObject obj : objectsToApplyMetadata) {
-                        String objPathToApplyMetadata = obj.getPath();
-
-                        logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, objPath);
-                        xmlManifestFileRule.append("automaticExtractMetadataFromXMLManifest {\n");
-                        ruleString.append(remoteHeader);
-                        xmlManifestFileRule.append("  msiobjput_mdmanifest(\'" + objPathToApplyMetadata + "\', \'" + filePath + "\', \'" + filePath
-                                + "\');\n");
-                        ruleString.append(remoteFooter);
-                        xmlManifestFileRule.append("}\n");
-                        xmlManifestFileRule.append("OUTPUT ruleExecOut");
-                        ruleProcessingAO.executeRule(xmlManifestFileRule.toString());
-                        xmlManifestFileRule.setLength(0);
-                    }
-                }
-
-                // Making sure the populate MSI is only executed on debug mode
-                if (populateMsiEnabled) {
-                    ruleString = new StringBuilder();
-                    ruleString.append("populateMetadataForFile {\n");
-                    ruleString.append(remoteHeader);
-                    ruleString.append(" msiobjput_populate(\"" + objPath + "\");\n");
-                    ruleString.append(remoteFooter);
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }
-
-                if (illuminaMsiEnabled && objPath.endsWith("_SSU.tar")) {
-                    ruleString = new StringBuilder();
-                    ruleString.append("illuminaMetadataForFile {\n");
-                    ruleString.append(remoteHeader);
-                    ruleString.append(String.format("msiTarFileExtract(\"%s\", \"%s\", \"%s\", *Status);\n", objPath, targetPath, destinationResource));
-                    ruleString.append(String.format("msiget_illumina_meta(\"%s\", \"%s\");", objPath, destinationResource));
-                    ruleString.append(remoteFooter);
-                    ruleString.append("}\n");
-                    ruleString.append("OUTPUT ruleExecOut");
-                    ruleProcessingAO.executeRule(ruleString.toString());
-                }
-            }
-            catch (Exception e) {
-                logger.error("Could not execute rule: ", e.getMessage());
-            }
-
-            isFileUploaded = true;
+            file = irodsFileFactory.instanceIRODSFile(path, filename);
+            dataObjectAO.computeMD5ChecksumOnDataObject(file);
+        } catch (JargonException e) {
+            logger.error("Could not calculate checksum: {}", e.getMessage());
+            throw new DataGridChecksumException("Could not calculate checksum.");
         }
-        catch (IOException e) {
-            logger.error("Could not create input stream for {}", originalFilename, e);
-        }
-        catch (JargonException e) {
-            logger.error("Could not upload IRODSFile for {}", targetPath, e);
-            throw new DataGridException(e.getMessage());
-        }
-
-        // Setting the default resource back to the original one.
-        irodsServices.setDefaultStorageResource(defaultStorageResource);
-
-        return isFileUploaded;
     }
 
     /*
@@ -612,8 +356,7 @@ public class FileOperationServiceImpl implements FileOperationService {
      *            HTTP response to let the user download the file
      * @return True, if the file was successfully added to the HTTP response.
      *         False, otherwise.
-     * @throws DataGridConnectionRefusedException
-     * @throws JargonException
+     * @throws DataGridConnectionRefusedException is Metalnx cannot connect to the data grid
      */
     private boolean copyFileIntoHttpResponse(String path, HttpServletResponse response) throws DataGridConnectionRefusedException {
 
@@ -655,8 +398,8 @@ public class FileOperationServiceImpl implements FileOperationService {
 
         finally {
             try {
-                irodsFileInputStream.close();
-                irodsFile.close();
+                if (irodsFileInputStream != null) irodsFileInputStream.close();
+                if (irodsFile != null) irodsFile.close();
             }
             catch (Exception e) {
                 logger.error("Could not close stream(s): ", e.getMessage());
@@ -665,73 +408,4 @@ public class FileOperationServiceImpl implements FileOperationService {
 
         return isCopySuccessFul;
     }
-
-    /**
-     * Auxiliary method to determine wether a file is an image file
-     *
-     * @param filePath
-     * @return bool
-     */
-    private boolean isImageFile(String filePath) {
-        Set<String> extensions = new HashSet<String>();
-        extensions.add("png");
-        extensions.add("PNG");
-        extensions.add("jpg");
-        extensions.add("JPG");
-        extensions.add("jpeg");
-        extensions.add("JPEG");
-        extensions.add("bmp");
-        extensions.add("BMP");
-
-        String fileExtension = "";
-
-        int i = filePath.lastIndexOf('.');
-        if (i > 0) {
-            fileExtension = filePath.substring(i + 1);
-        }
-
-        return extensions.contains(fileExtension);
-    }
-
-    /**
-     * Auxiliary method to determine wether a file is a VCF file
-     *
-     * @param filePath
-     * @return bool
-     */
-    private boolean isVCFFile(String filePath) {
-        Set<String> extensions = new HashSet<String>();
-        extensions.add("vcf");
-        extensions.add("VCF");
-
-        String fileExtension = "";
-
-        int i = filePath.lastIndexOf('.');
-        if (i > 0) {
-            fileExtension = filePath.substring(i + 1);
-        }
-
-        return extensions.contains(fileExtension);
-    }
-
-    /**
-     * Auxiliary method to determine wether a file is a VCF file
-     *
-     * @param filePath
-     * @return bool
-     */
-    private boolean isPrideXMLManifestFile(String filePath) {
-        Set<String> extensions = new HashSet<String>();
-        extensions.add("xml");
-
-        String fileExtension = "";
-
-        int i = filePath.lastIndexOf('.');
-        if (i > 0) {
-            fileExtension = filePath.substring(i + 1);
-        }
-
-        return extensions.contains(fileExtension);
-    }
-
 }

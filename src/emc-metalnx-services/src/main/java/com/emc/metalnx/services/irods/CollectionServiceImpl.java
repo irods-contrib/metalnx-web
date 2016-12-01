@@ -18,7 +18,10 @@
 package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.*;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
@@ -52,30 +55,35 @@ import java.util.regex.Pattern;
 public class CollectionServiceImpl implements CollectionService {
 
     private static final String IRODS_PATH_SEPARATOR = "/";
-
-	@Autowired
-    AdminServices adminServices;
-
-    @Autowired
-    IRODSServices irodsServices;
-
-    @Autowired
-    ResourceService resourceService;
-
-    @Autowired
-    PermissionsService permissionsService;
-
-    @Autowired
-    FileOperationService fileOperationService;
-
     private static final String SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxListOfCollectionsThatMatchSearchText";
     private static final String SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxListOfDataObjectsThatMatchSearchText";
     private static final String SQL_TOTAL_NUMBER_OF_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfDataObjectsThatMatchSearchText";
     private static final String SQL_TOTAL_NUMBER_OF_COLLS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfCollectionsThatMatchSearchText";
-
     private static final int MAX_RESULTS_PER_PAGE = 200;
-
     private static final Logger logger = LoggerFactory.getLogger(CollectionServiceImpl.class);
+    @Autowired
+    AdminServices adminServices;
+    @Autowired
+    IRODSServices irodsServices;
+    @Autowired
+    ResourceService resourceService;
+    @Autowired
+    PermissionsService permissionsService;
+    @Autowired
+    FileOperationService fileOperationService;
+
+    @Override
+    public boolean isFileInCollection(String filename, String collectionPath) throws DataGridConnectionRefusedException {
+        if (filename == null || collectionPath == null) return false;
+
+        List<DataGridCollectionAndDataObject> items = getSubCollectionsAndDataObjetsUnderPath(collectionPath);
+
+        for (DataGridCollectionAndDataObject i : items) {
+            if (!i.isCollection() && filename.equals(i.getName())) return true;
+        }
+
+        return false;
+    }
 
     @Override
     public boolean isPathValid(String path) throws DataGridConnectionRefusedException {
@@ -95,7 +103,7 @@ public class CollectionServiceImpl implements CollectionService {
             logger.error("Could not check whether {} is a collection: {}", path, e.getMessage());
         }
 
-        return file != null ? file.isDirectory() : false;
+        return file != null && file.isDirectory();
     }
 
     @Override
@@ -109,7 +117,7 @@ public class CollectionServiceImpl implements CollectionService {
         catch (JargonException e) {
             logger.error("Could not check if path is data object: {}", e.getMessage());
         }
-        return file != null ? file.isFile() : false;
+        return file != null && file.isFile();
     }
 
     @Override
@@ -744,54 +752,6 @@ public class CollectionServiceImpl implements CollectionService {
     public String getHomeDirectyForPublic() {
         logger.debug("Getting public directory");
         return IRODS_PATH_SEPARATOR + irodsServices.getCurrentUserZone() + "/home/public";
-    }
-
-    @Override
-    public int getTotalNumberOfCollectionsUnderPath(String path) throws DataGridFileNotFoundException, DataGridException {
-
-        CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = null;
-
-        int totalCollections = 0;
-
-        try {
-            collectionAndDataObjectListAndSearchAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
-
-            totalCollections = collectionAndDataObjectListAndSearchAO.countCollectionsUnderPath(path);
-        }
-        catch (FileNotFoundException e) {
-            logger.error("Could not find path {}: {}", path, e.getMessage());
-            throw new DataGridFileNotFoundException(e.getMessage());
-        }
-        catch (JargonException e) {
-            logger.error("Could not get the total number of data objs under path {}: {}", path, e.getMessage());
-            throw new DataGridException(e.getMessage());
-        }
-
-        return totalCollections;
-    }
-
-    @Override
-    public int getTotalNumberOfDataObjectsUnderPath(String path) throws DataGridFileNotFoundException, DataGridException {
-
-        CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = null;
-
-        int totalDataObjects = 0;
-
-        try {
-            collectionAndDataObjectListAndSearchAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
-
-            totalDataObjects = collectionAndDataObjectListAndSearchAO.countDataObjectsUnderPath(path);
-        }
-        catch (FileNotFoundException e) {
-            logger.error("Could not count data objs under path {}: {}", path, e.getMessage());
-            throw new DataGridFileNotFoundException(e.getMessage());
-        }
-        catch (JargonException e) {
-            logger.error("Could not get the total number of data objs under path {}: {}", path, e.getMessage());
-            throw new DataGridFileNotFoundException(e.getMessage());
-        }
-
-        return totalDataObjects;
     }
 
     /*

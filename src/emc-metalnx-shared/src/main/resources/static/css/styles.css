@@ -21,6 +21,38 @@ body {
 	opacity: 0.45 !important;
 }
 
+#uploadStatusIcon .fa.fa-tasks.white-icon{
+	font-size:18px;
+}
+
+#uploadStatusIcon .badge{
+	left: -10px;
+	top: -8px;
+	font-size: 10px;
+	padding: 2px 4px;
+	position: relative;
+}
+
+#uploadStatusIcon .badge.danger {
+    background-color: #ce4844;
+}
+
+#uploadStatusIcon .badge.warning {
+    background-color: #e59307;
+}
+
+#uploadStatusIcon .badge.success {
+    background-color: #429742;
+}
+
+#uploadStatusIcon p.text-warning {
+    color: #e59307;
+}
+
+#uploadStatusIcon p.text-success {
+    color: #429742;
+}
+
 #wrapper{
 	background-color: #263238;
 }
@@ -1335,19 +1367,6 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 
 #ui-datepicker-div{
 	font-size:14px;
-}
-
-#uploadStatusIcon .fa.fa-tasks.white-icon{
-	font-size:18px;
-}
-
-#uploadStatusIcon .badge{
-	left: -10px;
-	top: -8px;
-	background-color: red;
-	font-size: 10px;
-	padding: 2px 4px;
-	position: relative;
 }
 
 footer {

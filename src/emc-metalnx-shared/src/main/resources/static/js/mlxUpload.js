@@ -26,7 +26,7 @@ var files;
 var resolvedFileNames = [];
 var sizeAllFiles = 0;
 var percentSizeAllFiles = 0;
-var originalPagetitle = $('title').html(); 
+var originalPagetitle = $('title').html();
 
 /**
  * Function that checks when the users selects files for upload.
@@ -81,8 +81,24 @@ $("#uploadButton").click(function(){
 		var totalParts = Math.ceil(fileSize / partSize);
 		var totalChunksPerPart = Math.ceil(partSize / chunkSize);
 		var totalChunks = Math.ceil(fileSize/chunkSize);
-		var url = "/emc-metalnx-web/fileOperation/prepareFilesForUpload/";
-		
+		var url = "/emc-metalnx-web/upload/prepare/";
+
+		var preUploadData = {
+            fileName : fileName,
+            path : $('#navigationInput').val(),
+            fileSize : fileSize,
+            partSize : partSize,
+            totalParts : totalParts,
+            chunkSize : chunkSize,
+            totalChunksPerPart : totalChunksPerPart,
+            totalChunks: totalChunks,
+            checksum : $('#inputChecksum').is(':checked'),
+            replicate : $('#inputReplica').is(':checked'),
+            destResc : $('#selectResourceToUpload').val(),
+            replResc : $('#selectResource').val(),
+            overwrite : $('#inputOverwriteDuplicateFiles').is(':checked')
+        }
+
 		sizeAllFiles += fileSize;
 		
 		$('#uploadStatusIcon').removeClass('hide');
@@ -91,20 +107,7 @@ $("#uploadButton").click(function(){
 		ajaxEncapsulation(
 			url, 
 			"POST", 
-			{
-				fileName : fileName, 
-				fileSize : fileSize,
-				partSize : partSize, 
-				totalParts : totalParts, 
-				chunkSize : chunkSize,
-				totalChunksPerPart : totalChunksPerPart, 
-				totalChunks: totalChunks,
-				checksum : $('#inputChecksum').is(':checked'),
-				replica : $('#inputReplica').is(':checked'),
-				resources : $('#selectResource').val(), 
-				resourcesToUpload : $('#selectResourceToUpload').val(),
-				overwriteDuplicateFiles : $('#inputOverwriteDuplicateFiles').is(':checked')
-			},
+			preUploadData,
 			function () {
 			    preparedFiles++;
 			    if (preparedFiles == files.length) {
@@ -200,126 +203,83 @@ function sendFilePart(files, index, currPart, currFilePos){
 			
 			// Bind POST parameters to the HTTP request
 			$.ajax({
-				url:'/emc-metalnx-web/fileOperation/upload/',
+				url:'/emc-metalnx-web/upload/',
 				type:'POST',
 				data: formData,
 				cache: false,
 				contentType: false,
 				processData: false,
-				success:  function(data) {
-					//checking if chunk that was sent is corrupted
-					if(data.indexOf('nullpointer') >= 0 || data.indexOf('corruptedfile') >= 0 || data.indexOf('transfererror') >= 0){
-						if(data.indexOf('corruptedfile') >= 0){
-							$('#'+index+' .progressWrapper').html(
-								'<p style="color:red; text-align:center; font-size:12px;">'+
-								'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> '+
-								'Failed: File got corrupted.'+
-								'</p>'
-							);
-						}
-						else if(data.indexOf('nullpointer') >= 0) {
-							$('#'+index+' .progressWrapper').html(
-								'<p style="color:red; text-align:center; font-size:12px;">'+
-								'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> '+
-								'Failed: An error ocurred at the server.'+
-								'</p>'
-							);
-						}
-						else if(data.indexOf('transfererror') >= 0) {
-							$('#'+index+' .progressWrapper').html(
-								'<p style="color:red; text-align:center; font-size:12px;">'+
-								'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> '+
-								'Failed: Not enough free space in IRODS.'+
-								'</p>'
-							);
-						}
-						
-						$('#'+index+' .progressAction').hide();
-						//sending the next files
-						if((currFilePos+1) < files.length) {
-							chunksSent = 0;
-							currFilePos++;
-							sendFilePart(files, ++index, 0, currFilePos);
-						}
-						else if((currFilePos+1) == files.length) {
-							getSubDirectories(data.substring(0, data.indexOf(':')));
-							unsetOperationInProgress();
-						}
-					}
-					else {
-						chunksSent++;
-						
-						var percentComplete = ((chunksSent*chunkSize)+(currPart*partSize)) / file.size;
-						var progressValue = Math.round(percentComplete*100);
-						
-						if(file.size > chunkSize) {
-							percentSizeAllFiles += (chunkSize/sizeAllFiles)*100;
-						}
-						else {
-							progressValue = 100;
-							percentSizeAllFiles += (file.size/sizeAllFiles)*100;
-						}
+				success:  function(res) {
+				    var response = $.parseJSON(res);
+				    var path = response.path;
+				    var msg = response.msg;
 
-						$('#'+index+' .progress-bar.progress-bar-striped.active').css('width', progressValue+'%');
-						$('#'+index+' .progress-bar.progress-bar-striped.active').attr('aria-valuenow', progressValue);
-						$('#'+index+' .progress-bar.progress-bar-striped.active').html(progressValue+'%');
+                    chunksSent++;
 
-						$('title').html(progressValue + '% uploaded for ' + fileName + ' | ' + Math.round(percentSizeAllFiles) + '% in total');
+                    var percentComplete = ((chunksSent*chunkSize)+(currPart*partSize)) / file.size;
+                    var progressValue = Math.round(percentComplete*100);
 
-						if(progressValue >= 99) {
-							$('#'+index+' .progressWrapper').html('<p style="color:green; text-align:center;"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"> Transferring file to IRODS...</span></p>');
-							$('#'+index+' .progressAction').hide();
-						}
+                    if(file.size > chunkSize) {
+                        percentSizeAllFiles += (chunkSize/sizeAllFiles)*100;
+                    }
+                    else {
+                        progressValue = 100;
+                        percentSizeAllFiles += (file.size/sizeAllFiles)*100;
+                    }
 
-						var totalChunksPerParts;
-						if(endByteForPart > file.size) {
-							endByteForPart = file.size;	
-							totalChunksPerParts = Math.ceil((file.size % partSize)/chunkSize);
-						}
-						else {
-							totalChunksPerParts = Math.ceil(filePart.size/chunkSize);
-						}
+                    showProgressBarForFile(index, progressValue);
 
-						//sending the next parts
-						if(file.size > partSize && chunksSent >= totalChunksPerParts && (currPart+1) < totalParts && ($('#'+index+' .paused').val().indexOf('false') >= 0)) {
-							chunksSent = 0;
-							sendFilePart(files, index, ++currPart, currFilePos);
-						}    
+                    updatePageTitle(progressValue, fileName, Math.round(percentSizeAllFiles));
 
-						//sending the next files
-						if(currPart == totalParts - 1 && (currFilePos+1) < files.length && chunksSent >= totalChunksPerParts) {
-							$('#'+index+' .progressWrapper').html('<p style="color:green; text-align:center;"><span class="glyphicon glyphicon-ok" aria-hidden="true"> Completed</span></p>');
-							$('#'+index+' .progressAction').hide();
-							chunksSent = 0;
-							currFilePos++;
-							sendFilePart(files, ++index, 0, currFilePos);
-						}else if(currPart == totalParts - 1 && (currFilePos+1) == files.length && chunksSent >= totalChunksPerParts){
-							$('#'+index+' .progressWrapper').html('<p style="color:green; text-align:center;"><span class="glyphicon glyphicon-ok" aria-hidden="true"> Completed</span></p>');
-							$('#'+index+' .progressAction').hide();
-							getSubDirectories(data);
-							unsetOperationInProgress();
-							$('title').html(originalPagetitle);
-						}
-					}
+                    if(progressValue >= 99) showTransferFileIRODSMsg(index);
+
+                    var totalChunksPerParts;
+                    if(endByteForPart > file.size) {
+                        endByteForPart = file.size;
+                        totalChunksPerParts = Math.ceil((file.size % partSize)/chunkSize);
+                    }
+                    else {
+                        totalChunksPerParts = Math.ceil(filePart.size/chunkSize);
+                    }
+
+                    //sending the next parts
+                    if(file.size > partSize && chunksSent >= totalChunksPerParts && (currPart+1) < totalParts && ($('#' + index + ' .paused').val().indexOf('false') >= 0)) {
+                        chunksSent = 0;
+                        sendFilePart(files, index, ++currPart, currFilePos);
+                    }
+
+                    //sending the next files
+                    if(currPart == totalParts - 1 && (currFilePos+1) < files.length && chunksSent >= totalChunksPerParts) {
+                        showTransferCompletedMsg(index, msg);
+                        chunksSent = 0;
+                        currFilePos++;
+                        sendFilePart(files, ++index, 0, currFilePos);
+                    }
+                    else if(currPart == totalParts - 1 && (currFilePos+1) == files.length && chunksSent >= totalChunksPerParts){
+                        showTransferCompletedMsg(index, msg);
+                        getSubDirectories(path);
+                        unsetOperationInProgress();
+                        $('title').html(originalPagetitle);
+                    }
 				},
-				error: function(data){
-					var errorHtml = '<p style="color:red; text-align:center;">';
-						errorHtml += 	'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>';
-						errorHtml += 	'Upload failed. Please, check if all resources are available.';
-						errorHtml += '</p>';
-						
-					$('#'+index+' .progressWrapper').html(errorHtml);
-					$('#'+index+' .progressAction').hide();
-					unsetOperationInProgress();
-					$('#uploadFailMessage').show();
-					$('#uploadIcon').show();
-					$('#showCollectionFormBtn').show();
-					resolvedFileNames = [];
+				error: function(xhr, status, error){
+				    var error_response = $.parseJSON(xhr.responseText);
+
+				    showUploadErrorMsg(index, error_response.msg, error_response.errorType);
+
+				    //sending the next files
+                    if((currFilePos+1) < files.length) {
+                        chunksSent = 0;
+                        currFilePos++;
+                        sendFilePart(files, ++index, 0, currFilePos);
+                    }
+                    else if((currFilePos+1) == files.length) {
+                        resolvedFileNames = [];
+                        getSubDirectories(error_response.path);
+                        unsetOperationInProgress();
+                    }
 				},
 				statusCode: {
-					500: function(response){
-						$('#container-fluid').html(response);
-					},
 					408: function(response){
 						window.location= "/emc-metalnx-web/login/";
 					},
@@ -332,6 +292,83 @@ function sendFilePart(files, index, currPart, currFilePos){
 	};
 	reader.readAsArrayBuffer(filePart);
 
+}
+
+var uploadSuccess = 'success';
+var uploadWarning = 'warning';
+var uploadDanger = 'danger';
+
+// shows the upload error with the appropriate layout
+function showUploadErrorMsg(fileId, errorMsg, type) {
+    var id = '#' + fileId + ' .progressWrapper';
+
+    var icon = type.indexOf(uploadWarning) != -1 ? 'ok' : 'remove';
+    var textColor = type.indexOf(uploadWarning) != -1 ? uploadWarning : uploadDanger;
+
+    updateBadge(true, type);
+
+    $(id).html(
+        '<p class="text-' + textColor + '">'+
+            '<span class="glyphicon glyphicon-' + icon + '" aria-hidden="true"></span> '+
+            errorMsg +
+        '</p>'
+    );
+
+    $('#' + fileId + ' .progressAction').hide();
+}
+
+// shows the upload progress bar for a given file (by file ID)
+function showProgressBarForFile(fileId, progressValue) {
+    var id = '#' + fileId + ' .progress-bar.progress-bar-striped.active';
+    var progress = progressValue + '%';
+
+    $(id).css('width', progress);
+    $(id).attr('aria-valuenow', progressValue);
+    $(id).html(progress);
+}
+
+// transfer file to iRODS message
+function showTransferFileIRODSMsg(fileId) {
+   showTransferMsg(fileId, icon = 'glyphicon-hourglass', "Transferring file to IRODS...");
+}
+
+function showTransferCompletedMsg(fileId, msg) {
+   showTransferMsg(fileId, icon = 'glyphicon-ok', msg);
+}
+
+function showTransferMsg(fileId, icon, msg) {
+    var progressWrapper = '#' + fileId + ' .progressWrapper';
+    var progressAction = '#' + fileId + ' .progressAction';
+    var htmlMsg = '<p class="text-success">';
+        htmlMsg +=  '<span class="glyphicon ' + icon + '" aria-hidden="true"></span> ';
+        htmlMsg +=  msg;
+        htmlMsg += '</p>';
+
+    updateBadge();
+
+    $(progressWrapper).html(htmlMsg);
+    $(progressAction).hide();
+}
+
+function updateBadge(hasError, errorType) {
+    var badge = $('#uploadStatusIcon .badge');
+    var badgeColor = uploadSuccess;
+
+    if (hasError) badgeColor = errorType.indexOf(uploadWarning) != -1 ? uploadWarning : uploadDanger;
+
+    if(badgeColor == uploadWarning && badge.hasClass(uploadDanger)) return;
+    if(badgeColor == uploadSuccess && (badge.hasClass(uploadWarning) || badge.hasClass(uploadDanger))) return;
+
+    badge.removeClass(uploadDanger);
+    badge.removeClass(uploadWarning);
+    badge.removeClass(uploadSuccess);
+
+    badge.addClass(badgeColor);
+}
+
+// updates page title with upload transfer status
+function updatePageTitle(progressValue, fileName, percentSizeAllFiles) {
+    $('title').html(progressValue + '% uploaded for ' + fileName + ' | ' + percentSizeAllFiles + '% in total');
 }
 
 /**
@@ -361,7 +398,7 @@ function resolveFileName(fileName) {
  * Function that asks the server upload information of a file to resume upload.
  */
 function getWhereUploadStopped(index, fileName) {
-	var url = "/emc-metalnx-web/fileOperation/resumeUpload/";
+	var url = "/emc-metalnx-web/upload/resume/";
 	$('#'+index+' .paused').val("false");
 	$('#'+index+' .progressAction .btn.btn-default.btn-xs').attr('onclick', 'pause('+index+', \''+fileName+'\');');
 	$('#'+index+' .progressAction .btn.btn-default.btn-xs span.glyphicon').removeClass('glyphicon-play');
@@ -382,7 +419,7 @@ function resumeUpload(response) {
 
 	$.each(files, function(index, file){
 		if(file.name == resumeFileName) {
-			var url = "/emc-metalnx-web/fileOperation/upload/";
+			var url = "/emc-metalnx-web/upload/";
 			var startByteForPart = 0;
 			var endByteForPart = partSize;
 
