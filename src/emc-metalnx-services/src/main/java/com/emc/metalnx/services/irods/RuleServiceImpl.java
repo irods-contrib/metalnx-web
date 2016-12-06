@@ -90,7 +90,7 @@ public class RuleServiceImpl implements RuleService {
     private boolean illuminaMsiEnabled;
 
     public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
-        String flags = String.format("destRescName=%s++++%s", destResc, inAdminMode ? "irodsAdmin=" : "");
+        String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
         executeRule(buildRule(destResc, REPL_DATA_OBJ_RULE, rulesMap.get(REPL_DATA_OBJ_RULE), path, flags, "null"));
     }
 
@@ -135,18 +135,21 @@ public class RuleServiceImpl implements RuleService {
 
         RemoteRuleHeader header = new RemoteRuleHeader(destResc);
 
-        String msiTarFileExtract = String.format("%s(%s);\n", "msiTarFileExtract", escapeRuleParams(objPath, targetPath, destResc, "*Status"));
-        String msiIllumina = String.format("%s(%s);\n", "msiget_illumina_meta", escapeRuleParams(objPath, destResc));
+        String msiTarFileExtract = String.format("    %s(%s, *Status);\n", "msiTarFileExtract", escapeRuleParams(objPath, targetPath, destResc));
+        String msiIllumina = String.format("    %s(%s);\n", "msiget_illumina_meta", escapeRuleParams(objPath, destResc));
 
         StringBuilder rule = new StringBuilder();
+        rule.append("\n");
         rule.append(ILLUMINA_RULE);
         rule.append("{");
+        rule.append("\n");
         rule.append(header.getRemoteRuleHeader());
         rule.append(msiTarFileExtract);
         rule.append(msiIllumina);
         rule.append(header.getRemoteRuleFooter());
         rule.append("}");
-        rule.append("OUTPUT ruleExecOut");
+        rule.append("\n");
+        rule.append("OUTPUT ruleExecOut\n");
 
         this.executeRule(rule.toString());
     }
@@ -155,16 +158,19 @@ public class RuleServiceImpl implements RuleService {
     public String buildRule(String resource, String ruleName, String msiName, String... params) {
         RemoteRuleHeader header = new RemoteRuleHeader(resource);
 
-        String msi = String.format("%s(%s);\n", msiName, escapeRuleParams(params));
+        String msi = String.format("    %s(%s);\n", msiName, escapeRuleParams(params));
 
         StringBuilder rule = new StringBuilder();
+        rule.append("\n");
         rule.append(ruleName);
         rule.append("{");
+        rule.append("\n");
         rule.append(header.getRemoteRuleHeader());
         rule.append(msi);
         rule.append(header.getRemoteRuleFooter());
         rule.append("}");
-        rule.append("OUTPUT ruleExecOut");
+        rule.append("\n");
+        rule.append("OUTPUT ruleExecOut\n");
 
         return rule.toString();
     }
@@ -195,9 +201,7 @@ public class RuleServiceImpl implements RuleService {
 
         StringBuilder paramsEscaped = new StringBuilder();
 
-        for (int i = 0; i < params.length - 1; i++) {
-            paramsEscaped.append(String.format("\"%s\", ", params[i]));
-        }
+        for (int i = 0; i < params.length - 1; i++) paramsEscaped.append(String.format("\"%s\", ", params[i]));
 
         paramsEscaped.append(String.format("\"%s\"", params[params.length - 1]));
 
@@ -216,8 +220,8 @@ public class RuleServiceImpl implements RuleService {
                 dgResc = rs.find(destResc);
                 if (!iCATHost.startsWith(dgResc.getHost())) {
                     String remoteHost = dgResc.getHost();
-                    remoteHeader = String.format("remote(\"%s\", \"\") {", remoteHost);
-                    remoteFooter = "}";
+                    remoteHeader = String.format("  remote(\"%s\", \"\") {\n", remoteHost);
+                    remoteFooter = "  }\n";
                 }
             } catch (DataGridConnectionRefusedException e) {
                 remoteHeader = "";
