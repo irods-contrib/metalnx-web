@@ -283,25 +283,14 @@ public class UploadServiceImpl implements UploadService {
             stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
 
             // Computing a check sum for this file just uploaded to iRODS
-            if (computeCheckSum) {
-                logger.info("Computing checksum for {}", targetFile.getAbsoluteFile());
-                dataObjectAO.computeMD5ChecksumOnDataObject(targetFile);
-            }
+            if (computeCheckSum) fos.computeChecksum(targetPath, name);
 
             // Replicating file into desired resource
-            if (replicateFile) {
-                logger.info("Replicating data object into {}", replicationResource);
-                dataObjectAO.replicateIrodsDataObject(targetFile.getPath(), replicationResource);
-            }
+            if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResource, false);
 
             // Closing streams opened
             inputStream.close();
-        } catch (JargonException | IOException e) {
-            logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
-            throw new DataGridException("Upload failed. Resource(s) might be full.");
-        }
 
-        try{
             // Getting list of resources for upload
             HashMap<String, String> resourceMap = null;
             try {
@@ -310,6 +299,7 @@ public class UploadServiceImpl implements UploadService {
             }
             catch (JargonException e) {
                 logger.error("Could not build Resource map for upload", e);
+                throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
             }
             StringBuilder ruleString = new StringBuilder();
             String objPath = targetFile.getCanonicalPath();
@@ -317,21 +307,16 @@ public class UploadServiceImpl implements UploadService {
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
             rs.execBamCramMetadataRule(destinationResource, objPath, filePath);
-
             rs.execVCFMetadataRule(destinationResource, objPath, filePath);
-
             rs.execPopulateMetadataRule(destinationResource, objPath);
-
             rs.execImageRule(destinationResource, objPath, filePath);
-
             rs.execIlluminaMetadataRule(destinationResource, targetPath, objPath);
-
             rs.execManifestFileRule(destinationResource, targetPath, objPath, filePath);
 
             isFileUploaded = true;
-        } catch (IOException e) {
-            logger.error("Could not get canonical path of file: ", e.getMessage());
-            throw new DataGridException("Procedures not run after upload. Canonical path of file failed.");
+        } catch (JargonException | IOException e) {
+            logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
+            throw new DataGridException("Upload failed. Resource(s) might be full.");
         }
 
         // Setting the default resource back to the original one.
