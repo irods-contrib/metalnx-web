@@ -17,6 +17,7 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
 import com.emc.metalnx.service.utils.DataGridChunkForUpload;
@@ -24,6 +25,7 @@ import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -39,6 +41,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -218,5 +223,120 @@ public class UploadServiceImpl implements UploadService {
         }
     }
 
+    @Override
+    public boolean tranferFileDirectlyToJargon(String name, InputStream inputStream, String currentPath,
+                                               boolean checksum, boolean replica, String resources,
+                                               String resourcesToUpload, boolean overwriteDuplicateFiles)
+            throws DataGridException{
 
+        if (inputStream == null || "".equals(currentPath) || currentPath == null
+                || "".equals(resourcesToUpload) || resourcesToUpload == null) {
+            logger.error("File could not be sent to the data grid.");
+            return false;
+        }
+
+        String defaultStorageResource = is.getDefaultStorageResource();
+        String targetPath = currentPath;
+        String destinationResource = resourcesToUpload;
+        String replicationResource = resources;
+        boolean computeCheckSum = checksum;
+        boolean replicateFile = replica;
+
+        logger.info("Setting default resource to {}", destinationResource);
+
+        // Setting temporarily the defaultStorageResource for the logged user
+        is.setDefaultStorageResource(destinationResource);
+
+        // Getting DataObjectAO in order to create the new file
+        IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
+        DataObjectAO dataObjectAO = is.getDataObjectAO();
+
+        // Creating set of filenames on the current collection
+        List<DataGridCollectionAndDataObject> filesInColl = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
+
+        Set<String> setOfFilesInColl = new HashSet<String>();
+        for (DataGridCollectionAndDataObject dataObj : filesInColl) {
+            if (!dataObj.isCollection()) {
+                setOfFilesInColl.add(dataObj.getName());
+            }
+        }
+
+        //File file = fileForUpload.getFile();
+        boolean isFileUploaded = false;
+        boolean fileIsAlreadyInCollection = setOfFilesInColl.contains(name);
+
+        // If file already exists and we do not want to overwrite it, the
+        // transferring is aborted.
+        if (fileIsAlreadyInCollection && !overwriteDuplicateFiles) {
+            String msg = "File already exists. Not overwriting it.";
+            logger.info(msg);
+            throw new DataGridFileAlreadyExists(msg);
+        }
+
+        IRODSFile targetFile = null;
+        Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
+        try {
+            targetFile = irodsFileFactory.instanceIRODSFile(targetPath, name);
+            targetFile.setResource(destinationResource);
+
+            // Transfering file to iRODS filesystem
+            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
+
+            // Computing a check sum for this file just uploaded to iRODS
+            if (computeCheckSum) {
+                logger.info("Computing checksum for {}", targetFile.getAbsoluteFile());
+                dataObjectAO.computeMD5ChecksumOnDataObject(targetFile);
+            }
+
+            // Replicating file into desired resource
+            if (replicateFile) {
+                logger.info("Replicating data object into {}", replicationResource);
+                dataObjectAO.replicateIrodsDataObject(targetFile.getPath(), replicationResource);
+            }
+
+            // Closing streams opened
+            inputStream.close();
+        } catch (JargonException | IOException e) {
+            logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
+            throw new DataGridException("Upload failed. Resource(s) might be full.");
+        }
+
+        try{
+            // Getting list of resources for upload
+            HashMap<String, String> resourceMap = null;
+            try {
+                ResourceAO resourceAO = is.getResourceAO();
+                resourceMap = DataGridUtils.buildMapForResourcesNamesAndMountPoints(resourceAO.findAll());
+            }
+            catch (JargonException e) {
+                logger.error("Could not build Resource map for upload", e);
+            }
+            StringBuilder ruleString = new StringBuilder();
+            String objPath = targetFile.getCanonicalPath();
+            String filePath = resourceMap.get(destinationResource) +
+                    objPath.substring(objPath.indexOf("/", 1), objPath.length());
+
+            rs.execBamCramMetadataRule(destinationResource, objPath, filePath);
+
+            rs.execVCFMetadataRule(destinationResource, objPath, filePath);
+
+            rs.execPopulateMetadataRule(destinationResource, objPath);
+
+            rs.execImageRule(destinationResource, objPath, filePath);
+
+            rs.execIlluminaMetadataRule(destinationResource, targetPath, objPath);
+
+            rs.execManifestFileRule(destinationResource, targetPath, objPath, filePath);
+
+            isFileUploaded = true;
+        } catch (IOException e) {
+            logger.error("Could not get canonical path of file: ", e.getMessage());
+            throw new DataGridException("Procedures not run after upload. Canonical path of file failed.");
+        }
+
+        // Setting the default resource back to the original one.
+        is.setDefaultStorageResource(defaultStorageResource);
+
+        return isFileUploaded;
+    }
 }

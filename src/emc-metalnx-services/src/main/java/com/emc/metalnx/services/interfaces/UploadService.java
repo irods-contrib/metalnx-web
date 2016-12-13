@@ -22,6 +22,7 @@ import com.emc.metalnx.service.utils.DataGridChunkForUpload;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
 
 public interface UploadService {
 
@@ -80,4 +81,31 @@ public interface UploadService {
      * @throws DataGridException if rules cannot be executed
      */
     void postProcForTransfer(DataGridFileForUpload file) throws DataGridException;
+
+
+    /**
+     * Transfer a file to the data grid without chuncking file.
+     *
+     * @param name
+     *          file name that's going to be transferred
+     * @param inputStream
+     *          file in inputStream format
+     * @param currentPath
+     *          path to which the file is going to be tranferred
+     * @param checksum
+     *          True if user checked checksum option in UI
+     * @param replica
+     *          True if user checked replica option in UI
+     * @param resources
+     *          resources to which the file is going to be replicated into
+     * @param resourcesToUpload
+     *          resource in which the file is going to be uploaded
+     * @param overwriteDuplicateFiles
+     *          option to overwrite in case the file already exists in iRODS
+     * @return
+     * @throws DataGridException
+     */
+    boolean tranferFileDirectlyToJargon(String name, InputStream inputStream, String currentPath, boolean checksum,
+                                        boolean replica, String resources, String resourcesToUpload,
+                                        boolean overwriteDuplicateFiles) throws DataGridException;
 }

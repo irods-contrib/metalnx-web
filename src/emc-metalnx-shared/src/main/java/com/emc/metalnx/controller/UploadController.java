@@ -34,14 +34,17 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,5 +201,23 @@ public class UploadController {
         }
 
         return new ResponseEntity<>(jsonUploadMsg.toString(), status);
+    }
+
+
+    @RequestMapping(value = "/uploadSimple/", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void uploadTest(Model model, HttpServletRequest request) throws IOException, DataGridException {
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile multipartFile = multipartRequest.getFile("file");
+
+        boolean checksum = Boolean.parseBoolean(multipartRequest.getParameter("checksum"));
+        boolean replica = Boolean.parseBoolean(multipartRequest.getParameter("replica"));
+        boolean overwriteDuplicateFiles = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
+        String resources = multipartRequest.getParameter("resources");
+        String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
+        us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(),
+                multipartFile.getInputStream(), cc.getCurrentPath(),
+                checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
+        return;
     }
 }
