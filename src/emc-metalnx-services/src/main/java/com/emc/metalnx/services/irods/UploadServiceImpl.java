@@ -224,17 +224,24 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public boolean tranferFileDirectlyToJargon(String name, InputStream inputStream, String currentPath,
+    public boolean tranferFileDirectlyToJargon(String name, MultipartFile multipartFile, String currentPath,
                                                boolean checksum, boolean replica, String resources,
                                                String resourcesToUpload, boolean overwriteDuplicateFiles)
             throws DataGridException{
 
-        if (inputStream == null || "".equals(currentPath) || currentPath == null
+        if (multipartFile == null || multipartFile.isEmpty() || "".equals(currentPath) || currentPath == null
                 || "".equals(resourcesToUpload) || resourcesToUpload == null) {
             logger.error("File could not be sent to the data grid.");
             return false;
         }
 
+        InputStream inputStream = null;
+        try {
+            inputStream = multipartFile.getInputStream();
+        } catch (IOException e) {
+            logger.error("Could not get input stream from file: ", e.getMessage());
+            throw new DataGridException("Could not get input stream from file.");
+        }
         String defaultStorageResource = is.getDefaultStorageResource();
         String targetPath = currentPath;
         String destinationResource = resourcesToUpload;

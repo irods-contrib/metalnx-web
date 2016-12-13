@@ -20,6 +20,7 @@ package com.emc.metalnx.services.interfaces;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.service.utils.DataGridChunkForUpload;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -88,8 +89,8 @@ public interface UploadService {
      *
      * @param name
      *          file name that's going to be transferred
-     * @param inputStream
-     *          file in inputStream format
+     * @param multipartFile
+     *          file to be uploaded
      * @param currentPath
      *          path to which the file is going to be tranferred
      * @param checksum
@@ -105,7 +106,7 @@ public interface UploadService {
      * @return
      * @throws DataGridException
      */
-    boolean tranferFileDirectlyToJargon(String name, InputStream inputStream, String currentPath, boolean checksum,
+    boolean tranferFileDirectlyToJargon(String name, MultipartFile multipartFile, String currentPath, boolean checksum,
                                         boolean replica, String resources, String resourcesToUpload,
                                         boolean overwriteDuplicateFiles) throws DataGridException;
 }

@@ -20,6 +20,7 @@
  */
 var files;
 var resolvedFileNames = [];
+var originalPagetitle = $('title').html();
 
 /**
  * Function that checks when the users selects files for upload.
@@ -63,6 +64,7 @@ $("#uploadButton").click(function(){
 	$('#uploadStatusIcon .badge').html(files.length);
 
 	var uploadItems = "";
+	var currFilePos = 0;
 
 	$.each(files, function(index, file){
 		var url = "/emc-metalnx-web/upload/uploadSimple/";
@@ -92,21 +94,49 @@ $("#uploadButton").click(function(){
                         var percentComplete = (evt.loaded / evt.total)*100;
                         var roundedPercent = Math.round(percentComplete);
                         if(percentComplete >= 100) {
-                            $('#'+index+' .progressWrapper').html('<p style="color:green; text-align:center;"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"> Transferring file to IRODS...</span></p>');
+                            showTransferFileIRODSMsg(index);
                         }else{
-                            $('#'+index+' .progress-bar.progress-bar-striped.active').css('width', roundedPercent+'%');
-                            $('#'+index+' .progress-bar.progress-bar-striped.active').attr('aria-valuenow', roundedPercent);
-                            $('#'+index+' .progress-bar.progress-bar-striped.active').html(roundedPercent+'%');
+                            showProgressBarForFile(index, roundedPercent);
                         }
                     }
                 }, false);
                 return xhr;
             },
-			success: function () {
-			    $('#'+index+' .progressWrapper').html('<p style="color:green; text-align:center;"><span class="glyphicon glyphicon-ok" aria-hidden="true"> Completed</span></p>');
-			    getSubDirectories($('#navigationInput').val());
-			    unsetOperationInProgress();
+			success: function (res) {
+			    var response = $.parseJSON(res);
+                var path = response.path;
+                var msg = response.msg;
+			    showTransferCompletedMsg(index, msg);
+			    if((currFilePos+1) < files.length){
+			        currFilePos++;
+			    }else if((currFilePos+1) == files.length){
+                    getSubDirectories(path);
+                    unsetOperationInProgress();
+                    $('title').html(originalPagetitle);
+			    }
 			},
+			error: function(xhr, status, error){
+                var error_response = $.parseJSON(xhr.responseText);
+
+                showUploadErrorMsg(index, error_response.msg, error_response.errorType);
+                if((currFilePos+1) < files.length) {
+                    currFilePos++;
+                }
+                else if((currFilePos+1) == files.length) {
+                    //resolvedFileNames = [];
+                    getSubDirectories(error_response.path);
+                    unsetOperationInProgress();
+                    $('title').html(originalPagetitle);
+                }
+            },
+            statusCode: {
+                408: function(response){
+                    window.location= "/emc-metalnx-web/login/";
+                },
+                403: function(response){
+                    window.location= "/emc-metalnx-web/login/";
+                }
+            }
 		});
 
         uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
@@ -146,6 +176,60 @@ function showUploadErrorMsg(fileId, errorMsg, type) {
     );
 
     $('#' + fileId + ' .progressAction').hide();
+}
+
+// shows the upload progress bar for a given file (by file ID)
+function showProgressBarForFile(fileId, progressValue) {
+    var id = '#' + fileId + ' .progress-bar.progress-bar-striped.active';
+    var progress = progressValue + '%';
+
+    $(id).css('width', progress);
+    $(id).attr('aria-valuenow', progressValue);
+    $(id).html(progress);
+}
+
+// transfer file to iRODS message
+function showTransferFileIRODSMsg(fileId) {
+   showTransferMsg(fileId, icon = 'glyphicon-hourglass', "Transferring file to IRODS...");
+}
+
+function showTransferCompletedMsg(fileId, msg) {
+   showTransferMsg(fileId, icon = 'glyphicon-ok', msg);
+}
+
+function showTransferMsg(fileId, icon, msg) {
+    var progressWrapper = '#' + fileId + ' .progressWrapper';
+    var progressAction = '#' + fileId + ' .progressAction';
+    var htmlMsg = '<p class="text-success">';
+        htmlMsg +=  '<span class="glyphicon ' + icon + '" aria-hidden="true"></span> ';
+        htmlMsg +=  msg;
+        htmlMsg += '</p>';
+
+    updateBadge();
+
+    $(progressWrapper).html(htmlMsg);
+    $(progressAction).hide();
+}
+
+function updateBadge(hasError, errorType) {
+    var badge = $('#uploadStatusIcon .badge');
+    var badgeColor = uploadSuccess;
+
+    if (hasError) badgeColor = errorType.indexOf(uploadWarning) != -1 ? uploadWarning : uploadDanger;
+
+    if(badgeColor == uploadWarning && badge.hasClass(uploadDanger)) return;
+    if(badgeColor == uploadSuccess && (badge.hasClass(uploadWarning) || badge.hasClass(uploadDanger))) return;
+
+    badge.removeClass(uploadDanger);
+    badge.removeClass(uploadWarning);
+    badge.removeClass(uploadSuccess);
+
+    badge.addClass(badgeColor);
+}
+
+// updates page title with upload transfer status
+function updatePageTitle(progressValue, fileName, percentSizeAllFiles) {
+    $('title').html(progressValue + '% uploaded for ' + fileName + ' | ' + percentSizeAllFiles + '% in total');
 }
 
 /**

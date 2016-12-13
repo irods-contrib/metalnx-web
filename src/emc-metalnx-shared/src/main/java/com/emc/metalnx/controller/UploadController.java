@@ -204,9 +204,21 @@ public class UploadController {
     }
 
 
-    @RequestMapping(value = "/uploadSimple/", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadSimple/", method = RequestMethod.POST, produces = {"text/plain"})
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadTest(Model model, HttpServletRequest request) throws IOException, DataGridException {
+    public ResponseEntity<?> uploadSimple(Model model, HttpServletRequest request) throws DataGridConnectionRefusedException {
+
+        logger.info("Uploading files ...");
+        String uploadMessage = "File Uploaded. ";
+        String errorType = "";
+
+        if (!(request instanceof MultipartHttpServletRequest)) {
+            logger.debug("Request is not a multipart request.");
+            uploadMessage = "Request is not a multipart request.";
+            errorType = FATAL;
+            return getUploadResponse(uploadMessage, errorType);
+        }
+
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartRequest.getFile("file");
 
@@ -215,9 +227,17 @@ public class UploadController {
         boolean overwriteDuplicateFiles = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
         String resources = multipartRequest.getParameter("resources");
         String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
-        us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(),
-                multipartFile.getInputStream(), cc.getCurrentPath(),
-                checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
-        return;
+        try {
+            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(),
+                    multipartFile, cc.getCurrentPath(),
+                    checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
+        } catch (DataGridReplicateException | DataGridRuleException e) {
+            uploadMessage += e.getMessage();
+            errorType = WARNING;
+        } catch (DataGridException e) {
+            uploadMessage = e.getMessage();
+            errorType = FATAL;
+        }
+        return getUploadResponse(uploadMessage, errorType);
     }
 }
