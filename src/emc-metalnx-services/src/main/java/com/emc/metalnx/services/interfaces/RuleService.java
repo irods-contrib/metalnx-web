@@ -18,7 +18,6 @@
 package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 
 public interface RuleService {
@@ -108,14 +107,16 @@ public interface RuleService {
      * @param msiName  name of the microservice that will be called within the rule
      * @param params   all parameters of the msi called by the rule
      * @return String representing the rule already formatted properly to be executed
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    String buildRule(String resource, String ruleName, String msiName, String... params);
+    String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException;
 
     /**
      * Executes a rule in the data grid
      *
      * @param rule rule string to be executed
-     * @throws DataGridException if Metalnx cannot connect to the data grid or rule could not be executed
+     * @throws DataGridRuleException if rule exection failed.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
     void executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
 }
