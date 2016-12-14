@@ -228,8 +228,7 @@ public class UploadController {
         String resources = multipartRequest.getParameter("resources");
         String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
         try {
-            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(),
-                    multipartFile, cc.getCurrentPath(),
+            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(), multipartFile, cc.getCurrentPath(),
                     checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
         } catch (DataGridReplicateException | DataGridRuleException e) {
             uploadMessage += e.getMessage();

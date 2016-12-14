@@ -109,7 +109,7 @@ public interface RuleService {
      * @param params   all parameters of the msi called by the rule
      * @return String representing the rule already formatted properly to be executed
      */
-    String buildRule(String resource, String ruleName, String msiName, String... params);
+    String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException;
 
     /**
      * Executes a rule in the data grid
