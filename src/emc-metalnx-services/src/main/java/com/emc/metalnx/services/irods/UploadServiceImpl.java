@@ -28,6 +28,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
@@ -308,7 +309,6 @@ public class UploadServiceImpl implements UploadService {
                 logger.error("Could not build Resource map for upload", e);
                 throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
             }
-            StringBuilder ruleString = new StringBuilder();
             String objPath = targetFile.getCanonicalPath();
             String filePath = resourceMap.get(destinationResource) +
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
@@ -321,9 +321,13 @@ public class UploadServiceImpl implements UploadService {
             rs.execManifestFileRule(destinationResource, targetPath, objPath, filePath);
 
             isFileUploaded = true;
-        } catch (JargonException | IOException e) {
+        } catch (JargonException e) {
+            fos.deleteDataObject(targetFile.getPath(), true);
             logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
             throw new DataGridException("Upload failed. Resource(s) might be full.");
+        } catch (IOException e) {
+            logger.error("Could not get canonical path", e.getMessage());
+            throw new DataGridException("Could not get canonical path");
         }
 
         // Setting the default resource back to the original one.
