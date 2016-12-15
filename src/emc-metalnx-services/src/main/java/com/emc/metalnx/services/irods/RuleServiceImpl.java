@@ -155,7 +155,7 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException {
+    public String buildRule(String resource, String ruleName, String msiName, String... params) {
         RemoteRuleHeader header = new RemoteRuleHeader(resource);
 
         String msi = String.format("    %s(%s);\n", msiName, escapeRuleParams(params));
@@ -213,12 +213,11 @@ public class RuleServiceImpl implements RuleService {
         private String remoteFooter = null;
 
         public RemoteRuleHeader(String destResc) throws DataGridConnectionRefusedException {
+
             remoteHeader = "";
             remoteFooter = "";
+            DataGridResource dgResc = rs.find(destResc);
 
-            DataGridResource dgResc;
-
-            dgResc = rs.find(destResc);
             if (!iCATHost.startsWith(dgResc.getHost())) {
                 String remoteHost = dgResc.getHost();
                 remoteHeader = String.format("  remote(\"%s\", \"\") {\n", remoteHost);
