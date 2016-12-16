@@ -155,7 +155,7 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public String buildRule(String resource, String ruleName, String msiName, String... params) {
+    public String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException {
         RemoteRuleHeader header = new RemoteRuleHeader(resource);
 
         String msi = String.format("    %s(%s);\n", msiName, escapeRuleParams(params));
