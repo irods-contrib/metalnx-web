@@ -1,12 +1,5 @@
-<font color="#3892CF"> EMC METALNX
-===================================
-
-<font color="#3892CF"> Metalnx Web Installation Guide
-=========================================
-
-<font color="#A6A6A6"> <font size=+2> Revision 1.0 
-
-6/2016 </font>
+EMC METALNX WEB - INSTALL GUIDE
+===============================
 
 ----------------------------------
 
@@ -52,9 +45,17 @@ Metalnx is a web application designed to work alongside the [iRODS (integrated R
 
 This installation guide will provide information on how to install the components necessary to run Metalnx along with installation the application. 
 
+### Dependencies <a id="dependencies"></a>
+
+- Java 1.8 or higher
+- iRODS 4.1.8, 4.1.9 or 4.1.10
+- MySQL 5.6 or higher
+- PostgreSQL 9.3 or higher
+- Tomcat 7 or higher
+
 At a high level Metalnx is dependent on the following software components being available:
 
-- The Metalnx application, the Metalnx Remote Monitor Daemon (RMD), and the Metalnx iRODS MSI (microservice) files all being built and available as either .rpm or .deb files.
+- The Metalnx application, the Metalnx Remote Monitor Daemon (RMD), and the Metalnx iRODS MSI (microservice) files all being built and available as either `.rpm` or `.deb` files.
 - Apache Tomcat (for running EMC Metalnx which is a Java servlet)
 - iRODS runtime API
 - MySQL or PostgreSQL (we use a database to hold Metalnx operational information)
@@ -75,7 +76,7 @@ Metalnx has been tested on the following Linux distributions as indicated:
 - CentOS 6 – verified Metalnx will install and start.
 - Ubuntu 14 – verified Metalnx will install and start.
 
-Metalnx will work with iRODS 4.1 or later.  It has been tested the most using iRODS 4.1.8.
+Metalnx will work with iRODS 4.1.8, 4.1.9 or 4.1.10.
 
 ##### iRODS Background #####
  
