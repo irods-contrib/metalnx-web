@@ -3,9 +3,6 @@
 
 Metalnx is a web application designed to work alongside the iRODS ([integrated Rule-Oriented Data System](http://www.irods.org)). It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
-## Latest Version
-1.0
-
 ## Core Features
 
 - Dashboard (Data grid health status)
@@ -24,8 +21,7 @@ Metalnx has documentation to help with building and using the tool. Please, chec
 
 ### Installing Metalnx
 
-
-The full documentation on how to install Metalnx using `.rpm` and `.deb` packages is available in the [INSTALL](docs/INSTALL.md) document.
+The full documentation on how to install Metalnx using `.rpm` and `.deb` packages along with project (dependencies)[docs/INSTALL.md#dependencies] is available in the [INSTALL](docs/INSTALL.md) document.
 
 ### How to build Metalnx and deploy the WAR file
 
