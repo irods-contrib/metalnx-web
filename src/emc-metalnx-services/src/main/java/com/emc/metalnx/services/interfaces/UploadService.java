@@ -87,26 +87,26 @@ public interface UploadService {
     /**
      * Transfer a file to the data grid without chuncking file.
      *
-     * @param name
+     * @param fileName
      *          file name that's going to be transferred
      * @param multipartFile
      *          file to be uploaded
-     * @param currentPath
+     * @param targetPath
      *          path to which the file is going to be tranferred
-     * @param checksum
+     * @param computeCheckSum
      *          True if user checked checksum option in UI
-     * @param replica
+     * @param replicateFile
      *          True if user checked replica option in UI
-     * @param resources
+     * @param replicationResource
      *          resources to which the file is going to be replicated into
-     * @param resourcesToUpload
+     * @param destinationResource
      *          resource in which the file is going to be uploaded
      * @param overwriteDuplicateFiles
      *          option to overwrite in case the file already exists in iRODS
      * @return
      * @throws DataGridException
      */
-    boolean tranferFileDirectlyToJargon(String name, MultipartFile multipartFile, String currentPath, boolean checksum,
-                                        boolean replica, String resources, String resourcesToUpload,
+    boolean tranferFileDirectlyToJargon(String fileName, MultipartFile multipartFile, String targetPath, boolean computeCheckSum,
+                                        boolean replicateFile, String replicationResource, String destinationResource,
                                         boolean overwriteDuplicateFiles) throws DataGridException;
 }

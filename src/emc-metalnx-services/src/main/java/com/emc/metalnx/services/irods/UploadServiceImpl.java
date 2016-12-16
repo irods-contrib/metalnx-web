@@ -225,13 +225,13 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public boolean tranferFileDirectlyToJargon(String name, MultipartFile multipartFile, String currentPath,
-                                               boolean checksum, boolean replica, String resources,
-                                               String resourcesToUpload, boolean overwriteDuplicateFiles)
+    public boolean tranferFileDirectlyToJargon(String fileName, MultipartFile multipartFile, String targetPath,
+                                               boolean computeCheckSum, boolean replicateFile, String replicationResource,
+                                               String destinationResource, boolean overwriteDuplicateFiles)
             throws DataGridException{
 
-        if (multipartFile == null || multipartFile.isEmpty() || "".equals(currentPath) || currentPath == null
-                || "".equals(resourcesToUpload) || resourcesToUpload == null) {
+        if (multipartFile == null || multipartFile.isEmpty() || "".equals(targetPath) || targetPath == null
+                || "".equals(destinationResource) || destinationResource == null) {
             logger.error("File could not be sent to the data grid.");
             return false;
         }
@@ -244,11 +244,6 @@ public class UploadServiceImpl implements UploadService {
             throw new DataGridException("Could not get input stream from file.");
         }
         String defaultStorageResource = is.getDefaultStorageResource();
-        String targetPath = currentPath;
-        String destinationResource = resourcesToUpload;
-        String replicationResource = resources;
-        boolean computeCheckSum = checksum;
-        boolean replicateFile = replica;
 
         logger.info("Setting default resource to {}", destinationResource);
 
@@ -257,7 +252,6 @@ public class UploadServiceImpl implements UploadService {
 
         // Getting DataObjectAO in order to create the new file
         IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
-        DataObjectAO dataObjectAO = is.getDataObjectAO();
 
         // Creating set of filenames on the current collection
         List<DataGridCollectionAndDataObject> filesInColl = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
@@ -271,7 +265,7 @@ public class UploadServiceImpl implements UploadService {
 
         //File file = fileForUpload.getFile();
         boolean isFileUploaded = false;
-        boolean fileIsAlreadyInCollection = setOfFilesInColl.contains(name);
+        boolean fileIsAlreadyInCollection = setOfFilesInColl.contains(fileName);
 
         // If file already exists and we do not want to overwrite it, the
         // transferring is aborted.
@@ -284,14 +278,14 @@ public class UploadServiceImpl implements UploadService {
         IRODSFile targetFile = null;
         Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
         try {
-            targetFile = irodsFileFactory.instanceIRODSFile(targetPath, name);
+            targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
             targetFile.setResource(destinationResource);
 
             // Transfering file to iRODS filesystem
             stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
 
             // Computing a check sum for this file just uploaded to iRODS
-            if (computeCheckSum) fos.computeChecksum(targetPath, name);
+            if (computeCheckSum) fos.computeChecksum(targetPath, fileName);
 
             // Replicating file into desired resource
             if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResource, false);
