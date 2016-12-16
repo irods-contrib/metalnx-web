@@ -21,7 +21,7 @@ Metalnx has documentation to help with building and using the tool. Please, chec
 
 ### Installing Metalnx
 
-The full documentation on how to install Metalnx using `.rpm` and `.deb` packages along with project (dependencies)[docs/INSTALL.md#dependencies] is available in the [INSTALL](docs/INSTALL.md) document.
+The full documentation on how to install Metalnx using `.rpm` and `.deb` packages along with project [dependencies](docs/INSTALL.md#dependencies) is available in the [INSTALL](docs/INSTALL.md) document.
 
 ### How to build Metalnx and deploy the WAR file
 
