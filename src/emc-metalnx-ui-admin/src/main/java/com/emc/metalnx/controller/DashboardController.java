@@ -17,41 +17,30 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.auth.UserTokenDetails;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.ServerService;
-import com.emc.metalnx.services.interfaces.StorageService;
-import com.emc.metalnx.services.interfaces.TemplateService;
-import com.emc.metalnx.services.interfaces.UserProfileService;
-import com.emc.metalnx.services.interfaces.UserService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -81,6 +70,12 @@ public class DashboardController {
 
     @Autowired
     TemplateService templateService;
+
+    @Autowired
+    RuleService rs;
+
+    @Value("${msi.api.version}")
+    private String msiAPIVersionSupported;
 
     // list of all resource servers of the grid
     private List<DataGridServer> servers;
@@ -286,6 +281,28 @@ public class DashboardController {
         }
 
         return "dashboard/details/resourceInfo";
+    }
+
+    @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
+    public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
+        String msiAPIVersionInstalled = null;
+        boolean missingMSIPackage = false;
+        boolean isMSIPackageCompatible = true;
+
+        try {
+            msiAPIVersionInstalled = rs.execGetVersionRule("demoResc");
+            isMSIPackageCompatible = rs.isMSIAPICompatible();
+        } catch (DataGridRuleException e) {
+            logger.error("Could not get version of the MSI package.");
+            missingMSIPackage = true;
+        }
+
+        model.addAttribute("msiAPIVersionInstalled", msiAPIVersionInstalled);
+        model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
+        model.addAttribute("missingMSIPackage", missingMSIPackage);
+        model.addAttribute("isMSIPackageCompatible", isMSIPackageCompatible);
+
+        return "dashboard/msiPackageVersion";
     }
 
     /*

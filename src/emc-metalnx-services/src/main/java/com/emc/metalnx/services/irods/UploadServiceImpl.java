@@ -19,6 +19,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
+import com.emc.metalnx.core.domain.exceptions.DataGridMSIVersionNotSupported;
 import com.emc.metalnx.service.utils.DataGridChunkForUpload;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.*;
@@ -197,6 +198,12 @@ public class UploadServiceImpl implements UploadService {
             String objPath = targetFile.getCanonicalPath();
             String destResc = file.getDestResc();
             String filePath = resourceMap.get(destResc) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
+
+            if(!rs.isMSIAPICompatible()) {
+                String msg = "MSI Version installed is not supported.";
+                logger.error(msg);
+                throw new DataGridMSIVersionNotSupported(msg);
+            }
 
             rs.execBamCramMetadataRule(destResc, objPath, filePath);
 

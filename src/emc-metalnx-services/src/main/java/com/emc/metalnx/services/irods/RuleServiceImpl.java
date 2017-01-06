@@ -28,6 +28,8 @@ import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.RuleProcessingAO;
+import org.irods.jargon.core.rule.IRODSRuleExecResult;
+import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,7 @@ import java.util.Map;
 public class RuleServiceImpl implements RuleService {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleServiceImpl.class);
+    private static final String GET_VERSION_RULE = "getVersion";
     private static final String POPULATE_RULE = "populateMetadataForFile";
     private static final String JPG_RULE = "automaticJpgMetadataExtraction";
     private static final String VCF_RULE = "automaticVcfMetadataExtraction";
@@ -68,6 +71,7 @@ public class RuleServiceImpl implements RuleService {
         map.put(BAM_CRAM_RULE, "msiobjput_mdbam");
         map.put(XML_MANIFEST_RULE, "msiobjput_mdmanifest");
         map.put(REPL_DATA_OBJ_RULE, "msiDataObjRepl");
+        map.put(GET_VERSION_RULE, "msiobjget_version");
         rulesMap = Collections.unmodifiableMap(map);
     }
 
@@ -88,6 +92,49 @@ public class RuleServiceImpl implements RuleService {
 
     @Value("${illumina.msi.enabled}")
     private boolean illuminaMsiEnabled;
+
+    @Value("${msi.api.version}")
+    private String msiAPIVersion;
+
+    public boolean isMSIAPICompatible() throws DataGridConnectionRefusedException {
+        String version = "";
+
+        try {
+            version = execGetVersionRule("demoResc");
+        } catch (DataGridRuleException e) {
+            logger.info("Could not get MSI API version");
+        }
+
+        String msiAPIVersionSupported = getAPIVersion(msiAPIVersion);
+        String msiAPIVersionInstalled = getAPIVersion(version);
+
+        return msiAPIVersionInstalled.equalsIgnoreCase(msiAPIVersionSupported);
+    }
+
+    public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
+        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
+
+        String versionParam = "*version";
+        String msi = String.format("    %s(%s);\n", "msiobjget_version", versionParam);
+
+        StringBuilder rule = new StringBuilder();
+        rule.append("\n");
+        rule.append(GET_VERSION_RULE);
+        rule.append("{");
+        rule.append("\n");
+        rule.append(header.getRemoteRuleHeader());
+        rule.append(msi);
+        rule.append(header.getRemoteRuleFooter());
+        rule.append("}");
+        rule.append("\n");
+        rule.append("INPUT \"null\"\n");
+        rule.append("OUTPUT ");
+        rule.append(versionParam);
+
+        logger.info(rule.toString());
+
+        return (String) executeRule(rule.toString()).get("*version").getResultObject();
+    }
 
     public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
         String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
@@ -117,14 +164,12 @@ public class RuleServiceImpl implements RuleService {
     public void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath)) return;
 
-        String msiName = rulesMap.get(XML_MANIFEST_RULE);
-
         List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
 
         for (DataGridCollectionAndDataObject obj : objs) {
             logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, objPath);
 
-            String rule = buildRule(XML_MANIFEST_RULE, destResc, msiName, obj.getPath(), filePath, filePath);
+            String rule = buildRule(destResc, XML_MANIFEST_RULE, rulesMap.get(XML_MANIFEST_RULE), obj.getPath(), filePath, filePath);
 
             executeRule(rule);
         }
@@ -176,17 +221,21 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public void executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (rule == null || rule.isEmpty()) return;
+    public Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException {
+        if (rule == null || rule.isEmpty()) return null;
 
+        Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap = null;
         RuleProcessingAO ruleProcessingAO = is.getRuleProcessingAO();
 
         try {
-            ruleProcessingAO.executeRule(rule);
+            IRODSRuleExecResult result = ruleProcessingAO.executeRule(rule);
+            ruleResultMap = result.getOutputParameterResults();
         } catch (JargonException e) {
             logger.error("Could not execute rule {}: {}.", rule, e.getMessage());
             throw new DataGridRuleException("Metadata extraction failed.");
         }
+
+        return ruleResultMap;
     }
 
     /**
@@ -206,6 +255,14 @@ public class RuleServiceImpl implements RuleService {
         paramsEscaped.append(String.format("\"%s\"", params[params.length - 1]));
 
         return paramsEscaped.toString();
+    }
+
+    /**
+     * Finds the MSI API version currently supported.
+     * @return String containing the MSI API version
+     */
+    private String getAPIVersion(String version) {
+        return version.substring(0, version.indexOf('.'));
     }
 
     private class RemoteRuleHeader {

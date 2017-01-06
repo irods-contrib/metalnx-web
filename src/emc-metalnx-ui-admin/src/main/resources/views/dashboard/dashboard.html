@@ -51,10 +51,17 @@
 			<!-- <div class="col-xs-12 col-md-12 col-lg-12">
 				<div class="row"> -->
 			<!-- System Health -->
-			<div class="col-xs-12 col-md-12 col-lg-12 dashboardWidget" id="systemHealth">					
+			<div class="col-xs-12 col-md-9 col-lg-9 dashboardWidget" id="systemHealth">
 				<div class="table-loader">
 					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
 					<p class="text-center" th:text="#{loading.system.health.status}"></p>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-md-3 col-lg-3 dashboardWidget" id="msiAPIVersionPanel">
+				<div class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.msi.package.version}"></p>
 				</div>
 			</div>
 			
@@ -143,7 +150,7 @@
 					<!-- Groups -->
 					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
-							<div class="panel-body" id="">
+							<div class="panel-body">
 								<div class="cardIconWrapper col-xs-3">
 								</div>
 								<i class="fa fa-group col-xs-3 cardIcon"></i>
@@ -163,7 +170,7 @@
 					<!-- profiles -->
 					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
-							<div class="panel-body" id="">
+							<div class="panel-body">
 								<div class="cardIconWrapper col-xs-3">
 								</div>
 								<span class="fa-stack fa-lg col-xs-3 cardIcon">
@@ -186,9 +193,8 @@
 					<!-- templates -->
 					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
-							<div class="panel-body" id="">
-								<div class="cardIconWrapper col-xs-3">
-								</div>
+							<div class="panel-body">
+								<div class="cardIconWrapper col-xs-3"></div>
 								<i class="fa fa-cubes col-xs-3 cardIcon"></i>
 								<div class="col-xs-7 col-md-6">
 									<a th:href="@{ ${urlMap.URL_TEMPLATE_MANAGEMENT} }">
@@ -221,7 +227,6 @@
 					</div>
 				</div>
 			</div>
-					
 		</div>
 
 							
@@ -247,17 +252,24 @@
 				url = "/emc-metalnx-web/dashboard/servers/";
 				
 				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, 
-						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer, ajaxCallForNonResourceServer]);					
+						[ajaxCallForMSIAPIVersion, ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer, ajaxCallForNonResourceServer]);
 			});
+
+			function ajaxCallForMSIAPIVersion() {
+				url = "/emc-metalnx-web/dashboard/msiPackageVersion/";
+				ajaxEncapsulation(url, "GET", "", displayMSIVersionPanel, null, null);
+			}
 			
 			function ajaxCallForNonResourceServer(){						
 				url = "/emc-metalnx-web/dashboard/nonResourceServers/";				
 				ajaxEncapsulation(url, "GET", "", displayNonResourceServersPanel, null, null);				
 			}
+
 			function ajaxCallForIsilonServer(){						
 				url = "/emc-metalnx-web/dashboard/isilonServers/";				
 				ajaxEncapsulation(url, "GET", "", displayIsilonServersPanel, null, null);				
 			}
+
 			function ajaxCallForStorageGrid(){						
 				//we need to have all servers in order to get the total grid storage						
 				url = "/emc-metalnx-web/dashboard/storageGrid/";				
@@ -279,6 +291,10 @@
 			    $('.resourceMapDashboardWrapper .table-loader').hide();
 			    $('#resourceMapDashboard').html(data);
 			    $('.resourceMapDashboardWrapper .panel').removeClass('hideElement');
+			}
+
+			function displayMSIVersionPanel(data) {
+				$("#msiAPIVersionPanel").html(data);
 			}
 			
 			function displayNonResourceServersPanel(data){
