@@ -47,12 +47,16 @@ public class UploadServiceImpl implements UploadService {
 
     private static final int MEGABYTE = 1024 * 1024;
     private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
+
     @Autowired
     CollectionService cs;
+
     @Autowired
     RuleService rs;
+
     @Autowired
     FileOperationService fos;
+
     @Autowired
     IRODSServices is;
 
@@ -84,9 +88,9 @@ public class UploadServiceImpl implements UploadService {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFileChunk = multipartRequest.getFile("fileChunk");
 
-        String[] chunkNumberParam = (String[]) request.getParameterMap().get("chunkNumber");
-        String[] filePartParam = (String[]) request.getParameterMap().get("filePart");
-        String[] partCRC32Param = (String[]) request.getParameterMap().get("partCRC32");
+        String[] chunkNumberParam = request.getParameterMap().get("chunkNumber");
+        String[] filePartParam = request.getParameterMap().get("filePart");
+        String[] partCRC32Param = request.getParameterMap().get("partCRC32");
 
         int chunkNumber = Integer.valueOf(chunkNumberParam[0]);
         int partNumber = Integer.valueOf(filePartParam[0]);

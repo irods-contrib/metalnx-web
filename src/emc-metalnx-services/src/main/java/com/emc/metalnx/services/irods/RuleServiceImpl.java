@@ -111,31 +111,6 @@ public class RuleServiceImpl implements RuleService {
         return msiAPIVersionInstalled.equalsIgnoreCase(msiAPIVersionSupported);
     }
 
-    public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
-        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
-
-        String versionParam = "*version";
-        String msi = String.format("    %s(%s);\n", "msiobjget_version", versionParam);
-
-        StringBuilder rule = new StringBuilder();
-        rule.append("\n");
-        rule.append(GET_VERSION_RULE);
-        rule.append("{");
-        rule.append("\n");
-        rule.append(header.getRemoteRuleHeader());
-        rule.append(msi);
-        rule.append(header.getRemoteRuleFooter());
-        rule.append("}");
-        rule.append("\n");
-        rule.append("INPUT \"null\"\n");
-        rule.append("OUTPUT ");
-        rule.append(versionParam);
-
-        logger.info(rule.toString());
-
-        return (String) executeRule(rule.toString()).get("*version").getResultObject();
-    }
-
     public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
         String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
         executeRule(buildRule(destResc, REPL_DATA_OBJ_RULE, rulesMap.get(REPL_DATA_OBJ_RULE), path, flags, "null"));
@@ -200,6 +175,56 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
+    public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
+        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
+
+        String versionParam = "*version";
+        String msi = String.format("    %s(%s);\n", rulesMap.get(GET_VERSION_RULE), versionParam);
+
+        StringBuilder rule = new StringBuilder();
+        rule.append("\n");
+        rule.append(GET_VERSION_RULE);
+        rule.append("{");
+        rule.append("\n");
+        rule.append(header.getRemoteRuleHeader());
+        rule.append(msi);
+        rule.append(header.getRemoteRuleFooter());
+        rule.append("}");
+        rule.append("\n");
+        rule.append("INPUT \"null\"\n");
+        rule.append("OUTPUT ");
+        rule.append(versionParam);
+
+        return (String) executeRule(rule.toString()).get("*version").getResultObject();
+    }
+
+    @Override
+    public List<String> execGetMicroservicesRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
+        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
+
+        String msisParam = "*msis";
+        String msi = String.format("    %s(%s);\n", rulesMap.get(GET_MICROSERVICES_RULE), msisParam);
+
+        StringBuilder rule = new StringBuilder();
+        rule.append("\n");
+        rule.append(GET_MICROSERVICES_RULE);
+        rule.append("{");
+        rule.append("\n");
+        rule.append(header.getRemoteRuleHeader());
+        rule.append(msi);
+        rule.append(header.getRemoteRuleFooter());
+        rule.append("}");
+        rule.append("\n");
+        rule.append("INPUT \"null\"\n");
+        rule.append("OUTPUT ");
+        rule.append(msisParam);
+
+        String ruleOutput = (String) executeRule(rule.toString()).get(msisParam).getResultObject();
+
+        return Arrays.asList(ruleOutput.split(","));
+    }
+
+    @Override
     public String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException {
         RemoteRuleHeader header = new RemoteRuleHeader(resource);
 
@@ -215,7 +240,11 @@ public class RuleServiceImpl implements RuleService {
         rule.append(header.getRemoteRuleFooter());
         rule.append("}");
         rule.append("\n");
+        rule.append("INPUT \"null\"");
+        rule.append("\n");
         rule.append("OUTPUT ruleExecOut\n");
+
+        logger.info(rule.toString());
 
         return rule.toString();
     }
