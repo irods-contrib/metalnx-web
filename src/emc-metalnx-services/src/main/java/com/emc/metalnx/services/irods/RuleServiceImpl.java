@@ -199,32 +199,6 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public List<String> execGetMicroservicesRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
-        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
-
-        String msisParam = "*msis";
-        String msi = String.format("    %s(%s);\n", rulesMap.get(GET_MICROSERVICES_RULE), msisParam);
-
-        StringBuilder rule = new StringBuilder();
-        rule.append("\n");
-        rule.append(GET_MICROSERVICES_RULE);
-        rule.append("{");
-        rule.append("\n");
-        rule.append(header.getRemoteRuleHeader());
-        rule.append(msi);
-        rule.append(header.getRemoteRuleFooter());
-        rule.append("}");
-        rule.append("\n");
-        rule.append("INPUT \"null\"\n");
-        rule.append("OUTPUT ");
-        rule.append(msisParam);
-
-        String ruleOutput = (String) executeRule(rule.toString()).get(msisParam).getResultObject();
-
-        return Arrays.asList(ruleOutput.split(","));
-    }
-
-    @Override
     public String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException {
         RemoteRuleHeader header = new RemoteRuleHeader(resource);
 
