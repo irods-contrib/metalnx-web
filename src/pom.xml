@@ -20,11 +20,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.emc.metalnx</groupId>
 	<artifactId>emc-metalnx</artifactId>
-	<version>1.0</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<project.version>1.0</project.version>
+		<project.version>1.1.0</project.version>
 
 		<!-- Jargon -->
 		<jargon.version>4.0.2.3-RELEASE</jargon.version>
