@@ -288,6 +288,12 @@ public class DashboardController {
         return "dashboard/details/resourceInfo";
     }
 
+    @RequestMapping(value = "/mlxMicroservices/", method = RequestMethod.GET)
+    public String getMlxMicroservices(Model model) throws DataGridConnectionRefusedException {
+
+        return "dashboard/mlxMicroservices :: mlxMicroservices";
+    }
+
     /*
      * ********************************************************************************************
      * ********************************* PRIVATE METHODS **************************************
