@@ -82,7 +82,7 @@ public class DataGridCoreUtils {
     }
 
     /**
-     * Auxiliary method to determine wether a file is a VCF file
+     * Auxiliary method to determine whether a file is a VCF file
      *
      * @param path file path
      * @return bool True, if the given path is a manifest file. False, otherwise.

@@ -17,10 +17,7 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.apache.commons.io.FileUtils;
@@ -104,7 +101,7 @@ public class UploadController {
                     filesForUploadMap.remove(file.getFileName());
                 }
             }
-        } catch (DataGridReplicateException | DataGridRuleException e) {
+        } catch (DataGridReplicateException | DataGridRuleException | DataGridMSIVersionNotSupported e) {
             uploadMessage += e.getMessage();
             errorType = WARNING;
         } catch (DataGridException e) {

@@ -19,8 +19,27 @@ package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
+
+import java.util.Map;
 
 public interface RuleService {
+
+    /**
+     * Checks whether the current MSI API version installed is compatible with the API this application supports.
+     * @return True, if this application can talk to the MSI API - versions are compatible. False, otherwise.
+     * @throws DataGridConnectionRefusedException
+     */
+    boolean isMSIAPICompatible() throws DataGridConnectionRefusedException;
+
+    /**
+     * Executes the get version MSI.
+     * @param destResc
+     * @return version of the MSI currently installed
+     * @throws DataGridRuleException
+     * @throws DataGridConnectionRefusedException
+     */
+    String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Executes the replicate data object rule
@@ -118,5 +137,5 @@ public interface RuleService {
      * @throws DataGridRuleException if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
+    Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
 }

@@ -118,10 +118,10 @@
 					</div>	
 				</div>
 			</div>
-			<div class="col-md-3 col-sm-12 col-xs-12">
+			<div class="col-md-6 col-sm-12 col-xs-12">
 				<div class="row">
 					<!-- Users -->
-					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" id="">
 								<div class="cardIconWrapper col-xs-3">
@@ -141,7 +141,7 @@
 						</div>
 					</div>
 					<!-- Groups -->
-					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" id="">
 								<div class="cardIconWrapper col-xs-3">
@@ -161,7 +161,7 @@
 						</div>
 					</div>
 					<!-- profiles -->
-					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" >
 								<div class="cardIconWrapper col-xs-3">
@@ -186,10 +186,10 @@
 				</div>
 			</div>
 			<div class="col-xs-12 col-md-6 ">
-				<div class="dashboardWidget" id="mlxMicroservicesPanel">
+				<div class="dashboardWidget" id="msiAPIVersionPanel">
 					<div class="table-loader">
 						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-						<p class="text-center" th:text="#{loading.system.isilon.servers}"></p>
+						<p class="text-center" th:text="#{loading.msi.package.version}"></p>
 					</div>
 				</div>
 			</div>
@@ -235,22 +235,25 @@
 				url = "/emc-metalnx-web/dashboard/servers/";
 				
 				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, 
-						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer, ajaxCallForMlxMicroservices]);
+						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer]);
 			});
 
-			function ajaxCallForMlxMicroservices(){
-				url = "/emc-metalnx-web/dashboard/mlxMicroservices/";
-				ajaxEncapsulation(url, "GET", "", displayMlxMicroservicesPanel, null, null);
+			function ajaxCallForMSIAPIVersion() {
+				url = "/emc-metalnx-web/dashboard/msiPackageVersion/";
+				ajaxEncapsulation(url, "GET", "", displayMSIVersionPanel, null, null);
 			}
-			function ajaxCallForNonResourceServer(){
-				url = "/emc-metalnx-web/dashboard/nonResourceServers/";
-				ajaxEncapsulation(url, "GET", "", displayNonResourceServersPanel, null, null);
+
+			function ajaxCallForNonResourceServer(){						
+				url = "/emc-metalnx-web/dashboard/nonResourceServers/";				
+				ajaxEncapsulation(url, "GET", "", displayNonResourceServersPanel, null, null);				
 			}
-			function ajaxCallForIsilonServer(){						
+
+			function ajaxCallForIsilonServer(){
 				url = "/emc-metalnx-web/dashboard/isilonServers/";				
 				ajaxEncapsulation(url, "GET", "", displayIsilonServersPanel, null, null);				
 			}
-			function ajaxCallForStorageGrid(){						
+
+			function ajaxCallForStorageGrid(){
 				//we need to have all servers in order to get the total grid storage						
 				url = "/emc-metalnx-web/dashboard/storageGrid/";				
 				ajaxEncapsulation(url, "GET", "", updateStorageInfo, null, null);				
@@ -266,17 +269,17 @@
 			    url = "/emc-metalnx-web/resources/mapForDashboard/";
 				ajaxEncapsulation(url, "GET", "", displayResourceMap, null, null);
 			}
-
-			function displayMlxMicroservicesPanel(data){
-				$('#mlxMicroservicesPanel').html(data);
-			}
-
+			
 			function displayResourceMap(data){
 			    $('.resourceMapDashboardWrapper .table-loader').hide();
 			    $('#resourceMapDashboard').html(data);
 			    $('.resourceMapDashboardWrapper .panel').removeClass('hideElement');
 			}
-			
+
+			function displayMSIVersionPanel(data) {
+				$("#msiAPIVersionPanel").html(data);
+			}
+
 			function displayNonResourceServersPanel(data){
 				$("#nonResourceServerListPanel").html(data);
 			}
