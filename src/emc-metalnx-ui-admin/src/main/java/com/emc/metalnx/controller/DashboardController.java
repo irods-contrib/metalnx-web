@@ -20,7 +20,6 @@ package com.emc.metalnx.controller;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FileUtils;
@@ -73,6 +72,8 @@ public class DashboardController {
 
     @Autowired
     RuleService rs;
+
+    @Autowired PluginsService pluginsService;
 
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
@@ -152,22 +153,16 @@ public class DashboardController {
         logger.info("Get all servers from the grid");
 
         try {
-            if (resources == null || resources.isEmpty()) {
-                resources = resourceService.findAll();
-            }
-
+            if (resources == null || resources.isEmpty()) resources = resourceService.findAll();
             isServerResponding = true;
         }
         catch (DataGridConnectionRefusedException e) {
-            logger.info("Could not connect to the server.", e);
+            logger.info("Could not connect to the server: ", e);
 
             isServerResponding = false;
 
-            // if there is no cache available for displaying the servers, we will redirect
-            // the user to the iCAT-not-responding page
-            if (resources == null || resources.isEmpty()) {
-                throw new DataGridConnectionRefusedException();
-            }
+            // no cache available for servers, redirect the user to the iCAT-not-responding page
+            if (resources == null || resources.isEmpty()) throw new DataGridConnectionRefusedException();
         }
         finally {
             logger.info("Listing servers from the cache.");
@@ -285,22 +280,8 @@ public class DashboardController {
 
     @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
     public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
-        String msiAPIVersionInstalled = null;
-        boolean missingMSIPackage = false;
-        boolean isMSIPackageCompatible = true;
-
-        try {
-            msiAPIVersionInstalled = rs.execGetVersionRule("demoResc");
-            isMSIPackageCompatible = rs.isMSIAPICompatible();
-        } catch (DataGridRuleException e) {
-            logger.error("Could not get version of the MSI package.");
-            missingMSIPackage = true;
-        }
-
-        model.addAttribute("msiAPIVersionInstalled", msiAPIVersionInstalled);
+        model.addAttribute("servers", pluginsService.getMSIVersionForAllServers());
         model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
-        model.addAttribute("missingMSIPackage", missingMSIPackage);
-        model.addAttribute("isMSIPackageCompatible", isMSIPackageCompatible);
 
         return "dashboard/msiPackageVersion";
     }

@@ -55,16 +55,19 @@ public class UploadServiceImpl implements UploadService {
     private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
 
     @Autowired
-    CollectionService cs;
+    private CollectionService cs;
 
     @Autowired
-    RuleService rs;
+    private RuleService rs;
 
     @Autowired
-    FileOperationService fos;
+    private FileOperationService fos;
 
     @Autowired
-    IRODSServices is;
+    private IRODSServices is;
+
+    @Autowired
+    private PluginsService pluginService;
 
     @Override
     public DataGridFileForUpload buildFileForUpload(HttpServletRequest request) throws DataGridException {
@@ -209,7 +212,7 @@ public class UploadServiceImpl implements UploadService {
             String destResc = file.getDestResc();
             String filePath = resourceMap.get(destResc) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
-            if(!rs.isMSIAPICompatible()) {
+            if(!pluginService.isMSIAPICompatibleInResc(file.getDestResc())) {
                 String msg = "MSI Version installed is not supported.";
                 logger.error(msg);
                 throw new DataGridMSIVersionNotSupported(msg);

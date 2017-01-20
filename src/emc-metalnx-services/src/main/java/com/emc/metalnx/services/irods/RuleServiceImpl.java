@@ -19,6 +19,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridRule;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
@@ -40,8 +41,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,29 +50,6 @@ import java.util.Map;
 public class RuleServiceImpl implements RuleService {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleServiceImpl.class);
-    private static final String GET_VERSION_RULE = "getVersion";
-    private static final String POPULATE_RULE = "populateMetadataForFile";
-    private static final String JPG_RULE = "automaticJpgMetadataExtraction";
-    private static final String VCF_RULE = "automaticVcfMetadataExtraction";
-    private static final String BAM_CRAM_RULE = "automaticBamMetadataExtraction";
-    private static final String XML_MANIFEST_RULE = "automaticExtractMetadataFromXMLManifest";
-    private static final String ILLUMINA_RULE = "illuminaMetadataForFile";
-    private static final String REPL_DATA_OBJ_RULE = "replicateDataObjInAdminMode";
-
-    // Maps rules for their respective microservices
-    private static final Map<String, String> rulesMap;
-
-    static {
-        Map<String, String> map = new HashMap<>();
-        map.put(POPULATE_RULE, "msiobjput_populate");
-        map.put(JPG_RULE, "msiobjjpeg_extract");
-        map.put(VCF_RULE, "msiobjput_mdvcf");
-        map.put(BAM_CRAM_RULE, "msiobjput_mdbam");
-        map.put(XML_MANIFEST_RULE, "msiobjput_mdmanifest");
-        map.put(REPL_DATA_OBJ_RULE, "msiDataObjRepl");
-        map.put(GET_VERSION_RULE, "msiobjget_version");
-        rulesMap = Collections.unmodifiableMap(map);
-    }
 
     @Autowired
     CollectionService cs;
@@ -96,138 +72,117 @@ public class RuleServiceImpl implements RuleService {
     @Value("${msi.api.version}")
     private String msiAPIVersion;
 
-    public boolean isMSIAPICompatible() throws DataGridConnectionRefusedException {
-        String version = "";
-
-        try {
-            version = execGetVersionRule("demoResc");
-        } catch (DataGridRuleException e) {
-            logger.info("Could not get MSI API version");
-        }
-
-        String msiAPIVersionSupported = getAPIVersion(msiAPIVersion);
-        String msiAPIVersionInstalled = getAPIVersion(version);
-
-        return msiAPIVersionInstalled.equalsIgnoreCase(msiAPIVersionSupported);
-    }
-
     public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
+        logger.info("Get Replication Rule called");
+
         String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
-        executeRule(buildRule(destResc, REPL_DATA_OBJ_RULE, rulesMap.get(REPL_DATA_OBJ_RULE), path, flags, "null"));
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.REPL_DATA_OBJ_RULE, dgResc.getHost());
+        rule.setInputRuleParams(path, flags, "null");
+
+        executeRule(rule.toString());
     }
 
     public void execPopulateMetadataRule(String destResc, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!populateMsiEnabled) return;
-        executeRule(buildRule(destResc, POPULATE_RULE, rulesMap.get(POPULATE_RULE), objPath));
+
+        logger.info("Get Populate Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, dgResc.getHost());
+        rule.setInputRuleParams(objPath);
+
+        executeRule(rule.toString());
     }
 
     public void execImageRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isImageFile(objPath)) return;
-        executeRule(buildRule(destResc, JPG_RULE, rulesMap.get(JPG_RULE), objPath, filePath));
+
+        logger.info("Get Image Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, dgResc.getHost());
+        rule.setInputRuleParams(objPath, filePath);
+
+        executeRule(rule.toString());
     }
 
     public void execVCFMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isVCFFile(objPath)) return;
-        executeRule(buildRule(destResc, VCF_RULE, rulesMap.get(VCF_RULE), objPath, filePath));
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, dgResc.getHost());
+        rule.setInputRuleParams(objPath, filePath);
+
+        executeRule(rule.toString());
     }
 
     public void execBamCramMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isBamOrCram(objPath)) return;
-        executeRule(buildRule(destResc, BAM_CRAM_RULE, rulesMap.get(BAM_CRAM_RULE), objPath, filePath));
+
+        logger.info("Get BAM/CRAM Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, dgResc.getHost());
+        rule.setInputRuleParams(objPath, filePath);
+
+        executeRule(rule.toString());
     }
 
     public void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath)) return;
 
+        logger.info("Get Manifest Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, dgResc.getHost());
+
         List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
 
         for (DataGridCollectionAndDataObject obj : objs) {
-            logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, objPath);
-
-            String rule = buildRule(destResc, XML_MANIFEST_RULE, rulesMap.get(XML_MANIFEST_RULE), obj.getPath(), filePath, filePath);
-
-            executeRule(rule);
+            logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, obj.getPath());
+            rule.setInputRuleParams(obj.getPath(), filePath, filePath);
+            executeRule(rule.toString());
         }
     }
 
-    public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!illuminaMsiEnabled || !objPath.endsWith("_SSU.tar")) return;
-
-        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
-
-        String msiTarFileExtract = String.format("    %s(%s, *Status);\n", "msiTarFileExtract", escapeRuleParams(objPath, targetPath, destResc));
-        String msiIllumina = String.format("    %s(%s);\n", "msiget_illumina_meta", escapeRuleParams(objPath, destResc));
-
-        StringBuilder rule = new StringBuilder();
-        rule.append("\n");
-        rule.append(ILLUMINA_RULE);
-        rule.append("{");
-        rule.append("\n");
-        rule.append(header.getRemoteRuleHeader());
-        rule.append(msiTarFileExtract);
-        rule.append(msiIllumina);
-        rule.append(header.getRemoteRuleFooter());
-        rule.append("}");
-        rule.append("\n");
-        rule.append("OUTPUT ruleExecOut\n");
-
-        this.executeRule(rule.toString());
-    }
-
-    @Override
     public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
-        RemoteRuleHeader header = new RemoteRuleHeader(destResc);
+        logger.info("Get Version Rule called");
 
-        String versionParam = "*version";
-        String msi = String.format("    %s(%s);\n", rulesMap.get(GET_VERSION_RULE), versionParam);
-
-        StringBuilder rule = new StringBuilder();
-        rule.append("\n");
-        rule.append(GET_VERSION_RULE);
-        rule.append("{");
-        rule.append("\n");
-        rule.append(header.getRemoteRuleHeader());
-        rule.append(msi);
-        rule.append(header.getRemoteRuleFooter());
-        rule.append("}");
-        rule.append("\n");
-        rule.append("INPUT \"null\"\n");
-        rule.append("OUTPUT ");
-        rule.append(versionParam);
-
-        return (String) executeRule(rule.toString()).get("*version").getResultObject();
-    }
-
-    @Override
-    public String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException {
-        RemoteRuleHeader header = new RemoteRuleHeader(resource);
-
-        String msi = String.format("    %s(%s);\n", msiName, escapeRuleParams(params));
-
-        StringBuilder rule = new StringBuilder();
-        rule.append("\n");
-        rule.append(ruleName);
-        rule.append("{");
-        rule.append("\n");
-        rule.append(header.getRemoteRuleHeader());
-        rule.append(msi);
-        rule.append(header.getRemoteRuleFooter());
-        rule.append("}");
-        rule.append("\n");
-        rule.append("INPUT \"null\"");
-        rule.append("\n");
-        rule.append("OUTPUT ruleExecOut\n");
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, dgResc.getHost());
+        rule.setOutputRuleParams("version");
 
         logger.info(rule.toString());
 
-        return rule.toString();
+        return "1.1.0";
+        //return (String) executeRule(rule.toString()).get("*version").getResultObject();
+    }
+
+    public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
+        if (!illuminaMsiEnabled || !DataGridCoreUtils.isIllumina(objPath)) return;
+
+        logger.info("Illumina Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+
+        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, dgResc.getHost());
+        tarRule.setInputRuleParams(objPath, targetPath, destResc);
+        tarRule.setOutputRuleParams("Status");
+
+        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, dgResc.getHost());
+        illuminaRule.setInputRuleParams(objPath, destResc);
+
+        executeRule(tarRule.toString());
+        executeRule(illuminaRule.toString());
     }
 
     @Override
     public Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (rule == null || rule.isEmpty()) return null;
 
-        Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap = null;
+        Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap;
         RuleProcessingAO ruleProcessingAO = is.getRuleProcessingAO();
 
         try {
@@ -239,58 +194,5 @@ public class RuleServiceImpl implements RuleService {
         }
 
         return ruleResultMap;
-    }
-
-    /**
-     * Espaces all rule params to the format expected by the data grid
-     * ex: msi_name("param1", "param2", "param3");
-     *
-     * @param params string params to be escaped
-     * @return params escaped "param1", "param2", "param3" ... "paramN"
-     */
-    private String escapeRuleParams(String... params) {
-        if (params == null) return "";
-
-        StringBuilder paramsEscaped = new StringBuilder();
-
-        for (int i = 0; i < params.length - 1; i++) paramsEscaped.append(String.format("\"%s\", ", params[i]));
-
-        paramsEscaped.append(String.format("\"%s\"", params[params.length - 1]));
-
-        return paramsEscaped.toString();
-    }
-
-    /**
-     * Finds the MSI API version currently supported.
-     * @return String containing the MSI API version
-     */
-    private String getAPIVersion(String version) {
-        return version.substring(0, version.indexOf('.'));
-    }
-
-    private class RemoteRuleHeader {
-        private String remoteHeader = null;
-        private String remoteFooter = null;
-
-        public RemoteRuleHeader(String destResc) throws DataGridConnectionRefusedException {
-
-            remoteHeader = "";
-            remoteFooter = "";
-            DataGridResource dgResc = rs.find(destResc);
-
-            if (!iCATHost.startsWith(dgResc.getHost())) {
-                String remoteHost = dgResc.getHost();
-                remoteHeader = String.format("  remote(\"%s\", \"\") {\n", remoteHost);
-                remoteFooter = "  }\n";
-            }
-        }
-
-        public String getRemoteRuleHeader() {
-            return this.remoteHeader;
-        }
-
-        public String getRemoteRuleFooter() {
-            return this.remoteFooter;
-        }
     }
 }

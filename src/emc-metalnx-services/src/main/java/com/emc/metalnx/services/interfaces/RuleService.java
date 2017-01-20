@@ -26,18 +26,11 @@ import java.util.Map;
 public interface RuleService {
 
     /**
-     * Checks whether the current MSI API version installed is compatible with the API this application supports.
-     * @return True, if this application can talk to the MSI API - versions are compatible. False, otherwise.
-     * @throws DataGridConnectionRefusedException
-     */
-    boolean isMSIAPICompatible() throws DataGridConnectionRefusedException;
-
-    /**
      * Executes the get version MSI.
-     * @param destResc
+     * @param destResc resource where the rule is executed
      * @return version of the MSI currently installed
-     * @throws DataGridRuleException
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridRuleException if an error happens during the rule execution
+     * @throws DataGridConnectionRefusedException if there is no connection to the grid
      */
     String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException;
 
@@ -117,18 +110,6 @@ public interface RuleService {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
     void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
-
-    /**
-     * Builds a rule in the data grid
-     *
-     * @param resource resource name where this rule will be executed
-     * @param ruleName name of the rule that will be executed
-     * @param msiName  name of the microservice that will be called within the rule
-     * @param params   all parameters of the msi called by the rule
-     * @return String representing the rule already formatted properly to be executed
-     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
-     */
-    String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException;
 
     /**
      * Executes a rule in the data grid
