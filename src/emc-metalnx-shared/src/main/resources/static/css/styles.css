@@ -1469,7 +1469,7 @@ footer {
 }
 .dashboardCard .btn-link{
 	margin-right: 14px;
-	margin-top: 0px;
+	margin-top: 1px;
 	font-size: 13pt;
 }
 #serverListPanel .dashboardServersList{
