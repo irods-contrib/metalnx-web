@@ -26,6 +26,10 @@ import java.util.Set;
  */
 public class DataGridCoreUtils {
 
+    public static boolean isIllumina(String path) {
+        return path.endsWith("_SSU.tar");
+    }
+
     /**
      * Checks whether or not a given path refers to a BAM or CRAM file.
      * @param path file path
@@ -42,7 +46,7 @@ public class DataGridCoreUtils {
      * @return bool True, if the given path is an image. False, otherwise.
      */
     public static boolean isImageFile(String path) {
-        Set<String> extensions = new HashSet<String>();
+        Set<String> extensions = new HashSet<>();
         extensions.add("png");
         extensions.add("PNG");
         extensions.add("jpg");
@@ -88,7 +92,7 @@ public class DataGridCoreUtils {
      * @return bool True, if the given path is a manifest file. False, otherwise.
      */
     public static boolean isPrideXMLManifestFile(String path) {
-        Set<String> extensions = new HashSet<String>();
+        Set<String> extensions = new HashSet<>();
         extensions.add("xml");
 
         String fileExtension = "";
@@ -109,7 +113,7 @@ public class DataGridCoreUtils {
      */
     public static String getIconToDisplay(String filePath) {
 
-        String icon = "";
+        String icon;
         String extension = getFileExtension(filePath);
 
         switch (extension) {
@@ -175,10 +179,10 @@ public class DataGridCoreUtils {
     /**
      * Gets file extension based on its path
      *
-     * @param filePath
-     * @return
+     * @param filePath path to the file
+     * @return file extension
      */
-    public static String getFileExtension(String filePath) {
+    private static String getFileExtension(String filePath) {
 
         if (filePath.lastIndexOf(".") != -1 && filePath.lastIndexOf(".") != 0) {
             return filePath.substring(filePath.lastIndexOf(".") + 1);

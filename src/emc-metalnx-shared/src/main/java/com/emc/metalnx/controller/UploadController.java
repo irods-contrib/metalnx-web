@@ -165,7 +165,7 @@ public class UploadController {
      * @return string representing the file's name
      */
     private String getFileName(HttpServletRequest request) {
-        String[] fileName = (String[]) request.getParameterMap().get("fileName");
+        String[] fileName = request.getParameterMap().get("fileName");
         return fileName[0];
     }
 
