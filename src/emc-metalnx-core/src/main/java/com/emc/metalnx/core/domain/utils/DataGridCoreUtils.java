@@ -26,6 +26,14 @@ import java.util.Set;
  */
 public class DataGridCoreUtils {
 
+    /**
+     * Finds the MSI API version currently supported.
+     * @return String containing the MSI API version
+     */
+    public static String getAPIVersion(String version) {
+        return version.substring(0, version.indexOf('.'));
+    }
+
     public static boolean isIllumina(String path) {
         return path.endsWith("_SSU.tar");
     }

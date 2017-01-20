@@ -1,9 +1,11 @@
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIGridInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
 import com.emc.metalnx.services.interfaces.PluginsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
@@ -52,6 +54,11 @@ public class PluginServiceImpl implements PluginsService {
     }
 
     @Override
+    public DataGridMSIGridInfo getMSIGridInfo() throws DataGridConnectionRefusedException {
+        return new DataGridMSIGridInfo(getMSIVersionForAllServers());
+    }
+
+    @Override
     public List<DataGridServer> getMSIVersionForAllServers() throws DataGridConnectionRefusedException {
         for (DataGridServer server: servers) setMSIVersionForServer(server);
         return servers;
@@ -66,13 +73,13 @@ public class PluginServiceImpl implements PluginsService {
             return;
         }
 
-        String version = "Not installed";
+        String version = "";
 
         try {
             String destResc = server.getResources().get(0).getName();
             version = ruleService.execGetVersionRule(destResc);
 
-            server.setIsMSIVersionCompatible(getAPIVersion(version).equalsIgnoreCase(getAPIVersion(msiAPIVersion)));
+            server.setIsMSIVersionCompatible(DataGridCoreUtils.getAPIVersion(version).equalsIgnoreCase(DataGridCoreUtils.getAPIVersion(msiAPIVersion)));
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
             server.setIsMSIVersionCompatible(false);
@@ -100,13 +107,5 @@ public class PluginServiceImpl implements PluginsService {
         }
 
         return server.isMSIVersionCompatible();
-    }
-
-    /**
-     * Finds the MSI API version currently supported.
-     * @return String containing the MSI API version
-     */
-    private String getAPIVersion(String version) {
-        return version.substring(0, version.indexOf('.'));
     }
 }
