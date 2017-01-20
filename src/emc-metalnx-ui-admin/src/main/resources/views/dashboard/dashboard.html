@@ -118,10 +118,10 @@
 					</div>	
 				</div>
 			</div>
-			<div class="col-md-6 col-sm-12 col-xs-12">
+			<div class="col-md-3 col-sm-12 col-xs-12">
 				<div class="row">
 					<!-- Users -->
-					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" id="">
 								<div class="cardIconWrapper col-xs-3">
@@ -141,7 +141,7 @@
 						</div>
 					</div>
 					<!-- Groups -->
-					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" id="">
 								<div class="cardIconWrapper col-xs-3">
@@ -161,7 +161,7 @@
 						</div>
 					</div>
 					<!-- profiles -->
-					<div class="col-xs-12 col-md-6 col-sm-6 dashboardCard">
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
 						<div class="panel panel-default">
 							<div class="panel-body" >
 								<div class="cardIconWrapper col-xs-3">
@@ -235,7 +235,7 @@
 				url = "/emc-metalnx-web/dashboard/servers/";
 				
 				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, 
-						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer]);
+						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer, ajaxCallForMSIAPIVersion]);
 			});
 
 			function ajaxCallForMSIAPIVersion() {
