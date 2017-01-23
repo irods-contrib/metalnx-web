@@ -21,16 +21,26 @@
 		<div class="panel-body">
 			<h4 class=""> Metalnx Microservices </h4>
 			<p><span>Supported version: </span><span th:text="${msiAPIVersionSupported}"></span></p>
-			<!--<div class="col-xs-12" th:classappend="${!isMSIPackageCompatible} ? 'bg-warning': 'bg-success'" role="alert">
-				<p th:if="${isMSIPackageCompatible}">
+			<!--<span th:text="${status}"></span>
+			<p th:each="server: ${servers}">
+				<span th:text="${server.hostname}"></span>
+				<span th:text="${server.getMSIVersion()}"></span>
+			</p>-->
+			<div class="col-xs-12" th:classappend="${#strings.equals(status, 'OK')} ? 'bg-success': 'bg-warning'" role="alert">
+				<p th:if="${#strings.equals(status, 'OK')}">
 					<i class="fa fa-check" aria-hidden="true"></i>
 					<span>All installed microservices are compatible with Metalnx.</span>
 				</p>
-				<p th:if="${!isMSIPackageCompatible}">
+				<p th:unless="${#strings.equals(status, 'OK')}">
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-					<span>Unsupported version found.</span>
+					<span th:if="${#strings.equals(status, 'NOT_SUPPORTED') or #strings.equals(status, 'NOT_INSTALLED_NOT_SUPPORTED')}">
+						Unsupported version found.
+					</span>
+					<span th:if="${#strings.equals(status, 'NOT_INSTALLED') or #strings.equals(status, 'NOT_INSTALLED_NOT_SUPPORTED')}">
+						Metalnx MSI package not installed.
+					</span>
 				</p>
-			</div>-->
+			</div>
 		</div>
 	</div>
 </th:block>

@@ -55,7 +55,7 @@ public class PluginServiceImpl implements PluginsService {
 
     @Override
     public DataGridMSIGridInfo getMSIGridInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIGridInfo(getMSIVersionForAllServers());
+        return new DataGridMSIGridInfo(getMSIVersionForAllServers(), msiAPIVersion);
     }
 
     @Override

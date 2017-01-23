@@ -11,10 +11,11 @@ public class DataGridMSIGridInfo {
     private List<DataGridServer> servers;
     private String msiVersionSupported;
 
-    enum msiVersionGridStatus { OK, NOT_INSTALLED, NOT_SUPPORTED, NOT_INSTALLED_NOT_SUPPORTED }
+    public enum msiVersionGridStatus { OK, NOT_INSTALLED, NOT_SUPPORTED, NOT_INSTALLED_NOT_SUPPORTED }
 
-    public DataGridMSIGridInfo(List<DataGridServer> servers) {
+    public DataGridMSIGridInfo(List<DataGridServer> servers, String msiVersionSupported) {
         this.servers = servers;
+        this.msiVersionSupported = msiVersionSupported;
     }
 
     public msiVersionGridStatus msiVersionGridStatus() {
