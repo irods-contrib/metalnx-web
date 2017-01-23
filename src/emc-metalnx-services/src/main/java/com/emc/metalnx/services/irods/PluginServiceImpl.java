@@ -1,6 +1,6 @@
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIGridInfo;
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -54,8 +54,8 @@ public class PluginServiceImpl implements PluginsService {
     }
 
     @Override
-    public DataGridMSIGridInfo getMSIGridInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIGridInfo(getMSIVersionForAllServers(), msiAPIVersion);
+    public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
+        return new DataGridMSIPkgInfo(getMSIVersionForAllServers(), msiAPIVersion);
     }
 
     @Override
@@ -79,14 +79,19 @@ public class PluginServiceImpl implements PluginsService {
             String destResc = server.getResources().get(0).getName();
             version = ruleService.execGetVersionRule(destResc);
 
-            server.setIsMSIVersionCompatible(DataGridCoreUtils.getAPIVersion(version).equalsIgnoreCase(DataGridCoreUtils.getAPIVersion(msiAPIVersion)));
+            String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersion);
+            String apiVersionInstalled = DataGridCoreUtils.getAPIVersion(version);
+            boolean isCompatible = apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
+
+            server.setIsMSIVersionCompatible(isCompatible);
+
+            // adding info to cache
+            msiVersionCache.put(server.getHostname(), version);
+            msiVersionCacheTime.put(server.getHostname(), System.currentTimeMillis() + 15 * 1000);
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
             server.setIsMSIVersionCompatible(false);
         } finally {
-            msiVersionCache.put(server.getHostname(), version);
-            msiVersionCacheTime.put(server.getHostname(), System.currentTimeMillis() + 15 * 1000);
-
             server.setMSIVersion(version);
         }
     }

@@ -1,6 +1,6 @@
 package com.emc.metalnx.services.interfaces;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIGridInfo;
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface PluginsService {
 
-    DataGridMSIGridInfo getMSIGridInfo() throws DataGridConnectionRefusedException;
+    DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the MSI package version installed on all servers.

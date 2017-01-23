@@ -17,7 +17,7 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIGridInfo;
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -281,9 +281,9 @@ public class DashboardController {
 
     @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
     public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
-        DataGridMSIGridInfo msiGridInfo = pluginsService.getMSIGridInfo();
+        DataGridMSIPkgInfo msiGridInfo = pluginsService.getMSIPkgInfo();
         List<DataGridServer> serverList = msiGridInfo.getServers();
-        DataGridMSIGridInfo.msiVersionGridStatus status = msiGridInfo.msiVersionGridStatus();
+        DataGridMSIPkgInfo.msiVersionGridStatus status = msiGridInfo.msiVersionGridStatus();
         model.addAttribute("status", status);
         model.addAttribute("servers", serverList);
         model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);

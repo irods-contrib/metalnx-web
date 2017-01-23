@@ -7,13 +7,13 @@ import java.util.List;
 /**
  * Represents the status of the MSI package on the grid.
  */
-public class DataGridMSIGridInfo {
+public class DataGridMSIPkgInfo {
     private List<DataGridServer> servers;
     private String msiVersionSupported;
 
     public enum msiVersionGridStatus { OK, NOT_INSTALLED, NOT_SUPPORTED, NOT_INSTALLED_NOT_SUPPORTED }
 
-    public DataGridMSIGridInfo(List<DataGridServer> servers, String msiVersionSupported) {
+    public DataGridMSIPkgInfo(List<DataGridServer> servers, String msiVersionSupported) {
         this.servers = servers;
         this.msiVersionSupported = msiVersionSupported;
     }
@@ -24,7 +24,7 @@ public class DataGridMSIGridInfo {
         boolean notSupported = false;
 
         for(DataGridServer server: servers) {
-            String versionInstalled = server.getMSIVersion();
+            String versionInstalled = DataGridCoreUtils.getAPIVersion(server.getMSIVersion());
 
             if(versionInstalled.isEmpty()) notInstalled = true;
             if(!versionInstalled.equalsIgnoreCase(versionSupported)) notSupported = true;
