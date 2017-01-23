@@ -9,40 +9,19 @@ import java.util.List;
  */
 public class DataGridMSIPkgInfo {
     private List<DataGridServer> servers;
-    private String msiVersionSupported;
-
-    public enum msiVersionGridStatus { OK, NOT_INSTALLED, NOT_SUPPORTED, NOT_INSTALLED_NOT_SUPPORTED }
+    private boolean isThereAnyPkgMissing; // MSI pkg is not installed in one or more servers
+    private boolean isThereAnyPkgNotSupported; // MSI Pkg is installed but out-of-date
 
     public DataGridMSIPkgInfo(List<DataGridServer> servers, String msiVersionSupported) {
         this.servers = servers;
-        this.msiVersionSupported = msiVersionSupported;
-    }
-
-    public msiVersionGridStatus msiVersionGridStatus() {
         String versionSupported = DataGridCoreUtils.getAPIVersion(msiVersionSupported);
-        boolean notInstalled = false;
-        boolean notSupported = false;
 
         for(DataGridServer server: servers) {
             String versionInstalled = DataGridCoreUtils.getAPIVersion(server.getMSIVersion());
 
-            if(versionInstalled.isEmpty()) notInstalled = true;
-            else if(!versionInstalled.equalsIgnoreCase(versionSupported)) notSupported = true;
+            if(versionInstalled.isEmpty()) isThereAnyPkgMissing = true;
+            else if(!versionInstalled.equalsIgnoreCase(versionSupported)) isThereAnyPkgNotSupported = true;
         }
-
-        msiVersionGridStatus status = msiVersionGridStatus.OK;
-
-        if(notInstalled && notSupported){
-            status = msiVersionGridStatus.NOT_INSTALLED_NOT_SUPPORTED;
-        }
-        else if(notInstalled) {
-            status = msiVersionGridStatus.NOT_INSTALLED;
-        }
-        else if(notSupported) {
-            status = msiVersionGridStatus.NOT_SUPPORTED;
-        }
-
-        return status;
     }
 
     public List<DataGridServer> getServers() {
@@ -53,11 +32,11 @@ public class DataGridMSIPkgInfo {
         this.servers = servers;
     }
 
-    public String getMsiVersionSupported() {
-        return msiVersionSupported;
+    public boolean isThereAnyPkgMissing() {
+        return isThereAnyPkgMissing;
     }
 
-    public void setMsiVersionSupported(String msiVersionSupported) {
-        this.msiVersionSupported = msiVersionSupported;
+    public boolean isThereAnyPkgNotSupported() {
+        return isThereAnyPkgNotSupported;
     }
 }

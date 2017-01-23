@@ -16,29 +16,27 @@
   -->
 
 <th:block th:fragment="msiPackageVersionFrag">
-	
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<h4 class=""> Metalnx Microservices </h4>
 			<p><span>Supported version: </span><span th:text="${msiAPIVersionSupported}"></span></p>
-			<!--<span th:text="${status}"></span>
-			<p th:each="server: ${servers}">
-				<span th:text="${server.hostname}"></span>
-				<span th:text="${server.getMSIVersion()}"></span>
-			</p>-->
-			<div class="col-xs-12" th:classappend="${#strings.equals(status, 'OK')} ? 'bg-success': 'bg-warning'" role="alert">
-				<p th:if="${#strings.equals(status, 'OK')}">
-					<i class="fa fa-check" aria-hidden="true"></i>
-					<span>All installed microservices are compatible with Metalnx.</span>
-				</p>
-				<p th:unless="${#strings.equals(status, 'OK')}">
+
+			<div class="col-xs-12 bg-warning" th:if="${msiGridInfo.isThereAnyPkgNotSupported() or msiGridInfo.isThereAnyPkgMissing()}" role="alert">
+				<p>
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-					<span th:if="${#strings.equals(status, 'NOT_SUPPORTED') or #strings.equals(status, 'NOT_INSTALLED_NOT_SUPPORTED')}">
+					<span th:if="${msiGridInfo.isThereAnyPkgNotSupported()}">
 						Unsupported version found.
 					</span>
-					<span th:if="${#strings.equals(status, 'NOT_INSTALLED') or #strings.equals(status, 'NOT_INSTALLED_NOT_SUPPORTED')}">
+					<span th:if="${msiGridInfo.isThereAnyPkgMissing()}">
 						Metalnx MSI package not installed.
 					</span>
+				</p>
+            </div>
+
+            <div class="col-xs-12 bg-success" th:unless="${msiGridInfo.isThereAnyPkgNotSupported() or msiGridInfo.isThereAnyPkgMissing()}" role="alert">
+				<p th:if="${!msiGridInfo.isThereAnyPkgNotSupported() and !msiGridInfo.isThereAnyPkgMissing()}">
+					<i class="fa fa-check" aria-hidden="true"></i>
+					<span>All installed microservices are compatible with Metalnx.</span>
 				</p>
 			</div>
 		</div>

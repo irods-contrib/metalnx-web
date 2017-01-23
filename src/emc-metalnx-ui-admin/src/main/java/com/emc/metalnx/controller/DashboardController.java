@@ -283,8 +283,7 @@ public class DashboardController {
     public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
         DataGridMSIPkgInfo msiGridInfo = pluginsService.getMSIPkgInfo();
         List<DataGridServer> serverList = msiGridInfo.getServers();
-        DataGridMSIPkgInfo.msiVersionGridStatus status = msiGridInfo.msiVersionGridStatus();
-        model.addAttribute("status", status);
+        model.addAttribute("msiGridInfo", msiGridInfo);
         model.addAttribute("servers", serverList);
         model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
 
