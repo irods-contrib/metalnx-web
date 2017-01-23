@@ -27,7 +27,7 @@ public class DataGridMSIPkgInfo {
             String versionInstalled = DataGridCoreUtils.getAPIVersion(server.getMSIVersion());
 
             if(versionInstalled.isEmpty()) notInstalled = true;
-            if(!versionInstalled.equalsIgnoreCase(versionSupported)) notSupported = true;
+            else if(!versionInstalled.equalsIgnoreCase(versionSupported)) notSupported = true;
         }
 
         msiVersionGridStatus status = msiVersionGridStatus.OK;

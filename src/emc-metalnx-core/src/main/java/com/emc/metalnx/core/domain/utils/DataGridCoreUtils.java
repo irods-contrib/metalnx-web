@@ -31,6 +31,8 @@ public class DataGridCoreUtils {
      * @return String containing the MSI API version
      */
     public static String getAPIVersion(String version) {
+        if(version == null || version.isEmpty()) return "";
+
         return version.substring(0, version.indexOf('.'));
     }
 

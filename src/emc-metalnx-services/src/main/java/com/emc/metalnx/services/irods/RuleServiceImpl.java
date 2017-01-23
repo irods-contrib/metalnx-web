@@ -156,8 +156,7 @@ public class RuleServiceImpl implements RuleService {
 
         logger.info(rule.toString());
 
-        return "1.1.0";
-        //return (String) executeRule(rule.toString()).get("*version").getResultObject();
+        return (String) executeRule(rule.toString()).get("*version").getResultObject();
     }
 
     public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
