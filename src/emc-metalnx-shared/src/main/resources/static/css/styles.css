@@ -1434,6 +1434,9 @@ footer {
 	height: 280px;
 	overflow: auto;
 }
+#msiAPIVersionPanel .popover{
+    max-width: 550px;
+}
 #isilonServerListPanel, #isilonServerListPanel .panel, #nonResourceServerListPanel, #nonResourceServerListPanel .panel, #msiAPIVersionPanel .panel{
 	height: 165px;
 }
