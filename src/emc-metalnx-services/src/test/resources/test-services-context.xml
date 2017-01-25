@@ -61,7 +61,13 @@ Licensed under the Apache License, Version 2.0 (the "License");
 		<constructor-arg value="demoResc"></constructor-arg>
 	</bean>
 
-	<context:component-scan base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh com.emc.metalnx.services.machine" />
+    <bean id="ruleService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="com.emc.metalnx.services.irods.RuleServiceImpl" />
+    </bean>
 
+    <!--<bean id="resourceService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="com.emc.metalnx.services.irods.ResourceServiceImpl" />
+    </bean>-->
 
+    <context:component-scan base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh com.emc.metalnx.services.machine" />
 </beans>

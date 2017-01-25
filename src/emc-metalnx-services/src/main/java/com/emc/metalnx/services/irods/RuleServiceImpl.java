@@ -28,7 +28,6 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.rule.IRODSRuleExecResult;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("ruleService")
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class RuleServiceImpl implements RuleService {
@@ -182,10 +181,9 @@ public class RuleServiceImpl implements RuleService {
         if (rule == null || rule.isEmpty()) return null;
 
         Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap;
-        RuleProcessingAO ruleProcessingAO = is.getRuleProcessingAO();
 
         try {
-            IRODSRuleExecResult result = ruleProcessingAO.executeRule(rule);
+            IRODSRuleExecResult result = is.getRuleProcessingAO().executeRule(rule);
             ruleResultMap = result.getOutputParameterResults();
         } catch (JargonException e) {
             logger.error("Could not execute rule {}: {}.", rule, e.getMessage());

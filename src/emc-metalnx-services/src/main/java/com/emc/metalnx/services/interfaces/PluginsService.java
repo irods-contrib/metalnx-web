@@ -36,5 +36,5 @@ public interface PluginsService {
      * @param resource resource name
      * @return True, if the MSI package version installed is compatible with this version of the Web App. Otherwise, False.
      */
-    boolean isMSIAPICompatibleInResc(String resource);
+    boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException;
 }

@@ -36,7 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.net.ConnectException;
 
-@Service
+@Service("irodsServices")
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class IRODSServicesImpl implements IRODSServices {

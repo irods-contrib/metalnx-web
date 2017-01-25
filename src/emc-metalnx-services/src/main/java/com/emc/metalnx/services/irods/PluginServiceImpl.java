@@ -28,6 +28,7 @@ import java.util.*;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class PluginServiceImpl implements PluginsService {
     private static final Logger logger = LoggerFactory.getLogger(PluginServiceImpl.class);
+    private static final int EXPIRATION_CACHE_TIME = 15 * 1000;
 
     @Autowired
     RuleService ruleService;
@@ -39,27 +40,27 @@ public class PluginServiceImpl implements PluginsService {
     ResourceService resourceService;
 
     @Value("${msi.api.version}")
-    private String msiAPIVersion;
+    private String msiAPIVersionSupported;
 
-    private Map<String, String> msiVersionCache;
-    private Map<String, Long> msiVersionCacheTime;
-    private List<DataGridServer> servers;
+    private Map<String, String> msiVersionCache = new HashMap<>();
+    private Map<String, Long> msiVersionCacheTime = new Hashtable<>();
+    private List<DataGridServer> servers = new ArrayList<>();
+    private Long serversCacheTime = System.currentTimeMillis();
 
     @PostConstruct
     public void init() throws DataGridConnectionRefusedException {
-        servers = new ArrayList<>();
-        msiVersionCache = new HashMap<>();
-        msiVersionCacheTime = new Hashtable<>();
-        servers = resourceService.getAllResourceServers(resourceService.findAll());
+        refreshServersCache();
     }
 
     @Override
     public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIPkgInfo(getMSIVersionForAllServers(), msiAPIVersion);
+        return new DataGridMSIPkgInfo(getMSIVersionForAllServers(), msiAPIVersionSupported);
     }
 
     @Override
     public List<DataGridServer> getMSIVersionForAllServers() throws DataGridConnectionRefusedException {
+        if(System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) refreshServersCache();
+
         for (DataGridServer server: servers) setMSIVersionForServer(server);
         return servers;
     }
@@ -68,36 +69,40 @@ public class PluginServiceImpl implements PluginsService {
     public void setMSIVersionForServer(DataGridServer server) throws DataGridConnectionRefusedException {
         long currTime = System.currentTimeMillis();
 
-        if(msiVersionCache != null && msiVersionCache.containsKey(server) && currTime < msiVersionCacheTime.get(server)) {
+        // cache is still up-to-date
+        if(msiVersionCache.containsKey(server) && currTime < msiVersionCacheTime.get(server)) {
+            logger.info("Retrieving MSI version from cache.");
             server.setMSIVersion(msiVersionCache.get(server.getHostname()));
             return;
         }
 
+        logger.info("Refreshing MSI version cache.");
+
         String version = "";
 
         try {
-            String destResc = server.getResources().get(0).getName();
+            String destResc = "";
+
+            if (server.getResources() != null && !server.getResources().isEmpty()) {
+                destResc = server.getResources().get(0).getName();
+            }
+
             version = ruleService.execGetVersionRule(destResc);
-
-            String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersion);
-            String apiVersionInstalled = DataGridCoreUtils.getAPIVersion(version);
-            boolean isCompatible = apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
-
-            server.setIsMSIVersionCompatible(isCompatible);
 
             // adding info to cache
             msiVersionCache.put(server.getHostname(), version);
-            msiVersionCacheTime.put(server.getHostname(), System.currentTimeMillis() + 15 * 1000);
+            msiVersionCacheTime.put(server.getHostname(), System.currentTimeMillis() + EXPIRATION_CACHE_TIME);
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
-            server.setIsMSIVersionCompatible(false);
         } finally {
             server.setMSIVersion(version);
         }
     }
 
     @Override
-    public boolean isMSIAPICompatibleInResc(String resource) {
+    public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
+        if(servers == null || servers.isEmpty()) getMSIVersionForAllServers();
+
         DataGridServer server = null;
 
         for(DataGridServer s: servers) {
@@ -111,6 +116,16 @@ public class PluginServiceImpl implements PluginsService {
             if(server != null) break;
         }
 
-        return server.isMSIVersionCompatible();
+        String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersionSupported);
+        String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
+        boolean isCompatible = apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
+
+        return isCompatible;
+    }
+
+    private void refreshServersCache() throws DataGridConnectionRefusedException {
+        logger.info("Cache of servers is out-of-date. Refreshing it.");
+        servers = resourceService.getAllResourceServers(resourceService.findAll());
+        serversCacheTime = System.currentTimeMillis() + EXPIRATION_CACHE_TIME;
     }
 }

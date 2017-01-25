@@ -17,14 +17,15 @@
 
 package com.emc.metalnx.services.irods;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridResourceType;
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.core.domain.entity.enums.DataGridResourceTypeEnum;
+import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.MachineInfoService;
+import com.emc.metalnx.services.interfaces.ResourceService;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.ZoneAO;
@@ -35,17 +36,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridResourceType;
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.entity.enums.DataGridResourceTypeEnum;
-import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MachineInfoService;
-import com.emc.metalnx.services.interfaces.ResourceService;
+import java.net.UnknownHostException;
+import java.util.*;
 
-@Service
+@Service("resourceService")
 @Transactional
 public class ResourceServiceImpl implements ResourceService {
 
@@ -322,7 +316,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         logger.info("Getting all resource servers");
 
-        List<DataGridServer> servers = new ArrayList<DataGridServer>();
+        List<DataGridServer> servers = new ArrayList<>();
         boolean isResourceWithEmptyHost = false;
 
         for (DataGridResource resource : resources) {
