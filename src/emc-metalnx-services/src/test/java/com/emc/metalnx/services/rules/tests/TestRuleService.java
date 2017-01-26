@@ -1,6 +1,7 @@
 package com.emc.metalnx.services.rules.tests;
 
 import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridRule;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -69,6 +70,26 @@ public class TestRuleService {
         resc.setHost("icat.test.com");
         when(resourceService.find(anyString())).thenReturn(resc);
         when(ruleService.executeRule(anyString())).thenReturn(new HashMap<>());
+    }
+
+    @Test
+    public void testRuleWithInputParams() {
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com");
+        rule.setInputRuleParams("param1", "param2");
+
+        assertNotNull(rule.toString());
+        assertTrue(rule.toString().contains("INPUT *p0=\"param1\", *p1=\"param2\""));
+    }
+
+    @Test
+    public void testRuleWithOutputParams() {
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com");
+        rule.setInputRuleParams("param1", "param2");
+        rule.setOutputRuleParams("output_param");
+
+        assertNotNull(rule.toString());
+        assertTrue(rule.toString().contains("INPUT *p0=\"param1\", *p1=\"param2\""));
+        assertTrue(rule.toString().contains("OUTPUT *output_param"));
     }
 
     @Test
