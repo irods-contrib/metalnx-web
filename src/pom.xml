@@ -76,6 +76,8 @@
 		<!-- Junit version -->
 		<junit.version>4.10</junit.version>
 
+		<maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+
 		<build.number>DEV</build.number>
 		
 	</properties>

@@ -1,35 +1,37 @@
 package com.emc.metalnx.services.rules.tests;
 
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridRule;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
-import com.emc.metalnx.services.interfaces.UploadService;
-import com.emc.metalnx.services.irods.IRODSServicesImpl;
-import org.irods.jargon.core.connection.IRODSAccount;
+import com.emc.metalnx.services.irods.RuleServiceImpl;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.irods.jargon.core.pub.Stream2StreamAO;
-import org.irods.jargon.core.pub.io.IRODSFile;
-import org.irods.jargon.core.pub.io.IRODSFileFactory;
-import org.junit.Assert;
+import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for Rule Service
@@ -38,53 +40,146 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestRuleService {
-    @Autowired private IRODSAccessObjectFactory iaof;
+    @InjectMocks
+    private RuleService ruleService;
 
-    @Autowired private IRODSAccount ia;
+    @Mock
+    private CollectionService collectionService;
 
-    @Autowired private RuleService rs;
+    @Mock
+    private ResourceService resourceService;
 
-    @Autowired private UploadService us;
-
-    @Value("${irods.zoneName}")
-    private String irodsZone;
-
-    @Value("${jobs.irods.username}")
-    private String username;
-
-    private static String path;
-
-    private IRODSServices mockedIRODSServices;
-
-    private static final int MEGABYTE = 1024 * 1024;
+    private static String msiVersion;
 
     @PostConstruct
     public void init() {
-        path = String.format("/%s/home/%s", irodsZone, username);
-
+        msiVersion = "1.1.0";
     }
 
     @Before
     public void setUp() throws JargonException, DataGridException, URISyntaxException, IOException {
-        mockedIRODSServices = mock(IRODSServicesImpl.class);
-        when(mockedIRODSServices.getRuleProcessingAO()).thenReturn(iaof.getRuleProcessingAO(ia));
-        when(mockedIRODSServices.getIRODSFileFactory()).thenReturn(iaof.getIRODSFileFactory(ia));
+        ruleService = spy(RuleServiceImpl.class); // partial mocking
 
-        String filename = "test_bam_file.bam";
-        IRODSFileFactory irodsFileFactory = mockedIRODSServices.getIRODSFileFactory();
-        IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(path, filename);
-        targetFile.setResource("demoResc");
+        MockitoAnnotations.initMocks(this);
 
-        URL url = this.getClass().getClassLoader().getResource(filename);
-        File file = new File(url.toURI());
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(filename);
-        Stream2StreamAO stream2StreamA0 = mockedIRODSServices.getStream2StreamAO();
-        stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
-        inputStream.close();
+        ReflectionTestUtils.setField(ruleService, "iCATHost", "icat.test.com");
+        ReflectionTestUtils.setField(ruleService, "illuminaMsiEnabled", true);
+        ReflectionTestUtils.setField(ruleService, "msiAPIVersion", msiVersion);
+
+        DataGridResource resc = new DataGridResource(1, "demoResc", "zone", "unixfilesystem", "/test/resc/path");
+        resc.setHost("icat.test.com");
+        when(resourceService.find(anyString())).thenReturn(resc);
+        when(ruleService.executeRule(anyString())).thenReturn(new HashMap<>());
     }
 
     @Test
-    public void test() {
-        Assert.assertTrue(true);
+    public void testRuleWithInputParams() {
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com");
+        rule.setInputRuleParams("param1", "param2");
+
+        assertNotNull(rule.toString());
+        assertTrue(rule.toString().contains("INPUT *p0=\"param1\", *p1=\"param2\""));
+    }
+
+    @Test
+    public void testRuleWithOutputParams() {
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com");
+        rule.setInputRuleParams("param1", "param2");
+        rule.setOutputRuleParams("output_param");
+
+        assertNotNull(rule.toString());
+        assertTrue(rule.toString().contains("INPUT *p0=\"param1\", *p1=\"param2\""));
+        assertTrue(rule.toString().contains("OUTPUT *output_param"));
+    }
+
+    @Test
+    public void testGetVersionRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
+        IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
+        output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);
+        output.setParameterName("*version");
+        output.setResultObject(msiVersion);
+        result.put("*version", output);
+
+        when(ruleService.executeRule(anyString())).thenReturn(result);
+
+        String version = ruleService.execGetVersionRule("demoResc");
+        assertEquals(msiVersion, version);
+    }
+
+    @Test
+    public void testReplicateObjRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        String destResc = "demoResc";
+        String path = "this/is/a/path";
+
+        ruleService.execReplDataObjRule(destResc, path, false);
+
+        verify(resourceService, times(1)).find(destResc);
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testReplicateObjRuleInAdminMode() throws DataGridRuleException, DataGridConnectionRefusedException {
+        String destResc = "demoResc";
+        String path = "this/is/a/path";
+
+        ruleService.execReplDataObjRule(destResc, path, true);
+
+        verify(resourceService, times(1)).find(destResc);
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testPopulateMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        ReflectionTestUtils.setField(ruleService, "populateMsiEnabled", true);
+
+        ruleService.execPopulateMetadataRule("demoResc", "/testZone/home/rods");
+
+        verify(resourceService, times(1)).find(anyString());
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testImageRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        ruleService.execImageRule("demoResc", "/zone/home/rods/test.jpg", "/var/lib/irods/test.jpg");
+
+        verify(resourceService, times(1)).find(anyString());
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testVCFMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        ruleService.execVCFMetadataRule("demoResc", "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
+
+        verify(resourceService, times(1)).find(anyString());
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testBamCramMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        ruleService.execBamCramMetadataRule("demoResc", "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
+
+        verify(resourceService, times(1)).find(anyString());
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testManifestFileRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        when(collectionService.getSubCollectionsAndDataObjetsUnderPath(anyString())).thenReturn(new ArrayList<>());
+
+        ruleService.execManifestFileRule("demoResc", "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
+
+        // these two methods should never be called since there is no objects under the test path
+        verify(resourceService, atMost(1)).find(anyString());
+        verify(ruleService, atMost(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testIlluminaMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        ruleService.execIlluminaMetadataRule("demoResc", "/zone/home/rods", "/zone/home/rods/test_SSU.tar");
+
+        // these two methods should never be called since there is no objects under the test path
+        verify(resourceService, times(1)).find(anyString());
+        verify(ruleService, atMost(2)).executeRule(anyString());
     }
 }

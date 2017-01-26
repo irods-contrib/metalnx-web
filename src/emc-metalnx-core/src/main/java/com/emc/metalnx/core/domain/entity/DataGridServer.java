@@ -293,9 +293,14 @@ public class DataGridServer implements Comparable<DataGridServer> {
 
     public String getMSIVersion() { return msiVersion; }
 
-    public void setIsMSIVersionCompatible(boolean msiVersionCompatible) {
-	    this.msiVersionCompatible = msiVersionCompatible;
-    }
-
-    public boolean isMSIVersionCompatible() { return msiVersionCompatible; }
+    @Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getHostname());
+		sb.append(" - ");
+		sb.append(getIp());
+		sb.append(" - ");
+		sb.append(getMSIVersion());
+		return sb.toString();
+	}
 }
