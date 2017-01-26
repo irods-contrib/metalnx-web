@@ -53,6 +53,7 @@ $("#uploadButton").click(function(){
 	}
 
 	setOperationInProgress();
+	resetBadge();
 
 	$('.progress-bar.progress-bar-striped.active').css('width', '0%');
 	$('.progress-bar.progress-bar-striped.active').attr('aria-valuenow', 0);
@@ -155,10 +156,6 @@ $("#uploadButton").click(function(){
 	$('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
 });
 
-var uploadSuccess = 'success';
-var uploadWarning = 'warning';
-var uploadDanger = 'danger';
-
 // shows the upload error with the appropriate layout
 function showUploadErrorMsg(fileId, errorMsg, type) {
     var id = '#' + fileId + ' .progressWrapper';
@@ -209,6 +206,17 @@ function showTransferMsg(fileId, icon, msg) {
 
     $(progressWrapper).html(htmlMsg);
     $(progressAction).hide();
+}
+
+var uploadSuccess = 'success';
+var uploadWarning = 'warning';
+var uploadDanger = 'danger';
+
+function resetBadge() {
+    var badge = $('#uploadStatusIcon .badge');
+    badge.removeClass(uploadSuccess);
+    badge.removeClass(uploadWarning);
+    badge.removeClass(uploadDanger);
 }
 
 function updateBadge(hasError, errorType) {
