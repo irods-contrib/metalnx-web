@@ -151,8 +151,8 @@ function displayIRODSLogs(data){
 	$("#table-loader").hide();
 	$("#irodsServerLogs").html("");
 	for (message in data['lines']) {
-		$("#irodsServerLogs").append(data['lines'][message]);
-		$("#irodsServerLogs").append("<br /><br />");
+		$("#irodsServerLogs").append('<p>'+data['lines'][message]+'</p>');
+		//$("#irodsServerLogs").append("<br /><br />");
 	}
 }
 
