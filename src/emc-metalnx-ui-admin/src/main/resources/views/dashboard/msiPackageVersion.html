@@ -49,15 +49,12 @@
 		<table class="table table-hover">
 			<tbody>
 				<th:block th:each="server : ${servers}">
-					<tr th:if="${#strings.equals(server.getMSIVersion(), '') or !server.isMSIVersionCompatible()}">
+					<tr th:if="${#strings.equals(server.getMSIVersion(), '')}">
 						<td>
 							<a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
 						</td>
 						<td>
 							<span th:if="${#strings.equals(server.getMSIVersion(), '')}" th:text="#{dashboard.card.msi.not.installed}"></span>
-							<span th:if="not ${#strings.equals(server.getMSIVersion(), '') or server.isMSIVersionCompatible()}"
-								  th:text="#{dashboard.card.msi.pkg.not.supported(${server.getMSIVersion()})}">
-							</span>
 						</td>
 					</tr>
 				</th:block>
