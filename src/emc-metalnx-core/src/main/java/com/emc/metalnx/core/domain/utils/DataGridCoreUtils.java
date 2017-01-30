@@ -33,7 +33,11 @@ public class DataGridCoreUtils {
     public static String getAPIVersion(String version) {
         if(version == null || version.isEmpty()) return "";
 
-        return version.substring(0, version.indexOf('.'));
+        int end = version.indexOf('.');
+
+        if (end < 0) end = version.length();
+
+        return version.substring(0, end);
     }
 
     public static boolean isIllumina(String path) {

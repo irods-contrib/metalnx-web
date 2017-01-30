@@ -123,12 +123,26 @@ public class DataGridRule {
         return paramsEscaped.toString();
     }
 
+    private String declareOutputParams() {
+        if(outputRuleParams == null) return "";
+
+        StringBuilder outputParams = new StringBuilder();
+        outputParams.append("  ");
+
+        for (int i = 0; i < outputRuleParams.length - 1; i++) outputParams.append(String.format("*%s=\"\",", outputRuleParams[i]));
+        outputParams.append(String.format("*%s=\"\";", outputRuleParams[outputRuleParams.length - 1]));
+
+        return outputParams.toString();
+    }
+
     public String toString() {
         RemoteRuleHeader header = new RemoteRuleHeader(host);
         StringBuilder ruleString = new StringBuilder();
         ruleString.append("\n");
         ruleString.append(rule);
         ruleString.append("{");
+        ruleString.append("\n");
+        ruleString.append(declareOutputParams());
         ruleString.append("\n");
         ruleString.append(header.getRemoteRuleHeader());
         ruleString.append(getMSIParamsAsString());
