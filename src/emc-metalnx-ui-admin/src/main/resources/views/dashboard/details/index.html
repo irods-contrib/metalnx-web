@@ -313,71 +313,7 @@
 				<div class="panel-body" >
 					<h4 class="">Microservices</h4>
 					<div class="panel-body list row" id="mlxMsiPkgList"  role="tablist" aria-multiselectable="true">
-						<ul class="col-sm-12">
 
-							<li role="tab" id="headingMlxMSI" data-toggle="collapse" href="#mlxMSI" aria-expanded="true" aria-controls="mlxMSI">
-								<a role="button" class="btn-link">
-									Metalnx
-								</a>
-								<i class="fa fa-angle-down"></i>
-							</li>
-							<div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
-								<div class="">
-									<table class="table table-condensed">
-										<tbody><tr>
-											<td width="25%">Illumina</td>
-											<td>Extracts metadata from Illumina files during upload.</td>
-										</tr>
-										<tr>
-											<td>BAM/CRAM</td>
-											<td>Extracts metadata from files BAM/CRAM during upload.</td>
-										</tr>
-										<tr>
-											<td>Images</td>
-											<td>Extracts metadata from image files during upload.</td>
-										</tr>
-										<tr>
-											<td>Random</td>
-											<td>Extracts metadata from uploaded files.</td>
-										</tr>
-										<tr>
-											<td>Manifest</td>
-											<td>Extracts metadata from files that contains metadata description in a XML file.</td>
-										</tr>
-										<tr>
-											<td>VCF</td>
-											<td>Extracts metadata from VCF files. Extracts metadata from VCF files.Extracts metadata from VCF files.Extracts metadata from VCF files.Extracts metadata from VCF files.</td>
-										</tr>
-										<tr>
-											<td>Dictionary</td>
-											<td>Manages dictionary structure. Manages dictionary structure. Manages dictionary structure. Manages dictionary structure. Manages dictionary structure.</td>
-										</tr>
-										</tbody></table>
-								</div>
-							</div>
-							<li role="tab" id="headingIrodsMSI" data-toggle="collapse" href="#irodsMSI" aria-expanded="true" aria-controls="irodsMSI">
-								<a class="collapsed" role="button">
-									iRODS
-								</a>
-								<i class="fa fa-angle-down"></i>
-							</li>
-							<div id="irodsMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingIrodsMSI">
-								<div class="">
-									<p>No microservices found.</p>
-								</div>
-							</div>
-							<li role="tab" id="headingOtherMSI" data-toggle="collapse" href="#otherMSI" aria-expanded="true" aria-controls="otherMSI">
-								<a class="collapsed" role="button">
-									Others
-								</a>
-								<i class="fa fa-angle-down"></i>
-							</li>
-							<div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
-								<div class="">
-									<p>No microservices found.</p>
-								</div>
-							</div>
-						</ul>
 					</div>
 				</div>
 			</div>
@@ -425,8 +361,14 @@
 					$.get("/emc-metalnx-web/dashboard/resourceDetails/" + resourceName + "/", function(data) {
 						$("#resourceOfAServerInfo").html(data);		
 					});
-				});	
-			}	
+				});
+
+				ajaxEncapsulation("/emc-metalnx-web/dashboard/msiInstalledListOnServer", "GET", {host: serverHostname}, displayMSI);
+			}
+
+			function displayMSI(response){
+				$('#mlxMsiPkgList').html(response);
+			}
 			
 			function viewInfo(resourceName){
 				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
@@ -446,13 +388,7 @@
 				
 				$('#rescInfoModal').modal('show');
 			}
-			$('#mlxMsiPkgList ul li').on('click', function(e){
-				if($(this).children('i').hasClass('fa-angle-down')){
-					$(this).children('i').removeClass('fa-angle-down').addClass('fa-angle-left');
-				}else{
-					$(this).children('i').removeClass('fa-angle-left').addClass('fa-angle-down');
-				}
-			});
+
 		</script>
 	</div>
 	
