@@ -36,6 +36,7 @@ public class DataGridRule {
     public static final String REPL_DATA_OBJ_RULE = "replicateDataObjInAdminMode";
     public static final String ILLUMINA_RULE = "illuminaMetadataForFile";
     public static final String TAR_RULE = "extractTar";
+    public static final String GET_MSIS_RULE = "getMicroservices";
 
     // Maps rules for their respective microservices
     private static final Map<String, String> rulesMap;
@@ -51,6 +52,7 @@ public class DataGridRule {
         map.put(GET_VERSION_RULE, "msiobjget_version");
         map.put(ILLUMINA_RULE, "msiget_illumina_meta");
         map.put(TAR_RULE, "msiTarFileExtract");
+        map.put(GET_MSIS_RULE, "msiobjget_microservices");
         rulesMap = Collections.unmodifiableMap(map);
     }
 

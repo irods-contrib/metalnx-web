@@ -17,7 +17,9 @@
 
 package com.emc.metalnx.core.domain.utils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,6 +27,8 @@ import java.util.Set;
  *
  */
 public class DataGridCoreUtils {
+
+    public static final String MSI_LIST_SEPARATOR = ",";
 
     /**
      * Finds the MSI API version currently supported.
@@ -207,4 +211,18 @@ public class DataGridCoreUtils {
 
     }
 
+    /**
+     * Parses a raw list of MSIs coming from a rule.
+     * @param msisAsString list of MSIs coming from the rule as a string
+     * @return List of MSIs
+     */
+    public static List<String> getMSIsAsList(String msisAsString) {
+        List<String> msis = new ArrayList<>();
+
+        if(msisAsString != null && !msisAsString.isEmpty()) {
+            for (String msi: msisAsString.split(MSI_LIST_SEPARATOR)) msis.add(msi.trim());
+        }
+
+        return msis;
+    }
 }

@@ -21,9 +21,17 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 
+import java.util.List;
 import java.util.Map;
 
 public interface RuleService {
+
+    /**
+     * Executes the get microservices MSI.
+     * @param destResc resource where the rule will be executed
+     * @return List of MSIs on the server that resource is.
+     */
+    List<String> execGetMSIsRule(String destResc) throws DataGridConnectionRefusedException, DataGridRuleException;
 
     /**
      * Executes the get version MSI.

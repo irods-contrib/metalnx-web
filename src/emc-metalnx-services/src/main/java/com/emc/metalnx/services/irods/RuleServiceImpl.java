@@ -146,6 +146,19 @@ public class RuleServiceImpl implements RuleService {
         }
     }
 
+    @Override
+    public List<String> execGetMSIsRule(String destResc) throws DataGridConnectionRefusedException, DataGridRuleException {
+        logger.info("Get Microservices Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.GET_MSIS_RULE, dgResc.getHost());
+        rule.setOutputRuleParams("msis");
+
+        logger.info(rule.toString());
+
+        return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
+    }
+
     public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
         logger.info("Get Version Rule called");
 

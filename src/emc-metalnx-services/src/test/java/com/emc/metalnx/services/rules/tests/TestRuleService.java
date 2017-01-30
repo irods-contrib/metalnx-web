@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -90,6 +91,42 @@ public class TestRuleService {
         assertNotNull(rule.toString());
         assertTrue(rule.toString().contains("INPUT *p0=\"param1\", *p1=\"param2\""));
         assertTrue(rule.toString().contains("OUTPUT *output_param"));
+    }
+
+    @Test
+    public void testGetMSIsRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+        Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
+        IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
+        output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);
+        output.setParameterName("*msis");
+        output.setResultObject("libmsi1.so, libmsi2.so, libmsi3.so, libmsi4.so");
+        result.put("*msis", output);
+
+        when(ruleService.executeRule(anyString())).thenReturn(result);
+
+        List<String> msis = ruleService.execGetMSIsRule("demoResc");
+        assertNotNull(msis);
+        assertFalse(msis.isEmpty());
+        assertTrue(msis.contains("libmsi1.so"));
+        assertTrue(msis.contains("libmsi2.so"));
+        assertTrue(msis.contains("libmsi3.so"));
+        assertTrue(msis.contains("libmsi4.so"));
+    }
+
+    @Test
+    public void testGetMSIsRuleNoReturn() throws DataGridRuleException, DataGridConnectionRefusedException {
+        Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
+        IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
+        output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);
+        output.setParameterName("*msis");
+        output.setResultObject(null);
+        result.put("*msis", output);
+
+        when(ruleService.executeRule(anyString())).thenReturn(result);
+
+        List<String> msis = ruleService.execGetMSIsRule("demoResc");
+        assertNotNull(msis);
+        assertTrue(msis.isEmpty());
     }
 
     @Test
