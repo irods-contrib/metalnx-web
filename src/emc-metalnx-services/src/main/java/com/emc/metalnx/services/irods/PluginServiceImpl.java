@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class PluginServiceImpl implements PluginService {
     private static final Logger logger = LoggerFactory.getLogger(PluginServiceImpl.class);
-    private static final int EXPIRATION_CACHE_TIME = 5 * 1000;
 
     @Autowired
     RuleService ruleService;
@@ -46,14 +46,7 @@ public class PluginServiceImpl implements PluginService {
     @Value("#{'${msi.metalnx.list}'.split(',')}")
     private Set<String> msiMetalnxList;
 
-    private Map<String, String> msiVersionCache = new HashMap<>();
     private List<DataGridServer> servers = new ArrayList<>();
-    private Long serversCacheTime = System.currentTimeMillis();
-
-    @PostConstruct
-    public void init() throws DataGridConnectionRefusedException {
-        refreshServersCache();
-    }
 
     @Override
     public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
@@ -89,35 +82,15 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
-        if(System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) refreshServersCache();
-
+        servers = resourceService.getAllResourceServers(resourceService.findAll());
         for (DataGridServer server: servers) setMSIInfoForServer(server);
         return servers;
     }
 
     @Override
     public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
-        long currTime = System.currentTimeMillis();
-
-        // cache is still up-to-date
-        if(msiVersionCache.containsKey(server.getHostname()) && currTime < serversCacheTime) {
-            logger.info("Retrieving MSI info from cache.");
-            server.setMSIVersion(msiVersionCache.get(server.getHostname()));
-            return;
-        }
-
-        logger.info("Refreshing MSI version cache.");
-
-        String version;
-
         try {
-
-            version = ruleService.execGetVersionRule(server.getHostname());
-            server.setMSIVersion(version);
-
-            // adding info to cache
-            msiVersionCache.put(server.getHostname(), version);
-            serversCacheTime = System.currentTimeMillis() + EXPIRATION_CACHE_TIME;
+            server.setMSIVersion(ruleService.execGetVersionRule(server.getHostname()));
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
         }
@@ -149,11 +122,5 @@ public class PluginServiceImpl implements PluginService {
         String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersionSupported);
         String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
         return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
-    }
-
-    private void refreshServersCache() throws DataGridConnectionRefusedException {
-        logger.info("Cache of servers is out-of-date. Refreshing it.");
-        servers = resourceService.getAllResourceServers(resourceService.findAll());
-        serversCacheTime = System.currentTimeMillis() + EXPIRATION_CACHE_TIME;
     }
 }
