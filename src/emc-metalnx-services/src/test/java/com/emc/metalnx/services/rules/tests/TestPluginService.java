@@ -6,7 +6,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.PluginsService;
+import com.emc.metalnx.services.interfaces.PluginService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import com.emc.metalnx.services.irods.PluginServiceImpl;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 public class TestPluginService {
 
     @InjectMocks
-    private PluginsService pluginsService = new PluginServiceImpl();
+    private PluginService pluginService = new PluginServiceImpl();
 
     @Mock
     private ResourceService mockResourceService;
@@ -77,26 +77,26 @@ public class TestPluginService {
         servers.add(s1);
         servers.add(s2);
 
-        ReflectionTestUtils.setField(pluginsService, "msiAPIVersionSupported", msiVersion);
+        ReflectionTestUtils.setField(pluginService, "msiAPIVersionSupported", msiVersion);
         when(mockResourceService.getAllResourceServers(anyList())).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
     }
 
     @Test
     public void testNoPkgMissing() throws DataGridConnectionRefusedException, DataGridRuleException {
-        DataGridMSIPkgInfo msiPkgInfo = pluginsService.getMSIPkgInfo();
+        DataGridMSIPkgInfo msiPkgInfo = pluginService.getMSIPkgInfo();
         assertFalse(msiPkgInfo.isThereAnyPkgMissing());
     }
 
     @Test
     public void testNoPkgNotSupported() throws DataGridConnectionRefusedException, DataGridRuleException {
-        DataGridMSIPkgInfo msiPkgInfo = pluginsService.getMSIPkgInfo();
+        DataGridMSIPkgInfo msiPkgInfo = pluginService.getMSIPkgInfo();
         assertFalse(msiPkgInfo.isThereAnyPkgNotSupported());
     }
 
     @Test
     public void testServers() throws DataGridConnectionRefusedException, DataGridRuleException {
-        DataGridMSIPkgInfo msiPkgInfo = pluginsService.getMSIPkgInfo();
+        DataGridMSIPkgInfo msiPkgInfo = pluginService.getMSIPkgInfo();
         assertEquals(2, msiPkgInfo.getServers().size());
         for (DataGridServer server: msiPkgInfo.getServers()) assertEquals(msiVersion, server.getMSIVersion());
     }
@@ -110,11 +110,11 @@ public class TestPluginService {
 
         servers.get(0).setResources(rescs);
 
-        assertTrue(pluginsService.isMSIAPICompatibleInResc("demoResc"));
+        assertTrue(pluginService.isMSIAPICompatibleInResc("demoResc"));
     }
 
     @Test
     public void testMSICompatibilityInEmptyResc() throws DataGridConnectionRefusedException, DataGridRuleException {
-        assertFalse(pluginsService.isMSIAPICompatibleInResc(""));
+        assertFalse(pluginService.isMSIAPICompatibleInResc(""));
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Service for external software used by Metalnx
  */
-public interface PluginsService {
+public interface PluginService {
 
     DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException;
 

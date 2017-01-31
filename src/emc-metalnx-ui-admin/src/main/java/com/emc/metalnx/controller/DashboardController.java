@@ -74,7 +74,8 @@ public class DashboardController {
     @Autowired
     RuleService rs;
 
-    @Autowired PluginsService pluginsService;
+    @Autowired
+    PluginService pluginService;
 
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
@@ -281,7 +282,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
     public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
-        DataGridMSIPkgInfo msiGridInfo = pluginsService.getMSIPkgInfo();
+        DataGridMSIPkgInfo msiGridInfo = pluginService.getMSIPkgInfo();
         List<DataGridServer> serverList = msiGridInfo.getServers();
         model.addAttribute("msiGridInfo", msiGridInfo);
         model.addAttribute("servers", serverList);

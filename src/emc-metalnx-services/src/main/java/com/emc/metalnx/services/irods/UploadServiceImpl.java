@@ -26,10 +26,8 @@ import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
-import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
@@ -67,7 +65,7 @@ public class UploadServiceImpl implements UploadService {
     private IRODSServices is;
 
     @Autowired
-    private PluginsService pluginService;
+    private PluginService pluginService;
 
     @Override
     public DataGridFileForUpload buildFileForUpload(HttpServletRequest request) throws DataGridException {

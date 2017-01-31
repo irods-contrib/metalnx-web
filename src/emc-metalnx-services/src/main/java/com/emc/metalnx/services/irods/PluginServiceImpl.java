@@ -6,7 +6,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.PluginsService;
+import com.emc.metalnx.services.interfaces.PluginService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import com.emc.metalnx.services.interfaces.ServerService;
@@ -26,9 +26,9 @@ import java.util.*;
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
-public class PluginServiceImpl implements PluginsService {
+public class PluginServiceImpl implements PluginService {
     private static final Logger logger = LoggerFactory.getLogger(PluginServiceImpl.class);
-    private static final int EXPIRATION_CACHE_TIME = 15 * 1000;
+    private static final int EXPIRATION_CACHE_TIME = 5 * 1000;
 
     @Autowired
     RuleService ruleService;
