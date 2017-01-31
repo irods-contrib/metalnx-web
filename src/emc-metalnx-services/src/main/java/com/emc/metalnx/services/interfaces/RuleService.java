@@ -35,12 +35,12 @@ public interface RuleService {
 
     /**
      * Executes the get version MSI.
-     * @param destResc resource where the rule is executed
+     * @param host server's hostname
      * @return version of the MSI currently installed
      * @throws DataGridRuleException if an error happens during the rule execution
      * @throws DataGridConnectionRefusedException if there is no connection to the grid
      */
-    String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException;
+    String execGetVersionRule(String host) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Executes the replicate data object rule

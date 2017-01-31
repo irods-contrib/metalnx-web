@@ -158,11 +158,10 @@ public class RuleServiceImpl implements RuleService {
         return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
     }
 
-    public String execGetVersionRule(String destResc) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public String execGetVersionRule(String host) throws DataGridRuleException, DataGridConnectionRefusedException {
         logger.info("Get Version Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, host);
         rule.setOutputRuleParams("version");
 
         logger.info(rule.toString());

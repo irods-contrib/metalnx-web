@@ -140,7 +140,7 @@ public class TestRuleService {
 
         when(ruleService.executeRule(anyString())).thenReturn(result);
 
-        String version = ruleService.execGetVersionRule("demoResc");
+        String version = ruleService.execGetVersionRule("icat.test.com");
         assertEquals(msiVersion, version);
     }
 
