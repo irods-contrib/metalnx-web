@@ -11,8 +11,13 @@ import java.util.Set;
 public class DataGridMSIByServer {
     private String host;
 
+    // Maps MSI name to True/False that indicates whether or not the MSI is installed
     private Map<String, Boolean> metalnxMSIs;
+
+    // iRODS MSIs
     private Set<String> irodsMSIs;
+
+    // Other MSIs
     private Set<String> otherMSIs;
 
     public DataGridMSIByServer(String host, Set<String> expectedMetalnxMSIs) {
