@@ -39,11 +39,7 @@ public class DataGridServer implements Comparable<DataGridServer> {
 	private String rmdPackageRelease;
 	private String rmdPackageVersion;
 	private String msiVersion;
-    private boolean msiVersionCompatible;
-
-    public DataGridServer() {
-        this.msiVersionCompatible = false;
-    }
+    private List<String> msiInstalledList;
 
     /**
 	 * @return the type
@@ -303,4 +299,13 @@ public class DataGridServer implements Comparable<DataGridServer> {
 		sb.append(getMSIVersion());
 		return sb.toString();
 	}
+
+    public void setMSIInstalledList(List<String> msiInstalledList) {
+        this.msiInstalledList = msiInstalledList;
+    }
+
+    public List<String> getMSIInstalledList() {
+	    if(this.msiInstalledList == null) return new ArrayList<>();
+	    return this.msiInstalledList;
+    }
 }

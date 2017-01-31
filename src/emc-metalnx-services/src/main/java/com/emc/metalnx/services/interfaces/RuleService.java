@@ -28,10 +28,10 @@ public interface RuleService {
 
     /**
      * Executes the get microservices MSI.
-     * @param destResc resource where the rule will be executed
+     * @param host server's hostname
      * @return List of MSIs on the server that resource is.
      */
-    List<String> execGetMSIsRule(String destResc) throws DataGridConnectionRefusedException, DataGridRuleException;
+    List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException;
 
     /**
      * Executes the get version MSI.

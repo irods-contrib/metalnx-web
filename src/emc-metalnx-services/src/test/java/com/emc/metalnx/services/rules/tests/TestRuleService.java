@@ -104,7 +104,7 @@ public class TestRuleService {
 
         when(ruleService.executeRule(anyString())).thenReturn(result);
 
-        List<String> msis = ruleService.execGetMSIsRule("demoResc");
+        List<String> msis = ruleService.execGetMSIsRule("icat.test.com");
         assertNotNull(msis);
         assertFalse(msis.isEmpty());
         assertTrue(msis.contains("libmsi1.so"));
@@ -124,7 +124,7 @@ public class TestRuleService {
 
         when(ruleService.executeRule(anyString())).thenReturn(result);
 
-        List<String> msis = ruleService.execGetMSIsRule("demoResc");
+        List<String> msis = ruleService.execGetMSIsRule("icat.test.com");
         assertNotNull(msis);
         assertTrue(msis.isEmpty());
     }

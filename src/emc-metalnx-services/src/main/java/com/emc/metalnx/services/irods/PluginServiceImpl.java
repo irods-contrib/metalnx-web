@@ -54,19 +54,37 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIPkgInfo(getMSIVersionForAllServers(), msiAPIVersionSupported);
+        return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), msiAPIVersionSupported);
     }
 
     @Override
-    public List<DataGridServer> getMSIVersionForAllServers() throws DataGridConnectionRefusedException {
+    public List<String> getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+        List<String> msis = new ArrayList<>();
+
+        if(host != null && !host.isEmpty()) {
+            if (System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) getMSIInfoForAllServers();
+
+            for (DataGridServer server : servers) {
+                if (host.equals(server.getHostname())) {
+                    msis = server.getMSIInstalledList();
+                    break;
+                }
+            }
+        }
+
+        return msis;
+    }
+
+    @Override
+    public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
         if(System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) refreshServersCache();
 
-        for (DataGridServer server: servers) setMSIVersionForServer(server);
+        for (DataGridServer server: servers) setMSIInfoForServer(server);
         return servers;
     }
 
     @Override
-    public void setMSIVersionForServer(DataGridServer server) throws DataGridConnectionRefusedException {
+    public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
         long currTime = System.currentTimeMillis();
 
         // cache is still up-to-date
@@ -88,6 +106,7 @@ public class PluginServiceImpl implements PluginService {
             }
 
             version = ruleService.execGetVersionRule(destResc);
+            server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
 
             // adding info to cache
             msiVersionCache.put(server.getHostname(), version);
@@ -101,7 +120,7 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
-        if(servers == null || servers.isEmpty()) getMSIVersionForAllServers();
+        if(servers == null || servers.isEmpty()) getMSIInfoForAllServers();
 
         DataGridServer server = null;
 

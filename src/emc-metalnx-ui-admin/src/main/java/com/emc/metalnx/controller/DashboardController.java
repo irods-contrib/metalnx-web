@@ -288,7 +288,6 @@ public class DashboardController {
         model.addAttribute("servers", serverList);
         model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
 
-
         return "dashboard/msiPackageVersion";
     }
 
