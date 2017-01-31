@@ -6,7 +6,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.PluginsService;
+import com.emc.metalnx.services.interfaces.PluginService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import com.emc.metalnx.services.interfaces.ServerService;
@@ -26,9 +26,9 @@ import java.util.*;
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
-public class PluginServiceImpl implements PluginsService {
+public class PluginServiceImpl implements PluginService {
     private static final Logger logger = LoggerFactory.getLogger(PluginServiceImpl.class);
-    private static final int EXPIRATION_CACHE_TIME = 15 * 1000;
+    private static final int EXPIRATION_CACHE_TIME = 5 * 1000;
 
     @Autowired
     RuleService ruleService;
@@ -54,19 +54,37 @@ public class PluginServiceImpl implements PluginsService {
 
     @Override
     public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIPkgInfo(getMSIVersionForAllServers(), msiAPIVersionSupported);
+        return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), msiAPIVersionSupported);
     }
 
     @Override
-    public List<DataGridServer> getMSIVersionForAllServers() throws DataGridConnectionRefusedException {
+    public List<String> getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+        List<String> msis = new ArrayList<>();
+
+        if(host != null && !host.isEmpty()) {
+            if (System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) getMSIInfoForAllServers();
+
+            for (DataGridServer server : servers) {
+                if (host.equals(server.getHostname())) {
+                    msis = server.getMSIInstalledList();
+                    break;
+                }
+            }
+        }
+
+        return msis;
+    }
+
+    @Override
+    public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
         if(System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) refreshServersCache();
 
-        for (DataGridServer server: servers) setMSIVersionForServer(server);
+        for (DataGridServer server: servers) setMSIInfoForServer(server);
         return servers;
     }
 
     @Override
-    public void setMSIVersionForServer(DataGridServer server) throws DataGridConnectionRefusedException {
+    public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
         long currTime = System.currentTimeMillis();
 
         // cache is still up-to-date
@@ -88,6 +106,7 @@ public class PluginServiceImpl implements PluginsService {
             }
 
             version = ruleService.execGetVersionRule(destResc);
+            server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
 
             // adding info to cache
             msiVersionCache.put(server.getHostname(), version);
@@ -101,7 +120,7 @@ public class PluginServiceImpl implements PluginsService {
 
     @Override
     public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
-        if(servers == null || servers.isEmpty()) getMSIVersionForAllServers();
+        if(servers == null || servers.isEmpty()) getMSIInfoForAllServers();
 
         DataGridServer server = null;
 

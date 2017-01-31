@@ -10,8 +10,21 @@ import java.util.List;
 /**
  * Service for external software used by Metalnx
  */
-public interface PluginsService {
+public interface PluginService {
 
+    /**
+     * Retrieves all MSIs packages installed in the grid.
+     * @param host hostname of the server to get the MSIs installed
+     * @return List of all MSIs installed on the server
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
+     */
+    List<String> getMSIsInstalled(String host) throws DataGridConnectionRefusedException;
+
+    /**
+     * Retrieves information about the MSI package installed in the servers of the grid.
+     * @return {@link DataGridMSIPkgInfo} containing information about the MSI package of each server
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
+     */
     DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException;
 
     /**
@@ -19,16 +32,15 @@ public interface PluginsService {
      * @return <server hostname, version> map
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
-    List<DataGridServer> getMSIVersionForAllServers() throws DataGridConnectionRefusedException;
+    List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException;
 
     /**
      * Get the MSI package version for a specific server
      * @param server server where the MSI package is installed
-     * @return version of the MSI package installed
      * @throws DataGridRuleException if cannot execute rule that gets the MSI package version
      * @throws DataGridConnectionRefusedException if cannot connect to the grid
      */
-    void setMSIVersionForServer(DataGridServer server) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void setMSIInfoForServer(DataGridServer server) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Checks whether or not the MSI package version installed, if any, is compatible with this version of the Web App.
