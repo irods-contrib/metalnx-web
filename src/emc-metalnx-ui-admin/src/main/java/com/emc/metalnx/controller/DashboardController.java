@@ -21,6 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FileUtils;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -289,6 +291,15 @@ public class DashboardController {
 
 
         return "dashboard/msiPackageVersion";
+    }
+
+    @RequestMapping(value="/msiInstalledList")
+    public String getMSIInstalledList(Model model) throws DataGridConnectionRefusedException, DataGridRuleException {
+        List<String> msiPackages = rs.execGetMSIsRule("demoResc");
+        model.addAttribute("msiPackageListIrods", msiPackages);
+        model.addAttribute("msiPackageListMlx", new ArrayList<String>());
+        model.addAttribute("msiPackageListOthers", new ArrayList<String>());
+        return "dashboard/details/msiPackageListPerServer";
     }
 
     /*

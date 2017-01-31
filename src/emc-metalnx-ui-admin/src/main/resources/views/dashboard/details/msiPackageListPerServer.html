@@ -25,12 +25,12 @@
     </li>
     <div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
         <div class="">
-            <ul th:if="${not #lists.isEmpty(msiPackageListMlx)">
-                <li th:each="msiPackageMlx : $(msiPackageListMlx)">
+            <p th:if="${#lists.isEmpty(msiPackageListMlx)}">No microservices found.</p>
+            <ul th:unless="${#lists.isEmpty(msiPackageListMlx)}">
+                <li th:each="msiPackageMlx : ${msiPackageListMlx}">
                     <span th:text="${msiPackageMlx}"></span>
                 </li>
             </ul>
-            <p th:if="${#lists.isEmpty(msiPackageListMlx)">No microservices found.</p>
         </div>
     </div>
     <li role="tab" id="headingIrodsMSI" data-toggle="collapse" href="#irodsMSI" aria-expanded="true" aria-controls="irodsMSI">
@@ -41,12 +41,12 @@
     </li>
     <div id="irodsMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingIrodsMSI">
         <div class="">
-            <ul th:if="${not #lists.isEmpty(msiPackageListIrods)">
-                <li th:each="msiPackageIrods : $(msiPackageListIrods)">
+            <p th:if="${#lists.isEmpty(msiPackageListIrods)}">No microservices found.</p>
+            <ul th:unless="${#lists.isEmpty(msiPackageListIrods)}">
+                <li th:each="msiPackageIrods : ${msiPackageListIrods}">
                     <span th:text="${msiPackageIrods}"></span>
                 </li>
             </ul>
-            <p th:if="${#lists.isEmpty(msiPackageListIrods)">No microservices found.</p>
         </div>
     </div>
     <li role="tab" id="headingOtherMSI" data-toggle="collapse" href="#otherMSI" aria-expanded="true" aria-controls="otherMSI">
@@ -57,12 +57,12 @@
     </li>
     <div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
         <div class="">
-            <ul th:if="${not #lists.isEmpty(msiPackageListOthers)">
-                <li th:each="msiPackageOthers : $(msiPackageListOthers)">
+            <p th:if="${#lists.isEmpty(msiPackageListOthers)}">No microservices found.</p>
+            <ul th:unless="${#lists.isEmpty(msiPackageListOthers)}">
+                <li th:each="msiPackageOthers : ${msiPackageListOthers}">
                     <span th:text="${msiPackageOthers}"></span>
                 </li>
             </ul>
-            <p th:if="${#lists.isEmpty(msiPackageListOthers)">No microservices found.</p>
         </div>
     </div>
 </ul>
