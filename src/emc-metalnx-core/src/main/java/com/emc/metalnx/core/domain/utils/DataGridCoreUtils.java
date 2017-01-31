@@ -220,7 +220,10 @@ public class DataGridCoreUtils {
         List<String> msis = new ArrayList<>();
 
         if(msisAsString != null && !msisAsString.isEmpty()) {
-            for (String msi: msisAsString.split(MSI_LIST_SEPARATOR)) msis.add(msi.trim());
+            for (String msi: msisAsString.split(MSI_LIST_SEPARATOR)) {
+                String msiName = msi.trim();
+                if (!msiName.isEmpty()) msis.add(msiName);
+            }
         }
 
         return msis;
