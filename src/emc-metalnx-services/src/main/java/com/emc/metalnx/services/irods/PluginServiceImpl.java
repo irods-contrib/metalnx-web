@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -43,7 +46,6 @@ public class PluginServiceImpl implements PluginService {
     private String msiAPIVersionSupported;
 
     private Map<String, String> msiVersionCache = new HashMap<>();
-    private Map<String, Long> msiVersionCacheTime = new Hashtable<>();
     private List<DataGridServer> servers = new ArrayList<>();
     private Long serversCacheTime = System.currentTimeMillis();
 
@@ -88,8 +90,8 @@ public class PluginServiceImpl implements PluginService {
         long currTime = System.currentTimeMillis();
 
         // cache is still up-to-date
-        if(msiVersionCache.containsKey(server) && currTime < msiVersionCacheTime.get(server)) {
-            logger.info("Retrieving MSI version from cache.");
+        if(msiVersionCache.containsKey(server) && currTime < serversCacheTime) {
+            logger.info("Retrieving MSI info from cache.");
             server.setMSIVersion(msiVersionCache.get(server.getHostname()));
             return;
         }
@@ -106,15 +108,20 @@ public class PluginServiceImpl implements PluginService {
             }
 
             version = ruleService.execGetVersionRule(destResc);
-            server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
 
             // adding info to cache
             msiVersionCache.put(server.getHostname(), version);
-            msiVersionCacheTime.put(server.getHostname(), System.currentTimeMillis() + EXPIRATION_CACHE_TIME);
+            serversCacheTime = System.currentTimeMillis() + EXPIRATION_CACHE_TIME;
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
         } finally {
             server.setMSIVersion(version);
+        }
+
+        try {
+            server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
+        } catch (DataGridRuleException e) {
+            logger.error("Failed to get MSIs installed for server: ", server.getHostname());
         }
     }
 
