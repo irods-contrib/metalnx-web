@@ -66,7 +66,7 @@ public class PluginServiceImpl implements PluginService {
         DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxList);
 
         if(host != null && !host.isEmpty()) {
-            if (System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) getMSIInfoForAllServers();
+            getMSIInfoForAllServers();
 
             for (DataGridServer server : servers) {
                 if (host.equals(server.getHostname())) {

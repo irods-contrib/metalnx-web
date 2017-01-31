@@ -18,32 +18,28 @@
 <ul class="col-sm-12">
 
     <li role="tab" id="headingMlxMSI" data-toggle="collapse" href="#mlxMSI" aria-expanded="true" aria-controls="mlxMSI">
-        <a role="button" class="btn-link">
-            Metalnx
-        </a>
+        <a role="button" class="btn-link" th:text="#{msi.package.mlx.accordion}"></a>
         <i class="fa fa-angle-down"></i>
     </li>
     <div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
         <div class="">
-            <p th:if="${msiPackageListMlxMap.isEmpty()}">No microservices found.</p>
+            <p th:if="${msiPackageListMlxMap.isEmpty()}" th:text="#{msi.package.not.found}"></p>
             <ul th:unless="${msiPackageListMlxMap.isEmpty()}">
                 <li th:each="msiPackageMlx : ${msiPackageListMlxMap}">
                     <span th:text="${msiPackageMlx.key}"></span>
-                    <span th:if="${msiPackageMlx.value}">Installed</span>
-                    <span th:unless="${msiPackageMlx.value}">Not Installed</span>
+                    <span th:if="${msiPackageMlx.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
+                    <span th:unless="${msiPackageMlx.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
                 </li>
             </ul>
         </div>
     </div>
     <li role="tab" id="headingIrodsMSI" data-toggle="collapse" href="#irodsMSI" aria-expanded="true" aria-controls="irodsMSI">
-        <a class="collapsed" role="button">
-            iRODS
-        </a>
+        <a class="collapsed" role="button" th:text="#{msi.package.irods.accordion}"></a>
         <i class="fa fa-angle-down"></i>
     </li>
     <div id="irodsMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingIrodsMSI">
         <div class="">
-            <p th:if="${#lists.isEmpty(msiPackageListIrods)}">No microservices found.</p>
+            <p th:if="${#lists.isEmpty(msiPackageListIrods)}" th:text="#{msi.package.not.found}"></p>
             <ul th:unless="${#lists.isEmpty(msiPackageListIrods)}">
                 <li th:each="msiPackageIrods : ${msiPackageListIrods}">
                     <span th:text="${msiPackageIrods}"></span>
@@ -52,14 +48,12 @@
         </div>
     </div>
     <li role="tab" id="headingOtherMSI" data-toggle="collapse" href="#otherMSI" aria-expanded="true" aria-controls="otherMSI">
-        <a class="collapsed" role="button">
-            Others
-        </a>
+        <a class="collapsed" role="button" th:text="#{msi.package.others.accordion}"></a>
         <i class="fa fa-angle-down"></i>
     </li>
     <div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
         <div class="">
-            <p th:if="${#lists.isEmpty(msiPackageListOthers)}">No microservices found.</p>
+            <p th:if="${#lists.isEmpty(msiPackageListOthers)}" th:text="#{msi.package.not.found}"></p>
             <ul th:unless="${#lists.isEmpty(msiPackageListOthers)}">
                 <li th:each="msiPackageOthers : ${msiPackageListOthers}">
                     <span th:text="${msiPackageOthers}"></span>
