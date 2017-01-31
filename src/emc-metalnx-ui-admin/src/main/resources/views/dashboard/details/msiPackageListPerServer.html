@@ -25,10 +25,12 @@
     </li>
     <div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
         <div class="">
-            <p th:if="${#lists.isEmpty(msiPackageListMlx)}">No microservices found.</p>
-            <ul th:unless="${#lists.isEmpty(msiPackageListMlx)}">
-                <li th:each="msiPackageMlx : ${msiPackageListMlx}">
-                    <span th:text="${msiPackageMlx}"></span>
+            <p th:if="${msiPackageListMlxMap.isEmpty()}">No microservices found.</p>
+            <ul th:unless="${msiPackageListMlxMap.isEmpty()}">
+                <li th:each="msiPackageMlx : ${msiPackageListMlxMap}">
+                    <span th:text="${msiPackageMlx.key}"></span>
+                    <span th:if="${msiPackageMlx.value}">Installed</span>
+                    <span th:unless="${msiPackageMlx.value}">Not Installed</span>
                 </li>
             </ul>
         </div>

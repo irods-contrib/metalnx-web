@@ -17,6 +17,7 @@
 
 package com.emc.metalnx.controller;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -39,7 +40,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -97,11 +97,11 @@ public class DashboardController {
     private HashMap<String, DataGridServer> serverMap;
 
     // ui mode that will be shown when the rods user switches mode from admin to user and vice-versa
-    public static final String UI_USER_MODE = "user";
-    public static final String UI_ADMIN_MODE = "admin";
+    private static final String UI_USER_MODE = "user";
+    private static final String UI_ADMIN_MODE = "admin";
 
     // check if the iCAT Server is responding
-    public boolean isServerResponding;
+    private boolean isServerResponding;
 
     private int totalNumberOfUsers;
     private int totalNumberOfGroups;
@@ -191,7 +191,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/isilonServers/", method = RequestMethod.GET)
     public String getIsilonServers(Model model) throws DataGridConnectionRefusedException {
-        boolean isAnyIsilonWithNotWellFormedContextString = false;
+        boolean isAnyIsilonWithNotWellFormedContextString;
 
         logger.info("Listing isilon servers from the cache.");
 
@@ -295,10 +295,10 @@ public class DashboardController {
 
     @RequestMapping(value="/msiInstalledList")
     public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
-        List<String> msiPackages = pluginService.getMSIsInstalled(hostname);
-        model.addAttribute("msiPackageListIrods", msiPackages);
-        model.addAttribute("msiPackageListMlx", new ArrayList<String>());
-        model.addAttribute("msiPackageListOthers", new ArrayList<String>());
+        DataGridMSIByServer msiPackages = pluginService.getMSIsInstalled(hostname);
+        model.addAttribute("msiPackageListIrods", msiPackages.getIRODSMSIs());
+        model.addAttribute("msiPackageListMlxMap", msiPackages.getMetalnxMSIs());
+        model.addAttribute("msiPackageListOthers", msiPackages.getOtherMSIs());
         return "dashboard/details/msiPackageListPerServer";
     }
 
@@ -363,7 +363,7 @@ public class DashboardController {
     private boolean isRMDRunningOnAllServers() {
         boolean isRunning = true;
 
-        serverMap = new HashMap<String, DataGridServer>();
+        serverMap = new HashMap<>();
         for (DataGridServer server : servers) {
             serverMap.put(server.getHostname(), server);
 

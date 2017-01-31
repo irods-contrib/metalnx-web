@@ -1,5 +1,6 @@
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -21,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,6 +43,9 @@ public class PluginServiceImpl implements PluginService {
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
 
+    @Value("#{'${msi.metalnx.list}'.split(',')}")
+    private Set<String> msiMetalnxList;
+
     private Map<String, String> msiVersionCache = new HashMap<>();
     private List<DataGridServer> servers = new ArrayList<>();
     private Long serversCacheTime = System.currentTimeMillis();
@@ -60,8 +61,9 @@ public class PluginServiceImpl implements PluginService {
     }
 
     @Override
-    public List<String> getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+    public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
         List<String> msis = new ArrayList<>();
+        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxList);
 
         if(host != null && !host.isEmpty()) {
             if (System.currentTimeMillis() > serversCacheTime || servers.isEmpty()) getMSIInfoForAllServers();
@@ -74,7 +76,15 @@ public class PluginServiceImpl implements PluginService {
             }
         }
 
-        return msis;
+        if(!msis.isEmpty()) {
+            // classifying MSIs by their type
+            for(String msi: msis) {
+                if(msiMetalnxList.contains(msi)) msisByServer.addToMsiMetalnx(msi);
+                else msisByServer.addToMsiIRODS(msi);
+            }
+        }
+
+        return msisByServer;
     }
 
     @Override
@@ -90,7 +100,7 @@ public class PluginServiceImpl implements PluginService {
         long currTime = System.currentTimeMillis();
 
         // cache is still up-to-date
-        if(msiVersionCache.containsKey(server) && currTime < serversCacheTime) {
+        if(msiVersionCache.containsKey(server.getHostname()) && currTime < serversCacheTime) {
             logger.info("Retrieving MSI info from cache.");
             server.setMSIVersion(msiVersionCache.get(server.getHostname()));
             return;
@@ -98,7 +108,7 @@ public class PluginServiceImpl implements PluginService {
 
         logger.info("Refreshing MSI version cache.");
 
-        String version = "";
+        String version;
 
         try {
 
@@ -138,9 +148,7 @@ public class PluginServiceImpl implements PluginService {
 
         String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersionSupported);
         String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
-        boolean isCompatible = apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
-
-        return isCompatible;
+        return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
     }
 
     private void refreshServersCache() throws DataGridConnectionRefusedException {

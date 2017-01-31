@@ -1,5 +1,6 @@
 package com.emc.metalnx.services.interfaces;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -15,10 +16,10 @@ public interface PluginService {
     /**
      * Retrieves all MSIs packages installed in the grid.
      * @param host hostname of the server to get the MSIs installed
-     * @return List of all MSIs installed on the server
+     * @return {@link DataGridMSIByServer} containing the list of MSIs classified by type: metalnx, iRODS, other
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    List<String> getMSIsInstalled(String host) throws DataGridConnectionRefusedException;
+    DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException;
 
     /**
      * Retrieves information about the MSI package installed in the servers of the grid.
