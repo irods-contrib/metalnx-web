@@ -287,7 +287,12 @@ public class DataGridServer implements Comparable<DataGridServer> {
 
     public void setMSIVersion(String msiVersion) { this.msiVersion = msiVersion; }
 
-    public String getMSIVersion() { return msiVersion; }
+    public String getMSIVersion() {
+		if(msiVersion == null ){
+			return "";
+		}
+		return msiVersion;
+	}
 
     @Override
 	public String toString() {

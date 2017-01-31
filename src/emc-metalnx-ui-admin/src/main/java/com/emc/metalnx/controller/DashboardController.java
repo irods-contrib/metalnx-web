@@ -294,8 +294,8 @@ public class DashboardController {
     }
 
     @RequestMapping(value="/msiInstalledList")
-    public String getMSIInstalledList(Model model) throws DataGridConnectionRefusedException, DataGridRuleException {
-        List<String> msiPackages = rs.execGetMSIsRule("demoResc");
+    public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
+        List<String> msiPackages = pluginService.getMSIsInstalled(hostname);
         model.addAttribute("msiPackageListIrods", msiPackages);
         model.addAttribute("msiPackageListMlx", new ArrayList<String>());
         model.addAttribute("msiPackageListOthers", new ArrayList<String>());

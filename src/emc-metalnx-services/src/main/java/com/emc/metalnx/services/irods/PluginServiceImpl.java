@@ -101,21 +101,15 @@ public class PluginServiceImpl implements PluginService {
         String version = "";
 
         try {
-            String destResc = "";
 
-            if (server.getResources() != null && !server.getResources().isEmpty()) {
-                destResc = server.getResources().get(0).getName();
-            }
-
-            version = ruleService.execGetVersionRule(destResc);
+            version = ruleService.execGetVersionRule(server.getHostname());
+            server.setMSIVersion(version);
 
             // adding info to cache
             msiVersionCache.put(server.getHostname(), version);
             serversCacheTime = System.currentTimeMillis() + EXPIRATION_CACHE_TIME;
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSI version for server: ", server.getHostname());
-        } finally {
-            server.setMSIVersion(version);
         }
 
         try {
