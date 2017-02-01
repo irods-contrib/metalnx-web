@@ -24,7 +24,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
@@ -110,8 +112,9 @@ public class TestPluginService {
         servers.add(s2);
 
         ReflectionTestUtils.setField(pluginService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(pluginService, "msiMetalnxList", mlxMSIList);
-        ReflectionTestUtils.setField(pluginService, "msiIrodsList", iRODSMSIList);
+        ReflectionTestUtils.setField(pluginService, "msiMetalnxListExpected", mlxMSIList);
+        ReflectionTestUtils.setField(pluginService, "msiIrodsListExpected", iRODSMSIList);
+
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msiList);
