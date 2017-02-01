@@ -1,5 +1,6 @@
 package com.emc.metalnx.services.rules.tests;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -23,8 +24,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyList;
@@ -49,6 +49,7 @@ public class TestPluginService {
     private RuleService mockRuleService;
 
     private static String msiVersion;
+    private List<String> msiList, mlxMSIList, iRODSMSIList;
 
     private List<DataGridServer> servers;
 
@@ -56,6 +57,25 @@ public class TestPluginService {
     public void init() {
         servers = new ArrayList<>();
         msiVersion = "1.1.0";
+
+        msiList = new ArrayList<>();
+        mlxMSIList = new ArrayList<>();
+        iRODSMSIList = new ArrayList<>();
+
+        mlxMSIList.add("libmsiget_illumina_meta.so");
+        mlxMSIList.add("libmsiobjget_microservices.so");
+        mlxMSIList.add("libmsiobjget_version.so");
+        mlxMSIList.add("libmsiobjjpeg_extract.so");
+        mlxMSIList.add("libmsiobjput_mdbam.so");
+        mlxMSIList.add("libmsiobjput_mdbam.so");
+        mlxMSIList.add("libmsiobjput_mdmanifest.so");
+        mlxMSIList.add("libmsiobjput_mdvcf.so");
+        mlxMSIList.add("libmsiobjput_populate.so");
+        iRODSMSIList.add("libmsiobjirods1.so");
+        iRODSMSIList.add("libmsiobjirods2.so");
+
+        msiList.addAll(mlxMSIList);
+        msiList.addAll(iRODSMSIList);
     }
 
     @Before
@@ -77,9 +97,32 @@ public class TestPluginService {
         servers.add(s1);
         servers.add(s2);
 
+        Set<String> expectedMlxMSIList = new HashSet<>();
+        expectedMlxMSIList.add("libmsiget_illumina_meta.so");
+        expectedMlxMSIList.add("libmsiobjget_microservices.so");
+        expectedMlxMSIList.add("libmsiobjget_version.so");
+        expectedMlxMSIList.add("libmsiobjjpeg_extract.so");
+        expectedMlxMSIList.add("libmsiobjput_mdbam.so");
+        expectedMlxMSIList.add("libmsiobjput_mdbam.so");
+        expectedMlxMSIList.add("libmsiobjput_mdmanifest.so");
+        expectedMlxMSIList.add("libmsiobjput_mdvcf.so");
+        expectedMlxMSIList.add("libmsiobjput_populate.so");
+
         ReflectionTestUtils.setField(pluginService, "msiAPIVersionSupported", msiVersion);
+        ReflectionTestUtils.setField(pluginService, "msiMetalnxList", expectedMlxMSIList);
         when(mockResourceService.getAllResourceServers(anyList())).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msiList);
+    }
+
+    @Test
+    public void testMSIInstalledList() throws DataGridConnectionRefusedException {
+        DataGridMSIByServer dbMSIByServer = pluginService.getMSIsInstalled("server1.test.com");
+        Map<String, Boolean> map = dbMSIByServer.getMetalnxMSIs();
+        Set<String> iRODSMSIs = dbMSIByServer.getIRODSMSIs();
+
+        for (String msi: iRODSMSIList) assertTrue(iRODSMSIs.contains(msi));
+        for (String msi: mlxMSIList) assertTrue(map.containsKey(msi));
     }
 
     @Test
