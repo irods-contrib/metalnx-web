@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Service for external software used by Metalnx
  */
-public interface PluginService {
+public interface MSIService {
 
     /**
      * Retrieves all MSIs packages installed in the grid.

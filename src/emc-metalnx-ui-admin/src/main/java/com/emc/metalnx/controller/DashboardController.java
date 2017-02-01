@@ -77,7 +77,7 @@ public class DashboardController {
     RuleService rs;
 
     @Autowired
-    PluginService pluginService;
+    MSIService msiService;
 
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
@@ -284,7 +284,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
     public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
-        DataGridMSIPkgInfo msiGridInfo = pluginService.getMSIPkgInfo();
+        DataGridMSIPkgInfo msiGridInfo = msiService.getMSIPkgInfo();
         List<DataGridServer> serverList = msiGridInfo.getServers();
         model.addAttribute("msiGridInfo", msiGridInfo);
         model.addAttribute("servers", serverList);
@@ -295,7 +295,7 @@ public class DashboardController {
 
     @RequestMapping(value="/msiInstalledList")
     public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
-        DataGridMSIByServer msiPackages = pluginService.getMSIsInstalled(hostname);
+        DataGridMSIByServer msiPackages = msiService.getMSIsInstalled(hostname);
         model.addAttribute("msiPackages", msiPackages);
         return "dashboard/details/msiPackageListPerServer";
     }

@@ -65,7 +65,7 @@ public class UploadServiceImpl implements UploadService {
     private IRODSServices is;
 
     @Autowired
-    private PluginService pluginService;
+    private MSIService msiService;
 
     @Override
     public DataGridFileForUpload buildFileForUpload(HttpServletRequest request) throws DataGridException {
@@ -210,7 +210,7 @@ public class UploadServiceImpl implements UploadService {
             String destResc = file.getDestResc();
             String filePath = resourceMap.get(destResc) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
-            if(!pluginService.isMSIAPICompatibleInResc(file.getDestResc())) {
+            if(!msiService.isMSIAPICompatibleInResc(file.getDestResc())) {
                 String msg = "MSI Version installed is not supported.";
                 logger.error(msg);
                 throw new DataGridMSIVersionNotSupported(msg);
