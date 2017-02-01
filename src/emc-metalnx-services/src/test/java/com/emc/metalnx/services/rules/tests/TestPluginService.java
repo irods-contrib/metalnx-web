@@ -27,7 +27,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +49,7 @@ public class TestPluginService {
     private RuleService mockRuleService;
 
     private static String msiVersion;
-    private List<String> msiList, mlxMSIList, iRODSMSIList;
+    private List<String> msiList, mlxMSIList, iRODSMSIList, otherMSIList;
 
     private List<DataGridServer> servers;
 
@@ -61,6 +61,7 @@ public class TestPluginService {
         msiList = new ArrayList<>();
         mlxMSIList = new ArrayList<>();
         iRODSMSIList = new ArrayList<>();
+        otherMSIList = new ArrayList<>();
 
         mlxMSIList.add("libmsiget_illumina_meta.so");
         mlxMSIList.add("libmsiobjget_microservices.so");
@@ -71,11 +72,22 @@ public class TestPluginService {
         mlxMSIList.add("libmsiobjput_mdmanifest.so");
         mlxMSIList.add("libmsiobjput_mdvcf.so");
         mlxMSIList.add("libmsiobjput_populate.so");
-        iRODSMSIList.add("libmsiobjirods1.so");
-        iRODSMSIList.add("libmsiobjirods2.so");
+
+        iRODSMSIList.add("libmsisync_to_archive.so");
+        iRODSMSIList.add("libmsi_update_unixfilesystem_resource_free_space.so");
+        iRODSMSIList.add("libmsiobjput_http.so");
+        iRODSMSIList.add("libmsiobjput_irods.so");
+        iRODSMSIList.add("libmsiobjget_irods.so");
+        iRODSMSIList.add("libmsiobjget_http.so");
+        iRODSMSIList.add("libmsiobjput_slink.so");
+        iRODSMSIList.add("libmsiobjget_slink.so");
+
+        otherMSIList.add("libmsitest_other1.so");
+        otherMSIList.add("libmsitest_other2.so");
 
         msiList.addAll(mlxMSIList);
         msiList.addAll(iRODSMSIList);
+        msiList.addAll(otherMSIList);
     }
 
     @Before
@@ -97,20 +109,10 @@ public class TestPluginService {
         servers.add(s1);
         servers.add(s2);
 
-        Set<String> expectedMlxMSIList = new HashSet<>();
-        expectedMlxMSIList.add("libmsiget_illumina_meta.so");
-        expectedMlxMSIList.add("libmsiobjget_microservices.so");
-        expectedMlxMSIList.add("libmsiobjget_version.so");
-        expectedMlxMSIList.add("libmsiobjjpeg_extract.so");
-        expectedMlxMSIList.add("libmsiobjput_mdbam.so");
-        expectedMlxMSIList.add("libmsiobjput_mdbam.so");
-        expectedMlxMSIList.add("libmsiobjput_mdmanifest.so");
-        expectedMlxMSIList.add("libmsiobjput_mdvcf.so");
-        expectedMlxMSIList.add("libmsiobjput_populate.so");
-
         ReflectionTestUtils.setField(pluginService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(pluginService, "msiMetalnxList", expectedMlxMSIList);
-        when(mockResourceService.getAllResourceServers(anyList())).thenReturn(servers);
+        ReflectionTestUtils.setField(pluginService, "msiMetalnxList", mlxMSIList);
+        ReflectionTestUtils.setField(pluginService, "msiIrodsList", iRODSMSIList);
+        when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msiList);
     }
@@ -132,11 +134,13 @@ public class TestPluginService {
     @Test
     public void testMSIInstalledList() throws DataGridConnectionRefusedException {
         DataGridMSIByServer dbMSIByServer = pluginService.getMSIsInstalled("server1.test.com");
-        Map<String, Boolean> map = dbMSIByServer.getMetalnxMSIs();
-        Set<String> iRODSMSIs = dbMSIByServer.getIRODSMSIs();
+        Map<String, Boolean> mlxMSIsMap = dbMSIByServer.getMetalnxMSIs();
+        Map<String, Boolean> iRODSMSIsMap = dbMSIByServer.getIRODSMSIs();
+        List<String> otherMSIsList = dbMSIByServer.getOtherMSIs();
 
-        for (String msi: iRODSMSIList) assertTrue(iRODSMSIs.contains(msi));
-        for (String msi: mlxMSIList) assertTrue(map.containsKey(msi));
+        for (String msi: iRODSMSIList) assertTrue(iRODSMSIsMap.containsKey(msi));
+        for (String msi: mlxMSIList) assertTrue(mlxMSIsMap.containsKey(msi));
+        for (String msi: otherMSIList) assertTrue(otherMSIsList.contains(msi));
     }
 
     @Test

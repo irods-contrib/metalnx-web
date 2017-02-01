@@ -43,10 +43,10 @@ public class PluginServiceImpl implements PluginService {
     private String msiAPIVersionSupported;
 
     @Value("#{'${msi.metalnx.list}'.split(',')}")
-    private List<String> msiMetalnxList;
+    private List<String> msiMetalnxListExpected;
 
     @Value("#{'${msi.irods.list}'.split(',')}")
-    private List<String> msiIrodsList;
+    private List<String> msiIrodsListExpected;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
@@ -57,8 +57,8 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
-        List<String> msis = null;
-        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxList, msiIrodsList);
+        List<String> msis = new ArrayList<>();
+        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, msiIrodsListExpected);
 
         if(host != null && !host.isEmpty()) {
             getMSIInfoForAllServers();
@@ -71,16 +71,13 @@ public class PluginServiceImpl implements PluginService {
             }
         }
 
-        if(msis != null) {
+        if(!msis.isEmpty()) {
             // classifying MSIs by their type
             for(String msi: msis) {
-                if(msiMetalnxList.contains(msi)) msisByServer.addToMsiMetalnx(msi);
-                else if(msiIrodsList.contains(msi)) msisByServer.addToMsiIRODS(msi);
+                if(msiMetalnxListExpected.contains(msi)) msisByServer.addToMsiMetalnx(msi);
+                else if(msiIrodsListExpected.contains(msi)) msisByServer.addToMsiIRODS(msi);
                 else msisByServer.addToMsiOther(msi);
             }
-        }
-        else {
-            msisByServer.setConnectedToGrid(false);
         }
 
         return msisByServer;
