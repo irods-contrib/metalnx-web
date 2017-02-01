@@ -1,6 +1,9 @@
 package com.emc.metalnx.core.domain.entity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Has all types of MSIs installed on a host: metalnx, iRODS and others.
