@@ -55,7 +55,7 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
-        List<String> msis = new ArrayList<>();
+        List<String> msis = null;
         DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxList);
 
         if(host != null && !host.isEmpty()) {
@@ -69,12 +69,15 @@ public class PluginServiceImpl implements PluginService {
             }
         }
 
-        if(!msis.isEmpty()) {
+        if(msis != null) {
             // classifying MSIs by their type
             for(String msi: msis) {
                 if(msiMetalnxList.contains(msi)) msisByServer.addToMsiMetalnx(msi);
                 else msisByServer.addToMsiIRODS(msi);
             }
+        }
+        else {
+            msisByServer.setConnectedToGrid(false);
         }
 
         return msisByServer;

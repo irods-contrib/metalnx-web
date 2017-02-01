@@ -310,7 +310,6 @@ public class DataGridServer implements Comparable<DataGridServer> {
     }
 
     public List<String> getMSIInstalledList() {
-	    if(this.msiInstalledList == null) return new ArrayList<>();
 	    return this.msiInstalledList;
     }
 }

@@ -116,6 +116,20 @@ public class TestPluginService {
     }
 
     @Test
+    public void testGridConnection() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
+        DataGridMSIByServer dbMSIByServer = pluginService.getMSIsInstalled("server1.test.com");
+        assertTrue(dbMSIByServer.isConnectedToGrid());
+    }
+
+    @Test
+    public void testNoGridConnection() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenThrow(DataGridRuleException.class);
+        DataGridMSIByServer dbMSIByServer = pluginService.getMSIsInstalled("server1.test.com");
+        assertFalse(dbMSIByServer.isConnectedToGrid());
+    }
+
+    @Test
     public void testMSIInstalledList() throws DataGridConnectionRefusedException {
         DataGridMSIByServer dbMSIByServer = pluginService.getMSIsInstalled("server1.test.com");
         Map<String, Boolean> map = dbMSIByServer.getMetalnxMSIs();

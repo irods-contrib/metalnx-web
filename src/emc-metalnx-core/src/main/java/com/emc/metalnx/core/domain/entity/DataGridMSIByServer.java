@@ -20,8 +20,12 @@ public class DataGridMSIByServer {
     // Other MSIs
     private Set<String> otherMSIs;
 
+    private boolean isConnectedToGrid;
+
     public DataGridMSIByServer(String host, Set<String> expectedMetalnxMSIs) {
         this.host = host;
+
+        this.isConnectedToGrid = true;
 
         this.metalnxMSIs = new HashMap<>();
         this.irodsMSIs = new HashSet<>();
@@ -63,5 +67,11 @@ public class DataGridMSIByServer {
         this.host = host;
     }
 
+    public void setConnectedToGrid(boolean connectedToGrid) {
+        isConnectedToGrid = connectedToGrid;
+    }
 
+    public boolean isConnectedToGrid() {
+        return isConnectedToGrid;
+    }
 }
