@@ -17,25 +17,12 @@
 
 package com.emc.metalnx.services.irods;
 
-import java.net.ConnectException;
-
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.BulkFileOperationsAO;
-import org.irods.jargon.core.pub.CollectionAO;
-import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
-import org.irods.jargon.core.pub.DataObjectAO;
-import org.irods.jargon.core.pub.DataTransferOperations;
-import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.RemoteExecutionOfCommandsAO;
-import org.irods.jargon.core.pub.ResourceAO;
-import org.irods.jargon.core.pub.RuleProcessingAO;
-import org.irods.jargon.core.pub.SpecificQueryAO;
-import org.irods.jargon.core.pub.Stream2StreamAO;
-import org.irods.jargon.core.pub.UserAO;
-import org.irods.jargon.core.pub.UserGroupAO;
-import org.irods.jargon.core.pub.ZoneAO;
+import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.auth.UserTokenDetails;
-import com.emc.metalnx.services.interfaces.IRODSServices;
+import java.net.ConnectException;
 
-@Service
+@Service("irodsServices")
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class IRODSServicesImpl implements IRODSServices {
@@ -59,11 +44,19 @@ public class IRODSServicesImpl implements IRODSServices {
     @Autowired
     IRODSAccessObjectFactory irodsAccessObjectFactory;
 
-    private UserTokenDetails userTokenDetails = (UserTokenDetails) SecurityContextHolder
-            .getContext().getAuthentication().getDetails();
-    private IRODSAccount irodsAccount = this.userTokenDetails.getIrodsAccount();
+    private UserTokenDetails userTokenDetails;
+    private IRODSAccount irodsAccount;
 
     private static final Logger logger = LoggerFactory.getLogger(IRODSServicesImpl.class);
+
+    public IRODSServicesImpl() {
+        this.userTokenDetails = (UserTokenDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        this.irodsAccount = this.userTokenDetails.getIrodsAccount();
+    }
+
+    public IRODSServicesImpl(IRODSAccount acct) {
+        this.irodsAccount = acct;
+    }
 
     @Override
     public BulkFileOperationsAO getBulkFileOperationsAO() throws DataGridConnectionRefusedException {

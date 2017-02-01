@@ -307,17 +307,28 @@
 			</div>
 		</div>
 		
+		<!-- Metalnx microservices package -->
+		<div class="col-xs-12 col-md-6 dashboardWidget" th:if="${server}">
+			<div class="panel panel-default" id="mlxMsiPanel">
+				<div class="panel-body" >
+					<h4 class="">Microservices</h4>
+					<div class="panel-body list row" id="mlxMsiPkgList"  role="tablist" aria-multiselectable="true">
+
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- iRODS Server Logs -->
-		<div class="col-xs-12 col-md-12 dashboardWidget" th:if="${server}">
+		<div class="col-xs-12 col-md-6 dashboardWidget" th:if="${server}">
 			<div class="panel panel-default" id="irodsServerLogsPanel">
-				<div class="panel-body" id="">
+				<div class="panel-body" >
 					<h4 class=""><b>iRODS Server Logs</b> <small>(25 last entries)</small></h4>
 					<div class="panel-body" id="irodsServerLogs">
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<script type="text/javascript" th:src="@{/js/rmd.js}"></script>
 		<script type="text/javascript" th:inline="javascript">
 			if([[${ server }]]) {
@@ -350,8 +361,14 @@
 					$.get("/emc-metalnx-web/dashboard/resourceDetails/" + resourceName + "/", function(data) {
 						$("#resourceOfAServerInfo").html(data);		
 					});
-				});	
-			}	
+				});
+
+				ajaxEncapsulation("/emc-metalnx-web/dashboard/msiInstalledList", "GET", {host: serverHostname}, displayMSI);
+			}
+
+			function displayMSI(response){
+				$('#mlxMsiPkgList').html(response);
+			}
 			
 			function viewInfo(resourceName){
 				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
@@ -371,6 +388,7 @@
 				
 				$('#rescInfoModal').modal('show');
 			}
+
 		</script>
 	</div>
 	

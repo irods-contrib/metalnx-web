@@ -33,9 +33,9 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
             $(".alert-danger").delay(12000).fadeOut('slow');
             $(".alert-warning").delay(12000).fadeOut('slow');
             $(".alert-success").delay(12000).fadeOut('slow');
-            $(".label-success").delay(4000).fadeOut('slow');
-            $(".label-warning").delay(4000).fadeOut('slow');
-            $(".label-danger").delay(4000).fadeOut('slow');
+            $("table .label-success").delay(4000).fadeOut('slow');
+            $("table .label-warning").delay(4000).fadeOut('slow');
+            $("table .label-danger").delay(4000).fadeOut('slow');
         },
         statusCode: {
             500: function(response){

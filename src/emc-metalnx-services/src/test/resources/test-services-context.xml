@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2015-2016, EMC Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	">
+
+	<bean class="com.emc.metalnx.context.EncodedPropertiesConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="false"/>
+		<property name="locations">
+			<list merge="true">
+				<value>classpath:irods.environment.properties</value>
+				<value>classpath:database.properties</value>
+				<value>classpath:msi.properties</value>
+				<value>classpath:security.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<import resource="classpath:test-core-context.xml" />
+
+	<context:annotation-config />
+
+	<bean id="irodsConnectionManager" class="org.irods.jargon.core.connection.IRODSSimpleProtocolManager"
+		  factory-method="instance" init-method="initialize" destroy-method="destroy" />
+
+	<bean id="irodsSession" class="org.irods.jargon.core.connection.IRODSSession" factory-method="instance">
+		<constructor-arg type="org.irods.jargon.core.connection.IRODSProtocolManager" ref="irodsConnectionManager" />
+	</bean>
+
+	<bean id="irodsAccessObjectFactory" class="org.irods.jargon.core.pub.IRODSAccessObjectFactoryImpl" scope="singleton">
+		<constructor-arg ref="irodsSession" />
+	</bean>
+
+	<bean id="irodsAccount" class="org.irods.jargon.core.connection.IRODSAccount">
+		<constructor-arg value="${irods.host}"></constructor-arg>
+		<constructor-arg value="${irods.port}"></constructor-arg>
+		<constructor-arg value="${jobs.irods.username}"></constructor-arg>
+		<constructor-arg value="${jobs.irods.password}"></constructor-arg>
+		<constructor-arg value=""></constructor-arg>
+		<constructor-arg value="${irods.zoneName}"></constructor-arg>
+		<constructor-arg value="demoResc"></constructor-arg>
+	</bean>
+
+    <bean id="ruleService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="com.emc.metalnx.services.irods.RuleServiceImpl" />
+    </bean>
+
+    <context:component-scan base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh com.emc.metalnx.services.machine" />
+</beans>

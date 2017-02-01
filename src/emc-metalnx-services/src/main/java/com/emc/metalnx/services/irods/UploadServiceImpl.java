@@ -20,15 +20,14 @@ package com.emc.metalnx.services.irods;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
+import com.emc.metalnx.core.domain.exceptions.DataGridMSIVersionNotSupported;
 import com.emc.metalnx.service.utils.DataGridChunkForUpload;
 import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
-import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
@@ -52,14 +51,21 @@ public class UploadServiceImpl implements UploadService {
 
     private static final int MEGABYTE = 1024 * 1024;
     private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
+
     @Autowired
-    CollectionService cs;
+    private CollectionService cs;
+
     @Autowired
-    RuleService rs;
+    private RuleService rs;
+
     @Autowired
-    FileOperationService fos;
+    private FileOperationService fos;
+
     @Autowired
-    IRODSServices is;
+    private IRODSServices is;
+
+    @Autowired
+    private PluginService pluginService;
 
     @Override
     public DataGridFileForUpload buildFileForUpload(HttpServletRequest request) throws DataGridException {
@@ -89,9 +95,9 @@ public class UploadServiceImpl implements UploadService {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFileChunk = multipartRequest.getFile("fileChunk");
 
-        String[] chunkNumberParam = (String[]) request.getParameterMap().get("chunkNumber");
-        String[] filePartParam = (String[]) request.getParameterMap().get("filePart");
-        String[] partCRC32Param = (String[]) request.getParameterMap().get("partCRC32");
+        String[] chunkNumberParam = request.getParameterMap().get("chunkNumber");
+        String[] filePartParam = request.getParameterMap().get("filePart");
+        String[] partCRC32Param = request.getParameterMap().get("partCRC32");
 
         int chunkNumber = Integer.valueOf(chunkNumberParam[0]);
         int partNumber = Integer.valueOf(filePartParam[0]);
@@ -203,6 +209,12 @@ public class UploadServiceImpl implements UploadService {
             String objPath = targetFile.getCanonicalPath();
             String destResc = file.getDestResc();
             String filePath = resourceMap.get(destResc) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
+
+            if(!pluginService.isMSIAPICompatibleInResc(file.getDestResc())) {
+                String msg = "MSI Version installed is not supported.";
+                logger.error(msg);
+                throw new DataGridMSIVersionNotSupported(msg);
+            }
 
             rs.execBamCramMetadataRule(destResc, objPath, filePath);
 

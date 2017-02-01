@@ -1434,7 +1434,17 @@ footer {
 	height: 280px;
 	overflow: auto;
 }
-#isilonServerListPanel, #isilonServerListPanel .panel, #nonResourceServerListPanel, #nonResourceServerListPanel .panel{
+#msiAPIVersionPanel .popover{
+    max-width: 550px;
+}
+#mlxMsiPanel table td{
+    overflow: auto;
+    text-overflow: initial;
+    white-space: normal;
+    border-top: 0px solid #DDD;
+    border-bottom: 1px solid #DDD;
+}
+#isilonServerListPanel, #isilonServerListPanel .panel, #nonResourceServerListPanel, #nonResourceServerListPanel .panel, #msiAPIVersionPanel .panel{
 	height: 165px;
 }
 .dashboardCard {
@@ -1448,14 +1458,14 @@ footer {
 .dashboardCard .panel-body .cardIconWrapper{
 	background-color: #3580bd;
 	position: absolute;
-	height: 78%;
+	height: 69%;
 	top: 0px;
 	left: 16px;
 	width: 23%;
 }
 .dashboardCard .panel-body .cardIcon{
-	font-size: 26pt;
-	padding-top: 15px;
+	font-size: 18pt;
+	padding-top: 9px;
 	color: #fff;
 }
 .dashboardCard .panel{
@@ -1464,13 +1474,13 @@ footer {
 }
 .dashboardCard .panel-body .fa-stack{
 	width: 25%;
-	padding-top: 10px;
-	font-size: 19pt;
+	padding-top: 3px;
+	font-size: 13pt;
 }
 .dashboardCard .btn-link{
 	margin-right: 14px;
-	margin-top: 14px;
-	font-size: 14pt;
+	margin-top: 1px;
+	font-size: 13pt;
 }
 #serverListPanel .dashboardServersList{
 	width: 100%;

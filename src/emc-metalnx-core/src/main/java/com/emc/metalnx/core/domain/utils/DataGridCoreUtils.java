@@ -17,7 +17,9 @@
 
 package com.emc.metalnx.core.domain.utils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,6 +27,26 @@ import java.util.Set;
  *
  */
 public class DataGridCoreUtils {
+
+    public static final String MSI_LIST_SEPARATOR = ",";
+
+    /**
+     * Finds the MSI API version currently supported.
+     * @return String containing the MSI API version
+     */
+    public static String getAPIVersion(String version) {
+        if(version == null || version.isEmpty()) return "";
+
+        int end = version.indexOf('.');
+
+        if (end < 0) end = version.length();
+
+        return version.substring(0, end);
+    }
+
+    public static boolean isIllumina(String path) {
+        return path.endsWith("_SSU.tar");
+    }
 
     /**
      * Checks whether or not a given path refers to a BAM or CRAM file.
@@ -42,7 +64,7 @@ public class DataGridCoreUtils {
      * @return bool True, if the given path is an image. False, otherwise.
      */
     public static boolean isImageFile(String path) {
-        Set<String> extensions = new HashSet<String>();
+        Set<String> extensions = new HashSet<>();
         extensions.add("png");
         extensions.add("PNG");
         extensions.add("jpg");
@@ -82,13 +104,13 @@ public class DataGridCoreUtils {
     }
 
     /**
-     * Auxiliary method to determine wether a file is a VCF file
+     * Auxiliary method to determine whether a file is a VCF file
      *
      * @param path file path
      * @return bool True, if the given path is a manifest file. False, otherwise.
      */
     public static boolean isPrideXMLManifestFile(String path) {
-        Set<String> extensions = new HashSet<String>();
+        Set<String> extensions = new HashSet<>();
         extensions.add("xml");
 
         String fileExtension = "";
@@ -109,7 +131,7 @@ public class DataGridCoreUtils {
      */
     public static String getIconToDisplay(String filePath) {
 
-        String icon = "";
+        String icon;
         String extension = getFileExtension(filePath);
 
         switch (extension) {
@@ -175,10 +197,10 @@ public class DataGridCoreUtils {
     /**
      * Gets file extension based on its path
      *
-     * @param filePath
-     * @return
+     * @param filePath path to the file
+     * @return file extension
      */
-    public static String getFileExtension(String filePath) {
+    private static String getFileExtension(String filePath) {
 
         if (filePath.lastIndexOf(".") != -1 && filePath.lastIndexOf(".") != 0) {
             return filePath.substring(filePath.lastIndexOf(".") + 1);
@@ -189,4 +211,21 @@ public class DataGridCoreUtils {
 
     }
 
+    /**
+     * Parses a raw list of MSIs coming from a rule.
+     * @param msisAsString list of MSIs coming from the rule as a string
+     * @return List of MSIs
+     */
+    public static List<String> getMSIsAsList(String msisAsString) {
+        List<String> msis = new ArrayList<>();
+
+        if(msisAsString != null && !msisAsString.isEmpty()) {
+            for (String msi: msisAsString.split(MSI_LIST_SEPARATOR)) {
+                String msiName = msi.trim();
+                if (!msiName.isEmpty()) msis.add(msiName);
+            }
+        }
+
+        return msis;
+    }
 }

@@ -17,41 +17,32 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.auth.UserTokenDetails;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.ServerService;
-import com.emc.metalnx.services.interfaces.StorageService;
-import com.emc.metalnx.services.interfaces.TemplateService;
-import com.emc.metalnx.services.interfaces.UserProfileService;
-import com.emc.metalnx.services.interfaces.UserService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -82,6 +73,15 @@ public class DashboardController {
     @Autowired
     TemplateService templateService;
 
+    @Autowired
+    RuleService rs;
+
+    @Autowired
+    PluginService pluginService;
+
+    @Value("${msi.api.version}")
+    private String msiAPIVersionSupported;
+
     // list of all resource servers of the grid
     private List<DataGridServer> servers;
 
@@ -97,11 +97,11 @@ public class DashboardController {
     private HashMap<String, DataGridServer> serverMap;
 
     // ui mode that will be shown when the rods user switches mode from admin to user and vice-versa
-    public static final String UI_USER_MODE = "user";
-    public static final String UI_ADMIN_MODE = "admin";
+    private static final String UI_USER_MODE = "user";
+    private static final String UI_ADMIN_MODE = "admin";
 
     // check if the iCAT Server is responding
-    public boolean isServerResponding;
+    private boolean isServerResponding;
 
     private int totalNumberOfUsers;
     private int totalNumberOfGroups;
@@ -157,22 +157,16 @@ public class DashboardController {
         logger.info("Get all servers from the grid");
 
         try {
-            if (resources == null || resources.isEmpty()) {
-                resources = resourceService.findAll();
-            }
-
+            if (resources == null || resources.isEmpty()) resources = resourceService.findAll();
             isServerResponding = true;
         }
         catch (DataGridConnectionRefusedException e) {
-            logger.info("Could not connect to the server.", e);
+            logger.info("Could not connect to the server: ", e);
 
             isServerResponding = false;
 
-            // if there is no cache available for displaying the servers, we will redirect
-            // the user to the iCAT-not-responding page
-            if (resources == null || resources.isEmpty()) {
-                throw new DataGridConnectionRefusedException();
-            }
+            // no cache available for servers, redirect the user to the iCAT-not-responding page
+            if (resources == null || resources.isEmpty()) throw new DataGridConnectionRefusedException();
         }
         finally {
             logger.info("Listing servers from the cache.");
@@ -197,7 +191,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/isilonServers/", method = RequestMethod.GET)
     public String getIsilonServers(Model model) throws DataGridConnectionRefusedException {
-        boolean isAnyIsilonWithNotWellFormedContextString = false;
+        boolean isAnyIsilonWithNotWellFormedContextString;
 
         logger.info("Listing isilon servers from the cache.");
 
@@ -288,6 +282,24 @@ public class DashboardController {
         return "dashboard/details/resourceInfo";
     }
 
+    @RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
+    public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
+        DataGridMSIPkgInfo msiGridInfo = pluginService.getMSIPkgInfo();
+        List<DataGridServer> serverList = msiGridInfo.getServers();
+        model.addAttribute("msiGridInfo", msiGridInfo);
+        model.addAttribute("servers", serverList);
+        model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
+
+        return "dashboard/msiPackageVersion";
+    }
+
+    @RequestMapping(value="/msiInstalledList")
+    public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
+        DataGridMSIByServer msiPackages = pluginService.getMSIsInstalled(hostname);
+        model.addAttribute("msiPackages", msiPackages);
+        return "dashboard/details/msiPackageListPerServer";
+    }
+
     /*
      * ********************************************************************************************
      * ********************************* PRIVATE METHODS **************************************
@@ -349,7 +361,7 @@ public class DashboardController {
     private boolean isRMDRunningOnAllServers() {
         boolean isRunning = true;
 
-        serverMap = new HashMap<String, DataGridServer>();
+        serverMap = new HashMap<>();
         for (DataGridServer server : servers) {
             serverMap.put(server.getHostname(), server);
 

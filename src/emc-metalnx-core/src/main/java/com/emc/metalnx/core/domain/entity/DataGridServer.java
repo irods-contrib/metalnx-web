@@ -16,11 +16,11 @@
  */
 package com.emc.metalnx.core.domain.entity;
 
+import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
 
 public class DataGridServer implements Comparable<DataGridServer> {
 	
@@ -38,8 +38,10 @@ public class DataGridServer implements Comparable<DataGridServer> {
 	private boolean isRmdPackageRunning;
 	private String rmdPackageRelease;
 	private String rmdPackageVersion;
+	private String msiVersion;
+    private List<String> msiInstalledList;
 
-	/**
+    /**
 	 * @return the type
 	 */
 	public DataGridServerType getType() {
@@ -88,11 +90,11 @@ public class DataGridServer implements Comparable<DataGridServer> {
 	
 	/**
 	 * Adds resource to the server
-	 * @param resources
+	 * @param resource to be added
 	 */
 	public void addResource(DataGridResource resource) {
 		if (this.resources == null) {
-			this.resources = new ArrayList<DataGridResource>();
+			this.resources = new ArrayList<>();
 		}
 		this.resources.add(resource);
 	}
@@ -283,4 +285,31 @@ public class DataGridServer implements Comparable<DataGridServer> {
 		this.rmdPackageVersion = rmdPackageVersion;
 	}
 
+    public void setMSIVersion(String msiVersion) { this.msiVersion = msiVersion; }
+
+    public String getMSIVersion() {
+		if(msiVersion == null ){
+			return "";
+		}
+		return msiVersion;
+	}
+
+    @Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getHostname());
+		sb.append(" - ");
+		sb.append(getIp());
+		sb.append(" - ");
+		sb.append(getMSIVersion());
+		return sb.toString();
+	}
+
+    public void setMSIInstalledList(List<String> msiInstalledList) {
+        this.msiInstalledList = msiInstalledList;
+    }
+
+    public List<String> getMSIInstalledList() {
+	    return this.msiInstalledList;
+    }
 }

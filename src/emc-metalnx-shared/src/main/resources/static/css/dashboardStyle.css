@@ -67,6 +67,12 @@
     text-anchor: middle;
     font-size: inherit;
 }
+#mlxMsiPkgList .label {
+    font-size: 75%;
+}
+#mlxMsiPkgList > ul ul li:hover{
+    cursor: default;
+}
 
 .radial-svg {
     display: block;

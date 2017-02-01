@@ -17,12 +17,9 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.Set;
-
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.test.generic.UITest;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.IRODSSession;
@@ -30,11 +27,7 @@ import org.irods.jargon.core.connection.IRODSSimpleProtocolManager;
 import org.irods.jargon.core.connection.auth.AuthResponse;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.JargonFileOrCollAlreadyExistsException;
-import org.irods.jargon.core.pub.DataObjectAO;
-import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.irods.jargon.core.pub.IRODSAccessObjectFactoryImpl;
-import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.openqa.selenium.By;
@@ -45,9 +38,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.test.generic.UITest;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.Set;
 
 public class FileUtils {
 
@@ -62,11 +57,6 @@ public class FileUtils {
 
     public static final String RESOURCE_PATH = "/upload-tests/%s";
 
-    /**************************************************************************************/
-    /**************************** UPLOAD METHODS SECTION **********************************/
-    /**
-     * @return ************************************************************************************/
-    
     public static DataObjectAO getDataObjectAO(String user, String pwd) {
     	try {
     		IRODSAccount account = authenticateUser(user, pwd);
@@ -84,14 +74,13 @@ public class FileUtils {
      * Uploads a file to the data grid through the Metalnx UI.
      *
      * @param driver
-     * @param file
-     *            file name under the class path
+     * @param files file names under the class path
      * @throws FailingHttpStatusCodeException
      * @throws MalformedURLException
      * @throws IOException
      */
     public static void uploadFileThroughUI(WebDriver driver, String... files)
-            throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+            throws FailingHttpStatusCodeException, IOException {
         StringBuilder baseDir = new StringBuilder();
         baseDir.append(System.getProperty("user.dir"));
         baseDir.append(File.separator);

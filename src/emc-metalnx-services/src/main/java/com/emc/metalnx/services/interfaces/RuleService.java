@@ -19,8 +19,28 @@ package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
+
+import java.util.List;
+import java.util.Map;
 
 public interface RuleService {
+
+    /**
+     * Executes the get microservices MSI.
+     * @param host server's hostname
+     * @return List of MSIs on the server that resource is.
+     */
+    List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException;
+
+    /**
+     * Executes the get version MSI.
+     * @param host server's hostname
+     * @return version of the MSI currently installed
+     * @throws DataGridRuleException if an error happens during the rule execution
+     * @throws DataGridConnectionRefusedException if there is no connection to the grid
+     */
+    String execGetVersionRule(String host) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Executes the replicate data object rule
@@ -100,23 +120,11 @@ public interface RuleService {
     void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
-     * Builds a rule in the data grid
-     *
-     * @param resource resource name where this rule will be executed
-     * @param ruleName name of the rule that will be executed
-     * @param msiName  name of the microservice that will be called within the rule
-     * @param params   all parameters of the msi called by the rule
-     * @return String representing the rule already formatted properly to be executed
-     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
-     */
-    String buildRule(String resource, String ruleName, String msiName, String... params) throws DataGridConnectionRefusedException;
-
-    /**
      * Executes a rule in the data grid
      *
      * @param rule rule string to be executed
      * @throws DataGridRuleException if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
+    Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
 }
