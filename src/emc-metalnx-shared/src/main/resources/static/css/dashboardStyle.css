@@ -67,6 +67,9 @@
     text-anchor: middle;
     font-size: inherit;
 }
+#mlxMsiPanel .label {
+    font-size: 75%;
+}
 
 .radial-svg {
     display: block;

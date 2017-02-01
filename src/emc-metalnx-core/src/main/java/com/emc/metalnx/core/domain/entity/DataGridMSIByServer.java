@@ -1,9 +1,6 @@
 package com.emc.metalnx.core.domain.entity;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Has all types of MSIs installed on a host: metalnx, iRODS and others.
@@ -13,26 +10,22 @@ public class DataGridMSIByServer {
 
     // Maps MSI name to True/False that indicates whether or not the MSI is installed
     private Map<String, Boolean> metalnxMSIs;
-
-    // iRODS MSIs
-    private Set<String> irodsMSIs;
-
-    // Other MSIs
-    private Set<String> otherMSIs;
+    private Map<String, Boolean> irodsMSIs;
+    private List<String> otherMSIs;
 
     private boolean isConnectedToGrid;
 
-    public DataGridMSIByServer(String host, Set<String> expectedMetalnxMSIs) {
+    public DataGridMSIByServer(String host, List<String> expectedMetalnxMSIs, List<String> expectedIrodsMSIs) {
         this.host = host;
 
         this.isConnectedToGrid = true;
 
         this.metalnxMSIs = new HashMap<>();
-        this.irodsMSIs = new HashSet<>();
-        this.otherMSIs = new HashSet<>();
+        this.irodsMSIs = new HashMap<>();
+        this.otherMSIs = new ArrayList<>();
 
-        this.metalnxMSIs = new HashMap<>();
         if(expectedMetalnxMSIs != null) for(String msi: expectedMetalnxMSIs) this.metalnxMSIs.put(msi, false);
+        if(expectedIrodsMSIs != null) for(String msi: expectedIrodsMSIs) this.irodsMSIs.put(msi, false);
     }
 
     public Map<String, Boolean> getMetalnxMSIs() {
@@ -46,16 +39,21 @@ public class DataGridMSIByServer {
         this.metalnxMSIs.put(msi, true);
     }
 
-    public Set<String> getIRODSMSIs() {
+    public Map<String, Boolean> getIRODSMSIs() {
         return irodsMSIs;
     }
 
     public void addToMsiIRODS(String msi) {
         if(msi == null || msi.isEmpty()) return;
-        this.irodsMSIs.add(msi);
+        this.irodsMSIs.put(msi, true);
     }
 
-    public Set<String> getOtherMSIs() {
+    public void addToMsiOther(String msi) {
+        if(msi == null || msi.isEmpty()) return;
+        this.otherMSIs.add(msi);
+    }
+
+    public List<String> getOtherMSIs() {
         return otherMSIs;
     }
 

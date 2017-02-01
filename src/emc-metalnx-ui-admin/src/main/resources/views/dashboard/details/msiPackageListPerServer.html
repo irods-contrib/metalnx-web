@@ -42,13 +42,15 @@
             <p th:if="${#lists.isEmpty(msiPackageListIrods)}" th:text="#{msi.package.not.found}"></p>
             <ul th:unless="${#lists.isEmpty(msiPackageListIrods)}">
                 <li th:each="msiPackageIrods : ${msiPackageListIrods}">
-                    <span th:text="${msiPackageIrods}"></span>
+                    <span th:text="${msiPackageIrods.key}"></span>
+                    <span th:if="${msiPackageIrods.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
+                    <span th:unless="${msiPackageIrods.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
                 </li>
             </ul>
         </div>
     </div>
     <li role="tab" id="headingOtherMSI" data-toggle="collapse" href="#otherMSI" aria-expanded="true" aria-controls="otherMSI">
-        <a class="collapsed" role="button" th:text="#{msi.package.others.accordion}"></a>
+        <a class="collapsed" role="button" th:text="#{msi.package.other.accordion}"></a>
         <i class="fa fa-angle-down"></i>
     </li>
     <div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
