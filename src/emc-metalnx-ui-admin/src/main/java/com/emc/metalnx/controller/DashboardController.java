@@ -296,9 +296,7 @@ public class DashboardController {
     @RequestMapping(value="/msiInstalledList")
     public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
         DataGridMSIByServer msiPackages = pluginService.getMSIsInstalled(hostname);
-        model.addAttribute("msiPackageListIrods", msiPackages.getIRODSMSIs());
-        model.addAttribute("msiPackageListMlxMap", msiPackages.getMetalnxMSIs());
-        model.addAttribute("msiPackageListOthers", msiPackages.getOtherMSIs());
+        model.addAttribute("msiPackages", msiPackages);
         return "dashboard/details/msiPackageListPerServer";
     }
 
