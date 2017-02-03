@@ -300,8 +300,10 @@ public class PermissionsServiceImpl implements PermissionsService {
     public void resolveMostPermissiveAccessForUser(DataGridCollectionAndDataObject obj, DataGridUser user) throws
             DataGridException {
 
-        List<UserGroup> userGroups = null;
-        List<UserFilePermission> acl = null;
+        if(obj == null || user == null) return;
+
+        List<UserGroup> userGroups;
+        List<UserFilePermission> acl;
 
         try {
             userGroups = irodsServices.getGroupAO().findUserGroupsForUser(user.getUsername());
@@ -380,7 +382,7 @@ public class PermissionsServiceImpl implements PermissionsService {
      * @throws DataGridConnectionRefusedException
      */
     private List<UserFilePermission> getFilePermissionListForObject(String path, String username) throws DataGridConnectionRefusedException,
-            FileNotFoundException, JargonException {
+            JargonException {
         Object obj = irodsServices.getCollectionAndDataObjectListAndSearchAO().getFullObjectForType(path);
 
         List<UserFilePermission> filePermissionList = new ArrayList<UserFilePermission>();

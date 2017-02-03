@@ -17,39 +17,8 @@
 
 package com.emc.metalnx.controller;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.context.WebApplicationContext;
-
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridMetadata;
-import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.*;
 import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -60,6 +29,22 @@ import com.emc.metalnx.services.interfaces.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -109,7 +94,7 @@ public class MetadataController {
 
     @RequestMapping(value = "/")
     public String index(Model model, HttpServletRequest request,
-            @RequestParam(value = "backFromCollections", required = false) boolean backFromCollections) throws DataGridConnectionRefusedException,
+            @RequestParam(value = "backFromCollections", required = false) boolean backFromCollections) throws
             DataGridException {
 
         DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
@@ -258,14 +243,14 @@ public class MetadataController {
     public String getMetadata(Model model, @RequestParam("path") String path) throws DataGridConnectionRefusedException {
 
         List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
-        DataGridCollectionAndDataObject dgColObj;
+        DataGridCollectionAndDataObject dgColObj = null;
+
         try {
             dgColObj = collectionService.findByName(path);
             permissionsService.resolveMostPermissiveAccessForUser(dgColObj, loggedUserUtils.getLoggedDataGridUser());
         }
         catch (DataGridException e) {
             logger.error("Could not retrieve collection/dataobject from path: {}", path);
-            throw new DataGridConnectionRefusedException();
         }
 
         model.addAttribute("permissionOnCurrentPath", collectionService.getPermissionsForPath(path));
