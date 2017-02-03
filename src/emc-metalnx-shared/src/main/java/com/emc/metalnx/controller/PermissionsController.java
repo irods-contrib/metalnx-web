@@ -88,14 +88,14 @@ public class PermissionsController {
     public String getPermissionDetails(Model model, @RequestParam("path") String path) {
         logger.debug("Getting permission info for {}", path);
 
-        DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
-        List<DataGridFilePermission> permissions = null;
-        List<DataGridGroupPermission> groupPermissions = null;
-        List<DataGridUserPermission> userPermissions = null;
-        List<DataGridGroupBookmark> bookmarks = null;
-        List<DataGridUserBookmark> userBookmarks = null;
-        Set<String> groupsWithBookmarks = null;
-        Set<String> usersWithBookmarks = null;
+        DataGridCollectionAndDataObject obj = null;
+        List<DataGridFilePermission> permissions;
+        List<DataGridGroupPermission> groupPermissions;
+        List<DataGridUserPermission> userPermissions;
+        List<DataGridGroupBookmark> bookmarks;
+        List<DataGridUserBookmark> userBookmarks;
+        Set<String> groupsWithBookmarks;
+        Set<String> usersWithBookmarks;
         boolean userCanModify = false;
         boolean isCollection = false;
 
