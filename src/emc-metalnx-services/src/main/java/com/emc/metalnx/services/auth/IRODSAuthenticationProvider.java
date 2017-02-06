@@ -22,6 +22,8 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.emc.metalnx.services.exceptions.DataGridDatabaseException;
+import com.emc.metalnx.services.exceptions.DataGridServerException;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.auth.AuthResponse;
@@ -43,6 +45,7 @@ import com.emc.metalnx.core.domain.dao.UserDao;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.services.exceptions.DataGridAuthenticationException;
 import com.emc.metalnx.services.interfaces.AuthenticationProviderService;
+import org.springframework.transaction.TransactionException;
 import org.springframework.util.StringUtils;
 
 public class IRODSAuthenticationProvider implements AuthenticationProviderService, Serializable {
@@ -115,12 +118,15 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 
             // Settings the user details object into the authentication object
             authObject.setDetails(userDetails);
-        } catch (Exception e) {
+        } catch (TransactionException e) {
+            logger.error("Database not responding");
+            throw new DataGridDatabaseException(e.getMessage());
+        } catch (org.irods.jargon.core.exception.AuthenticationException e) {
             logger.error("Could not authenticate user: ", username);
-
-            if (e.getCause() instanceof ConnectException) {
-                throw new DataGridAuthenticationException(e.getMessage());
-            }
+            throw new DataGridAuthenticationException(e.getMessage());
+        } catch (JargonException e) {
+            logger.error("Server not responding");
+            throw new DataGridServerException(e.getMessage());
         }
 
         return authObject;
@@ -131,7 +137,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
-    private AuthResponse authenticateAgainstIRODS(String username, String password) throws Exception {
+    private AuthResponse authenticateAgainstIRODS(String username, String password) throws JargonException {
 
         AuthResponse authResponse = null;
 

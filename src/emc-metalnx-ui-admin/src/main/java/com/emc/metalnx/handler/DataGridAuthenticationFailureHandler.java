@@ -23,6 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emc.metalnx.services.exceptions.DataGridDatabaseException;
+import com.emc.metalnx.services.exceptions.DataGridServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +55,13 @@ public class DataGridAuthenticationFailureHandler implements AuthenticationFailu
 			throws IOException, ServletException {
 
 		//if we could not connect to the iCAT Server
-		if(exception instanceof DataGridAuthenticationException) {
+		if (exception instanceof DataGridServerException) {
 			logger.error("Server not respoding.", exception.getMessage());
-			
 			response.sendRedirect("/emc-metalnx-web/login/serverNotResponding/");
-		}
-		else {
+		} else if (exception instanceof DataGridDatabaseException) {
+			logger.error("Database not respoding.", exception.getMessage());
+			response.sendRedirect("/emc-metalnx-web/login/databaseNotResponding/");
+		} else {
 			response.sendRedirect("/emc-metalnx-web/login/exception/");			
 		}
 	}

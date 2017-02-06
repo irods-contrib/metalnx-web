@@ -71,5 +71,14 @@ public class LoginController {
 		
 	    return model;
 	}
+
+	@RequestMapping(value = "/databaseNotResponding", method = RequestMethod.GET)
+	public ModelAndView databaseNotRespondingErrorHandler(Exception e) {
+
+		ModelAndView model = new ModelAndView("login/index");
+		model.addObject("databaseNotResponding", true);
+
+		return model;
+	}
 	
 }
