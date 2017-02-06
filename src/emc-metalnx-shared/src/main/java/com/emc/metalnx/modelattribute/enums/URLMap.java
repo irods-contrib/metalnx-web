@@ -90,4 +90,5 @@ public class URLMap {
     public static final String URL_MODIFY_COLLECTION_USER = "/emc-metalnx-web/fileOperation/modify/";
     public static final String URL_DELETE_COLLECTION_USER = "/fileOperation/delete/";
     public static final String URL_COLLECTION_VALIDATE_NAME_USER = "/emc-metalnx-web/collections/isValidCollectionName/";
+    public static final String URL_LOGOUT = "/logout/";
 }

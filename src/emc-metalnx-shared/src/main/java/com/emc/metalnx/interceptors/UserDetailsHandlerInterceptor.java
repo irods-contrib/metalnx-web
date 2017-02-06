@@ -17,30 +17,35 @@
 
 package com.emc.metalnx.interceptors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.emc.metalnx.modelattribute.enums.URLMap;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.emc.metalnx.services.auth.UserTokenDetails;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class UserDetailsHandlerInterceptor extends HandlerInterceptorAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(UserDetailsHandlerInterceptor.class);
 
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView)
             throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (modelAndView != null) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            // add user details only if the user is logged
-            if (authentication instanceof UsernamePasswordAuthenticationToken) {
+        if(authentication == null) {
+            logger.error("Session expired. Logging out the user.");
+            response.sendRedirect(request.getContextPath() + URLMap.URL_LOGOUT);
+        }
+        else if (modelAndView != null && authentication instanceof UsernamePasswordAuthenticationToken) {
+                // add user details only if the user is logged
                 UserTokenDetails userTokenDetails = (UserTokenDetails) authentication.getDetails();
                 modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
-            }
         }
     }
 
