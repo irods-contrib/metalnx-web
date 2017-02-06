@@ -1,7 +1,5 @@
 package com.emc.metalnx.core.domain.entity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
@@ -19,8 +17,6 @@ public class DataGridRule {
     private String[] outputRuleParams; // rule output parameters
     private String host;
     private String rule;
-
-    private static final Logger logger = LoggerFactory.getLogger(DataGridRule.class);
 
     private static final String INPUT = "INPUT";
     private static final String OUTPUT = "OUTPUT";
@@ -63,7 +59,9 @@ public class DataGridRule {
 
     public void setInputRuleParams(String... params) { this.inputRuleParams = params; }
 
-    public String getInputParamsAsString() {
+    public void setOutputRuleParams(String... params) { this.outputRuleParams = params; }
+
+    private String getInputParamsAsString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(INPUT);
@@ -81,9 +79,7 @@ public class DataGridRule {
         return sb.toString();
     }
 
-    public void setOutputRuleParams(String... params) { this.outputRuleParams = params; }
-
-    public String getOutputParamsAsString() {
+    private String getOutputParamsAsString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(OUTPUT);
@@ -154,8 +150,6 @@ public class DataGridRule {
         ruleString.append(getInputParamsAsString());
         ruleString.append(getOutputParamsAsString());
 
-        logger.info(ruleString.toString());
-
         return ruleString.toString();
     }
 
@@ -163,16 +157,16 @@ public class DataGridRule {
         private String remoteHeader = null;
         private String remoteFooter = null;
 
-        public RemoteRuleHeader(String host) {
+        RemoteRuleHeader(String host) {
             remoteHeader = String.format("  remote(\"%s\", \"\") {\n", host);
             remoteFooter = "  }\n";
         }
 
-        public String getRemoteRuleHeader() {
+        String getRemoteRuleHeader() {
             return this.remoteHeader;
         }
 
-        public String getRemoteRuleFooter() {
+        String getRemoteRuleFooter() {
             return this.remoteFooter;
         }
     }

@@ -153,7 +153,7 @@ public class RuleServiceImpl implements RuleService {
         DataGridRule rule = new DataGridRule(DataGridRule.GET_MSIS_RULE, host);
         rule.setOutputRuleParams("msis");
 
-        logger.info(rule.toString());
+        logger.debug(rule.toString());
 
         return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
     }
@@ -164,7 +164,7 @@ public class RuleServiceImpl implements RuleService {
         DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, host);
         rule.setOutputRuleParams("version");
 
-        logger.info(rule.toString());
+        logger.debug(rule.toString());
 
         return (String) executeRule(rule.toString()).get("*version").getResultObject();
     }
