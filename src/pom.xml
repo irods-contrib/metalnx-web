@@ -27,7 +27,7 @@
 		<project.version>1.1.0</project.version>
 
 		<!-- Jargon -->
-		<jargon.version>4.0.2.3-RELEASE</jargon.version>
+		<jargon.version>4.1.10.0-RC2</jargon.version>
 
 		<!-- Spring -->
 		<spring.version>4.1.1.RELEASE</spring.version>
