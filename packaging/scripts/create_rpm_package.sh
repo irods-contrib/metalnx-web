@@ -45,6 +45,7 @@ cp $WORKSPACE/contrib/ldap/* $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSIO
 cd $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
 # wget https://bintray.com/metalnx/generic/download_file?file_path=metalnx-connection-test-1.0-RELEASE-jar-with-dependencies.jar -O test-connection.jar --no-check-certificate
 cp $WORKSPACE/target/metalnx-connection-test-*-jar-with-dependencies.jar $RPMBUILD_DIR/SOURCES/$PROJECT_NAME-$PROJECT_VERSION/opt/emc/
+mv metalnx-connection-test-*-jar-with-dependencies.jar test-connection.jar
 cd -
 
 echo "Creating tarball of the sources..."
