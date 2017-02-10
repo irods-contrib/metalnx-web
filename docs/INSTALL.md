@@ -30,6 +30,7 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 10. [Accessing Metalnx](#accessing_metalnx)
 11. [Metalnx Install Checklist](#metalnx_checklist)
 12. [Integration With LDAP](#LDAP)
+13. [PAM authentication](#PAM)
 
 </font>
 
@@ -906,6 +907,11 @@ An example of configuration is:
 	runSyncJobs=true
 
 **NOTE:** Always check the new line format in your properties files. Avoid Windows-editors to eliminate new line characters being inserted to prevent errors on Linux environments. 
+
+__PAM__ <a name="PAM"></a>
+
+If you want to set up an environment with PAM authentication, please check the <a href="METALNX_PAM_AUTH"> Metalnx PAM authentication </a> document. It walks you through the necessary steps to configure Metalnx 
+to work with PAM.
 
 [RMD_github_repo]: https://github.com/sgworth/metalnx-rmd/
 [RMD_installation_guide]: https://github.com/sgworth/metalnx-rmd/blob/master/docs/INSTALL.md
