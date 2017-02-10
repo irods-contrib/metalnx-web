@@ -17,13 +17,6 @@
 
 package com.emc.metalnx.services.auth;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -33,6 +26,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 
 public class IRODSLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 
@@ -51,7 +50,7 @@ public class IRODSLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler imp
             IRODSAccount irodsAccount = ((UserTokenDetails) authentication.getDetails()).getIrodsAccount();
             String username = irodsAccount.getUserName();
 
-            logger.debug("Closing session and eating all exceptions");
+            logger.info("Closing session and eating all exceptions");
             irodsAccessObjectFactory.closeSessionAndEatExceptions(irodsAccount);
             irodsAccessObjectFactory.closeSessionAndEatExceptions();
 

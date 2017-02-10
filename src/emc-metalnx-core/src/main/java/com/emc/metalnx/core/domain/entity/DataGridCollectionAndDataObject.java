@@ -16,11 +16,11 @@
  */
 package com.emc.metalnx.core.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DataGridCollectionAndDataObject implements Serializable {
 
@@ -269,6 +269,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
      * @return String in the format MM/DD/YYYY HH:MM
      */
     public String getModifiedAtFormatted() {
+        if(modifiedAt == null) return "";
         return new SimpleDateFormat(DATE_FORMAT_STR).format(modifiedAt);
     }
 
@@ -288,6 +289,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
      */
     @JsonIgnore
     public String getCreatedAtFormatted() {
+        if(createdAt == null) return "";
         return new SimpleDateFormat(DATE_FORMAT_STR).format(createdAt);
     }
 
