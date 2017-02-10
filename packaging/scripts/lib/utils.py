@@ -11,10 +11,11 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+import os
 import re
 import subprocess
 from datetime import datetime
-from os import path, listdir, rename
+from os import listdir, rename
 from os.path import devnull
 from shutil import copy
 
@@ -35,7 +36,7 @@ def log(msg):
 
 def banner():
     """Returns banner string for the configuration script"""
-    main_line = ' ' * 21 + 'Metalnx Installation Script v{}-{}'.format(RELEASE_VERSION, BUILD_NUMBER) + ' ' * 21
+    main_line = ' ' * 21 + 'Metalnx Installation Script v{} {}'.format(RELEASE_VERSION, BUILD_NUMBER) + ' ' * 21
     return '\033[44m' + ' ' * len(main_line) + '\033[0m\n\033[44m' + main_line + '\033[0m\n\033[44m' + ' ' * len(
         main_line) + '\033[0m'
 
@@ -146,7 +147,6 @@ class DBConnectionTestMixin:
         ).close()
 
 
-
 class IRODSConnectionTestMixin:
     def _test_irods_connection(self):
         """Authenticates against iRODS"""
@@ -154,8 +154,10 @@ class IRODSConnectionTestMixin:
 
         os_devnull = open(devnull, 'w')
 
+        trust_store = '{}={}'.format(JAVA_SSL_TRUSTSTORE_PARAM, os.path.join(KEYSTORE_DIR, KEYSTORE_FILE))
+
         irods_auth_params = [
-            'java', '-jar', TEST_CONNECTION_JAR,
+            'java', '-jar', trust_store, TEST_CONNECTION_JAR,
             self.irods_props[IRODS_PROPS_SPEC['host']['name']],
             self.irods_props[IRODS_PROPS_SPEC['port']['name']],
             self.irods_props[IRODS_PROPS_SPEC['user']['name']],
