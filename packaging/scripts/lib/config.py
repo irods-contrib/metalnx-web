@@ -143,10 +143,14 @@ def get_mlx_url(is_https):
         return MLX_URL_FORMAT('https', gethostname(), '8443')
     return MLX_URL_FORMAT('http', gethostname(), '8080')
 
-RELEASE_VERSION = '1.0'
-BUILD_NUMBER = '257'
+RELEASE_VERSION = '1.1.0'
+BUILD_NUMBER = ''
 
 TEST_CONNECTION_JAR = '/opt/emc/test-connection.jar'
+
+KEYSTORE_DIR = '/etc/irods/ssl'
+KEYSTORE_FILE = 'irodskeystore'
+JAVA_SSL_TRUSTSTORE_PARAM = '-Djavax.net.ssl.trustStore'
 
 IRODS_PROPS_FILENAME = 'irods.environment.properties'
 DATABASE_PROPS_FILENAME = 'database.properties'

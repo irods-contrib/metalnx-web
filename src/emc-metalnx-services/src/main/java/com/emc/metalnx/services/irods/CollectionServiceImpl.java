@@ -327,7 +327,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public boolean createCollection(DataGridCollectionAndDataObject collection) throws DataGridException {
 
-        boolean collCreated = false;
+        boolean collCreated;
 
         try {
             IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
@@ -350,7 +350,7 @@ public class CollectionServiceImpl implements CollectionService {
             collCreated = true;
         }
         catch (JargonException e) {
-            logger.error("Could not create a collection in the data grid: {}", e.getMessage());
+            logger.debug("Could not create a collection in the data grid: {}", e.getMessage());
             throw new DataGridException(e.getMessage());
         }
 
@@ -394,7 +394,7 @@ public class CollectionServiceImpl implements CollectionService {
             }
         }
         catch (JargonException e) {
-            logger.error("Could not find collection/data object by name: {}", path);
+            logger.debug("Could not find collection/data object by name: {}", path);
             throw new DataGridException("Could not find path " + path);
         }
 
