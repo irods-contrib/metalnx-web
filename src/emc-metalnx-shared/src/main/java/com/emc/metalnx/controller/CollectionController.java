@@ -117,6 +117,11 @@ public class CollectionController {
     private Stack<String> collectionHistoryBack;
     private Stack<String> collectionHistoryForward;
 
+    // variable to save trash path for the logged user
+    private String userTrashPath = "";
+    // saves the trash under the zone
+    private String zoneTrashPath = "";
+
     private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
     @PostConstruct
@@ -800,7 +805,10 @@ public class CollectionController {
         // cleaning session variables
         sourcePaths.clear();
 
-        currentPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
+        if(userTrashPath == null || userTrashPath.equals("")){
+            userTrashPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
+        }
+        currentPath = userTrashPath;
         parentPath = currentPath;
 
         model.addAttribute("currentPath", currentPath);
@@ -1183,7 +1191,10 @@ public class CollectionController {
 
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
         permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
-        isTrash = path.contains(String.format("/%s/trash", irodsServices.getCurrentUserZone())) && ("own".equals(permissionType) || user.isAdmin());
+        if(zoneTrashPath == null || zoneTrashPath.equals("")){
+            zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
+        }
+        isTrash = path.contains(zoneTrashPath) && ("own".equals(permissionType) || user.isAdmin());
 
         model.addAttribute("collectionAndDataObject", dataGridObj);
         model.addAttribute("permissionType", permissionType);
