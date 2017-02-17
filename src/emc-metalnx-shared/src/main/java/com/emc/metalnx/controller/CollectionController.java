@@ -72,9 +72,6 @@ public class CollectionController {
     UserBookmarkService userBookmarkService;
 
     @Autowired
-    TemplateService templateService;
-
-    @Autowired
     MetadataService metadataService;
 
     @Autowired
@@ -107,14 +104,9 @@ public class CollectionController {
     // Auxiliary structure to manage download, upload, copy and move operations
     private List<String> sourcePaths;
 
-    // Logged user home path
-    private String homePath;
-
     // ui mode that will be shown when the rods user switches mode from admin to user and vice-versa
     public static final String UI_USER_MODE = "user";
     public static final String UI_ADMIN_MODE = "admin";
-    private static String TRASH_PATH;
-    private static String USER_TRASH_PATH;
 
     public static final int MAX_HISTORY_SIZE = 10;
 
@@ -124,6 +116,11 @@ public class CollectionController {
 
     private Stack<String> collectionHistoryBack;
     private Stack<String> collectionHistoryForward;
+
+    // variable to save trash path for the logged user
+    private String userTrashPath = "";
+    // saves the trash under the zone
+    private String zoneTrashPath = "";
 
     private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
@@ -136,13 +133,9 @@ public class CollectionController {
         cameFromFilePropertiesSearch = false;
         cameFromBookmarks = false;
 
-        homePath = cs.getHomeDirectyForCurrentUser();
-
         sourcePaths = new ArrayList<>();
         parentPath = "";
         currentPath = "";
-        TRASH_PATH = String.format("/%s/trash", irodsServices.getCurrentUserZone());
-        USER_TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
     }
 
     /**
@@ -159,7 +152,7 @@ public class CollectionController {
             sourcePaths.clear();
 
             if (!cs.isPathValid(currentPath)) {
-                currentPath = homePath;
+                currentPath = cs.getHomeDirectyForCurrentUser();
                 parentPath = currentPath;
             }
             else if (cs.isDataObject(currentPath)) {
@@ -180,7 +173,7 @@ public class CollectionController {
             }
 
             if (uiMode.equals(UI_USER_MODE)) {
-                model.addAttribute("homePath", homePath);
+                model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
                 model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
             }
             if (uploadNewTab) {
@@ -812,7 +805,10 @@ public class CollectionController {
         // cleaning session variables
         sourcePaths.clear();
 
-        currentPath = USER_TRASH_PATH;
+        if(userTrashPath == null || userTrashPath.equals("")){
+            userTrashPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
+        }
+        currentPath = userTrashPath;
         parentPath = currentPath;
 
         model.addAttribute("currentPath", currentPath);
@@ -1195,7 +1191,10 @@ public class CollectionController {
 
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
         permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
-        isTrash = path.contains(TRASH_PATH) && ("own".equals(permissionType) || user.isAdmin());
+        if(zoneTrashPath == null || zoneTrashPath.equals("")){
+            zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
+        }
+        isTrash = path.contains(zoneTrashPath) && ("own".equals(permissionType) || user.isAdmin());
 
         model.addAttribute("collectionAndDataObject", dataGridObj);
         model.addAttribute("permissionType", permissionType);
