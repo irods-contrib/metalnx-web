@@ -17,13 +17,12 @@
 
 package com.emc.metalnx.services.auth;
 
-import java.io.Serializable;
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.emc.metalnx.core.domain.dao.UserDao;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.services.exceptions.DataGridAuthenticationException;
 import com.emc.metalnx.services.exceptions.DataGridDatabaseException;
 import com.emc.metalnx.services.exceptions.DataGridServerException;
+import com.emc.metalnx.services.interfaces.AuthenticationProviderService;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.auth.AuthResponse;
@@ -40,13 +39,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-
-import com.emc.metalnx.core.domain.dao.UserDao;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.services.exceptions.DataGridAuthenticationException;
-import com.emc.metalnx.services.interfaces.AuthenticationProviderService;
 import org.springframework.transaction.TransactionException;
 import org.springframework.util.StringUtils;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IRODSAuthenticationProvider implements AuthenticationProviderService, Serializable {
 
@@ -151,7 +149,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         logger.debug(
                 "Authenticating IRODSAccount:\n\tusername: {}\n\tpassword: ***********\n\tirodsHost: {}\n\tirodsZone: {}",
                 username, this.irodsHost, this.irodsZoneName);
-        authResponse = this.irodsAccessObjectFactory.authenticateIRODSAccount(this.irodsAccount);
+        authResponse = this.irodsAccessObjectFactory.authenticateIRODSAccountUtilizingCachedConnectionIfPresent(this.irodsAccount);
         logger.debug("Done.");
 
         if (authResponse.isSuccessful()) {
@@ -253,7 +251,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         public String getAuthority() {
             return "ROLE_ADMIN";
         }
-    };
+    }
 
     /**
      * Temporary implementation of the GrantedAuthority interface for User authentication
@@ -266,5 +264,5 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         public String getAuthority() {
             return "ROLE_USER";
         }
-    };
+    }
 }
