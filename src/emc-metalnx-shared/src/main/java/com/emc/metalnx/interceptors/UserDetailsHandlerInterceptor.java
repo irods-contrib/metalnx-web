@@ -19,8 +19,10 @@ package com.emc.metalnx.interceptors;
 
 import com.emc.metalnx.modelattribute.enums.URLMap;
 import com.emc.metalnx.services.auth.UserTokenDetails;
+import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,20 +35,21 @@ import javax.servlet.http.HttpServletResponse;
 public class UserDetailsHandlerInterceptor extends HandlerInterceptorAdapter {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsHandlerInterceptor.class);
 
+    @Autowired
+    IRODSAccessObjectFactory irodsAccessObjectFactory;
+
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView)
             throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null) {
-            logger.error("Session expired. Logging out the user.");
-            response.sendRedirect(request.getContextPath() + URLMap.URL_LOGOUT);
-        }
-        else if (modelAndView != null && authentication instanceof UsernamePasswordAuthenticationToken) {
+        if (modelAndView != null && authentication instanceof UsernamePasswordAuthenticationToken) {
                 // add user details only if the user is logged
                 UserTokenDetails userTokenDetails = (UserTokenDetails) authentication.getDetails();
                 modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
         }
+
+        irodsAccessObjectFactory.closeSessionAndEatExceptions();
     }
 
 }
