@@ -1173,6 +1173,7 @@ public class CollectionController {
         setBreadcrumbToModel(model, path);
 
         DataGridCollectionAndDataObject dataGridObj = new DataGridCollectionAndDataObject();
+        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
         try {
             dataGridObj = cs.findByName(path);
             if (dataGridObj != null && !dataGridObj.isCollection()) {
@@ -1180,6 +1181,7 @@ public class CollectionController {
                 dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
                 dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
             }
+            permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
         }
         catch (DataGridException e) {
             dataGridObj.setPath(path);
@@ -1189,8 +1191,6 @@ public class CollectionController {
             logger.error("Could not get file info for {}", path, e);
         }
 
-        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
-        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
         if(zoneTrashPath == null || zoneTrashPath.equals("")){
             zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
         }
