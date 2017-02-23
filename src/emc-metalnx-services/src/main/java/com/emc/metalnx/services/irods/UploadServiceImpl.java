@@ -17,7 +17,6 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
 import com.emc.metalnx.core.domain.exceptions.DataGridMSIVersionNotSupported;
@@ -42,9 +41,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -242,9 +238,9 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public boolean tranferFileDirectlyToJargon(String fileName, MultipartFile multipartFile, String targetPath,
-                                               boolean computeCheckSum, boolean replicateFile, String replicationResource,
-                                               String destinationResource, boolean overwriteDuplicateFiles)
-            throws DataGridException{
+                                               boolean computeCheckSum, boolean replicateFile,
+                                               String replicationResource, String destinationResource,
+                                               boolean overwriteDuplicateFiles) throws DataGridException {
 
         if (multipartFile == null || multipartFile.isEmpty() || "".equals(targetPath) || targetPath == null
                 || "".equals(destinationResource) || destinationResource == null) {
@@ -252,13 +248,14 @@ public class UploadServiceImpl implements UploadService {
             return false;
         }
 
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             inputStream = multipartFile.getInputStream();
         } catch (IOException e) {
             logger.error("Could not get input stream from file: ", e.getMessage());
             throw new DataGridException("Could not get input stream from file.");
         }
+
         String defaultStorageResource = is.getDefaultStorageResource();
 
         logger.info("Setting default resource to {}", destinationResource);
@@ -266,36 +263,22 @@ public class UploadServiceImpl implements UploadService {
         // Setting temporarily the defaultStorageResource for the logged user
         is.setDefaultStorageResource(destinationResource);
 
+        boolean isFileUploaded;
+
         // Getting DataObjectAO in order to create the new file
         IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
-
-        // Creating set of filenames on the current collection
-        List<DataGridCollectionAndDataObject> filesInColl = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
-
-        Set<String> setOfFilesInColl = new HashSet<String>();
-        for (DataGridCollectionAndDataObject dataObj : filesInColl) {
-            if (!dataObj.isCollection()) {
-                setOfFilesInColl.add(dataObj.getName());
-            }
-        }
-
-        //File file = fileForUpload.getFile();
-        boolean isFileUploaded = false;
-        boolean fileIsAlreadyInCollection = setOfFilesInColl.contains(fileName);
-
-        // If file already exists and we do not want to overwrite it, the
-        // transferring is aborted.
-        if (fileIsAlreadyInCollection && !overwriteDuplicateFiles) {
-            String msg = "File already exists. Not overwriting it.";
-            logger.info(msg);
-            throw new DataGridFileAlreadyExists(msg);
-        }
-
-        IRODSFile targetFile = null;
         Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
+        IRODSFile targetFile = null;
         try {
             targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
             targetFile.setResource(destinationResource);
+
+            // file already exists and we do not want to overwrite it, the transferring is aborted.
+            if (targetFile.exists() && !overwriteDuplicateFiles) {
+                String msg = "File already exists. Not overwriting it.";
+                logger.info(msg);
+                throw new DataGridFileAlreadyExists(msg);
+            }
 
             // Transfering file to iRODS filesystem
             stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
