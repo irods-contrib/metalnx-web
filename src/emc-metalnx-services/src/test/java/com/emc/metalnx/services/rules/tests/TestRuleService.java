@@ -6,6 +6,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import com.emc.metalnx.services.irods.RuleServiceImpl;
@@ -50,6 +51,9 @@ public class TestRuleService {
     @Mock
     private ResourceService resourceService;
 
+    @Mock
+    private IRODSServices irodsServices;
+
     private static String msiVersion;
 
     @PostConstruct
@@ -71,6 +75,31 @@ public class TestRuleService {
         resc.setHost("icat.test.com");
         when(resourceService.find(anyString())).thenReturn(resc);
         when(ruleService.executeRule(anyString())).thenReturn(new HashMap<>());
+    }
+
+    @Test
+    public void testIRODS42Rule() throws DataGridConnectionRefusedException {
+        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com", true);
+        assertTrue(rule.isAtLeastIRODS420());
+    }
+
+    @Test
+    public void testRuleWithNoVariableDeclarationForIRODS420() throws DataGridConnectionRefusedException {
+        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
+        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", true);
+        rule.setInputRuleParams("param1", "param2");
+        rule.setOutputRuleParams("output_param");
+        assertFalse(rule.toString().contains("*output_param=\"\";"));
+    }
+
+    @Test
+    public void testRuleWithVariableDeclarationForIRODS41X() throws DataGridConnectionRefusedException {
+        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
+        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", false);
+        rule.setInputRuleParams("param1", "param2");
+        rule.setOutputRuleParams("output_param");
+        assertTrue(rule.toString().contains("*output_param=\"\";"));
     }
 
     @Test
