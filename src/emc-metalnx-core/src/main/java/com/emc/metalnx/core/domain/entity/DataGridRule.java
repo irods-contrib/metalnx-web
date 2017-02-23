@@ -17,6 +17,7 @@ public class DataGridRule {
     private String[] outputRuleParams; // rule output parameters
     private String host;
     private String rule;
+    private boolean isAtLeastIRODS420;
 
     private static final String INPUT = "INPUT";
     private static final String OUTPUT = "OUTPUT";
@@ -52,14 +53,23 @@ public class DataGridRule {
         rulesMap = Collections.unmodifiableMap(map);
     }
 
-    public DataGridRule(String rule, String host) {
+    public DataGridRule(String rule, String host, boolean isAtLeastIRODS420) {
         this.host = host;
         this.rule = rule;
+        this.isAtLeastIRODS420 = isAtLeastIRODS420;
+    }
+
+    public DataGridRule(String rule, String host) {
+        this(rule, host, true);
     }
 
     public void setInputRuleParams(String... params) { this.inputRuleParams = params; }
 
     public void setOutputRuleParams(String... params) { this.outputRuleParams = params; }
+
+    public boolean isAtLeastIRODS420() {
+        return isAtLeastIRODS420;
+    }
 
     private String getInputParamsAsString() {
         StringBuilder sb = new StringBuilder();
@@ -140,8 +150,7 @@ public class DataGridRule {
         ruleString.append(rule);
         ruleString.append("{");
         ruleString.append("\n");
-        ruleString.append(declareOutputParams());
-        ruleString.append("\n");
+        if(!isAtLeastIRODS420) ruleString.append(declareOutputParams() + "\n");
         ruleString.append(header.getRemoteRuleHeader());
         ruleString.append(getMSIParamsAsString());
         ruleString.append(header.getRemoteRuleFooter());

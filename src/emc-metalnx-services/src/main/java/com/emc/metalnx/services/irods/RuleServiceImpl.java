@@ -176,11 +176,11 @@ public class RuleServiceImpl implements RuleService {
 
         DataGridResource dgResc = rs.find(destResc);
 
-        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, dgResc.getHost());
+        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, dgResc.getHost(), is.isAtLeastIrods420());
         tarRule.setInputRuleParams(objPath, targetPath, destResc);
         tarRule.setOutputRuleParams("Status");
 
-        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, dgResc.getHost());
+        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, dgResc.getHost(), is.isAtLeastIrods420());
         illuminaRule.setInputRuleParams(objPath, destResc);
 
         executeRule(tarRule.toString());

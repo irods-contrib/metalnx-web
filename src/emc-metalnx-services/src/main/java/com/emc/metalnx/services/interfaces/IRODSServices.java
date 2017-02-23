@@ -17,23 +17,9 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import org.irods.jargon.core.pub.BulkFileOperationsAO;
-import org.irods.jargon.core.pub.CollectionAO;
-import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
-import org.irods.jargon.core.pub.DataObjectAO;
-import org.irods.jargon.core.pub.DataTransferOperations;
-import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.RemoteExecutionOfCommandsAO;
-import org.irods.jargon.core.pub.ResourceAO;
-import org.irods.jargon.core.pub.RuleProcessingAO;
-import org.irods.jargon.core.pub.SpecificQueryAO;
-import org.irods.jargon.core.pub.Stream2StreamAO;
-import org.irods.jargon.core.pub.UserAO;
-import org.irods.jargon.core.pub.UserGroupAO;
-import org.irods.jargon.core.pub.ZoneAO;
-import org.irods.jargon.core.pub.io.IRODSFileFactory;
-
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import org.irods.jargon.core.pub.*;
+import org.irods.jargon.core.pub.io.IRODSFileFactory;
 
 /**
  * Service that allows the user to get an instance of each iRODS AO by session.
@@ -47,21 +33,21 @@ public interface IRODSServices {
      * @return BulkFileOperationsAO instance
      * @throws DataGridConnectionRefusedException
      */
-    public BulkFileOperationsAO getBulkFileOperationsAO() throws DataGridConnectionRefusedException;
+    BulkFileOperationsAO getBulkFileOperationsAO() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the current user's zone
      *
      * @return zone name
      */
-    public String getCurrentUserZone();
+    String getCurrentUserZone();
 
     /**
      * Gets the logged user
      *
      * @return logged user name
      */
-    public String getCurrentUser();
+    String getCurrentUser();
 
     /**
      * Gets the UserAO from iRODS based on the logged user.
@@ -69,7 +55,7 @@ public interface IRODSServices {
      * @return the UserAO object
      * @throws DataGridConnectionRefusedException
      */
-    public UserAO getUserAO() throws DataGridConnectionRefusedException;
+    UserAO getUserAO() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the GroupAO from iRODS based on the logged user.
@@ -77,7 +63,7 @@ public interface IRODSServices {
      * @return the UserAO object
      * @throws DataGridConnectionRefusedException
      */
-    public UserGroupAO getGroupAO() throws DataGridConnectionRefusedException;
+    UserGroupAO getGroupAO() throws DataGridConnectionRefusedException;
 
     /**
      * Returns the AO of the Collections API
@@ -85,7 +71,7 @@ public interface IRODSServices {
      * @return CollectionAO object
      * @throws DataGridConnectionRefusedException
      */
-    public CollectionAO getCollectionAO() throws DataGridConnectionRefusedException;
+    CollectionAO getCollectionAO() throws DataGridConnectionRefusedException;
 
     /**
      * Returns the AO of the CollectionAndDataObjectListAndSearch API
@@ -93,7 +79,7 @@ public interface IRODSServices {
      * @return
      * @throws DataGridConnectionRefusedException
      */
-    public CollectionAndDataObjectListAndSearchAO getCollectionAndDataObjectListAndSearchAO()
+    CollectionAndDataObjectListAndSearchAO getCollectionAndDataObjectListAndSearchAO()
             throws DataGridConnectionRefusedException;
 
     /**
@@ -102,7 +88,7 @@ public interface IRODSServices {
      * @return IRODSFileSystemAO object
      * @throws DataGridConnectionRefusedException
      */
-    public IRODSFileSystemAO getIRODSFileSystemAO() throws DataGridConnectionRefusedException;
+    IRODSFileSystemAO getIRODSFileSystemAO() throws DataGridConnectionRefusedException;
 
     /**
      * Get access to the iRods File Factory
@@ -110,7 +96,7 @@ public interface IRODSServices {
      * @return IRODSFileFactory object
      * @throws DataGridConnectionRefusedException
      */
-    public IRODSFileFactory getIRODSFileFactory() throws DataGridConnectionRefusedException;
+    IRODSFileFactory getIRODSFileFactory() throws DataGridConnectionRefusedException;
 
     /**
      * This is an access object that can be used to move data to, from, and between iRODS resources.
@@ -118,7 +104,7 @@ public interface IRODSServices {
      * @return DataTransferOperations object
      * @throws DataGridConnectionRefusedException
      */
-    public DataTransferOperations getDataTransferOperations()
+    DataTransferOperations getDataTransferOperations()
             throws DataGridConnectionRefusedException;
 
     /**
@@ -127,11 +113,11 @@ public interface IRODSServices {
      * @return Stream2StreamAO object
      * @throws DataGridConnectionRefusedException
      */
-    public Stream2StreamAO getStream2StreamAO() throws DataGridConnectionRefusedException;
+    Stream2StreamAO getStream2StreamAO() throws DataGridConnectionRefusedException;
 
-    public SpecificQueryAO getSpecificQueryAO() throws DataGridConnectionRefusedException;
+    SpecificQueryAO getSpecificQueryAO() throws DataGridConnectionRefusedException;
 
-    public RemoteExecutionOfCommandsAO getRemoteExecutionOfCommandsAO()
+    RemoteExecutionOfCommandsAO getRemoteExecutionOfCommandsAO()
             throws DataGridConnectionRefusedException;
 
     /**
@@ -140,7 +126,7 @@ public interface IRODSServices {
      * @return Resource access object
      * @throws DataGridConnectionRefusedException
      */
-    public ResourceAO getResourceAO() throws DataGridConnectionRefusedException;
+    ResourceAO getResourceAO() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the ZoneAO from iRODS based on the logged user.
@@ -148,7 +134,7 @@ public interface IRODSServices {
      * @return Zone access object
      * @throws DataGridConnectionRefusedException
      */
-    public ZoneAO getZoneAO() throws DataGridConnectionRefusedException;
+    ZoneAO getZoneAO() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the DataObjectAO from iRODS based on the logged user.
@@ -156,7 +142,7 @@ public interface IRODSServices {
      * @return Data Object access object
      * @throws DataGridConnectionRefusedException
      */
-    public DataObjectAO getDataObjectAO() throws DataGridConnectionRefusedException;
+    DataObjectAO getDataObjectAO() throws DataGridConnectionRefusedException;
 
     /**
      * Gets the RuleProcessingAO from iRODS based on the logged user.
@@ -164,18 +150,38 @@ public interface IRODSServices {
      * @return Rule Processing Access Object
      * @throws DataGridConnectionRefusedException
      */
-    public RuleProcessingAO getRuleProcessingAO() throws DataGridConnectionRefusedException;
+    RuleProcessingAO getRuleProcessingAO() throws DataGridConnectionRefusedException;
 
     /**
      * Sets the default storage resource for the current iRODS Account.
      *
      * @param newResourceName
      */
-    public void setDefaultStorageResource(String newResourceName);
+    void setDefaultStorageResource(String newResourceName);
 
     /**
      * Gets the default storage resource for the current iRODS Account.
      */
-    public String getDefaultStorageResource();
+    String getDefaultStorageResource();
 
+    /**
+     * Gets the grid environmental info.
+     * @return
+     * @throws DataGridConnectionRefusedException
+     */
+    EnvironmentalInfoAO getEnvironmentalInfoAO() throws DataGridConnectionRefusedException;
+
+    /**
+     * Verifies whether or not the version of iRODS is at least 4.2.0.
+     * @return True if iRODS version is >= 4.2.0. False, otherwise.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
+     */
+    boolean isAtLeastIrods420() throws DataGridConnectionRefusedException;
+
+    /**
+     * Verifies whether or not the version of iRODS is at least 4.1.0.
+     * @return True if iRODS version is >= 4.1.0. False, otherwise.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
+     */
+    boolean isAtLeastIrods418() throws DataGridConnectionRefusedException;
 }
