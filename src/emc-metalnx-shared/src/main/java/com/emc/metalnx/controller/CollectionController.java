@@ -616,33 +616,6 @@ public class CollectionController {
     }
 
     /**
-     * Responds the collection/add/ request and displays the add collection form
-     *
-     * @param model
-     * @return add collection template
-     * @throws DataGridConnectionRefusedException
-     */
-    @RequestMapping(value = "add/")
-    public String showAddCollection(Model model) throws DataGridConnectionRefusedException {
-        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
-        String permission = cs.getPermissionsForPath(currentPath);
-        boolean inheritance = cs.getInheritanceOptionForCollection(currentPath);
-        if (inheritance) {
-            collectionForm.setInheritOption(true);
-        }
-        else {
-            collectionForm.setInheritOption(false);
-        }
-        model.addAttribute("inheritanceDisabled", !"own".equals(permission) && inheritance);
-        model.addAttribute("collection", collectionForm);
-        model.addAttribute("requestMapping", "/collections/add/action/");
-        model.addAttribute("currentPath", currentPath);
-        model.addAttribute("parentPath", parentPath);
-
-        return "collections/addCollectionForm";
-    }
-
-    /**
      * Performs the action of actually creating a collection in iRODS
      *
      * @param model
@@ -1156,9 +1129,13 @@ public class CollectionController {
         String permissionType = "none";
         boolean isCurrentPathCollection = false;
         boolean isTrash = false;
+        boolean inheritance = false;
+        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
 
         permissionType = cs.getPermissionsForPath(path);
         isCurrentPathCollection = cs.isCollection(path);
+        inheritance = cs.getInheritanceOptionForCollection(currentPath);
+        collectionForm.setInheritOption(inheritance);
 
         if (path.isEmpty()) {
             path = currentPath;
@@ -1203,6 +1180,11 @@ public class CollectionController {
         model.addAttribute("user", user);
         model.addAttribute("isTrash", isTrash);
         model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
+
+        model.addAttribute("inheritanceDisabled", !"own".equals(permissionType) && inheritance);
+        model.addAttribute("collection", collectionForm);
+        model.addAttribute("requestMapping", "/collections/add/action/");
+        model.addAttribute("parentPath", parentPath);
 
         return "collections/collectionsBrowser";
     }

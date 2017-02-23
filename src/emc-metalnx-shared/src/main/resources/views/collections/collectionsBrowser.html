@@ -182,6 +182,71 @@
 	</div>
 </div>
 
+<!-- Add Modal -->
+<div class="modal fade" id="addAndModifyModal" tabindex="-1"
+	 role="dialog" aria-labelledby="myAddAndModifyModalLabel"
+	 aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-form-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myAddAndModifyModalLabel"
+						th:text="#{collections.add.form.title}"></h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="row">
+						<form role="form" class="container-fluid registerForm"
+							  method="POST" th:object="${collection}"
+							  th:action="@{${requestMapping}}">
+
+							<input type="hidden" id="inputCollectionPath" th:field="*{path}" />
+							<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" />
+
+							<div class="form-group">
+								<b><span th:text="#{collections.add.form.current.path.alternate}"></span></b><br/>
+								<span th:text="${currentPath}"></span>
+							</div>
+
+							<div class="form-group">
+								<label for="inputCollectionName" th:text="#{collections.add.form.collectionname.label}"></label>
+								<input type="text" class="form-control" id="inputCollectionName" th:placeholder="#{collections.add.form.collectionname.placeholder}" th:field="*{collectionName}" style="width:66%"/>
+								<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidCollectionNameIcon" style="right:33%"></i>
+								<small class="help-block hideElement" id="invalidCollectionNameMsg" th:text="#{collections.validation.name.duplicated}"></small>
+								<small class="help-block hideElement" id="emptyCollectionNameMsg" th:text="#{collections.validation.name.blank}"></small>
+							</div>
+
+							<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
+							<span th:unless="${inheritanceDisabled}">
+								<span th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
+								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							</span>
+							<span th:if="${inheritanceDisabled}">
+								<span>iRods Inheritance</span>
+								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							</span>
+						</form>
+
+					</div>
+					<script>
+						$(function(){
+							$('[data-toggle="tooltip"]').tooltip();
+						});
+					</script>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default cancelBtn" data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
+				<button type="button" class="btn btn-primary" id="submitCollectionFormBtn" th:text="#{forms.save.action.button}"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Add Modal -->
+
 <!-- Bread Crumb -->
 <div id="directoryPath" class="col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">		
 </div>
@@ -409,9 +474,7 @@
         var path = null;
         var currentPermissionTab = "groups";
         var datatable;
-       
-      
-        
+
         $(document).ready(function(e){  
         	
 			// Add tooltip on Upload button
@@ -688,11 +751,7 @@
 				}
 			}
 		}
-        $("#showCollectionFormBtn").click(function () {
-        	var url = [[ ${ urlMap.URL_ADD_COLLECTION_USER } ]];
-        	ajaxEncapsulation(url, "GET", "", displayAddModifyCollectionModal, null, null);
-		});
-        
+
         $("#downloadBtn").click(function(e) {
         	e.preventDefault();
         	$("#actionUpload").hide();
@@ -701,6 +760,23 @@
         	ajaxEncapsulation(downloadURL, "GET", null, handleDownload, handleDownloadFailure, null, null);
 			$("#actions button").prop("disabled", true);
         });
+
+        $("#submitCollectionFormBtn").click(function(){
+			var newCollOrDataObjectName = $('#inputCollectionName').val();
+			var parentPath = $('#inputCollectionParentPath').val();
+			var collPath = $('#inputCollectionPath').val();
+
+			if (collPath != "") {
+				var oldCollName = path.substring(parentPath.length + 1, collPath.length);
+			}
+
+			if(collPath == "" || oldCollName != newCollOrDataObjectName) {
+				validateCollectionNameAjax([[${urlMap.URL_COLLECTION_VALIDATE_NAME}]] + newCollOrDataObjectName, submitForm);
+			}
+			else {
+				submitForm();
+			}
+		});
         
         function handleDownload() {
         	$("#actionDownload").hide();
@@ -761,11 +837,6 @@
             $("#table-loader").after(data);
         }
         
-        function displayAddModifyCollectionModal(data){
-			$("#addAndModifyModal .modal-form-content").html(data);
-			$("#addAndModifyModal").modal("show");
-        }
-
         $('a[data-target="#uploadModal"]').click(function(){
         	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {path: path}, displayUploadModal, null, null, null);
         });
