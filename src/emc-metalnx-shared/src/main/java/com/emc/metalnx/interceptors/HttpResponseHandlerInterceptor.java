@@ -19,9 +19,8 @@ package com.emc.metalnx.interceptors;
 
 import com.emc.metalnx.modelattribute.enums.URLMap;
 import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.utils.EmcMetalnxVersion;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,23 +31,35 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UserDetailsHandlerInterceptor extends HandlerInterceptorAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(UserDetailsHandlerInterceptor.class);
+/**
+ * Class that will intercept HTTP responses to clients. Metalnx will use it to close sessions in the grid and add
+ * objects pertinent to every response.
+ */
+public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    IRODSAccessObjectFactory irodsAccessObjectFactory;
+    private IRODSAccessObjectFactory irodsAccessObjectFactory;
+
+    private UserTokenDetails userTokenDetails;
+    private URLMap urlMap;
+    private EmcMetalnxVersion emcmetalnxVersion;
 
     @Override
-    public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView)
-            throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
+                           final ModelAndView modelAndView) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (modelAndView != null && authentication instanceof UsernamePasswordAuthenticationToken) {
-                // add user details only if the user is logged
-                UserTokenDetails userTokenDetails = (UserTokenDetails) authentication.getDetails();
-                modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
+        if (modelAndView != null && auth != null && auth instanceof UsernamePasswordAuthenticationToken) {
+            if(urlMap == null) urlMap = new URLMap();
+            if(emcmetalnxVersion == null) emcmetalnxVersion = new EmcMetalnxVersion();
+            userTokenDetails = (UserTokenDetails) auth.getDetails();
+
+            modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
+            modelAndView.getModelMap().addAttribute("urlMap", urlMap);
+            modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
         }
 
+        // closing sessions to avoid idle agents
         irodsAccessObjectFactory.closeSessionAndEatExceptions();
     }
 

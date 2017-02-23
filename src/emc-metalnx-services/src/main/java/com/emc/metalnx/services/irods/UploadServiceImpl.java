@@ -26,6 +26,7 @@ import com.emc.metalnx.service.utils.DataGridFileForUpload;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -66,6 +67,9 @@ public class UploadServiceImpl implements UploadService {
 
     @Autowired
     private MSIService msiService;
+
+    @Autowired
+    private IRODSAccessObjectFactory irodsAccessObjectFactory;
 
     @Override
     public DataGridFileForUpload buildFileForUpload(HttpServletRequest request) throws DataGridException {
@@ -302,9 +306,6 @@ public class UploadServiceImpl implements UploadService {
             // Replicating file into desired resource
             if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResource, false);
 
-            // Closing streams opened
-            inputStream.close();
-
             // Getting list of resources for upload
             HashMap<String, String> resourceMap = null;
             try {
@@ -334,6 +335,12 @@ public class UploadServiceImpl implements UploadService {
         } catch (IOException e) {
             logger.error("Could not get canonical path", e.getMessage());
             throw new DataGridException("Could not get canonical path");
+        } finally {
+            try {
+                inputStream.close(); // Closing streams opened
+            } catch (IOException e) {
+                logger.error("Could close stream: ", e.getMessage());
+            }
         }
 
         // Setting the default resource back to the original one.

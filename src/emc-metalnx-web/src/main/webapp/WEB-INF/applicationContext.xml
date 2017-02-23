@@ -173,9 +173,7 @@
 
 	<!-- MVC Interceptors -->
 	<mvc:interceptors>
-	    <bean class="com.emc.metalnx.interceptors.URLHandlerInterceptor" autowire="constructor" />
-	    <bean class="com.emc.metalnx.interceptors.UserDetailsHandlerInterceptor" autowire="constructor" />
-	    <bean class="com.emc.metalnx.interceptors.EmcMetalnxVersionHandlerInterceptor" autowire="constructor" />
+		<bean class="com.emc.metalnx.interceptors.HttpResponseHandlerInterceptor" autowire="constructor" />
 	    <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
 			<property name="cacheSeconds" value="0"/>
 			<property name="useExpiresHeader" value="true"/>

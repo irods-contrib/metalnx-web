@@ -26,10 +26,12 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 6. [Apache Tomcat Installation](#apache_tomcat_installation)
 7. [Install the Metalnx Web Application](#install_metalnx)
 8. [Configure the Metalnx Database](#config_metalnx_database)
-9. [Setup Metalnx](#setup_metalnx)
-10. [Accessing Metalnx](#accessing_metalnx)
-11. [Metalnx Install Checklist](#metalnx_checklist)
-12. [Integration With LDAP](#LDAP)
+9. [Setup iRODS Negotiation Paramater](#setup_irods_neg)
+10. [Setup Metalnx](#setup_metalnx)
+11. [Accessing Metalnx](#accessing_metalnx)
+12. [Metalnx Install Checklist](#metalnx_checklist)
+13. [Integration With LDAP](#LDAP)
+14. [PAM authentication](#PAM)
 
 </font>
 
@@ -502,6 +504,46 @@ Then, start and enable Postgres:
 -------------- 
 
 <br>
+__Setup iRODS Negotiation__ <a name="setup_irods_neg"></a>
+
+Before running the Metalnx set up script, you need to make sure your iRODS negotiation paramaters are correct.
+
+By default, iRODS is configured as `CS_NEG_DONT_CARE` in the `core.re` file, which means that the server can use SSL or not to communicate with the client. `CS_NEG_REQUIRE` and `CS_NEG_REFUSE` can be also
+used. `CS_NEG_REQUIRE` means that iRODS will always use SSL communication while `CS_NEG_REFUSE` tells iRODS not to use SSL at all.
+
+If you *do not* want to use any SSL communication, before installing Metalnx we need to set the negotiation type on the grid to `CS_NEG_REFUSE`. If you want to use SSL, you can leave iRODS set to `CS_NEG_DONT_CARE` or 
+`CS_NEG_REQUIRE`. Metalnx is always set to `CS_NEG_DONT_CARE`, so it will use SSL when required by iRODS.
+
+You can change the negotiation paramater in iRODS by either 1) changing the `core.re` file directly or 2) creating a new file and then adding this file to the *rule base set* section in the `server_config` file.
+
+1) Changing `core.re`
+
+Open the `core.re` file under `/etc/irods/` and replace `acPreConnect(*OUT) { *OUT="CS_NEG_DONT_CARE"; }` by `acPreConnect(*OUT) { *OUT="CS_NEG_REFUSE"; }`.
+
+2) Creating a new rule file
+
+Go to `/etc/irods/` and create a new file named `ssl_negotiate.re`. Open the `ssl_negotiate.re` file, type `acPreConnect(*OUT) { *OUT="CS_NEG_REFUSE"; }` and save it. Now, open the `server_config.json` file and add a 
+new entry to the `rule_base_set` section. It should look like:
+
+```
+"re_rulebase_set": [
+	{
+		"filename": "ssl_negotiate"
+	},
+	{
+		"filename": "core"
+	}
+]
+```
+
+**Just remember that once you modify this negotiation parameter to `CS_NEG_REFUSE` iRODS will never use SSL. If it is not the desired behaviour, check out the iRODS [documentation](https://docs.irods.org) to set up a grid with SSL.**
+
+
+[[Back to: Table of Contents](#TOC)]
+
+-------------- 
+
+<br>
 <font color="#0066CC"> <font size=+2> __Setup Metalnx__ </font> <a name="setup_metalnx"></a>
 
 <font color="#000000">
@@ -906,6 +948,11 @@ An example of configuration is:
 	runSyncJobs=true
 
 **NOTE:** Always check the new line format in your properties files. Avoid Windows-editors to eliminate new line characters being inserted to prevent errors on Linux environments. 
+
+__PAM__ <a name="PAM"></a>
+
+If you want to set up an environment with PAM authentication, please check the <a href="METALNX_PAM_AUTH"> Metalnx PAM authentication </a> document. It walks you through the necessary steps to configure Metalnx 
+to work with PAM.
 
 [RMD_github_repo]: https://github.com/sgworth/metalnx-rmd/
 [RMD_installation_guide]: https://github.com/sgworth/metalnx-rmd/blob/master/docs/INSTALL.md
