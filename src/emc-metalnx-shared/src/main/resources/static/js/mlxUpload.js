@@ -64,97 +64,104 @@ $("#uploadButton").click(function(){
 	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);
 
-	var uploadItems = "";
-	var currFilePos = 0;
+	//var uploadItems = "";
+	//var currFilePos = 0;
 
-	$.each(files, function(index, file){
-		var url = "/emc-metalnx-web/upload/uploadSimple/";
-		var formData = new FormData();
-        formData.append('file', file);
-        formData.append('checksum', $('#inputChecksum').is(':checked'));
-        formData.append('replica', $('#inputReplica').is(':checked'));
-        formData.append('resources', $('#selectResource').val());
-        formData.append('resourcesToUpload', $('#selectResourceToUpload').val());
-        formData.append('overwriteDuplicateFiles', $('#inputOverwriteDuplicateFiles').is(':checked'));
+    $('#uploadStatusIcon').removeClass('hide');
+    $('#uploadStatusIcon ul.dropdown-menu').empty();
+    var uploadItems = "";
 
-		$('#uploadStatusIcon').removeClass('hide');
-		$('#uploadStatusIcon ul.dropdown-menu').empty();
-
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: formData,
-			cache: false,
-            contentType: false,
-            processData: false,
-			xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                //Upload progress
-                xhr.upload.addEventListener("progress", function(evt){
-                    if (evt.lengthComputable) {
-                        var percentComplete = (evt.loaded / evt.total)*100;
-                        var roundedPercent = Math.round(percentComplete);
-                        if(percentComplete >= 100) {
-                            showTransferFileIRODSMsg(index);
-                        }else{
-                            showProgressBarForFile(index, roundedPercent);
-                        }
-                    }
-                }, false);
-                return xhr;
-            },
-			success: function (res) {
-			    var response = $.parseJSON(res);
-                var path = response.path;
-                var msg = response.msg;
-			    showTransferCompletedMsg(index, msg);
-			    if((currFilePos+1) < files.length){
-			        currFilePos++;
-			    }else if((currFilePos+1) == files.length){
-                    getSubDirectories(path);
-                    unsetOperationInProgress();
-                    $('title').html(originalPagetitle);
-			    }
-			},
-			error: function(xhr, status, error){
-                var error_response = $.parseJSON(xhr.responseText);
-
-                showUploadErrorMsg(index, error_response.msg, error_response.errorType);
-                if((currFilePos+1) < files.length) {
-                    currFilePos++;
-                }
-                else if((currFilePos+1) == files.length) {
-                    //resolvedFileNames = [];
-                    getSubDirectories(error_response.path);
-                    unsetOperationInProgress();
-                    $('title').html(originalPagetitle);
-                }
-            },
-            statusCode: {
-                408: function(response){
-                    window.location= "/emc-metalnx-web/login/";
-                },
-                403: function(response){
-                    window.location= "/emc-metalnx-web/login/";
-                }
-            }
-		});
-
+    $.each(files, function(index, file){
         uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
-		'<input type="hidden" class="paused" value="false" />'+
-		'<div class="col-sm-4" style="float:left; margin-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
-		    '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
-		'</div>'+
-		'<div class="col-sm-7 progressWrapper">'+
+        '<input type="hidden" class="paused" value="false" />'+
+        '<div class="col-sm-4" style="float:left; margin-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
+            '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
+        '</div>'+
+        '<div class="col-sm-7 progressWrapper">'+
             '<div class="progress" style="">'+
                 '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>'+
             '</div>'+
-		'</div>'+
-		'</a></li>';
-	});
+        '</div>'+
+        '</a></li>';
 
-	$('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
+    });
+    $('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
+
+	uploadAndUpdateStatus(files[0], 0, files.length)
+
 });
+
+function uploadAndUpdateStatus(file, index, totalFiles){
+    var url = "/emc-metalnx-web/upload/uploadSimple/";
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('checksum', $('#inputChecksum').is(':checked'));
+    formData.append('replica', $('#inputReplica').is(':checked'));
+    formData.append('resources', $('#selectResource').val());
+    formData.append('resourcesToUpload', $('#selectResourceToUpload').val());
+    formData.append('overwriteDuplicateFiles', $('#inputOverwriteDuplicateFiles').is(':checked'));
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            //Upload progress
+            xhr.upload.addEventListener("progress", function(evt){
+                if (evt.lengthComputable) {
+                    var percentComplete = (evt.loaded / evt.total)*100;
+                    var roundedPercent = Math.round(percentComplete);
+                    if(percentComplete >= 100) {
+                        showTransferFileIRODSMsg(index);
+                    }else{
+                        showProgressBarForFile(index, roundedPercent);
+                    }
+                }
+            }, false);
+            return xhr;
+        },
+        success: function (res) {
+            var response = $.parseJSON(res);
+            var path = response.path;
+            var msg = response.msg;
+            showTransferCompletedMsg(index, msg);
+            if((index+1) < totalFiles){
+                uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
+            }
+            else if((index+1) == totalFiles){
+                getSubDirectories(path);
+                unsetOperationInProgress();
+                $('title').html(originalPagetitle);
+            }
+        },
+        error: function(xhr, status, error){
+            var error_response = $.parseJSON(xhr.responseText);
+
+            showUploadErrorMsg(index, error_response.msg, error_response.errorType);
+            if((index+1) < totalFiles){
+                uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
+            }
+            else if((index+1) == totalFiles) {
+                //resolvedFileNames = [];
+                getSubDirectories(error_response.path);
+                unsetOperationInProgress();
+                $('title').html(originalPagetitle);
+            }
+        },
+        statusCode: {
+            408: function(response){
+                window.location= "/emc-metalnx-web/login/";
+            },
+            403: function(response){
+                window.location= "/emc-metalnx-web/login/";
+            }
+        }
+    });
+}
 
 // shows the upload error with the appropriate layout
 function showUploadErrorMsg(fileId, errorMsg, type) {
