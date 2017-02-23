@@ -271,7 +271,6 @@ public class UploadServiceImpl implements UploadService {
         IRODSFile targetFile = null;
         try {
             targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
-            targetFile.setResource(destinationResource);
 
             // file already exists and we do not want to overwrite it, the transferring is aborted.
             if (targetFile.exists() && !overwriteDuplicateFiles) {
