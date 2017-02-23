@@ -46,7 +46,7 @@ import java.util.HashMap;
 @Transactional
 public class UploadServiceImpl implements UploadService {
 
-    private static final int MEGABYTE = 1024 * 1024;
+    private static final int BUFFER_SIZE = 4 * 1024 * 1024;
     private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
 
     @Autowired
@@ -182,7 +182,7 @@ public class UploadServiceImpl implements UploadService {
 
             InputStream inputStream = new BufferedInputStream(new FileInputStream(file.getFile()));
             Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
-            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
+            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
             inputStream.close();
 
             logger.info("Completed upload to resource {} in {}.", file.getDestResc(), file.getTargetPath());
@@ -281,7 +281,7 @@ public class UploadServiceImpl implements UploadService {
             }
 
             // Transfering file to iRODS filesystem
-            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, MEGABYTE);
+            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
 
             // Computing a check sum for this file just uploaded to iRODS
             if (computeCheckSum) fos.computeChecksum(targetPath, fileName);
