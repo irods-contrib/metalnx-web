@@ -518,7 +518,7 @@ You can change the negotiation paramater in iRODS by either 1) changing the `cor
 
 1) Changing `core.re`
 
-Open the `core.re` file under `/etc/irods/` and replace `acPreConnect(*OUT) { *OUT="CS_NEG_DONT_CARE"; }` by `acPreConnect(*OUT) { *OUT="CS_NEG_REFUSE"; }`.
+Open the `core.re` file under `/etc/irods/` and replace `acPreConnect(*OUT) { *OUT="CS_NEG_DONT_CARE"; }` with `acPreConnect(*OUT) { *OUT="CS_NEG_REFUSE"; }`.
 
 2) Creating a new rule file
 
@@ -536,7 +536,7 @@ new entry to the `rule_base_set` section. It should look like:
 ]
 ```
 
-**Just remember that once you modify this negotiation parameter to `CS_NEG_REFUSE` iRODS will never use SSL. If it is not the desired behaviour, check out the iRODS [documentation](https://docs.irods.org) to set up a grid with SSL.**
+**Just remember that once you modify this negotiation parameter to `CS_NEG_REFUSE` iRODS will never use SSL. If this is not the desired behaviour, check out the iRODS [documentation](https://docs.irods.org) to set up a grid with SSL.**
 
 
 [[Back to: Table of Contents](#TOC)]
