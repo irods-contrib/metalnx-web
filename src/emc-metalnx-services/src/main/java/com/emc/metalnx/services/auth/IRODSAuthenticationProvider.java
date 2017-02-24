@@ -26,6 +26,7 @@ import com.emc.metalnx.services.interfaces.AuthenticationProviderService;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.auth.AuthResponse;
+import org.irods.jargon.core.exception.InvalidUserException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.UserTypeEnum;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -119,7 +120,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         } catch (TransactionException e) {
             logger.error("Database not responding");
             throw new DataGridDatabaseException(e.getMessage());
-        } catch (org.irods.jargon.core.exception.AuthenticationException e) {
+        } catch (InvalidUserException | org.irods.jargon.core.exception.AuthenticationException e) {
             logger.error("Could not authenticate user: ", username);
             throw new DataGridAuthenticationException(e.getMessage());
         } catch (JargonException e) {
@@ -149,7 +150,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
         logger.debug(
                 "Authenticating IRODSAccount:\n\tusername: {}\n\tpassword: ***********\n\tirodsHost: {}\n\tirodsZone: {}",
                 username, this.irodsHost, this.irodsZoneName);
-        authResponse = this.irodsAccessObjectFactory.authenticateIRODSAccountUtilizingCachedConnectionIfPresent(this.irodsAccount);
+        authResponse = this.irodsAccessObjectFactory.authenticateIRODSAccount(this.irodsAccount);
         logger.debug("Done.");
 
         if (authResponse.isSuccessful()) {
