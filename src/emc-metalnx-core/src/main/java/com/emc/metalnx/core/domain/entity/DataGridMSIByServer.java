@@ -15,14 +15,10 @@ public class DataGridMSIByServer {
     private Map<String, Boolean> metalnxMSIs;
     private Map<String, Boolean> irodsMSIs;
     private List<String> otherMSIs;
-
-    private boolean isConnectedToGrid;
+    private List<String> msisInstalled;
 
     public DataGridMSIByServer(String host, List<String> expectedMetalnxMSIs, List<String> expectedIrodsMSIs) {
         this.host = host;
-
-        this.isConnectedToGrid = true;
-
         this.metalnxMSIs = new HashMap<>();
         this.irodsMSIs = new HashMap<>();
         this.otherMSIs = new ArrayList<>();
@@ -37,8 +33,6 @@ public class DataGridMSIByServer {
 
     public void addToMsiMetalnx(String msi) {
         if(msi == null || msi.isEmpty()) return;
-
-        // updating map
         this.metalnxMSIs.put(msi, true);
     }
 
@@ -68,11 +62,20 @@ public class DataGridMSIByServer {
         this.host = host;
     }
 
-    public void setConnectedToGrid(boolean connectedToGrid) {
-        isConnectedToGrid = connectedToGrid;
+    public void addMicroservices(List<String> msis) {
+        if(msis == null) return;
+
+        this.msisInstalled = msis;
+
+        // classifying MSIs by their type
+        for(String msi: msisInstalled) {
+            if(metalnxMSIs.keySet().contains(msi)) addToMsiMetalnx(msi);
+            else if(irodsMSIs.keySet().contains(msi)) addToMsiIRODS(msi);
+            else addToMsiOther(msi);
+        }
     }
 
-    public boolean isConnectedToGrid() {
-        return isConnectedToGrid;
+    public boolean isThereAnyMSI() {
+        return this.msisInstalled != null && !this.msisInstalled.isEmpty();
     }
 }

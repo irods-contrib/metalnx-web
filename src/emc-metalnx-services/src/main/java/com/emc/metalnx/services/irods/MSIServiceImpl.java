@@ -7,10 +7,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.MSIService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleService;
-import com.emc.metalnx.services.interfaces.ServerService;
+import com.emc.metalnx.services.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +28,16 @@ public class MSIServiceImpl implements MSIService {
     private static final Logger logger = LoggerFactory.getLogger(MSIServiceImpl.class);
 
     @Autowired
-    RuleService ruleService;
+    private RuleService ruleService;
 
     @Autowired
-    ServerService serverService;
+    private ServerService serverService;
 
     @Autowired
-    ResourceService resourceService;
+    private ResourceService resourceService;
+
+    @Autowired
+    private IRODSServices irodsServices;
 
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
@@ -46,7 +46,10 @@ public class MSIServiceImpl implements MSIService {
     private List<String> msiMetalnxListExpected;
 
     @Value("#{'${msi.irods.list}'.split(',')}")
-    private List<String> msiIrodsListExpected;
+    private List<String> irods41XMSIList;
+
+    @Value("#{'${msi.irods.420.list}'.split(',')}")
+    private List<String> irods420MSIList;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
@@ -57,31 +60,13 @@ public class MSIServiceImpl implements MSIService {
 
     @Override
     public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
-        List<String> msis = null;
-        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, msiIrodsListExpected);
+        if(host == null || host.isEmpty()) return null;
 
-        if(host != null && !host.isEmpty()) {
-            getMSIInfoForAllServers();
+        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods420MSIList : irods41XMSIList;
+        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, irodsMSIs);
 
-            for (DataGridServer server : servers) {
-                if (host.equals(server.getHostname())) {
-                    msis = server.getMSIInstalledList();
-                    break;
-                }
-            }
-        }
-
-        if(msis != null) {
-            // classifying MSIs by their type
-            for(String msi: msis) {
-                if(msiMetalnxListExpected.contains(msi)) msisByServer.addToMsiMetalnx(msi);
-                else if(msiIrodsListExpected.contains(msi)) msisByServer.addToMsiIRODS(msi);
-                else msisByServer.addToMsiOther(msi);
-            }
-        }
-        else {
-            msisByServer.setConnectedToGrid(false);
-        }
+        DataGridServer server = findServerByHostname(host);
+        if(server != null) msisByServer.addMicroservices(server.getMSIInstalledList());
 
         return msisByServer;
     }
@@ -128,5 +113,25 @@ public class MSIServiceImpl implements MSIService {
         String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersionSupported);
         String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
         return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
+    }
+
+    /**
+     * Looks for a server instance based on its hostname
+     * @param host server's hostname
+     * @return server instance
+     */
+    private DataGridServer findServerByHostname(String host) throws DataGridConnectionRefusedException {
+        getMSIInfoForAllServers(); // update list of servers
+
+        DataGridServer server = null;
+
+        for (DataGridServer s : servers) {
+            if (host.equals(s.getHostname())) {
+                server = s;
+                break;
+            }
+        }
+
+        return server;
     }
 }

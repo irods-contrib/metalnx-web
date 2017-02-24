@@ -381,7 +381,7 @@ public class IRODSServicesImpl implements IRODSServices {
 
         try {
             EnvironmentalInfoAO env = irodsAccessObjectFactory.getEnvironmentalInfoAO(this.irodsAccount);
-            if(env != null) env.getIRODSServerPropertiesFromIRODSServer().isAtLeastIrods420();
+            if(env != null) isAtLeastIrods420 = env.getIRODSServerPropertiesFromIRODSServer().isAtLeastIrods420();
         } catch (JargonException e) {
             e.printStackTrace();
         }

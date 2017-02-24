@@ -15,7 +15,7 @@
   ~
   -->
 
-<ul class="col-sm-12" th:if="${msiPackages.isConnectedToGrid()}">
+<ul class="col-sm-12" th:if="${msiPackages.isThereAnyMSI()}">
 
     <li role="tab" id="headingMlxMSI" data-toggle="collapse" href="#mlxMSI" aria-expanded="true" aria-controls="mlxMSI">
         <a role="button" class="btn-link" th:text="#{msi.package.mlx.accordion}"></a>
@@ -70,5 +70,5 @@
         });
     </script>
 </ul>
-<p th:unless="${msiPackages.isConnectedToGrid()}" th:text="#{msi.package.not.found}"></p>
+<p th:unless="${msiPackages.isThereAnyMSI()}" th:text="#{msi.package.not.found}"></p>
 
