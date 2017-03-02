@@ -150,9 +150,12 @@ function displayCPUInfo(data){
 function displayIRODSLogs(data){
 	$("#table-loader").hide();
 	$("#irodsServerLogs").html("");
-	for (message in data['lines']) {
-		$("#irodsServerLogs").append('<p>'+data['lines'][message]+'</p>');
-		//$("#irodsServerLogs").append("<br /><br />");
+	if (data['error']){
+	    $("#irodsServerLogs").append('<p class="text-danger">'+data['error']+'</p>');
+	} else{
+        for (message in data['lines']) {
+            $("#irodsServerLogs").append('<p>'+data['lines'][message]+'</p>');
+        }
 	}
 }
 
