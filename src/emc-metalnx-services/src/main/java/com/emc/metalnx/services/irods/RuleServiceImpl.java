@@ -188,6 +188,21 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
+    public void execEmptyTrashRule(String destResc, String objPath, boolean inAdminMode) throws DataGridConnectionRefusedException, DataGridRuleException {
+        logger.info("Empty Trash Rule called");
+
+        DataGridResource dgResc = rs.find(destResc);
+        DataGridRule rule = new DataGridRule(DataGridRule.EMPTY_TRASH_RULE, dgResc.getHost(), false);
+
+        String flag = inAdminMode ? "irodsAdminRmTrash=" : "irodsRmTrash=";
+
+        rule.setInputRuleParams(objPath, flag);
+        rule.setOutputRuleParams("out");
+
+        executeRule(rule.toString());
+    }
+
+    @Override
     public Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (rule == null || rule.isEmpty()) return null;
 

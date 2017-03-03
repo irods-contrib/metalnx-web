@@ -26,7 +26,6 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.DataTransferOperations;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
-import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
@@ -48,20 +47,27 @@ public class FileOperationServiceImpl implements FileOperationService {
     private static final String CONTENT_TYPE = "application/octet-stream";
     private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
     private static final Logger logger = LoggerFactory.getLogger(FileOperationServiceImpl.class);
+
     @Autowired
-    IRODSServices irodsServices;
+    private IRODSServices irodsServices;
+
     @Autowired
-    CollectionService collectionService;
+    private CollectionService collectionService;
+
     @Autowired
-    UserBookmarkService userBookmarkService;
+    private UserBookmarkService userBookmarkService;
+
     @Autowired
-    GroupBookmarkService groupBookmarkService;
+    private GroupBookmarkService groupBookmarkService;
+
     @Autowired
-    FavoritesService favoritesService;
+    private FavoritesService favoritesService;
+
     @Autowired
-    ResourceService resourceService;
+    private ResourceService resourceService;
+
     @Autowired
-    RuleService rs;
+    private RuleService rs;
 
     @Override
     public boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException {
@@ -256,27 +262,18 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean emptyTrash(DataGridUser user, String currentPath) throws DataGridConnectionRefusedException {
-        if (user == null) {
-            return false;
-        }
+    public boolean emptyTrash(DataGridUser user, String collectionPath) throws DataGridConnectionRefusedException {
+        if (user == null || collectionPath == null || collectionPath.isEmpty()) return false;
 
         boolean itemsDeleted = false;
-        RuleProcessingAO ruleProcessingAO = irodsServices.getRuleProcessingAO();
 
-
-        try{
-            StringBuilder ruleString = new StringBuilder();
-            ruleString.append("mlxEmptyTrash {\n");
-            ruleString.append(String.format(" msiRmColl(\"%s\",\"%s\",\"null\");", currentPath, user.isAdmin() ? "irodsAdminRmTrash=" : "irodsRmTrash="));
-            ruleString.append("}\n");
-            ruleString.append("OUTPUT ruleExecOut");
-            ruleProcessingAO.executeRule(ruleString.toString());
+        try {
+            String resc = irodsServices.getDefaultStorageResource();
+            rs.execEmptyTrashRule(resc, collectionPath, user.isAdmin());
             itemsDeleted = true;
-        }catch(Exception e){
-            logger.error("Could not execute rule on path {}: ", currentPath, e.getMessage());
+        } catch (DataGridRuleException e) {
+            logger.info("Could not empty trash: ", e.getMessage());
         }
-
 
         return itemsDeleted;
     }

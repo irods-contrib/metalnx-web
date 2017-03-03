@@ -15,6 +15,7 @@ import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -42,6 +43,12 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestRuleService {
+
+    private static final String RM_TRASH_RODS_ADMIN_FLAG = "irodsAdminRmTrash=";
+    private static final String RM_TRASH_RODS_USER_FLAG = "irodsRmTrash=";
+    public static final String RESOURCE = "demoResc";
+    private static String msiVersion;
+
     @InjectMocks
     private RuleService ruleService;
 
@@ -53,8 +60,6 @@ public class TestRuleService {
 
     @Mock
     private IRODSServices irodsServices;
-
-    private static String msiVersion;
 
     @PostConstruct
     public void init() {
@@ -78,16 +83,36 @@ public class TestRuleService {
     }
 
     @Test
+    public void testEmptyTrashRuleInAdminMode() throws DataGridConnectionRefusedException, DataGridRuleException {
+        ruleService.execEmptyTrashRule(RESOURCE, "/tempZone/home/rods", true);
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(ruleService, times(1)).executeRule(captor.capture());
+        final String rule = captor.getValue();
+
+        assertTrue(rule.contains(RM_TRASH_RODS_ADMIN_FLAG));
+    }
+
+    @Test
+    public void testEmptyTrashRuleAsRodsUser() throws DataGridConnectionRefusedException, DataGridRuleException {
+        ruleService.execEmptyTrashRule(RESOURCE, "/tempZone/home/rods", false);
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(ruleService, times(1)).executeRule(captor.capture());
+        final String rule = captor.getValue();
+
+        assertTrue(rule.contains(RM_TRASH_RODS_USER_FLAG));
+    }
+
+    @Test
     public void testIRODS42Rule() throws DataGridConnectionRefusedException {
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
         DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, "icat.test.com", true);
-        assertTrue(rule.isAtLeastIRODS420());
+        assertTrue(rule.declareRuleOutputParams());
     }
 
     @Test
     public void testRuleWithNoVariableDeclarationForIRODS420() throws DataGridConnectionRefusedException {
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", true);
+        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", false);
         rule.setInputRuleParams("param1", "param2");
         rule.setOutputRuleParams("output_param");
         assertFalse(rule.toString().contains("*output_param=\"\";"));
@@ -96,7 +121,7 @@ public class TestRuleService {
     @Test
     public void testRuleWithVariableDeclarationForIRODS41X() throws DataGridConnectionRefusedException {
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", false);
+        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", true);
         rule.setInputRuleParams("param1", "param2");
         rule.setOutputRuleParams("output_param");
         assertTrue(rule.toString().contains("*output_param=\"\";"));

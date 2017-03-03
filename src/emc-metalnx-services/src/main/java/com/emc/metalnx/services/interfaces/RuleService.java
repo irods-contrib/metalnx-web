@@ -27,6 +27,16 @@ import java.util.Map;
 public interface RuleService {
 
     /**
+     * Executes the remove collection microservice.
+     * @param destResc resource where the data object is
+     * @param objPath trash path to be emptied
+     * @param inAdminMode execute empty trash in admin mode or not
+     * @throws DataGridConnectionRefusedException if there is no connection to the grid
+     * @throws DataGridRuleException if an error happens during the rule execution
+     */
+    void execEmptyTrashRule(String destResc, String objPath, boolean inAdminMode) throws DataGridConnectionRefusedException, DataGridRuleException;
+
+    /**
      * Executes the get microservices MSI.
      * @param host server's hostname
      * @return List of MSIs on the server that resource is.

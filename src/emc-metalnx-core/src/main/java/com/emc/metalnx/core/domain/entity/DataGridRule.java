@@ -12,19 +12,19 @@ import java.util.Map;
 public class DataGridRule {
     @Value("${irods.host}")
     private String iCATHost;
-
     private String[] inputRuleParams; // rule input parameters
+
     private String[] outputRuleParams; // rule output parameters
     private String host;
     private String rule;
-    private boolean isAtLeastIRODS420;
-
+    private boolean declareRuleOutputParams;
     private static final String INPUT = "INPUT";
+
     private static final String OUTPUT = "OUTPUT";
     private static final String RULE_EXEC_OUT = "ruleExecOut";
     private static final String RULE_INPUT_NULL = "null";
-
     public static final String GET_VERSION_RULE = "getVersion";
+
     public static final String POPULATE_RULE = "populateMetadataForFile";
     public static final String JPG_RULE = "automaticJpgMetadataExtraction";
     public static final String VCF_RULE = "automaticVcfMetadataExtraction";
@@ -34,6 +34,7 @@ public class DataGridRule {
     public static final String ILLUMINA_RULE = "illuminaMetadataForFile";
     public static final String TAR_RULE = "extractTar";
     public static final String GET_MSIS_RULE = "getMicroservices";
+    public static final String EMPTY_TRASH_RULE = "emptyTrash";
 
     // Maps rules for their respective microservices
     private static final Map<String, String> rulesMap;
@@ -50,13 +51,14 @@ public class DataGridRule {
         map.put(ILLUMINA_RULE, "msiget_illumina_meta");
         map.put(TAR_RULE, "msiTarFileExtract");
         map.put(GET_MSIS_RULE, "msiobjget_microservices");
+        map.put(EMPTY_TRASH_RULE, "msiRmColl");
         rulesMap = Collections.unmodifiableMap(map);
     }
 
-    public DataGridRule(String rule, String host, boolean isAtLeastIRODS420) {
+    public DataGridRule(String rule, String host, boolean declareRuleOutputParams) {
         this.host = host;
         this.rule = rule;
-        this.isAtLeastIRODS420 = isAtLeastIRODS420;
+        this.declareRuleOutputParams = declareRuleOutputParams;
     }
 
     public DataGridRule(String rule, String host) {
@@ -67,8 +69,8 @@ public class DataGridRule {
 
     public void setOutputRuleParams(String... params) { this.outputRuleParams = params; }
 
-    public boolean isAtLeastIRODS420() {
-        return isAtLeastIRODS420;
+    public boolean declareRuleOutputParams() {
+        return declareRuleOutputParams;
     }
 
     private String getInputParamsAsString() {
@@ -131,7 +133,7 @@ public class DataGridRule {
         return paramsEscaped.toString();
     }
 
-    private String declareOutputParams() {
+    private String initializeOutputParams() {
         if(outputRuleParams == null) return "";
 
         StringBuilder outputParams = new StringBuilder();
@@ -150,7 +152,7 @@ public class DataGridRule {
         ruleString.append(rule);
         ruleString.append("{");
         ruleString.append("\n");
-        if(!isAtLeastIRODS420) ruleString.append(declareOutputParams() + "\n");
+        if(declareRuleOutputParams) ruleString.append(initializeOutputParams() + "\n");
         ruleString.append(header.getRemoteRuleHeader());
         ruleString.append(getMSIParamsAsString());
         ruleString.append(header.getRemoteRuleFooter());
