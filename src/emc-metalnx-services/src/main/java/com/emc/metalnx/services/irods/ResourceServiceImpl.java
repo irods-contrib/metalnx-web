@@ -361,7 +361,8 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<DataGridServer> getAllIsilonServers(List<DataGridResource> resources) {
         logger.info("Getting all isilon servers");
-        List<DataGridServer> isilonServers = new ArrayList<DataGridServer>();
+
+        List<DataGridServer> isilonServers = new ArrayList<>();
 
         for (DataGridResource resource : resources) {
             logger.debug("Listing resource information: {}", resource);
@@ -387,6 +388,8 @@ public class ResourceServiceImpl implements ResourceService {
         }
 
         Collections.sort(isilonServers);
+
+        logger.info("Isilon servers done");
 
         return isilonServers;
     }
