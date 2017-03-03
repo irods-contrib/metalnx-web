@@ -17,20 +17,6 @@
 
 package com.emc.metalnx.services.machine;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -45,6 +31,15 @@ import com.emc.metalnx.services.machine.util.ServerUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.*;
 
 @Service
 public class ServerServiceImpl implements ServerService {
@@ -104,14 +99,8 @@ public class ServerServiceImpl implements ServerService {
 
                 serverResources = serverMapInCache.get(serverHostName).getResources();
             }
-            catch (JsonProcessingException e) {
-                logger.error("Could not parse server information", e);
-            }
-            catch (IOException e) {
-                logger.error("Could not parse server information", e);
-            }
-            catch (NullPointerException e) {
-                logger.debug("Hostname not found in cache, need to resolve it.");
+            catch (IOException | NullPointerException e) {
+                logger.error("Could not parse server information: {}", e.getMessage());
             }
 
             ServerUtil.populateDataGridServerStatus(machineStatus, server);

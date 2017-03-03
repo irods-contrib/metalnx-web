@@ -17,21 +17,20 @@
 
 package com.emc.metalnx.services.machine.util;
 
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.services.machine.enums.ServerRequestInfoType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.services.machine.enums.ServerRequestInfoType;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ServerUtil {
 
@@ -83,12 +82,10 @@ public class ServerUtil {
     /**
      * Creates a DataGridServer instance based on JSON response from RMD.
      *
-     * @param string
-     *            jsonResponse
+     * @param jsonResponse response from external service in JSON
      * @return dataGridServer
      */
-    static public void populateDataGridServerStatus(String jsonResponse,
-            DataGridServer dataGridServer) {
+    static public void populateDataGridServerStatus(String jsonResponse, DataGridServer dataGridServer) {
 
         // RMD package isn't available
         if (jsonResponse == null || jsonResponse.isEmpty()) {
