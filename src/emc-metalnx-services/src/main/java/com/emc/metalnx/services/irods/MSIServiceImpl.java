@@ -48,8 +48,8 @@ public class MSIServiceImpl implements MSIService {
     @Value("#{'${msi.irods.list}'.split(',')}")
     private List<String> irods41XMSIList;
 
-    @Value("#{'${msi.irods.420.list}'.split(',')}")
-    private List<String> irods420MSIList;
+    @Value("#{'${msi.irods.42.list}'.split(',')}")
+    private List<String> irods42MSIList;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
@@ -62,7 +62,7 @@ public class MSIServiceImpl implements MSIService {
     public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
         if(host == null || host.isEmpty()) return null;
 
-        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods420MSIList : irods41XMSIList;
+        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIList : irods41XMSIList;
         DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, irodsMSIs);
 
         DataGridServer server = findServerByHostname(host);

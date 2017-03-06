@@ -55,7 +55,7 @@ public class TestPluginService {
     private IRODSServices irodsServices;
 
     private static String msiVersion;
-    private List<String> msiList, mlxMSIList, irods41XMSIs, irods420MSIs, otherMSIList;
+    private List<String> msiList, mlxMSIList, irods41XMSIs, irods42MSIs, otherMSIList;
 
     private List<DataGridServer> servers;
 
@@ -68,7 +68,7 @@ public class TestPluginService {
         msiList = msiUtils.getMsiList();
         mlxMSIList = msiUtils.getMlxMSIList();
         irods41XMSIs = msiUtils.getIrods41XMSIs();
-        irods420MSIs = msiUtils.getIrods420MSIs();
+        irods42MSIs = msiUtils.getIrods420MSIs();
         otherMSIList = msiUtils.getOtherMSIList();
     }
 
@@ -94,7 +94,7 @@ public class TestPluginService {
         ReflectionTestUtils.setField(msiService, "msiAPIVersionSupported", msiVersion);
         ReflectionTestUtils.setField(msiService, "msiMetalnxListExpected", mlxMSIList);
         ReflectionTestUtils.setField(msiService, "irods41XMSIList", irods41XMSIs);
-        ReflectionTestUtils.setField(msiService, "irods420MSIList", irods420MSIs);
+        ReflectionTestUtils.setField(msiService, "irods42MSIList", irods42MSIs);
 
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
