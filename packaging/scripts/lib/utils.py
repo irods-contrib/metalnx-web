@@ -107,6 +107,7 @@ class MetalnxConfigParser(object):
             find_option_regex = re.escape(option) + r'\s*=\s*\S*'
             self.prop_file_content = re.sub(find_option_regex, '{}={}'.format(option, value), self.prop_file_content)
 
+        self.fp.truncate()
         self.fp.write(self.prop_file_content)
 
 
