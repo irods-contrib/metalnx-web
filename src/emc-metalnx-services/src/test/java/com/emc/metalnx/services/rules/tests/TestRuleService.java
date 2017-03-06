@@ -111,7 +111,6 @@ public class TestRuleService {
 
     @Test
     public void testRuleWithNoVariableDeclarationForIRODS420() throws DataGridConnectionRefusedException {
-        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
         DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", false);
         rule.setInputRuleParams("param1", "param2");
         rule.setOutputRuleParams("output_param");
@@ -120,11 +119,10 @@ public class TestRuleService {
 
     @Test
     public void testRuleWithVariableDeclarationForIRODS41X() throws DataGridConnectionRefusedException {
-        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", true);
+        DataGridRule rule = new DataGridRule(DataGridRule.ILLUMINA_RULE, "icat.test.com", false);
         rule.setInputRuleParams("param1", "param2");
         rule.setOutputRuleParams("output_param");
-        assertTrue(rule.toString().contains("*output_param=\"\";"));
+        assertFalse(rule.toString().contains("*output_param=\"\";"));
     }
 
     @Test

@@ -43,9 +43,4 @@ public class TestServerUtil {
         assertEquals(server.getDiskStatus(), ServerRequestInfoType.WARNING_STATUS.toString());
         assertEquals(server.getMemoryStatus(), ServerRequestInfoType.WARNING_STATUS.toString());
     }
-
-    @Test
-    public void testNullServer() throws DataGridConnectionRefusedException {
-        ServerUtil.populateDataGridServerStatus("", null);
-    }
 }
