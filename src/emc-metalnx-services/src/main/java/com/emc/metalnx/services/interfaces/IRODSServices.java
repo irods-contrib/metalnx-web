@@ -177,11 +177,4 @@ public interface IRODSServices {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
      */
     boolean isAtLeastIrods420() throws DataGridConnectionRefusedException;
-
-    /**
-     * Verifies whether or not the version of iRODS is at least 4.1.0.
-     * @return True if iRODS version is >= 4.1.0. False, otherwise.
-     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
-     */
-    boolean isAtLeastIrods418() throws DataGridConnectionRefusedException;
 }

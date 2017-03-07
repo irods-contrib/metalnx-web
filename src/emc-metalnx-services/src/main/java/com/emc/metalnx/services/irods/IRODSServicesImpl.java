@@ -21,7 +21,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import org.irods.jargon.core.connection.IRODSAccount;
-import org.irods.jargon.core.connection.IrodsVersion;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
@@ -383,28 +382,9 @@ public class IRODSServicesImpl implements IRODSServices {
             EnvironmentalInfoAO env = irodsAccessObjectFactory.getEnvironmentalInfoAO(this.irodsAccount);
             if(env != null) isAtLeastIrods420 = env.getIRODSServerPropertiesFromIRODSServer().isAtLeastIrods420();
         } catch (JargonException e) {
-            e.printStackTrace();
+            logger.error("Could not get environmental information from grid: {}", e.getMessage());
         }
 
         return isAtLeastIrods420;
-    }
-
-    @Override
-    public boolean isAtLeastIrods418() throws DataGridConnectionRefusedException {
-        boolean isAtLeastIrods418 = false;
-
-        try {
-            EnvironmentalInfoAO env = irodsAccessObjectFactory.getEnvironmentalInfoAO(this.irodsAccount);
-            IrodsVersion version = env.getIRODSServerPropertiesFromIRODSServer().getIrodsVersion();
-            isAtLeastIrods418 = version.getMajor() >= 4 && version.getMinor() >= 1 && version.getPatch() >= 8;
-        } catch (JargonException e) {
-            logger.error("Could not instantiate EnvironmentalInfoAO: ", e);
-
-            if (e.getCause() instanceof ConnectException) {
-                throw new DataGridConnectionRefusedException(e.getMessage());
-            }
-        }
-
-        return isAtLeastIrods418;
     }
 }
