@@ -195,7 +195,7 @@
 											th:field="${user.userType}">
 											<th:block th:each="userType : ${userTypes}">
 												<option th:value="${userType}"
-													th:selected="${user.getUserType() != null and user.getUserType() == userType ? 'selected' : 'false'}">
+													th:selected="${user.getUserType() != null and user.getUserType() == userType ? 'selected' : userType == 'rodsuser' ? 'selected' : 'false'}">
 													<span th:text="${userType}"></span>
 												</option>
 											</th:block>
