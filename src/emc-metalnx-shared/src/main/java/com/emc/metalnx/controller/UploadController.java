@@ -224,8 +224,9 @@ public class UploadController {
         boolean overwriteDuplicateFiles = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
         String resources = multipartRequest.getParameter("resources");
         String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
+        String uploadDestinationPath = multipartRequest.getParameter("uploadDestinationPath");
         try {
-            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(), multipartFile, cc.getCurrentPath(),
+            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(), multipartFile, uploadDestinationPath,
                     checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
         } catch (DataGridReplicateException | DataGridRuleException e) {
             uploadMessage += e.getMessage();

@@ -100,6 +100,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
     formData.append('resources', $('#selectResource').val());
     formData.append('resourcesToUpload', $('#selectResourceToUpload').val());
     formData.append('overwriteDuplicateFiles', $('#inputOverwriteDuplicateFiles').is(':checked'));
+    formData.append('uploadDestinationPath', $('#uploadDestinationPath').val());
 
     $.ajax({
         url: url,

@@ -838,6 +838,7 @@
         }
         
         $('a[data-target="#uploadModal"]').click(function(){
+        	$('#uploadDestinationPath').val([[${ currentPath }]]);
         	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {path: path}, displayUploadModal, null, null, null);
         });
         function displayUploadModal(data){
