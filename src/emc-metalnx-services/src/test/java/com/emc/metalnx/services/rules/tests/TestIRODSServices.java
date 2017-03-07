@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test iRODS services.
@@ -22,11 +21,6 @@ public class TestIRODSServices {
 
     @Autowired
     private IRODSServices irodsServices;
-
-    @Test
-    public void testIRODSVersion() throws DataGridConnectionRefusedException {
-        assertTrue(irodsServices.isAtLeastIrods420() || irodsServices.isAtLeastIrods418());
-    }
 
     @Test
     public void testEnvironmentalInfo() throws DataGridConnectionRefusedException {
