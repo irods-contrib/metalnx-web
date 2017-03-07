@@ -23,7 +23,6 @@ import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -31,9 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -117,18 +113,6 @@ public class DashboardController {
             resources = resourceService.findAll();
 
             isServerResponding = true;
-
-            // Checking if user is Admin or normal user
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth instanceof UsernamePasswordAuthenticationToken) {
-                UserTokenDetails userDetails = (UserTokenDetails) auth.getDetails();
-
-                // If user is not admin, redirect him to the user UI
-                if (!userDetails.getUser().isAdmin()) {
-                    request.getSession().setAttribute("uiMode", UI_USER_MODE);
-                    return "redirect:/collections/";
-                }
-            }
 
             request.getSession().setAttribute("uiMode", UI_ADMIN_MODE);
             totalNumberOfUsers = userService.countAll();
