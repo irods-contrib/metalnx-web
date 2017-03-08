@@ -16,10 +16,11 @@
  */
 package com.emc.metalnx.core.domain.dao.impl;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
+import com.emc.metalnx.core.domain.dao.FavoriteDao;
+import com.emc.metalnx.core.domain.dao.UserDao;
+import com.emc.metalnx.core.domain.dao.generic.GenericDaoImpl;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -27,11 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.emc.metalnx.core.domain.dao.FavoriteDao;
-import com.emc.metalnx.core.domain.dao.UserDao;
-import com.emc.metalnx.core.domain.dao.generic.GenericDaoImpl;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
@@ -47,6 +46,8 @@ public class FavoriteDaoImpl extends GenericDaoImpl<DataGridUserFavorite, Long> 
 
     @Override
     public DataGridUserFavorite findByUserAndPath(DataGridUser user, String path) {
+        if(user == null || path == null || path.isEmpty()) return null;
+
         Query q = sessionFactory.getCurrentSession().createQuery("from DataGridUserFavorite where user_id = :user_id and path = :path");
         q.setLong("user_id", user.getId());
         q.setString("path", path);
