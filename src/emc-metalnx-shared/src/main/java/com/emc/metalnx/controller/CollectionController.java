@@ -44,8 +44,6 @@ import org.thymeleaf.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -160,16 +158,11 @@ public class CollectionController {
             }
 
             DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-            boolean overwriteFileOption = loggedUser.isForceFileOverwriting();
             String uiMode = (String) request.getSession().getAttribute("uiMode");
 
             if (uiMode == null || uiMode.isEmpty()) {
-                if (loggedUser.isAdmin()) {
-                    uiMode = UI_ADMIN_MODE;
-                }
-                else {
-                    uiMode = UI_USER_MODE;
-                }
+                boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
+                uiMode = isUserAdmin ? UI_ADMIN_MODE :UI_USER_MODE;
             }
 
             if (uiMode.equals(UI_USER_MODE)) {
@@ -187,7 +180,7 @@ public class CollectionController {
             model.addAttribute("currentPath", currentPath);
             model.addAttribute("parentPath", parentPath);
             model.addAttribute("resources", resourceService.findAll());
-            model.addAttribute("overwriteFileOption", overwriteFileOption);
+            model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
 
             cameFromMetadataSearch = false;
             cameFromFilePropertiesSearch = false;
@@ -662,7 +655,7 @@ public class CollectionController {
      */
     @RequestMapping(value = "modify/action", method = RequestMethod.POST)
     public String modifyAction(@ModelAttribute CollectionOrDataObjectForm collectionForm, Model model, RedirectAttributes redirectAttributes)
-            throws DataGridConnectionRefusedException, DataGridException {
+            throws DataGridException {
         boolean modificationSuccessful = false;
         if (sourcePaths.size() != 1) {
             throw new DataGridException("Cannot rename more than one element at a time.");
@@ -735,7 +728,7 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     @RequestMapping(value = "/home/")
-    public String homeCollection(Model model) throws DataGridConnectionRefusedException, DataGridException {
+    public String homeCollection(Model model) throws DataGridException {
         // cleaning session variables
         sourcePaths.clear();
         currentPath = cs.getHomeDirectyForCurrentUser();
@@ -750,7 +743,7 @@ public class CollectionController {
      * @return the collection management template
      */
     @RequestMapping(value = "/public/")
-    public String publicCollection(Model model) throws DataGridConnectionRefusedException, DataGridException {
+    public String publicCollection(Model model) throws DataGridException {
         // cleaning session variables
         sourcePaths.clear();
 
@@ -895,7 +888,7 @@ public class CollectionController {
      */
     @ResponseBody
     @RequestMapping(value = "isValidCollectionName/{newObjectName}/", method = RequestMethod.GET, produces = { "text/plain" })
-    public String isValidCollectionName(@PathVariable String newObjectName) throws DataGridConnectionRefusedException, DataGridException {
+    public String isValidCollectionName(@PathVariable String newObjectName) throws DataGridException {
         String rc = "true";
         String newPath = String.format("%s/%s", currentPath, newObjectName);
 
