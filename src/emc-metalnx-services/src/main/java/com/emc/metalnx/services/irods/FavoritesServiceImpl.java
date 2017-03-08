@@ -17,22 +17,21 @@
 
 package com.emc.metalnx.services.irods;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.emc.metalnx.core.domain.dao.FavoriteDao;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -145,10 +144,7 @@ public class FavoritesServiceImpl implements FavoritesService {
      */
     @Override
     public boolean isPathFavoriteForUser(DataGridUser user, String path) {
-        if (favoriteDao.findByUserAndPath(user, path) != null) {
-            return true;
-        }
-        return false;
+        return favoriteDao.findByUserAndPath(user, path) != null;
     }
 
     @Override

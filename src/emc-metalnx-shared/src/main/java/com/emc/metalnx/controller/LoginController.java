@@ -17,8 +17,7 @@
 
 package com.emc.metalnx.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.emc.metalnx.services.auth.UserTokenDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping(value = "/login")
 public class LoginController {
@@ -38,10 +39,11 @@ public class LoginController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String loginView(Model model) {
 		
-		Authentication authObject = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-		if (authObject instanceof UsernamePasswordAuthenticationToken) {
-			return "redirect:/dashboard/";
+		if (auth instanceof UsernamePasswordAuthenticationToken) {
+			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
+			return isUserAdmin ? "redirect:/dashboard/" : "redirect:/collections/";
 		}
 		
 		return "login/index";
