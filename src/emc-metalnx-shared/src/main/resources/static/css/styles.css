@@ -1591,6 +1591,10 @@ form.registerForm > .pull-right > .btn{
     color: gray;
     padding-left: 5px;
 }
+#nonexistentUsernameIcon, #nonexistentGroupIcon {
+    left: 260px;
+}
+
 
 /* Medium devices and up */
 @media ( min-width : 1001px) {
