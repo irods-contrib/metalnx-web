@@ -210,6 +210,11 @@ public class PermissionsController {
         loggedUser = luu.getLoggedDataGridUser();
 
         for (String group : groupParts) {
+            if (gs.findByGroupname(group).isEmpty()){
+                return REQUEST_ERROR;
+            }
+        }
+        for (String group : groupParts) {
             operationResult &= ps.setPermissionOnPath(permType, group, path, recursive, loggedUser.isAdmin());
         }
 
@@ -243,6 +248,12 @@ public class PermissionsController {
         DataGridPermType permType = DataGridPermType.valueOf(permission);
 
         loggedUser = luu.getLoggedDataGridUser();
+
+        for (String username : usernames) {
+            if (us.findByUsername(username).isEmpty()){
+                return REQUEST_ERROR;
+            }
+        }
 
         for (String username : usernames) {
             operationResult &= ps.setPermissionOnPath(permType, username, path, recursive, loggedUser.isAdmin());
