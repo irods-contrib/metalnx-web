@@ -201,6 +201,9 @@
                             <br />
                             <input type="search" class="form-control" id="groupsToBeAdded" name="groupsToBeAdded" autocomplete="off"
                                 data-provide="typeahead" placeholder="Type group names here" />
+                            <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentGroupError" id="nonexistentGroupIcon"></i>
+                            <small class="help-block hideElement nonexistentGroupError" id="nonexistentGroupMsg"
+                                   th:text="#{permission.validation.group.nonexistent}"></small>
                         </div>
 
                         <div class="form-group">
@@ -257,6 +260,9 @@
                             <br />
                             <input type="search" class="form-control" id="usersToBeAdded" name="usersToBeAdded" autocomplete="off"
                                 data-provide="typeahead" placeholder="Type user names here" />
+                            <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentUsernameError" id="nonexistentUsernameIcon"></i>
+                            <small class="help-block hideElement nonexistentUsernameError" id="nonexistentUsernameMsg"
+                                   th:text="#{permission.validation.username.nonexistent}"></small>
                         </div>
 
                         <div class="form-group">
@@ -516,8 +522,14 @@
                 // Submits group form on the modal to be persisted on the services layer
                 $("#submitGroupToBeAddedButton").click(function() {
 
+                    if($('#groupsToBeAdded').val() == ""){
+                        $("#groupsToBeAdded").parent().addClass("has-feedback has-error");
+                        $('.nonexistentGroupError').show();
+                        return false;
+                    }
+                    $("#groupsToBeAdded").parent().removeClass("has-feedback has-error");
+                    $('.nonexistentGroupError').hide();
                     var url = "/emc-metalnx-web/permissions/addGroupPermissions/";
-
                     var postData = {
                         permission: $("#groupPermissionToBeSet").val(),
                         groups: $("#groupsToBeAdded").val(),
@@ -581,7 +593,13 @@
 
                 // Submits group form on the modal to be persisted on the services layer
                 $("#submitUserToBeAddedButton").click(function() {
-
+                    if($('#usersToBeAdded').val() == ""){
+                        $("#usersToBeAdded").parent().addClass("has-feedback has-error");
+                        $('.nonexistentUsernameError').show();
+                        return false;
+                    }
+                    $("#usersToBeAdded").parent().removeClass("has-feedback has-error");
+                    $('.nonexistentUsernameError').hide();
                     var url = "/emc-metalnx-web/permissions/addUserPermissions/";
                     var postData = {
                         permission: $("#userPermissionToBeSet").val(),
