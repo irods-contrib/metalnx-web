@@ -89,7 +89,6 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 
             // Retrieving logging user
             User irodsUser = new User();
-            GrantedAuthority grantedAuth = null;
 
             try {
                 irodsUser = this.irodsAccessObjectFactory.getUserAO(this.irodsAccount).findByName(username);
@@ -97,6 +96,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
                 logger.error("Could not find user: " + e.getMessage());
             }
 
+            GrantedAuthority grantedAuth;
             if (irodsUser.getUserType().equals(UserTypeEnum.RODS_ADMIN)) {
                 grantedAuth = new IRODSAdminGrantedAuthority();
             } else {
@@ -137,8 +137,11 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
     }
 
     private AuthResponse authenticateAgainstIRODS(String username, String password) throws JargonException {
+        if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new DataGridAuthenticationException("Username or password invalid: null or empty value(s) provided");
+        }
 
-        AuthResponse authResponse = null;
+        AuthResponse authResponse;
 
         // Getting iRODS protocol set
         logger.debug("Creating IRODSAccount object.");
