@@ -546,7 +546,7 @@
                     {
                     	"render": function ( data, type, full, meta ) {
     						return '<a href="#" name="' + full.path + 
-								'" onclick="'+(full.collection?'getSubDirectories(\'':'goToDataObjDetails(\'')+full.path+'\')" title="' + full.path + 
+								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
 								'"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
     					},
     					"width": "50%",
