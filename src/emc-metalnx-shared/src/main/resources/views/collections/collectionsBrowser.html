@@ -801,29 +801,31 @@
         	
         	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
 		}
-        
-        
-        function getInfoDetails(path){
-        	$("#table-loader").show();
-        	$("#table-loader").nextAll().remove();
-        	//$(".nav-tabs a[href='#info-collection']").tab("show");
-        	
-        	var url = "/emc-metalnx-web/collections/info/";
-			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
-			
+
+        function getBreadcrumb(path) {
         	ajaxEncapsulation(
-   				'/emc-metalnx-web/collections/getBreadCrumbForObject/', 
-   				"POST", 
-   				{path: path}, 
+   				'/emc-metalnx-web/collections/getBreadCrumbForObject/',
+   				"POST",
+   				{path: path},
    				function(data){
    					$("#directoryPath").html(data);
    				}, null, null, null
    			);
         }
         
+        function getInfoDetails(path){
+        	$("#table-loader").show();
+        	$("#table-loader").nextAll().remove();
+
+        	var url = "/emc-metalnx-web/collections/info/";
+        	getBreadcrumb(path);
+			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
+        }
+
         function getMetadata(path){
         	$('#table-loader').show();
         	$('#table-loader').nextAll().remove();
+        	getBreadcrumb(path);
         	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}
         
