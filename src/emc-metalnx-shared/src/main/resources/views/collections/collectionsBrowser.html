@@ -848,11 +848,11 @@
         }
         $('a[data-target="#replicateModal"]').click(function(){
             $('#selectResourceForReplication').empty();
-            $('#replicate-table-loader').show();
+            $('#replicate-loader').show();
         	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: false}, displayReplicateModal, null, null, null);
         });
         function displayReplicateModal(data){
-            $('#replicate-table-loader').hide();
+            $('#replicate-loader').hide();
         	$('#selectResourceForReplication').html(data);
         }
 
