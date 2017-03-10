@@ -190,7 +190,8 @@
             <table class="table table-hover" id="metadaTable">
                 <thead>
                     <tr>
-                        <th class="tableCheckBoxCol" th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"><input type="checkbox" id="checkAllMetadata" /></th>
+                        <th class="tableCheckBoxCol" th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
+                            <input type="checkbox" id="checkAllMetadata" /></th>
                         <th>Attribute</th>
                         <th>Value</th>
                         <th>Unit</th>
@@ -396,7 +397,8 @@
     	            .css( 'display', this.api().data().length <= 0 ?
     	                 'none' :
     	                 'block'
-    	            )
+    	            );
+    	            $('input[name=selectAllMetadata]').prop("checked", false);
     	        },
 			});
 			addGoToPage('metadaTable', datatable);

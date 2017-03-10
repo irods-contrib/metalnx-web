@@ -216,7 +216,8 @@
 	    	            .css( 'display', this.api().data().length <= 0 ?
 	    	                 'none' :
 	    	                 'block'
-	    	            )
+	    	            );
+	    	            $('input[name=selectAllCheckboxes]').prop("checked", false);
 	    	        },
 				});
 				addGoToPage('templatesListTable', datatable);

@@ -30,7 +30,7 @@
 					<table class="table" id="templatesListTable" >
 						<thead>
 							<tr>
-								<th><input type="checkbox" name="" /></th>
+								<th><input type="checkbox" name="selectAllCheckboxes" /></th>
 								<th th:text="#{templates.management.table.name.label}"></th>
 								<th th:text="#{templates.management.table.owner.label}"></th>
 								<th th:text="#{templates.management.table.description.label}"></th>
@@ -90,7 +90,8 @@
     	            .css( 'display', this.api().data().length <= 0 ?
     	                 'none' :
     	                 'block'
-    	            )
+    	            );
+    	            $('input[name=selectAllCheckboxes]').prop("checked", false);
 		        },
 		        "columnDefs": [
 	                {"width": "2%","orderable": false, "targets": 0},
