@@ -235,15 +235,12 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     @RequestMapping(value = "getAvailableRescForPath/")
-    public String getAvailableRescForPath(Model model) throws DataGridConnectionRefusedException {
+    public String getAvailableRescForPath(Model model, @RequestParam("isUpload") boolean isUpload) throws DataGridConnectionRefusedException {
 
         Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
         List<DataGridResource> resources = resourceService.findFirstLevelResources();
 
-        if (sourcePaths.size() == 0) {
-            model.addAttribute("resources", resources);
-        }
-        else {
+        if(!isUpload){
             for (String path : sourcePaths) {
                 replicasMap = cs.listReplicasByResource(path);
                 for (DataGridResource resc : replicasMap.values()) {
@@ -251,10 +248,9 @@ public class CollectionController {
                         resources.remove(resc);
                     }
                 }
-                model.addAttribute("resources", resources);
             }
         }
-
+        model.addAttribute("resources", resources);
         return "collections/collectionsResourcesForReplica";
     }
 

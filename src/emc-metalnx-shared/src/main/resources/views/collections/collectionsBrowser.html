@@ -812,7 +812,7 @@
    				}, null, null, null
    			);
         }
-        
+
         function getInfoDetails(path){
         	$("#table-loader").show();
         	$("#table-loader").nextAll().remove();
@@ -828,7 +828,7 @@
         	getBreadcrumb(path);
         	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}
-        
+
         function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
@@ -841,13 +841,13 @@
         
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);
-        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {path: path}, displayUploadModal, null, null, null);
+        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
         });
         function displayUploadModal(data){
         	$('#selectResourceToUpload').html(data);
         }
         $('a[data-target="#replicateModal"]').click(function(){
-        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {path: path}, displayReplicateModal, null, null, null);
+        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: false}, displayReplicateModal, null, null, null);
         });
         function displayReplicateModal(data){
         	$('#selectResourceForReplication').html(data);
