@@ -1,16 +1,15 @@
-<font color="#3892CF"> EMC METALNX
+EMC METALNX
 ===================================
 
-<font color="#3892CF"> Build a Docker Container
+Build a Docker Container
 =========================================
 
-<font color="#A6A6A6"> <font size=+2> Revision 1.0 
+Revision 1.0 
 
-6/2016 </font>
+6/2016
 
 ----------------------------------
 
-<font color="#000000">
 
 Copyright © 2015-16 EMC Corporation.
 
@@ -18,10 +17,8 @@ This software is provided under the Software license provided in the <a href="LI
 
 The information in this file is provided “as is.” EMC Corporation makes no representations or warranties of any kind with respect to the information in this publication, and specifically disclaims implied warranties of merchantability or fitness for a particular purpose. 
 
-<font color="#000000"> 
-
-<br>
-## Introduction </font> <a name="introduction"></a>
+<a name="introduction"></a>
+## Introduction 
 
 
 This document walks you through the creation of a Metalnx Docker Container. There are two ways of using the Metalnx docker container:
@@ -29,8 +26,8 @@ This document walks you through the creation of a Metalnx Docker Container. Ther
 * You can either run the already built container hosted on [DockerHub][dockerhub-metalnx] or
 * you can build MetaLnx container on your environment and run it locally
 
-<br>
-## Requirements <a name="requirements"></a>
+<a name="requirements"></a>
+## Requirements 
 
 * [Docker 1.9.1][docker]
 * Metalnx source code (specifically the `packaging/docker` folder), (*This is needed if you are building the container locally*)
