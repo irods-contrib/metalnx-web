@@ -3,7 +3,6 @@ EMC METALNX WEB - INSTALL GUIDE
 
 ----------------------------------
 
-<font color="#000000">
 Copyright © 2015-16 EMC Corporation.
 
 This software is provided under the Software license provided in the <a href="LICENSE"> LICENSE </a> file.
@@ -11,12 +10,8 @@ This software is provided under the Software license provided in the <a href="LI
 The information in this file is provided “as is.” EMC Corporation makes no representations or warranties of any kind with respect to the information in this publication, and specifically disclaims implied warranties of merchantability or fitness for a particular purpose. 
 
 -------------------------------- 
-
-<font color="#0066CC"> <font size=+2> __TABLE OF CONTENTS__ </font>
-
-<font color="#000000"> <a name="TOC"></a>
-
-<font size=+1> 
+<a id="TOC"></a>
+## TABLE OF CONTENTS 
 
 1. [Introduction](#introduction)
 2. [Overview](#metalnx_overview)
@@ -33,21 +28,17 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 13. [Integration With LDAP](#LDAP)
 14. [PAM authentication](#PAM)
 
-</font>
-
 ----------------------------------
-
-<br>
-<font color="#0066CC"> <font size=+2> __INTRODUCTION (Read First!)__ </font> <a name="introduction"></a>
-
-<font color="#000000">
+<a name="introduction"></a>
+## INTRODUCTION (Read First!) 
 
 
 Metalnx is a web application designed to work alongside the [iRODS (integrated Rule-Oriented Data System)](http://www.irods.org). It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
 This installation guide will provide information on how to install the components necessary to run Metalnx along with installation the application. 
 
-### Dependencies <a id="dependencies"></a>
+<a name="dependencies"></a>
+### Dependencies 
 
 - Java 1.8 or higher
 - iRODS 4.1.8, 4.1.9 or 4.1.10
@@ -63,7 +54,7 @@ At a high level Metalnx is dependent on the following software components being 
 - MySQL or PostgreSQL (we use a database to hold Metalnx operational information)
 - Java
 
-__Assumptions__
+## Assumptions
 
 In this installation guide, to fully install Metalnx, we will:
 
@@ -115,10 +106,9 @@ The iRODS Consortium [www.irods.org](http://www.irods.org) provides a short tech
 
 [[Back to: Table of Contents](#TOC)]
 
-<br>
-<font color="#0066CC"> <font size=+2> __Metalnx Overview__ </font></font> <a name="metalnx_overview"></a>
+<a name="metalnx_overview"></a>
+## Metalnx Overview 
 
-<font color="#000000">
 
 Metalnx is a web application designed to work alongside iRODS (Integrated Rule-Oriented Data System).  It provides an intuitive graphical interface that supports iRODS administrative actions, collection management, and metadata management without requiring the iRODS administrator or user to memorize individual icommands. The application allows administrators to monitor system health, manage users, storage resources, and content.  It allows users to manage content and metadata associated with content.
 
@@ -154,23 +144,21 @@ Figure 2 (below) illustrates an iRODS grid with Metalnx deployed:
 
 In figure 2 items 1-4 are the same as in Figure 1 above.  In addition:
 
-<ol start=5>
-<li> The server running Apache Tomcat and Metalnx.  Metalnx does NOT require a separate server.  It can be run on the ICAT, resource server, or any virtual machine running Linux on the local area network, where you can install and run Apache Tomcat. We show Metalnx running on a separate server to add clarity to the diagram. </li> 
-<br>
+5. The server running Apache Tomcat and Metalnx.  Metalnx does NOT require a separate server.  It can be run on the ICAT, resource server, or any virtual machine running Linux on the local area network, where you can install and run Apache Tomcat. We show Metalnx running on a separate server to add clarity to the diagram.
+
 The Metalnx RDMBS.  Metalnx requires its own small database.  The database manager must be either MySQL or PostgreSQL.  The database does NOT have to be on unique, attached storage.  It can be on any server in the local area network, including the ICAT database server if desired.  Again we show the data storage as local direct attach for clarity in the drawing.
-<br>
-<br>
-<li> Metalnx Remote Monitor Daemons (RMD).   Metalnx Remote Monitor Daemons are installed on the ICAT server and each iRODS resource server.  The RMD is a small daemon which runs as the user iRODS and listens for a request on a port of the customer’s choosing via a configuration file (port 8000 is the default).  When a Metalnx user views the dashboard page it issues update requests to the RMD daemons in the grid which will report memory, disk, and iRODS application status via JSON packets back to Metalnx.  The Metalnx application parses the information to build the dashboard and drill down pages.  (<strong> Note: </strong> Metalnx RMD is not required for the application to work, but without the Dashboard page will have incomplete information and show each iRODS server without RMD to be in a <em> Warning </em> state.) </li>
-<br>
-<li> (NOT SHOWN IN FIGURE)  Metalnx Micro Services.  Metalnx microservices is a collection of iRODS microservices which, if installed on each server in the iRODS grid, will automatically extract metadata from .jpg, .bam, .cram, and .vcf files and add the metadata into the ICAT as part of a file upload from the Metalnx collections interface. The microservice file also contain a tool for extracting all metadata in a <strong> Ilumina </strong> sample sheet provided the sample sheet is setup properly and ingested with the sequencer data into iRODS. 
-</li>
-</ol>
- 
+
+
+6. Metalnx Remote Monitor Daemons (RMD).   Metalnx Remote Monitor Daemons are installed on the ICAT server and each iRODS resource server.  The RMD is a small daemon which runs as the user iRODS and listens for a request on a port of the customer’s choosing via a configuration file (port 8000 is the default).  When a Metalnx user views the dashboard page it issues update requests to the RMD daemons in the grid which will report memory, disk, and iRODS application status via JSON packets back to Metalnx.  The Metalnx application parses the information to build the dashboard and drill down pages.  (<strong> Note: </strong> Metalnx RMD is not required for the application to work, but without the Dashboard page will have incomplete information and show each iRODS server without RMD to be in a <em> Warning </em> state.) 
+
+7. (NOT SHOWN IN FIGURE)  Metalnx Micro Services.  Metalnx microservices is a collection of iRODS microservices which, if installed on each server in the iRODS grid, will automatically extract metadata from .jpg, .bam, .cram, and .vcf files and add the metadata into the ICAT as part of a file upload from the Metalnx collections interface. The microservice file also contain a tool for extracting all metadata in a <strong> Ilumina </strong> sample sheet provided the sample sheet is setup properly and ingested with the sequencer data into iRODS. 
+
+
 [[Back to: Table of Contents](#TOC)]
 
 ----------
-<br>
-<font color="#0066CC"> <font size=+2> __Metalnx Packages__ </font></font> <a name="metalnx_packages"></a>
+<a name="metalnx_packages"></a>
+## Metalnx Packages 
 
 ### JFrog Bintray ###
 
@@ -189,10 +177,9 @@ Metalnx also has a Docker image that is ready for you to deploy in your environm
 [[Back to: Table of Contents](#TOC)]
 
 ----------
-<br>
-<font color="#0066CC"> <font size=+2> __METALNX WEB INSTALLATION__ </font> <a name="metalnx_installation"></a>
+<a name="metalnx_installation"></a>
+## METALNX WEB INSTALLATION 
 
-<font color="#000000">
 
 ### NOTE: ###
 
@@ -255,11 +242,9 @@ Metalnx works with:
 [[Back to: Table of Contents](#TOC)]
 
 ------------- 
+<a name="metalnx_installation_process"></a>
+## METALNX INSTALLATION PROCESS 
 
-<br>
-<font color="#0066CC"> <font size=+2> __METALNX INSTALLATION PROCESS__ </font> <a name="metalnx_installation_process"></a>
-
-<font color="#000000">
 
 ##### Metalnx RMD Background #####
 
@@ -270,11 +255,9 @@ Metalnx will run without the RMD package. However, RMD is necessary to allow for
 [[Back to: Table of Contents](#TOC)]
 
 -----------------
+<a name="apache_tomcat_installation"></a>
+## Apache Tomcat Installation 
 
-<br>
-<font color="#0066CC"> <font size=+2> __Apache Tomcat Installation__ </font> <a name="apache_tomcat_installation"></a>
-
-<font color="#000000">
 
 ##### Installing Tomcat #####
 
@@ -388,9 +371,9 @@ You will be prompted to provide the username and password added to the `tomcat-u
 
 From this page you can enable / disable Metalnx or deploy it from a .war file if this is the version you built. (NOTE:  We recommend using an .rpm or .deb file - setup is easier.)
 
-<font color="#0066CC"> <font size=+2> __Install the Metalnx Application__ </font> <a name="install_metalnx"></a>
+<a name="install_metalnx"></a>
+## Install the Metalnx Application 
 
-<font color="#000000">
 
 **1)** Verify that the Tomcat web server is running using the systemctl command
 
@@ -412,11 +395,9 @@ On a Debian-like system install the Metalnx application, as root, using the comm
 [[Back to: Table of Contents](#TOC)]
 
 -------------- 
+<a name="config_metalnx_database"></a>
+## Configure the Metalnx Database 
 
-<br>
-<font color="#0066CC"> <font size=+2> __Configure the Metalnx Database__ </font> <a name="config_metalnx_database"></a>
-
-<font color="#000000">
 
 **NOTE: The Metalnx Database MUST be setup prior to starting Metalnx (the Setup Metalnx step).**
 
@@ -502,9 +483,8 @@ Then, start and enable Postgres:
 [[Back to: Table of Contents](#TOC)]
 
 -------------- 
-
-<br>
-__Setup iRODS Negotiation__ <a name="setup_irods_neg"></a>
+<a name="setup_irods_neg"></a>
+__Setup iRODS Negotiation__ 
 
 Before running the Metalnx set up script, you need to make sure your iRODS negotiation paramaters are correct.
 
@@ -542,11 +522,9 @@ new entry to the `rule_base_set` section. It should look like:
 [[Back to: Table of Contents](#TOC)]
 
 -------------- 
+<a name="setup_metalnx"></a>
+## Setup Metalnx 
 
-<br>
-<font color="#0066CC"> <font size=+2> __Setup Metalnx__ </font> <a name="setup_metalnx"></a>
-
-<font color="#000000">
 
 The Metalnx installation package comes with a setup script.  The script setup the Metalnx environment on a CentOS server using MySQL as the Metalnx database (default) or using PostgreSQL (a script option).   The script will help to setup the Metalnx in other environments, but additional manual configuration changes may be needed.
 
@@ -735,10 +713,8 @@ to read:
 [[Back to: Table of Contents](#TOC)]
 
 -------------- 
-
-<br>
-<font color="#0066CC"> <font size=+2> __Accessing Metalnx__ </font> <a name="accessing_metalnx"></a>
-<font color="#000000">
+<a name="accessing_metalnx"></a>
+## Accessing Metalnx 
 
 
 After following all these instructions, the system is ready to run Metalnx. 
@@ -757,7 +733,7 @@ For example, if your metalnx sever was named `metalnx1`:
 
     http://metalnx1:8080/emc-metalnx-web/login/
 
-<br>
+
 If the connection is successful you should reach the login screen shown below.
 
 ![alt text] [6]
@@ -772,7 +748,7 @@ Log in with the default iRODS admin username and password setup when iRODS was i
 
 -------------- 
 
-<br>
+
 **Modifing properties files directly**
 
 *NOTICE: If you already run the script and you are able to access the Metalnx UI, this section can be skipped. This is troubleshooting section in case an Authentication Error happens in the UI.*
@@ -810,10 +786,8 @@ However, those parameters are encoded only if the Metalnx setup script is used. 
 
 [[Back to: Table of Contents](#TOC)]
 
-
-<br>
-<font color="#0066CC"> <font size=+2> __Metalnx Install Checklist__ </font> <a name="metalnx_checklist"></a>
-<font color="#000000">
+<a name="metalnx_checklist"></a>
+## Metalnx Install Checklist 
 
 <table>
    <tr>
@@ -855,9 +829,8 @@ Use & Enjoy Metalnx!
 
 [[Back to: Table of Contents](#TOC)]
 
-<br>
-<font color="#0066CC"> <font size=+2> __Integration with LDAP__ </font> <a name="LDAP"></a>
-<font color="#000000">
+<a name="LDAP"></a>
+## Integration with LDAP 
 
 ##### Authentication using LDAP (Lightweight Directory Access Protocol) #####
 
@@ -949,7 +922,8 @@ An example of configuration is:
 
 **NOTE:** Always check the new line format in your properties files. Avoid Windows-editors to eliminate new line characters being inserted to prevent errors on Linux environments. 
 
-__PAM__ <a name="PAM"></a>
+<a name="PAM"></a>
+__PAM__ 
 
 If you want to set up an environment with PAM authentication, please check the <a href="METALNX_PAM_AUTH"> Metalnx PAM authentication </a> document. It walks you through the necessary steps to configure Metalnx 
 to work with PAM.
