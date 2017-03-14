@@ -88,8 +88,7 @@ An iRODS data grid consists of three elements:
 
 The diagram below (Figure 1) illustrates an iRODS environment:
 
-![alt text] [1]
-[1]: IMAGES/Install_figure_1.png "Figure 1 - An Example iRODS Grid"
+![Figure 1 - An Example iRODS Grid](IMAGES/Install_figure_1.png)
 
 The elements are:
 
@@ -139,8 +138,7 @@ For **rodsuser** users:
 
 Figure 2 (below) illustrates an iRODS grid with Metalnx deployed:
 
-![alt text] [2]
-[2]: IMAGES/Install_figure_2.png "Figure 2 - An Example iRODS Grid with Metalnx Installed"
+![Figure 2 - An Example iRODS Grid with Metalnx Installed](IMAGES/Install_figure_2.png)
 
 In figure 2 items 1-4 are the same as in Figure 1 above.  In addition:
 
@@ -200,8 +198,7 @@ Metalnx also has a Docker image that is ready for you to deploy in your environm
 
 Figure 3 shows the relationship between iRODS and Metalnx components.
 
-![alt text] [3]
-[3]: IMAGES/Install_figure_3.png "Figure 3 - Relationship between iRODS/Metalnx components"
+![Figure 3 - Relationship between iRODS/Metalnx components](IMAGES/Install_figure_3.png)
 
 ##### iRODS #####
 
@@ -366,8 +363,7 @@ This line will open access to any system which connects to Tomcat via port 8080.
 
 You will be prompted to provide the username and password added to the `tomcat-users.xm`l file to gain access. The Tomcat Applicaiton Manager screen will be displayed.
 
-![alt text] [4]
-[4]: IMAGES/Install_figure_4_tomcat_app_mgr.png "Figure 4 - Tomcat Web Application Manager"
+![Figure 4 - Tomcat Web Application Manager](IMAGES/Install_figure_4_tomcat_app_mgr.png)
 
 From this page you can enable / disable Metalnx or deploy it from a .war file if this is the version you built. (NOTE:  We recommend using an .rpm or .deb file - setup is easier.)
 
@@ -665,7 +661,7 @@ This message means that the installation script could not restart Tomcat on its 
 
      # systemctl start tomcat
 
-<br>
+
 **Modify the Metalnx Configuration for PostgreSQL** 
 
 If you used PostgreSQL as the database for Metalnx the setup script above should automatically convert the MySQL settings to PosgreSQL settings in in the `database.properties` file.  However, if for some reason you need to manually edit the database properties configuration file.  The steps for this are below.
@@ -736,13 +732,11 @@ For example, if your metalnx sever was named `metalnx1`:
 
 If the connection is successful you should reach the login screen shown below.
 
-![alt text] [6]
-[6]: IMAGES/Install_figure_6_metalnx_welcome.png "Figure 6 - Metalnx Login Screen"
+![Figure 6 - Metalnx Login Screen](IMAGES/Install_figure_6_metalnx_welcome.png)
 
 Log in with the default iRODS admin username and password setup when iRODS was installed.  Typically this will be username: **rods** and the password **rods**. If successful the Metalnx dashboard page will be displayed as below:
 
-![alt text] [7]
-[7]: IMAGES/Install_figure_7_metalnx_dashboard.png "Figure 7 - Metalnx Dashboard"
+![Figure 7 - Metalnx Dashboard](IMAGES/Install_figure_7_metalnx_dashboard.png)
 
 [[Back to: Table of Contents](#TOC)]
 
@@ -836,8 +830,7 @@ Use & Enjoy Metalnx!
 
 The diagram below illustrates how Metalnx syncs user information with LDAP (Lightweight Directory Access Protocol): 
 
-![alt text] [8]
-[8]: IMAGES/ldap_sync_diagram.png "Figure 8 - LDAP Syncing With Metalnx"
+![Figure 8 - LDAP Syncing With Metalnx](IMAGES/ldap_sync_diagram.png)
 
 1.	In the LDAP server, Metalnx users must be members of a unique group that will be imported into iRODS.
 2.	In iRODS, authentication must be set to PAM (Pluggable Authentication Modules). Refer to iRODS documentation for more information. 
