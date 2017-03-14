@@ -1,16 +1,15 @@
-<font color="#3892CF"> EMC METALNX
+EMC METALNX
 ===================================
 
-<font color="#3892CF"> Open Source Usage
+Open Source Usage
 =========================================
 
-<font color="#A6A6A6"> <font size=+2> Revision 1.0 
+Revision 1.0 
 
-6/2016 </font>
+6/2016 
 
 ----------------------------------
 
-<font color="#000000">
 Copyright © 2015-16 EMC Corporation.
 
 This software is provided under the Software license provided in the <a href="LICENSE"> LICENSE </a> file.
@@ -19,10 +18,9 @@ The information in this file is provided “as is.” EMC Corporation makes no r
 
 -------------------------------- 
 
-<br>
-<font color="#0066CC"> <font size=+2> __OVERVIEW__ </font> <a name="introduction"></a>
+<a name="introduction"></a>
+## OVERVIEW 
 
-<font color="#000000">
 
 Metalnx (the application), the Metalnx Remote Monitor Daemon, the Metalnx MSI package make use of Open Source Packages as follows:
 
@@ -113,30 +111,30 @@ Metalnx (the application), the Metalnx Remote Monitor Daemon, the Metalnx MSI pa
    </tr>
 </table>
 
-##Copyrights for Open Source Libraries Used
+## Copyrights for Open Source Libraries Used
 
-**Bootstrap**
+** Bootstrap **
 
 2011-2016 Twitter, Inc.
 
-**D3(Chart Library)**
+** D3(Chart Library) **
 
 Copyright 2010-2016 Mike Bostock
 All rights reserved.
 
-**Datatables Plug-in for jQuery**
+** Datatables Plug-in for jQuery **
 
 Copyright (c) 2008-2015 SpryMedia Limited
 http://datatables.net
 
-**Hibernate: ORM**
+** Hibernate: ORM **
 
 Copyright (c) 2009 by Red Hat Inc and/or its affiliates or by
 third-party contributors as indicated by either @author tags or express
 copyright attribution statements applied by the authors.  All
 third-party contributions are distributed under license by Red Hat Inc.
 
-**Hibernate: Validator**
+** Hibernate: Validator **
 
 Hibernate: Validator is release under an Apache License v2.0.  Below is copied from the copyright.txt file on the Hibernate: Validator Github page:
 
@@ -172,7 +170,7 @@ Steve Ebersole,
 Strong Liu,
 Victor Rezende dos Santos
 
-**Jackson**
+** Jackson **
 
 Copyright (c) 2007- Tatu Saloranta, tatu.saloranta@iki.fi
 
@@ -184,19 +182,19 @@ Copyright (c) 2005-2016, Regents of the University of California, the University
 
 Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors
 
-**jQueryUI**
+** jQueryUI **
 
 Copyright jQuery Foundation and other contributors
 
-**Spring Framework**
+** Spring Framework **
 
 Copyright 2002-2014 the original author or authors. 
 
-**Spring Security**
+** Spring Security **
 
 Copyright 2002-2016 the original author or authors. 
 
-**Thymeleaf**
+** Thymeleaf **
 
 Copyright (c) 2011-2013, The THYMELEAF team (http://www.thymeleaf.org)
 
@@ -204,10 +202,10 @@ Copyright (c) 2011-2013, The THYMELEAF team (http://www.thymeleaf.org)
 
 
 
-##Licenses for Open Source Libraries Used
+## Licenses for Open Source Libraries Used
 
 
-###Boostrap 3.2.0###
+### Boostrap 3.2.0 ###
 
 [https://github.com/twbs/bootstrap/blob/master/LICENSE](https://github.com/twbs/bootstrap/blob/master/LICENSE)
 
@@ -235,7 +233,7 @@ THE SOFTWARE.
 
 --------------------
 
-###D3 3.5.5
+### D3 3.5.5
 
 [http://opensource.org/licenses/BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause)
 
