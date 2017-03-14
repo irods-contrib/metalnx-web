@@ -1,16 +1,15 @@
-<font color="#3892CF"> EMC METALNX WEB BUILD GUIDE
+EMC METALNX WEB BUILD GUIDE
 ===================================
 
-<font color="#3892CF"> Build From Source Instructions
+Build From Source Instructions
 =========================================
 
-<font color="#A6A6A6"> <font size=+2> Revision 1.0
+Revision 1.0
 
-6/2016 </font>
+6/2016
 
 ----------------------------------
 
-<font color="#000000">
 Copyright © 2015-16 EMC Corporation.
 
 This software is provided under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
@@ -18,11 +17,9 @@ This software is provided under [Apache License 2.0](http://www.apache.org/licen
 The information in this file is provided “as is.” EMC Corporation makes no representations or warranties of any kind with respect to the information in this publication, and specifically disclaims implied warranties of merchantability or fitness for a particular purpose. 
 
 -------------------------------- 
+<a name="Introduction"></a>
+## INTRODUCTION 
 
-<br>
-<font color="#0066CC"> <font size=+2> __INTRODUCTION__ </font>
-
-<font color="#000000"> <a name="Introduction"></a>
 
 This tutorial guides you through the Metalnx Web compilation pipeline. It explains how to build Metalnx Web from scratch.
 
