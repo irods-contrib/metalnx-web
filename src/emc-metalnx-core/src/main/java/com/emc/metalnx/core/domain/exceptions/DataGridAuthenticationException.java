@@ -15,7 +15,7 @@
  *
  */
 
-package com.emc.metalnx.services.exceptions;
+package com.emc.metalnx.core.domain.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 
