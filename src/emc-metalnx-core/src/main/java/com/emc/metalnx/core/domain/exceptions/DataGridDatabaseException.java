@@ -13,12 +13,12 @@ Licensed under the Apache License, Version 2.0 (the "License");
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package com.emc.metalnx.services.exceptions;
+package com.emc.metalnx.core.domain.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 
-public class DataGridServerException extends AuthenticationException {
-    public DataGridServerException(String message) {
+public class DataGridDatabaseException extends AuthenticationException {
+    public DataGridDatabaseException(String message) {
         super(message);
     }
 }

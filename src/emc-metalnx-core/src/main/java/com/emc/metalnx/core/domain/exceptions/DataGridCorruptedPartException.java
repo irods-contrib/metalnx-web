@@ -15,7 +15,7 @@
  *
  */
 
-package com.emc.metalnx.services.exceptions;
+package com.emc.metalnx.core.domain.exceptions;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 
