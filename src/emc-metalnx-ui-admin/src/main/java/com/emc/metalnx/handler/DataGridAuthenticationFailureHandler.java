@@ -17,14 +17,9 @@
 
 package com.emc.metalnx.handler;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.emc.metalnx.services.exceptions.DataGridDatabaseException;
-import com.emc.metalnx.services.exceptions.DataGridServerException;
+import com.emc.metalnx.core.domain.exceptions.DataGridDatabaseException;
+import com.emc.metalnx.core.domain.exceptions.DataGridServerException;
+import com.emc.metalnx.services.interfaces.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +28,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.emc.metalnx.services.exceptions.DataGridAuthenticationException;
-import com.emc.metalnx.services.interfaces.UserService;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class DataGridAuthenticationFailureHandler implements AuthenticationFailureHandler {
 

@@ -19,9 +19,9 @@ package com.emc.metalnx.services.auth;
 
 import com.emc.metalnx.core.domain.dao.UserDao;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.services.exceptions.DataGridAuthenticationException;
-import com.emc.metalnx.services.exceptions.DataGridDatabaseException;
-import com.emc.metalnx.services.exceptions.DataGridServerException;
+import com.emc.metalnx.core.domain.exceptions.DataGridAuthenticationException;
+import com.emc.metalnx.core.domain.exceptions.DataGridDatabaseException;
+import com.emc.metalnx.core.domain.exceptions.DataGridServerException;
 import com.emc.metalnx.services.interfaces.AuthenticationProviderService;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
