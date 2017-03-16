@@ -17,7 +17,7 @@
 
 package com.emc.metalnx.service.utils;
 
-import com.emc.metalnx.services.exceptions.DataGridCorruptedPartException;
+import com.emc.metalnx.core.domain.exceptions.DataGridCorruptedPartException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -30,14 +30,6 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.emc.metalnx</groupId>
 			<artifactId>emc-metalnx-core</artifactId>
 			<version>${project.version}</version>
