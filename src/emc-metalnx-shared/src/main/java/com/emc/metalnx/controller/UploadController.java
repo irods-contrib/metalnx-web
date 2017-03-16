@@ -17,11 +17,11 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.*;
-import com.emc.metalnx.service.utils.DataGridFileForUpload;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.UploadService;
-import org.apache.commons.io.FileUtils;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -32,19 +32,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -60,117 +55,6 @@ public class UploadController {
 
     @Autowired
     private UploadService us;
-
-    // contains the file name, DataGridForUpload map containing all files that will be uploaded
-    private Map<String, DataGridFileForUpload> filesForUploadMap;
-
-    @PostConstruct
-    public void init() {
-        filesForUploadMap = new HashMap<>();
-    }
-
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = {"text/plain"})
-    public ResponseEntity<?> upload(HttpServletRequest request) throws DataGridConnectionRefusedException {
-        logger.info("Uploading files ...");
-        String uploadMessage = "File Uploaded. ";
-        String errorType = "";
-
-        if (!(request instanceof MultipartHttpServletRequest)) {
-            logger.debug("Request is not a multipart request.");
-            uploadMessage = "Request is not a multipart request.";
-            errorType = FATAL;
-            return getUploadResponse(uploadMessage, errorType);
-        }
-
-        String filename = getFileName(request);
-
-        logger.debug("Uploading file {} ", filename);
-
-        DataGridFileForUpload file;
-
-        synchronized (filesForUploadMap) {
-            file = filesForUploadMap.get(filename);
-        }
-
-        try {
-            file.writeChunk(us.getChunk(request));
-
-            if (file.isFileReadyForDataGrid()) {
-                us.transferFileToDataGrid(file);
-                synchronized (filesForUploadMap) {
-                    filesForUploadMap.remove(file.getFileName());
-                }
-            }
-        } catch (DataGridReplicateException | DataGridRuleException | DataGridMSIVersionNotSupported e) {
-            uploadMessage += e.getMessage();
-            errorType = WARNING;
-        } catch (DataGridException e) {
-            uploadMessage = e.getMessage();
-            errorType = FATAL;
-        }
-
-        if (!errorType.isEmpty()) {
-            File tmpSessionDir = new File(file.getUser(), file.getPathToParts());
-            FileUtils.deleteQuietly(tmpSessionDir);
-        }
-
-        return getUploadResponse(uploadMessage, errorType);
-    }
-
-    @RequestMapping(value = "/prepare/", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void prepareFilesForUpload(HttpServletRequest request) {
-        logger.debug("Preparing file for upload.");
-
-        DataGridFileForUpload file;
-        try {
-            file = us.buildFileForUpload(request);
-            synchronized (filesForUploadMap) {
-                filesForUploadMap.put(file.getFileName(), file);
-            }
-        } catch (DataGridException e) {
-        }
-    }
-
-    @RequestMapping(value = "/resume/", method = RequestMethod.POST, produces = {"text/plain"})
-    @ResponseBody
-    public String resumeUpload(HttpServletResponse response, @RequestParam("fileName") String fileName) {
-
-        JSONObject resumeUploadJSON = new JSONObject();
-        JSONArray listOfChunksUploadedJSON;
-        DataGridFileForUpload resumeFileUpload;
-
-        try {
-            synchronized (filesForUploadMap) {
-                resumeFileUpload = filesForUploadMap.get(fileName);
-            }
-            resumeUploadJSON.append("fileName", resumeFileUpload.getFileName());
-            resumeUploadJSON.append("lastPartUploaded", resumeFileUpload.getLastPartUploaded());
-
-            listOfChunksUploadedJSON = new JSONArray();
-            List<Integer> chunks = resumeFileUpload.getChunksUploadedFromLastPartUploaded();
-            for (Integer chunk : chunks) {
-                listOfChunksUploadedJSON.put(chunk);
-            }
-
-            resumeUploadJSON.append("listOfChunksUploaded", listOfChunksUploadedJSON);
-        } catch (JSONException | NullPointerException e) {
-            logger.error("Could not resume upload for file: {} {}", fileName, e.getMessage());
-        }
-
-        return resumeUploadJSON.toString();
-    }
-
-    /**
-     * Gets the name of a file being transferred from an HTTP request
-     *
-     * @param request HTTP request for file transfer
-     * @return string representing the file's name
-     */
-    private String getFileName(HttpServletRequest request) {
-        String[] fileName = request.getParameterMap().get("fileName");
-        return fileName[0];
-    }
 
     /**
      * Sets the HTTP response text and status for an upload request.
