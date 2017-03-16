@@ -80,13 +80,12 @@ public class FavoritesController {
 
         model.addAttribute("userFavorites", userFavorites);
 
-        return "user/favorites/favorites";
+        return "favorites/favorites";
     }
 
     /**
      * Add a path to the favorites list
      *
-     * @param model
      * @param path
      *            path to be added to the favorites
      */

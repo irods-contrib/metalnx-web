@@ -89,7 +89,7 @@ public class UserBookmarkController {
         model.addAttribute("userBookmarks", userBookmakrs);
         model.addAttribute("foundUserBookmarks", !userBookmakrs.isEmpty());
 
-        return "user/bookmarks/userBookmarks";
+        return "bookmarks/userBookmarks";
     }
 
     @RequestMapping(value = "/addBookmark/")

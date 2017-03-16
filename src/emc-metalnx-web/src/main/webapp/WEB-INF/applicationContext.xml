@@ -25,7 +25,6 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 	
 	<import resource="classpath:META-INF/emc-metalnx-ui-admin/emc-metalnx-ui-admin-context.xml" />
-	<import resource="classpath:META-INF/emc-metalnx-ui-user/emc-metalnx-ui-user-context.xml" />
 
 	<bean class="com.emc.metalnx.context.EncodedPropertiesConfigurer">
 		<property name="ignoreUnresolvablePlaceholders" value="false" />

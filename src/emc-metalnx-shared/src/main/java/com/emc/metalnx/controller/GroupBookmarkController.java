@@ -98,7 +98,7 @@ public class GroupBookmarkController {
 
         model.addAttribute("groups", groups);
 
-        return "user/groups/groupsCollections";
+        return "groups/groupsCollections";
     }
 
     @RequestMapping(value = "/addBookmark/")

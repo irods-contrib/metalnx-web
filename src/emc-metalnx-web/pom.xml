@@ -39,11 +39,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.emc.metalnx</groupId>
-			<artifactId>emc-metalnx-ui-user</artifactId>
-			<version>${project.version}</version>
-		</dependency>	
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
