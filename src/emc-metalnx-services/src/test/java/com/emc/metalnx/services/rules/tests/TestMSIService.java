@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.services.rules.tests;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -134,30 +133,30 @@ public class TestMSIService {
     public void testOtherMSIInstalledFor420() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(otherMSIList, dbMSIByServer.getOtherMSIs());
+        assertTrue(server.isThereAnyMSI());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     @Test
     public void testOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(otherMSIList, dbMSIByServer.getOtherMSIs());
+        assertTrue(server.isThereAnyMSI());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     @Test
     public void testNoOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertFalse(dbMSIByServer.isThereAnyMSI());
-        assertTrue(dbMSIByServer.getOtherMSIs().isEmpty());
+        assertFalse(server.isThereAnyMSI());
+        assertTrue(server.getOtherMSIs().isEmpty());
     }
 
     @Test
@@ -170,12 +169,12 @@ public class TestMSIService {
 
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIListWithEmptyString);
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertFalse(dbMSIByServer.getOtherMSIs().isEmpty());
-        assertEquals(1, dbMSIByServer.getOtherMSIs().size());
-        assertTrue(dbMSIByServer.getOtherMSIs().containsKey(testMSI));
+        assertTrue(server.isThereAnyMSI());
+        assertFalse(server.getOtherMSIs().isEmpty());
+        assertEquals(1, server.getOtherMSIs().size());
+        assertTrue(server.getOtherMSIs().containsKey(testMSI));
     }
 
     @Test
@@ -186,12 +185,12 @@ public class TestMSIService {
 
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(mlxMSIList, dbMSIByServer.getMetalnxMSIs());
-        assertMap(irods42MSIs, dbMSIByServer.getIRODSMSIs());
-        assertMap(otherMSIList, dbMSIByServer.getOtherMSIs());
+        assertTrue(server.isThereAnyMSI());
+        assertMap(mlxMSIList, server.getMetalnxMSIs());
+        assertMap(irods42MSIs, server.getIRODSMSIs());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     @Test
@@ -202,12 +201,12 @@ public class TestMSIService {
 
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(mlxMSIList, dbMSIByServer.getMetalnxMSIs());
-        assertMap(irods41XMSIs, dbMSIByServer.getIRODSMSIs());
-        assertMap(otherMSIList, dbMSIByServer.getOtherMSIs());
+        assertTrue(server.isThereAnyMSI());
+        assertMap(mlxMSIList, server.getMetalnxMSIs());
+        assertMap(irods41XMSIs, server.getIRODSMSIs());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     public void assertMap(List<String> msiList, Map<String, Boolean> map) {

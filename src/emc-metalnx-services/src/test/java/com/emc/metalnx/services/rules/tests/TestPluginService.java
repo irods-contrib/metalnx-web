@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.services.rules.tests;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -121,24 +120,24 @@ public class TestPluginService {
     public void testMSIListForIRODS420() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        assertFalse(dbMSIByServer.isThereAnyMSI());
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        assertFalse(server.isThereAnyMSI());
     }
 
     @Test
     public void testMSIListForIRODS41X() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        assertFalse(dbMSIByServer.isThereAnyMSI());
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        assertFalse(server.isThereAnyMSI());
     }
 
     @Test
     public void testMSIInstalledList() throws DataGridConnectionRefusedException {
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        Map<String, Boolean> mlxMSIsMap = dbMSIByServer.getMetalnxMSIs();
-        Map<String, Boolean> iRODSMSIsMap = dbMSIByServer.getIRODSMSIs();
-        Map<String, Boolean> otherMSIsList = dbMSIByServer.getOtherMSIs();
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        Map<String, Boolean> mlxMSIsMap = server.getMetalnxMSIs();
+        Map<String, Boolean> iRODSMSIsMap = server.getIRODSMSIs();
+        Map<String, Boolean> otherMSIsList = server.getOtherMSIs();
 
         for (String msi: irods41XMSIs) assertTrue(iRODSMSIsMap.containsKey(msi));
         for (String msi: mlxMSIList) assertTrue(mlxMSIsMap.containsKey(msi));
