@@ -106,23 +106,23 @@
 											</option>
 										</th:block>									
 									</select>								
-								</div>								
+								</div>
 								
-								<div class="form-group hideElement storageResourcesProperties">
+								<div class="form-group storageResourcesProperties">
 									<label for="inputResourceHost" th:text="#{resources.add.form.resource.host}"></label> 
 									<input type="text" class="form-control" id="inputResourceHost" 
-										th:field="*{host}" th:placeholder="#{resources.add.form.placeholder.resource.host}" />
+										th:field="*{host}" th:placeholder="#{resources.add.form.placeholder.resource.host.optional}" />
 									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourceHostIcon"></i>
 									<small class="help-block hideElement" id="emptyResourceHostMsg" th:text="#{resources.validation.host.blank}"></small>
-								</div>						
+								</div>
 								
-								<div class="form-group hideElement storageResourcesProperties">
+								<div class="form-group storageResourcesProperties">
 									<label for="inputResourcePath" th:text="#{resources.add.form.resource.path}"></label> 
 									<input type="text" class="form-control" id="inputResourcePath" 
-										th:field="*{path}" th:placeholder="#{resources.add.form.placeholder.resource.path}" />
+										th:field="*{path}" th:placeholder="#{resources.add.form.placeholder.resource.path.optional}" />
 									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourcePathIcon"></i>
 									<small class="help-block hideElement" id="emptyResourcePathMsg" th:text="#{resources.validation.resource.path.blank}"></small>
-								</div>								
+								</div>
 								
 								<!-- Isilon Host -->
 								<div class="form-group hideElement isilonProperty">
@@ -231,14 +231,18 @@
 				//show or hide Host and Path inputs depending on the resource type
 				var optionSelected = $(this).find(":selected");
 				if(optionSelected.parent().attr("id") == "optGroupStorageResources") {
-					$(".storageResourcesProperties").removeClass("hideElement");
+					//$(".storageResourcesProperties").removeClass("hideElement");
+					$("#inputResourceHost").attr("placeholder", [[#{resources.add.form.placeholder.resource.host}]]);
+					$("#inputResourcePath").attr("placeholder", [[#{resources.add.form.placeholder.resource.path}]]);
 					$(".storageResourcesProperties").removeClass("has-feedback has-error");
-					$(".storageResourcesProperties .help-block").hide();	
-					$(".storageResourcesProperties").show(600);
+					//$(".storageResourcesProperties .help-block").hide();
+					//$(".storageResourcesProperties").show(600);
 				}
 				else  {
-					$(".storageResourcesProperties i").hide();	
-					$(".storageResourcesProperties").hide(600);				
+				    $("#inputResourceHost").attr("placeholder", [[#{resources.add.form.placeholder.resource.host.optional}]]);
+					$("#inputResourcePath").attr("placeholder", [[#{resources.add.form.placeholder.resource.path.optional}]]);
+					//$(".storageResourcesProperties i").hide();
+					//$(".storageResourcesProperties").hide(600);
 				}
 				
 				//isilon resources required extra parameters to be created
