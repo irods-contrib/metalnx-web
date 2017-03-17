@@ -59,13 +59,16 @@ public class MSIServiceImpl implements MSIService {
     private String msiAPIVersionSupported;
 
     @Value("#{'${msi.metalnx.list}'.split(',')}")
-    private List<String> msiMetalnxListExpected;
+    private List<String> mlxMSIsExpected;
 
     @Value("#{'${msi.irods.list}'.split(',')}")
-    private List<String> irods41XMSIList;
+    private List<String> irods41MSIsExpected;
 
     @Value("#{'${msi.irods.42.list}'.split(',')}")
-    private List<String> irods42MSIList;
+    private List<String> irods42MSIsExpected;
+
+    @Value("#{'${msi.other.list}'.split(',')}")
+    private List<String> otherMSIsExpected;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
@@ -78,8 +81,8 @@ public class MSIServiceImpl implements MSIService {
     public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
         if(host == null || host.isEmpty()) return null;
 
-        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIList : irods41XMSIList;
-        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, irodsMSIs);
+        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIsExpected : irods41MSIsExpected;
+        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, mlxMSIsExpected, irodsMSIs, otherMSIsExpected);
 
         DataGridServer server = findServerByHostname(host);
         if(server != null) msisByServer.addMicroservices(server.getMSIInstalledList());

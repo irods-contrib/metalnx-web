@@ -54,7 +54,9 @@
         <div class="">
             <ul>
                 <li th:each="msiPackageOthers : ${msiPackages.getOtherMSIs()}">
-                    <span th:text="${msiPackageOthers}"></span>
+                    <span th:text="${msiPackageOthers.key}"></span>
+                    <span th:if="${msiPackageOthers.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
+                    <span th:unless="${msiPackageOthers.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
                 </li>
             </ul>
         </div>

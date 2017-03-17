@@ -16,7 +16,8 @@
 
 package com.emc.metalnx.core.domain.entity;
 
-import java.util.ArrayList;
+import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,17 +31,19 @@ public class DataGridMSIByServer {
     // Maps MSI name to True/False that indicates whether or not the MSI is installed
     private Map<String, Boolean> metalnxMSIs;
     private Map<String, Boolean> irodsMSIs;
-    private List<String> otherMSIs;
+    private Map<String, Boolean> otherMSIs;
     private List<String> msisInstalled;
 
-    public DataGridMSIByServer(String host, List<String> expectedMetalnxMSIs, List<String> expectedIrodsMSIs) {
+    public DataGridMSIByServer(String host, List<String> expectedMetalnxMSIs, List<String> expectedIrodsMSIs,
+                               List<String> expectedOtherMSIs) {
         this.host = host;
         this.metalnxMSIs = new HashMap<>();
         this.irodsMSIs = new HashMap<>();
-        this.otherMSIs = new ArrayList<>();
+        this.otherMSIs = new HashMap<>();
 
-        if(expectedMetalnxMSIs != null) for(String msi: expectedMetalnxMSIs) this.metalnxMSIs.put(msi, false);
-        if(expectedIrodsMSIs != null) for(String msi: expectedIrodsMSIs) this.irodsMSIs.put(msi, false);
+        DataGridCoreUtils.fillMSIMap(expectedMetalnxMSIs, metalnxMSIs);
+        DataGridCoreUtils.fillMSIMap(expectedIrodsMSIs, irodsMSIs);
+        DataGridCoreUtils.fillMSIMap(expectedOtherMSIs, otherMSIs);
     }
 
     public Map<String, Boolean> getMetalnxMSIs() {
@@ -63,10 +66,10 @@ public class DataGridMSIByServer {
 
     public void addToMsiOther(String msi) {
         if(msi == null || msi.isEmpty()) return;
-        this.otherMSIs.add(msi);
+        this.otherMSIs.put(msi, true);
     }
 
-    public List<String> getOtherMSIs() {
+    public Map<String, Boolean> getOtherMSIs() {
         return otherMSIs;
     }
 
