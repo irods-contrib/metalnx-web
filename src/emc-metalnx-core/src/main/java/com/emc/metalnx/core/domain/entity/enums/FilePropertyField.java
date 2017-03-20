@@ -36,8 +36,8 @@ public enum FilePropertyField {
 	
 	/**
 	 * Finds the correct label associated to the input String
-	 * @param accessType
-	 * @return
+	 * @param fieldName field name as is written in front-end
+	 * @return field name as is used in database
 	 */
 	public static FilePropertyField findByString(String fieldName) {
 		
