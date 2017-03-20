@@ -159,7 +159,6 @@ public class MetadataController {
             DataGridPageContext pageContext = new DataGridPageContext();
             List<DataGridCollectionAndDataObject> dgCollDataObjs =
                     metadataService.findByMetadata(currSearch, pageContext, currPage, length);
-            metadataService.populateVisibilityForCurrentUser(dgCollDataObjs);
 
             jsonResponse.put("recordsTotal", String.valueOf(pageContext.getTotalNumberOfItems()));
             jsonResponse.put("recordsFiltered", String.valueOf(pageContext.getTotalNumberOfItems()));
