@@ -102,7 +102,7 @@ public class DataGridFilePropertySearch {
         boolean isAttributeEqualsDate = this.attribute == FilePropertyField.CREATION_DATE || this.attribute == FilePropertyField.MODIFICATION_DATE;
 
         if (this.operator == DataGridSearchOperatorEnum.LIKE || this.operator == DataGridSearchOperatorEnum.NOT_LIKE) {
-            whereClause = String.format(" fileProperties.%s %s '%%%s%%'", attribute, operator, value);
+            whereClause = String.format(" LOWER( fileProperties.%s ) %s LOWER( '%%%s%%' )", attribute, operator, value);
         }
         else if (isAttributeEqualsDate && this.operator == DataGridSearchOperatorEnum.EQUAL) {
             whereClause = String.format(" fileProperties.%s BETWEEN %s AND %d", attribute, value, Long.parseLong(value) + 60);
@@ -111,7 +111,7 @@ public class DataGridFilePropertySearch {
             whereClause = String.format(" fileProperties.%s %s %s", attribute, operator, value);
         }
         else {
-            whereClause = String.format(" fileProperties.%s %s '%s'", attribute, operator, value);
+            whereClause = String.format(" LOWER( fileProperties.%s ) %s LOWER( '%s' )", attribute, operator, value);
         }
 
         return whereClause;

@@ -59,9 +59,9 @@ public class DataGridMetadataSearch {
         val = addSQLCharToQueryParamBasedOnOperator(val);
         unit = addSQLCharToQueryParamBasedOnOperator(unit);
 
-        String attrQuery = hasAttr ? String.format(" %s = '%s' ", attrColName, attr) : "";
-        String valueQuery = hasVal ? String.format(" %s %s %s ", valueColName, opt, val) : "";
-        String unitQuery = hasUnit ? String.format(" %s %s %s ", unitColName, opt, unit) : "";
+        String attrQuery = hasAttr ? String.format(" LOWER( %s ) = LOWER( '%s' ) ", attrColName, attr) : "";
+        String valueQuery = hasVal ? String.format(" LOWER( %s ) %s LOWER( %s ) ", valueColName, opt, val) : "";
+        String unitQuery = hasUnit ? String.format(" LOWER( %s ) %s LOWER( %s ) ", unitColName, opt, unit) : "";
 
         if (hasAttr && (hasVal || hasUnit)) {
             attrQuery = String.format(" %s AND ", attrQuery);
