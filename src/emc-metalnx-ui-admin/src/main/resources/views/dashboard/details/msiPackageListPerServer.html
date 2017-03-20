@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<ul class="col-sm-12" th:if="${msiPackages.isThereAnyMSI()}">
+<ul class="col-sm-12" th:if="${server.isThereAnyMSI()}">
 
     <li role="tab" id="headingMlxMSI" data-toggle="collapse" href="#mlxMSI" aria-expanded="true" aria-controls="mlxMSI">
         <a role="button" class="btn-link" th:text="#{msi.package.mlx.accordion}"></a>
@@ -23,7 +23,7 @@
     <div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
         <div class="">
             <ul>
-                <li th:each="msiPackageMlx : ${msiPackages.getMetalnxMSIs()}">
+                <li th:each="msiPackageMlx : ${server.getMetalnxMSIs()}">
                     <span th:text="${msiPackageMlx.key}"></span>
                     <span th:if="${msiPackageMlx.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
                     <span th:unless="${msiPackageMlx.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
@@ -38,7 +38,7 @@
     <div id="irodsMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingIrodsMSI">
         <div class="">
             <ul>
-                <li th:each="msiPackageIrods : ${msiPackages.getIRODSMSIs()}">
+                <li th:each="msiPackageIrods : ${server.getIRODSMSIs()}">
                     <span th:text="${msiPackageIrods.key}"></span>
                     <span th:if="${msiPackageIrods.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
                     <span th:unless="${msiPackageIrods.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
@@ -53,8 +53,10 @@
     <div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
         <div class="">
             <ul>
-                <li th:each="msiPackageOthers : ${msiPackages.getOtherMSIs()}">
-                    <span th:text="${msiPackageOthers}"></span>
+                <li th:each="msiPackageOthers : ${server.getOtherMSIs()}">
+                    <span th:text="${msiPackageOthers.key}"></span>
+                    <span th:if="${msiPackageOthers.value}" th:text="#{msi.package.installed}" class="pull-right label label-info"></span>
+                    <span th:unless="${msiPackageOthers.value}" th:text="#{msi.package.not.installed}" class="pull-right label label-default"></span>
                 </li>
             </ul>
         </div>
@@ -69,5 +71,5 @@
         });
     </script>
 </ul>
-<p th:unless="${msiPackages.isThereAnyMSI()}" th:text="#{msi.package.not.found}"></p>
+<p th:unless="${server.isThereAnyMSI()}" th:text="#{msi.package.not.found}"></p>
 

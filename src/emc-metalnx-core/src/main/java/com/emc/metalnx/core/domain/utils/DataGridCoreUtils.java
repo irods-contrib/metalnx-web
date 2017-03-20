@@ -16,10 +16,7 @@
 
 package com.emc.metalnx.core.domain.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper class for common operations with core classes.
@@ -226,5 +223,11 @@ public class DataGridCoreUtils {
         }
 
         return msis;
+    }
+
+    public static void fillMSIMap(List<String> msis, Map<String, Boolean> map) {
+        if(msis == null || msis.isEmpty()) return;
+
+        for(String msi: msis) if(!msi.isEmpty()) map.put(msi, false);
     }
 }

@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -278,8 +277,8 @@ public class DashboardController {
 
     @RequestMapping(value="/msiInstalledList")
     public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridConnectionRefusedException, DataGridRuleException {
-        DataGridMSIByServer msiPackages = msiService.getMSIsInstalled(hostname);
-        model.addAttribute("msiPackages", msiPackages);
+        DataGridServer server = msiService.getMSIsInstalled(hostname);
+        model.addAttribute("server", server);
         return "dashboard/details/msiPackageListPerServer";
     }
 

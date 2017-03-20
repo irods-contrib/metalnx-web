@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -59,13 +58,16 @@ public class MSIServiceImpl implements MSIService {
     private String msiAPIVersionSupported;
 
     @Value("#{'${msi.metalnx.list}'.split(',')}")
-    private List<String> msiMetalnxListExpected;
+    private List<String> mlxMSIsExpected;
 
     @Value("#{'${msi.irods.list}'.split(',')}")
-    private List<String> irods41XMSIList;
+    private List<String> irods41MSIsExpected;
 
     @Value("#{'${msi.irods.42.list}'.split(',')}")
-    private List<String> irods42MSIList;
+    private List<String> irods42MSIsExpected;
+
+    @Value("#{'${msi.other.list}'.split(',')}")
+    private List<String> otherMSIsExpected;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
@@ -75,16 +77,9 @@ public class MSIServiceImpl implements MSIService {
     }
 
     @Override
-    public DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+    public DataGridServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
         if(host == null || host.isEmpty()) return null;
-
-        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIList : irods41XMSIList;
-        DataGridMSIByServer msisByServer = new DataGridMSIByServer(host, msiMetalnxListExpected, irodsMSIs);
-
-        DataGridServer server = findServerByHostname(host);
-        if(server != null) msisByServer.addMicroservices(server.getMSIInstalledList());
-
-        return msisByServer;
+        return findServerByHostname(host);
     }
 
     @Override
@@ -96,6 +91,12 @@ public class MSIServiceImpl implements MSIService {
 
     @Override
     public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
+        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIsExpected : irods41MSIsExpected;
+
+        server.setMetalnxExpectedMSIs(mlxMSIsExpected);
+        server.setIRodsExpectedMSIs(irodsMSIs);
+        server.setOtherExpectedMSIs(otherMSIsExpected);
+
         try {
             server.setMSIVersion(ruleService.execGetVersionRule(server.getHostname()));
         } catch (DataGridRuleException e) {
@@ -107,6 +108,7 @@ public class MSIServiceImpl implements MSIService {
         } catch (DataGridRuleException e) {
             logger.error("Failed to get MSIs installed for server: ", server.getHostname());
         }
+
     }
 
     @Override

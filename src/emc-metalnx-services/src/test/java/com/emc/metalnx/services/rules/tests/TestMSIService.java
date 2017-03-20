@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.services.rules.tests;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -44,8 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.spy;
@@ -89,7 +87,7 @@ public class TestMSIService {
         mlxMSIList = msiUtils.getMlxMSIList();
         irods41XMSIs = msiUtils.getIrods41XMSIs();
         irods42MSIs = msiUtils.getIrods420MSIs();
-        otherMSIList = msiUtils.getOtherMSIList();
+        otherMSIList = msiUtils.getOtherMSIs();
     }
 
     @Before
@@ -112,9 +110,9 @@ public class TestMSIService {
         servers.add(s2);
 
         ReflectionTestUtils.setField(msiService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(msiService, "msiMetalnxListExpected", mlxMSIList);
-        ReflectionTestUtils.setField(msiService, "irods41XMSIList", irods41XMSIs);
-        ReflectionTestUtils.setField(msiService, "irods42MSIList", irods42MSIs);
+        ReflectionTestUtils.setField(msiService, "mlxMSIsExpected", mlxMSIList);
+        ReflectionTestUtils.setField(msiService, "irods41MSIsExpected", irods41XMSIs);
+        ReflectionTestUtils.setField(msiService, "irods42MSIsExpected", irods42MSIs);
 
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
@@ -132,6 +130,54 @@ public class TestMSIService {
     }
 
     @Test
+    public void testOtherMSIInstalledFor420() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
+        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+
+        assertTrue(server.isThereAnyMSI());
+        assertMap(otherMSIList, server.getOtherMSIs());
+    }
+
+    @Test
+    public void testOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
+        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+
+        assertTrue(server.isThereAnyMSI());
+        assertMap(otherMSIList, server.getOtherMSIs());
+    }
+
+    @Test
+    public void testNoOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
+        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+
+        assertFalse(server.isThereAnyMSI());
+        assertTrue(server.getOtherMSIs().isEmpty());
+    }
+
+    @Test
+    public void testNoOtherMSIListed() throws DataGridConnectionRefusedException, DataGridRuleException {
+        String testMSI = "libmsitest_installed.so";
+
+        List<String> otherMSIListWithEmptyString = new ArrayList<>();
+        otherMSIListWithEmptyString.add("");
+        otherMSIListWithEmptyString.add(testMSI);
+
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIListWithEmptyString);
+        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+
+        assertTrue(server.isThereAnyMSI());
+        assertFalse(server.getOtherMSIs().isEmpty());
+        assertEquals(1, server.getOtherMSIs().size());
+        assertTrue(server.getOtherMSIs().containsKey(testMSI));
+    }
+
+    @Test
     public void testGetMSIInstalledFor420Server() throws DataGridConnectionRefusedException, DataGridRuleException {
         List<String> msis = new ArrayList<>(mlxMSIList);
         msis.addAll(irods42MSIs);
@@ -139,12 +185,12 @@ public class TestMSIService {
 
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(mlxMSIList, dbMSIByServer.getMetalnxMSIs());
-        assertMap(irods42MSIs, dbMSIByServer.getIRODSMSIs());
-        assertTrue(dbMSIByServer.getOtherMSIs().containsAll(otherMSIList));
+        assertTrue(server.isThereAnyMSI());
+        assertMap(mlxMSIList, server.getMetalnxMSIs());
+        assertMap(irods42MSIs, server.getIRODSMSIs());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     @Test
@@ -155,12 +201,12 @@ public class TestMSIService {
 
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
-        assertTrue(dbMSIByServer.isThereAnyMSI());
-        assertMap(mlxMSIList, dbMSIByServer.getMetalnxMSIs());
-        assertMap(irods41XMSIs, dbMSIByServer.getIRODSMSIs());
-        assertTrue(dbMSIByServer.getOtherMSIs().containsAll(otherMSIList));
+        assertTrue(server.isThereAnyMSI());
+        assertMap(mlxMSIList, server.getMetalnxMSIs());
+        assertMap(irods41XMSIs, server.getIRODSMSIs());
+        assertMap(otherMSIList, server.getOtherMSIs());
     }
 
     public void assertMap(List<String> msiList, Map<String, Boolean> map) {
