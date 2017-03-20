@@ -69,47 +69,21 @@ public class MSIUtils {
         return msiVersion;
     }
 
-    public static void setMsiVersion(String msiVersion) {
-        MSIUtils.msiVersion = msiVersion;
-    }
-
     public List<String> getMsiList() {
         return msiList;
-    }
-
-    public void setMsiList(List<String> msiList) {
-        this.msiList = msiList;
     }
 
     public List<String> getMlxMSIList() {
         return mlxMSIList;
     }
 
-    public void setMlxMSIList(List<String> mlxMSIList) {
-        this.mlxMSIList = mlxMSIList;
-    }
-
     public List<String> getIrods41XMSIs() {
         return irods41XMSIs;
-    }
-
-    public void setIrods41XMSIs(List<String> irods41XMSIs) {
-        this.irods41XMSIs = irods41XMSIs;
     }
 
     public List<String> getIrods420MSIs() {
         return irods420MSIs;
     }
 
-    public void setIrods420MSIs(List<String> irods420MSIs) {
-        this.irods420MSIs = irods420MSIs;
-    }
-
-    public List<String> getOtherMSIList() {
-        return otherMSIList;
-    }
-
-    public void setOtherMSIList(List<String> otherMSIList) {
-        this.otherMSIList = otherMSIList;
-    }
+    public List<String> getOtherMSIs() { return otherMSIList; }
 }

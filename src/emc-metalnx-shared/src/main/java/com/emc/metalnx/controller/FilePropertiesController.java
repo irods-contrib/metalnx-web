@@ -41,7 +41,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -107,9 +106,9 @@ public class FilePropertiesController {
 
     @RequestMapping(value = "/search")
     @ResponseBody
-    public String search(Model model, final RedirectAttributes redirectAttributes,
-            @RequestParam(value = "jsonFilePropertySearch", required = false) String jsonFilePropertySearch, @RequestParam("draw") int draw,
-            @RequestParam("start") int start, @RequestParam("length") int length) throws DataGridConnectionRefusedException {
+    public String search(@RequestParam(value = "jsonFilePropertySearch", required = false) String jsonFilePropertySearch,
+                         @RequestParam("draw") int draw, @RequestParam("start") int start,
+                         @RequestParam("length") int length) throws DataGridConnectionRefusedException {
 
         if (jsonFilePropertySearch != null) {
             currentPage = (int) (Math.floor(start / length) + 1);
@@ -127,7 +126,7 @@ public class FilePropertiesController {
         try {
             JsonNode jsonNode = mapper.readTree(this.jsonFilePropertySearch);
 
-            currentFilePropertySearch = new ArrayList<DataGridFilePropertySearch>();
+            currentFilePropertySearch = new ArrayList<>();
 
             JsonNode attributes = jsonNode.get("attribute");
             JsonNode operators = jsonNode.get("operator");
