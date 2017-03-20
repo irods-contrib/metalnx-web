@@ -118,11 +118,9 @@ public class MetadataController {
 
     @RequestMapping(value = "/search/", method = RequestMethod.POST)
     @ResponseBody
-    public String searchByMetadata(@RequestParam(required = false) String jsonMetadataSearch, @RequestParam("draw") int draw,
-            @RequestParam("start") int start, @RequestParam("length") int length) throws DataGridConnectionRefusedException {
-
-        List<DataGridCollectionAndDataObject> dgCollDataObjs = new ArrayList<DataGridCollectionAndDataObject>();
-        DataGridPageContext pageContext = new DataGridPageContext();
+    public String searchByMetadata(@RequestParam(required = false) String jsonMetadataSearch,
+                                   @RequestParam("draw") int draw, @RequestParam("start") int start,
+                                   @RequestParam("length") int length) throws DataGridConnectionRefusedException {
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonResponse = new HashMap<String, Object>();
@@ -141,7 +139,7 @@ public class MetadataController {
             // Creating parser
             JsonNode jsonObject = mapper.readTree(this.jsonMetadataSearch);
 
-            currSearch = new ArrayList<DataGridMetadataSearch>();
+            currSearch = new ArrayList<>();
 
             JsonNode attributes = jsonObject.get("attribute");
             JsonNode operators = jsonObject.get("operator");
@@ -158,13 +156,14 @@ public class MetadataController {
                 currSearch.add(ms);
             }
 
-            dgCollDataObjs = metadataService.findByMetadata(currSearch, pageContext, currPage, length);
+            DataGridPageContext pageContext = new DataGridPageContext();
+            List<DataGridCollectionAndDataObject> dgCollDataObjs =
+                    metadataService.findByMetadata(currSearch, pageContext, currPage, length);
             metadataService.populateVisibilityForCurrentUser(dgCollDataObjs);
 
             jsonResponse.put("recordsTotal", String.valueOf(pageContext.getTotalNumberOfItems()));
             jsonResponse.put("recordsFiltered", String.valueOf(pageContext.getTotalNumberOfItems()));
             jsonResponse.put("data", dgCollDataObjs);
-
         }
         catch (DataGridConnectionRefusedException e) {
             throw e;

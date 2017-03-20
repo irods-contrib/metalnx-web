@@ -152,13 +152,14 @@ public class SpecQueryServiceImpl implements SpecQueryService {
         StringBuilder q = new StringBuilder();
 
         if (searchAgainstColls) {
-            objQuery.append(" SELECT obj_name, parent_path, obj_owner, create_ts, modify_ts, totalMatches");
+            objQuery.append(" SELECT obj_name, parent_path, obj_owner, create_ts, modify_ts, resc_name, totalMatches");
             objQuery.append(" FROM (");
             objQuery.append(" SELECT c.coll_name as obj_name,");
             objQuery.append("      c.parent_coll_name as parent_path,");
             objQuery.append("      c.coll_owner_name as obj_owner,");
             objQuery.append("      c.create_ts as create_ts,");
             objQuery.append("      c.modify_ts as modify_ts,");
+            objQuery.append("      '' as resc_name,");
             objQuery.append("      c.coll_inheritance,");
             objQuery.append("      COUNT(c.coll_name) as totalMatches");
             objQuery.append(" FROM ");
@@ -172,12 +173,13 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             gb.append("      c.coll_owner_name,");
             gb.append("      c.create_ts,");
             gb.append("      c.modify_ts,");
+            gb.append("      resc_name,");
             gb.append("      c.coll_inheritance");
             gb.append(" ORDER BY totalMatches DESC, c.coll_name ");
             gb.append(" ) AS ms ");
         }
         else {
-            objQuery.append(" SELECT obj_name, size, obj_owner, repl_num, create_ts, modify_ts, parent_path, totalMatches");
+            objQuery.append(" SELECT obj_name, size, obj_owner, repl_num, create_ts, modify_ts, resc_name, parent_path, totalMatches");
             objQuery.append(" FROM (");
             objQuery.append(" SELECT ");
             objQuery.append("      d.data_name as obj_name, ");
@@ -186,6 +188,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             objQuery.append("      d.data_repl_num as repl_num, ");
             objQuery.append("      d.create_ts as create_ts,");
             objQuery.append("      d.modify_ts as modify_ts, ");
+            objQuery.append("      d.resc_name as resc_name, ");
             objQuery.append("      c.coll_name as parent_path,");
             objQuery.append("      COUNT(d.data_name) as totalMatches");
             objQuery.append(" FROM r_data_main d ");
@@ -200,6 +203,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             gb.append("      d.data_repl_num,");
             gb.append("      d.create_ts,");
             gb.append("      d.modify_ts,");
+            gb.append("      d.resc_name, ");
             gb.append("      c.coll_name");
             gb.append(" ORDER BY totalMatches DESC, d.data_name ");
             gb.append(" ) AS ms ");
