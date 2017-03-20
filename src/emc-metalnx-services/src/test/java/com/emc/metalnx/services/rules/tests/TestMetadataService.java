@@ -4,6 +4,7 @@ import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
@@ -52,9 +53,11 @@ public class TestMetadataService {
     @Autowired
     private FileOperationService fos;
 
-    private String targetPath, parentPath;
+    private String targetPath, parentPath, attr, val, unit;
 
     private List<DataGridCollectionAndDataObject> objs;
+
+    private List<DataGridMetadataSearch> search;
 
     @Before
     public void setUp() throws DataGridException {
@@ -80,14 +83,11 @@ public class TestMetadataService {
         metadataService.addMetadataToPath(targerFilenames[1], "test", "test", "test");
         metadataService.addMetadataToPath(targerFilenames[2], "TeSt", "tEsT", "teST");
 
-        String attr = "test";
-        String val = "TEST";
-        String unit = "TEst";
+        attr = "test";
+        val = "TEST";
+        unit = "TEst";
 
-        List<DataGridMetadataSearch> search = new ArrayList<>();
-        search.add(new DataGridMetadataSearch(attr, val, unit, DataGridSearchOperatorEnum.EQUAL));
-
-        objs = metadataService.findByMetadata(search, new DataGridPageContext(), 0, 100);
+        search = new ArrayList<>();
     }
 
     @After
@@ -96,14 +96,28 @@ public class TestMetadataService {
     }
 
     @Test
-    public void testCaseInsensitiveMetadataSearch() {
-        Assert.assertEquals(3, objs.size());
+    public void testCaseInsensitiveMetadataSearchEqual() throws DataGridConnectionRefusedException {
+        search.add(new DataGridMetadataSearch(attr, val, unit, DataGridSearchOperatorEnum.EQUAL));
+        assertMetadataSearch(3, 1);
+    }
+
+    @Test
+    public void testCaseInsensitiveMetadataSearchContains() throws DataGridConnectionRefusedException {
+        search.add(new DataGridMetadataSearch(attr, val, unit, DataGridSearchOperatorEnum.LIKE));
+        assertMetadataSearch(3, 1);
+    }
+
+    private void assertMetadataSearch(int expectedNumOfFiles, int expectedNumOfMatchesByFile)
+            throws DataGridConnectionRefusedException {
+        objs = metadataService.findByMetadata(search, new DataGridPageContext(), 1, 100);
+
+        Assert.assertEquals(expectedNumOfFiles, objs.size());
 
         for(DataGridCollectionAndDataObject obj: objs) {
             Assert.assertTrue(obj.isVisibleToCurrentUser());
             Assert.assertFalse(obj.isCollection());
             Assert.assertTrue(obj.getResourceName().equalsIgnoreCase(RESOURCE));
-            Assert.assertEquals(1, obj.getNumberOfMatches());
+            Assert.assertEquals(expectedNumOfMatchesByFile, obj.getNumberOfMatches());
         }
     }
 }
