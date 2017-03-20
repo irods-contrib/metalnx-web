@@ -64,17 +64,21 @@ public class TestMetadataService {
         fos.deleteCollection(targetPath, true);
         cs.createCollection(new DataGridCollectionAndDataObject(targetPath, parentPath, true));
 
-        MockMultipartFile file1 = new MockMultipartFile(BASE_FILE_NAME + "1.txt", "Hello World 1".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile(BASE_FILE_NAME + "2.txt", "Hello World 2".getBytes());
-        MockMultipartFile file3 = new MockMultipartFile(BASE_FILE_NAME + "3.txt", "Hello World 3".getBytes());
+        String[] targerFilenames = new String[3];
 
-        us.tranferFileDirectlyToJargon(file1.getName(), file1, targetPath, false, false, "", RESOURCE, false);
-        us.tranferFileDirectlyToJargon(file2.getName(), file2, targetPath, false, false, "", RESOURCE, false);
-        us.tranferFileDirectlyToJargon(file3.getName(), file3, targetPath, false, false, "", RESOURCE, false);
+        for(int i = 0; i < targerFilenames.length; i++) {
+            String currFilename = BASE_FILE_NAME + i + ".txt";
+            String currContent = "Hello World" + i;
 
-        metadataService.addMetadataToPath(targetPath, "TEST", "TEST", "TEST");
-        metadataService.addMetadataToPath(targetPath, "test", "test", "test");
-        metadataService.addMetadataToPath(targetPath, "TeSt", "tEsT", "teST");
+            MockMultipartFile file = new MockMultipartFile(currFilename, currContent.getBytes());
+            us.tranferFileDirectlyToJargon(currFilename, file, targetPath, false, false, "", RESOURCE, false);
+
+            targerFilenames[i] = String.format("%s/%s", targetPath, currFilename);
+        }
+
+        metadataService.addMetadataToPath(targerFilenames[0], "TEST", "TEST", "TEST");
+        metadataService.addMetadataToPath(targerFilenames[1], "test", "test", "test");
+        metadataService.addMetadataToPath(targerFilenames[2], "TeSt", "tEsT", "teST");
 
         String attr = "test";
         String val = "TEST";
