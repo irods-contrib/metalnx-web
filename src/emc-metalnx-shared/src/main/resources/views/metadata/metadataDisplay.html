@@ -276,46 +276,46 @@
 			  		    	"columnDefs": [
 			                    {
 			                    	"render": function ( data, type, full, meta ) {
-			    						return full.visibleToCurrentUser ? 
-			    							'<a href="#" onclick="redirectMetadataToCollections(\''+full.path+'\')" name="' + full.path + '"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' : 
+			    						return full.visibleToCurrentUser ?
+			    							'<a href="#" onclick="redirectMetadataToCollections(\''+full.path+'\')" name="' + full.path + '"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
 			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
 			    					},
 			    					"title": [[#{collections.management.table.collection.name.label}]],
-			    					"width": "20%", 
+			    					"width": "18%",
 			    					"targets": 0
 			                    },
 			                    {
 			                    	"data": "path",
 			                    	"title": [[#{collections.management.table.collection.path.label}]],
-			                    	"width": "25%", 
+			                    	"width": "25%",
 			                    	"targets": 1
 			                    },
 			                    {
-			                    	"data": "owner", 
+			                    	"data": "owner",
 			                    	"title": [[#{collections.management.table.owner.label}]],
-			                    	"width": "10%", 
+			                    	"width": "8%",
 			                    	"targets": 2
 			                   	},
 			                    {
 			                    	"render": function ( data, type, full, meta ){
 			                    		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
-			                    	}, 
+			                    	},
 			                    	"title": [[#{collections.management.table.kind.label}]],
 			                    	"width": "10%",
 			                    	"targets": 3
 			                   	},
 			                    {
-			                    	"data": "modifiedAtFormatted", 
+			                    	"data": "modifiedAtFormatted",
 			                    	"title": [[#{collections.management.table.modified.label}]],
-			                    	"width": "15%", 
+			                    	"width": "13%",
 			                    	"targets": 4
 			                   	},
 			                    {
 			                    	"render": function ( data, type, full, meta ){
 			                    		return full.collection? "-" : full.displaySize
-			                    	}, 
+			                    	},
 			                    	"title": [[#{collections.management.table.size.label}]],
-			                    	"width": "10%",
+			                    	"width": "8%",
 			                    	"targets": 5
 			                   	},
 			                   	{
@@ -327,8 +327,17 @@
 			                    		return tags;
 			                    	},
 			                   		"title": [[#{collections.management.table.matches.label}]],
-			                   		"width": "10%",
+			                   		"width": "8%",
 			                    	"targets": 6
+			                   	},
+			                    {
+			                    	"data": "resourceName",
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.resourceName != "" ? full.resourceName : "-"
+			                    	},
+			                    	"title": [[#{collections.management.table.resource.label}]],
+			                    	"width": "10%",
+			                    	"targets": 7
 			                   	}
 			                ]
 			    		} );
@@ -382,46 +391,55 @@
 			  		    	"columnDefs": [
 			                    {
 			                    	"render": function ( data, type, full, meta ) {
-			    						return full.visibleToCurrentUser ? '<a href="#" onclick="redirectFilePropertiesToCollections(\''+full.path+'\')"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' : 
+			    						return full.visibleToCurrentUser ? '<a href="#" onclick="redirectFilePropertiesToCollections(\''+full.path+'\')"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
 			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
 			    					},
 			    					"title": [[#{collections.management.table.collection.name.label}]],
-			    					"width": "20%", 
+			    					"width": "18%",
 			    					"targets": 0
 			                    },
 			                    {
 			                    	"data": "path",
 			                    	"title": [[#{collections.management.table.collection.path.label}]],
-			                    	"width": "30%", 
+			                    	"width": "25%",
 			                    	"targets": 1
 			                    },
 			                    {
-			                    	"data": "owner", 
+			                    	"data": "owner",
 			                    	"title": [[#{collections.management.table.owner.label}]],
-			                    	"width": "10%", 
+			                    	"width": "8%",
 			                    	"targets": 2
 			                   	},
 			                    {
 			                    	"render": function ( data, type, full, meta ){
 			                    		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
-			                    	}, 
+			                    	},
 			                    	"title": [[#{collections.management.table.kind.label}]],
 			                    	"width": "15%",
 			                    	"targets": 3
 			                   	},
 			                    {
-			                    	"data": "modifiedAtFormatted", 
+			                    	"data": "modifiedAtFormatted",
 			                    	"title": [[#{collections.management.table.modified.label}]],
-			                    	"width": "15%", 
+			                    	"width": "14%",
 			                    	"targets": 4
 			                   	},
 			                    {
 			                    	"render": function ( data, type, full, meta ){
-			                    		return full.collection? "-" : full.displaySize
-			                    	}, 
+			                    		return full.collection ? "-" : full.displaySize
+			                    	},
 			                    	"title": [[#{collections.management.table.size.label}]],
 			                    	"width": "10%",
 			                    	"targets": 5
+			                   	},
+			                    {
+			                    	"data": "resourceName",
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.resourceName != "" ? full.resourceName : "-"
+			                    	},
+			                    	"title": [[#{collections.management.table.resource.label}]],
+			                    	"width": "10%",
+			                    	"targets": 6
 			                   	}
 			                ]
 			    		} );

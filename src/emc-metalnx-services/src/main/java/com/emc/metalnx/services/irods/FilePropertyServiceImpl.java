@@ -81,10 +81,8 @@ public class FilePropertyServiceImpl implements FilePropertyService {
         try {
             String zone = irodsServices.getCurrentUserZone();
 
-            totalCollections = specQueryService.countCollectionsMatchingFileProperties(searchList,
-                    zone);
-            totalDataObjects = specQueryService.countDataObjectsMatchingFileProperties(searchList,
-                    zone);
+            totalCollections = specQueryService.countCollectionsMatchingFileProperties(searchList, zone);
+            totalDataObjects = specQueryService.countDataObjectsMatchingFileProperties(searchList, zone);
 
             pageContext.setStartItemNumber(startIndex + 1);
             pageContext.setTotalNumberOfItems(totalCollections + totalDataObjects);
