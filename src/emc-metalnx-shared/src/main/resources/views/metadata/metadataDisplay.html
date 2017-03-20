@@ -359,7 +359,7 @@
 			                   	},
 			                    {
 			                    	"render": function ( data, type, full, meta ){
-			                    		return full.collection? "-" : full.displaySize
+			                    		return full.collection ? "-" : full.displaySize
 			                    	},
 			                    	"title": [[#{collections.management.table.size.label}]],
 			                    	"width": "10%",
@@ -367,6 +367,9 @@
 			                   	},
 			                    {
 			                    	"data": "resourceName",
+			                    	"render": function ( data, type, full, meta ){
+			                    		return full.resourceName != "" ? full.resourceName : "-"
+			                    	},
 			                    	"title": [[#{collections.management.table.resource.label}]],
 			                    	"width": "10%",
 			                    	"targets": 6
