@@ -86,12 +86,9 @@
             </ol>
         </div>
         <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
-            <!--<button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
-            <button href="#" class="pull-right btn btn-sm btn-default" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
-!-->
         </div>
-        <button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
-        <button href="#" class="pull-right btn btn-sm btn-default" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
+        <button href="#" class="pull-right btn btn-sm btn-primary hidden" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
+        <button href="#" class="pull-right btn btn-sm btn-default hidden" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
     </div>
         <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
 		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" th:title="#{collections.menu.options.tooltip}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -129,8 +126,6 @@
 		data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
 		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
 	</a>
-
-
 </div>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -180,6 +175,8 @@
 			$('#breadcrumbStar').addClass("hidden");
 			$('#breadcrumbOptionsMenu').addClass("hidden");
 			$('#navigationBar').removeClass("hidden");
+			$('#navigationBarGo').removeClass("hidden");
+			$('#navigationBarCancel').removeClass("hidden");
 			$('#navigationInput').focus().select();
 		}
 	});
@@ -198,14 +195,6 @@
 		}
 	});
 
-    $("#navigationBar").focusout(function() {
-        $('#navigationInput').val([[${collectionAndDataObject.path}]]);
-        $("#current-path").removeClass("hidden").addClass("visible");
-        $("#navigationBar").removeClass("visible").addClass("hidden");
-        $('#breadcrumbStar').removeClass("hidden").addClass("visible");
-        $('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
-        $("#current-path .breadcrumb").css("background-color", "#ffffff");
-    });
 	$('#navigationBarGo').click(function(e){
 		e.stopPropagation();
 		e.preventDefault();
@@ -218,6 +207,8 @@
 		$('#navigationInput').val([[${collectionAndDataObject.path}]]);
 			$('#current-path').removeClass("hidden");
 			$('#navigationBar').addClass("hidden");
+			$('#navigationBarGo').addClass("hidden");
+			$('#navigationBarCancel').addClass("hidden");
 			$(".current-path .breadcrumb").css("background-color", "#ffffff");
 			$('#breadcrumbStar').removeClass("hidden").addClass("visible");
 			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
@@ -227,12 +218,11 @@
             $("#current-path .breadcrumb").css("background-color", "#f7fafe");
         }
     });
-    //$("#editable-path").mouseout(function(e) {
-        //if (!$(e.target).is('a')) {
-      //  if (!($(e.target).is('a')) && !($(e.target).is('button'))){
-        //    $("#current-path .breadcrumb").css("background-color", "#ffffff");
-       // }
-    //});
+    $("#editable-path").mouseout(function(e) {
+       if (!$(e.target).is('a')) {
+         $("#current-path .breadcrumb").css("background-color", "#ffffff");
+      }
+    });
 	function starPath(path){
 		$('#breadcrumbStar').attr('onclick', '');
 		ajaxEncapsulation(

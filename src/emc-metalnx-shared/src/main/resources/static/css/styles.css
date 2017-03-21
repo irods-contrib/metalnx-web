@@ -882,7 +882,7 @@ span .label {
     display: inline-block;
     min-height: 38px;
     z-index: 4;
-    width:700px;
+    width:85%;
 }
 
 #current-path {
@@ -926,17 +926,17 @@ span .label {
 }
 #navigationBarGo,
 #navigationBarCancel{
-	top:5px;
+	top:10px;
 	position:absolute;
 
 }
 
 #navigationBarGo{
-right:-40px;
+    right:55px;
 }
 
 #navigationBarCancel{
-right:-75px;
+    right: 20px;
 }
 
 #navigationInput{
@@ -1724,7 +1724,7 @@ form.registerForm > .pull-right > .btn{
 		margin-bottom: 0px
 	}
 	#editable-path {
-	    width:505px;
+	    width:80%;
     }
     .breadcrumb:nth-last-child(2),
     .breadcrumb:nth-last-child(3) {
@@ -1893,7 +1893,7 @@ form.registerForm > .pull-right > .btn{
         max-width: 45ch;
     }
     #editable-path {
-    	    width:900px;
+    	    width:90%;
     }
 }
 
