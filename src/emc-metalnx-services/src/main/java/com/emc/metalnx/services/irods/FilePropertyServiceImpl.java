@@ -1,26 +1,31 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ * Copyright (c) 2015-2017, Dell Inc.
  *
- * 	Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.emc.metalnx.services.irods;
 
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
+import com.emc.metalnx.core.domain.entity.DataGridPageContext;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.FilePropertyService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.SpecQueryService;
+import com.emc.metalnx.services.interfaces.UserService;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.DataObjectAO;
@@ -35,16 +40,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.FilePropertyService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.SpecQueryService;
-import com.emc.metalnx.services.interfaces.UserService;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -83,10 +81,8 @@ public class FilePropertyServiceImpl implements FilePropertyService {
         try {
             String zone = irodsServices.getCurrentUserZone();
 
-            totalCollections = specQueryService.countCollectionsMatchingFileProperties(searchList,
-                    zone);
-            totalDataObjects = specQueryService.countDataObjectsMatchingFileProperties(searchList,
-                    zone);
+            totalCollections = specQueryService.countCollectionsMatchingFileProperties(searchList, zone);
+            totalDataObjects = specQueryService.countDataObjectsMatchingFileProperties(searchList, zone);
 
             pageContext.setStartItemNumber(startIndex + 1);
             pageContext.setTotalNumberOfItems(totalCollections + totalDataObjects);

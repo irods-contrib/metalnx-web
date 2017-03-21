@@ -1,6 +1,21 @@
+/*
+ * Copyright (c) 2015-2017, Dell Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.emc.metalnx.services.interfaces;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -16,10 +31,10 @@ public interface MSIService {
     /**
      * Retrieves all MSIs packages installed in the grid.
      * @param host hostname of the server to get the MSIs installed
-     * @return {@link DataGridMSIByServer} containing the list of MSIs classified by type: metalnx, iRODS, other
+     * @return {@link DataGridServer} containing the list of MSIs classified by type: metalnx, iRODS, other
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    DataGridMSIByServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException;
+    DataGridServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException;
 
     /**
      * Retrieves information about the MSI package installed in the servers of the grid.

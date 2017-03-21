@@ -1,29 +1,28 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ * Copyright (c) 2015-2017, Dell Inc.
  *
- * 	Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.emc.metalnx.services.irods;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.emc.metalnx.core.domain.entity.*;
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridMetadata;
+import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
+import com.emc.metalnx.core.domain.entity.DataGridPageContext;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.*;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
 import org.irods.jargon.core.pub.CollectionAO;
@@ -41,18 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MetadataService;
-import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.SpecQueryService;
-import com.emc.metalnx.services.interfaces.UserService;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import java.util.*;
 
 @Service
 @Transactional
@@ -78,12 +69,12 @@ public class MetadataServiceImpl implements MetadataService {
     public List<DataGridCollectionAndDataObject> findByMetadata(List<DataGridMetadataSearch> searchList, DataGridPageContext pageContext,
             int pageNum, int pageSize) throws DataGridConnectionRefusedException {
 
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
-        List<DataGridCollectionAndDataObject> dataGridObjects = null;
-        List<DataGridCollectionAndDataObject> dataGridCollections = null;
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
+        List<DataGridCollectionAndDataObject> dataGridObjects;
+        List<DataGridCollectionAndDataObject> dataGridCollections;
 
-        int totalCollections = 0;
-        int totalDataObjects = 0;
+        int totalCollections;
+        int totalDataObjects;
         int startIndex = (pageNum - 1) * pageSize;
         int endIndex = (pageNum * pageSize) - 1;
         int endIndexForDataObjs;
@@ -149,6 +140,7 @@ public class MetadataServiceImpl implements MetadataService {
             logger.error("Could not find data objects by metadata. ", e.getMessage());
         }
 
+        populateVisibilityForCurrentUser(dataGridCollectionAndDataObjects);
         return dataGridCollectionAndDataObjects;
     }
 
@@ -297,7 +289,7 @@ public class MetadataServiceImpl implements MetadataService {
             return;
         }
 
-        final String currentUser = getLoggedDataGridUser().getUsername();
+        final String currentUser = irodsServices.getCurrentUser();
         final IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
         final IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
 
@@ -319,12 +311,5 @@ public class MetadataServiceImpl implements MetadataService {
                 logger.error("Could not get permissions for current user: {}", e.getMessage());
             }
         }
-    }
-
-    private DataGridUser getLoggedDataGridUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) auth.getPrincipal();
-
-        return userService.findByUsernameAndAdditionalInfo(username, zoneName);
     }
 }

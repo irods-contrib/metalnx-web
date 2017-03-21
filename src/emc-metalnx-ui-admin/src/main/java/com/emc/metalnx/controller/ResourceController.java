@@ -1,31 +1,30 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ * Copyright (c) 2015-2017, Dell Inc.
  *
- * 	Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.emc.metalnx.controller;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridResourceType;
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.core.domain.entity.enums.DataGridResourceTypeEnum;
+import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.modelattribute.enums.URLMap;
+import com.emc.metalnx.modelattribute.resource.ResourceForm;
+import com.emc.metalnx.services.interfaces.*;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -36,28 +35,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridResourceType;
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.entity.enums.DataGridResourceTypeEnum;
-import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.modelattribute.enums.URLMap;
-import com.emc.metalnx.modelattribute.resource.ResourceForm;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MachineInfoService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.ServerService;
-import com.emc.metalnx.services.interfaces.ZoneService;
+import javax.servlet.http.HttpServletRequest;
+import java.net.UnknownHostException;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/resources")

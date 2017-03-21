@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2015-2016, EMC Corporation
+Copyright (c) 2015-2017 Dell Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@ Licensed under the Apache License, Version 2.0 (the "License");
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package com.emc.metalnx.services.exceptions;
+package com.emc.metalnx.core.domain.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 
-public class DataGridDatabaseException extends AuthenticationException {
-    public DataGridDatabaseException(String message) {
+public class DataGridServerException extends AuthenticationException {
+    public DataGridServerException(String message) {
         super(message);
     }
 }

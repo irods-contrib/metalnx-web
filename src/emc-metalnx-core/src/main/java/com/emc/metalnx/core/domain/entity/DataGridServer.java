@@ -1,26 +1,23 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ * Copyright (c) 2015-2017, Dell Inc.
  *
- * 	Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.emc.metalnx.core.domain.entity;
 
 import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DataGridServer implements Comparable<DataGridServer> {
 	
@@ -39,7 +36,21 @@ public class DataGridServer implements Comparable<DataGridServer> {
 	private String rmdPackageRelease;
 	private String rmdPackageVersion;
 	private String msiVersion;
-    private List<String> msiInstalledList;
+    private List<String> msisInstaleld;
+
+	private List<String> mlxMSIsExpected;
+	private List<String> irodsMSIsExpected;
+	private List<String> otherMSIsExpected;
+
+    private Map<String, Boolean> metalnxMSIs;
+    private Map<String, Boolean> irodsMSIs;
+    private Map<String, Boolean> otherMSIs;
+
+    public DataGridServer() {
+        metalnxMSIs = new HashMap<>();
+        irodsMSIs = new HashMap<>();
+        otherMSIs = new HashMap<>();
+    }
 
     /**
 	 * @return the type
@@ -305,11 +316,61 @@ public class DataGridServer implements Comparable<DataGridServer> {
 		return sb.toString();
 	}
 
-    public void setMSIInstalledList(List<String> msiInstalledList) {
-        this.msiInstalledList = msiInstalledList;
+    public void setMSIInstalledList(List<String> msisInstalled) {
+        if(msisInstalled == null || msisInstalled.isEmpty()) return;
+
+        this.msisInstaleld = msisInstalled;
+
+        // classifying MSIs by their type
+        for(String msi: msisInstalled) {
+            if(mlxMSIsExpected.contains(msi)) addToMsiMetalnx(msi);
+            else if(irodsMSIsExpected.contains(msi)) addToMsiIRODS(msi);
+            else addToMsiOther(msi);
+        }
     }
 
     public List<String> getMSIInstalledList() {
-	    return this.msiInstalledList != null ? this.msiInstalledList : new ArrayList<>();
+	    return this.msisInstaleld != null ? this.msisInstaleld : new ArrayList<>();
+    }
+
+	public void setMetalnxExpectedMSIs(List<String> mlxMSIsExpected) {
+		this.mlxMSIsExpected = mlxMSIsExpected;
+	}
+
+	public void setIRodsExpectedMSIs(List<String> irodsMSIsExpected) {
+		this.irodsMSIsExpected = irodsMSIsExpected;
+	}
+
+	public void setOtherExpectedMSIs(List<String> otherMSIsExpected) {
+		this.otherMSIsExpected = otherMSIsExpected;
+	}
+
+	// used by frontend
+    public Map<String, Boolean> getMetalnxMSIs() { return metalnxMSIs; }
+
+    // used by frontend
+    public Map<String, Boolean> getIRODSMSIs() { return irodsMSIs; }
+
+    // used by frontend
+    public Map<String, Boolean> getOtherMSIs() { return otherMSIs; }
+
+    // used by frontend
+    public boolean isThereAnyMSI() {
+        return !getMSIInstalledList().isEmpty();
+    }
+
+    private void addToMsiMetalnx(String msi) {
+        if(msi == null || msi.isEmpty()) return;
+        this.metalnxMSIs.put(msi, true);
+    }
+
+    private void addToMsiIRODS(String msi) {
+        if(msi == null || msi.isEmpty()) return;
+        this.irodsMSIs.put(msi, true);
+    }
+
+    private void addToMsiOther(String msi) {
+        if(msi == null || msi.isEmpty()) return;
+        this.otherMSIs.put(msi, true);
     }
 }

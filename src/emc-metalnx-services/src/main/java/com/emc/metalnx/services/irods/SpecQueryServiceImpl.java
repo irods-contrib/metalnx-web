@@ -1,24 +1,28 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ * Copyright (c) 2015-2017, Dell Inc.
  *
- * 	Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.emc.metalnx.services.irods;
 
-import java.util.List;
-
+import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
+import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
+import com.emc.metalnx.core.domain.entity.DataGridPageContext;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.AdminServices;
+import com.emc.metalnx.services.interfaces.SpecQueryService;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.SpecificQueryAO;
 import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
@@ -31,13 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
-import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.AdminServices;
-import com.emc.metalnx.services.interfaces.SpecQueryService;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import java.util.List;
 
 @Service
 @Transactional
@@ -154,13 +152,14 @@ public class SpecQueryServiceImpl implements SpecQueryService {
         StringBuilder q = new StringBuilder();
 
         if (searchAgainstColls) {
-            objQuery.append(" SELECT obj_name, parent_path, obj_owner, create_ts, modify_ts, totalMatches");
+            objQuery.append(" SELECT obj_name, parent_path, obj_owner, create_ts, modify_ts, resc_name, totalMatches");
             objQuery.append(" FROM (");
             objQuery.append(" SELECT c.coll_name as obj_name,");
             objQuery.append("      c.parent_coll_name as parent_path,");
             objQuery.append("      c.coll_owner_name as obj_owner,");
             objQuery.append("      c.create_ts as create_ts,");
             objQuery.append("      c.modify_ts as modify_ts,");
+            objQuery.append("      '' as resc_name,");
             objQuery.append("      c.coll_inheritance,");
             objQuery.append("      COUNT(c.coll_name) as totalMatches");
             objQuery.append(" FROM ");
@@ -174,12 +173,13 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             gb.append("      c.coll_owner_name,");
             gb.append("      c.create_ts,");
             gb.append("      c.modify_ts,");
+            gb.append("      resc_name,");
             gb.append("      c.coll_inheritance");
             gb.append(" ORDER BY totalMatches DESC, c.coll_name ");
             gb.append(" ) AS ms ");
         }
         else {
-            objQuery.append(" SELECT obj_name, size, obj_owner, repl_num, create_ts, modify_ts, parent_path, totalMatches");
+            objQuery.append(" SELECT obj_name, size, obj_owner, repl_num, create_ts, modify_ts, resc_name, parent_path, totalMatches");
             objQuery.append(" FROM (");
             objQuery.append(" SELECT ");
             objQuery.append("      d.data_name as obj_name, ");
@@ -188,6 +188,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             objQuery.append("      d.data_repl_num as repl_num, ");
             objQuery.append("      d.create_ts as create_ts,");
             objQuery.append("      d.modify_ts as modify_ts, ");
+            objQuery.append("      d.resc_name as resc_name, ");
             objQuery.append("      c.coll_name as parent_path,");
             objQuery.append("      COUNT(d.data_name) as totalMatches");
             objQuery.append(" FROM r_data_main d ");
@@ -202,6 +203,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
             gb.append("      d.data_repl_num,");
             gb.append("      d.create_ts,");
             gb.append("      d.modify_ts,");
+            gb.append("      d.resc_name, ");
             gb.append("      c.coll_name");
             gb.append(" ORDER BY totalMatches DESC, d.data_name ");
             gb.append(" ) AS ms ");

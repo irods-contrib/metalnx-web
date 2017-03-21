@@ -1,6 +1,21 @@
+/*
+ * Copyright (c) 2015-2017, Dell Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.emc.metalnx.services.rules.tests;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIByServer;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
@@ -69,7 +84,7 @@ public class TestPluginService {
         mlxMSIList = msiUtils.getMlxMSIList();
         irods41XMSIs = msiUtils.getIrods41XMSIs();
         irods42MSIs = msiUtils.getIrods420MSIs();
-        otherMSIList = msiUtils.getOtherMSIList();
+        otherMSIList = msiUtils.getOtherMSIs();
     }
 
     @Before
@@ -92,9 +107,9 @@ public class TestPluginService {
         servers.add(s2);
 
         ReflectionTestUtils.setField(msiService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(msiService, "msiMetalnxListExpected", mlxMSIList);
-        ReflectionTestUtils.setField(msiService, "irods41XMSIList", irods41XMSIs);
-        ReflectionTestUtils.setField(msiService, "irods42MSIList", irods42MSIs);
+        ReflectionTestUtils.setField(msiService, "mlxMSIsExpected", mlxMSIList);
+        ReflectionTestUtils.setField(msiService, "irods41MSIsExpected", irods41XMSIs);
+        ReflectionTestUtils.setField(msiService, "irods42MSIsExpected", irods42MSIs);
 
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
@@ -105,28 +120,28 @@ public class TestPluginService {
     public void testMSIListForIRODS420() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        assertFalse(dbMSIByServer.isThereAnyMSI());
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        assertFalse(server.isThereAnyMSI());
     }
 
     @Test
     public void testMSIListForIRODS41X() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        assertFalse(dbMSIByServer.isThereAnyMSI());
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        assertFalse(server.isThereAnyMSI());
     }
 
     @Test
     public void testMSIInstalledList() throws DataGridConnectionRefusedException {
-        DataGridMSIByServer dbMSIByServer = msiService.getMSIsInstalled("server1.test.com");
-        Map<String, Boolean> mlxMSIsMap = dbMSIByServer.getMetalnxMSIs();
-        Map<String, Boolean> iRODSMSIsMap = dbMSIByServer.getIRODSMSIs();
-        List<String> otherMSIsList = dbMSIByServer.getOtherMSIs();
+        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        Map<String, Boolean> mlxMSIsMap = server.getMetalnxMSIs();
+        Map<String, Boolean> iRODSMSIsMap = server.getIRODSMSIs();
+        Map<String, Boolean> otherMSIsList = server.getOtherMSIs();
 
         for (String msi: irods41XMSIs) assertTrue(iRODSMSIsMap.containsKey(msi));
         for (String msi: mlxMSIList) assertTrue(mlxMSIsMap.containsKey(msi));
-        for (String msi: otherMSIList) assertTrue(otherMSIsList.contains(msi));
+        for (String msi: otherMSIList) assertTrue(otherMSIsList.containsKey(msi));
     }
 
     @Test

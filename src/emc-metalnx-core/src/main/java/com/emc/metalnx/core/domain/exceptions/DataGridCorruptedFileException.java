@@ -1,5 +1,5 @@
 /*
- *    Copyright (c) 2015-2016, EMC Corporation
+ *    Copyright (c) 2015-2017 Dell Inc.
  *
  * 	Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  *
  */
 
-package com.emc.metalnx.services.exceptions;
+package com.emc.metalnx.core.domain.exceptions;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-
-public class DataGridCorruptedPartException extends DataGridException {
+public class DataGridCorruptedFileException extends DataGridException {
     private static final long serialVersionUID = 1L;
 
-	public DataGridCorruptedPartException(String msg) {
+	public DataGridCorruptedFileException(String msg) {
 		super(msg);
 	}
 }
