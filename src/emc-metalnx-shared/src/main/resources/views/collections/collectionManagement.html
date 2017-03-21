@@ -609,7 +609,7 @@
 					{path : directoryPath, groupName : groupName}, 
 					function (data){
 						$(".modal a[name='" + directoryPath + "']").attr("onclick", "retractElement('" + directoryName + "', '" + directoryPath + "');");
-						$(".modal a[name='" + directoryPath + "']").parents('.tab-pane.active').children('ul').remove();
+						$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 						$(".modal a[name='" + directoryPath + "']").parent().after(data);
 						$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-open-16.png");
 						
@@ -621,7 +621,7 @@
 	        
 	        function retractElement(directoryName, directoryPath) {
 	        	$(".modal a[name='" + directoryPath + "']").attr("onclick", "getSubDirectoriesOldTree('" + directoryName + "', '" + directoryPath + "');");
-				$(".modal a[name='" + directoryPath + "']").parents('.tab-pane.active').children('ul').remove();
+				$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 				$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-16.png");
 				
 				targetPath = directoryPath;	
