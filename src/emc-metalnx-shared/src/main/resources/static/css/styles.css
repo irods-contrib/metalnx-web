@@ -856,13 +856,6 @@ span .label {
     padding-left:10px;
 }
 
-.btn-group.history>ul.dropdown-menu>li.active>a:after
-{
-    font-family: FontAwesome;
-    content: "\f00c";
-    margin-left:5px;
-}
-
 .btn-group.history>.btn.dropdown-toggle {
     border-right: 2px solid #f3f3f3;
 }
