@@ -14,53 +14,86 @@
   ~    limitations under the License.
   ~
   -->
+<div class="breadcrumb-wrapper">
+    <!-- History button -->
+    <div class="btn-group history" xmlns:th="http://www.w3.org/1999/xhtml">
+      <button id="historyBtn" th:title="#{collections.history.button.tooltip}" type="button" class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+          <li class="header" th:text="#{collections.history.list.header}"></li>
+        <th:block th:each="historyElement,iterStat : ${collectionForwardHistory}">
+            <li th:if="${not #strings.isEmpty(historyElement)}"><a href="#" th:text="${historyElement}" th:onclick="'javascript:goForwardHistory('+ ${iterStat.size - iterStat.index} +');'"></a></li>
+        </th:block>
 
-<!-- History button -->
-<div class="btn-group pull-left" xmlns:th="http://www.w3.org/1999/xhtml">
-  <button id="backBtn" th:title="#{collections.back.button.tooltip}" type="button" class="btn btn-link" onclick="goBackHistory(1);" th:disabled="${collectionPastHistoryEmpty}"><i class="fa fa-arrow-left"></i></button>
-  <button id="forwardBtn" th:title="#{collections.forward.button.tooltip}" type="button" class="btn btn-link" onclick="goForwardHistory(1);" th:disabled="${collectionForwardHistoryEmpty}"><i class="fa fa-arrow-right"></i></button>
-  <button id="historyBtn" th:title="#{collections.history.button.tooltip}" type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu">
-  	<th:block th:each="historyElement,iterStat : ${collectionForwardHistory}">
-	  	<li th:if="${not #strings.isEmpty(historyElement)}"><a href="#" th:text="${historyElement}" th:onclick="'javascript:goForwardHistory('+ ${iterStat.size - iterStat.index} +');'"></a></li>
-  	</th:block>
-  	<li class="active"><a href="#" th:text="${collectionAndDataObject.path}"><i class="fa fa-check"></i></a></li>
-  	<th:block th:each="historyElement,iterStat : ${collectionPastHistory}">
-	  	<li th:if="${not #strings.isEmpty(historyElement)}"><a href="#" th:text="${historyElement}" th:onclick="'javascript:goBackHistory('+ ${iterStat.count} +');'"></a></li>
-  	</th:block>
-  </ul>
-</div>
+        <li class="active"><a href="#" th:text="${collectionAndDataObject.path}"></a></li>
 
-<!-- Current Collections Table -->		
-<ol class="breadcrumb">
+          <th:block th:each="historyElement,iterStat : ${collectionPastHistory}">
+              <li th:if="${not #strings.isEmpty(historyElement)}" th:onLoad="'javascript:getSubDirectories(\'' + ${historyElement} + '\');'">
+                  <a  href="#" th:text="${historyElement}" th:onclick="'javascript:goBackHistory('+ ${iterStat.count} +');'">Collection</a>
+              </li>
+          </th:block>
 
-	<i class="fa fa-folder-o" style="color:#2C95DD"></i> &nbsp; 
-	<!-- root item -->
-	<li><a href="#"  title="/" onclick="javascript:getSubDirectories('/');">iRods</a></li>
+          <li role="separator" class="divider"></li>
+          <li><a class="home" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" th:text="'Home ('+${homeCollectionName}+')'"></a>
+          </li>
+      </ul>
+    </div>
 
-	<th:block th:each="breadcrumbItem, eachLoop: ${breadcrumb.items}">
-		<li th:if="${ eachLoop.last == false }">
-			<a  href="#"
-				th:text="${breadcrumbItem.name}"
-				th:title="${breadcrumbItem.path}"
-				th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
-			>
-			</a>
-		</li>
-	</th:block>
-		
-	<li>
-		<span th:if="${collectionAndDataObject.path != '/'}"
-			  th:text="${ collectionAndDataObject.name }"
-			  th:title="${ collectionAndDataObject.path }">
-		</span>
-	</li>
-	
-	<div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
-		<a id="breadcrumbOptionsMenu" href="#" class="btn dropdown-toggle" th:title="#{collections.menu.options.tooltip}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div id="editable-path">
+    <!-- Current Collections Table -->
+        <div id="current-path">
+            <ol class="breadcrumb">
+
+                <th:block th:if="${breadcrumb.items.size()} le 2" th:each="breadcrumbItem, eachLoop: ${breadcrumb.items}">
+                    <li>
+                        <a  href="#"
+                            th:text="${breadcrumbItem.name}"
+                            th:title="${breadcrumbItem.path}"
+                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
+                        >
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${breadcrumb.items.size()} gt 2">
+                    <li>...</li>
+                    <li class="hidden-sm hidden-xs hidden-md">
+                        <a  href="#"
+                            th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
+                            th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
+                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'"
+                        >
+                        </a>
+                    </li>
+                    <li class="hidden-xs hidden-sm">
+                        <a  href="#"
+                            th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
+                            th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
+                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'"
+                        >
+                        </a>
+                    </li>
+                </th:block>
+
+
+                <li class="collections-view">
+                    <span th:if="${collectionAndDataObject.path != '/'}"
+                          th:text="${ collectionAndDataObject.name }"
+                          th:title="${ collectionAndDataObject.path }">
+                    </span>
+                </li>
+
+            </ol>
+        </div>
+        <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
+            <button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
+            <button href="#" class="pull-right btn btn-sm btn-default" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
+
+        </div>
+    </div>
+        <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
+		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" th:title="#{collections.menu.options.tooltip}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-bars"></i>
 		</a>   
 		<ul class="dropdown-menu">
@@ -90,17 +123,13 @@
 		    </li>
 		</ul>     
     </div>
-    
-	<a id="breadcrumbHome" class="pull-right" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" data-toggle="tooltip" data-placement="top" data-trigger="hover" th:title="'Home Colletion ('+${homeCollectionName}+')'" >
-		<i class="fa fa-home" aria-hidden="true"></i>
-	</a>
-	<a id="breadcrumbStar" class="pull-right" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
+
+	<a id="breadcrumbStar" class="btn-favorite" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
 		data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
 		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
 	</a>
-</ol>
-<div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
-	<button href="#" class="pull-right btn btn-default" id="navigationBarGo">Go</button>
+
+
 </div>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -146,7 +175,9 @@
 	});
 	$('.breadcrumb').click(function(e){
 		if(!$(e.target).is('ol.breadcrumb li a') && !$(e.target).is('i.fa.fa-star') && !$(e.target).is('i.fa.fa-home') && !$(e.target).parents('#breadcrumbOptions').length){
-			$('.breadcrumb').addClass("hidden");
+			$('#current-path').addClass("hidden");
+			$('#breadcrumbStar').addClass("hidden");
+			$('#breadcrumbOptionsMenu').addClass("hidden");
 			$('#navigationBar').removeClass("hidden");
 			$('#navigationInput').focus().select();
 		}
@@ -158,16 +189,48 @@
 		}
 		if(e.keyCode == 27){
 			$('#navigationInput').val([[${collectionAndDataObject.path}]]);
-			$('.breadcrumb').removeClass("hidden");
+			$('#current-path').removeClass("hidden");
 			$('#navigationBar').addClass("hidden");
+			$('#breadcrumbStar').removeClass("hidden").addClass("visible");
+			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
+
 		}
 	});
+
+    $("#navigationBar").focusout(function() {
+        $('#navigationInput').val([[${collectionAndDataObject.path}]]);
+        $("#current-path").removeClass("hidden").addClass("visible");
+        $("#navigationBar").removeClass("visible").addClass("hidden");
+        $('#breadcrumbStar').removeClass("hidden").addClass("visible");
+        $('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
+        $("#current-path .breadcrumb").css("background-color", "#ffffff");
+    });
 	$('#navigationBarGo').click(function(e){
 		e.stopPropagation();
 		e.preventDefault();
 		if($('#navigationInput').val().trim() == '') return;
 		getSubDirectories($('#navigationInput').val());
 	});
+	$('#navigationBarCancel').click(function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		$('#navigationInput').val([[${collectionAndDataObject.path}]]);
+			$('#current-path').removeClass("hidden");
+			$('#navigationBar').addClass("hidden");
+			$(".current-path .breadcrumb").css("background-color", "#ffffff");
+			$('#breadcrumbStar').removeClass("hidden").addClass("visible");
+			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
+	});
+	$("#editable-path").mouseover(function(e) {
+        if (!$(e.target).is('a')) {
+            $("#current-path .breadcrumb").css("background-color", "#f7fafe");
+        }
+    });
+    $("#editable-path").mouseout(function(e) {
+        if (!$(e.target).is('a')) {
+            $("#current-path .breadcrumb").css("background-color", "#ffffff");
+        }
+    });
 	function starPath(path){
 		$('#breadcrumbStar').attr('onclick', '');
 		ajaxEncapsulation(
