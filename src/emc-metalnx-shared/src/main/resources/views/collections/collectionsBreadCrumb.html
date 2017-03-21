@@ -86,10 +86,12 @@
             </ol>
         </div>
         <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
-            <button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
+            <!--<button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
             <button href="#" class="pull-right btn btn-sm btn-default" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
-
+!-->
         </div>
+        <button href="#" class="pull-right btn btn-sm btn-primary" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
+        <button href="#" class="pull-right btn btn-sm btn-default" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
     </div>
         <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
 		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" th:title="#{collections.menu.options.tooltip}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -225,11 +227,12 @@
             $("#current-path .breadcrumb").css("background-color", "#f7fafe");
         }
     });
-    $("#editable-path").mouseout(function(e) {
-        if (!$(e.target).is('a')) {
-            $("#current-path .breadcrumb").css("background-color", "#ffffff");
-        }
-    });
+    //$("#editable-path").mouseout(function(e) {
+        //if (!$(e.target).is('a')) {
+      //  if (!($(e.target).is('a')) && !($(e.target).is('button'))){
+        //    $("#current-path .breadcrumb").css("background-color", "#ffffff");
+       // }
+    //});
 	function starPath(path){
 		$('#breadcrumbStar').attr('onclick', '');
 		ajaxEncapsulation(
