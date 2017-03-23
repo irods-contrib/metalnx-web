@@ -9,7 +9,6 @@ import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,15 +20,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-
 /**
  * Test metadata service.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestAddMetadataToColls {
+public class TestAddDataGridMetadataToColls {
     private static final String BASE_COLL_NAME = "test-coll-transfer-";
     private static final int NUMBER_OF_COLLS = 3;
     private static final int NUMBER_OF_METADATA_TAGS = 3;
@@ -54,7 +51,7 @@ public class TestAddMetadataToColls {
 
     private String parentPath, path;
 
-    private List<String> expectedMetadataList;
+    private List<DataGridMetadata> expectedMetadataList;
 
     @Before
     public void setUp() throws DataGridException {
@@ -64,17 +61,14 @@ public class TestAddMetadataToColls {
         fos.deleteCollection(path, true);
         cs.createCollection(new DataGridCollectionAndDataObject(path, parentPath, true));
 
-        expectedMetadataList = MetadataUtils.createRandomMetadataAsString(NUMBER_OF_METADATA_TAGS);
+        expectedMetadataList = MetadataUtils.createRandomMetadata(NUMBER_OF_METADATA_TAGS);
 
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
-            String collname = BASE_COLL_NAME + i;
-            String collPath = String.format("%s/%s", path, collname);
+            String collPath = String.format("%s/%s", path, BASE_COLL_NAME + i);
             cs.createCollection(new DataGridCollectionAndDataObject(collPath, path, true));
 
-            for(String metadataStr: expectedMetadataList) {
-                String[] metadata = metadataStr.split(" ");
-                String attr = metadata[0], val = metadata[1], unit = metadata[2];
-                metadataService.addMetadataToPath(collPath, attr, val, unit);
+            for(DataGridMetadata metadata: expectedMetadataList) {
+                metadataService.addMetadataToPath(collPath, metadata);
             }
         }
     }
@@ -87,20 +81,9 @@ public class TestAddMetadataToColls {
     @Test
     public void testAddMetadataToColls() throws DataGridConnectionRefusedException {
         for (int i = 0; i < NUMBER_OF_COLLS; i++) {
-            String collname = BASE_COLL_NAME + i;
-            String collPath = String.format("%s/%s", path, collname);
-            assertMetadataInPath(collPath);
-        }
-    }
-
-    private void assertMetadataInPath(String path) throws DataGridConnectionRefusedException {
-        List<DataGridMetadata> actualMetadataList = metadataService.findMetadataValuesByPath(path);
-
-        Assert.assertEquals(expectedMetadataList.size(), actualMetadataList.size());
-
-        for (DataGridMetadata m: actualMetadataList) {
-            String metadataStr = m.getAttribute() + " " + m.getValue() + " " + m.getUnit();
-            assertTrue(expectedMetadataList.contains(metadataStr));
+            String collPath = String.format("%s/%s", path, BASE_COLL_NAME + i);
+            List<DataGridMetadata> actualMetadataList = metadataService.findMetadataValuesByPath(collPath);
+            MetadataUtils.assertDataGridMetadataInPath(collPath, expectedMetadataList, actualMetadataList);
         }
     }
 }
