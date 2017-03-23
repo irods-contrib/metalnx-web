@@ -147,9 +147,9 @@ public class MetadataServiceImpl implements MetadataService {
     @Override
     public List<DataGridMetadata> findMetadataValuesByPath(String path) throws DataGridConnectionRefusedException {
 
-        List<MetaDataAndDomainData> metadataList = null;
-        List<DataGridMetadata> dataGridMetadataList = new ArrayList<DataGridMetadata>();
-        List<MetaDataAndDomainData> resultingList = null;
+        List<MetaDataAndDomainData> metadataList;
+        List<DataGridMetadata> dataGridMetadataList = new ArrayList<>();
+        List<MetaDataAndDomainData> resultingList;
 
         CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
 
@@ -165,8 +165,8 @@ public class MetadataServiceImpl implements MetadataService {
             }
 
             // TODO: Making sure all AVUs are unique. Jargon should do that.
-            resultingList = new ArrayList<MetaDataAndDomainData>();
-            Set<Integer> setOfAlreadyListedAVUs = new HashSet<Integer>();
+            resultingList = new ArrayList<>();
+            Set<Integer> setOfAlreadyListedAVUs = new HashSet<>();
             for (MetaDataAndDomainData avuForItem : metadataList) {
 
                 int avuId = avuForItem.getAvuId();
@@ -195,7 +195,6 @@ public class MetadataServiceImpl implements MetadataService {
         }
 
         return dataGridMetadataList;
-
     }
 
     @Override
