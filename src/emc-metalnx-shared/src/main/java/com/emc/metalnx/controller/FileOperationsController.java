@@ -110,10 +110,11 @@ public class FileOperationsController {
         List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedCopies = new ArrayList<>();
         String fileCopied = "";
+        boolean copyWithMetadata = false;
 
         for (String sourcePathItem : sourcePaths) {
             String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-            if (!fileOperationService.copy(sourcePathItem, targetPath)) {
+            if (!fileOperationService.copy(sourcePathItem, targetPath, copyWithMetadata)) {
                 failedCopies.add(item);
             } else if (sourcePaths.size() == 1) {
                 fileCopied = item;

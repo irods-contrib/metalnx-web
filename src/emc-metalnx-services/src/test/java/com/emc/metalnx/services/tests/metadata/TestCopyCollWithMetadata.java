@@ -7,7 +7,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.MetadataService;
-import com.emc.metalnx.services.interfaces.UploadService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 public class TestCopyCollWithMetadata {
     private static final String BASE_COLL_NAME = "test-coll-transfer-";
-    private static final String RESOURCE = "demoResc";
     private static final int NUMBER_OF_COLLS = 3;
 
     @Value("${irods.zoneName}")
@@ -43,9 +41,6 @@ public class TestCopyCollWithMetadata {
 
     @Autowired
     private MetadataService metadataService;
-
-    @Autowired
-    private UploadService us;
 
     @Autowired
     private CollectionService cs;
@@ -98,7 +93,7 @@ public class TestCopyCollWithMetadata {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
         String collDstPath = String.format("%s/%s", dstPath, collname);
-        fos.copy(collSrcPath, collDstPath);
+        fos.copy(collSrcPath, collDstPath, true);
         assertMetadataInPath(collDstPath);
     }
 
@@ -107,7 +102,7 @@ public class TestCopyCollWithMetadata {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
         String collDstPath = String.format("%s/%s", dstPath, collname);
-        fos.copy(collSrcPath, collDstPath);
+        fos.copy(collSrcPath, collDstPath, false);
 
         assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
     }
@@ -118,7 +113,7 @@ public class TestCopyCollWithMetadata {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
             String collDstPath = String.format("%s/%s", dstPath, collname);
-            fos.copy(collSrcPath, collDstPath);
+            fos.copy(collSrcPath, collDstPath, true);
             assertMetadataInPath(collDstPath);
         }
     }
@@ -129,7 +124,7 @@ public class TestCopyCollWithMetadata {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
             String collDstPath = String.format("%s/%s", dstPath, collname);
-            fos.copy(collSrcPath, collDstPath);
+            fos.copy(collSrcPath, collDstPath, false);
             assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
         }
     }

@@ -619,7 +619,7 @@ public class CollectionServiceImpl implements CollectionService {
                 logger.info("Copying files to be downloaded to the temporary collection");
 
                 // copying all files and collections to be downloaded to the temporary collection
-                fileOperationService.copy(sourcePaths, tempCollectionPath);
+                fileOperationService.copy(sourcePaths, tempCollectionPath, false);
 
                 // creating the compressed file (tar) into the temporary collection
                 logger.info("Compressing temporary collection");

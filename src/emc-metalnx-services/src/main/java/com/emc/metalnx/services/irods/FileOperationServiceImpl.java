@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.*;
@@ -72,7 +73,7 @@ public class FileOperationServiceImpl implements FileOperationService {
     private RuleService rs;
 
     @Override
-    public boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException {
+    public boolean copy(String sourcePath, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
         IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
         DataTransferOperations dataTransferOperations = irodsServices.getDataTransferOperations();
 
@@ -82,6 +83,8 @@ public class FileOperationServiceImpl implements FileOperationService {
             IRODSFile target = irodsFileFactory.instanceIRODSFile(targetPath);
             dataTransferOperations.copy(source, target, null, null);
             isCopied = true;
+
+            if(copyWithMetadata) copyMetadata(sourcePath, targetPath);
         }
         catch (JargonException e) {
             logger.error("Could not copy item from " + sourcePath + " to " + targetPath + ": ", e.getMessage());
@@ -91,14 +94,34 @@ public class FileOperationServiceImpl implements FileOperationService {
     }
 
     @Override
-    public boolean copy(List<String> sourcePaths, String targetPath) throws DataGridConnectionRefusedException {
+    public boolean copy(List<String> sourcePaths, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
         boolean isCopied = true;
 
         for (String sourcePath : sourcePaths) {
-            if (!this.copy(sourcePath, targetPath)) isCopied = false;
+            isCopied &= this.copy(sourcePath, targetPath, copyWithMetadata);
         }
 
         return isCopied;
+    }
+
+    /**
+     * Copies metadata existing in a source path to a destination path.
+     * @param srcPath path to retrieve metadata from
+     * @param dstPath path to add metadata to
+     * @return True, if there is metadata and it could be copied or if there is no metadata at all. False, otherwise.
+     */
+    private boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
+        if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
+
+        boolean isMetadataCopied = false;
+
+        List<DataGridMetadata> metadataFromSrcPath = metadataService.findMetadataValuesByPath(srcPath);
+
+        for(DataGridMetadata metadata: metadataFromSrcPath) {
+            isMetadataCopied &= metadataService.addMetadataToPath(dstPath, metadata);
+        }
+
+        return isMetadataCopied;
     }
 
     @Override
