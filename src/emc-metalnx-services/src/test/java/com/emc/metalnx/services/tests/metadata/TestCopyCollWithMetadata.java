@@ -1,4 +1,4 @@
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.metadata;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridMetadata;
@@ -9,13 +9,11 @@ import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,18 +21,19 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Test metadata service.
+ * Test copying collections with metadata.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestAddMetadataToObjs {
-    private static final String BASE_FILE_NAME = "test-file-transfer-";
+public class TestCopyCollWithMetadata {
+    private static final String BASE_COLL_NAME = "test-coll-transfer-";
     private static final String RESOURCE = "demoResc";
-    private static final int NUMBER_OF_FILES = 3;
+    private static final int NUMBER_OF_COLLS = 3;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -75,18 +74,15 @@ public class TestAddMetadataToObjs {
         expectedMetadataList.add("attr2 val2 unit2");
         expectedMetadataList.add("attr3 val3 unit3");
 
-        MockMultipartFile file;
-        for(int i = 0; i < NUMBER_OF_FILES; i++) {
-            String filename = BASE_FILE_NAME + i;
-            String fileSrcPath = String.format("%s/%s", srcPath, filename);
+        for(int i = 0; i < NUMBER_OF_COLLS; i++) {
+            String collname = BASE_COLL_NAME + i;
+            String collSrcPath = String.format("%s/%s", srcPath, collname);
+            cs.createCollection(new DataGridCollectionAndDataObject(collSrcPath, srcPath, true));
 
-            file = new MockMultipartFile(filename, "Hello World Transfer".getBytes());
-            us.tranferFileDirectlyToJargon(filename, file, srcPath, false, false, "", RESOURCE, false);
-
-            for(String metadataStr: expectedMetadataList) {
-                String[] metadata = metadataStr.split(" ");
+            for(String s: expectedMetadataList) {
+                String[] metadata = s.split(" ");
                 String attr = metadata[0], val = metadata[1], unit = metadata[2];
-                metadataService.addMetadataToPath(fileSrcPath, attr, val, unit);
+                metadataService.addMetadataToPath(collSrcPath, attr, val, unit);
             }
         }
     }
@@ -98,18 +94,50 @@ public class TestAddMetadataToObjs {
     }
 
     @Test
-    public void testAddMetadataToObj() throws DataGridConnectionRefusedException {
-        for (int i = 0; i < NUMBER_OF_FILES; i++) {
-            String filename = BASE_FILE_NAME + i;
-            String filePath = String.format("%s/%s", srcPath, filename);
-            assertMetadataInPath(filePath);
+    public void testCopyOneFileWithMetadata() throws DataGridException {
+        String collname = BASE_COLL_NAME + "0";
+        String collSrcPath = String.format("%s/%s", srcPath, collname);
+        String collDstPath = String.format("%s/%s", dstPath, collname);
+        fos.copy(collSrcPath, collDstPath);
+        assertMetadataInPath(collDstPath);
+    }
+
+    @Test
+    public void testCopyOneFileWithoutMetadata() throws DataGridException {
+        String collname = BASE_COLL_NAME + "0";
+        String collSrcPath = String.format("%s/%s", srcPath, collname);
+        String collDstPath = String.format("%s/%s", dstPath, collname);
+        fos.copy(collSrcPath, collDstPath);
+
+        assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
+    }
+
+    @Test
+    public void testCopySeveralFilesWithMetadata() throws  DataGridException {
+        for(int i = 0; i < NUMBER_OF_COLLS; i++) {
+            String collname = BASE_COLL_NAME + i;
+            String collSrcPath = String.format("%s/%s", srcPath, collname);
+            String collDstPath = String.format("%s/%s", dstPath, collname);
+            fos.copy(collSrcPath, collDstPath);
+            assertMetadataInPath(collDstPath);
+        }
+    }
+
+    @Test
+    public void testCopySeveralFilesWithoutMetadata() throws  DataGridException {
+        for(int i = 0; i < NUMBER_OF_COLLS; i++) {
+            String collname = BASE_COLL_NAME + i;
+            String collSrcPath = String.format("%s/%s", srcPath, collname);
+            String collDstPath = String.format("%s/%s", dstPath, collname);
+            fos.copy(collSrcPath, collDstPath);
+            assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
         }
     }
 
     private void assertMetadataInPath(String path) throws DataGridConnectionRefusedException {
         List<DataGridMetadata> actualMetadataList = metadataService.findMetadataValuesByPath(path);
 
-        Assert.assertEquals(expectedMetadataList.size(), actualMetadataList.size());
+        assertEquals(expectedMetadataList.size(), actualMetadataList.size());
 
         for (DataGridMetadata m: actualMetadataList) {
             String metadataStr = m.getAttribute() + " " + m.getValue() + " " + m.getUnit();

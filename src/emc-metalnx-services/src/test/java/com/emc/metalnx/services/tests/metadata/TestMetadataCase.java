@@ -1,4 +1,4 @@
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.metadata;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;

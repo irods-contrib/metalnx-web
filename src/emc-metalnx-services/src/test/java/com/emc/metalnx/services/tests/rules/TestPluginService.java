@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.rules;
 
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -26,6 +27,7 @@ import com.emc.metalnx.services.interfaces.MSIService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
 import com.emc.metalnx.services.irods.MSIServiceImpl;
+import com.emc.metalnx.services.tests.msi.MSIUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +48,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 /**
@@ -55,10 +56,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestMSIService {
+public class TestPluginService {
 
     @InjectMocks
-    private MSIService msiService;
+    private MSIService msiService = new MSIServiceImpl();
 
     @Mock
     private ResourceService mockResourceService;
@@ -76,10 +77,7 @@ public class TestMSIService {
 
     @PostConstruct
     public void init() {
-        msiService = spy(MSIServiceImpl.class); // partial mocking
-
         servers = new ArrayList<>();
-
         MSIUtils msiUtils = new MSIUtils();
 
         msiVersion = MSIUtils.getMsiVersion();
@@ -120,99 +118,66 @@ public class TestMSIService {
     }
 
     @Test
-    public void testEmptyHost() throws DataGridConnectionRefusedException {
-        assertNull(msiService.getMSIsInstalled(""));
-    }
-
-    @Test
-    public void testNullHost() throws DataGridConnectionRefusedException {
-        assertNull(msiService.getMSIsInstalled(null));
-    }
-
-    @Test
-    public void testOtherMSIInstalledFor420() throws DataGridConnectionRefusedException, DataGridRuleException {
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
+    public void testMSIListForIRODS420() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(true);
         DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
-
-        assertTrue(server.isThereAnyMSI());
-        assertMap(otherMSIList, server.getOtherMSIs());
+        assertFalse(server.isThereAnyMSI());
     }
 
     @Test
-    public void testOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
-        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
-
-        assertTrue(server.isThereAnyMSI());
-        assertMap(otherMSIList, server.getOtherMSIs());
-    }
-
-    @Test
-    public void testNoOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
+    public void testMSIListForIRODS41X() throws DataGridConnectionRefusedException, DataGridRuleException {
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
         DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
-
         assertFalse(server.isThereAnyMSI());
-        assertTrue(server.getOtherMSIs().isEmpty());
     }
 
     @Test
-    public void testNoOtherMSIListed() throws DataGridConnectionRefusedException, DataGridRuleException {
-        String testMSI = "libmsitest_installed.so";
-
-        List<String> otherMSIListWithEmptyString = new ArrayList<>();
-        otherMSIListWithEmptyString.add("");
-        otherMSIListWithEmptyString.add(testMSI);
-
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIListWithEmptyString);
-        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+    public void testMSIInstalledList() throws DataGridConnectionRefusedException {
         DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
+        Map<String, Boolean> mlxMSIsMap = server.getMetalnxMSIs();
+        Map<String, Boolean> iRODSMSIsMap = server.getIRODSMSIs();
+        Map<String, Boolean> otherMSIsList = server.getOtherMSIs();
 
-        assertTrue(server.isThereAnyMSI());
-        assertFalse(server.getOtherMSIs().isEmpty());
-        assertEquals(1, server.getOtherMSIs().size());
-        assertTrue(server.getOtherMSIs().containsKey(testMSI));
+        for (String msi: irods41XMSIs) assertTrue(iRODSMSIsMap.containsKey(msi));
+        for (String msi: mlxMSIList) assertTrue(mlxMSIsMap.containsKey(msi));
+        for (String msi: otherMSIList) assertTrue(otherMSIsList.containsKey(msi));
     }
 
     @Test
-    public void testGetMSIInstalledFor420Server() throws DataGridConnectionRefusedException, DataGridRuleException {
-        List<String> msis = new ArrayList<>(mlxMSIList);
-        msis.addAll(irods42MSIs);
-        msis.addAll(otherMSIList);
-
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
-        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
-        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
-
-        assertTrue(server.isThereAnyMSI());
-        assertMap(mlxMSIList, server.getMetalnxMSIs());
-        assertMap(irods42MSIs, server.getIRODSMSIs());
-        assertMap(otherMSIList, server.getOtherMSIs());
+    public void testNoPkgMissing() throws DataGridConnectionRefusedException, DataGridRuleException {
+        DataGridMSIPkgInfo msiPkgInfo = msiService.getMSIPkgInfo();
+        assertFalse(msiPkgInfo.isThereAnyPkgMissing());
     }
 
     @Test
-    public void testGetMSIInstalledFor41XServer() throws DataGridConnectionRefusedException, DataGridRuleException {
-        List<String> msis = new ArrayList<>(mlxMSIList);
-        msis.addAll(irods41XMSIs);
-        msis.addAll(otherMSIList);
-
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msis);
-        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
-        DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
-
-        assertTrue(server.isThereAnyMSI());
-        assertMap(mlxMSIList, server.getMetalnxMSIs());
-        assertMap(irods41XMSIs, server.getIRODSMSIs());
-        assertMap(otherMSIList, server.getOtherMSIs());
+    public void testNoPkgNotSupported() throws DataGridConnectionRefusedException, DataGridRuleException {
+        DataGridMSIPkgInfo msiPkgInfo = msiService.getMSIPkgInfo();
+        assertFalse(msiPkgInfo.isThereAnyPkgNotSupported());
     }
 
-    public void assertMap(List<String> msiList, Map<String, Boolean> map) {
-        for(String msi: msiList) {
-            assertTrue(map.containsKey(msi));
-            assertTrue(map.get(msi));
-        }
+    @Test
+    public void testServers() throws DataGridConnectionRefusedException, DataGridRuleException {
+        DataGridMSIPkgInfo msiPkgInfo = msiService.getMSIPkgInfo();
+        assertEquals(2, msiPkgInfo.getServers().size());
+        for (DataGridServer server: msiPkgInfo.getServers()) assertEquals(msiVersion, server.getMSIVersion());
+    }
+
+    @Test
+    public void testMSICompatibility() throws DataGridConnectionRefusedException, DataGridRuleException {
+        DataGridResource resc = new DataGridResource();
+        resc.setName("demoResc");
+        List<DataGridResource> rescs = new ArrayList<>();
+        rescs.add(resc);
+
+        servers.get(0).setResources(rescs);
+
+        assertTrue(msiService.isMSIAPICompatibleInResc("demoResc"));
+    }
+
+    @Test
+    public void testMSICompatibilityInEmptyResc() throws DataGridConnectionRefusedException, DataGridRuleException {
+        assertFalse(msiService.isMSIAPICompatibleInResc(""));
     }
 }

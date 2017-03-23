@@ -227,6 +227,12 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
+    public boolean addMetadataToPath(String path, DataGridMetadata metadata) throws DataGridConnectionRefusedException {
+        if (metadata == null) return false;
+        return addMetadataToPath(path, metadata.getAttribute(), metadata.getValue(), metadata.getUnit());
+    }
+
+    @Override
     public boolean modMetadataFromPath(String path, String oldAttribute, String oldValue, String oldUnit, String newAttribute, String newValue,
             String newUnit) throws DataGridConnectionRefusedException {
 
