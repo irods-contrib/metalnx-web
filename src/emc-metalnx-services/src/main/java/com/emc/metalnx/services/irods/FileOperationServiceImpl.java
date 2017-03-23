@@ -113,7 +113,7 @@ public class FileOperationServiceImpl implements FileOperationService {
     private boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
         if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
 
-        boolean isMetadataCopied = false;
+        boolean isMetadataCopied = true;
 
         List<DataGridMetadata> metadataFromSrcPath = metadataService.findMetadataValuesByPath(srcPath);
 
