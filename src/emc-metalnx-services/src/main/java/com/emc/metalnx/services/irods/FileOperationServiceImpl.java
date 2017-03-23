@@ -84,7 +84,7 @@ public class FileOperationServiceImpl implements FileOperationService {
             dataTransferOperations.copy(source, target, null, null);
             isCopied = true;
 
-            if(copyWithMetadata) copyMetadata(sourcePath, targetPath);
+            if (copyWithMetadata) copyMetadata(sourcePath, targetPath);
         }
         catch (JargonException e) {
             logger.error("Could not copy item from " + sourcePath + " to " + targetPath + ": ", e.getMessage());
