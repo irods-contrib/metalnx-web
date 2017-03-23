@@ -1,4 +1,4 @@
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.metadata;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
@@ -31,7 +31,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestMetadataService {
+public class TestMetadataCase {
     private static final String BASE_FILE_NAME = "test-file-";
     private static final String RESOURCE = "demoResc";
 

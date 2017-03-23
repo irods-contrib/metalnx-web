@@ -66,34 +66,32 @@ public class FileOperationServiceImpl implements FileOperationService {
     private ResourceService resourceService;
 
     @Autowired
+    private MetadataService metadataService;
+
+    @Autowired
     private RuleService rs;
 
     @Override
     public boolean copy(String sourcePath, String targetPath) throws DataGridConnectionRefusedException {
-
         IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
-
         DataTransferOperations dataTransferOperations = irodsServices.getDataTransferOperations();
 
+        boolean isCopied = false;
         try {
-
             IRODSFile source = irodsFileFactory.instanceIRODSFile(sourcePath);
             IRODSFile target = irodsFileFactory.instanceIRODSFile(targetPath);
-
             dataTransferOperations.copy(source, target, null, null);
-
-            return true;
+            isCopied = true;
         }
         catch (JargonException e) {
             logger.error("Could not copy item from " + sourcePath + " to " + targetPath + ": ", e.getMessage());
         }
 
-        return false;
+        return isCopied;
     }
 
     @Override
     public boolean copy(List<String> sourcePaths, String targetPath) throws DataGridConnectionRefusedException {
-
         boolean isCopied = true;
 
         for (String sourcePath : sourcePaths) {
@@ -335,12 +333,6 @@ public class FileOperationServiceImpl implements FileOperationService {
             throw new DataGridChecksumException("Could not calculate checksum.");
         }
     }
-
-    /*
-     * *************************************************************************
-     * *************************** PRIVATE METHODS *****************************
-     * *************************************************************************
-     */
 
     /**
      * Copies a buffered input stream from a file to a HTTP response for
