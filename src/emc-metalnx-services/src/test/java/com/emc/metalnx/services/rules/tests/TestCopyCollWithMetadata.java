@@ -9,7 +9,6 @@ import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test copying collections with metadata.
@@ -101,6 +103,16 @@ public class TestCopyCollWithMetadata {
     }
 
     @Test
+    public void testCopyOneFileWithoutMetadata() throws DataGridException {
+        String collname = BASE_COLL_NAME + "0";
+        String collSrcPath = String.format("%s/%s", srcPath, collname);
+        String collDstPath = String.format("%s/%s", dstPath, collname);
+        fos.copy(collSrcPath, collDstPath);
+
+        assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
+    }
+
+    @Test
     public void testCopySeveralFilesWithMetadata() throws  DataGridException {
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
             String collname = BASE_COLL_NAME + i;
@@ -111,14 +123,25 @@ public class TestCopyCollWithMetadata {
         }
     }
 
+    @Test
+    public void testCopySeveralFilesWithoutMetadata() throws  DataGridException {
+        for(int i = 0; i < NUMBER_OF_COLLS; i++) {
+            String collname = BASE_COLL_NAME + i;
+            String collSrcPath = String.format("%s/%s", srcPath, collname);
+            String collDstPath = String.format("%s/%s", dstPath, collname);
+            fos.copy(collSrcPath, collDstPath);
+            assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
+        }
+    }
+
     private void assertMetadataInPath(String fileDstPath) throws DataGridConnectionRefusedException {
         List<DataGridMetadata> actualMetadataList = metadataService.findMetadataValuesByPath(fileDstPath);
 
-        Assert.assertEquals(expectedMetadataList.size(), actualMetadataList.size());
+        assertEquals(expectedMetadataList.size(), actualMetadataList.size());
 
         for (DataGridMetadata m: actualMetadataList) {
             String metadataStr = m.getAttribute() + " " + m.getValue() + " " + m.getUnit();
-            Assert.assertTrue(expectedMetadataList.contains(metadataStr));
+            assertTrue(expectedMetadataList.contains(metadataStr));
         }
     }
 }

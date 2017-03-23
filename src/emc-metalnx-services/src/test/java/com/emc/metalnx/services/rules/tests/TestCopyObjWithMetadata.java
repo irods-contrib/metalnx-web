@@ -23,6 +23,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertTrue;
+
 /**
  * Test copying data objects with metadata.
  */
@@ -109,16 +111,33 @@ public class TestCopyObjWithMetadata {
     }
 
     @Test
+    public void testCopyOneFileWithoutMetadata() throws DataGridException {
+        String filename = BASE_FILE_NAME + "0";
+        String fileSrcPath = String.format("%s/%s", srcPath, filename);
+        String fileDstPath = String.format("%s/%s", dstPath, filename);
+        fos.copy(fileSrcPath, fileDstPath);
+        assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
+    }
+
+    @Test
     public void testCopySeveralFilesWithMetadata() throws  DataGridException {
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
             String filename = BASE_FILE_NAME + i;
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
             String fileDstPath = String.format("%s/%s", dstPath, filename);
-
             fos.copy(fileSrcPath, fileDstPath);
-
-
             assertMetadataInPath(fileDstPath);
+        }
+    }
+
+    @Test
+    public void testCopySeveralFilesWithoutMetadata() throws  DataGridException {
+        for(int i = 0; i < NUMBER_OF_FILES; i++) {
+            String filename = BASE_FILE_NAME + i;
+            String fileSrcPath = String.format("%s/%s", srcPath, filename);
+            String fileDstPath = String.format("%s/%s", dstPath, filename);
+            fos.copy(fileSrcPath, fileDstPath);
+            assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
         }
     }
 
@@ -129,7 +148,7 @@ public class TestCopyObjWithMetadata {
 
         for (DataGridMetadata m: actualMetadataList) {
             String metadataStr = m.getAttribute() + " " + m.getValue() + " " + m.getUnit();
-            Assert.assertTrue(expectedMetadataList.contains(metadataStr));
+            assertTrue(expectedMetadataList.contains(metadataStr));
         }
     }
 }
