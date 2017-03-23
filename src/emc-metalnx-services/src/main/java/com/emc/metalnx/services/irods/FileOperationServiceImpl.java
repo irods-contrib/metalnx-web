@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.*;
@@ -100,26 +99,6 @@ public class FileOperationServiceImpl implements FileOperationService {
         }
 
         return isCopied;
-    }
-
-    /**
-     * Copies metadata existing in a source path to a destination path.
-     * @param srcPath path to retrieve metadata from
-     * @param dstPath path to add metadata to
-     * @return True, if there is metadata and it could be copied or if there is no metadata at all. False, otherwise.
-     */
-    private boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
-        if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
-
-        boolean isMetadataCopied = false;
-
-        List<DataGridMetadata> metadataFromSrcPath = metadataService.findMetadataValuesByPath(srcPath);
-
-        for(DataGridMetadata metadata: metadataFromSrcPath) {
-            isMetadataCopied &= metadataService.addMetadataToPath(dstPath, metadata);
-        }
-
-        return isMetadataCopied;
     }
 
     @Override
