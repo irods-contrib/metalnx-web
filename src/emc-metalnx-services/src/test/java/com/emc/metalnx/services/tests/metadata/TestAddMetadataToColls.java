@@ -19,7 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
@@ -32,8 +31,8 @@ import static junit.framework.Assert.assertTrue;
 @WebAppConfiguration
 public class TestAddMetadataToColls {
     private static final String BASE_COLL_NAME = "test-coll-transfer-";
-    private static final String RESOURCE = "demoResc";
     private static final int NUMBER_OF_COLLS = 3;
+    private static final int NUMBER_OF_METADATA_TAGS = 3;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -65,10 +64,7 @@ public class TestAddMetadataToColls {
         fos.deleteCollection(path, true);
         cs.createCollection(new DataGridCollectionAndDataObject(path, parentPath, true));
 
-        expectedMetadataList = new ArrayList<>();
-        expectedMetadataList.add("attr1 val1 unit1");
-        expectedMetadataList.add("attr2 val2 unit2");
-        expectedMetadataList.add("attr3 val3 unit3");
+        expectedMetadataList = MetadataUtils.createRandomMetadataAsString(NUMBER_OF_METADATA_TAGS);
 
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
             String collname = BASE_COLL_NAME + i;
@@ -89,7 +85,7 @@ public class TestAddMetadataToColls {
     }
 
     @Test
-    public void testAddMetadataToObj() throws DataGridConnectionRefusedException {
+    public void testAddMetadataToColls() throws DataGridConnectionRefusedException {
         for (int i = 0; i < NUMBER_OF_COLLS; i++) {
             String collname = BASE_COLL_NAME + i;
             String collPath = String.format("%s/%s", path, collname);

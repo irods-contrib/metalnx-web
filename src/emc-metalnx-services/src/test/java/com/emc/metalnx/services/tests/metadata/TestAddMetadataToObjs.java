@@ -20,7 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
@@ -35,6 +34,7 @@ public class TestAddMetadataToObjs {
     private static final String BASE_FILE_NAME = "test-file-transfer-";
     private static final String RESOURCE = "demoResc";
     private static final int NUMBER_OF_FILES = 3;
+    private static final int NUMBER_OF_METADATA_TAGS = 3;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -70,10 +70,7 @@ public class TestAddMetadataToObjs {
         cs.createCollection(new DataGridCollectionAndDataObject(srcPath, parentPath, true));
         cs.createCollection(new DataGridCollectionAndDataObject(dstPath, parentPath, true));
 
-        expectedMetadataList = new ArrayList<>();
-        expectedMetadataList.add("attr1 val1 unit1");
-        expectedMetadataList.add("attr2 val2 unit2");
-        expectedMetadataList.add("attr3 val3 unit3");
+        expectedMetadataList = MetadataUtils.createRandomMetadataAsString(NUMBER_OF_METADATA_TAGS);
 
         MockMultipartFile file;
         for(int i = 0; i < NUMBER_OF_FILES; i++) {

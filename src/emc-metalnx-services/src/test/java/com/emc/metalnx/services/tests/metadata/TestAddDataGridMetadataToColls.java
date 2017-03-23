@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +29,7 @@ import java.util.List;
 public class TestAddDataGridMetadataToColls {
     private static final String BASE_COLL_NAME = "test-coll-transfer-";
     private static final int NUMBER_OF_COLLS = 3;
+    private static final int NUMBER_OF_METADATA_TAGS = 3;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -61,14 +61,10 @@ public class TestAddDataGridMetadataToColls {
         fos.deleteCollection(path, true);
         cs.createCollection(new DataGridCollectionAndDataObject(path, parentPath, true));
 
-        expectedMetadataList = new ArrayList<>();
-        expectedMetadataList.add(new DataGridMetadata("attr1",  "val1",  "unit1"));
-        expectedMetadataList.add(new DataGridMetadata("attr2",  "val2",  "unit2"));
-        expectedMetadataList.add(new DataGridMetadata("attr3",  "val3",  "unit3"));
+        expectedMetadataList = MetadataUtils.createRandomMetadata(NUMBER_OF_METADATA_TAGS);
 
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
-            String collname = BASE_COLL_NAME + i;
-            String collPath = String.format("%s/%s", path, collname);
+            String collPath = String.format("%s/%s", path, BASE_COLL_NAME + i);
             cs.createCollection(new DataGridCollectionAndDataObject(collPath, path, true));
 
             for(DataGridMetadata metadata: expectedMetadataList) {
