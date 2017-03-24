@@ -60,6 +60,9 @@ public class MetadataServiceImpl implements MetadataService {
     @Autowired
     PermissionsService permissionsService;
 
+    @Autowired
+    private CollectionService collectionService;
+
     @Value("${irods.zoneName}")
     private String zoneName;
 
@@ -329,5 +332,24 @@ public class MetadataServiceImpl implements MetadataService {
                 logger.error("Could not get permissions for current user: {}", e.getMessage());
             }
         }
+    }
+
+    public boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
+        if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
+
+        if(collectionService.isCollection(srcPath)) {
+            String item = srcPath.substring(srcPath.lastIndexOf("/") + 1, srcPath.length());
+            dstPath = String.format("%s/%s", dstPath, item);
+        }
+
+        boolean isMetadataCopied = true;
+
+        List<DataGridMetadata> metadataFromSrcPath = findMetadataValuesByPath(srcPath);
+
+        for(DataGridMetadata metadata: metadataFromSrcPath) {
+            isMetadataCopied &= addMetadataToPath(dstPath, metadata);
+        }
+
+        return isMetadataCopied;
     }
 }

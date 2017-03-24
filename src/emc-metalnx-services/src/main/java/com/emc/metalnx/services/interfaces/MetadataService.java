@@ -123,4 +123,12 @@ public interface MetadataService {
      * @throws DataGridConnectionRefusedException
      */
     public void populateVisibilityForCurrentUser(List<DataGridCollectionAndDataObject> objectList) throws DataGridConnectionRefusedException;
+
+    /**
+     * Copies metadata existing in a source path to a destination path.
+     * @param srcPath path to retrieve metadata from
+     * @param dstPath path to add metadata to
+     * @return True, if there is metadata and it could be copied or if there is no metadata at all. False, otherwise.
+     */
+    boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException;
 }
