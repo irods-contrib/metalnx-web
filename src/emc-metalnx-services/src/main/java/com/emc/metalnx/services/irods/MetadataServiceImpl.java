@@ -337,16 +337,11 @@ public class MetadataServiceImpl implements MetadataService {
     public boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
         if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
 
-        if(collectionService.isCollection(srcPath)) {
-            String item = srcPath.substring(srcPath.lastIndexOf("/") + 1, srcPath.length());
-            dstPath = String.format("%s/%s", dstPath, item);
-        }
+        logger.info("Copying metadata from {} to {}", srcPath, dstPath);
 
         boolean isMetadataCopied = true;
 
-        List<DataGridMetadata> metadataFromSrcPath = findMetadataValuesByPath(srcPath);
-
-        for(DataGridMetadata metadata: metadataFromSrcPath) {
+        for(DataGridMetadata metadata: findMetadataValuesByPath(srcPath)) {
             isMetadataCopied &= addMetadataToPath(dstPath, metadata);
         }
 

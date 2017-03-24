@@ -72,32 +72,36 @@ public class FileOperationServiceImpl implements FileOperationService {
     private RuleService rs;
 
     @Override
-    public boolean copy(String sourcePath, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
+    public boolean copy(String sourcePath, String dstPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
         IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
         DataTransferOperations dataTransferOperations = irodsServices.getDataTransferOperations();
 
         boolean isCopied = false;
         try {
             IRODSFile source = irodsFileFactory.instanceIRODSFile(sourcePath);
-            IRODSFile target = irodsFileFactory.instanceIRODSFile(targetPath);
+            IRODSFile target = irodsFileFactory.instanceIRODSFile(dstPath);
             dataTransferOperations.copy(source, target, null, null);
             isCopied = true;
 
-            if (copyWithMetadata) metadataService.copyMetadata(sourcePath, targetPath);
+            if (copyWithMetadata) {
+                String objName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1, sourcePath.length());
+                dstPath = String.format("%s/%s", dstPath, objName);
+                metadataService.copyMetadata(sourcePath, dstPath);
+            }
         }
         catch (JargonException e) {
-            logger.error("Could not copy item from " + sourcePath + " to " + targetPath + ": ", e.getMessage());
+            logger.error("Could not copy item from " + sourcePath + " to " + dstPath + ": ", e.getMessage());
         }
 
         return isCopied;
     }
 
     @Override
-    public boolean copy(List<String> sourcePaths, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
+    public boolean copy(List<String> sourcePaths, String dstPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException {
         boolean isCopied = true;
 
         for (String sourcePath : sourcePaths) {
-            isCopied &= this.copy(sourcePath, targetPath, copyWithMetadata);
+            isCopied &= this.copy(sourcePath, dstPath, copyWithMetadata);
         }
 
         return isCopied;

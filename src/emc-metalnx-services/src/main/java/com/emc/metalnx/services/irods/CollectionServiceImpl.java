@@ -641,7 +641,7 @@ public class CollectionServiceImpl implements CollectionService {
             logger.error("Collection {} does not exist: {}", collPath, e.getMessage());
         }
         catch (JargonException e) {
-            logger.error("Could not retrieve inheritance option value for", collPath, e);
+            logger.error("Could not retrieve inheritance option value for", collPath, e.getMessage());
         }
         return false;
     }

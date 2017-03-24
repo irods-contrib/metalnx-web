@@ -32,23 +32,23 @@ public interface FileOperationService {
      * Copy a file or collection between two locations in the data grid.
      *
      * @param sourcePath origin path
-     * @param targetPath destination path
+     * @param dstPath destination path
      * @param copyWithMetadata flag that says whether or not we are copying the file along with its metadata tags
      * @return True, if file or collection was moved. False, otherwise.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    boolean copy(String sourcePath, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException;
+    boolean copy(String sourcePath, String dstPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException;
 
     /**
      * Copy a set of files or collections between two locations in the data grid.
      *
      * @param sourcePaths list of paths to be copied
-     * @param targetPath path where the files/collections will be copied
+     * @param dstPath path where the files/collections will be copied
      * @param copyWithMetadata flag that says whether or not we are copying the file along with its metadata tags
      * @return True, if all files or collections were moved. False, otherwise.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    boolean copy(List<String> sourcePaths, String targetPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException;
+    boolean copy(List<String> sourcePaths, String dstPath, boolean copyWithMetadata) throws DataGridConnectionRefusedException;
 
     /**
      * Delete a file or collection in iRODS

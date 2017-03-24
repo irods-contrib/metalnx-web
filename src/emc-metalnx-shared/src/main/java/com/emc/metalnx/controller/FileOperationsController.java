@@ -115,10 +115,6 @@ public class FileOperationsController {
 
         for (String sourcePathItem : sourcePaths) {
             String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-
-            if(collectionService.isDataObject(sourcePathItem))
-                targetPath = String.format("%s/%s", targetPath, item);
-
             if (!fileOperationService.copy(sourcePathItem, targetPath, copyWithMetadata)) {
                 failedCopies.add(item);
             } else if (sourcePaths.size() == 1) {
