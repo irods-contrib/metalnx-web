@@ -87,13 +87,12 @@ public interface PermissionsService {
      * @param inAdminMode
      *          if true, tries to set permission in admin mode (-M option)
      *          if false, tries to set permission normally (no additional options)
-     * @param path
-     *            that can be a collection or a data object
+     * @param paths to apply permission
      * @return a {@link boolean} indicating the status of the request
      * @throws DataGridConnectionRefusedException
      */
     boolean setPermissionOnPath(DataGridPermType permType, String userOrGroupName, boolean recursive,
-                                boolean inAdminMode, String path) throws DataGridConnectionRefusedException;
+                                boolean inAdminMode, String... paths) throws DataGridConnectionRefusedException;
 
     /**
      * Finds resulting most permissive permission for a given user

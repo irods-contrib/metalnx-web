@@ -92,18 +92,23 @@ public class TestReadPermissionOnFiles {
     private void assertPermissionFiles(DataGridPermType permission, boolean recursive, boolean inAdminMode)
             throws DataGridConnectionRefusedException {
         boolean isPermSet;
+
+        String[] files = new String[NUMBER_OF_FILES];
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
-            String filepath = String.format("%s/%s", targetPath, BASE_FILE_NAME + i);
-            isPermSet = permissionsService.setPermissionOnPath(permission, username, recursive, inAdminMode, filepath);
-            assertTrue(isPermSet);
+            files[i] = String.format("%s/%s", targetPath, BASE_FILE_NAME + i);
         }
+
+        isPermSet = permissionsService.setPermissionOnPath(permission, username, recursive, inAdminMode, files);
+        assertTrue(isPermSet);
     }
 
     private void setOwnOnFiles() throws DataGridConnectionRefusedException {
+        String[] files = new String[NUMBER_OF_FILES];
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
-            String filepath = String.format("%s/%s", targetPath, BASE_FILE_NAME + i);
-             permissionsService.setPermissionOnPath(DataGridPermType.OWN, username, false, false, filepath);
+            files[i] = String.format("%s/%s", targetPath, BASE_FILE_NAME + i);
         }
+
+        permissionsService.setPermissionOnPath(DataGridPermType.OWN, username, false, false, files);
     }
 
     private void uploadTestFiles() throws DataGridException {
