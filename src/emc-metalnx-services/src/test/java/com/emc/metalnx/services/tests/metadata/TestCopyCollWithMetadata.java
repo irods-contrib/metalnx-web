@@ -93,7 +93,7 @@ public class TestCopyCollWithMetadata {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
         String collDstPath = String.format("%s/%s", dstPath, collname);
-        fos.copy(collSrcPath, collDstPath, true);
+        fos.copy(collSrcPath, dstPath, true);
         assertMetadataInPath(collDstPath);
     }
 
@@ -102,7 +102,7 @@ public class TestCopyCollWithMetadata {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
         String collDstPath = String.format("%s/%s", dstPath, collname);
-        fos.copy(collSrcPath, collDstPath, false);
+        fos.copy(collSrcPath, dstPath, false);
 
         assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
     }
@@ -113,7 +113,7 @@ public class TestCopyCollWithMetadata {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
             String collDstPath = String.format("%s/%s", dstPath, collname);
-            fos.copy(collSrcPath, collDstPath, true);
+            fos.copy(collSrcPath, dstPath, true);
             assertMetadataInPath(collDstPath);
         }
     }
@@ -124,7 +124,7 @@ public class TestCopyCollWithMetadata {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
             String collDstPath = String.format("%s/%s", dstPath, collname);
-            fos.copy(collSrcPath, collDstPath, false);
+            fos.copy(collSrcPath, dstPath, false);
             assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
         }
     }

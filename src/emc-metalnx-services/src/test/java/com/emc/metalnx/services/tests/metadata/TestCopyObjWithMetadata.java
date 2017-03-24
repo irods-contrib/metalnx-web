@@ -104,8 +104,7 @@ public class TestCopyObjWithMetadata {
         String filename = BASE_FILE_NAME + "0";
         String fileSrcPath = String.format("%s/%s", srcPath, filename);
         String fileDstPath = String.format("%s/%s", dstPath, filename);
-
-        fos.copy(fileSrcPath, fileDstPath, true);
+        fos.copy(fileSrcPath, dstPath, true);
 
         assertMetadataInPath(fileDstPath);
     }
@@ -115,7 +114,7 @@ public class TestCopyObjWithMetadata {
         String filename = BASE_FILE_NAME + "0";
         String fileSrcPath = String.format("%s/%s", srcPath, filename);
         String fileDstPath = String.format("%s/%s", dstPath, filename);
-        fos.copy(fileSrcPath, fileDstPath, false);
+        fos.copy(fileSrcPath, dstPath, false);
         assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
     }
 
@@ -125,7 +124,7 @@ public class TestCopyObjWithMetadata {
             String filename = BASE_FILE_NAME + i;
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
             String fileDstPath = String.format("%s/%s", dstPath, filename);
-            fos.copy(fileSrcPath, fileDstPath, true);
+            fos.copy(fileSrcPath, dstPath, true);
             assertMetadataInPath(fileDstPath);
         }
     }
@@ -136,7 +135,7 @@ public class TestCopyObjWithMetadata {
             String filename = BASE_FILE_NAME + i;
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
             String fileDstPath = String.format("%s/%s", dstPath, filename);
-            fos.copy(fileSrcPath, fileDstPath, false);
+            fos.copy(fileSrcPath, dstPath, false);
             assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
         }
     }
