@@ -214,7 +214,7 @@ public class PermissionsController {
             }
         }
         for (String group : groupParts) {
-            operationResult &= ps.setPermissionOnPath(permType, group, path, recursive, loggedUser.isAdmin());
+            operationResult &= ps.setPermissionOnPath(permType, group, recursive, loggedUser.isAdmin(), path);
         }
 
         // Updating bookmarks for the recently-created permissions
@@ -255,7 +255,7 @@ public class PermissionsController {
         }
 
         for (String username : usernames) {
-            operationResult &= ps.setPermissionOnPath(permType, username, path, recursive, loggedUser.isAdmin());
+            operationResult &= ps.setPermissionOnPath(permType, username, recursive, loggedUser.isAdmin(), path);
 
             // Updating bookmarks for the recently-created permissions
             if (bookmark) {
@@ -300,7 +300,8 @@ public class PermissionsController {
 
         loggedUser = luu.getLoggedDataGridUser();
 
-        boolean permChanged = ps.setPermissionOnPath(newPermission, userOrGroupName, path, recursive, loggedUser.isAdmin());
+        boolean permChanged = ps.setPermissionOnPath(newPermission, userOrGroupName, recursive, loggedUser.isAdmin(),
+                path);
 
         return permChanged ? REQUEST_OK : REQUEST_ERROR;
     }

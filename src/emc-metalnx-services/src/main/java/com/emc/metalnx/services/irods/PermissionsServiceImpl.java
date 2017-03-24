@@ -191,12 +191,12 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean setPermissionOnPath(DataGridPermType permType, String uName, String path, boolean recursive, boolean inAdminMode)
-            throws DataGridConnectionRefusedException {
+    public boolean setPermissionOnPath(DataGridPermType permType, String uName, boolean recursive,
+                                       boolean inAdminMode, String path) throws DataGridConnectionRefusedException {
 
-        logger.info("Attempting to set {} permission on path {} for user/group {}", permType, path, uName);
+        logger.info("Setting {} permission on path {} for user/group {}", permType, path, uName);
 
-        boolean operationResult = true;
+        boolean operationResult;
 
         try {
             IRODSFile irodsFilePath = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
