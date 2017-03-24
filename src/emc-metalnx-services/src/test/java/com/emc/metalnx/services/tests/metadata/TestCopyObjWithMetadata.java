@@ -103,9 +103,8 @@ public class TestCopyObjWithMetadata {
     public void testCopyOneFileWithMetadata() throws DataGridException {
         String filename = BASE_FILE_NAME + "0";
         String fileSrcPath = String.format("%s/%s", srcPath, filename);
-        String fileDstPath = String.format("%s/%s", dstPath, filename);
         fos.copy(fileSrcPath, dstPath, true);
-
+        String fileDstPath = String.format("%s/%s", dstPath, filename);
         assertMetadataInPath(fileDstPath);
     }
 
@@ -113,8 +112,8 @@ public class TestCopyObjWithMetadata {
     public void testCopyOneFileWithoutMetadata() throws DataGridException {
         String filename = BASE_FILE_NAME + "0";
         String fileSrcPath = String.format("%s/%s", srcPath, filename);
-        String fileDstPath = String.format("%s/%s", dstPath, filename);
         fos.copy(fileSrcPath, dstPath, false);
+        String fileDstPath = String.format("%s/%s", dstPath, filename);
         assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
     }
 
@@ -123,8 +122,8 @@ public class TestCopyObjWithMetadata {
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
             String filename = BASE_FILE_NAME + i;
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
-            String fileDstPath = String.format("%s/%s", dstPath, filename);
             fos.copy(fileSrcPath, dstPath, true);
+            String fileDstPath = String.format("%s/%s", dstPath, filename);
             assertMetadataInPath(fileDstPath);
         }
     }
@@ -134,8 +133,8 @@ public class TestCopyObjWithMetadata {
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
             String filename = BASE_FILE_NAME + i;
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
-            String fileDstPath = String.format("%s/%s", dstPath, filename);
             fos.copy(fileSrcPath, dstPath, false);
+            String fileDstPath = String.format("%s/%s", dstPath, filename);
             assertTrue(metadataService.findMetadataValuesByPath(fileDstPath).isEmpty());
         }
     }

@@ -92,8 +92,8 @@ public class TestCopyCollWithMetadata {
     public void testCopyOneFileWithMetadata() throws DataGridException {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
-        String collDstPath = String.format("%s/%s", dstPath, collname);
         fos.copy(collSrcPath, dstPath, true);
+        String collDstPath = String.format("%s/%s", dstPath, collname);
         assertMetadataInPath(collDstPath);
     }
 
@@ -101,9 +101,8 @@ public class TestCopyCollWithMetadata {
     public void testCopyOneFileWithoutMetadata() throws DataGridException {
         String collname = BASE_COLL_NAME + "0";
         String collSrcPath = String.format("%s/%s", srcPath, collname);
-        String collDstPath = String.format("%s/%s", dstPath, collname);
         fos.copy(collSrcPath, dstPath, false);
-
+        String collDstPath = String.format("%s/%s", dstPath, collname);
         assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
     }
 
@@ -112,8 +111,8 @@ public class TestCopyCollWithMetadata {
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
-            String collDstPath = String.format("%s/%s", dstPath, collname);
             fos.copy(collSrcPath, dstPath, true);
+            String collDstPath = String.format("%s/%s", dstPath, collname);
             assertMetadataInPath(collDstPath);
         }
     }
@@ -123,8 +122,8 @@ public class TestCopyCollWithMetadata {
         for(int i = 0; i < NUMBER_OF_COLLS; i++) {
             String collname = BASE_COLL_NAME + i;
             String collSrcPath = String.format("%s/%s", srcPath, collname);
-            String collDstPath = String.format("%s/%s", dstPath, collname);
             fos.copy(collSrcPath, dstPath, false);
+            String collDstPath = String.format("%s/%s", dstPath, collname);
             assertTrue(metadataService.findMetadataValuesByPath(collDstPath).isEmpty());
         }
     }
