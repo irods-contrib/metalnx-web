@@ -226,13 +226,13 @@ public class DataGridUtils {
         for (IRODSQueryResultRow irodsQueryResultRow : results) {
             CollectionAndDataObjectListingEntry collectionAndDataObject = new CollectionAndDataObjectListingEntry();
 
-            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn("c.parent_coll_name"));
-            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn("c.coll_name"));
-            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn("c.coll_owner_name"));
-            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("c.coll_owner_zone"));
+            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn(2));
+            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn(1));
+            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn(3));
+            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn(4));
             collectionAndDataObject.setObjectType(ObjectType.COLLECTION);
-            collectionAndDataObject.setCreatedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("c.create_ts")));
-            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("c.modify_ts")));
+            collectionAndDataObject.setCreatedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn(8)));
+            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn(9)));
 
             dataGridCollectionAndDataObjects.add(collectionAndDataObject);
         }
@@ -287,16 +287,15 @@ public class DataGridUtils {
         for (IRODSQueryResultRow irodsQueryResultRow : results) {
             CollectionAndDataObjectListingEntry collectionAndDataObject = new CollectionAndDataObjectListingEntry();
 
-            collectionAndDataObject.setId(Integer.valueOf(irodsQueryResultRow.getColumn("d.data_id")));
-            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn("d.data_name"));
-            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn("c.coll_name"));
-            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("d.data_owner_zone"));
+            collectionAndDataObject.setId(Integer.valueOf(irodsQueryResultRow.getColumn(2)));
+            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn(0));
+            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn(1));
             collectionAndDataObject.setObjectType(ObjectType.DATA_OBJECT);
-            collectionAndDataObject.setDataSize(Long.valueOf(irodsQueryResultRow.getColumn("d.data_size")));
-            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn("d.data_owner_name"));
-            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("d.data_owner_zone"));
-            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("d.create_ts")));
-            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("d.modify_ts")));
+            collectionAndDataObject.setDataSize(Long.valueOf(irodsQueryResultRow.getColumn(3)));
+            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn(5));
+            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn(6));
+            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn(7)));
+            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn(8)));
 
             dataGridCollectionAndDataObjects.add(collectionAndDataObject);
         }
