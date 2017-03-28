@@ -121,7 +121,8 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(
-            String parentPath, String searchText, int pageNum, int pageSize, int orderColumn, String orderDir, DataGridPageContext pageContext )
+            String parentPath, String searchText, int pageNum, int pageSize, int orderColumn, String orderDir,
+            DataGridPageContext pageContext )
             throws DataGridDataNotFoundException, DataGridQueryException, DataGridException {
 
         List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
