@@ -266,6 +266,9 @@
 			    	            });
 			    	        },
 			    	        "drawCallback": function(){
+			    	        	$('#treeViewTable tbody td').each(function () {
+			    	            	$(this).attr('title', $(this).text().trim());
+			    	            });
 			    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
 			    	            $('.dataTables_paginate.paging_simple_numbers')
 			    	            .css( 'display', this.api().data().length <= 0 ?
@@ -380,6 +383,9 @@
 			    	            });
 			    	        },
 			    	        "drawCallback": function(){
+			    	        	$('#treeViewTable tbody td').each(function () {
+			    	            	$(this).attr('title', $(this).text().trim());
+			    	            });
 			    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
 			    	            $('.dataTables_paginate.paging_simple_numbers')
 			    	            .css( 'display', this.api().data().length <= 0 ?
