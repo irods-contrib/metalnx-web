@@ -36,36 +36,36 @@ var i18n = {
 	    }
 	}
 
+
 //Adds Action button on Collection table
 function addCollectionActions(table_id, datatable){
-
     $("div.toolbar").html(
-                '<div id="actions" class="btn-group pull-left">'+
-                '   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled="">'+
-                '       <span>Action</span> &nbsp; <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> '+
-                '   </button> '+
-                '   <ul class="dropdown-menu" role="menu"> '+
-                '       <li>'+
-                '           <a href="#" id="moveBtn" class="hideElement" data-toggle="modal" data-target="#moveModal"><span><i class="fa fa-exchange"></i> </span><span>Move</span></a>'+
-                '       </li>'+
-                '       <li>'+
-                '           <a href="#" id="copyBtn" class="hideElement" data-toggle="modal" data-target="#copyModal"><span><i class="fa fa-files-o"></i></span> <span>Copy</span></a>'+
-                '       </li>'+
-                '       <li>'+
-                '           <a href="#" id="replicateBtn" class="hideElement" data-toggle="modal" data-target="#replicateModal"><span><i class="fa fa-clone"></i></span> Replicate</a>'+
-                '       </li>'+
-                '       <li>'+
-                '           <a href="#" id="modifyBtn" class="hideElement" onclick="showModifyForm();"><span><i class="fa fa-pencil-square-o"> </i></span> <span>Edit</span></a>'+
-                '       </li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a>'+
-                '       </li>'+
-                '       <li class="divider"></li> <li> <a id="downloadBtn" href="/emc-metalnx-web/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
-                '       </li>'+
-                '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
-                '       </li>'+
-                '   </ul>'+
-                '</div>'+
-                '<div id="actionsWait" class="hideElement">Retrieving permissions from Data grid...</div>'
-            );
+        '<div id="actions" class="btn-group pull-left">'+
+        '   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled="">'+
+        '       <span>Action</span> &nbsp; <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> '+
+        '   </button> '+
+        '   <ul class="dropdown-menu" role="menu"> '+
+        '       <li>'+
+        '           <a href="#" id="moveBtn" class="hideElement" data-toggle="modal" data-target="#moveModal"><span><i class="fa fa-exchange"></i> </span><span>Move</span></a>'+
+        '       </li>'+
+        '       <li>'+
+        '           <a href="#" id="copyBtn" class="hideElement" data-toggle="modal" data-target="#copyModal"><span><i class="fa fa-files-o"></i></span> <span>Copy</span></a>'+
+        '       </li>'+
+        '       <li>'+
+        '           <a href="#" id="replicateBtn" class="hideElement" data-toggle="modal" data-target="#replicateModal"><span><i class="fa fa-clone"></i></span> Replicate</a>'+
+        '       </li>'+
+        '       <li>'+
+        '           <a href="#" id="modifyBtn" class="hideElement" onclick="showModifyForm();"><span><i class="fa fa-pencil-square-o"> </i></span> <span>Edit</span></a>'+
+        '       </li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a>'+
+        '       </li>'+
+        '       <li class="divider"></li> <li> <a id="downloadBtn" href="/emc-metalnx-web/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
+        '       </li>'+
+        '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
+        '       </li>'+
+        '   </ul>'+
+        '</div>'+
+        '<div id="actionsWait" class="hideElement">Retrieving permissions from Data grid...</div>'
+    );
 
 	$("#"+table_id+"_length").addClass("pull-right");
 }
