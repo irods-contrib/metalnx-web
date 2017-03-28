@@ -54,8 +54,8 @@ import java.util.regex.Pattern;
 public class CollectionServiceImpl implements CollectionService {
 
     private static final String IRODS_PATH_SEPARATOR = "/";
-    private static final String SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxListOfCollectionsThatMatchSearchText";
-    private static final String SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxListOfDataObjectsThatMatchSearchText";
+    private static final String SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfCollectionsThatMatchSearchText";
+    private static final String SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfDataObjectsThatMatchSearchText";
     private static final String SQL_TOTAL_NUMBER_OF_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfDataObjectsThatMatchSearchText";
     private static final String SQL_TOTAL_NUMBER_OF_COLLS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfCollectionsThatMatchSearchText";
     private static final int MAX_RESULTS_PER_PAGE = 200;
@@ -815,7 +815,7 @@ public class CollectionServiceImpl implements CollectionService {
         String sqlQueryAlias = "";
 
         try {
-            sqlQueryAlias = SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS;
+            sqlQueryAlias = SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING;
 
             if (DataGridUtils.isUserLoggedAdmin()) {
 
@@ -823,8 +823,7 @@ public class CollectionServiceImpl implements CollectionService {
                 // on the collection
                 // taking the offset and limit into account.
                 StringBuilder query = new StringBuilder();
-                query.append("select * from ( ");
-                query.append(" select ");
+                query.append("select ");
                 query.append("   c.coll_id,");
                 query.append("   c.coll_name,");
                 query.append("   c.parent_coll_name,");
@@ -835,13 +834,12 @@ public class CollectionServiceImpl implements CollectionService {
                 query.append("   c.r_comment,");
                 query.append("   c.create_ts,");
                 query.append("   c.modify_ts ");
-                query.append("  from ");
+                query.append("from ");
                 query.append("   R_COLL_MAIN c ");
-                query.append(" where ");
+                query.append("where ");
                 query.append("   c.coll_name ILIKE ?");
-                query.append("    and ");
+                query.append("   and ");
                 query.append("   c.parent_coll_name = ? ");
-                query.append(" ) searchCollectionsByMetadata ");
                 query.append("order by " + getMapColumnsForCollections().get(orderColumn) + " " + orderDir + " ");
                 query.append("offset ? ");
                 query.append("limit ? ");
@@ -859,7 +857,12 @@ public class CollectionServiceImpl implements CollectionService {
             String zone = irodsServices.getCurrentUserZone();
             
             List<String> args = new ArrayList<String>();
-            String collNameParam = IRODS_PATH_SEPARATOR.equals(parentPath) ? String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText) : String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+            String collNameParam = null;
+            if (IRODS_PATH_SEPARATOR.equals(parentPath)) {
+                collNameParam = String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText);
+            } else {
+                collNameParam = String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+            }
             args.add(collNameParam);
             args.add(parentPath);
             args.add(String.valueOf(offset));
@@ -875,7 +878,7 @@ public class CollectionServiceImpl implements CollectionService {
         }
         catch (JargonException | JargonQueryException e) {
             logger.error("Could not execute specific query to find collections matching a search text. ", e);
-        }finally {
+        } finally {
             try {
                 // after running the user specific query, we need to remove from the database
                 specificQueryAO.removeSpecificQueryByAlias(sqlQueryAlias);
@@ -917,24 +920,27 @@ public class CollectionServiceImpl implements CollectionService {
 
         try {
             dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
-            sqlAlias = SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS;
+            sqlAlias = SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING;
 
             if (DataGridUtils.isUserLoggedAdmin()) {
 
                 // Build specific query SQL command to retrieve data objects
                 // on the collection taking the offset and limit into account.
                 StringBuilder query = new StringBuilder();
-                query.append(" select * from ( ");
+                query.append(" select ");
+                query.append("    data_name,");
+                query.append("    coll_name,");
+                query.append("    data_id,");
+                query.append("    data_size,");
+                query.append("    data_path,");
+                query.append("    data_owner_name,");
+                query.append("    data_owner_zone,");
+                query.append("    create_ts,");
+                query.append("    modify_ts ");
+                query.append(" from ( ");
                 query.append("  select distinct on (d.data_name) ");
-                query.append("    d.data_name,");
-                query.append("    c.coll_name,");
-                query.append("    d.data_id,");
-                query.append("    d.data_size,");
-                query.append("    d.data_path,");
-                query.append("    d.data_owner_name,");
-                query.append("    d.data_owner_zone,");
-                query.append("    d.create_ts,");
-                query.append("    d.modify_ts ");
+                query.append("    d.* , ");
+                query.append("    c.coll_name ");
                 query.append("  from ");
                 query.append("    R_DATA_MAIN d ");
                 query.append("    left join ");
@@ -976,7 +982,7 @@ public class CollectionServiceImpl implements CollectionService {
         }
         catch (JargonException e) {
             logger.error("Could not execute specific query for listing data objects that match a search text", e);
-        }finally {
+        } finally {
             try {
                 // after running the user specific query, we need to remove from the database
                 specificQueryAO.removeSpecificQueryByAlias(sqlAlias);
@@ -1013,10 +1019,6 @@ public class CollectionServiceImpl implements CollectionService {
         try {
             sqlQueryAlias = SQL_TOTAL_NUMBER_OF_COLLS_MATCHING_SEARCH_TEXT_ALIAS;
             if (DataGridUtils.isUserLoggedAdmin()) {
-                /*try {
-                    specificQueryAO.findSpecificQueryByAlias(sqlQueryAlias);
-                }
-                catch (Exception e) {*/
 
                 // Build specific query SQL command to retrieve data objects on
                 // the collection taking the offset and limit into account.
@@ -1050,14 +1052,18 @@ public class CollectionServiceImpl implements CollectionService {
 
                 // Creating spec query on iRODS
                 specificQueryAO.addSpecificQuery(queryDef);
-                //}
             }
 
             // Executing specific query
             String zone = irodsServices.getCurrentUserZone();
 
             List<String> args = new ArrayList<String>();
-            String collNameParam = IRODS_PATH_SEPARATOR.equals(parentPath) ? String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText) : String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+            String collNameParam = null;
+            if (IRODS_PATH_SEPARATOR.equals(parentPath)) {
+                collNameParam = String.format("%%%s%%%%%s%%", IRODS_PATH_SEPARATOR, searchText);
+            } else {
+                collNameParam = String.format("%s%s%%%s%%", parentPath, IRODS_PATH_SEPARATOR, searchText);
+            }
             args.add(collNameParam);
             args.add(parentPath);
 
@@ -1067,7 +1073,7 @@ public class CollectionServiceImpl implements CollectionService {
         }
         catch (JargonException | JargonQueryException e) {
             logger.error("Could not execute specific query to find collections matching a search text. ", e);
-        }finally {
+        } finally {
             try {
                 // after running the user specific query, we need to remove from the database
                 specificQueryAO.removeSpecificQueryByAlias(sqlQueryAlias);
@@ -1104,57 +1110,52 @@ public class CollectionServiceImpl implements CollectionService {
             sqlAlias = SQL_TOTAL_NUMBER_OF_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS;
 
             if (DataGridUtils.isUserLoggedAdmin()) {
-                /*try {
-                    specificQueryAO.findSpecificQueryByAlias(sqlAlias);
-                }
-                catch (Exception e) {*/
 
-                    // Build specific query SQL command to retrieve data objects
-                    // on the collection taking the offset and limit into account.
-                    StringBuilder query = new StringBuilder();
-                    query.append(" WITH countDataObjectsThatMatchSearchText AS ( ");
-                    query.append(" select distinct on (d.data_name) ");
-                    query.append("  d.data_name,");
-                    query.append("  d.data_id,");
-                    query.append("  d.data_repl_num,");
-                    query.append("  d.data_version,");
-                    query.append("  d.data_type_name,");
-                    query.append("  d.data_size,");
-                    query.append("  d.resc_group_name,");
-                    query.append("  d.resc_name,");
-                    query.append("  d.data_path,");
-                    query.append("  d.data_owner_name,");
-                    query.append("  d.data_owner_zone,");
-                    query.append("  d.data_is_dirty,");
-                    query.append("  d.data_status,");
-                    query.append("  d.data_checksum,");
-                    query.append("  d.data_expiry_ts,");
-                    query.append("  d.data_map_id,");
-                    query.append("  d.data_mode,");
-                    query.append("  d.r_comment,");
-                    query.append("  d.create_ts,");
-                    query.append("  d.modify_ts,");
-                    query.append("  d.resc_hier ");
-                    query.append("from ");
-                    query.append("  R_DATA_MAIN d, ");
-                    query.append("  R_COLL_MAIN c ");
-                    query.append("where ");
-                    query.append("  c.coll_id = d.coll_id ");
-                    query.append("  AND ");
-                    query.append("  c.coll_name = ? ");
-                    query.append("  AND ");
-                    query.append("  d.data_name ILIKE ? ");
-                    query.append("  ) ");
-                    query.append("  SELECT COUNT(*) FROM countDataObjectsThatMatchSearchText ");
+                // Build specific query SQL command to retrieve data objects
+                // on the collection taking the offset and limit into account.
+                StringBuilder query = new StringBuilder();
+                query.append(" WITH countDataObjectsThatMatchSearchText AS ( ");
+                query.append(" select distinct on (d.data_name) ");
+                query.append("  d.data_name,");
+                query.append("  d.data_id,");
+                query.append("  d.data_repl_num,");
+                query.append("  d.data_version,");
+                query.append("  d.data_type_name,");
+                query.append("  d.data_size,");
+                query.append("  d.resc_group_name,");
+                query.append("  d.resc_name,");
+                query.append("  d.data_path,");
+                query.append("  d.data_owner_name,");
+                query.append("  d.data_owner_zone,");
+                query.append("  d.data_is_dirty,");
+                query.append("  d.data_status,");
+                query.append("  d.data_checksum,");
+                query.append("  d.data_expiry_ts,");
+                query.append("  d.data_map_id,");
+                query.append("  d.data_mode,");
+                query.append("  d.r_comment,");
+                query.append("  d.create_ts,");
+                query.append("  d.modify_ts,");
+                query.append("  d.resc_hier ");
+                query.append("from ");
+                query.append("  R_DATA_MAIN d, ");
+                query.append("  R_COLL_MAIN c ");
+                query.append("where ");
+                query.append("  c.coll_id = d.coll_id ");
+                query.append("  AND ");
+                query.append("  c.coll_name = ? ");
+                query.append("  AND ");
+                query.append("  d.data_name ILIKE ? ");
+                query.append("  ) ");
+                query.append("  SELECT COUNT(*) FROM countDataObjectsThatMatchSearchText ");
 
-                    // Creating Specific Query instance
-                    queryDef = new SpecificQueryDefinition();
-                    queryDef.setAlias(sqlAlias);
-                    queryDef.setSql(query.toString());
+                // Creating Specific Query instance
+                queryDef = new SpecificQueryDefinition();
+                queryDef.setAlias(sqlAlias);
+                queryDef.setSql(query.toString());
 
-                    // Creating spec query on iRODS
-                    specificQueryAO.addSpecificQuery(queryDef);
-                //}
+                // Creating spec query on iRODS
+                specificQueryAO.addSpecificQuery(queryDef);
             }
 
             // Executing specific query
@@ -1172,15 +1173,15 @@ public class CollectionServiceImpl implements CollectionService {
         }
         catch (JargonException e) {
             logger.error("Could not execute specific query to get the total number of data objects matching a search text.", e);
-        }finally {
-        try {
-            // after running the user specific query, we need to remove from the database
-            specificQueryAO.removeSpecificQueryByAlias(sqlAlias);
+        } finally {
+            try {
+                // after running the user specific query, we need to remove from the database
+                specificQueryAO.removeSpecificQueryByAlias(sqlAlias);
+            }
+            catch (JargonException e) {
+                logger.error("Could not remove specific query {}: ", sqlAlias, e.getMessage());
+            }
         }
-        catch (JargonException e) {
-            logger.error("Could not remove specific query {}: ", sqlAlias, e.getMessage());
-        }
-    }
 
         return totalNumberOfItems;
     }
@@ -1284,7 +1285,6 @@ public class CollectionServiceImpl implements CollectionService {
         Map<Integer, String> datatableColumns = new HashMap<>();
         datatableColumns.put(0, "coll_name");
         datatableColumns.put(1, "coll_name");
-        //datatableColumns.put(2, "c.coll_owner_name");
         datatableColumns.put(3, "coll_type");
         datatableColumns.put(4, "modify_ts");
 
@@ -1296,7 +1296,6 @@ public class CollectionServiceImpl implements CollectionService {
         datatableColumns.put(0, "data_name");
         datatableColumns.put(1, "data_name");
         datatableColumns.put(2, "data_owner_name");
-        //datatableColumns.put(3, "c.coll_type");
         datatableColumns.put(4, "modify_ts");
         datatableColumns.put(5, "data_size");
 

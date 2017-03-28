@@ -959,7 +959,7 @@ public class CollectionController {
     /**
      * Finds all collections and data objects existing under a certain path
      *
-     * @param request
+     * @param request contains all parameters in a map, we can use it to get all parameters passed in request
      * @return json with collections and data objects
      * @throws DataGridConnectionRefusedException
      */
@@ -968,7 +968,6 @@ public class CollectionController {
     public String getPaginatedJSONObjs(HttpServletRequest request) throws DataGridConnectionRefusedException {
         List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
 
-        //Map<String, String[]> map = request.getParameterMap();
         int draw = Integer.parseInt(request.getParameter("draw"));
         int start = Integer.parseInt(request.getParameter("start"));
         int length = Integer.parseInt(request.getParameter("length"));
