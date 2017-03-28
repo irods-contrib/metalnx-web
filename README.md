@@ -16,7 +16,7 @@ Metalnx is a web application designed to work alongside the iRODS ([integrated R
 
 ## Documentation
 
-Metalnx has documentation to help with building and using the tool. Please, check the following links for further information.
+Metalnx has documentation to help with building and using the tool. Please, check our [wiki](https://github.com/Metalnx/metalnx-web/wiki) and the following links for further information.
 
 ### Installing Metalnx
 
