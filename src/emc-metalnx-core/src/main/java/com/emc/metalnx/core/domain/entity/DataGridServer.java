@@ -334,16 +334,22 @@ public class DataGridServer implements Comparable<DataGridServer> {
     }
 
     public void setMetalnxExpectedMSIs(List<String> mlxMSIsExpected) {
+        if(mlxMSIsExpected == null || mlxMSIsExpected.isEmpty()) return;
+
         this.mlxMSIsExpected = mlxMSIsExpected;
         for(String msi: mlxMSIsExpected) metalnxMSIs.put(msi, false);
     }
 
     public void setIRodsExpectedMSIs(List<String> irodsMSIsExpected) {
+        if(irodsMSIsExpected == null || irodsMSIsExpected.isEmpty()) return;
+
         this.irodsMSIsExpected = irodsMSIsExpected;
         for(String msi: irodsMSIsExpected) irodsMSIs.put(msi, false);
     }
 
     public void setOtherExpectedMSIs(List<String> otherMSIsExpected) {
+	    if(otherMSIsExpected == null || otherMSIsExpected.isEmpty()) return;
+
         this.otherMSIsExpected = otherMSIsExpected;
         for(String msi: otherMSIsExpected) otherMSIs.put(msi, false);
     }
