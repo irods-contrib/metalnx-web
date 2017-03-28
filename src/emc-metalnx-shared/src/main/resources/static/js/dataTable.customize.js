@@ -1,5 +1,8 @@
 //patterns for dom option in datatables
 var dtPatternForMetadata = '<"row"<"download_csv pull-left col-sm-12 col-md-12">><"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6"l<"toolbar">><"col-md-6"i>>><"row"<"col-md-12"tr>><"row"<"col-md-12"p>>';
+var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6 col-sm-6 col-xs-6"<"toolbar">><"col-md-3 col-sm-2 hidden-xs"><"col-md-3 col-sm-4 col-xs-6"lf>><"col-md-12 col-xs-12"i>>'+
+                            '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
+                            '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
 var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"p><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
@@ -33,43 +36,15 @@ var i18n = {
 	    }
 	}
 
-//Adds GoToPage button on datatables
-function addGoToPage(table_id, datatable){
-	
-	// Adding a content to the div toolbar:
-		//GotoPage feature
+//Adds Action button on Collection table
+function addCollectionActions(table_id, datatable){
+
 	$("div.toolbar").html(
-		'<div class="input-group input-group-sm">'+
-			'<input type="text" class="form-control" id="goToPageInput" placeholder="Page #"/>'+
-			'<div class="input-group-btn">'+
-				'<button id="goToPageBtn" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>'+
-			'</div>'+
-		'</div>'
-	);
-	
-	$("#"+table_id+"_length").addClass("pull-left");
-	
-	//jquery functions bound to the html code added above
-	$('#goToPageBtn').on( 'click', function () {
-		var pageNum = $("#goToPageInput").val();        	
-		pageNum = parseInt(pageNum);
-		
-		if(isNaN(pageNum)){
-	   		$("#goToPageInput").val("");
-			return;
-		}
-	   	
-	   	if(pageNum > datatable.page.info().pages || 1 > pageNum) {
-	   		$("#goToPageInput").val("");
-	   		return;
-	   	}  
-	    datatable.page( pageNum-1 ).draw( 'page' );
-	});
-	$("#goToPageInput").keypress(function(e){
-		if(e.which == 13) {
-			$("#goToPageBtn").click();
-	    }
-	});
+	        '<div id="actions" class="btn-group pull-left"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled=""> <span>Action</span> &nbsp; <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> </button> <ul class="dropdown-menu" role="menu"> <li><a href="#" id="moveBtn" class="hideElement" data-toggle="modal" data-target="#moveModal"><span><i class="fa fa-exchange"></i> </span><span>Move</span></a></li><li><a href="#" id="copyBtn" class="hideElement" data-toggle="modal" data-target="#copyModal"><span><i class="fa fa-files-o"></i></span> <span>Copy</span></a></li><li><a href="#" id="replicateBtn" class="hideElement" data-toggle="modal" data-target="#replicateModal"><span><i class="fa fa-clone"></i></span> Replicate</a></li><li><a href="#" id="modifyBtn" class="hideElement" onclick="showModifyForm();"><span><i class="fa fa-pencil-square-o"> </i></span> <span>Edit</span></a></li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a></li><li class="divider"></li> <li> <a id="downloadBtn" href="/emc-metalnx-web/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a></li><li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a></li></ul></div>'+
+	        '<div id="actionsWait" class="hideElement">Retrieving permissions from Data grid...</div>'
+    	);
+
+	$("#"+table_id+"_length").addClass("pull-right");
 }
 
 /**

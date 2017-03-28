@@ -226,7 +226,6 @@
 	    	            "targets": "_all",
 	    	        }]
 				});
-				addGoToPage('groupsListTable', datatableGroups);
 				
 				var datatableAttachedGroups = $("#attachedGroupsListTable").DataTable({
 					"dom": dtPatternUserMgmt,
@@ -254,7 +253,6 @@
 	    	            "targets": "_all",
 	    	        }]
 				});
-				addGoToPage('attachedGroupsListTable', datatableAttachedGroups);
 				
 				$("#submitProfileFormBtn").click(function(){
 					if($("#invalidProfileNameIcon").css("display") == "none"){

@@ -14,7 +14,9 @@ body {
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn{
-	opacity: 0.45 !important;
+	opacity: 1 !important;
+	border-color: lightgray;
+	color:lightgray;
 }
 
 .btn.disabled > i, .btn[disabled] >i , fieldset[disabled] .btn >i{
@@ -487,9 +489,6 @@ h3.collection-details
 
 /**********************************   CUSTOM DATATABLE CSS  *******************************************/
 
-div.dataTables_wrapper.form-inline.dt-bootstrap{
-	margin-top:15px;
-}
 #groupPermissionsTable_wrapper, #userPermissionsTable_wrapper{
 	margin-top:0px;
 }
@@ -737,7 +736,7 @@ div.header-line
     border-top: 1px dotted #cfcfcf;
     width: 100%;
     margin-top:0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #info-collection label:AFTER {
@@ -875,7 +874,7 @@ span .label {
     display: inline-block;
     min-height: 38px;
     z-index: 4;
-    width:85%;
+    width:78%;
 }
 
 #current-path {
@@ -905,7 +904,7 @@ span .label {
 }
 
 .breadcrumb li:last-child {
-    max-width: 35ch;
+    max-width: 25ch;
 }
 
 #navigationBar{
@@ -1057,26 +1056,74 @@ a.page-hint {
 	padding: 0;
 }
 
+#emptyTrashBtn{
+     height:40px;
+     margin-top:5px;
+}
 #actionUpload > a{
-    max-height: 35px;
-    max-width: 40px;
+    width:50px;
+    height:40px;
+    margin-top:5px;
+    display: flex;
 }
+
 #showCollectionFormBtn{
-	padding: 0;
+	margin-left: 5px;
+	display: flex;
+	justify-content:center;
 }
-#showCollectionFormBtn > span> i.icon-inside {
+
+#showCollectionFormBtn > span{
+    margin-right: 1px;
+    float:left;
+}
+#showCollectionFormBtn > span i.icon-inside {
     color: #428bca;
     margin-top: 2px;
 }
-#showCollectionFormBtn > span.fa-stack {
-    margin: 5px;
-	font-size: 10pt;
+#showCollectionFormBtn span.fa-stack {
+	font-size: 11px;
+	margin-top:3px;
 }
+#uploadIcon  div.btnLabel,
+#showCollectionFormBtn  div.btnLabel {
+    padding-top: 4px;
+    visibility:hidden;
+    display:none;
+}
+
+#uploadIcon  div.btnLabel{
+    padding-left: 3px;
+}
+
+#showCollectionFormBtn  div.btnLabel {
+    padding-left: 5px;
+}
+
 #uploadIcon{
-	padding: 5px;
+    float:right;
+    display: flex;
+    justify-content:center;
 }
+
 #uploadIcon > i{
-	font-size: 19pt;
+	font-size: 21px;
+	margin-right:3px;
+	margin-top:3px;
+}
+
+#panelRemoval{
+    margin-top:10px;
+}
+
+div.dataTables_wrapper .dataTables_length select{
+    width:65px !important;
+    font-size:12px;
+    margin-left:5px;
+}
+
+div.dataTables_wrapper div.dataTables_filter{
+    text-align: none;
 }
 
 alert-dialog {
@@ -1640,7 +1687,8 @@ footer {
 	padding-right: 10px;
 }
 
-#treeViewTable tr td .recursiveQuestion{
+#treeViewTable tr td .recursiveQuestion,
+#treeViewCollectionTable tr td .recursiveQuestion{
 	position: absolute;
 	z-index: 99;
 	width: 100%;
@@ -1650,11 +1698,13 @@ footer {
 	height: 40px;
 	padding-top: 6px;
 }
-#treeViewTable tr td .recursiveQuestion > div{
+#treeViewTable tr td .recursiveQuestion > div,
+#treeViewCollectionsTable tr td .recursiveQuestion > div{
 	display: flex;
 	justify-content: center;
 }
-#treeViewTable tr td .recursiveQuestion .recursiveQuestionButtonsWrapper{
+#treeViewTable tr td .recursiveQuestion .recursiveQuestionButtonsWrapper,
+#treeViewCollectionsTable tr td .recursiveQuestion .recursiveQuestionButtonsWrapper{
 	margin-left: 15px;
 }
 
@@ -1703,6 +1753,10 @@ form.registerForm > .pull-right > .btn{
 	#actionApplyTemplates, #actionRemoval, #actionDownload {
 		width: 350px;
 	}
+
+#directoryPath{
+    padding-right:0;
+}
 }
 
 @media ( min-width : 769px) and (max-width: 1000px) {
@@ -1710,14 +1764,11 @@ form.registerForm > .pull-right > .btn{
 	#treeViewTable {
 		float: left;
 	}
-	#actions {
-		top: 6px;
-	}
 	#actionUpload {
 		margin-bottom: 0px
 	}
 	#editable-path {
-	    width:80%;
+	    width:78%;
     }
     .breadcrumb:nth-last-child(2),
     .breadcrumb:nth-last-child(3) {
@@ -1725,7 +1776,7 @@ form.registerForm > .pull-right > .btn{
     }
 }
 
-@media ( max-width : 768px) {
+@media ( max-width : 767px) {
 	.sidebar.nano > .nano-content {
 		position:relative;
 	}
@@ -1745,16 +1796,13 @@ form.registerForm > .pull-right > .btn{
 	.scrollable-table {
 		max-height: 100%;
 	}
-	#treeViewTable {
+	#treeViewTable{
 		float: left;
-	}
-	#actions {
-		top: 6px;
 	}
 	#actionUpload {
 		margin-bottom: 0px
 	}
-	#treeViewTable {
+	#treeViewTable{
 		margin-top: 30px;
 	}
 	#editable-path {
@@ -1765,6 +1813,22 @@ form.registerForm > .pull-right > .btn{
 	}
 	.breadcrumb li:last-child {
         max-width: 80%;
+    }
+    #uploadIcon{
+        float:left;
+    }
+    #actionUpload > a{
+        width: 49%;
+        margin-top:5px;
+        margin-bottom:5px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        height: 35px;
+    }
+    #uploadIcon  div.btnLabel,
+    #showCollectionFormBtn  div.btnLabel {
+        visibility:visible;
+        display:block;
     }
 }
 
@@ -1880,13 +1944,13 @@ form.registerForm > .pull-right > .btn{
 @media (min-width: 1200px) {
     .breadcrumb li:nth-last-child(2),
     .breadcrumb li:nth-last-child(3) {
-        max-width:20ch;
+        max-width:15ch;
     }
     .breadcrumb li:last-child {
-        max-width: 45ch;
+        max-width: 25ch;
     }
     #editable-path {
-    	    width:90%;
+    	    width:85%;
     }
 }
 
