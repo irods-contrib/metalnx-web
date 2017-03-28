@@ -620,7 +620,7 @@ public class CollectionServiceImpl implements CollectionService {
                 logger.info("Copying files to be downloaded to the temporary collection");
 
                 // copying all files and collections to be downloaded to the temporary collection
-                fileOperationService.copy(sourcePaths, tempCollectionPath);
+                fileOperationService.copy(sourcePaths, tempCollectionPath, false);
 
                 // creating the compressed file (tar) into the temporary collection
                 logger.info("Compressing temporary collection");
@@ -642,7 +642,7 @@ public class CollectionServiceImpl implements CollectionService {
             logger.error("Collection {} does not exist: {}", collPath, e.getMessage());
         }
         catch (JargonException e) {
-            logger.error("Could not retrieve inheritance option value for", collPath, e);
+            logger.error("Could not retrieve inheritance option value for", collPath, e.getMessage());
         }
         return false;
     }

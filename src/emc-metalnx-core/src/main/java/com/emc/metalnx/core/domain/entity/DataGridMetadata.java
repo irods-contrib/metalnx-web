@@ -32,12 +32,14 @@ public class DataGridMetadata implements Comparable<DataGridMetadata> {
 		this.value = value;
 		this.unit = unit;
 	}
-	
-	public boolean equals(DataGridMetadata dataGridAVU){
-		if(this.attribute.equals(dataGridAVU.getAttribute()) && this.value.equals(dataGridAVU.getValue()) && this.unit.equals(dataGridAVU.getUnit()))
-			return true;
-		return false;
-	}
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj == null || !(obj instanceof DataGridMetadata)) return false;
+
+        DataGridMetadata m = (DataGridMetadata) obj;
+        return attribute.equals(m.getAttribute()) && value.equals(m.getValue()) && unit.equals(m.getUnit());
+    }
 
 	public String getAttribute() {
 		return attribute;
