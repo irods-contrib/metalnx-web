@@ -1,4 +1,4 @@
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.metadata;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
@@ -11,7 +11,6 @@ import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,15 +24,18 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.*;
+
 /**
  * Test metadata service.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestMetadataService {
+public class TestMetadataCase {
     private static final String BASE_FILE_NAME = "test-file-";
     private static final String RESOURCE = "demoResc";
+    private static final int NUMBER_OF_FILES = 3;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -67,21 +69,17 @@ public class TestMetadataService {
         fos.deleteCollection(targetPath, true);
         cs.createCollection(new DataGridCollectionAndDataObject(targetPath, parentPath, true));
 
-        String[] targerFilenames = new String[3];
+        for(int i = 0; i < NUMBER_OF_FILES; i++) {
+            String filename = BASE_FILE_NAME + i + ".txt";
+            MockMultipartFile file = new MockMultipartFile(filename, "Hello World".getBytes());
+            us.tranferFileDirectlyToJargon(filename, file, targetPath, false, false, "", RESOURCE, false);
 
-        for(int i = 0; i < targerFilenames.length; i++) {
-            String currFilename = BASE_FILE_NAME + i + ".txt";
-            String currContent = "Hello World" + i;
+            String filepath = String.format("%s/%s", targetPath, filename);
 
-            MockMultipartFile file = new MockMultipartFile(currFilename, currContent.getBytes());
-            us.tranferFileDirectlyToJargon(currFilename, file, targetPath, false, false, "", RESOURCE, false);
-
-            targerFilenames[i] = String.format("%s/%s", targetPath, currFilename);
+            metadataService.addMetadataToPath(filepath, "TEST", "TEST", "TEST");
+            metadataService.addMetadataToPath(filepath, "test", "test", "test");
+            metadataService.addMetadataToPath(filepath, "TeSt", "tEsT", "teST");
         }
-
-        metadataService.addMetadataToPath(targerFilenames[0], "TEST", "TEST", "TEST");
-        metadataService.addMetadataToPath(targerFilenames[1], "test", "test", "test");
-        metadataService.addMetadataToPath(targerFilenames[2], "TeSt", "tEsT", "teST");
 
         attr = "test";
         val = "TEST";
@@ -111,13 +109,12 @@ public class TestMetadataService {
             throws DataGridConnectionRefusedException {
         objs = metadataService.findByMetadata(search, new DataGridPageContext(), 1, 100);
 
-        Assert.assertEquals(expectedNumOfFiles, objs.size());
+        assertTrue(objs.size() >= expectedNumOfFiles);
 
         for(DataGridCollectionAndDataObject obj: objs) {
-            Assert.assertTrue(obj.isVisibleToCurrentUser());
-            Assert.assertFalse(obj.isCollection());
-            Assert.assertTrue(obj.getResourceName().equalsIgnoreCase(RESOURCE));
-            Assert.assertEquals(expectedNumOfMatchesByFile, obj.getNumberOfMatches());
+            assertTrue(obj.isVisibleToCurrentUser());
+            assertFalse(obj.isCollection());
+            assertEquals(expectedNumOfMatchesByFile, obj.getNumberOfMatches());
         }
     }
 }

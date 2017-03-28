@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.serverutil;
 
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;

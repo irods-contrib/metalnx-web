@@ -248,6 +248,10 @@
 			                    </table>
 						    </div>
 						</div>
+                        <div class="col-xs-12">
+                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked"/>
+                            <span th:text="#{copy.with.metadata.label}"></span>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<div class="row">
@@ -609,7 +613,7 @@
 					{path : directoryPath, groupName : groupName}, 
 					function (data){
 						$(".modal a[name='" + directoryPath + "']").attr("onclick", "retractElement('" + directoryName + "', '" + directoryPath + "');");
-						$(".modal a[name='" + directoryPath + "']").parents('.tab-pane.active').children('ul').remove();
+						$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 						$(".modal a[name='" + directoryPath + "']").parent().after(data);
 						$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-open-16.png");
 						
@@ -621,7 +625,7 @@
 	        
 	        function retractElement(directoryName, directoryPath) {
 	        	$(".modal a[name='" + directoryPath + "']").attr("onclick", "getSubDirectoriesOldTree('" + directoryName + "', '" + directoryPath + "');");
-				$(".modal a[name='" + directoryPath + "']").parents('.tab-pane.active').children('ul').remove();
+				$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 				$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-16.png");
 				
 				targetPath = directoryPath;	
@@ -679,7 +683,10 @@
 	        });
 	        
 	        $("#copyBtn").click(function() {
-	        	ajaxEncapsulation("/emc-metalnx-web/fileOperation/copy/", "POST", {targetPath : targetPath}, callbackMoveAndCopy, null, null, null);
+	            var copyWithMetadata = $("#inputCopyWithMetadata").is(":checked");
+	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata};
+	            var url = "/emc-metalnx-web/fileOperation/copy/";
+	        	ajaxEncapsulation(url, "POST", params, callbackMoveAndCopy, null, null, null);
 	        });
 	        
 	        $("#cancelMoveBtn").click(function() {

@@ -82,18 +82,17 @@ public interface PermissionsService {
      * @param permType
      * @param userOrGroupName
      *            user or group name to give permissions
-     * @param path
-     *            that can be a collection or a data object
      * @param recursive
      *            flag that says whether or not the given permission should be applied recursively
      * @param inAdminMode
      *          if true, tries to set permission in admin mode (-M option)
      *          if false, tries to set permission normally (no additional options)
+     * @param paths to apply permission
      * @return a {@link boolean} indicating the status of the request
      * @throws DataGridConnectionRefusedException
      */
-    boolean setPermissionOnPath(DataGridPermType permType, String userOrGroupName, String path, boolean recursive, boolean inAdminMode)
-            throws DataGridConnectionRefusedException;
+    boolean setPermissionOnPath(DataGridPermType permType, String userOrGroupName, boolean recursive,
+                                boolean inAdminMode, String... paths) throws DataGridConnectionRefusedException;
 
     /**
      * Finds resulting most permissive permission for a given user

@@ -47,23 +47,6 @@
 
         <div class="row">
             <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
-
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs pull-left" role="tablist" id="permissionsTabList">
-                    <li role="presentation" class="active">
-                        <a href="#userPermissions" class="permissionTab" aria-controls="home" role="tab" data-toggle="tab">
-                            <i class="fa fa-user"></i>
-                            <span th:text="#{permissions.page.user.title}"></span>
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#groupPermissions" class="permissionTab" aria-controls="profile" role="tab" data-toggle="tab">
-                            <i class="fa fa-group"></i>
-                            <span th:text="#{permissions.page.group.title}"></span>
-                        </a>
-                    </li>
-
-                </ul>
                 <div th:if="${userCanModify}" class="btn-group pull-right" id="addPermissionButtonDiv">
                     <button class="btn btn-primary btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-plus"></i>  Permission  <span class="caret"></span>
@@ -78,101 +61,83 @@
                     </ul>
                  </div>
 
-                <!-- Tab panes -->
-                <div class="tab-content" id="permissionTabPanes">
+                <div>
+                    <p th:if="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" th:text="#{no.permission.available}" class="col-xs-12"></p>
 
-                    <div role="tabpanel" class="tab-pane active" id="userPermissions">
-                        <p th:if="${#lists.isEmpty(userPermissions)}" class="col-xs-12">No permission available for this item.</p>
-
-                        <table class="table table-hover" id="userPermissionsTable" th:unless="${#lists.isEmpty(userPermissions)}">
-                            <thead>
-                                <tr>
-                                    <th th:text="#{permissions.table.user.column}"></th>
-                                    <th th:text="#{permissions.table.systemrole.column}"></th>
-                                    <th th:text="#{permission.table.permission.column}"></th>
-                                    <th th:text="#{collections.management.table.bookmark.label}"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="userPermission : ${userPermissions}">
-                                    <td th:text="${userPermission.getUserName()}"></td>
-                                    <td th:text="${userPermission.getUserSystemRole()}"></td>
-                                    <td th:unless="${userCanModify}" th:text="${userPermission.getPermission()}"></td>
-                                    <td th:if="${userCanModify}">
-                                        <select class="userOptionForPermission" th:title="#{permission.table.permission.column}">
-                                            <option th:each="permission : ${permissions}"
-                                                th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
-                                                th:text="${permission}" th:title="${permission}"
-                                                th:selected="${userPermission.getPermission() == permission}"></option>
-                                        </select>
-                                        <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
-                                            <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
-                                            <div class="pull-right">
-                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)"></button>
-                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)"></button>
-                                            </div>
+                    <table th:unless="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" id="permissionsTable" class="table table-hover" >
+                        <thead>
+                            <tr>
+                                <th th:text="#{permissions.table.user.group.column}"></th>
+                                <th th:text="#{permissions.table.systemrole.column}"></th>
+                                <th th:text="#{permission.table.permission.column}"></th>
+                                <th th:text="#{collections.management.table.bookmark.label}"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="userPermission : ${userPermissions}">
+                                <td th:text="${userPermission.getUserName()}"></td>
+                                <td th:text="${userPermission.getUserSystemRole()}"></td>
+                                <td th:unless="${userCanModify}" th:text="${userPermission.getPermission()}"></td>
+                                <td th:if="${userCanModify}">
+                                    <select class="userOptionForPermission" th:title="#{permission.table.permission.column}">
+                                        <option th:each="permission : ${permissions}"
+                                            th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
+                                            th:text="${permission}" th:title="${permission}"
+                                            th:selected="${userPermission.getPermission() == permission}"></option>
+                                    </select>
+                                    <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
+                                        <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
+                                        <div class="pull-right">
+                                            <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)"></button>
+                                            <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)"></button>
                                         </div>
-                                    </td>
-                                    <td th:if="${userCanModify}">
-                                        <input
-                                            type="checkbox"
-                                            class="userBookmarkCheckbox"
-                                            th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" />
-                                    </td>
-                                    <td th:unless="${userCanModify}">
-                                        <span aria-hidden="true"
-                                            th:class="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="groupPermissions">
-                        <p th:if="${#lists.isEmpty(groupPermissions)}" th:text="#{no.permission.available}" class="col-xs-12"></p>
-
-                        <table class="table table-hover" id="groupPermissionsTable" th:unless="${#lists.isEmpty(groupPermissions)}">
-                            <thead>
-                                <tr>
-                                    <th th:text="#{permissions.table.group.column}"></th>
-                                    <th th:text="#{permission.table.permission.column}"></th>
-                                    <th th:text="#{collections.management.table.bookmark.label}"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="groupPermission : ${groupPermissions}">
-                                    <td th:text="${groupPermission.getGroupName()}" th:id="${groupPermission.getGroupName()}"></td>
-                                    <td th:unless="${userCanModify}" th:text="${groupPermission.getPermission()}"></td>
-                                    <td th:if="${userCanModify}">
-                                        <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
-                                            <option th:each="permission : ${permissions}"
-                                                th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
-                                                th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
-                                                th:title="${permission}"></option>
-                                        </select>
-                                        <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
-                                            <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
-                                            <div class="pull-right">
-                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-no" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)"></button>
-                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-yes" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)"></button>
-                                            </div>
+                                    </div>
+                                </td>
+                                <td th:if="${userCanModify}">
+                                    <input
+                                        type="checkbox"
+                                        class="userBookmarkCheckbox"
+                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" />
+                                </td>
+                                <td th:unless="${userCanModify}">
+                                    <span aria-hidden="true"
+                                        th:class="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:each="groupPermission : ${groupPermissions}">
+                                <td th:text="${groupPermission.getGroupName()}" th:id="${groupPermission.getGroupName()}"></td>
+                                <td><span th:text="#{permissions.table.group.label}"></span></td>
+                                <td th:unless="${userCanModify}" th:text="${groupPermission.getPermission()}"></td>
+                                <td th:if="${userCanModify}">
+                                    <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
+                                        <option th:each="permission : ${permissions}"
+                                            th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
+                                            th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
+                                            th:title="${permission}"></option>
+                                    </select>
+                                    <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
+                                        <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
+                                        <div class="pull-right">
+                                            <button type="button" class="btn-xs btn btn-default confirm-msg-table-no" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)"></button>
+                                            <button type="button" class="btn-xs btn btn-default confirm-msg-table-yes" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)"></button>
                                         </div>
-                                    </td>
-                                    <td th:if="${userCanModify}">
-                                        <input
-                                            type="checkbox"
-                                            class="groupBookmarkCheckbox"
-                                            th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" />
-                                    </td>
-                                    <td th:unless="${userCanModify}">
-                                        <span aria-hidden="true"
-                                            th:class="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </div>
+                                </td>
+                                <td th:if="${userCanModify}">
+                                    <input
+                                        type="checkbox"
+                                        class="groupBookmarkCheckbox"
+                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" />
+                                </td>
+                                <td th:unless="${userCanModify}">
+                                    <span aria-hidden="true"
+                                        th:class="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -299,7 +264,7 @@
             /*<![CDATA[*/
 
                 $(document).ready(function(){
-                    var datatableGroup = $("#groupPermissionsTable").DataTable({
+                    var datatablePermissions = $("#permissionsTable").DataTable({
                         "dom": dtPatternMlxStandard,
                         "language": i18n,
                         "stateSave": true,
@@ -317,28 +282,6 @@
                         },
                         "columnDefs": [{
                             "width": "25%",
-                            "targets": "_all",
-                        }]
-                    });
-
-                    var datatableUser = $("#userPermissionsTable").DataTable({
-                        "dom": dtPatternMlxStandard,
-                        "language": i18n,
-                        "stateSave": true,
-                        "autoWidth": false,
-                        "stateSaveParams": function (settings, data) {
-                            data.search.search = "";
-                        },
-                        "drawCallback": function(){
-                            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
-                            $('.dataTables_paginate.paging_simple_numbers')
-                            .css( 'display', this.api().data().length <= 0 ?
-                                 'none' :
-                                 'block'
-                            )
-                        },
-                        "columnDefs": [{
-                            "width": "33%",
                             "targets": "_all",
                         }]
                     });
@@ -389,17 +332,6 @@
 
                 permission = null;
                 path = null;
-
-                // Making sure the user is on the tab he was before action
-                if (currentPermissionTab == "users") {
-                    $("a[href='#userPermissions']").click();
-
-                    // Switching modal buttons
-                    var buttonToShow = $("span > button.hide");
-                    var otherButton = buttonToShow.siblings();
-                    buttonToShow.removeClass('hide');
-                    otherButton.addClass('hide');
-                }
 
                 // Creates bloodhound instance for querying requests
                 function createBloodhoundInstance(url, filterFunction) {

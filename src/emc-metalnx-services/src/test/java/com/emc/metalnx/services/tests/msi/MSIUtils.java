@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.emc.metalnx.services.rules.tests;
+package com.emc.metalnx.services.tests.msi;
 
 import java.util.ArrayList;
 import java.util.List;

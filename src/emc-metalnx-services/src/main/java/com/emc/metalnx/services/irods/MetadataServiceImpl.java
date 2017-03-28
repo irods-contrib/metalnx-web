@@ -60,6 +60,9 @@ public class MetadataServiceImpl implements MetadataService {
     @Autowired
     PermissionsService permissionsService;
 
+    @Autowired
+    private CollectionService collectionService;
+
     @Value("${irods.zoneName}")
     private String zoneName;
 
@@ -147,9 +150,9 @@ public class MetadataServiceImpl implements MetadataService {
     @Override
     public List<DataGridMetadata> findMetadataValuesByPath(String path) throws DataGridConnectionRefusedException {
 
-        List<MetaDataAndDomainData> metadataList = null;
-        List<DataGridMetadata> dataGridMetadataList = new ArrayList<DataGridMetadata>();
-        List<MetaDataAndDomainData> resultingList = null;
+        List<MetaDataAndDomainData> metadataList;
+        List<DataGridMetadata> dataGridMetadataList = new ArrayList<>();
+        List<MetaDataAndDomainData> resultingList;
 
         CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
 
@@ -165,8 +168,8 @@ public class MetadataServiceImpl implements MetadataService {
             }
 
             // TODO: Making sure all AVUs are unique. Jargon should do that.
-            resultingList = new ArrayList<MetaDataAndDomainData>();
-            Set<Integer> setOfAlreadyListedAVUs = new HashSet<Integer>();
+            resultingList = new ArrayList<>();
+            Set<Integer> setOfAlreadyListedAVUs = new HashSet<>();
             for (MetaDataAndDomainData avuForItem : metadataList) {
 
                 int avuId = avuForItem.getAvuId();
@@ -195,7 +198,6 @@ public class MetadataServiceImpl implements MetadataService {
         }
 
         return dataGridMetadataList;
-
     }
 
     @Override
@@ -223,6 +225,25 @@ public class MetadataServiceImpl implements MetadataService {
         catch (JargonException e) {
             logger.error("Error trying to add metadata: " + e);
         }
+        return isMetadataAdded;
+    }
+
+    @Override
+    public boolean addMetadataToPath(String path, DataGridMetadata metadata) throws DataGridConnectionRefusedException {
+        if (metadata == null) return false;
+        return addMetadataToPath(path, metadata.getAttribute(), metadata.getValue(), metadata.getUnit());
+    }
+
+    @Override
+    public boolean addMetadataToPath(String path, List<DataGridMetadata> metadataList) throws DataGridConnectionRefusedException {
+        if (metadataList == null || metadataList.isEmpty()) return false;
+
+        boolean isMetadataAdded = false;
+
+        for(DataGridMetadata metadata: metadataList) {
+            isMetadataAdded &= addMetadataToPath(path, metadata);
+        }
+
         return isMetadataAdded;
     }
 
@@ -311,5 +332,19 @@ public class MetadataServiceImpl implements MetadataService {
                 logger.error("Could not get permissions for current user: {}", e.getMessage());
             }
         }
+    }
+
+    public boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
+        if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty()) return false;
+
+        logger.info("Copying metadata from {} to {}", srcPath, dstPath);
+
+        boolean isMetadataCopied = true;
+
+        for(DataGridMetadata metadata: findMetadataValuesByPath(srcPath)) {
+            isMetadataCopied &= addMetadataToPath(dstPath, metadata);
+        }
+
+        return isMetadataCopied;
     }
 }

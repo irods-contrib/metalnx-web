@@ -287,16 +287,15 @@ public class DataGridUtils {
         for (IRODSQueryResultRow irodsQueryResultRow : results) {
             CollectionAndDataObjectListingEntry collectionAndDataObject = new CollectionAndDataObjectListingEntry();
 
-            collectionAndDataObject.setId(Integer.valueOf(irodsQueryResultRow.getColumn("d.data_id")));
-            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn("d.data_name"));
-            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn("c.coll_name"));
-            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("d.data_owner_zone"));
+            collectionAndDataObject.setId(Integer.valueOf(irodsQueryResultRow.getColumn("data_id")));
+            collectionAndDataObject.setPathOrName(irodsQueryResultRow.getColumn("data_name"));
+            collectionAndDataObject.setParentPath(irodsQueryResultRow.getColumn("coll_name"));
             collectionAndDataObject.setObjectType(ObjectType.DATA_OBJECT);
-            collectionAndDataObject.setDataSize(Long.valueOf(irodsQueryResultRow.getColumn("d.data_size")));
-            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn("d.data_owner_name"));
-            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("d.data_owner_zone"));
-            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("d.create_ts")));
-            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("d.modify_ts")));
+            collectionAndDataObject.setDataSize(Long.valueOf(irodsQueryResultRow.getColumn("data_size")));
+            collectionAndDataObject.setOwnerName(irodsQueryResultRow.getColumn("data_owner_name"));
+            collectionAndDataObject.setOwnerZone(irodsQueryResultRow.getColumn("data_owner_zone"));
+            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("create_ts")));
+            collectionAndDataObject.setModifiedAt(IRODSDataConversionUtil.getDateFromIRODSValue(irodsQueryResultRow.getColumn("modify_ts")));
 
             dataGridCollectionAndDataObjects.add(collectionAndDataObject);
         }
@@ -368,7 +367,7 @@ public class DataGridUtils {
     /**
      * Maps a CollectionAndDataObjectListingEntry list into a DataGridCollectionAndDataObject list
      *
-     * @param List
+     * @param entries
      *            CollectionAndDataObjectListingEntry objects to map
      * @return list of DataGridCollectionAndDataObject objects
      */
@@ -391,8 +390,8 @@ public class DataGridUtils {
      * Maps a CollectionAndDataObjectListingEntry object into a DataGridCollectionAndDataObject
      * object
      *
-     * @param List
-     *            CollectionAndDataObjectListingEntry objects to map
+     * @param entry
+     *            CollectionAndDataObjectListingEntry object to map into DataGridCollectionAndDataObject
      * @return instance of DataGridCollectionAndDataObject
      */
     public static DataGridCollectionAndDataObject mapListingEntryToDataGridCollectionAndDataObject(CollectionAndDataObjectListingEntry entry) {

@@ -67,6 +67,26 @@ public interface MetadataService {
     public boolean addMetadataToPath(String path, String attribute, String value, String unit) throws DataGridConnectionRefusedException;
 
     /**
+     * Add metadata (Attribute/Value/Unit) to a Collection or DataObject in iRODS
+     *
+     * @param path      path of the Collection or DataObject which we will be adding a metadata
+     * @param metadata  object representing an AVU
+     * @return True, if metadata was added to path. False, otherwise.
+     * @throws DataGridConnectionRefusedException
+     */
+    public boolean addMetadataToPath(String path, DataGridMetadata metadata) throws DataGridConnectionRefusedException;
+
+    /**
+     * Add metadata (Attribute/Value/Unit) to a Collection or DataObject in iRODS
+     *
+     * @param path      path of the Collection or DataObject which we will be adding a metadata
+     * @param metadataList  list of objects representing AVUs
+     * @return True, if metadata was added to path. False, otherwise.
+     * @throws DataGridConnectionRefusedException
+     */
+    public boolean addMetadataToPath(String path, List<DataGridMetadata> metadataList) throws DataGridConnectionRefusedException;
+
+    /**
      * Modify metadata (Attribute/Value/Unit) by passing the path of the Collection or DataObject,
      * the metadata that is going to be updated and the new metadata that will replace the old one as parameters
      *
@@ -104,4 +124,11 @@ public interface MetadataService {
      */
     public void populateVisibilityForCurrentUser(List<DataGridCollectionAndDataObject> objectList) throws DataGridConnectionRefusedException;
 
+    /**
+     * Copies metadata existing in a source path to a destination path.
+     * @param srcPath path to retrieve metadata from
+     * @param dstPath path to add metadata to
+     * @return True, if there is metadata and it could be copied or if there is no metadata at all. False, otherwise.
+     */
+    boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException;
 }

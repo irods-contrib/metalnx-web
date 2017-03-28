@@ -191,42 +191,34 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean setPermissionOnPath(DataGridPermType permType, String uName, String path, boolean recursive, boolean inAdminMode)
-            throws DataGridConnectionRefusedException {
+    public boolean setPermissionOnPath(DataGridPermType permType, String uName, boolean recursive,
+                                       boolean inAdminMode, String... paths) throws DataGridConnectionRefusedException {
 
-        logger.info("Attempting to set {} permission on path {} for user/group {}", permType, path, uName);
+        logger.info("Setting {} permission on path {} for user/group {}", permType, paths, uName);
 
         boolean operationResult = true;
 
-        try {
-            IRODSFile irodsFilePath = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
+        for(String path: paths) {
+            try {
+                IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
 
-            if (irodsFilePath.isDirectory()) {
-                logger.debug("{} is a collection", path);
-                operationResult = chmodCollection(permType, path, recursive, uName, inAdminMode);
-            } else {
-                logger.debug("{} is a data object", path);
-                operationResult = chmodDataObject(permType, path, uName, inAdminMode);
-            }
-
-            // If the permissions is set to NONE, remove all the bookmarks associated to the group
-            // and the path
-            if (permType.equals(DataGridPermType.NONE)) {
-                // Making sure we are dealing with a group
-                String currentZone = irodsServices.getCurrentUserZone();
-                DataGridGroup group = groupDao.findByGroupnameAndZone(uName, currentZone);
-                if (group != null) {
-                    groupBookmarkDao.removeByGroupAndPath(group, path);
+                if (irodsFile.isDirectory()) {
+                    operationResult = chmodCollection(permType, path, recursive, uName, inAdminMode);
+                } else {
+                    operationResult = chmodDataObject(permType, path, uName, inAdminMode);
                 }
+
+                // If the permissions is NONE, remove all bookmarks associated to the group and the path
+                if (permType.equals(DataGridPermType.NONE)) {
+                    DataGridGroup group = groupDao.findByGroupnameAndZone(uName, irodsServices.getCurrentUserZone());
+                    if (group != null) groupBookmarkDao.removeByGroupAndPath(group, path);
+                }
+
+                logger.info("Permission {} for user {} on path {} set successfully", permType, uName, paths);
+            } catch (JargonException e) {
+                logger.error("Could not set {} permission on path {} for user/group {}", permType, path, uName, e);
+                operationResult = false;
             }
-
-        } catch (JargonException e) {
-            logger.error("Could not set {} permission on path {} for user/group {}", permType, path, uName, e);
-            operationResult = false;
-        }
-
-        if (operationResult) {
-            logger.info("Successfully set the permission {} for user {} on path {}", permType, uName, path);
         }
 
         return operationResult;
