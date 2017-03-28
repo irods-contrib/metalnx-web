@@ -819,8 +819,7 @@ public class CollectionServiceImpl implements CollectionService {
             sqlQueryAlias = SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING;
 
             // Build specific query SQL command to retrieve data objects
-            // on the collection
-            // taking the offset and limit into account.
+            // on the collection taking the offset and limit into account.
             StringBuilder query = new StringBuilder();
             query.append("select ");
             query.append("   c.coll_id,");
