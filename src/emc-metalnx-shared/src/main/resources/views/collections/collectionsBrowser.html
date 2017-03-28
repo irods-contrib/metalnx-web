@@ -450,12 +450,12 @@
     	            $('#treeViewTable tbody td').each(function () {
     	               $(this).attr('title', $(this).text().trim());
     	            });
-    	            
+
     	            if(datatable.data().length == 0) {
     	            	$("#emptyTrashBtn").addClass("hideElement");
     	            }
     	            else {
-    	            	$("#emptyTrashBtn").removeClass("hideElement");            	
+    	            	$("#emptyTrashBtn").removeClass("hideElement");
     	            }
     	        },
     	        "drawCallback": function(){
@@ -474,7 +474,8 @@
     					},
     					"className": "dt-center",
     					"width": "25px",
-    					"targets": 0
+    					"targets": 0,
+    					"orderable": false
                     },
                     {
                     	"render": function ( data, type, full, meta ) {
