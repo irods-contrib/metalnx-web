@@ -54,8 +54,8 @@ import java.util.regex.Pattern;
 public class CollectionServiceImpl implements CollectionService {
 
     private static final String IRODS_PATH_SEPARATOR = "/";
-    private static final String SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfCollectionsThatMatchSearchText";
-    private static final String SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfDataObjectsThatMatchSearchText";
+    private static final String SQL_LIST_COLLS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfCollectionsThatMatchSearchTextWithOrdering";
+    private static final String SQL_LIST_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS_WITH_ORDERING = "metalnxListOfDataObjectsThatMatchSearchTextWithOrdering";
     private static final String SQL_TOTAL_NUMBER_OF_DATA_OBJECTS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfDataObjectsThatMatchSearchText";
     private static final String SQL_TOTAL_NUMBER_OF_COLLS_MATCHING_SEARCH_TEXT_ALIAS = "metalnxTotalNumberOfCollectionsThatMatchSearchText";
     private static final int MAX_RESULTS_PER_PAGE = 200;
@@ -120,9 +120,9 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(String parentPath,
-            String searchText, int pageNum, int pageSize, int orderColumn, String orderDir, DataGridPageContext pageContext) throws DataGridDataNotFoundException,
-            DataGridQueryException, DataGridException {
+    public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(
+            String parentPath, String searchText, int pageNum, int pageSize, int orderColumn, String orderDir, DataGridPageContext pageContext )
+            throws DataGridDataNotFoundException, DataGridQueryException, DataGridException {
 
         List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
 

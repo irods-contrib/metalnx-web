@@ -966,7 +966,7 @@ public class CollectionController {
     @RequestMapping(value = "getPaginatedJSONObjs/")
     @ResponseBody
     public String getPaginatedJSONObjs(HttpServletRequest request) throws DataGridConnectionRefusedException {
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
 
         int draw = Integer.parseInt(request.getParameter("draw"));
         int start = Integer.parseInt(request.getParameter("start"));

@@ -391,7 +391,7 @@ public class DataGridUtils {
      * object
      *
      * @param entry
-     *            CollectionAndDataObjectListingEntry objects to map
+     *            CollectionAndDataObjectListingEntry object to map into DataGridCollectionAndDataObject
      * @return instance of DataGridCollectionAndDataObject
      */
     public static DataGridCollectionAndDataObject mapListingEntryToDataGridCollectionAndDataObject(CollectionAndDataObjectListingEntry entry) {
