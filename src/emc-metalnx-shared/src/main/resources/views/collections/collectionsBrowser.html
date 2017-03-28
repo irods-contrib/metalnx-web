@@ -263,25 +263,22 @@
               <i class="fa fa-folder fa-stack-2x"></i>
               <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
             </span>
-			<div class="btnLabel">Add Collection</div>
+			<div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
 
 		</a>
 		<a role="button" href="#" class="btn btn-default" data-toggle="modal"
 		   data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
 
-            <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel">Upload</div>
+            <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
 		</a>
 	</div>
     <!-- Removal activity indicator -->
     <div id="actionRemoval" class="hideElement ">
         <div id="panelRemoval" class="col-md-5">
-            <div class="pull-left hidden">
-                <span>Removing files...</span>
-            </div>
             <div class="progress ">
                 <div class="progress-bar progress-bar-striped active"
                      role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                     aria-valuemax="100" style="width: 100%">Removing...</div>
+                     aria-valuemax="100" style="width: 100%" th:text="#{collections.empty.trash.status}"></div>
             </div>
         </div>
     </div>
@@ -325,10 +322,6 @@
 				<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
 				<p class="text-center" th:text="#{loading.table.label}"></p>
 			</div>
-
-
-
-          
 			<div class="col-xs-6 hidden">
                    <a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right hideElement" data-toggle="modal" data-target="#emptyTrashModal">
                        <span class="glyphicon glyphicon-trash"></span>
@@ -528,7 +521,6 @@
 			
 			//select all collections
 			if($(this).is(":checked")){
-				//$("#actions").hide();
 				$("#actionsWait").show();
 				url = "/emc-metalnx-web/collections/addArrayToSourcePaths/";
 				

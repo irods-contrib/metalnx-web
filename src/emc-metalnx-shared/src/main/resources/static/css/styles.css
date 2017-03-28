@@ -540,9 +540,6 @@ div.dataTables_wrapper div.col-md-12 > .dataTables_info {
 	padding-top: 0;
 	padding-bottom: 5px;
 }
-div.dataTables_wrapper .dataTables_length{
-	margin-right:10px;
-}
 .row table.dataTable{
 	margin-top: 0px !important;
 	margin-bottom: 0px !important;
@@ -1124,6 +1121,7 @@ div.dataTables_wrapper .dataTables_length select{
 
 div.dataTables_wrapper div.dataTables_filter{
     text-align: none;
+    float:right;
 }
 
 alert-dialog {
@@ -1754,9 +1752,9 @@ form.registerForm > .pull-right > .btn{
 		width: 350px;
 	}
 
-#directoryPath{
-    padding-right:0;
-}
+    #directoryPath{
+        padding-right:0;
+    }
 }
 
 @media ( min-width : 769px) and (max-width: 1000px) {
