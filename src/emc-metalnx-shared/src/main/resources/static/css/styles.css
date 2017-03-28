@@ -1623,6 +1623,9 @@ footer {
 #irodsServerLogs{
 	background-color: #f2f6f9;
 }
+#irodsServerLogs p{
+    word-break: break-all;
+}
 
 #resourcesPanel .panel-body{
 	height: 15em;
