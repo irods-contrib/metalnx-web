@@ -93,8 +93,8 @@ public interface CollectionService {
      * @throws DataGridException
      */
     List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(String path, String searchText,
-            int pageNum, int pageSize, DataGridPageContext pageContext) throws DataGridDataNotFoundException, DataGridException,
-            DataGridQueryException;
+            int pageNum, int pageSize, int orderColumn, String orderDir, DataGridPageContext pageContext)
+            throws DataGridDataNotFoundException, DataGridException, DataGridQueryException;
 
     /**
      * Gets what kind of permission(s) the logged user has on a certain path

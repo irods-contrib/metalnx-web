@@ -959,22 +959,21 @@ public class CollectionController {
     /**
      * Finds all collections and data objects existing under a certain path
      *
-     * @param draw
-     * @param start
-     *            index of the first element of the page that needs to be shown
-     * @param length
-     *            page size
-     * @param searchString
-     *            [value]
-     *            string value when searching for a collection/file name
+     * @param request contains all parameters in a map, we can use it to get all parameters passed in request
      * @return json with collections and data objects
      * @throws DataGridConnectionRefusedException
      */
     @RequestMapping(value = "getPaginatedJSONObjs/")
     @ResponseBody
-    public String getPaginatedJSONObjs(@RequestParam("draw") int draw, @RequestParam("start") int start, @RequestParam("length") int length,
-            @RequestParam("search[value]") String searchString) throws DataGridConnectionRefusedException {
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
+    public String getPaginatedJSONObjs(HttpServletRequest request) throws DataGridConnectionRefusedException {
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
+
+        int draw = Integer.parseInt(request.getParameter("draw"));
+        int start = Integer.parseInt(request.getParameter("start"));
+        int length = Integer.parseInt(request.getParameter("length"));
+        String searchString = request.getParameter("search[value]");
+        int orderColumn = Integer.parseInt(request.getParameter("order[0][column]"));
+        String orderDir = request.getParameter("order[0][dir]");
 
         // Pagination context to get the sequence number for the listed items
         DataGridPageContext pageContext = new DataGridPageContext();
@@ -987,10 +986,11 @@ public class CollectionController {
         jsonResponse.put("data", new ArrayList<String>());
         String jsonString = "";
 
+
         try {
             Double startPage = Math.floor(start / length) + 1;
             dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(currentPath,
-                    searchString, startPage.intValue(), length, pageContext);
+                    searchString, startPage.intValue(), length, orderColumn, orderDir, pageContext);
             totalObjsForCurrentSearch = pageContext.getTotalNumberOfItems();
             totalObjsForCurrentPath = pageContext.getTotalNumberOfItems();
 
