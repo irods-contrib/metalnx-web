@@ -333,17 +333,26 @@ public class DataGridServer implements Comparable<DataGridServer> {
 	    return this.msisInstaleld != null ? this.msisInstaleld : new ArrayList<>();
     }
 
-	public void setMetalnxExpectedMSIs(List<String> mlxMSIsExpected) {
-		this.mlxMSIsExpected = mlxMSIsExpected;
-	}
+    public void setMetalnxExpectedMSIs(List<String> mlxMSIsExpected) {
+        if(mlxMSIsExpected == null || mlxMSIsExpected.isEmpty()) return;
 
-	public void setIRodsExpectedMSIs(List<String> irodsMSIsExpected) {
-		this.irodsMSIsExpected = irodsMSIsExpected;
-	}
+        this.mlxMSIsExpected = mlxMSIsExpected;
+        for(String msi: mlxMSIsExpected) metalnxMSIs.put(msi, false);
+    }
 
-	public void setOtherExpectedMSIs(List<String> otherMSIsExpected) {
-		this.otherMSIsExpected = otherMSIsExpected;
-	}
+    public void setIRodsExpectedMSIs(List<String> irodsMSIsExpected) {
+        if(irodsMSIsExpected == null || irodsMSIsExpected.isEmpty()) return;
+
+        this.irodsMSIsExpected = irodsMSIsExpected;
+        for(String msi: irodsMSIsExpected) irodsMSIs.put(msi, false);
+    }
+
+    public void setOtherExpectedMSIs(List<String> otherMSIsExpected) {
+	    if(otherMSIsExpected == null || otherMSIsExpected.isEmpty()) return;
+
+        this.otherMSIsExpected = otherMSIsExpected;
+        for(String msi: otherMSIsExpected) otherMSIs.put(msi, false);
+    }
 
 	// used by frontend
     public Map<String, Boolean> getMetalnxMSIs() { return metalnxMSIs; }
