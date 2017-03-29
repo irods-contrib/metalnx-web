@@ -322,27 +322,7 @@
 				<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
 				<p class="text-center" th:text="#{loading.table.label}"></p>
 			</div>
-			<div class="col-xs-6 hidden">
-                   <a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right hideElement" data-toggle="modal" data-target="#emptyTrashModal">
-                       <span class="glyphicon glyphicon-trash"></span>
-                       <span th:text="#{empty.trash.label}"></span> 
-                   </a>
-				<div th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload" class="pull-right">
-					<a role="button" href="#" class="btn btn-default" data-toggle="modal"
-						data-target="#addAndModifyModal" id="showCollectionFormBtn"
-						style="margin-left: 10px" th:title="#{collections.management.add.button}">
 
-			              <i class="fa fa-folder"></i> Add Collection
-
-
-					</a> 
-					<a role="button" href="#" class="btn btn-default" data-toggle="modal"
-						data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods"> <i
-						class="fa fa-cloud-upload"></i>Upload
-					</a>
-				</div>
-			</div>
-               
                <div class="col-xs-12">
    				<table class="table table-hover" id="treeViewTable">
    					<thead>
@@ -440,6 +420,7 @@
     		    "destroy": true,
     		    "stateSave": true,
     		    "autoWidth": false,
+    		    "processing": true,
     		    "stateSaveParams": function (settings, data) {
     		    	data.search.search = "";
     		    },
@@ -496,7 +477,8 @@
                     		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
                     	}, 
                     	"width": "10%",
-                    	"targets": 3
+                    	"targets": 3,
+                    	"orderable": false
                    	},
                     {
                     	"data": "modifiedAtFormatted", 

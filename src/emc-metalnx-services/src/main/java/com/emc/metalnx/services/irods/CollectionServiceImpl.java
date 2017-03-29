@@ -1274,8 +1274,9 @@ public class CollectionServiceImpl implements CollectionService {
         Map<Integer, String> datatableColumns = new HashMap<>();
         datatableColumns.put(0, "coll_name");
         datatableColumns.put(1, "coll_name");
-        datatableColumns.put(3, "coll_type");
+        datatableColumns.put(2, "coll_owner_name");
         datatableColumns.put(4, "modify_ts");
+        datatableColumns.put(5, "coll_type");
 
         return datatableColumns;
     }
