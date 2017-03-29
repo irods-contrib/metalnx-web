@@ -16,7 +16,7 @@
 <div class="breadcrumb-wrapper">
     <!-- History button -->
     <div class="btn-group history" xmlns:th="http://www.w3.org/1999/xhtml">
-      <button id="historyBtn" th:title="#{collections.history.button.tooltip}" type="button" class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button id="historyBtn" type="button" class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="caret"></span>
         <span class="sr-only">Toggle Dropdown</span>
       </button>
@@ -44,18 +44,27 @@
     <!-- Current Collections Table -->
         <div id="current-path">
             <ol class="breadcrumb">
-
-                <th:block th:if="${breadcrumb.items.size()} le 2" th:each="breadcrumbItem, eachLoop: ${breadcrumb.items}">
-                    <li>
-                        <a  href="#"
-                            th:text="${breadcrumbItem.name}"
-                            th:title="${breadcrumbItem.path}"
-                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
-                        >
-                        </a>
-                    </li>
+                <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+                    <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+                        <li>
+                            <a  href="#"
+                                th:text="${breadcrumbItem.name}"
+                                th:title="${breadcrumbItem.path}"
+                                th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
+                            >
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
+                        <li class="collections-view">
+                        <span th:if="${collectionAndDataObject.path != '/'}"
+                              th:text="${ collectionAndDataObject.name }"
+                              th:title="${ collectionAndDataObject.path }">
+                        </span>
+                        </li>
+                    </th:block>
                 </th:block>
-                <th:block th:if="${breadcrumb.items.size()} gt 2">
+                <th:block th:if="${breadcrumb.items.size()} gt 3">
                     <li>...</li>
                     <li class="hidden-sm hidden-xs hidden-md">
                         <a  href="#"
@@ -73,16 +82,13 @@
                         >
                         </a>
                     </li>
-                </th:block>
-
-
-                <li class="collections-view">
+                    <li class="collections-view">
                     <span th:if="${collectionAndDataObject.path != '/'}"
                           th:text="${ collectionAndDataObject.name }"
                           th:title="${ collectionAndDataObject.path }">
                     </span>
-                </li>
-
+                    </li>
+                </th:block>
             </ol>
         </div>
         <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
@@ -91,7 +97,7 @@
         <button href="#" class="pull-right btn btn-sm btn-default hidden" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
     </div>
         <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
-		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" th:title="#{collections.menu.options.tooltip}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-bars"></i>
 		</a>   
 		<ul class="dropdown-menu">
