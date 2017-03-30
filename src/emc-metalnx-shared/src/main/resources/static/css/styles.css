@@ -512,10 +512,28 @@ div.dataTables_wrapper.dt-bootstrap div.dataTables_paginate ul.pagination{
     border-bottom: 0 none;
 }
 div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing{
-	background-color: white;
-	color: dimgrey;
-	height: 75px;
+	position:absolute;
+    top:50%;
+    left:50%;
+    width:98%;
+    margin-left:-49%;
+    margin-top:-25px;
+    text-align:center;
+    font-size:1.2em;
+    color: dimgrey;
+    height: 75px;
+    background-color:white;
+    background:-webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(25%, rgba(255,255,255,0.9)), color-stop(75%, rgba(255,255,255,0.9)), color-stop(100%, rgba(255,255,255,0)));
+    background:-webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
+    background:-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
+    background:-ms-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
+    background:-o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
+    background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)
 }
+.dataTables_wrapper .minHeightForLoading{
+    min-height: 120px;
+}
+
 div.dataTables_wrapper .row .col-md-12:first-child > div{
 	background-color: #5faee5;
 	height: 50px;
