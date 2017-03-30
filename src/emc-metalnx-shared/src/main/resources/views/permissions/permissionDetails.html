@@ -15,40 +15,43 @@
   -->
 
 <div class="col-md-12" th:fragment="permissionDetails" xmlns:th="http://www.w3.org/1999/xhtml">
-    <th:block th:if="${collectionAndDataObject != null}">
-        <div class="row">
-            <h3 class="col-md-12 collection-details" th:text="#{permissions.page.title}"></h3>
-            <!-- name -->
-            <div class="col-md-4 col-sm-3 ">
-                <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-                <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
-                <span><b th:text="${ collectionAndDataObject.getName() }"></b></span>
-                <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
-            </div>
+    <div id="collections-content" class="panel property">
+        <th:block th:if="${collectionAndDataObject != null}">
 
-            <div class="col-md-8 col-sm-9 collLesserInfo">
-                <ul class="pull-right">
-                    <li>
-                        <label th:text="#{collections.management.table.owner.label}"></label>:
-                        <span th:text="${ collectionAndDataObject.getOwner() }"></span>
-                    </li>
-                    <li>
-                        <label th:text="#{collections.management.table.created.label}"></label>:
-                        <span th:text="${ collectionAndDataObject.getCreatedAtFormatted() }"></span>
-                    </li>
-                    <li>
-                        <label th:text="#{collections.management.table.modified.label}"></label>:
-                        <span th:text="${ collectionAndDataObject.getModifiedAtFormatted() }"></span>
-                    </li>
-                </ul>
+        <div class="row">
+
+                <h3 class="col-md-12 collection-details" th:text="#{permissions.page.title}"></h3>
+                <!-- name -->
+                <div class="col-md-4 col-sm-3 ">
+                    <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+                    <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+                    <span><b th:text="${ collectionAndDataObject.getName() }"></b></span>
+                    <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+                </div>
+
+                <div class="col-md-8 col-sm-9 collLesserInfo">
+                    <ul class="pull-right">
+                        <li>
+                            <label th:text="#{collections.management.table.owner.label}"></label>:
+                            <span th:text="${ collectionAndDataObject.getOwner() }"></span>
+                        </li>
+                        <li>
+                            <label th:text="#{collections.management.table.created.label}"></label>:
+                            <span th:text="${ collectionAndDataObject.getCreatedAtFormatted() }"></span>
+                        </li>
+                        <li>
+                            <label th:text="#{collections.management.table.modified.label}"></label>:
+                            <span th:text="${ collectionAndDataObject.getModifiedAtFormatted() }"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-12"><div class="col-md-12 collLesserInfo divider"></div></div>
             </div>
-            <div class="col-md-12"><div class="col-md-12 collLesserInfo divider"></div></div>
-        </div>
 
         <div class="row">
             <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                 <div th:if="${userCanModify}" class="btn-group pull-right" id="addPermissionButtonDiv">
-                    <button class="btn btn-primary btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-primary btn-property btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-plus"></i>  Permission  <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" th:if="${userCanModify}">
@@ -629,6 +632,7 @@
 
             /*]]>*/
         </script>
-    </th:block>
 
+    </th:block>
+    </div>
 </div>

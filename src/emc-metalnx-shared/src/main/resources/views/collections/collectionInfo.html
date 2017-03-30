@@ -66,7 +66,8 @@
         </div>
     </div>
 
-    <div class="col-md-12 col-sm-12" th:unless="${collectionAndDataObject == null}">
+    <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
+        <div id="collections-content" class="panel property">
         <h3 class="collection-details">Info</h3>
         <!-- name -->
         <div class="collLesserInfo divider">
@@ -124,8 +125,8 @@
                 </tbody>
             </table>
         </div>
+        </div>
     </div>
-
     <script>
 		function displayDeleteReplicaModal(path, fileName, replicaNumber) {
 			$('#deleteReplicaPath').val(path);
@@ -145,5 +146,9 @@
 			$('.modal-backdrop.fade.in').remove();
 			ajaxEncapsulation("/emc-metalnx-web/fileOperation/deleteReplica/", "POST", {path: path, fileName: fileName, replicaNumber: replicaNumber}, displayInfoDetails, null, null, null);
 		}
+		$(document).ready(function(){
+           $("#collection-content").removeClass("collections-table");
+            $("#collection-content").addClass("property");
+        });
     </script>
 </th:block>

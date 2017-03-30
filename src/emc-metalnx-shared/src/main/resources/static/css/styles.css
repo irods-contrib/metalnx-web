@@ -1038,6 +1038,18 @@ a.page-hint {
 	margin-top:30px;	
 }
 
+.property{
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    border: solid 1px #f3f3f3;
+    border-color: #CBDFF7;
+}
+
+.btn-property{
+    margin-bottom: 10px;
+}
+
 #tree-view-panel-body a,
 #tree-view-panel-body a:hover,
 #tree-view-panel-body a:ACTIVE {

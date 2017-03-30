@@ -315,50 +315,48 @@
 		</div>
 	</div>
 
-	<div class="panel">
-		<div class="row browse-collection-files-content">
-		
-			<div id="table-loader" class="table-loader col-sm-12 hideElement">
-				<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-				<p class="text-center" th:text="#{loading.table.label}"></p>
-			</div>
-			<div class="col-xs-6 hidden">
-                   <a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right hideElement" data-toggle="modal" data-target="#emptyTrashModal">
-                       <span class="glyphicon glyphicon-trash"></span>
-                       <span th:text="#{empty.trash.label}"></span> 
-                   </a>
-				<div th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload" class="pull-right">
-					<a role="button" href="#" class="btn btn-default" data-toggle="modal"
-						data-target="#addAndModifyModal" id="showCollectionFormBtn"
-						style="margin-left: 10px" th:title="#{collections.management.add.button}">
+    <div class="row browse-collection-files-content">
 
-			              <i class="fa fa-folder"></i> Add Collection
+        <div id="table-loader" class="table-loader col-sm-12 hideElement">
+            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+            <p class="text-center" th:text="#{loading.table.label}"></p>
+        </div>
+        <div class="col-xs-6 hidden">
+               <a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right hideElement" data-toggle="modal" data-target="#emptyTrashModal">
+                   <span class="glyphicon glyphicon-trash"></span>
+                   <span th:text="#{empty.trash.label}"></span>
+               </a>
+            <div th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload" class="pull-right">
+                <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+                    data-target="#addAndModifyModal" id="showCollectionFormBtn"
+                    style="margin-left: 10px" th:title="#{collections.management.add.button}">
+
+                      <i class="fa fa-folder"></i> Add Collection
 
 
-					</a> 
-					<a role="button" href="#" class="btn btn-default" data-toggle="modal"
-						data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods"> <i
-						class="fa fa-cloud-upload"></i>Upload
-					</a>
-				</div>
-			</div>
-               
-               <div class="col-xs-12">
-   				<table class="table table-hover" id="treeViewTable">
-   					<thead>
-   						<tr>
-   							<th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
-   							<th th:text="#{collections.management.table.collection.name.label}"></th>
-   							<th th:text="#{collections.management.table.owner.label}"></th>
-   							<th th:text="#{collections.management.table.kind.label}"></th>
-   							<th th:text="#{collections.management.table.modified.label}"></th>
-   							<th th:text="#{collections.management.table.size.label}"></th>
-   						</tr>
-   					</thead>
-   				</table>
-               </div>
-		</div>
-	</div>
+                </a>
+                <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+                    data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods"> <i
+                    class="fa fa-cloud-upload"></i>Upload
+                </a>
+            </div>
+        </div>
+
+           <div class="col-xs-12">
+            <table class="table table-hover" id="treeViewTable">
+                <thead>
+                    <tr>
+                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
+                        <th th:text="#{collections.management.table.collection.name.label}"></th>
+                        <th th:text="#{collections.management.table.owner.label}"></th>
+                        <th th:text="#{collections.management.table.kind.label}"></th>
+                        <th th:text="#{collections.management.table.modified.label}"></th>
+                        <th th:text="#{collections.management.table.size.label}"></th>
+                    </tr>
+                </thead>
+            </table>
+           </div>
+    </div>
 </div>
 
 <!-- Some items were not deleted -->
@@ -730,7 +728,10 @@
         function getPermDetails(path){
             $('#table-loader').nextAll().remove();
         	$('#table-loader').show();
-        	$("#actionUpload").hide();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
         	
         	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
@@ -750,16 +751,23 @@
         function getInfoDetails(path){
         	$("#table-loader").show();
         	$("#table-loader").nextAll().remove();
-            $("#actionUpload").hide();
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	var url = "/emc-metalnx-web/collections/info/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
+
         }
 
         function getMetadata(path){
         	$('#table-loader').show();
         	$('#table-loader').nextAll().remove();
-        	$("#actionUpload").hide();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	getBreadcrumb(path);
         	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}
@@ -767,13 +775,19 @@
         function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
-			$("#actionUpload").hide();
+			$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
 		}
         
         function displayPermDetails(data){
             $('#table-loader').hide();
             $("#table-loader").after(data);
-            $("#actionUpload").hide();
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         }
         
         $('a[data-target="#uploadModal"]').click(function(){
