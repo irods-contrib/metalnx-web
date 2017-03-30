@@ -1129,6 +1129,10 @@ a.page-hint {
 
 #panelRemoval{
     margin-top:10px;
+    width: 100%;
+}
+#panelRemoval .progress{
+    height: 30px;
 }
 
 div.dataTables_wrapper .dataTables_length select{
@@ -1769,12 +1773,16 @@ form.registerForm > .pull-right > .btn{
 
 /* Medium devices and up */
 @media ( min-width : 1001px) {
-	#actionApplyTemplates, #actionRemoval, #actionDownload {
+	#actionApplyTemplates, #actionDownload {
 		width: 350px;
 	}
 
     #directoryPath{
         padding-right:0;
+    }
+
+    #actionRemoval{
+        width: 270px;
     }
 }
 
