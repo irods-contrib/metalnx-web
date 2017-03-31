@@ -25,7 +25,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="addMetadataModalLabel">Add Metadata</h4>
+                            <h4 class="modal-title" id="addMetadataModalLabel"><span th:text="#{metadata.modal.add.title}"></span></h4>
                         </div>
                         <div class="modal-body">
                             <form id="editMetadataForm">
@@ -34,26 +34,26 @@
                                 <input type="hidden" name="oldValue" id="oldValModal" />
                                 <input type="hidden" name="oldUnit" id="oldUnitModal" />
                                 <div class="form-group ">
-                                    <label class="" >Attribute</label>
+                                    <label class="" th:text="#{metadata.modal.add.label.attribute}"></label>
                                     <input type="text" class="form-control" placeholder="New Attribute" id="newAttrModal" />
                                     <i class="emptyAttrMetadata form-control-feedback glyphicon glyphicon-remove hideElement" id=""></i>
                                     <small class="emptyAttrMetadata help-block hideElement" id="" th:text="#{collections.management.add.metadata.modal.empty.attribute}"></small>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="" >Value</label>
+                                    <label class="" th:text="#{metadata.modal.add.label.value}"></label>
                                     <input type="text" class="form-control" placeholder="New Value" id="newValModal" />
                                     <i class="emptyValMetadata form-control-feedback glyphicon glyphicon-remove hideElement" id=""></i>
                                     <small class="emptyValMetadata help-block hideElement" id="" th:text="#{collections.management.add.metadata.modal.empty.value}"></small>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="" >Unit</label>
+                                    <label class="" th:text="#{metadata.modal.add.label.unit}"></label>
                                     <input type="text" class="form-control" placeholder="New Unit" id="newUnitModal" />
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="saveMetadata();" id="saveMetadata">Save changes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{metadata.modal.add.btn.cancel}"></button>
+                            <button type="button" class="btn btn-primary" onclick="saveMetadata();" id="saveMetadata" th:text="#{metadata.modal.add.btn.save}"></button>
                         </div>
                     </div>
                 </div>
@@ -67,19 +67,19 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="deleteMetadataModalLabel">Delete Metadata</h4>
+                            <h4 class="modal-title" id="deleteMetadataModalLabel" th:text="#{metadata.modal.delete.title}"></h4>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" id="deleteOneAVU" />
                             <input type="hidden" id="deleteMetadataAttribute" />
                             <input type="hidden" id="deleteMetadataValue" />
                             <input type="hidden" id="deleteMetadataUnit" />
-                            <p>Delete operation cannot be undone. Once a Metadata is deleted, it cannot be recovered.</p>
-                            <p>Are you really sure you want to perform this operation?</p>
+                            <p th:text="#{metadata.modal.delete.msg.info}"></p>
+                            <p th:text="#{metadata.modal.delete.msg.confirm}"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="deleteMetadataList();">Delete</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{metadata.modal.delete.btn.cancel}"></button>
+                            <button type="button" class="btn btn-primary" onclick="deleteMetadataList();" th:text="#{metadata.modal.delete.btn.delete}"></button>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata already exists.</p>
+                <p th:text="#{metadata.modal.feedback.msg.duplicated}"></p>
             </div>
 
             <!-- Metadata added -->
@@ -98,7 +98,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata successfully added.</p>
+                <p th:text="#{metadata.modal.feedback.msg.added}"></p>
             </div>
 
             <!-- Metadata editing failed -->
@@ -106,7 +106,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata editing failed.</p>
+                <p th:text="#{metadata.modal.feedback.msg.edit.failed}"></p>
             </div>
 
             <!-- Metadata successfully modified -->
@@ -114,7 +114,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata successfully modified.</p>
+                <p th:text="#{metadata.modal.feedback.msg.edited}"></p>
             </div>
 
             <!-- Metadata deletion failed -->
@@ -122,7 +122,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata could not be removed.</p>
+                <p th:text="#{metadata.modal.feedback.msg.remove.failed}"></p>
             </div>
 
             <!-- Metadata successfully deleted -->
@@ -130,37 +130,12 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <p>Metadata successfully removed.</p>
+                <p th:text="#{metadata.modal.feedback.msg.removed}"></p>
             </div>
 
             <div class="row">
 
-                    <h3 class="col-md-12 collection-details">Metadata</h3>
-
-                    <!-- name -->
-                    <div class="col-md-4 col-sm-3 collLesserInfo">
-                        <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-                        <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
-                        <span><b th:text="${ collectionAndDataObject.getName() }"></b></span>
-                        <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
-                    </div>
-
-                    <div class="col-md-8 col-sm-9 collLesserInfo">
-                        <ul class="pull-right">
-                            <li>
-                                <label th:text="#{collections.management.table.owner.label}"></label>:
-                                <span th:text="${ collectionAndDataObject.getOwner() }"></span>
-                            </li>
-                            <li>
-                                <label th:text="#{collections.management.table.created.label}"></label>:
-                                <span th:text="${ collectionAndDataObject.getCreatedAtFormatted() }"></span>
-                            </li>
-                            <li>
-                                <label th:text="#{collections.management.table.modified.label}"></label>:
-                                <span th:text="${ collectionAndDataObject.getModifiedAtFormatted() }"></span>
-                            </li>
-                        </ul>
-                    </div>
+                    <h4 class="property-title"><i class="fa fa-tags"></i><span th:text="#{metadata.tab.title}"></span></h4>
                     <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
             </div>
 
@@ -171,18 +146,18 @@
                         id="addMetadataBtn" class="btn btn-primary btn-sm btn-property"
                         th:onclick="'javascript:addMetadataModal(\'' + ${currentPath} +'\');'"
                         href="#" style="">
-                            <i class="fa fa-plus"></i> Metadata
+                            <i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
                     </button>
                     <button
                         th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"
                         id="delMetadataBtn" class="btn btn-default btn-sm btn-property"
                         href="#">
-                            <i class="fa fa-trash-o"></i> Delete selected
+                            <i class="fa fa-trash-o"></i> <span th:text="#{metadata.tab.btn.delete}"></span>
                     </button>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-3">
                     <button id="exportMetadataToCSV" class="btn btn-primary btn-property btn-sm pull-right" href="#" style="">
-                        <i class="fa fa-external-link"></i> CSV
+                        <i class="fa fa-external-link"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
                     </button>
                 </div>
             </div>
@@ -193,10 +168,11 @@
                         <tr>
                             <th class="tableCheckBoxCol" th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
                                 <input type="checkbox" id="checkAllMetadata" /></th>
-                            <th>Attribute</th>
-                            <th>Value</th>
-                            <th>Unit</th>
-                            <th th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">Actions</th>
+                            <th><span th:text="#{metadata.table.header.attribute}"></span></th>
+                            <th><span th:text="#{metadata.table.header.value}"></span></th>
+                            <th><span th:text="#{metadata.table.header.unit}"></span></th>
+                            <th th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
+                                <span th:text="#{metadata.table.header.actions}"></span></th>
                         </tr>
                     </thead>
                     <tbody>

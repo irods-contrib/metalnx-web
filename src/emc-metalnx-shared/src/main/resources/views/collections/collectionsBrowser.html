@@ -16,13 +16,14 @@
 
 <!-- Invalid path provided -->
 <div class="col-xs-12" id="invalidPathErrorMsg">
-	<div class="alert alert-danger" role="alert"
-		th:if="${invalidPath != null}">
-		<p class="text-center">
-			<b th:text="${invalidPath}"></b> does not exist or user lacks access permission.
-		</p>
-	</div>
+    <div class="alert alert-danger" role="alert"
+         th:if="${invalidPath != null}">
+        <p class="text-center">
+            <b th:text="${invalidPath}"></b> does not exist or user lacks access permission.
+        </p>
+    </div>
 </div>
+
 
 <!-- Invalid number of steps in history stack -->
 <div class="col-xs-12">
@@ -289,13 +290,10 @@
 	<!-- Apply templates activity indicator -->
 	<div id="actionApplyTemplates" class="col-xs-12 hideElement">
 		<div id="panelApplyTemplates">
-			<div style="float: left">
-				<span style="text-align: right">Applying templates...</span>
-			</div>
 			<div class="progress">
 				<div class="progress-bar progress-bar-striped active"
 					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"></div>
+					aria-valuemax="100" style="width: 100%"><span th:text="#{collections.management.progress.label.apply.template}"></span></div>
 			</div>
 		</div>
 	</div>
@@ -303,23 +301,20 @@
 	<!-- Download activity indicator -->
 	<div id="actionDownload" class="col-xs-12 hideElement">
 		<div id="panelDownload">
-			<div style="float: left">
-				<span style="text-align: right">Preparing files for
-					download...</span>
-			</div>
 			<div class="progress">
 				<div class="progress-bar progress-bar-striped active"
 					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"></div>
+					aria-valuemax="100" style="width: 100%"> <span th:text="#{collections.management.progress.label.download}"></span>
+                    </div>
 			</div>
 		</div>
 	</div>
-
     <div class="row browse-collection-files-content">
-
         <div id="table-loader" class="table-loader col-sm-12 hideElement">
-            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-            <p class="text-center" th:text="#{loading.table.label}"></p>
+            <div class="panel loading">
+                <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+                <p class="text-center" th:text="#{loading.table.label}"></p>
+            </div>
         </div>
         <div class="col-xs-6 hidden">
                <a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right hideElement" data-toggle="modal" data-target="#emptyTrashModal">
@@ -331,13 +326,13 @@
                     data-target="#addAndModifyModal" id="showCollectionFormBtn"
                     style="margin-left: 10px" th:title="#{collections.management.add.button}">
 
-                      <i class="fa fa-folder"></i> Add Collection
+                      <i class="fa fa-folder"></i> <span th:text="#{collections.management.btn.action.add.collection}"></span>
 
 
                 </a>
                 <a role="button" href="#" class="btn btn-default" data-toggle="modal"
                     data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods"> <i
-                    class="fa fa-cloud-upload"></i>Upload
+                    class="fa fa-cloud-upload"></i><span th:text="#{collections.management.btn.action.upload}"></span>
                 </a>
             </div>
         </div>
@@ -362,7 +357,7 @@
 <!-- Some items were not deleted -->
 <div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
     <div class="text-center" role="alert">
-        <span>You do not have permissions to access information in the target collection or for the selected object.</span>
+        <span th:text="#{collections.management.msg.access.denied}"></span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#" onclick="javascript:goBackHistory('1');">
             <span>Back</span>
