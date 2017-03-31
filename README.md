@@ -36,6 +36,6 @@ Metalnx is available in a Docker container that automates the deployment of the 
 
 ## License
 
-Copyright © 2015-2017, Dell Inc.
+Copyright © 2015-2017, Dell EMC.
 
 This software is provided under the Software license provided in the <a href="LICENSE.md"> LICENSE </a> file.
