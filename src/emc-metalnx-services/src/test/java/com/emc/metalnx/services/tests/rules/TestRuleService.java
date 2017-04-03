@@ -21,10 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridRule;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleService;
+import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.irods.RuleServiceImpl;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
@@ -77,6 +74,9 @@ public class TestRuleService {
     @Mock
     private IRODSServices irodsServices;
 
+    @Mock
+    private ConfigService configService;
+
     @PostConstruct
     public void init() {
         msiVersion = "1.1.0";
@@ -88,9 +88,8 @@ public class TestRuleService {
 
         MockitoAnnotations.initMocks(this);
 
-        ReflectionTestUtils.setField(ruleService, "iCATHost", "icat.test.com");
-        ReflectionTestUtils.setField(ruleService, "illuminaMsiEnabled", true);
-        ReflectionTestUtils.setField(ruleService, "msiAPIVersion", msiVersion);
+        when(configService.getIrodsHost()).thenReturn("icat.test.com");
+        when(configService.getMsiAPIVersionSupported()).thenReturn(msiVersion);
 
         DataGridResource resc = new DataGridResource(1, "demoResc", "zone", "unixfilesystem", "/test/resc/path");
         resc.setHost("icat.test.com");
