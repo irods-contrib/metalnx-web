@@ -87,4 +87,10 @@ public interface ConfigService {
      * @return String representing the authentication scheme.
      */
     String getIrodsAuthScheme();
+
+    /**
+     * Checks whether or not the populate MSI flag is enabled
+     * @return True, if populate is enabled. False, otherwise.
+     */
+    boolean isPopulateMsiEnabled();
 }

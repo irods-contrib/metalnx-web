@@ -69,6 +69,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${jobs.irods.auth.scheme}")
     private String irodsAuthScheme;
 
+    @Value("${populate.msi.enabled}")
+    private boolean populateMsiEnabled;
+
     public String getMsiAPIVersionSupported() {
         if (msiAPIVersionSupported == null) return "";
         return msiAPIVersionSupported;
@@ -117,4 +120,6 @@ public class ConfigServiceImpl implements ConfigService {
     public String getIrodsAuthScheme() {
         return irodsAuthScheme;
     }
+
+    public boolean isPopulateMsiEnabled() { return populateMsiEnabled; }
 }
