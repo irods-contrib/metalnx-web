@@ -22,13 +22,33 @@ import java.util.List;
  * Service used to retrieve all configurable parameters from *.properties files.
  */
 public interface ConfigService {
+    /**
+     * Finds the MSI API version supported by the current version of Metalnx.
+     * @return string representing the version
+     */
     String getMsiAPIVersionSupported();
 
+    /**
+     * Finds the list of all expected Metalnx microservices.
+     * @return list of all Metalnx microservices.
+     */
     List<String> getMlxMSIsExpected();
 
+    /**
+     * Finds the list of all expected iRODS 4.1.X microservices.
+     * @return list of all iRODS 4.1.X microservices.
+     */
     List<String> getIrods41MSIsExpected();
 
+    /**
+     * Finds the list of all expected irods 4.2.X microservices.
+     * @return list of all irods 4.2.X microservices.
+     */
     List<String> getIrods42MSIsExpected();
 
+    /**
+     * Finds the list of all third-party microservices.
+     * @return list of all third-party microservices.
+     */
     List<String> getOtherMSIsExpected();
 }
