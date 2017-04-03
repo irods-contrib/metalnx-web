@@ -10,7 +10,7 @@ Revision 1.0
 
 ----------------------------------
 
-Copyright © 2015-2017 Dell Inc.
+Copyright © 2015-2017 Dell EMC.
 
 This software is provided under the Software license provided in the <a href="LICENSE"> LICENSE </a> file.
 
