@@ -32,7 +32,6 @@ import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,9 +43,6 @@ public class SpecificQueryServiceImpl implements SpecificQueryService {
 	@Autowired
 	private IRODSServices irodsServices;
 	
-	@Value("${irods.zoneName}")
-	private String irodsZoneName;
-
 	private static final Logger logger = LoggerFactory.getLogger(SpecificQueryServiceImpl.class);
 	
 	private final DataGridSpecificQuery createDataGridSpecificQuery(SpecificQueryDefinition specificQueryFromIrods) {
