@@ -22,10 +22,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MSIService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleService;
+import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.irods.MSIServiceImpl;
 import com.emc.metalnx.services.tests.msi.MSIUtils;
 import org.irods.jargon.core.exception.JargonException;
@@ -38,7 +35,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -58,6 +54,7 @@ import static org.mockito.Mockito.when;
 @WebAppConfiguration
 public class TestPluginService {
 
+    public static final String DELIMITER = ",";
     @InjectMocks
     private MSIService msiService = new MSIServiceImpl();
 
@@ -69,6 +66,9 @@ public class TestPluginService {
 
     @Mock
     private IRODSServices irodsServices;
+
+    @Mock
+    private ConfigService mockConfigService;
 
     private static String msiVersion;
     private List<String> msiList, mlxMSIList, irods41XMSIs, irods42MSIs, otherMSIList;
@@ -107,14 +107,15 @@ public class TestPluginService {
         servers.add(s1);
         servers.add(s2);
 
-        ReflectionTestUtils.setField(msiService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(msiService, "mlxMSIsExpected", mlxMSIList);
-        ReflectionTestUtils.setField(msiService, "irods41MSIsExpected", irods41XMSIs);
-        ReflectionTestUtils.setField(msiService, "irods42MSIsExpected", irods42MSIs);
-
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msiList);
+
+        when(mockConfigService.getMlxMSIsExpected()).thenReturn(mlxMSIList);
+        when(mockConfigService.getIrods41MSIsExpected()).thenReturn(irods41XMSIs);
+        when(mockConfigService.getIrods42MSIsExpected()).thenReturn(irods42MSIs);
+        when(mockConfigService.getOtherMSIsExpected()).thenReturn(otherMSIList);
+        when(mockConfigService.getMsiAPIVersionSupported()).thenReturn(msiVersion);
     }
 
     @Test

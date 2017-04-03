@@ -26,7 +26,6 @@ import com.emc.metalnx.services.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -54,26 +53,14 @@ public class MSIServiceImpl implements MSIService {
     @Autowired
     private IRODSServices irodsServices;
 
-    @Value("${msi.api.version}")
-    private String msiAPIVersionSupported;
-
-    @Value("#{'${msi.metalnx.list}'.split(',')}")
-    private List<String> mlxMSIsExpected;
-
-    @Value("#{'${msi.irods.list}'.split(',')}")
-    private List<String> irods41MSIsExpected;
-
-    @Value("#{'${msi.irods.42.list}'.split(',')}")
-    private List<String> irods42MSIsExpected;
-
-    @Value("#{'${msi.other.list}'.split(',')}")
-    private List<String> otherMSIsExpected;
+    @Autowired
+    private ConfigService configService;
 
     private List<DataGridServer> servers = new ArrayList<>();
 
     @Override
     public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), msiAPIVersionSupported);
+        return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), configService.getMsiAPIVersionSupported());
     }
 
     @Override
@@ -91,11 +78,11 @@ public class MSIServiceImpl implements MSIService {
 
     @Override
     public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
-        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? irods42MSIsExpected : irods41MSIsExpected;
+        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? configService.getIrods42MSIsExpected() : configService.getIrods41MSIsExpected();
 
-        server.setMetalnxExpectedMSIs(mlxMSIsExpected);
+        server.setMetalnxExpectedMSIs(configService.getMlxMSIsExpected());
         server.setIRodsExpectedMSIs(irodsMSIs);
-        server.setOtherExpectedMSIs(otherMSIsExpected);
+        server.setOtherExpectedMSIs(configService.getOtherMSIsExpected());
 
         try {
             server.setMSIVersion(ruleService.execGetVersionRule(server.getHostname()));
@@ -128,7 +115,7 @@ public class MSIServiceImpl implements MSIService {
             if(server != null) break;
         }
 
-        String apiVersionSupported = DataGridCoreUtils.getAPIVersion(msiAPIVersionSupported);
+        String apiVersionSupported = DataGridCoreUtils.getAPIVersion(configService.getMsiAPIVersionSupported());
         String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
         return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
     }
