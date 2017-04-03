@@ -26,7 +26,7 @@
 	<import resource="classpath:META-INF/emc-metalnx-ui-admin/emc-metalnx-ui-admin-context.xml" />
 
 	<bean class="com.emc.metalnx.context.EncodedPropertiesConfigurer">
-		<property name="ignoreUnresolvablePlaceholders" value="false" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="locations">
 			<list merge="true">
 				<value>classpath:irods.environment.properties</value>
