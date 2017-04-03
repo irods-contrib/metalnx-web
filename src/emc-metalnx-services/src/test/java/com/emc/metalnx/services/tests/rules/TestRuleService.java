@@ -35,7 +35,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -235,8 +234,7 @@ public class TestRuleService {
 
     @Test
     public void testPopulateMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ReflectionTestUtils.setField(ruleService, "populateMsiEnabled", true);
-
+        when(configService.isPopulateMsiEnabled()).thenReturn(true);
         ruleService.execPopulateMetadataRule("demoResc", "/testZone/home/rods");
 
         verify(resourceService, times(1)).find(anyString());
