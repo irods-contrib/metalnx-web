@@ -51,4 +51,40 @@ public interface ConfigService {
      * @return list of all third-party microservices.
      */
     List<String> getOtherMSIsExpected();
+
+    /**
+     * Find the iCAT hostname.
+     * @return String representing the iCAT machine's hostname.
+     */
+    String getIrodsHost();
+
+    /**
+     * Find the irods port number.
+     * @return String representing irods port number.
+     */
+    String getIrodsPort();
+
+    /**
+     * Find the irods default zone.
+     * @return String representing the irods default zone.
+     */
+    String getIrodsZone();
+
+    /**
+     * Find the jobs username.
+     * @return String representing the username used for synchronizing Metalnx and iRODS.
+     */
+    String getIrodsJobUser();
+
+    /**
+     * Find the jobs password.
+     * @return String representing the password used for synchronizing Metalnx and iRODS.
+     */
+    String getIrodsJobPassword();
+
+    /**
+     * Find the authentication scheme used for authenticating against iRODS.
+     * @return String representing the authentication scheme.
+     */
+    String getIrodsAuthScheme();
 }

@@ -51,6 +51,24 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${msi.other.list}")
     private String otherMSIsExpected;
 
+    @Value("${irods.host}")
+    private String irodsHost;
+
+    @Value("${irods.port}")
+    private String irodsPort;
+
+    @Value("${irods.zoneName}")
+    private String irodsZone;
+
+    @Value("${jobs.irods.username}")
+    private String irodsJobUser;
+
+    @Value("${jobs.irods.password}")
+    private String irodsJobPassword;
+
+    @Value("${jobs.irods.auth.scheme}")
+    private String irodsAuthScheme;
+
     public String getMsiAPIVersionSupported() {
         if (msiAPIVersionSupported == null) return "";
         return msiAPIVersionSupported;
@@ -74,5 +92,29 @@ public class ConfigServiceImpl implements ConfigService {
     public List<String> getOtherMSIsExpected() {
         if (otherMSIsExpected == null) return Collections.emptyList();
         return Arrays.asList(otherMSIsExpected.split(","));
+    }
+
+    public String getIrodsHost() {
+        return irodsHost;
+    }
+
+    public String getIrodsPort() {
+        return irodsPort;
+    }
+
+    public String getIrodsZone() {
+        return irodsZone;
+    }
+
+    public String getIrodsJobUser() {
+        return irodsJobUser;
+    }
+
+    public String getIrodsJobPassword() {
+        return irodsJobPassword;
+    }
+
+    public String getIrodsAuthScheme() {
+        return irodsAuthScheme;
     }
 }
