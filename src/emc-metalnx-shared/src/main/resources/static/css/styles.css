@@ -744,8 +744,8 @@ div.header-line
 	color: #656363;
 }
 .collLesserInfo.divider{
-	border-bottom: 1px dotted #428bca;
-	margin:0px 0 15px 0;
+	border-bottom: 1px dotted #CBDFF7;
+	margin:0 5px 15px 0;
 }
 .collLesserInfo > ul li{
 	display: inline;
@@ -1056,7 +1056,7 @@ a.page-hint {
 .property-title {
     color: #428bca;
     float:left;
-    margin-left: 10px;
+    margin-left: 20px;
     margin-right: 5px;
 }
 
@@ -1141,10 +1141,29 @@ a.page-hint {
 	margin-top:3px;
 }
 
-.btn-default.disabled{
+.panel-info{
+    padding: 15px;
+    background-color: #f2f6f9;
+    border-radius: 5px;
+}
+
+.panel-info span{
+    word-break: break-all;
+}
+
+.panel-info > .name {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-default.disabled,
+.btn-default[disabled]{
     background-color: #fff;
     color: #cbdff7;
     border: solid 1px #cbdff7;
+}
+.btn-default.disabled > i{
+    opacity: 1 !important;
 }
 
 #panelRemoval{

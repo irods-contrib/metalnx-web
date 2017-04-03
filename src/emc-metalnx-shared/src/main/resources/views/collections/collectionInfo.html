@@ -70,31 +70,37 @@
 
     <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
         <div id="collections-content" class="panel property">
-            <h4 class="property-title"><i class="fa fa-info-circle"></i>Info</h4>
-            <!-- name -->
-            <div class="collLesserInfo divider">
-                <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-                <i th:unless="${collectionAndDataObject.isCollection()}"
-                   th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
-                <span><b th:text="${ currentCollection.getName() }"></b></span>
-                <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+            <div class="row">
+                <h4 class="property-title"><i class="fa fa-info-circle"></i>Info</h4>
+                <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
+            </div>
+            <div class="panel-info">
+                <div class="name">
+                    <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+                    <i th:unless="${collectionAndDataObject.isCollection()}"
+                       th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+                    <span><b th:text="${ currentCollection.getName() }"></b></span>
+                    <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.owner.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.created.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getCreatedAtFormatted() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.modified.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getModifiedAtFormatted() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label>Checksum</label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getChecksum() }"></span></div>
+                </div>
             </div>
 
-            <div id="replicaAndChecksumInfo" th:if="${!currentCollection.isCollection()}">
-                <p>
-                    <label th:text="#{collections.management.table.owner.label}"></label>:
-                    <span th:text="${ currentCollection.getOwner() }"></span><br/>
-
-                    <label th:text="#{collections.management.table.created.label}"></label>:
-                    <span th:text="${ currentCollection.getCreatedAtFormatted() }"></span><br/>
-
-                    <label th:text="#{collections.management.table.modified.label}"></label>:
-                    <span th:text="${ currentCollection.getModifiedAtFormatted() }"></span><br/>
-
-                    <label>Checksum</label>:
-                    <span th:text="${ currentCollection.getChecksum() }"></span>
-                </p>
-
+            <div id="replicaAndChecksumInfo" class="hidden" th:if="${!currentCollection.isCollection()}">
                 <table class="table table-hover">
                     <thead>
                     <tr>
