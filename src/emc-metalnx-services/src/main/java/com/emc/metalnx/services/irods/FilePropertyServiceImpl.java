@@ -21,10 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.FilePropertyService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.SpecQueryService;
-import com.emc.metalnx.services.interfaces.UserService;
+import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.CollectionAO;
@@ -34,7 +31,6 @@ import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -57,8 +53,8 @@ public class FilePropertyServiceImpl implements FilePropertyService {
     @Autowired
     SpecQueryService specQueryService;
 
-    @Value("${irods.zoneName}")
-    private String zoneName;
+    @Autowired
+    private ConfigService configService;
 
     private static final Logger logger = LoggerFactory.getLogger(FilePropertyServiceImpl.class);
 
@@ -194,7 +190,7 @@ public class FilePropertyServiceImpl implements FilePropertyService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
 
-        return userService.findByUsernameAndAdditionalInfo(username, zoneName);
+        return userService.findByUsernameAndAdditionalInfo(username, configService.getIrodsZone());
     }
 
 }
