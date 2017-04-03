@@ -31,7 +31,6 @@ import org.irods.jargon.core.pub.domain.UserGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,8 +55,8 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     GroupDao groupDao;
 
-    @Value("${irods.zoneName}")
-    private String zoneName;
+    @Autowired
+    private ConfigService configService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -129,13 +128,13 @@ public class GroupServiceImpl implements GroupService {
 
         try {
 
-            DataGridGroup group = groupDao.findByGroupnameAndZone(groupname, zoneName);
+            DataGridGroup group = groupDao.findByGroupnameAndZone(groupname, configService.getIrodsZone());
 
             // remove group from the data grid
             groupAO.removeUserGroup(groupname);
 
             // Removing group bookmarks associated to this group
-            userBookmarkService.removeBookmarkBasedOnPath(String.format("/%s/home/%s", zoneName, groupname));
+            userBookmarkService.removeBookmarkBasedOnPath(String.format("/%s/home/%s", configService.getIrodsZone(), groupname));
             groupBookmarkService.removeBookmarkBasedOnGroup(group);
 
             // remove user from the Mlx database
@@ -392,7 +391,7 @@ public class GroupServiceImpl implements GroupService {
             return "";
         }
 
-        return String.format("/%s/home/%s", zoneName, groupName);
+        return String.format("/%s/home/%s", configService.getIrodsZone(), groupName);
     }
 
 }
