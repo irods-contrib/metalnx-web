@@ -46,7 +46,7 @@
             <ol class="breadcrumb">
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
-                        <li>
+                        <li class="hidden-xs hidden-sm">
                             <a  href="#"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
@@ -91,6 +91,20 @@
                 </th:block>
             </ol>
         </div>
+        <div id="current-path-property" class="hidden">
+            <ol class="breadcrumb info">
+                <th:block th:if="${collectionAndDataObject.isCollection()}">
+                    <li>
+                        <a class="collection" href="#">
+                            <span th:if="${collectionAndDataObject.path != '/'}"
+                                  th:text="${ collectionAndDataObject.name }"
+                                  th:title="${ collectionAndDataObject.path }">
+                            </span>
+                        </a>
+                    </li>
+                </th:block>
+            </ol>
+        </div>
         <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
         </div>
         <button href="#" class="pull-right btn btn-sm btn-primary hidden" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
@@ -101,18 +115,18 @@
 			<i class="fa fa-bars"></i>
 		</a>   
 		<ul class="dropdown-menu">
-		    <li>
-		        <a href="#" th:onclick="'javascript:getSubDirectories(\'' + ${collectionAndDataObject.path} + '\');'">
-			        <th:block th:if="${collectionAndDataObject.isCollection()}">
-			            <span><i class="fa fa-folder"></i></span>
-			            <span title="Browse collection">Browse</span>
-		            </th:block>
-			        <th:block th:unless="${collectionAndDataObject.isCollection()}">
-			            <span><i class="fa fa-info-circle"></i></span>
-			            <span title="File information">Info</span>
-		            </th:block>
-		        </a>
-		    </li>
+            <li>
+                <a href="#" th:onclick="'javascript:getSubDirectories(\'' + ${collectionAndDataObject.path} + '\');'">
+                    <th:block th:if="${collectionAndDataObject.isCollection()}">
+                        <span><i class="fa fa-folder"></i></span>
+                        <span title="Browse collection">Browse</span>
+                    </th:block>
+                    <th:block th:unless="${collectionAndDataObject.isCollection()}">
+                        <span><i class="fa fa-info-circle"></i></span>
+                        <span title="File information">Info</span>
+                    </th:block>
+                </a>
+            </li>
 		    <li>
 		        <a href="#" th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
 		            <span><i class="fa fa-tags"></i></span>
@@ -164,7 +178,7 @@
    			trigger: 'hover',
        		placement: 'top',
        		container: 'body'
-   		}); 
+   		});
     });
     
 	$(document).click(function(e){

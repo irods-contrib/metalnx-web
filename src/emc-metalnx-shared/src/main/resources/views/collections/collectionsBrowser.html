@@ -289,13 +289,10 @@
 	<!-- Apply templates activity indicator -->
 	<div id="actionApplyTemplates" class="col-xs-12 hideElement">
 		<div id="panelApplyTemplates">
-			<div style="float: left">
-				<span style="text-align: right">Applying templates...</span>
-			</div>
 			<div class="progress">
 				<div class="progress-bar progress-bar-striped active"
 					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"></div>
+					aria-valuemax="100" style="width: 100%"><span th:text="#{collections.management.progress.label.apply.template}"></span></div>
 			</div>
 		</div>
 	</div>
@@ -303,48 +300,42 @@
 	<!-- Download activity indicator -->
 	<div id="actionDownload" class="col-xs-12 hideElement">
 		<div id="panelDownload">
-			<div style="float: left">
-				<span style="text-align: right">Preparing files for
-					download...</span>
-			</div>
 			<div class="progress">
 				<div class="progress-bar progress-bar-striped active"
 					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"></div>
+					aria-valuemax="100" style="width: 100%"> <span th:text="#{collections.management.progress.label.download}"></span>
+                    </div>
 			</div>
 		</div>
 	</div>
-
-	<div class="panel">
-		<div class="row browse-collection-files-content">
-		
-			<div id="table-loader" class="table-loader col-sm-12 hideElement">
-				<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-				<p class="text-center" th:text="#{loading.table.label}"></p>
-			</div>
-
-               <div class="col-xs-12">
-   				<table class="table table-hover" id="treeViewTable">
-   					<thead>
-   						<tr>
-   							<th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
-   							<th th:text="#{collections.management.table.collection.name.label}"></th>
-   							<th th:text="#{collections.management.table.owner.label}"></th>
-   							<th th:text="#{collections.management.table.kind.label}"></th>
-   							<th th:text="#{collections.management.table.modified.label}"></th>
-   							<th th:text="#{collections.management.table.size.label}"></th>
-   						</tr>
-   					</thead>
-   				</table>
-               </div>
-		</div>
-	</div>
+    <div class="row browse-collection-files-content">
+        <div id="table-loader" class="table-loader col-sm-12 hideElement">
+            <div class="panel loading">
+                <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+                <p class="text-center" th:text="#{loading.label}"></p>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <table class="table table-hover" id="treeViewTable">
+                <thead>
+                    <tr>
+                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
+                        <th th:text="#{collections.management.table.collection.name.label}"></th>
+                        <th th:text="#{collections.management.table.owner.label}"></th>
+                        <th th:text="#{collections.management.table.kind.label}"></th>
+                        <th th:text="#{collections.management.table.modified.label}"></th>
+                        <th th:text="#{collections.management.table.size.label}"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
 
 <!-- Some items were not deleted -->
 <div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
     <div class="text-center" role="alert">
-        <span>You do not have permissions to access information in the target collection or for the selected object.</span>
+        <span th:text="#{collections.management.msg.access.denied}"></span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#" onclick="javascript:goBackHistory('1');">
             <span>Back</span>
@@ -712,7 +703,10 @@
         function getPermDetails(path){
             $('#table-loader').nextAll().remove();
         	$('#table-loader').show();
-        	$("#actionUpload").hide();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
         	
         	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
@@ -732,7 +726,10 @@
         function getInfoDetails(path){
         	$("#table-loader").show();
         	$("#table-loader").nextAll().remove();
-            $("#actionUpload").hide();
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	var url = "/emc-metalnx-web/collections/info/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
@@ -741,7 +738,10 @@
         function getMetadata(path){
         	$('#table-loader').show();
         	$('#table-loader').nextAll().remove();
-        	$("#actionUpload").hide();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	getBreadcrumb(path);
         	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}
@@ -749,13 +749,19 @@
         function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
-			$("#actionUpload").hide();
+			$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
 		}
         
         function displayPermDetails(data){
             $('#table-loader').hide();
             $("#table-loader").after(data);
-            $("#actionUpload").hide();
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         }
         
         $('a[data-target="#uploadModal"]').click(function(){

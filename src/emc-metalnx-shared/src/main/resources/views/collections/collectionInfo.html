@@ -54,78 +54,87 @@
         </button>
         <p class="text-center">Replica deletion failed.</p>
     </div>
-
     <!-- Permission none -->
     <div th:if="${collectionAndDataObject == null}">
-        <div class="text-center" role="alert">
-            <span>You do not have permissions to access information in the target collection or for the selected object.</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" onclick="javascript:goBackHistory('1');">
-                <span>Back</span>
-            </a>
+        <div id="collections-content" class="panel property">
+            <div class="text-center" role="alert">
+                <span>You do not have permissions to access information in the target collection or for the selected object.</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#" onclick="javascript:goBackHistory('1');">
+                    <span>Back</span>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-12 col-sm-12" th:unless="${collectionAndDataObject == null}">
-        <h3 class="collection-details">Info</h3>
-        <!-- name -->
-        <div class="collLesserInfo divider">
-            <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-            <i th:unless="${collectionAndDataObject.isCollection()}"
-               th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
-            <span><b th:text="${ currentCollection.getName() }"></b></span>
-            <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
-        </div>
 
-        <div id="replicaAndChecksumInfo" th:if="${!currentCollection.isCollection()}">
-            <p>
-                <label th:text="#{collections.management.table.owner.label}"></label>:
-                <span th:text="${ currentCollection.getOwner() }"></span><br/>
+    <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
+        <div id="collections-content" class="panel property">
+            <div class="row">
+                <h4 class="property-title"><i class="fa fa-info-circle"></i>Info</h4>
+                <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
+            </div>
+            <div class="panel-info">
+                <div class="name">
+                    <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+                    <i th:unless="${collectionAndDataObject.isCollection()}"
+                       th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+                    <span><b th:text="${ currentCollection.getName() }"></b></span>
+                    <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.owner.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.created.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getCreatedAtFormatted() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.modified.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getModifiedAtFormatted() }"></span></div>
+                </div>
+                <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label>Checksum</label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getChecksum() }"></span></div>
+                </div>
+            </div>
 
-                <label th:text="#{collections.management.table.created.label}"></label>:
-                <span th:text="${ currentCollection.getCreatedAtFormatted() }"></span><br/>
+            <div id="replicaAndChecksumInfo" class="hidden" th:if="${!currentCollection.isCollection()}">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th th:text="#{collections.management.table.replica.number.label}"></th>
+                        <th>Created</th>
+                        <th>Modified</th>
+                        <th>Size</th>
+                        <th>Resource</th>
+                        <th>Path</th>
+                        <th></th>
+                    </tr>
+                    </thead>
 
-                <label th:text="#{collections.management.table.modified.label}"></label>:
-                <span th:text="${ currentCollection.getModifiedAtFormatted() }"></span><br/>
-
-                <label>Checksum</label>:
-                <span th:text="${ currentCollection.getChecksum() }"></span>
-            </p>
-
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th th:text="#{collections.management.table.replica.number.label}"></th>
-                    <th>Created</th>
-                    <th>Modified</th>
-                    <th>Size</th>
-                    <th>Resource</th>
-                    <th>Path</th>
-                    <th></th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr th:each="replica : ${replicasMap}">
-                    <td><span th:text="${replica.key.replicaNumber}"></span></td>
-                    <td><span th:text="${replica.key.createdAtFormatted}"></span></td>
-                    <td><span th:text="${replica.key.modifiedAtFormatted}"></span></td>
-                    <td><span th:text="${replica.key.displaySize}"></span></td>
-                    <td><span th:text="${replica.value.name}"></span></td>
-                    <td><span th:text="${replica.value.path}"></span></td>
-                    <td th:if="${replicasMap.size() > 1}">
-                        <button class="btn btn-default btn-xs"
-                                th:onclick="'javascript:displayDeleteReplicaModal(\'' + ${currentCollection.getPath()} + '\', \'' + ${currentCollection.getName()} + '\', \'' + ${replica.key.replicaNumber} + '\');'"
-                                type="button">
-                            <span class="glyphicon glyphicon-trash"> </span>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    <tbody>
+                    <tr th:each="replica : ${replicasMap}">
+                        <td><span th:text="${replica.key.replicaNumber}"></span></td>
+                        <td><span th:text="${replica.key.createdAtFormatted}"></span></td>
+                        <td><span th:text="${replica.key.modifiedAtFormatted}"></span></td>
+                        <td><span th:text="${replica.key.displaySize}"></span></td>
+                        <td><span th:text="${replica.value.name}"></span></td>
+                        <td><span th:text="${replica.value.path}"></span></td>
+                        <td th:if="${replicasMap.size() > 1}">
+                            <button class="btn btn-default btn-xs"
+                                    th:onclick="'javascript:displayDeleteReplicaModal(\'' + ${currentCollection.getPath()} + '\', \'' + ${currentCollection.getName()} + '\', \'' + ${replica.key.replicaNumber} + '\');'"
+                                    type="button">
+                                <span class="glyphicon glyphicon-trash"> </span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
     <script>
 		function displayDeleteReplicaModal(path, fileName, replicaNumber) {
 			$('#deleteReplicaPath').val(path);
@@ -145,5 +154,9 @@
 			$('.modal-backdrop.fade.in').remove();
 			ajaxEncapsulation("/emc-metalnx-web/fileOperation/deleteReplica/", "POST", {path: path, fileName: fileName, replicaNumber: replicaNumber}, displayInfoDetails, null, null, null);
 		}
+		$(document).ready(function(){
+            $("#collection-content").removeClass("collections-table");
+            $("#collection-content").addClass("property");
+        });
     </script>
 </th:block>
