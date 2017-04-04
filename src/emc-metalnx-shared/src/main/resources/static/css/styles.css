@@ -651,8 +651,12 @@ div.dataTables_wrapper .toolbar .input-group{
 }
 
 #actions .btn-group, #addPermissionButtonDiv{
-	margin: 0;
+	margin: 0 15px 0 0;
 	padding: 0;
+}
+
+#addPermissionButtonDiv .dropdown-menu{
+    top:30px;
 }
 
 #actions .btn-group a:FIRST-CHILD{
@@ -1184,18 +1188,22 @@ a.page-hint {
     opacity: 1 !important;
 }
 
-#panelRemoval{
-    margin-top:10px;
-    width: 100%;
-}
-#panelRemoval .progress{
-    height: 30px;
+#actionRemoval,
+#actionsWait,
+#actionDownload,
+#actionApplyTemplates{
+    margin-top:7px;
+    width: 300px;
 }
 
+div.dataTables_wrapper .dataTables_length{
+    float:left !important;
+}
 div.dataTables_wrapper .dataTables_length select{
     width:55px !important;
     font-size:12px;
-    margin-left:5px;
+    margin-right:10px;
+    height:35px;
 }
 
 div.dataTables_wrapper div.dataTables_filter{

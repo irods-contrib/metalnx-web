@@ -721,14 +721,18 @@
 	        function deleteAction(){
 	        	setOperationInProgress();
 	        	$("#actions a").hide();
-	        	$('#actionRemoval').show();
-	        	$('#actionUpload').hide();
+	        	$('#actionsWait').show();
+	        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
+	        	$("#uploadIcon").prop("disabled", true);
+            	$("#uploadIcon").addClass("disabled");
+            	$("#showCollectionFormBtn").prop("disabled", true);
+            	$("#showCollectionFormBtn").addClass("disabled");
 	        	ajaxEncapsulation(
 	        		"/emc-metalnx-web/fileOperation/delete/", 
 	        		"POST", 
 	        		"", 
 	        		function (data) {
-		        		$('#actionRemoval').hide();
+		        		$("#actionsWait").hide();
 		        		unsetOperationInProgress();
 		        		
 		        		resetDataTablesStart();	

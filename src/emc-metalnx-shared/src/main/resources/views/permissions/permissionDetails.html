@@ -20,13 +20,7 @@
 
         <div class="row">
 
-                <h4 class="property-title"><i class="fa fa-tags"></i><span th:text="#{permissions.page.title}"></span></h4>
-
-                <div class="col-md-12"><div class="col-md-12 collLesserInfo divider"></div></div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
+                <h4 class="property-title pull-left"><i class="fa fa-tags"></i><span th:text="#{permissions.page.title}"></span></h4>
                 <div th:if="${userCanModify}" class="btn-group pull-right" id="addPermissionButtonDiv">
                     <button class="btn btn-primary btn-property btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-plus"></i> <span th:text="#{permissions.page.add.button}"></span>  <span class="caret"></span>
@@ -39,7 +33,12 @@
                             <span><i class="fa fa-group"></i></span>  <span th:text="#{permissions.page.group.add.button}"></span></a>
                         </li>
                     </ul>
-                 </div>
+                </div>
+                <div class="col-md-12"><div class="col-md-12 collLesserInfo divider"></div></div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
 
                 <div>
                     <p th:if="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" th:text="#{no.permission.available}" class="col-xs-12"></p>

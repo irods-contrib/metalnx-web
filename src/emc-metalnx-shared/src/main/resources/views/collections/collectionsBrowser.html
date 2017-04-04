@@ -272,42 +272,28 @@
             <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
 		</a>
 	</div>
-    <!-- Removal activity indicator -->
-    <div id="actionRemoval" class="hideElement ">
-        <div id="panelRemoval" class="col-md-5">
-            <div class="progress ">
-                <div class="progress-bar progress-bar-striped active"
-                     role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                     aria-valuemax="100" style="width: 100%" th:text="#{collections.empty.trash.status}"></div>
-            </div>
-        </div>
-    </div>
+	<div th:unless="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload">
+		<a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
+		   data-target="#addAndModifyModal" id="showCollectionFormBtn"
+		   th:title="#{collections.management.add.button}">
+
+			<span class="fa-stack fa-lg">
+              <i class="fa fa-folder fa-stack-2x"></i>
+              <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+            </span>
+			<div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
+
+		</a>
+		<a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
+		   data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
+
+			<i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+		</a>
+	</div>
 </div>
 
 <div class="col-xs-12" th:if="${permissionType != 'none' or user.isAdmin()}">
 
-	<!-- Apply templates activity indicator -->
-	<div id="actionApplyTemplates" class="col-xs-12 hideElement">
-		<div id="panelApplyTemplates">
-			<div class="progress">
-				<div class="progress-bar progress-bar-striped active"
-					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"><span th:text="#{collections.management.progress.label.apply.template}"></span></div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Download activity indicator -->
-	<div id="actionDownload" class="col-xs-12 hideElement">
-		<div id="panelDownload">
-			<div class="progress">
-				<div class="progress-bar progress-bar-striped active"
-					role="progressbar" aria-valuenow="100" aria-valuemin="0"
-					aria-valuemax="100" style="width: 100%"> <span th:text="#{collections.management.progress.label.download}"></span>
-                    </div>
-			</div>
-		</div>
-	</div>
     <div class="row browse-collection-files-content">
         <div id="table-loader" class="table-loader col-sm-12 hideElement">
             <div class="panel loading">
@@ -495,6 +481,7 @@
 			//select all collections
 			if($(this).is(":checked")){
 				$("#actionsWait").show();
+				$('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
 				url = "/emc-metalnx-web/collections/addArrayToSourcePaths/";
 				
 				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
@@ -661,7 +648,8 @@
         $("#downloadBtn").click(function(e) {
         	e.preventDefault();
         	$("#actionUpload").hide();
-        	$("#actionDownload").show();
+        	$("#actionsWait").show();
+        	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
         	var downloadURL = $("#downloadBtn").attr("href");
         	ajaxEncapsulation(downloadURL, "GET", null, handleDownload, handleDownloadFailure, null, null);
 			$("#actions button").prop("disabled", true);
@@ -685,7 +673,7 @@
 		});
         
         function handleDownload() {
-        	$("#actionDownload").hide();
+        	$("#actionsWait").hide();
         	$("#actionUpload").show();
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("checked", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
@@ -694,7 +682,7 @@
         }
         
 		function handleDownloadFailure() {
-        	$("#actionDownload").hide();
+        	$("#actionsWait").hide();
         	$("#downloadFailureMessage").show();
         	$("input[name=selectAllCheckboxes]").prop('checked', false);
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);

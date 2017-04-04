@@ -3,10 +3,10 @@ var dtPatternForMetadata =  '<"row"<"download_csv pull-left col-sm-12 col-md-12"
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6"l<"toolbar">><"col-md-6"i>>>'+
                             '<"row"<"col-md-12 minHeightForLoading"tr>>'+
                             '<"row"<"col-md-12"p>>';
-var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6 col-sm-6 col-xs-6"<"toolbar">><"col-md-2 col-sm-1 col-xs-1"><"col-md-4 col-sm-5 col-xs-5"fl>><"col-md-12 col-xs-12"i>>'+
+var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8 col-sm-8 col-xs-6"l<"toolbar">><"hidden-md hidden-sm col-xs-1"><"col-md-4 col-sm-4 col-xs-5"f>><"col-md-12 col-xs-12"<"msg">i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12 minHeightForLoading"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
-var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"p><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
+var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
 var dtPatternMetadataTemplate = '<"row"<"col-sm-12 col-md-12"<"col-xs-6 #info_templateFieldsListTable"i><"col-xs-6"f>>><"row"<"col-sm-12 col-md-12"tr>>';
@@ -66,10 +66,19 @@ function addCollectionActions(table_id, datatable){
         '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
         '       </li>'+
         '   </ul>'+
-        '</div>'+
-        '<div id="actionsWait" class="hideElement">Retrieving permissions from Data grid...</div>'
+        '</div>'
+    +
+        '<div id="actionsWait" class="col-xs-12 hideElement">' +
+        '   <div id="panelWait">' +
+        '       <div class="progress">'+
+        '           <div class="progress-bar progress-bar-striped active" '+
+        '                   role="progressbar" aria-valuenow="100" aria-valuemin="0" '+
+        '                    aria-valuemax="100" style="width: 100%"><span id="actionLabel"></span>'+
+        '           </div>' +
+        '       </div>'+
+        '   </div>'+
+        '</div>'
     );
-
 	$("#"+table_id+"_length").addClass("pull-right");
 }
 
