@@ -250,45 +250,42 @@
 <div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
 </div>
 <div class="col-md-2 col-sm-3 col-xs-12">
-	<a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default hideElement" data-toggle="modal" data-target="#emptyTrashModal">
+	<a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
 		<span class="glyphicon glyphicon-trash"></span>
 		<span th:text="#{empty.trash.label}"></span>
 	</a>
-	<div th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload">
-		<a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-		   data-target="#addAndModifyModal" id="showCollectionFormBtn"
-		   th:title="#{collections.management.add.button}">
 
-			<span class="fa-stack fa-lg">
-              <i class="fa fa-folder fa-stack-2x"></i>
-              <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-            </span>
-			<div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
-
-		</a>
-		<a role="button" href="#" class="btn btn-default" data-toggle="modal"
-		   data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
-
-            <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
-		</a>
-	</div>
-	<div th:unless="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}" id="actionUpload">
-		<a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-		   data-target="#addAndModifyModal" id="showCollectionFormBtn"
-		   th:title="#{collections.management.add.button}">
-
-			<span class="fa-stack fa-lg">
-              <i class="fa fa-folder fa-stack-2x"></i>
-              <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-            </span>
-			<div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
-
-		</a>
-		<a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
-		   data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
-
-			<i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
-		</a>
+	<div id="actionUpload">
+        <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
+            <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               th:title="#{collections.management.add.button}">
+                <span class="fa-stack fa-lg">
+                  <i class="fa fa-folder fa-stack-2x"></i>
+                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+                </span>
+                <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
+            </a>
+            <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+               data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
+                <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+            </a>
+        </th:block>
+        <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
+            <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               th:title="#{collections.management.add.button}">
+                <span class="fa-stack fa-lg">
+                  <i class="fa fa-folder fa-stack-2x"></i>
+                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+                </span>
+                <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
+            </a>
+            <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
+               data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
+                <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+            </a>
+        </th:block>
 	</div>
 </div>
 
@@ -410,10 +407,17 @@
     	            });
 
     	            if(datatable.data().length == 0) {
-    	            	$("#emptyTrashBtn").addClass("hideElement");
+    	            	$("#emptyTrashBtn").addClass("disabled");
+    	            	$("#emptyTrashBtn").prop("disabled", true);
+    	            	$("#actions").hide();
+    	            	$("#actionsWait").hide();
+    	            	$('input[name=selectAllCheckboxes]').prop("disabled", true);
     	            }
     	            else {
-    	            	$("#emptyTrashBtn").removeClass("hideElement");
+    	                $("#emptyTrashBtn").removeClass("hideElement");
+    	            	$("#emptyTrashBtn").removeClass("disabled");
+    	            	$("#emptyTrashBtn").prop("disabled", false);
+    	            	$('input[name=selectAllCheckboxes]').prop("disabled", false);
     	            }
     	        },
     	        "drawCallback": function(){
@@ -424,6 +428,9 @@
     	                 'block'
     	            )
     	            $('input[name=selectAllCheckboxes]').prop("checked", false);
+    	            if(datatable.data().length < 3) {
+    	                $('.minHeightForLoading').removeClass("minHeightForLoading");
+    	            }
     	        },
   		    	"columnDefs": [
                     {
@@ -647,7 +654,10 @@
 
         $("#downloadBtn").click(function(e) {
         	e.preventDefault();
-        	$("#actionUpload").hide();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
         	$("#actionsWait").show();
         	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
         	var downloadURL = $("#downloadBtn").attr("href");
@@ -674,7 +684,10 @@
         
         function handleDownload() {
         	$("#actionsWait").hide();
-        	$("#actionUpload").show();
+        	$("#uploadIcon").prop("disabled", false);
+            $("#uploadIcon").removeClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", false);
+            $("#showCollectionFormBtn").removeClass("disabled");
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("checked", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");

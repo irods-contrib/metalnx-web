@@ -838,7 +838,7 @@ span .label {
     border: solid 1px #f3f3f3;
     border-color: #CBDFF7;
     height: 40px;
-    margin: 5px 0 5px 0;
+    margin: 5px 0 10px 0;
     float: left;
     width: 100%;
 }
@@ -1188,10 +1188,8 @@ a.page-hint {
     opacity: 1 !important;
 }
 
-#actionRemoval,
-#actionsWait,
-#actionDownload,
-#actionApplyTemplates{
+
+#actionsWait{
     margin-top:7px;
     width: 300px;
 }

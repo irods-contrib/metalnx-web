@@ -3,7 +3,7 @@ var dtPatternForMetadata =  '<"row"<"download_csv pull-left col-sm-12 col-md-12"
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6"l<"toolbar">><"col-md-6"i>>>'+
                             '<"row"<"col-md-12 minHeightForLoading"tr>>'+
                             '<"row"<"col-md-12"p>>';
-var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8 col-sm-8 col-xs-6"l<"toolbar">><"hidden-md hidden-sm col-xs-1"><"col-md-4 col-sm-4 col-xs-5"f>><"col-md-12 col-xs-12"<"msg">i>>'+
+var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8 col-sm-8 col-xs-8"l<"toolbar">><"col-md-4 col-sm-4 col-xs-4"f>><"col-md-12 col-xs-12"<"msg">i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12 minHeightForLoading"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
 var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
@@ -66,8 +66,7 @@ function addCollectionActions(table_id, datatable){
         '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
         '       </li>'+
         '   </ul>'+
-        '</div>'
-    +
+        '</div>'  +
         '<div id="actionsWait" class="col-xs-12 hideElement">' +
         '   <div id="panelWait">' +
         '       <div class="progress">'+
