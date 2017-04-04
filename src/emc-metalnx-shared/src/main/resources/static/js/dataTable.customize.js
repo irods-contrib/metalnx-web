@@ -23,7 +23,7 @@ var i18n = {
 	    "thousands":      ",",
 	    "lengthMenu":     "_MENU_",
 	    "loadingRecords": "Loading...",
-	    "processing":     '<img class="center-block" src="../images/ajax_loader.gif" /><p class="text-center" >Loading...</p>',
+	    "processing":     '<img class="center-block" src="/emc-metalnx-web/images/ajax_loader.gif" /><p class="text-center" >Loading...</p>',
 	    "search":         "_INPUT_",
 	    "searchPlaceholder": "Search...",
 	    "zeroRecords":    "No matching records found",
