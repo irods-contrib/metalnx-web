@@ -21,10 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.MSIService;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleService;
+import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.irods.MSIServiceImpl;
 import org.irods.jargon.core.exception.JargonException;
 import org.junit.Before;
@@ -36,7 +33,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -68,6 +64,9 @@ public class TestMSIService {
 
     @Mock
     private IRODSServices irodsServices;
+
+    @Mock
+    private ConfigService mockConfigService;
 
     private static String msiVersion;
     private List<String> msiList, mlxMSIList, irods41XMSIs, irods42MSIs, otherMSIList;
@@ -109,14 +108,14 @@ public class TestMSIService {
         servers.add(s1);
         servers.add(s2);
 
-        ReflectionTestUtils.setField(msiService, "msiAPIVersionSupported", msiVersion);
-        ReflectionTestUtils.setField(msiService, "mlxMSIsExpected", mlxMSIList);
-        ReflectionTestUtils.setField(msiService, "irods41MSIsExpected", irods41XMSIs);
-        ReflectionTestUtils.setField(msiService, "irods42MSIsExpected", irods42MSIs);
-
         when(mockResourceService.getAllResourceServers(anyListOf(DataGridResource.class))).thenReturn(servers);
         when(mockRuleService.execGetVersionRule(anyString())).thenReturn(msiVersion);
         when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(msiList);
+
+        when(mockConfigService.getMlxMSIsExpected()).thenReturn(mlxMSIList);
+        when(mockConfigService.getIrods41MSIsExpected()).thenReturn(irods41XMSIs);
+        when(mockConfigService.getIrods42MSIsExpected()).thenReturn(irods42MSIs);
+        when(mockConfigService.getOtherMSIsExpected()).thenReturn(otherMSIList);
     }
 
     @Test
@@ -151,8 +150,9 @@ public class TestMSIService {
 
     @Test
     public void testNoOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
+        when(mockConfigService.getOtherMSIsExpected()).thenReturn(new ArrayList<>());
         DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
         assertFalse(server.isThereAnyMSI());
@@ -167,8 +167,9 @@ public class TestMSIService {
         otherMSIListWithEmptyString.add("");
         otherMSIListWithEmptyString.add(testMSI);
 
-        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIListWithEmptyString);
         when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+        when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIListWithEmptyString);
+        when(mockConfigService.getOtherMSIsExpected()).thenReturn(otherMSIListWithEmptyString);
         DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
 
         assertTrue(server.isThereAnyMSI());

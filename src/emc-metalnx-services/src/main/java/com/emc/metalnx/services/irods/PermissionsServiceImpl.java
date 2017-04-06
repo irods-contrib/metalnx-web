@@ -38,7 +38,6 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,9 +62,6 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Autowired
     GroupDao groupDao;
-
-    @Value("${irods.zoneName}")
-    private String zoneName;
 
     // String representing the rodsgroup type on the UserFilePermission enum
     private static final String RODS_GROUP = "rodsgroup";

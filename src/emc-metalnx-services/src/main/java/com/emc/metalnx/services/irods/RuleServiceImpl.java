@@ -22,17 +22,13 @@ import com.emc.metalnx.core.domain.entity.DataGridRule;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleService;
+import com.emc.metalnx.services.interfaces.*;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.rule.IRODSRuleExecResult;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -58,17 +54,8 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private ResourceService rs;
 
-    @Value("${irods.host}")
-    private String iCATHost;
-
-    @Value("${populate.msi.enabled}")
-    private boolean populateMsiEnabled;
-
-    @Value("${illumina.msi.enabled}")
-    private boolean illuminaMsiEnabled;
-
-    @Value("${msi.api.version}")
-    private String msiAPIVersion;
+    @Autowired
+    private ConfigService configService;
 
     public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
         logger.info("Get Replication Rule called");
@@ -83,7 +70,7 @@ public class RuleServiceImpl implements RuleService {
     }
 
     public void execPopulateMetadataRule(String destResc, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!populateMsiEnabled) return;
+        if (!configService.isPopulateMsiEnabled()) return;
 
         logger.info("Get Populate Rule called");
 
@@ -169,7 +156,7 @@ public class RuleServiceImpl implements RuleService {
     }
 
     public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!illuminaMsiEnabled || !DataGridCoreUtils.isIllumina(objPath)) return;
+        if (!DataGridCoreUtils.isIllumina(objPath)) return;
 
         logger.info("Illumina Rule called");
 

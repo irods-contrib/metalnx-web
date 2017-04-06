@@ -35,7 +35,6 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,8 +59,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private IRODSServices irodsServices;
 
-    @Value("${irods.zoneName}")
-    private String zoneName;
+    @Autowired
+    private ConfigService configService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -111,7 +110,7 @@ public class UserServiceImpl implements UserService {
         try {
 
             DataGridUser user = findByUsername(username).get(0);
-            String userHomeFolder = String.format("/%s/home/%s", zoneName, username);
+            String userHomeFolder = String.format("/%s/home/%s", configService.getIrodsZone(), username);
 
             // Removing user
             userAO.deleteUser(username);

@@ -23,7 +23,7 @@ var i18n = {
 	    "thousands":      ",",
 	    "lengthMenu":     "_MENU_",
 	    "loadingRecords": "Loading...",
-	    "processing":     '<img class="center-block" src="../images/table_loading.svg" />',
+	    "processing":     '<img class="center-block" src="/emc-metalnx-web/images/table_loading.svg" /><p class="text-center" >Loading...</p>',
 	    "search":         "_INPUT_",
 	    "searchPlaceholder": "Search...",
 	    "zeroRecords":    "No matching records found",
@@ -78,6 +78,7 @@ function addCollectionActions(table_id, datatable){
         '   </div>'+
         '</div>'
     );
+
 	$("#"+table_id+"_length").addClass("pull-right");
 }
 

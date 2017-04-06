@@ -18,6 +18,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.services.interfaces.AdminServices;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.auth.AuthResponse;
@@ -26,7 +27,6 @@ import org.irods.jargon.core.pub.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -43,25 +43,10 @@ public class AdminServicesImpl implements AdminServices {
     @Autowired
     IRODSAccessObjectFactory irodsAccessObjectFactory;
 
+    @Autowired
+    private ConfigService configService;
+
     private IRODSAccount irodsAccount;
-
-    @Value("${irods.host}")
-    private String irodsHost;
-
-    @Value("${irods.port}")
-    private String irodsPort;
-
-    @Value("${irods.zoneName}")
-    private String irodsZone;
-
-    @Value("${jobs.irods.username}")
-    private String irodsJobUser;
-
-    @Value("${jobs.irods.password}")
-    private String irodsJobPassword;
-
-    @Value("${jobs.irods.auth.scheme}")
-    private String irodsAuthScheme;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminServicesImpl.class);
 
@@ -124,15 +109,21 @@ public class AdminServicesImpl implements AdminServices {
     }
 
     private void authenticateIRODSAccount() throws JargonException {
-        AuthResponse authResponse = null;
+
+        String host = configService.getIrodsHost();
+        int port = Integer.parseInt(configService.getIrodsPort());
+        String zone = configService.getIrodsZone();
+        String user = configService.getIrodsJobUser();
+        String password = configService.getIrodsJobPassword();
+        String authScheme = configService.getIrodsAuthScheme();
+        String resc = "demoResc";
+        String homeDir = "";
 
         if (irodsAccount == null) {
-            // Getting iRODS protocol set
-            IRODSAccount tempAccount = IRODSAccount.instance(irodsHost, Integer.parseInt(irodsPort), irodsJobUser, irodsJobPassword, "", irodsZone,
-                    "demoResc");
+            IRODSAccount tempAccount = IRODSAccount.instance(host, port, user, password, homeDir, zone, resc);
+            tempAccount.setAuthenticationScheme(AuthScheme.findTypeByString(authScheme));
 
-            tempAccount.setAuthenticationScheme(AuthScheme.findTypeByString(irodsAuthScheme));
-            authResponse = irodsAccessObjectFactory.authenticateIRODSAccount(tempAccount);
+            AuthResponse authResponse = irodsAccessObjectFactory.authenticateIRODSAccount(tempAccount);
 
             if (authResponse.isSuccessful()) {
                 irodsAccount = authResponse.getAuthenticatedIRODSAccount();
