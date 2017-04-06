@@ -73,6 +73,14 @@ function addCollectionActions(table_id, datatable){
 	$("#"+table_id+"_length").addClass("pull-right");
 }
 
+
+//Adds Action button on Collection table
+function addDeleteMetadataBtn(table_id, datatable){
+     $("div.toolbar").html(
+
+     );
+}
+
 /**
  * Resets the start page of a table.
  * After any file operation (copy, move, delete, etc), the table needs to go back to the first page.

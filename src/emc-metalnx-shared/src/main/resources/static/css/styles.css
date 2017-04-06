@@ -1226,6 +1226,10 @@ alert-dialog {
 	padding: 0 15px;
 }
 
+.table-loader img {
+    width: 40px;
+}
+
 .table-loader > p {
 	padding: 1%;
 }

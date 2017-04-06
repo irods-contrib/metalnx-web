@@ -155,7 +155,7 @@ input{
     position: absolute;
     z-index: 1;
     left: 36px;
-    top: 8px;
+    top: 10px;
     opacity:.5;
     color: #afb1be;
 }
