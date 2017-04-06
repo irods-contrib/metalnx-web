@@ -151,7 +151,7 @@
                         th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"
                         id="delMetadataBtn" class="btn btn-default btn-sm btn-property"
                         href="#">
-                            <i class="fa fa-trash-o"></i> <span th:text="#{metadata.tab.btn.delete}"></span>
+                            <i class="fa fa-trash-o"></i> <span id="delMetadataBtnLabel" th:text="#{metadata.tab.btn.delete}"></span>
                     </button>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-3">
