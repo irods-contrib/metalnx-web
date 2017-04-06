@@ -515,13 +515,13 @@ div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing{
 	position:absolute;
     top:50%;
     left:50%;
-    width:98%;
+    width:100%;
     margin-left:-49%;
     margin-top:-25px;
     text-align:center;
     font-size:1.2em;
     color: dimgrey;
-    height: 75px;
+    height: 60px;
     background-color:white;
     background:-webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(25%, rgba(255,255,255,0.9)), color-stop(75%, rgba(255,255,255,0.9)), color-stop(100%, rgba(255,255,255,0)));
     background:-webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
@@ -530,8 +530,34 @@ div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing{
     background:-o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);
     background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)
 }
-.dataTables_wrapper .minHeightForLoading{
-    min-height: 120px;
+
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-xs{
+    top: 85px;
+    margin-top:-33px;
+    height: 30px;
+}
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-sm{
+    margin-top:-10px;
+    height: 70px;
+}
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-md{
+    height: 80px;
+}
+
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing > img{
+    width: 35px;
+    margin-top: 5px;
+}
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-xs > img{
+    width: 30px;
+    margin-top: -6px;
+}
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-sm > img{
+    width: 35px;
+}
+div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-md > img{
+    width: 55px;
+    margin-top: 10px;
 }
 
 div.dataTables_wrapper .row .col-md-12:first-child > div{
@@ -585,10 +611,20 @@ div.dataTables_wrapper .toolbar .input-group{
 	border: none;
 	font-weight: bold;
 }
+.table.dataTable thead tr > th {
+    padding: 13px;
+    font-size: 15px;
+}
+
+.table.dataTable thead tr > th.tableCheckBoxCol {
+    padding-left: 10px;
+}
+
 .table.dataTable tr>td {
 	border-top: 1px dotted #c8dff7;
 	border-bottom: 1px dotted #c8dff7;
 	background-color: #fff;
+	padding: 10px;
 }
 .table.dataTable tr>td input[type=text]{
 	width:100%;

@@ -418,6 +418,21 @@
     	            	$("#emptyTrashBtn").removeClass("disabled");
     	            	$("#emptyTrashBtn").prop("disabled", false);
     	            	$('input[name=selectAllCheckboxes]').prop("disabled", false);
+    	            	if (datatable.data().length == 1){
+    	            	    $("#treeViewTable_processing").removeClass("loading-md");
+    	            	    $("#treeViewTable_processing").removeClass("loading-sm");
+    	            	    $("#treeViewTable_processing").addClass("loading-xs");
+    	            	}
+    	            	else if (datatable.data().length == 2){
+                            $("#treeViewTable_processing").removeClass("loading-xs");
+                            $("#treeViewTable_processing").removeClass("loading-md");
+                            $("#treeViewTable_processing").addClass("loading-sm");
+    	            	}
+    	            	else {
+                            $("#treeViewTable_processing").removeClass("loading-xs");
+    	            	    $("#treeViewTable_processing").removeClass("loading-sm");
+    	            	    $("#treeViewTable_processing").addClass("loading-md");
+    	            	}
     	            }
     	        },
     	        "drawCallback": function(){
@@ -428,9 +443,6 @@
     	                 'block'
     	            )
     	            $('input[name=selectAllCheckboxes]').prop("checked", false);
-    	            if(datatable.data().length < 3) {
-    	                $('.minHeightForLoading').removeClass("minHeightForLoading");
-    	            }
     	        },
   		    	"columnDefs": [
                     {
