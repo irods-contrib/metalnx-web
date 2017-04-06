@@ -1,0 +1,161 @@
+body{
+    height: 100vh;
+    margin:0;
+    overflow: hidden;
+    background: #2c95dd ; /* Old browsers */
+    background: -moz-linear-gradient(-45deg,  #ffffff  0%, #2c95dd 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ffffff ), color-stop(100%,#2c95dd)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* IE10+ */
+    background: linear-gradient(135deg,  #ffffff  0%,#2c95dd 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff ', endColorstr='#2c95dd',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    ::-webkit-input-placeholder {
+        color: #4E546D
+    }
+}
+
+p{
+    color: #5B5E6F;
+    font-size:10px;
+    text-align:left;
+}
+
+.login{
+    font-size: 14px;
+    opacity:1;
+    top:15px;
+    -webkit-transition-timing-function: cubic-bezier(0.68, -0.25, 0.265, .85);
+    transition-property:transform,opacity,box-shadow,top,left;
+    transition-duration:.5s;
+    transform-origin:161px 100%;
+    transform:rotateX(0deg);
+    position:relative;
+    width:360px;
+    border-top: 2px solid #2c95dd;
+    height:450px;
+    position:absolute;
+    left:0;
+    right:0;
+    margin:auto;
+    top:0;
+    bottom:0;
+    padding:100px 40px 40px 40px;
+    background: #35394a; /* Old browsers */
+    background: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* IE10+ */
+    background: linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.login_title {
+    color:rgb(175, 177, 190);
+    text-align:left;
+    font-size:20px;
+    padding-bottom: 40px;
+}
+
+.login_fields {
+    height: 208px;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+input[type='password'] {
+    color:#2c95dd !important;
+}
+
+input[type="submit"] {
+    border-radius:50px;
+}
+
+input[type="submit"]:hover {
+    color:white;
+    background:#2c95dd ;
+    cursor:pointer;
+    transition-property:background,color;
+    transition-duration:.2s;
+}
+
+input[type="submit"]:focus{
+    box-shadow:none;
+    outline:none;
+}
+
+input[type='text'],input[type='password']{
+    color: #2c95dd;
+    width: 100%;
+    margin-top:-2px;
+    background: rgb(50, 54, 74);
+    left: 0;
+    right: 0;
+    padding: 10px 40px;
+    border-top: 2px solid rgb(57, 61, 82);
+    border-bottom: 2px solid rgb(57, 61, 82);
+    border-right: none;
+    border-left: none;
+    outline: none;
+    box-shadow: none;
+    font-size: 13px;
+    padding-left: 55px;
+}
+
+.login_fields_user, .login_fields_password{
+    position:relative;
+}
+
+.login_fields_submit{
+    position: relative;
+    top: 35px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    padding-left: 40px;
+}
+
+.login_fields_submit input {
+    padding: 10px 50px;
+}
+
+input{
+    background:transparent;
+    padding:10px 50px;
+    border:2px solid #2c95dd ;
+    color: #ffffff ;
+    transition-property:background,color;
+    transition-duration:.2s;
+}
+
+.login_msgs {
+    bottom: 40px;
+    color: #c0605e;
+}
+
+.login_msgs, .login_copyright {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 10px 40px;
+}
+
+.login_copyright {
+    bottom: 0;
+}
+
+.login_copyright span {
+    font-size: 10px;
+    color: #636b8b;
+}
+
+.icon{
+    position: absolute;
+    z-index: 1;
+    left: 36px;
+    top: 8px;
+    opacity:.5;
+    color: #afb1be;
+}

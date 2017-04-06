@@ -30,9 +30,6 @@
 	    <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css"
 	    	th:href="@{/css/font-awesome.min.css}"/>
 	    
-	    <link href="../static/css/styles.css" rel="stylesheet"
-	    	th:href="@{/css/styles.css}"/>
-	    
 	    <!-- jQuery Version 1.11.0 -->
 	    <script src="../static/js/jquery-1.11.0.js" th:src="@{/js/jquery.min.js}"></script>
 	    
@@ -43,77 +40,40 @@
 	    <!-- Bootstrap Validator JS -->
 	    <script src="../static/js/bootstrapValidator.min.js" 
 	    	th:src="@{/js/bootstrapValidator.min.js}"></script>
-			
-		<style>
-			.container-fluid{ height: 90vh; }
-			.container-fluid > .row{ height: 95% }
-			.container-fluid > .row > div{ align-items: center; display: flex; min-height: 100%; }
-			.container-fluid > .row .panel{ border-top: 3px solid #5faee5; border-bottom: none; border-right: none; border-left:none; margin: 0 auto;}
-			.container-fluid > .row .panel .btn-primary{ background-color: #428bca; border-color: #3580bd; }
-			.container-fluid > .row .panel .list-group-item{ border: 1px solid #f2f6f9; }
-			.container-fluid .alert{ margin-bottom: 0px; }
-		</style>
+
+        <link rel="stylesheet" th:href="@{/css/styles-login.css}"/>
 	</head>
 	
 	<body>
-		<!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" 
-        	style="margin-bottom: 0;">
-            <div class="navbar-header col-sm-12" style="margin-bottom: 0;">                     
-                <a class="navbar-brand" href="#">
-                	<!-- EMC metalnx logo -->
-                	<img  alt="EMC logo" src="../static/images/logo.svg" 
-                		th:src="@{/images/logo.svg}" />
-					<!-- EMC metalnx logo - end -->
-				</a>  
-			</div>                       
-        </nav>
-        
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
-					<div class="panel panel-default">
-						<ul class="list-group">
-							<li class="list-group-item"><h3>Welcome to Metalnx</h3></li>
-							<li class="list-group-item">
-								<form action="#" th:action="@{/login/authenticate/}" method="POST" class="registerForm row">
-									<div class="form-group col-xs-12"> 
-										<label for="inputUsernameLogin" th:text="#{login.username}"></label>
-										<input type="text" name="username" class="form-control" 
-											id="inputUsernameLogin" />
-									</div>
-									<div class="form-group col-xs-12"> 
-										<label for="inputPasswordLogin" th:text="#{login.password}"></label>
-										<input type="password" name="password" class="form-control" 
-											id="inputPasswordLogin" />
-									</div>
-									
-									<div class="pull-right col-xs-2">
-										<input type="submit" value="Sign in" class="btn btn-primary pull-right"/>
-									</div>
-								</form>
-							</li>
-						</ul>
-						<div class="alert alert-danger errorMsg" th:if="${usernameOrPasswordInvalid}">
-							<h5>Invalid username or password</h5>
-						</div>
-						<div class="alert alert-danger errorMsg"
-							 th:if="${serverNotResponding != null or databaseNotResponding != null}">
-							<h5 th:if="${serverNotResponding}">iRODS not responding.</h5>
-							<h5 th:if="${databaseNotResponding}">Database not responding.</h5>
-							<p>
-								Please, try logging in later.
-								If this problem persists, please notify your system administrator.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div> <!-- End row  -->
-		</div> <!-- End container-fluid  -->
-		<!-- Footer -->
-        <footer>
-        	&copy; 2015-2017 DELL EMC All rights reserved.
-        </footer>
+        <div class="login">
+            <div class="login_title">
+                <img alt="EMC logo" th:src="@{/images/logo-blue.svg}" />
+            </div>
+            <div class="login_fields">
+                <form action="#" th:action="@{/login/authenticate/}" method="POST">
+                    <div class="login_fields_user">
+                        <div class="icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                        <input type="text" placeholder="Username" name="username" id="inputUsernameLogin" />
+                    </div>
+                    <div class="login_fields_password">
+                        <div class="icon"><i class="fa fa-lock" aria-hidden="true"></i></div>
+                        <input type="password" placeholder="Password" name="password" id="inputPasswordLogin" />
+                    </div>
+                    <div class="login_fields_submit"><input type="submit" value="Log in"/></div>
+                </form>
+            </div>
+
+            <div class="login_msgs">
+                <i th:if="${usernameOrPasswordInvalid != null or serverNotResponding != null or databaseNotResponding != null}" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <span th:if="${usernameOrPasswordInvalid}">Invalid username or password</span>
+                <span th:if="${serverNotResponding}">iRODS not responding</span>
+                <span th:if="${databaseNotResponding}">Database not responding</span>
+            </div>
+
+            <div class="login_copyright">
+                <span>&copy; 2015-2017 DELL EMC All rights reserved.</span>
+            </div>
+        </div>
 	</body>
     
     <script>
