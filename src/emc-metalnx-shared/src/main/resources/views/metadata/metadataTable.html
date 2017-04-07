@@ -134,25 +134,20 @@
             </div>
 
             <div class="row">
-                <h4 class="property-title"><i class="fa fa-tags"></i><span th:text="#{metadata.tab.title}"></span></h4>
-                <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
-            </div>
-
-            <div class="row">
-                <div id="metadataActions" class="col-md-6 col-sm-6 col-xs-9">
+                <h4 class="property-title "><i class="fa fa-tags"></i><span th:text="#{metadata.tab.title}"></span></h4>
+                <div id="metadataActions" class="pull-right">
                     <button
-                        th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"
-                        id="addMetadataBtn" class="btn btn-primary btn-sm btn-property"
-                        th:onclick="'javascript:addMetadataModal(\'' + ${currentPath} +'\');'"
-                        href="#" style="">
-                            <i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
+                            th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"
+                            id="addMetadataBtn" class="btn btn-primary btn-sm btn-property pull-right"
+                            th:onclick="'javascript:addMetadataModal(\'' + ${currentPath} +'\');'"
+                            href="#" style="">
+                        <i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
+                    </button>
+                    <button id="exportMetadataToCSV" class="btn btn-default btn-property btn-sm" href="#" style="">
+                        <i class="fa fa-download"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
                     </button>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-3">
-                    <button id="exportMetadataToCSV" class="btn btn-primary btn-property btn-sm pull-right" href="#" style="">
-                        <i class="fa fa-external-link"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
-                    </button>
-                </div>
+                <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
             </div>
 
             <th:block th:unless="${#lists.isEmpty(dataGridMetadataList)}">
@@ -189,8 +184,8 @@
                                     <i class="fa fa-trash-o"></i>
                                     Delete
                                 </button>
-                                <button type="button" class="btn btn-primary btn-xs saveEditAVUActionColumn hidden" title="Save"><i class="fa fa-check"></i></button>
-                                <button type="button" class="btn btn-default btn-xs cancelEditAVUActionColumn hidden" title="Cancel"><i class="fa fa-times"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs saveEditAVUActionColumn hidden" title="Save"><i class="fa fa-check"></i><span class="btn-save-label" th:text="#{metadata.table.button.label.save}"></span></button>
+                                <button type="button" class="btn btn-default btn-xs cancelEditAVUActionColumn hidden" title="Cancel"><i class="fa fa-times"></i><span class="btn-cancel-label" th:text="#{metadata.table.button.label.cancel}"></span></button>
                             </td>
                         </tr>
                     </tbody>
@@ -269,9 +264,21 @@
                 ajaxEncapsulation("/emc-metalnx-web/metadata/addMetadata/", "POST", {path: path, attribute: attr, value: val, unit: unit}, displayMetadata, null, null, null);
             }
 
+            function disableDeletion() {
+                var permission = ([[${permissionOnCurrentPath}]]).toLowerCase();
+                console.log(permission);
+                var disableDelBtn = (((permission.indexOf("write") == -1) && (permission.indexOf("own") == -1))? true: false);
+                console.log("write: " + permission.indexOf("write"));
+                console.log("own: " + permission.indexOf("own"));
+                console.log(disableDelBtn);
+                return disableDelBtn;
+            }
+
             $(document).ready(function(){
 
                 $('#delMetadataBtn').prop("disabled", true);
+                $('input.metadataCheckbox').prop("disabled",disableDeletion());
+                $('#checkAllMetadata').prop("disabled",disableDeletion());
                 $('input.metadataCheckbox').click(function(){
                     if($('input.metadataCheckbox').length == $('input.metadataCheckbox:checked').length){
                         $('#checkAllMetadata').prop('checked', true);
@@ -281,6 +288,7 @@
                             $('#delMetadataBtn').prop("disabled", true);
                         }else{
                             $('#delMetadataBtn').prop("disabled", false);
+                            $('#delMetadataBtn').removeClass("disabled");
                         }
                         $('#checkAllMetadata').prop('checked', false);
                     }
@@ -291,6 +299,7 @@
                         $('input.metadataCheckbox').prop('checked', true);
                         if($('input.metadataCheckbox:checked').length != 0){
                             $('#delMetadataBtn').prop("disabled", false);
+                            $('#delMetadataBtn').removeClass("disabled");
                         }
                     }else{
                         $('input.metadataCheckbox').prop('checked', false);
@@ -306,6 +315,10 @@
                     $(this).parents('tr').find('.deleteAVUActionColumn').addClass('hidden');
                     $(this).parents('tr').find('.cancelEditAVUActionColumn').removeClass('hidden');
                     $(this).parents('tr').find('.saveEditAVUActionColumn').removeClass('hidden');
+                    $(this).parents('tr').find('.saveEditAVUActionColumn > span.btn-save-label').removeClass('hidden');
+                    console.log("removed hidden from save btn");
+                    $(this).parents('tr').find('.cancelEditAVUActionColumn > span.btn-cancel-label').removeClass('hidden');
+                    console.log("removed hidden from cancel btn");
                 });
                 $('.cancelEditAVUActionColumn').click(function(){
                     $(this).parents('tr').find('.metadataCheckbox').prop('disabled', false);
@@ -343,10 +356,8 @@
                     $('#deleteMetadataUnit').val($(this).parents('tr').find('.metadataCheckbox').attr('data-unit'));
                     $('#deleteMetadataModal').modal('show');
                 });
-                $('#delMetadataBtn').click(function(){
-                    $('#deleteOneAVU').val("false");
-                    $('#deleteMetadataModal').modal('show');
-                });
+
+
 
                 var datatable = $("#metadaTable").DataTable({
                     "dom": dtPatternMlxStandard,
@@ -360,6 +371,7 @@
                         $('#metadaTable tbody td').each(function () {
                             $(this).attr('title', $(this).text().trim());
                         });
+
                     },
                     "drawCallback": function(){
                         $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
@@ -369,10 +381,17 @@
                              'block'
                         );
                         $('input[name=selectAllMetadata]').prop("checked", false);
+
                     },
                 });
-
                 addCollectionMetadataDelBtn('metadaTable', datatable);
+                $('#delMetadataBtnLabel').html([[#{metadata.tab.btn.delete}]]);
+                $('#delMetadataBtn').addClass("disabled");
+                $('#delMetadataBtn').click(function(){
+                    console.log('delete');
+                    $('#deleteOneAVU').val("false");
+                    $('#deleteMetadataModal').modal('show');
+                });
             });
 
             $("#exportMetadataToCSV").click(function() {

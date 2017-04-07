@@ -86,7 +86,7 @@ function addCollectionActions(table_id, datatable){
 function addCollectionMetadataDelBtn(table_id, datatable){
     $("div.toolbar").html(
         '<button' +
-        '   id="delMetadataBtn" class="btn btn-default btn-sm btn-property" href="#">' +
+        '   id="delMetadataBtn" class="btn btn-default btn-property" href="#">' +
         '        <i class="fa fa-trash-o"></i> <span id="delMetadataBtnLabel"></span>' +
         '</button>'
         );

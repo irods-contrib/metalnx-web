@@ -719,6 +719,33 @@ div.dataTables_wrapper .toolbar .input-group{
 	margin-right: 0.1%;
 }
 
+#metadataActions{
+    margin-right: 15px;
+}
+
+#metadataActions > button{
+    min-width: 80px;
+}
+
+#metadataModal button {
+    min-width: 110px;
+}
+
+#addMetadataBtn{
+    margin-left: 10px;
+}
+
+.saveEditAVUActionColumn,
+.cancelEditAVUActionColumn{
+    min-width: 40px;
+    margin-right: 5px;
+}
+
+.saveEditAVUActionColumn > i,
+.cancelEditAVUActionColumn > i{
+    margin-right: 5px;
+}
+
 .shortcuts-section * {
 	margin-bottom: 2%;
 }
