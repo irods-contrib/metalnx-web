@@ -56,7 +56,20 @@ body {
 }
 
 #wrapper{
-	background-color: #263238;
+    opacity:1;
+    -webkit-transition-timing-function: cubic-bezier(0.68, -0.25, 0.265, .85);
+    transition-property:transform,opacity,box-shadow,top,left;
+    transition-duration:.5s;
+    transform-origin:161px 100%;
+    transform:rotateX(0deg);
+    background: #35394a; /* Old browsers */
+    background: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* IE10+ */
+    background: linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 #wrapper nav.navbar{
@@ -1471,9 +1484,6 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .navbar-top-links .dropdown-user > li > a:hover{
     background-color: #3d9de0;
 }
-.navbar-default.sidebar{
-    background-color: #263238;
-}
 
 .sidebar .sidebar-nav.navbar-collapse {
     padding-right: 0;
@@ -1484,29 +1494,40 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
     padding: 15px;
 }
 
+.sidebar #side-menu{
+    opacity:1;
+    -webkit-transition-timing-function: cubic-bezier(0.68, -0.25, 0.265, .85);
+    transition-property:transform,opacity,box-shadow,top,left;
+    transition-duration:.5s;
+    transform-origin:161px 100%;
+    transform:rotateX(0deg);
+    background: #35394a; /* Old browsers */
+    background: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* IE10+ */
+    background: linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
 .sidebar ul li a{
-    border-top: 1px solid #e7e7e7;		
 	color: #b0bcc5;
-	border-right: 6px solid #263238;
+	border-right-width: 6px;
+	border-right-style: solid;
+	border-right-color: #35394a; /* Old browsers */
+    border-right-color: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
+    border-right-color: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
+    border-right-color: -webkit-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Chrome10+,Safari5.1+ */
+    border-right-color: -o-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Opera 11.10+ */
+    border-right-color: -ms-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* IE10+ */
+    border-right-color: linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* W3C */
 	padding: 5px 0 5px 0;
 }
 
-.sidebar ul li:last-child a{
-    border-bottom: 1px solid #e7e7e7;	
-} 
-
 .sidebar ul li a:hover, .sidebar ul li a:focus, .sidebar ul li a.active{
-    background: #2f3c43;
-    border-right: 6px solid #3580bd;
-}
-
-.sidebar ul li a:hover
-{
-	color: #fff;
-}
-
-.sidebar ul li a.active{
-	border-right: 6px solid #3580bd;
+    background: #35394a;
+    border-right: 6px solid #2c95dd;
 }
 
 .sidebar .arrow {
@@ -2011,9 +2032,6 @@ form.registerForm > .pull-right > .btn{
 		padding: 0 30px;
 		border-left: 1px solid #e7e7e7;
 	}
-	#side-menu {
-		background-color: #263238;
-	}
 	#side-menu li a span.fa-stack.fa-lg
 	{
 		font-size:20px;
@@ -2060,7 +2078,6 @@ form.registerForm > .pull-right > .btn{
 	    color: #f9f9f9;
 	    width: 100%;
 	    text-align: center;
-	    border: 1px solid #3580bd;
 	    font-family: Verdana, Geneva, sans-serif;
 	}
 	
