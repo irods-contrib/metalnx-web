@@ -34,8 +34,7 @@
 			<div class="col-sm-12">
 				<h1 class="page-header pull-left" th:text="#{users.profile.management.page.title}"></h1>
 				<a id="profiles-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
-				<div class="header-line"></div>
-				<div th:if="${ userProfileAddedSuccessfully != null or userProfileModifiedSuccessfully != null or profileRemovedSuccessfully != null }" 
+				<div th:if="${ userProfileAddedSuccessfully != null or userProfileModifiedSuccessfully != null or profileRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>

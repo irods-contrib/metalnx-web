@@ -815,23 +815,14 @@ h1.page-header {
 	color: #428bca;
 	border-bottom:none;
 	padding-bottom: 0;
-	margin:25px 0 10px 0;
+	margin:30px 0 30px 0;
 }
 
 h1 + span.subtitle
 {
-	margin-top: 33px; 
+	margin-top: 45px;
 	margin-left:10px;
 	float: left;
-}
-
-div.header-line
-{
-    clear: both;
-    border-top: 1px dotted #cfcfcf;
-    width: 100%;
-    margin-top:0;
-    margin-bottom: 10px;
 }
 
 #info-collection label:AFTER {
@@ -1264,6 +1255,24 @@ a.page-hint {
     opacity: 1 !important;
 }
 
+.btn-users,
+.btn-groups,
+.btn-templates,
+.btn-resource {
+    float: right;
+    margin-bottom: 10px;
+}
+
+.btn-shared, .btn-resource-view, .btn-user-view, .btn-template-action{
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    min-width: 100px;
+}
+
+.clear {
+    clear: both;
+}
 
 #actionsWait{
     margin-top:7px;
@@ -1677,7 +1686,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 #templateListAsync #actions{
 	position:absolute;
 	width: 50%;
-	margin-top: -34px;
+	margin-top: -44px;
 }
 
 #templateListAsync .scrollable-table{
@@ -2049,8 +2058,9 @@ form.registerForm > .pull-right > .btn{
 	}
 	.sidebar ul li a i{
 		display: block;
+		font-size: 30px;
 	}
-	.sidebar ul li a i.fa.fa-tachometer,
+	/*.sidebar ul li a i.fa.fa-tachometer,
 	.sidebar ul li a i.fa.fa-database,
 	.sidebar ul li a i.fa.fa-user,
 	.sidebar ul li a i.fa.fa-group,
@@ -2067,7 +2077,7 @@ form.registerForm > .pull-right > .btn{
 	.sidebar ul li a i.fa-inverse.fa-cubes
 	{
 		margin-top: 0;
-	}
+	}*/
 	.sidebar ul li:last-child a {
 		border-bottom-style: none;
 	}

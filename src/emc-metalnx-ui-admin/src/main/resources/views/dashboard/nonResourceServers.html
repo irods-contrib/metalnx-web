@@ -20,7 +20,6 @@
 			<h4 class="">Other Devices</h4>
 			<table class="table" th:if="${nonResourceServers}">
 				<tr th:each="nonResourceServer : ${nonResourceServers}">
-					<!-- <div class="header-line"></div> -->
 					<td>
 						<a th:href="@{'/dashboard/detail/' + ${nonResourceServer.hostname} + '/' }" th:text="${nonResourceServer.hostname}"></a>
 						<small th:text="${nonResourceServer.ip}"></small>

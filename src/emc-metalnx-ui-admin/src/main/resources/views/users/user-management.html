@@ -33,8 +33,7 @@
 			<div class="col-sm-12">
 				<h1 class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
 				<a id="users-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
-				<div class="header-line"></div>
-				<div th:if="${ userAddedSuccessfully != null or userModifiedSuccessfully != null or userRemovedSuccessfully != null}" 
+				<div th:if="${ userAddedSuccessfully != null or userModifiedSuccessfully != null or userRemovedSuccessfully != null}"
 					class="alert alert-success alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -59,82 +58,80 @@
 				  	
 					<span th:text="#{ users.not.removed.successfully }"></span>
 				</div>	
-						
-				<!-- Download CSV and Add User -->
-				<div class="row">
-					<div class="col-sm-6">
-						<a th:href="@{ ${urlMap.URL_ADD_USER} }"
-							class="btn btn-primary btn-sm pull-left" th:text="#{users.management.add.button}" style="margin-right: 5px;"></a>
-						<a th:href="@{ ${urlMap.URL_USERS_CSV_REPORT} }"
-							class="btn btn-default btn-sm pull-left" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
-					</div>
-					<div class="col-sm-6">
-						<a id="usersMgtBtn" th:title="#{users.management.menu.title}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm pull-right" style="margin-right: 5px;" disabled="">
-							<i class="fa fa-user"></i>
-							<span th:text="#{users.management.menu.title}"></span>
-						</a>
-						<a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm pull-right" style="margin-right: 5px;">
-							<span class="fa-stack fa-lg" style="margin-left: auto; margin-right: auto; font-size: .7em;">
-								<i class="fa fa-square-o fa-stack-2x"></i> 
-								<i class="fa fa-user fa-stack-1x" style="font-size:1em"></i> &nbsp; 
-                    		</span>
-							<span th:text="#{users.profile.management.menu.title}"></span>
-						</a>
-					</div>
-				</div>
+            </div>
+        </div>
+        <!-- Download CSV and Add User -->
+        <div class="row">
+            <div class="col-12-md">
+                <div class="col-sm-6">
+                    <a id="usersMgtBtn" th:title="#{users.management.menu.title}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;" disabled="">
+                        <i class="fa fa-user"></i>
+                        <span th:text="#{users.management.menu.title}"></span>
+                    </a>
+                    <a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;">
+                        <span class="fa-stack fa-lg" style="margin-left: auto; margin-right: auto; font-size: .7em;">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-user fa-stack-1x" style="font-size:1em"></i> &nbsp;
+                        </span>
+                        <span th:text="#{users.profile.management.menu.title}"></span>
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a th:href="@{ ${urlMap.URL_ADD_USER} }"
+                        class="btn btn-primary btn-sm btn-users" th:text="#{users.management.add.button}" style="margin-right: 5px;"></a>
+                    <a th:href="@{ ${urlMap.URL_USERS_CSV_REPORT} }"
+                        class="btn btn-default btn-sm btn-users" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
+                </div>
+            </div>
+        </div>
+        <!-- Table loader Ajax Gif -->
+        <div id="table-loader" class="table-loader">
+            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+            <p class="text-center" th:text="#{loading.table.label}"></p>
+        </div>
 
-				<!-- Table loader Ajax Gif -->
-				<div id="table-loader" class="table-loader">
-					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-					<p class="text-center" th:text="#{loading.table.label}"></p>
-				</div>
+        <!-- Current Users Table -->
+        <div id="userListAsync"></div>
 
-				<!-- Current Users Table -->
-				<div id="userListAsync"></div>
+        <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+            $(document).ready(function(){
+                // Add popover on page title
+                $('#users-page-title').popover({
+                    title:[[#{users.management.page.title}]],
+                    content:[[#{users.management.page.title.popover}]],
+                    trigger: 'hover click',
+                    placement: 'left',
+                });
+                // Add popover on page title
+                $('#usersMgtBtn').tooltip({
+                    trigger: 'hover click',
+                    placement: 'top',
+                });
+                // Add popover on page title
+                $('#profilesMgtBtn').tooltip({
+                    trigger: 'hover click',
+                    placement: 'top',
+                });
+            });
+            $(function() {
+                function populateUserTableDiv(data) {
+                    $("#userListAsync").html(data);
+                    $("#table-loader").hide();
+                    $("#userListAsync").show();
+                }
 
-				<script type="text/javascript" th:inline="javascript">
-				/*<![CDATA[*/
-				    $(document).ready(function(){
-						// Add popover on page title
-				        $('#users-page-title').popover({
-				    		title:[[#{users.management.page.title}]],
-				    		content:[[#{users.management.page.title.popover}]],
-				   			trigger: 'hover click',
-				       		placement: 'left',
-				   		});
-				     	// Add popover on page title
-				        $('#usersMgtBtn').tooltip({
-				   			trigger: 'hover click',
-				       		placement: 'top',
-				   		});
-				     	// Add popover on page title
-				        $('#profilesMgtBtn').tooltip({
-				   			trigger: 'hover click',
-				       		placement: 'top',
-				   		});
-					});
-					$(function() {
-						function populateUserTableDiv(data) {
-							$("#userListAsync").html(data);
-							$("#table-loader").hide();
-							$("#userListAsync").show();
-						}
+                // Loads results in user management page
+                function loadUserResults() {
+                    var url = "/emc-metalnx-web/users/findAll/";
+                    ajaxEncapsulation(url, "GET", "", populateUserTableDiv, null, null);
+                }
 
-						// Loads results in user management page
-						function loadUserResults() {
-							var url = "/emc-metalnx-web/users/findAll/";
-							ajaxEncapsulation(url, "GET", "", populateUserTableDiv, null, null);
-						}
-
-						// When the user arrives to this page
-						loadUserResults();
-					});
-				/*]]>*/
-				</script>
-
-			</div>
-		</div>
-
+                // When the user arrives to this page
+                loadUserResults();
+            });
+        /*]]>*/
+        </script>
 	</div>
 	<!-- /.layout:content -->
 

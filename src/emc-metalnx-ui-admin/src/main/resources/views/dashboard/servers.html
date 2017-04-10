@@ -20,7 +20,6 @@
 			<h4 class="">iRODS Servers</h4>
 			<table class="dashboardServersList" width="100%">
 				<tr th:each="server : ${servers}">
-					<!-- <div class="header-line"></div>	 -->		
 					<td>
 	                    <img alt="Server" class="dashboard-server-icon" 
 									th:src="@{${ '/images/Server-' + server.machineStatus + '.png' }}" />
@@ -31,7 +30,6 @@
 					</td>
 				</tr>
 			</table>
-			<div class="header-line"></div>
 			<a th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" class="pull-right">View All Servers</a>
 		</div>
 		<div th:if="${isRMDRunningOnAllServers == false}" class="panel-footer">

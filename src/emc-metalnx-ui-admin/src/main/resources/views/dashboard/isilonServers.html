@@ -21,7 +21,6 @@
 			<h4 class="">Isilon Devices</h4>
 			<table class="table">
 				<tr th:each="isilon : ${isilonServers}">
-					<!-- <div class="header-line"></div> -->
 					<td>
 						<a th:href="'https://' + ${isilon.ip} + ':8080/'" target="_blank" th:text="${isilon.ip}"></a>
 						<small th:text="${isilon.hostname == isilon.ip ? '' : '['+isilon.hostname+']'}"></small>

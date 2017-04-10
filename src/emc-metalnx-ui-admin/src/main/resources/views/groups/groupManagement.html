@@ -34,7 +34,6 @@
 			<div class="col-sm-12">
 				<h1 class="page-header pull-left" th:text="#{groups.management.page.title}"></h1>
 				<a  id="groups-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
-				<div class="header-line"></div>
 				<div th:if="${ groupAddedSuccessfully != null or groupModifiedSuccessfully != null or groupRemovedSuccessfully != null}" class="alert alert-success alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -61,9 +60,9 @@
 				<!-- CSV -->
 				<div class="row">
 					<div class="col-sm-12">
-						<a th:href="@{ ${urlMap.URL_ADD_GROUP} }" class="btn btn-primary btn-sm" th:text="#{groups.management.add.button}"></a>
+						<a th:href="@{ ${urlMap.URL_ADD_GROUP} }" class="btn btn-primary btn-sm btn-groups" th:text="#{groups.management.add.button}"></a>
 						<a th:href="@{ ${urlMap.URL_GROUPS_CSV_REPORT} }"
-							class="btn btn-default btn-sm" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
+							class="btn btn-default btn-sm btn-groups" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
 					</div>
 				</div> <!-- /. row Search Box -->
 				

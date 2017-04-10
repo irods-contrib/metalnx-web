@@ -28,8 +28,7 @@
 			<div class="col-sm-12">
 				<h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
 				<a id="templates-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
-				<div class="header-line"></div>		
-				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }" 
+				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -83,7 +82,7 @@
 				
 				<div class="row">
 					<div class="col-sm-12">
-						<div class="btn-group pull-right">
+						<div class="btn-group pull-right btn-templates">
 						 	<a type="button" th:href="@{ ${urlMap.URL_ADD_TEMPLATE} }" class="btn btn-primary">Add Template</a>
 						 	<a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 								<span class="caret"></span>
