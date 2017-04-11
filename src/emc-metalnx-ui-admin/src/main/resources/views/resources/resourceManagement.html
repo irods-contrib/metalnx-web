@@ -72,22 +72,22 @@
             <div class="col-12-md">
                 <!-- Map view and list view for resources -->
                 <div class="col-sm-6">
-                    <a id="serverViewBtn" class="btn btn-default btn-sm btn-resource-view" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view.tooltip}" style="margin-right: 5px;">
+                    <a id="serverViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-server"> </span>
                         <span th:text="#{resources.management.server.view.label}"> </span>
                     </a>
-                    <a id="mapViewBtn" class="btn btn-default btn-sm btn-resource-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view.tooltip}" style="margin-right: 5px;">
+                    <a id="mapViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-sitemap"> </span>
                         <span th:text="#{resources.management.map.view.label}"> </span>
                     </a>
-                    <a id="listViewBtn" class="btn btn-default btn-sm btn-resource-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view.tooltip}" style="margin-right: 5px;">
+                    <a id="listViewBtn" class="btn btn-default btn-sm btn-resources-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-list"> </span>
                         <span th:text="#{resources.management.list.view.label}"> </span>
                     </a>
                 </div>
                 <!-- Add resource -->
                 <div class="col-sm-6 ">
-                    <a id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resource" th:text="#{resources.management.add.button}"></a>
+                    <a id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resources" th:text="#{resources.management.add.button}"></a>
                 </div>
             </div>
         </div> <!-- /. row Search Box -->

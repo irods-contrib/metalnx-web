@@ -61,7 +61,6 @@ body {
     transition-property:transform,opacity,box-shadow,top,left;
     transition-duration:.5s;
     transform-origin:161px 100%;
-    transform:rotateX(0deg);
     background: #35394a; /* Old browsers */
     background: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
@@ -461,8 +460,9 @@ h3.collection-details
 	overflow: auto;
 	padding: 0;
 	margin-top: 1%;
-	border: 1px solid #ccc;
+	border: 1px solid #CBDFF7;
 	border-radius: 4px;
+	background: #fff;
 }
 
 #resourceMapDashboard #resourceMapPanel{
@@ -1258,16 +1258,17 @@ a.page-hint {
 .btn-users,
 .btn-groups,
 .btn-templates,
-.btn-resource {
+.btn-resources {
     float: right;
     margin-bottom: 10px;
+    min-width: 120px;
 }
 
-.btn-shared, .btn-resource-view, .btn-user-view, .btn-template-action{
+.btn-shared, .btn-resources-view, .btn-users-view, .btn-template-action{
     float: left;
     margin-right: 5px;
     margin-bottom: 10px;
-    min-width: 100px;
+    min-width: 120px;
 }
 
 .clear {
@@ -1632,9 +1633,12 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .metadata > .tree-view-panel > .tabpanel {
 	margin-left: 0;
 	padding-left: 0;
-	margin-bottom: 0px;
+	margin-bottom: 5px;
+	padding-bottom: 10px;
 }
-
+#properties-search {
+    padding-bottom: 10px;
+}
 #metadata-search > div, #properties-search > div{
 	display:inline-block;
 	width:100%;
@@ -1642,8 +1646,11 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 #metadataSearchActionButtons{
 	margin-bottom: 10px;
 }
+
+#propertiesSearchActionButtons button,
 #metadataSearchActionButtons button{
-	margin-left:5px;
+	margin-left:10px;
+	min-width: 110px;
 }
 
 .metadataSearchField{
@@ -1684,9 +1691,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 }
 
 #templateListAsync #actions{
-	position:absolute;
 	width: 50%;
-	margin-top: -44px;
 }
 
 #templateListAsync .scrollable-table{
@@ -1706,8 +1711,8 @@ footer {
 }
 
 .dashboardWidget .panel{
-	border-radius: 0px;
-	border-color: #fff;
+	border-radius: 5px;
+	border-color: #CBDFF7;
 }
 #systemHealth .panel.panel-default{
 	padding: 10px;
@@ -1742,9 +1747,9 @@ footer {
 	height: 630px;
 }
 .resourceMapDashboardWrapper .panel{
-	border-radius: 0px;
+	border-radius: 5px;
 	margin-bottom: 10px;
-	border-color: #fff;
+	border: 1px solid #CBDFF7;
 }
 .resourceMapDashboardWrapper .panel-body{
 	height: 610px;
@@ -1752,6 +1757,10 @@ footer {
 
 .resourceMapDashboardWrapper #resourceInfo{
 	z-index:1;
+}
+
+.resourceMapDashboardWrapper a {
+    margin-top: 15px;
 }
 
 #totalStorageDiv{
@@ -1787,10 +1796,12 @@ footer {
 .dashboardCard .panel-body .cardIconWrapper{
 	background-color: #3580bd;
 	position: absolute;
-	height: 69%;
+	height: 65%;
 	top: 0px;
 	left: 16px;
 	width: 23%;
+	border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 .dashboardCard .panel-body .cardIcon{
 	font-size: 18pt;
@@ -1798,8 +1809,8 @@ footer {
 	color: #fff;
 }
 .dashboardCard .panel{
-	border-color: #fff;
-	border-radius: 0px;
+	border-color: #CBDFF7;
+	border-radius: 5px;
 }
 .dashboardCard .panel-body .fa-stack{
 	width: 25%;
@@ -2060,24 +2071,6 @@ form.registerForm > .pull-right > .btn{
 		display: block;
 		font-size: 30px;
 	}
-	/*.sidebar ul li a i.fa.fa-tachometer,
-	.sidebar ul li a i.fa.fa-database,
-	.sidebar ul li a i.fa.fa-user,
-	.sidebar ul li a i.fa.fa-group,
-	.sidebar ul li a i.fa.fa-folder
-	{
-		font-size: 33px;
-	}
-	.sidebar ul li a i.fa-inverse{
-		font-size:18px;
-		color: #263238;
-		margin-top: 0;
-	}
-	.sidebar ul li a i.fa-inverse.fa-search,
-	.sidebar ul li a i.fa-inverse.fa-cubes
-	{
-		margin-top: 0;
-	}*/
 	.sidebar ul li:last-child a {
 		border-bottom-style: none;
 	}

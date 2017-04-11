@@ -1,6 +1,6 @@
 //patterns for dom option in datatables
-var dtPatternForMetadata =  '<"row"<"download_csv pull-left col-sm-12 col-md-12">>'+
-                            '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6"l<"toolbar">><"col-md-6"i>>>'+
+var dtPatternForMetadata =  '<"row"<" pull-left col-sm-12 col-md-12">>'+
+                            '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6"l<"download_csv">><"col-md-6"i>>>'+
                             '<"row"<"col-md-12 minHeightForLoading"tr>>'+
                             '<"row"<"col-md-12"p>>';
 var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8 col-sm-8 col-xs-8"l<"toolbar">><"col-md-4 col-sm-4 col-xs-4"f>><"col-md-12 col-xs-12"<"msg">i>>'+
@@ -9,6 +9,9 @@ var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8
 var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
+var dtPatternMlxTemplatesList = '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6 col-xs-6"l<"toolbar">><"col-md-6 col-xs-6"f>><"col-md-12 col-xs-12"i>>'+
+                                '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
+                                '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
 var dtPatternMetadataTemplate = '<"row"<"col-sm-12 col-md-12"<"col-xs-6 #info_templateFieldsListTable"i><"col-xs-6"f>>><"row"<"col-sm-12 col-md-12"tr>>';
 var dtPatternUserMgmt = '<"row"<"col-sm-12 col-md-12"<"col-xs-4"l><"col-xs-4"i><"col-xs-4"f>>><"row"<"col-sm-12 col-md-12"tr>><"row"<"col-md-12"p>>';
 
@@ -90,6 +93,27 @@ function addCollectionMetadataDelBtn(table_id, datatable){
         '        <i class="fa fa-trash-o"></i> <span id="delMetadataBtnLabel"></span>' +
         '</button>'
         );
+}
+
+//Adds Action button on Template table
+function addTemplateActionBtn(table_id, datatable){
+    $('div.toolbar').html(
+        '<div id="actions" class="pull-left"><div class="btn-group">'+
+            '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled="">' +
+                '<span>Action</span> &nbsp;' +
+                '<span class="caret"></span>' +
+                '<span class="sr-only">Toggle Dropdown</span>' +
+            '</button>' +
+           '  <ul class="dropdown-menu" role="menu">' +
+                '<li>'+
+                    '<a href="#" onclick="javascript:exportFilesToXML();" class=""><i class="fa fa-external-link"></i> Export</a>' +
+                '</li>' +
+                '<li>' +
+'                    <a href="#" id="removeTemplatesBtn" onclick="javascript:confirmTemplateRemoval();" class=""><i class="glyphicon glyphicon-trash"></i> Delete</a>' +
+                '</li>' +
+            '</ul>' +
+        '</div></div>'
+    );
 }
 
 /**

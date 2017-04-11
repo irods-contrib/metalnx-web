@@ -27,32 +27,6 @@
 	<div th:fragment="templateList" class="row">
 	
 		<div class="col-sm-12">
-			<div id="actions">
-				<!-- <a href="/emc-metalnx-web/templates/modify/" id="modifyBtn" class="hideElement"><i class="fa fa-edit"></i> Modify</a>
-				<a href="#" onclick="javascript:exportFilesToXML();" class="hideElement"><i class="fa fa-external-link"></i> Export</a>
-				<a href="#" id="removeTemplatesBtn" th:onclick="'javascript:confirmTemplateRemoval();'"
-					class="hideElement"><i class="glyphicon glyphicon-trash"></i> Delete</a> -->
-					
-				<div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled="">
-				    	<span>Select Action</span> &nbsp;
-				  		<span class="caret"></span>
-				    	<span class="sr-only">Toggle Dropdown</span>
-				  	</button>
-				  	<ul class="dropdown-menu" role="menu">
-				  		<!-- <li>
-				  			<a href="/emc-metalnx-web/templates/modify/" id="modifyBtn" class="hideElement"><i class="fa fa-edit"></i> Modify</a>
-						</li> -->
-				  		<li>
-				  			<a href="#" onclick="javascript:exportFilesToXML();" class=""><i class="fa fa-external-link"></i> Export</a>
-						</li>
-				  		<li>
-				  			<a href="#" id="removeTemplatesBtn" th:onclick="'javascript:confirmTemplateRemoval();'" class=""><i class="glyphicon glyphicon-trash"></i> Delete</a>
-						</li>
-					</ul>							
-				</div>
-			</div>
-			
 			<div class="">
 				<table class="table table-hover" id="templatesListTable">
 					<thead>
@@ -197,7 +171,7 @@
 				});
 				
 				var datatable = $("#templatesListTable").DataTable({
-					"dom": dtPatternMlxStandard,
+					"dom": dtPatternMlxTemplatesList,
 	    		    "language": i18n,
 					"stateSave": true,
 					"autoWidth": false,
@@ -219,6 +193,7 @@
 	    	            $('input[name=selectAllCheckboxes]').prop("checked", false);
 	    	        },
 				});
+				addTemplateActionBtn('templatesListTable',datatable);
 			});
 		
 			function handleRemoveTemplatePermission(canRemove){

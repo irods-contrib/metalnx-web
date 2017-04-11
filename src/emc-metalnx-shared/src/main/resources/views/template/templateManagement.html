@@ -29,18 +29,18 @@
 				<h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
 				<a id="templates-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
-					class="alert alert-success alert-dismissible text-center" role="alert">
+					class="alert alert-success alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
-				  	<b><span th:if="${ templateAddedSuccessfully }" th:text="${ templateAddedSuccessfully }" class="text-center"></span></b>
-				  	<b><span th:if="${ templateModifiedSuccessfully }" th:text="${ templateModifiedSuccessfully }" class="text-center"></span></b>
-				  	<b><span th:if="${ templateRemovedSuccessfully }" class="text-center">Template(s)</span></b>
+				  	<b><span th:if="${ templateAddedSuccessfully }" th:text="${ templateAddedSuccessfully }" class="text-center clear"></span></b>
+				  	<b><span th:if="${ templateModifiedSuccessfully }" th:text="${ templateModifiedSuccessfully }" class="text-center clear"></span></b>
+				  	<b><span th:if="${ templateRemovedSuccessfully }" class="text-center clear">Template(s)</span></b>
 				  	
-					<span th:if="${ templateAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
-					<span th:if="${ templateModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
-					<span th:if="${ templateRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
+					<span th:if="${ templateAddedSuccessfully }" th:text="#{ confirmation.add.successfully }" class="text-center clear"></span>
+					<span th:if="${ templateModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }" class="text-center clear"></span>
+					<span th:if="${ templateRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }" class="text-center clear"></span>
 				</div>
 				
 				<div th:if="${templateNotModifiedSuccessfully}">
