@@ -44,12 +44,12 @@
 							<td>
 								<a class="btn btn-default btn-xs" th:id="${'btn_edit_' + userProfile.getProfileName()}"
 									th:href="${urlMap.URL_MODIFY_USER_PROFILE} + ${userProfile.profileId} + '/'">
-									<span class="glyphicon glyphicon-pencil"> </span>
+									<i class="fa fa-pencil"></i><span  th:text="#{users.profile.management.edit.button}"></span>
 								</a>
 								&nbsp; &nbsp;
 								<button type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + userProfile.getProfileName()}"
 									th:onclick="'javascript:confirmUserProfileRemoval(\'' + ${userProfile.getProfileName()} + '\', \'' + ${userProfile.getProfileId()} + '\');'">
-									<span class="glyphicon glyphicon-trash"> </span>
+									<i class="fa fa-trash-o"></i><span  th:text="#{users.profile.management.delete.button}"></span>
 								</button>
 							</td>
 						</tr>

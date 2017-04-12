@@ -53,11 +53,11 @@
 		<!-- User menu Box -->
 		<div class="row">
 			<div class="col-sm-6">
-				<a id="usersMgtBtn" th:title="#{users.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;">
+				<a id="usersMgtBtn" th:title="#{users.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;">
 					<i class="fa fa-user"></i>
 					<span th:text="#{users.management.menu.title}"></span>
 				</a>
-				<a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;" disabled="">
+				<a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;" disabled="">
 					<span class="fa-stack fa-lg" style="margin-left: auto; margin-right: auto; font-size: .7em;">
 						<i class="fa fa-square-o fa-stack-2x"></i>
 						<i class="fa fa-user fa-stack-1x" style="font-size:1em"></i> &nbsp;

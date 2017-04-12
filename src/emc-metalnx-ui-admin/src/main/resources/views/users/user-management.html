@@ -49,7 +49,7 @@
 				</div>	
 				
 				<div th:if="${ userNotRemovedSuccessfully != null}" 
-					class="alert alert-danger alert-dismissible text-center" role="alert">
+					class="alert alert-danger alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
@@ -64,11 +64,11 @@
         <div class="row">
             <div class="col-12-md">
                 <div class="col-sm-6">
-                    <a id="usersMgtBtn" th:title="#{users.management.menu.title}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;" disabled="">
+                    <a id="usersMgtBtn" th:title="#{users.management.menu.title}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;" disabled="">
                         <i class="fa fa-user"></i>
                         <span th:text="#{users.management.menu.title}"></span>
                     </a>
-                    <a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view" style="margin-right: 5px;">
+                    <a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;">
                         <span class="fa-stack fa-lg" style="margin-left: auto; margin-right: auto; font-size: .7em;">
                             <i class="fa fa-square-o fa-stack-2x"></i>
                             <i class="fa fa-user fa-stack-1x" style="font-size:1em"></i> &nbsp;

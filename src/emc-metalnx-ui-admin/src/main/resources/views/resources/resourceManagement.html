@@ -38,7 +38,7 @@
 				<div th:if="${ resourceAddedSuccessfully != null or
 								resourceModifiedSuccessfully != null or
 								resourceDeletedSuccessfully != null}" 
-					class="alert alert-success alert-dismissible text-center" 
+					class="alert alert-success alert-dismissible text-center clear"
 					role="alert">
 					
 				  	<button type="button" class="close" data-dismiss="alert">
@@ -57,7 +57,7 @@
 				</div>
 				
 				<!-- Message when a resource cannot be deleted -->
-				<div th:if="${resourceNotDeletedSuccessfully}" class="alert alert-danger alert-dismissible text-center" role="alert">
+				<div th:if="${resourceNotDeletedSuccessfully}" class="alert alert-danger alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>

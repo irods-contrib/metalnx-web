@@ -1433,6 +1433,18 @@ alert-dialog {
     color: #fff;
 }
 
+#side-menu li.profile: first-child span{
+    bottom:0;
+    margin-bottom: 5px;
+}
+
+i.fa-square-o.menu-icon{
+    font-size: 42px;
+}
+i.fa-user.menu-icon{
+    font-size: 25px;
+}
+
 #uploadStatusIcon li a{
 	color: #333;
 }
@@ -1579,6 +1591,17 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .navbar-default .navbar-toggle {
 	border: 0;
 	border-color: none;
+}
+
+.modal-footer button.btn{
+    min-width: 100px;
+}
+
+button.btn-default > i,
+a.btn-default > i,
+button.btn-primary > i,
+a.btn-primary > i  {
+    margin-right: 3px;
 }
     
 .user-panel {
@@ -2056,8 +2079,7 @@ form.registerForm > .pull-right > .btn{
 	{
 		font-size:20px;
 	}
-	
-	
+
 	#side-menu li a span.fa-stack.fa-lg > .fa-folder.fa-stack-2x
 	{
 		font-size:40px;

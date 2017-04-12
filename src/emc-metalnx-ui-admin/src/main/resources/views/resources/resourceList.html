@@ -50,11 +50,11 @@
 						<td>
 							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_info_' + resource.name}"
 								th:onclick="'javascript:viewInfo(\'' + *{resource.name} + '\');'">
-								<span class="glyphicon glyphicon-info-sign"> </span>
+								<i class="fa fa-info-circle"></i><span  th:text="#{resources.management.list.item.info}"></span>
 							</button>
 							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + resource.name}"
 								th:onclick="'javascript:confirmResourceDeletion(\'' + *{resource.name} + '\');'">
-								<span class="glyphicon glyphicon-trash"> </span>
+								<i class="fa fa-trash-o"></i><span  th:text="#{resources.management.list.item.delete}"></span>
 							</button>
 						</td>
 					</tr>
