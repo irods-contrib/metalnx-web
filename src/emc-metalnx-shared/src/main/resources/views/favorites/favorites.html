@@ -49,19 +49,17 @@
 				</div>
 			</div>
             <div class="col-sm-12 table-responsive" > 
-                <div class="">
-                	<table class="table table-hover" id="favoritesTable">
-                        <thead>
-                            <tr>
-                                <th th:text="#{favorites.table.name.label}"></th>
-                                <th th:text="#{favorites.table.path.label}"></th>
-                                <th th:text="#{favorites.table.created.at.label}"></th>
-                                <th th:text="#{favorites.table.type.label}"></th>
-                                <th ></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+				<table class="table table-hover" id="favoritesTable">
+					<thead>
+						<tr>
+							<th th:text="#{favorites.table.name.label}"></th>
+							<th th:text="#{favorites.table.path.label}"></th>
+							<th th:text="#{favorites.table.created.at.label}"></th>
+							<th th:text="#{favorites.table.type.label}"></th>
+							<th ></th>
+						</tr>
+					</thead>
+				</table>
              </div>
              
              <!-- <div class="col-sm-12 table-responsive" th:unless="${not #lists.isEmpty(userFavorites)}">

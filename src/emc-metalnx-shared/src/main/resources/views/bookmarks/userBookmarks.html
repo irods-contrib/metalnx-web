@@ -50,18 +50,16 @@
 			</div>
               
             <div class="col-sm-12 table-responsive"> 
-                <div class="">
-                    <table class="table table-hover" id="userBookmarksTable">
-                        <thead>
-                            <tr>
-                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-                                <th th:text="#{bookmarks.table.created.at.label}"></th>
-                                <th th:text="#{bookmarks.table.type.label}"></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+				<table class="table table-hover" id="userBookmarksTable">
+					<thead>
+						<tr>
+							<th th:text="#{bookmarks.table.file.name.label}"></th>
+							<th th:text="#{bookmarks.table.file.path.label}"></th>
+							<th th:text="#{bookmarks.table.created.at.label}"></th>
+							<th th:text="#{bookmarks.table.type.label}"></th>
+						</tr>
+					</thead>
+				</table>
              </div>
              
              <!-- <div class="col-sm-12 table-responsive" th:unless="${foundUserBookmarks}">
