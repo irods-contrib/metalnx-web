@@ -30,6 +30,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Date;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -51,28 +52,52 @@ public class TestResourceService {
     @Autowired
     private ResourceService resourceService;
 
-    private String rescName;
+    private String parentRescName, childRescName;
+
+    private DataGridResource parentResc, childResc;
 
     @Before
     public void setUp() throws DataGridConnectionRefusedException {
-        rescName = "testResc" + System.currentTimeMillis();
+        long time = System.currentTimeMillis();
+        parentRescName = "testResc" + time;
+        childRescName = "testRescChild" + time;
+        Date date = new Date();
 
-        DataGridResource dgResc = new DataGridResource();
-        dgResc.setName(rescName);
-        dgResc.setType("unixfilesystem");
-        dgResc.setZone(zone);
-        dgResc.setCreateTime(new Date());
-        dgResc.setModifyTime(new Date());
-        dgResc.setFreeSpaceDate(new Date());
-        dgResc.setPath("/var/lib/irods/iRODS/Vault2");
-        dgResc.setHost(host);
+        parentResc = new DataGridResource();
+        parentResc.setName(parentRescName);
+        parentResc.setType("compound");
+        parentResc.setZone(zone);
+        parentResc.setCreateTime(date);
+        parentResc.setModifyTime(date);
+        parentResc.setFreeSpaceDate(date);
+        parentResc.setPath("/var/lib/irods/iRODS/Vault2");
+        parentResc.setHost(host);
 
-        resourceService.createResource(dgResc);
+        childResc = new DataGridResource();
+        childResc.setName(childRescName);
+        childResc.setType("unixfilesystem");
+        childResc.setZone(zone);
+        childResc.setCreateTime(date);
+        childResc.setModifyTime(date);
+        childResc.setFreeSpaceDate(date);
+        childResc.setPath("/var/lib/irods/iRODS/Vault2");
+        childResc.setHost(host);
+
+        resourceService.createResource(parentResc);
     }
 
     @Test
     public void testDeleteResourceByName() {
-        assertTrue(resourceService.deleteResource(rescName));
+        assertTrue(resourceService.deleteResource(parentRescName));
+    }
+
+    @Test
+    public void testDeleteResourceWithChildren() throws DataGridConnectionRefusedException {
+        resourceService.createResource(childResc);
+        resourceService.addChildToResource(parentRescName, childRescName);
+
+        assertTrue(resourceService.deleteResource(parentRescName));
+        assertNotNull(resourceService.find(childRescName));
     }
 
 

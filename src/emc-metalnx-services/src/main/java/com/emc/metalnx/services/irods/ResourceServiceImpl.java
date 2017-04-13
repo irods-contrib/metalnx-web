@@ -96,7 +96,7 @@ public class ResourceServiceImpl implements ResourceService {
             return null;
         }
 
-        DataGridResource resc = null;
+        DataGridResource dgResc = null;
 
         try {
             ResourceAO resourceAO = irodsServices.getResourceAO();
@@ -104,20 +104,27 @@ public class ResourceServiceImpl implements ResourceService {
 
             List<DataGridResource> resources = findAll();
 
+            // TODO - immediate children from Jargon does not return anything
+            List<String> childrenRescs = new ArrayList<>();
+
             for (DataGridResource r : resources) {
                 if (resourceName.equals(r.getName())) {
                     irodsResource.setParentName(r.getParent());
-                    break;
+                }
+                else if (resourceName.equals(r.getParent())) {
+                    // find children resources
+                    childrenRescs.add(r.getName());
                 }
             }
 
-            resc = getDataGridResource(irodsResource);
+            dgResc = getDataGridResource(irodsResource);
+            dgResc.setChildren(childrenRescs);
         }
         catch (JargonException e) {
             logger.error("Could not find a resource named " + resourceName);
         }
 
-        return resc;
+        return dgResc;
     }
 
     private DataGridResource getDataGridResource(Resource irodsResource) {
