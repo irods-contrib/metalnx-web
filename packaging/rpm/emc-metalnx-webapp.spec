@@ -11,6 +11,8 @@ Requires:	java-devel
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-buildroot
 
+%define _unpackaged_files_terminate_build 0
+
 %description
 Install the EMC MetaLnx Web Application on Tomcat directory.
 
