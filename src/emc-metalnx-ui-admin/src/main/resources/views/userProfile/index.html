@@ -52,20 +52,7 @@
 		</div>
 		<!-- User menu Box -->
 		<div class="row">
-			<div class="col-sm-6">
-				<a id="usersMgtBtn" th:title="#{users.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;">
-					<i class="fa fa-user"></i>
-					<span th:text="#{users.management.menu.title}"></span>
-				</a>
-				<a id="profilesMgtBtn" th:title="#{users.profile.management.menu.title.tooltip}" th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" class="btn btn-default btn-sm btn-users-view hidden" style="margin-right: 5px;" disabled="">
-					<span class="fa-stack fa-lg" style="margin-left: auto; margin-right: auto; font-size: .7em;">
-						<i class="fa fa-square-o fa-stack-2x"></i>
-						<i class="fa fa-user fa-stack-1x" style="font-size:1em"></i> &nbsp;
-					</span>
-					<span th:text="#{users.profile.management.menu.title}"></span>
-				</a>
-			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-12">
 				<a id="addProfileButton" th:href="@{ ${urlMap.URL_ADD_USER_PROFILE} }" class="btn btn-primary btn-sm btn-users" th:text="#{users.profile.management.add.button}" style="margin-right: 5px;"></a>
 				<a th:href="@{ ${urlMap.URL_USER_PROFILES_CSV_REPORT} }"
 				   class="btn btn-default btn-sm btn-users" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
