@@ -231,6 +231,7 @@ public class DataGridResource implements Serializable, Comparable<DataGridResour
      * @return the parent
      */
     public String getParent() {
+        if (parent == null) return "";
         return parent;
     }
 

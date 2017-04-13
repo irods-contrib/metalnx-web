@@ -239,52 +239,54 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public boolean deleteResource(String resourceName) {
-        boolean isResourceDeleted = false;
+        if (resourceName.isEmpty()) {
+            logger.error("Could not delete resource: name cannot be empty.");
+            return false;
+        }
+
+        boolean isResourceDeleted = true;
 
         try {
+            DataGridResource dgRescToRemove = find(resourceName);
+
+            if (dgRescToRemove == null) {
+                logger.error("Could not delete resource: resource {} not found.", resourceName);
+                return false;
+            }
+
             ResourceAO resourceAO = irodsServices.getResourceAO();
 
-            // Map all resources to know parent-child relations between resources
-            List<DataGridResource> dataGridResources = findAll();
-            Map<String, DataGridResource> dataGridResourcesMap = new HashMap<String, DataGridResource>();
-
-            for (DataGridResource dataGridResource : dataGridResources) {
-                dataGridResourcesMap.put(dataGridResource.getName(), dataGridResource);
+            // if resource has a parent, it is necessary remove the relationship between that resource and its parent
+            if (!dgRescToRemove.isFirstLevelResc()) {
+                resourceAO.removeChildFromResource(dgRescToRemove.getParent(), resourceName);
             }
 
-            /*
-             * Find the resource that is going to be deleted and remove its child so it can be
-             * deleted without problems
-             */
-            DataGridResource dataGridResource = dataGridResourcesMap.get(resourceName);
-            List<String> childrenResources = dataGridResource.getChildren();
+            deleteChildrenFromResource(dgRescToRemove);
 
-            /*
-             * A resource can be deleted only if it has no resource-parent (zone is not considered
-             * a resource) and no resource-children.
-             * The resource that is going to be deleted needs to be promoted to a first-level
-             * resource, making it possible for the resource to be deleted
-             */
-            if (dataGridResource.getParent() != null && !dataGridResource.getParent().isEmpty()) {
-                resourceAO.removeChildFromResource(dataGridResource.getParent(), resourceName);
-            }
-            if (childrenResources != null && !childrenResources.isEmpty()) {
-                for (String childResource : childrenResources) {
-                    resourceAO.removeChildFromResource(resourceName, childResource);
-                }
-            }
-
-            // Delete the resource
             resourceAO.deleteResource(resourceName);
-
-            isResourceDeleted = true;
         }
         catch (Exception e) {
             logger.error("Could not delete resource " + resourceName + ": ", e);
+            isResourceDeleted = false;
         }
 
         return isResourceDeleted;
+    }
 
+    public void deleteChildrenFromResource(DataGridResource dgRescToRemove) throws DataGridConnectionRefusedException {
+        ResourceAO resourceAO = irodsServices.getResourceAO();
+
+        try {
+            List<String> childrenResources = dgRescToRemove.getChildren();
+            if (childrenResources != null && !childrenResources.isEmpty()) {
+                for (String childResource : childrenResources) {
+                    resourceAO.removeChildFromResource(dgRescToRemove.getName(), childResource);
+                }
+            }
+        }
+        catch (JargonException e) {
+            logger.error("Could not delete children from resource {}.", dgRescToRemove.getName());
+        }
     }
 
     @Override

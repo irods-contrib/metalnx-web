@@ -26,6 +26,13 @@ import java.util.List;
 public interface ResourceService {
 
     /**
+     * Deletes all children resources from a specific resource.
+     * @param dgRescToRemove resource to remove the children from
+     * @throws DataGridConnectionRefusedException if Metalnx cannot communicate with the grid.
+     */
+    void deleteChildrenFromResource(DataGridResource dgRescToRemove) throws DataGridConnectionRefusedException;
+
+    /**
      * Get all resources existing in the data grid
      *
      * @return List of resources
