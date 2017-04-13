@@ -100,7 +100,8 @@ input[type='text'],input[type='password']{
     border-left: none;
     outline: none;
     box-shadow: none;
-    font-size: 13px;
+    font-size: 16px;
+    font-family: verdana, sans-serif;
     padding-left: 55px;
 }
 
@@ -119,10 +120,12 @@ input[type='text'],input[type='password']{
 
 .login_fields_submit input {
     padding: 10px 50px;
+    font-size: 16px;
 }
 
 input{
     background:transparent;
+    font-family: verdana, sans-serif;
     padding:10px 50px;
     border:2px solid #2c95dd ;
     color: #ffffff ;
@@ -155,7 +158,36 @@ input{
     position: absolute;
     z-index: 1;
     left: 36px;
-    top: 10px;
-    opacity:.5;
-    color: #afb1be;
+    top: 15px;
+    opacity:1;
+    color: #a4a6b5;
+    font-size: 16px;
+}
+
+.icon-username-check,
+.icon-password-check {
+    position: absolute;
+    z-index: 1;
+    right: 36px;
+    top: 15px;
+    opacity:1;
+    color: #2c95dd;
+    font-size: 16px;
+ }
+
+img {
+    width: 85%;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #a4a6b5;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #a4a6b5;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #a4a6b5;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #a4a6b5;
 }
