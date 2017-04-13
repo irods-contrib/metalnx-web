@@ -192,6 +192,9 @@
 	    	            );
 	    	            $('input[name=selectAllCheckboxes]').prop("checked", false);
 	    	        },
+	    	        "columnDefs":[{
+	    	            "targets": 0, "orderable": false
+	    	         }]
 				});
 				addTemplateActionBtn('templatesListTable',datatable);
 			});
