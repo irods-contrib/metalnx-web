@@ -96,7 +96,10 @@ public class UploadServiceImpl implements UploadService {
         Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
         IRODSFile targetFile = null;
         try {
-            String fileName = file.getName();
+            String fileName = file.getOriginalFilename();
+
+            if (fileName.isEmpty()) fileName = file.getName();
+
             targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
 
             // file already exists and we do not want to overwrite it, the transferring is aborted.
