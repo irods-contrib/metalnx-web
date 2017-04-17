@@ -181,7 +181,6 @@ public class ResourceController {
     /**
      * Add a resource to the data grid
      *
-     * @param model
      * @return the template that renders the add resource from
      * @throws DataGridConnectionRefusedException
      */
@@ -279,12 +278,11 @@ public class ResourceController {
     /**
      * modify a resource from the data grid
      *
-     * @param model
+     * @param resourceForm form of resources
      * @return the template that renders the add resource from
      */
     @RequestMapping(value = "/modify/action/")
-    public String modifyResource(@ModelAttribute ResourceForm resourceForm, HttpServletRequest httpServletRequest,
-            RedirectAttributes redirectAttributes) {
+    public String modifyResource(@ModelAttribute ResourceForm resourceForm, RedirectAttributes redirectAttributes) {
 
         resourceService.updateResource(resourceForm.getName(), null, null);
 
@@ -342,9 +340,9 @@ public class ResourceController {
     /**
      * Show the resource map
      *
-     * @return
-     * @throws JSONException
-     * @throws DataGridConnectionRefusedException
+     * @return String representing the HTML to render on the client
+     * @throws JSONException if resource map json cannot be created
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
     @RequestMapping(value = "/map/")
     public String getResourceTreeStructure(Model model) throws JSONException, DataGridConnectionRefusedException {
@@ -355,9 +353,9 @@ public class ResourceController {
     /**
      * Show the resource map in dashboard
      *
-     * @return
-     * @throws JSONException
-     * @throws DataGridConnectionRefusedException
+     * @return String representing the HTML to render on the client
+     * @throws JSONException if resource map json cannot be created
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
     @RequestMapping(value = "/mapForDashboard/")
     public String getResourceTreeStructureFordashboard(Model model) throws JSONException, DataGridConnectionRefusedException {
@@ -457,41 +455,32 @@ public class ResourceController {
     /**
      * Add a resource and its children to a JSON Tree
      *
-     * @param parent
+     * @param rescParent
      * @param jsonParent
      * @param jsonChildren
      * @param dataGridResourcesMap
      */
-    private void addParentToJSON(DataGridResource parent, JSONObject jsonParent, JSONArray jsonChildren,
+    private void addParentToJSON(DataGridResource rescParent, JSONObject jsonParent, JSONArray jsonChildren,
             Map<String, DataGridResource> dataGridResourcesMap, boolean isDashboard) {
 
+        if (rescParent == null) return;
+
+        String icon = isDashboard ? treeImagePathForDashboard : treeImagePath;
+
         try {
+            JSONObject element = new JSONObject();
+            element.put("name", rescParent.getName());
+            element.put("icon", icon);
 
-            if (parent != null) {
-                JSONObject element = new JSONObject();
-                element.put("name", parent.getName());
-                if (isDashboard) {
-                    element.put("icon", treeImagePathForDashboard);
-                }
-                else {
-                    element.put("icon", treeImagePath);
-                }
+            JSONArray childrenOfElement = new JSONArray();
 
-                List<String> childrenResources = parent.getChildren();
-
-                if (childrenResources != null && !childrenResources.isEmpty()) {
-                    JSONArray childrenOfElement = new JSONArray();
-
-                    for (String childResource : childrenResources) {
-                        DataGridResource child = dataGridResourcesMap.get(childResource);
-                        addParentToJSON(child, element, childrenOfElement, dataGridResourcesMap, isDashboard);
-                    }
-                }
-
-                jsonChildren.put(element);
-                jsonParent.put("children", jsonChildren);
+            for (String childResource : rescParent.getChildren()) {
+                DataGridResource child = dataGridResourcesMap.get(childResource);
+                addParentToJSON(child, element, childrenOfElement, dataGridResourcesMap, isDashboard);
             }
 
+            jsonChildren.put(element);
+            jsonParent.put("children", jsonChildren);
         }
         catch (JSONException e) {
             logger.error("Could not create JSON Tree: ", e);
@@ -594,28 +583,21 @@ public class ResourceController {
     }
 
     private void getResourcesMap(Model model, boolean isDashboard) throws JSONException, DataGridConnectionRefusedException {
-        dataGridResources = resourceService.findAll();
-
-        Map<String, DataGridResource> dataGridResourcesMap = buildDataGridResourcesMap(dataGridResources);
-
         // JSON object that will have all data of resources to be displayed as a tree
         logger.debug("Building JSON Tree");
         JSONArray treeData = new JSONArray();
 
         JSONObject root = new JSONObject();
         root.put("name", zoneName);
-        if (isDashboard) {
-            root.put("icon", zoneImagePathForDashBoard);
-        }
-        else {
-            root.put("icon", zoneImagePath);
-        }
+        root.put("icon", isDashboard ? treeImagePathForDashboard : treeImagePath);
 
         JSONArray childrenOfRoot = new JSONArray();
 
-        for (DataGridResource dataGridResource : dataGridResources) {
-            if (dataGridResource.getParent().equals(zoneName)) {
-                addParentToJSON(dataGridResource, root, childrenOfRoot, dataGridResourcesMap, isDashboard);
+        dataGridResources = resourceService.findAll();
+        Map<String, DataGridResource> dataGridResourcesMap = buildDataGridResourcesMap(dataGridResources);
+        for (DataGridResource resc : dataGridResources) {
+            if (resc.getParent().equals(zoneName)) {
+                addParentToJSON(resc, root, childrenOfRoot, dataGridResourcesMap, isDashboard);
             }
         }
 

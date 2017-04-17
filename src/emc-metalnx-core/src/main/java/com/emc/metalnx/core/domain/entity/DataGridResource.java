@@ -16,6 +16,7 @@
 package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -216,6 +217,7 @@ public class DataGridResource implements Serializable, Comparable<DataGridResour
      * @return the children
      */
     public List<String> getChildren() {
+        if (children == null) return new ArrayList<>();
         return children;
     }
 
@@ -225,6 +227,11 @@ public class DataGridResource implements Serializable, Comparable<DataGridResour
      */
     public void setChildren(List<String> children) {
         this.children = children;
+    }
+
+    public void addChildResc(String childResc) {
+        if (children == null) children = new ArrayList<>();
+        children.add(childResc);
     }
 
     /**
