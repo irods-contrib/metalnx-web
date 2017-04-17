@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
 import com.emc.metalnx.services.interfaces.*;
@@ -63,21 +64,23 @@ public class UploadServiceImpl implements UploadService {
     @Autowired
     private IRODSAccessObjectFactory irodsAccessObjectFactory;
 
-    @Override
-    public boolean tranferFileDirectlyToJargon(String fileName, MultipartFile multipartFile, String targetPath,
-                                               boolean computeCheckSum, boolean replicateFile,
-                                               String replicationResource, String destinationResource,
-                                               boolean overwriteDuplicateFiles) throws DataGridException {
+    @Autowired
+    private ResourceService resourceService;
 
-        if (multipartFile == null || multipartFile.isEmpty() || "".equals(targetPath) || targetPath == null
-                || "".equals(destinationResource) || destinationResource == null) {
+    @Override
+    public boolean upload(MultipartFile file, String targetPath, boolean computeCheckSum, boolean replicateFile,
+                          String replicationResc, String destResc, boolean overwrite)
+            throws DataGridException {
+
+        if (file == null || file.isEmpty() || "".equals(targetPath) || targetPath == null
+                || "".equals(destResc) || destResc == null) {
             logger.error("File could not be sent to the data grid.");
             return false;
         }
 
         InputStream inputStream;
         try {
-            inputStream = multipartFile.getInputStream();
+            inputStream = file.getInputStream();
         } catch (IOException e) {
             logger.error("Could not get input stream from file: ", e.getMessage());
             throw new DataGridException("Could not get input stream from file.");
@@ -85,10 +88,10 @@ public class UploadServiceImpl implements UploadService {
 
         String defaultStorageResource = is.getDefaultStorageResource();
 
-        logger.info("Setting default resource to {}", destinationResource);
+        logger.info("Setting default resource to {}", destResc);
 
         // Setting temporarily the defaultStorageResource for the logged user
-        is.setDefaultStorageResource(destinationResource);
+        is.setDefaultStorageResource(destResc);
 
         boolean isFileUploaded;
 
@@ -96,11 +99,16 @@ public class UploadServiceImpl implements UploadService {
         IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
         Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
         IRODSFile targetFile = null;
+
         try {
+            String fileName = file.getOriginalFilename();
+
+            if (fileName.isEmpty()) fileName = file.getName();
+
             targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
 
             // file already exists and we do not want to overwrite it, the transferring is aborted.
-            if (targetFile.exists() && !overwriteDuplicateFiles) {
+            if (targetFile.exists() && !overwrite) {
                 String msg = "File already exists. Not overwriting it.";
                 logger.info(msg);
                 throw new DataGridFileAlreadyExists(msg);
@@ -113,7 +121,7 @@ public class UploadServiceImpl implements UploadService {
             if (computeCheckSum) fos.computeChecksum(targetPath, fileName);
 
             // Replicating file into desired resource
-            if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResource, false);
+            if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResc, false);
 
             // Getting list of resources for upload
             HashMap<String, String> resourceMap = null;
@@ -125,16 +133,20 @@ public class UploadServiceImpl implements UploadService {
                 logger.error("Could not build Resource map for upload", e);
                 throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
             }
+
             String objPath = targetFile.getCanonicalPath();
-            String filePath = resourceMap.get(destinationResource) +
+            String filePath = resourceMap.get(destResc) +
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
-            rs.execBamCramMetadataRule(destinationResource, objPath, filePath);
-            rs.execVCFMetadataRule(destinationResource, objPath, filePath);
-            rs.execPopulateMetadataRule(destinationResource, objPath);
-            rs.execImageRule(destinationResource, objPath, filePath);
-            rs.execIlluminaMetadataRule(destinationResource, targetPath, objPath);
-            rs.execManifestFileRule(destinationResource, targetPath, objPath, filePath);
+            DataGridResource dgDestResc = resourceService.find(destResc);
+            String host = dgDestResc.getHost();
+
+            rs.execBamCramMetadataRule(host, objPath, filePath);
+            rs.execVCFMetadataRule(host, objPath, filePath);
+            rs.execPopulateMetadataRule(host, objPath);
+            rs.execImageRule(host, objPath, filePath);
+            rs.execIlluminaMetadataRule(dgDestResc, targetPath, objPath);
+            rs.execManifestFileRule(host, targetPath, objPath, filePath);
 
             isFileUploaded = true;
         } catch (JargonException e) {

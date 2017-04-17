@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
@@ -65,68 +66,68 @@ public interface RuleService {
     /**
      * Execute populate metadata rule.
      *
-     * @param destResc resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param objPath  path to the object in the data grid path to the object in the data grid
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execPopulateMetadataRule(String destResc, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execPopulateMetadataRule(String host, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from image files rule.
      *
-     * @param destResc resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param objPath  path to the object in the data grid
      * @param filePath physical file path physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid if Metalnx cannot connect to the data grid
      */
-    void execImageRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execImageRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from VCF files rule.
      *
-     * @param destResc resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param objPath  path to the object in the data grid
      * @param filePath physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execVCFMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execVCFMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from BAM or CRAM files rule.
      *
-     * @param destResc resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param objPath  path to the object in the data grid
      * @param filePath physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execBamCramMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execBamCramMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from manifest files rule.
      *
-     * @param destResc   resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param targetPath target path target path
      * @param objPath    path to the object in the data grid
      * @param filePath   physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execManifestFileRule(String host, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from Illumina files rule.
      *
-     * @param destResc   resource to run the rule
+     * @param dgResc resource to run the rule
      * @param targetPath target path
      * @param objPath    path to the object in the data grid
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Executes a rule in the data grid

@@ -58,7 +58,8 @@ public class TestRuleService {
 
     private static final String RM_TRASH_RODS_ADMIN_FLAG = "irodsAdminRmTrash=";
     private static final String RM_TRASH_RODS_USER_FLAG = "irodsRmTrash=";
-    public static final String RESOURCE = "demoResc";
+    private static final String HOST = "icat.test.com";
+    private static final String RESOURCE = "demoResc";
     private static String msiVersion;
 
     @InjectMocks
@@ -90,7 +91,7 @@ public class TestRuleService {
         when(configService.getIrodsHost()).thenReturn("icat.test.com");
         when(configService.getMsiAPIVersionSupported()).thenReturn(msiVersion);
 
-        DataGridResource resc = new DataGridResource(1, "demoResc", "zone", "unixfilesystem", "/test/resc/path");
+        DataGridResource resc = new DataGridResource(1, RESOURCE, "zone", "unixfilesystem", "/test/resc/path");
         resc.setHost("icat.test.com");
         when(resourceService.find(anyString())).thenReturn(resc);
         when(ruleService.executeRule(anyString())).thenReturn(new HashMap<>());
@@ -190,7 +191,7 @@ public class TestRuleService {
 
         when(ruleService.executeRule(anyString())).thenReturn(result);
 
-        List<String> msis = ruleService.execGetMSIsRule("icat.test.com");
+        List<String> msis = ruleService.execGetMSIsRule(HOST);
         assertNotNull(msis);
         assertTrue(msis.isEmpty());
     }
@@ -212,76 +213,62 @@ public class TestRuleService {
 
     @Test
     public void testReplicateObjRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        String destResc = "demoResc";
         String path = "this/is/a/path";
 
-        ruleService.execReplDataObjRule(destResc, path, false);
+        ruleService.execReplDataObjRule(RESOURCE, path, false);
 
-        verify(resourceService, times(1)).find(destResc);
+        verify(resourceService, times(1)).find(RESOURCE);
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testReplicateObjRuleInAdminMode() throws DataGridRuleException, DataGridConnectionRefusedException {
-        String destResc = "demoResc";
         String path = "this/is/a/path";
 
-        ruleService.execReplDataObjRule(destResc, path, true);
+        ruleService.execReplDataObjRule(RESOURCE, path, true);
 
-        verify(resourceService, times(1)).find(destResc);
+        verify(resourceService, times(1)).find(RESOURCE);
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testPopulateMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         when(configService.isPopulateMsiEnabled()).thenReturn(true);
-        ruleService.execPopulateMetadataRule("demoResc", "/testZone/home/rods");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execPopulateMetadataRule(HOST, "/testZone/home/rods");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testImageRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execImageRule("demoResc", "/zone/home/rods/test.jpg", "/var/lib/irods/test.jpg");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execImageRule(HOST, "/zone/home/rods/test.jpg", "/var/lib/irods/test.jpg");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testVCFMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execVCFMetadataRule("demoResc", "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execVCFMetadataRule(HOST, "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testBamCramMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execBamCramMetadataRule("demoResc", "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execBamCramMetadataRule(HOST, "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testManifestFileRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         when(collectionService.getSubCollectionsAndDataObjetsUnderPath(anyString())).thenReturn(new ArrayList<>());
-
-        ruleService.execManifestFileRule("demoResc", "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
-
-        // these two methods should never be called since there is no objects under the test path
-        verify(resourceService, atMost(1)).find(anyString());
+        ruleService.execManifestFileRule(HOST, "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
         verify(ruleService, atMost(1)).executeRule(anyString());
     }
 
     @Test
     public void testIlluminaMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execIlluminaMetadataRule("demoResc", "/zone/home/rods", "/zone/home/rods/test_SSU.tar");
+        DataGridResource dgDestResc = resourceService.find(RESOURCE);
+        ruleService.execIlluminaMetadataRule(dgDestResc, "/zone/home/rods", "/zone/home/rods/test_SSU.tar");
 
         // these two methods should never be called since there is no objects under the test path
-        verify(resourceService, times(1)).find(anyString());
         verify(ruleService, atMost(2)).executeRule(anyString());
     }
 }

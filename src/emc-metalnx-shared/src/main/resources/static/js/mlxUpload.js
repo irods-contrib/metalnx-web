@@ -92,7 +92,7 @@ $("#uploadButton").click(function(){
 });
 
 function uploadAndUpdateStatus(file, index, totalFiles){
-    var url = "/emc-metalnx-web/upload/uploadSimple/";
+    var url = "/emc-metalnx-web/upload/";
     var formData = new FormData();
     formData.append('file', file);
     formData.append('checksum', $('#inputChecksum').is(':checked'));

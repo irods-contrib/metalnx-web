@@ -24,8 +24,6 @@ public interface UploadService {
     /**
      * Transfer a file to the data grid without chuncking file.
      *
-     * @param fileName
-     *          file name that's going to be transferred
      * @param multipartFile
      *          file to be uploaded
      * @param targetPath
@@ -43,7 +41,7 @@ public interface UploadService {
      * @return
      * @throws DataGridException
      */
-    boolean tranferFileDirectlyToJargon(String fileName, MultipartFile multipartFile, String targetPath, boolean computeCheckSum,
-                                        boolean replicateFile, String replicationResource, String destinationResource,
-                                        boolean overwriteDuplicateFiles) throws DataGridException;
+    boolean upload(MultipartFile multipartFile, String targetPath, boolean computeCheckSum,
+                   boolean replicateFile, String replicationResource, String destinationResource,
+                   boolean overwriteDuplicateFiles) throws DataGridException;
 }

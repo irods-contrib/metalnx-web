@@ -69,59 +69,54 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execPopulateMetadataRule(String destResc, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execPopulateMetadataRule(String host, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!configService.isPopulateMsiEnabled()) return;
 
         logger.info("Get Populate Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, host);
         rule.setInputRuleParams(objPath);
 
         executeRule(rule.toString());
     }
 
-    public void execImageRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execImageRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isImageFile(objPath)) return;
 
         logger.info("Get Image Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());
     }
 
-    public void execVCFMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execVCFMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isVCFFile(objPath)) return;
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());
     }
 
-    public void execBamCramMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execBamCramMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isBamOrCram(objPath)) return;
 
         logger.info("Get BAM/CRAM Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());
     }
 
-    public void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execManifestFileRule(String host, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath)) return;
 
         logger.info("Get Manifest Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, host);
 
         List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
 
@@ -155,18 +150,20 @@ public class RuleServiceImpl implements RuleService {
         return (String) executeRule(rule.toString()).get("*version").getResultObject();
     }
 
-    public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isIllumina(objPath)) return;
 
         logger.info("Illumina Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
+        String destResc = dgResc.getName();
+        String host = dgResc.getHost();
+        boolean declareOutputParams = false;
 
-        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, dgResc.getHost(), false);
+        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, host, declareOutputParams);
         tarRule.setInputRuleParams(objPath, targetPath, destResc);
         tarRule.setOutputRuleParams("Status");
 
-        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, dgResc.getHost(), false);
+        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, host, declareOutputParams);
         illuminaRule.setInputRuleParams(objPath, destResc);
 
         executeRule(tarRule.toString());

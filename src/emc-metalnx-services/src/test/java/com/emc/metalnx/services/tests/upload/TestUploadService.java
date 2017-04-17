@@ -83,7 +83,7 @@ public class TestUploadService {
 
         MockMultipartFile file = new MockMultipartFile(TEST_FILE_NAME, "Hello World".getBytes());
 
-        us.tranferFileDirectlyToJargon(file.getName(), file, targetPath, false, false,
+        us.upload(file, targetPath, false, false,
                 "", RESOURCE, false);
 
         List<DataGridCollectionAndDataObject> items = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
@@ -102,11 +102,11 @@ public class TestUploadService {
     public void testExistingFileTransfer() throws DataGridException {
         MockMultipartFile file = new MockMultipartFile(TEST_FILE_NAME, "Hello World".getBytes());
 
-        us.tranferFileDirectlyToJargon(file.getName(), file, targetPath, false, false,
+        us.upload(file, targetPath, false, false,
                 "", RESOURCE, false);
 
         // should raise an exception
-        us.tranferFileDirectlyToJargon(file.getName(), file, targetPath, false, false,
+        us.upload(file, targetPath, false, false,
                 "", RESOURCE, false);
     }
 }
