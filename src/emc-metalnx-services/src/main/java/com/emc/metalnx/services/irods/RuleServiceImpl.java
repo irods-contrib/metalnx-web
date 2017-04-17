@@ -103,13 +103,12 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execBamCramMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execBamCramMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isBamOrCram(objPath)) return;
 
         logger.info("Get BAM/CRAM Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());

@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
 import com.emc.metalnx.services.interfaces.*;
@@ -62,6 +63,9 @@ public class UploadServiceImpl implements UploadService {
 
     @Autowired
     private IRODSAccessObjectFactory irodsAccessObjectFactory;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @Override
     public boolean upload(MultipartFile file, String targetPath, boolean computeCheckSum, boolean replicateFile,
@@ -132,7 +136,9 @@ public class UploadServiceImpl implements UploadService {
             String filePath = resourceMap.get(destResc) +
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
-            rs.execBamCramMetadataRule(destResc, objPath, filePath);
+            DataGridResource dgDestResc = resourceService.find(destResc);
+
+            rs.execBamCramMetadataRule(dgDestResc.getHost(), objPath, filePath);
             rs.execVCFMetadataRule(destResc, objPath, filePath);
             rs.execPopulateMetadataRule(destResc, objPath);
             rs.execImageRule(destResc, objPath, filePath);
