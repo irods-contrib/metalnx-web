@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
@@ -120,13 +121,13 @@ public interface RuleService {
     /**
      * Execute metadata extraction from Illumina files rule.
      *
-     * @param destResc   resource to run the rule
+     * @param dgResc resource to run the rule
      * @param targetPath target path
      * @param objPath    path to the object in the data grid
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Executes a rule in the data grid

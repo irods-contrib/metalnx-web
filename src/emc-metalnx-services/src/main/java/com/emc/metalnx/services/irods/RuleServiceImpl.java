@@ -150,18 +150,20 @@ public class RuleServiceImpl implements RuleService {
         return (String) executeRule(rule.toString()).get("*version").getResultObject();
     }
 
-    public void execIlluminaMetadataRule(String destResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isIllumina(objPath)) return;
 
         logger.info("Illumina Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
+        String destResc = dgResc.getName();
+        String host = dgResc.getHost();
+        boolean declareOutputParams = false;
 
-        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, dgResc.getHost(), false);
+        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, host, declareOutputParams);
         tarRule.setInputRuleParams(objPath, targetPath, destResc);
         tarRule.setOutputRuleParams("Status");
 
-        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, dgResc.getHost(), false);
+        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, host, declareOutputParams);
         illuminaRule.setInputRuleParams(objPath, destResc);
 
         executeRule(tarRule.toString());

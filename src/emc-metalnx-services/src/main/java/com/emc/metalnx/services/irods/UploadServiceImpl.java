@@ -99,6 +99,7 @@ public class UploadServiceImpl implements UploadService {
         IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
         Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
         IRODSFile targetFile = null;
+
         try {
             String fileName = file.getOriginalFilename();
 
@@ -132,6 +133,7 @@ public class UploadServiceImpl implements UploadService {
                 logger.error("Could not build Resource map for upload", e);
                 throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
             }
+
             String objPath = targetFile.getCanonicalPath();
             String filePath = resourceMap.get(destResc) +
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
@@ -143,7 +145,7 @@ public class UploadServiceImpl implements UploadService {
             rs.execVCFMetadataRule(host, objPath, filePath);
             rs.execPopulateMetadataRule(host, objPath);
             rs.execImageRule(host, objPath, filePath);
-            rs.execIlluminaMetadataRule(destResc, targetPath, objPath);
+            rs.execIlluminaMetadataRule(dgDestResc, targetPath, objPath);
             rs.execManifestFileRule(host, targetPath, objPath, filePath);
 
             isFileUploaded = true;
