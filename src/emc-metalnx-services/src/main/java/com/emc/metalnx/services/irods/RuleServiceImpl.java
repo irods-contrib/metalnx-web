@@ -93,11 +93,10 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execVCFMetadataRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execVCFMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isVCFFile(objPath)) return;
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());

@@ -137,9 +137,10 @@ public class UploadServiceImpl implements UploadService {
                     objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
             DataGridResource dgDestResc = resourceService.find(destResc);
+            String host = dgDestResc.getHost();
 
-            rs.execBamCramMetadataRule(dgDestResc.getHost(), objPath, filePath);
-            rs.execVCFMetadataRule(destResc, objPath, filePath);
+            rs.execBamCramMetadataRule(host, objPath, filePath);
+            rs.execVCFMetadataRule(host, objPath, filePath);
             rs.execPopulateMetadataRule(destResc, objPath);
             rs.execImageRule(destResc, objPath, filePath);
             rs.execIlluminaMetadataRule(destResc, targetPath, objPath);

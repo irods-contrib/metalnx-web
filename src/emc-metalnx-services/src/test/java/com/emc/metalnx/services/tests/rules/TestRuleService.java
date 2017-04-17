@@ -59,6 +59,7 @@ public class TestRuleService {
     private static final String RM_TRASH_RODS_ADMIN_FLAG = "irodsAdminRmTrash=";
     private static final String RM_TRASH_RODS_USER_FLAG = "irodsRmTrash=";
     public static final String RESOURCE = "demoResc";
+    public static final String HOST = "icat.test.com";
     private static String msiVersion;
 
     @InjectMocks
@@ -190,7 +191,7 @@ public class TestRuleService {
 
         when(ruleService.executeRule(anyString())).thenReturn(result);
 
-        List<String> msis = ruleService.execGetMSIsRule("icat.test.com");
+        List<String> msis = ruleService.execGetMSIsRule(HOST);
         assertNotNull(msis);
         assertTrue(msis.isEmpty());
     }
@@ -251,17 +252,15 @@ public class TestRuleService {
 
     @Test
     public void testVCFMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execVCFMetadataRule("demoResc", "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
+        ruleService.execVCFMetadataRule(HOST, "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
 
-        verify(resourceService, times(1)).find(anyString());
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testBamCramMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execBamCramMetadataRule("demoResc", "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
+        ruleService.execBamCramMetadataRule(HOST, "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
 
-        verify(resourceService, times(1)).find(anyString());
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
