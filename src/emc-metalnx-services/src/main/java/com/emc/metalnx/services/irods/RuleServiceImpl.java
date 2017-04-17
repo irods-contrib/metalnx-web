@@ -69,13 +69,12 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execPopulateMetadataRule(String destResc, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execPopulateMetadataRule(String host, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!configService.isPopulateMsiEnabled()) return;
 
         logger.info("Get Populate Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, host);
         rule.setInputRuleParams(objPath);
 
         executeRule(rule.toString());

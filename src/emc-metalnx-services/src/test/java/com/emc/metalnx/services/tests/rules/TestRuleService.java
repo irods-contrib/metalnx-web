@@ -236,9 +236,7 @@ public class TestRuleService {
     @Test
     public void testPopulateMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         when(configService.isPopulateMsiEnabled()).thenReturn(true);
-        ruleService.execPopulateMetadataRule("demoResc", "/testZone/home/rods");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execPopulateMetadataRule(HOST, "/testZone/home/rods");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 

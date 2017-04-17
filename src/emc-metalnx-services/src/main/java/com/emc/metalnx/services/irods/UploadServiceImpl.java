@@ -141,7 +141,7 @@ public class UploadServiceImpl implements UploadService {
 
             rs.execBamCramMetadataRule(host, objPath, filePath);
             rs.execVCFMetadataRule(host, objPath, filePath);
-            rs.execPopulateMetadataRule(destResc, objPath);
+            rs.execPopulateMetadataRule(host, objPath);
             rs.execImageRule(destResc, objPath, filePath);
             rs.execIlluminaMetadataRule(destResc, targetPath, objPath);
             rs.execManifestFileRule(destResc, targetPath, objPath, filePath);
