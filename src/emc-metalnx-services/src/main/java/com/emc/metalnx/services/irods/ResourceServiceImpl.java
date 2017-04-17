@@ -105,30 +105,13 @@ public class ResourceServiceImpl implements ResourceService {
 
         DataGridResource dgResc = null;
 
-        try {
-            ResourceAO resourceAO = irodsServices.getResourceAO();
-            Resource irodsResource = resourceAO.findByName(resourceName);
+        List<DataGridResource> resources = findAll();
 
-            //List<DataGridResource> resources = findAll();
-
-            // TODO - immediate children from Jargon does not return anything
-            /*List<String> childrenRescs = new ArrayList<>();
-
-            for (DataGridResource r : resources) {
-                if (resourceName.equals(r.getName())) {
-                    irodsResource.setParentName(r.getParent());
-                }
-                else if (resourceName.equals(r.getParent())) {
-                    // find children resources
-                    childrenRescs.add(r.getName());
-                }
-            }*/
-
-            dgResc = getDataGridResource(irodsResource);
-            //dgResc.setChildren(childrenRescs);
-        }
-        catch (JargonException e) {
-            logger.error("Could not find a resource named " + resourceName);
+        for (DataGridResource r : resources) {
+            if (resourceName.equals(r.getName())) {
+                dgResc = r;
+                break;
+            }
         }
 
         return dgResc;
