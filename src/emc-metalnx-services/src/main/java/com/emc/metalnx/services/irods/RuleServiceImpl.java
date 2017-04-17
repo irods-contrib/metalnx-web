@@ -111,13 +111,12 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execManifestFileRule(String host, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath)) return;
 
         logger.info("Get Manifest Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, host);
 
         List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
 
