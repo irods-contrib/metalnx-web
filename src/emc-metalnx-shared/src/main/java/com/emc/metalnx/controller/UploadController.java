@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -84,9 +83,9 @@ public class UploadController {
     }
 
 
-    @RequestMapping(value = "/uploadSimple/", method = RequestMethod.POST, produces = {"text/plain"})
+    @RequestMapping(value = "/", method = RequestMethod.POST, produces = {"text/plain"})
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<?> uploadSimple(Model model, HttpServletRequest request) throws DataGridConnectionRefusedException {
+    public ResponseEntity<?> upload(HttpServletRequest request) throws DataGridConnectionRefusedException {
 
         logger.info("Uploading files ...");
         String uploadMessage = "File Uploaded. ";
@@ -104,13 +103,13 @@ public class UploadController {
 
         boolean checksum = Boolean.parseBoolean(multipartRequest.getParameter("checksum"));
         boolean replica = Boolean.parseBoolean(multipartRequest.getParameter("replica"));
-        boolean overwriteDuplicateFiles = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
+        boolean overwrite = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
         String resources = multipartRequest.getParameter("resources");
         String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
-        String uploadDestinationPath = multipartRequest.getParameter("uploadDestinationPath");
+        String destPath = multipartRequest.getParameter("uploadDestinationPath");
+
         try {
-            us.tranferFileDirectlyToJargon(multipartFile.getOriginalFilename(), multipartFile, uploadDestinationPath,
-                    checksum, replica, resources, resourcesToUpload, overwriteDuplicateFiles);
+            us.upload(multipartFile, destPath, checksum, replica, resources, resourcesToUpload, overwrite);
         } catch (DataGridReplicateException | DataGridRuleException e) {
             uploadMessage += e.getMessage();
             errorType = WARNING;
