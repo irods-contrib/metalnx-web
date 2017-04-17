@@ -132,7 +132,7 @@
 					
 					//unselect all collections
 					else {
-						$("#actions a").hide();
+						$("#actions button").prop("disabled", true);
 						url = "/emc-metalnx-web/templates/unselectTemplate/";
 						$("#fBody input[name=selectedTemplates]").each(function(){
 							var id = $(this).attr("value");

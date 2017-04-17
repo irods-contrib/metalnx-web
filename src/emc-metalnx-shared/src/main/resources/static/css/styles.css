@@ -1263,8 +1263,12 @@ a.page-hint {
     margin-bottom: 10px;
     min-width: 120px;
 }
-
-.btn-shared, .btn-resources-view, .btn-users-view, .btn-template-action{
+a.btn-add-user{
+    margin-right: 15px;
+    float: right;
+    min-width: 120px;
+}
+.btn-shared, .btn-resources-view, .btn-template-action{
     float: left;
     margin-right: 5px;
     margin-bottom: 10px;
@@ -1284,7 +1288,7 @@ div.dataTables_wrapper .dataTables_length{
     float:left !important;
 }
 div.dataTables_wrapper .dataTables_length select{
-    width:55px !important;
+    width:65px !important;
     font-size:12px;
     margin-right:10px;
     height:35px;
