@@ -249,25 +249,19 @@ public class TestRuleService {
     @Test
     public void testVCFMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         ruleService.execVCFMetadataRule(HOST, "/zone/home/rods/test.vcf", "/var/lib/irods/test.vcf");
-
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testBamCramMetadataRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         ruleService.execBamCramMetadataRule(HOST, "/zone/home/rods/test.bam", "/var/lib/irods/test.bam");
-
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
     @Test
     public void testManifestFileRule() throws DataGridRuleException, DataGridConnectionRefusedException {
         when(collectionService.getSubCollectionsAndDataObjetsUnderPath(anyString())).thenReturn(new ArrayList<>());
-
-        ruleService.execManifestFileRule("demoResc", "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
-
-        // these two methods should never be called since there is no objects under the test path
-        verify(resourceService, atMost(1)).find(anyString());
+        ruleService.execManifestFileRule(HOST, "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
         verify(ruleService, atMost(1)).executeRule(anyString());
     }
 

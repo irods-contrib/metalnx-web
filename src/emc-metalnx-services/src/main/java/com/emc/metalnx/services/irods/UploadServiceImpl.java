@@ -144,7 +144,7 @@ public class UploadServiceImpl implements UploadService {
             rs.execPopulateMetadataRule(host, objPath);
             rs.execImageRule(host, objPath, filePath);
             rs.execIlluminaMetadataRule(destResc, targetPath, objPath);
-            rs.execManifestFileRule(destResc, targetPath, objPath, filePath);
+            rs.execManifestFileRule(host, targetPath, objPath, filePath);
 
             isFileUploaded = true;
         } catch (JargonException e) {

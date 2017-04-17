@@ -108,14 +108,14 @@ public interface RuleService {
     /**
      * Execute metadata extraction from manifest files rule.
      *
-     * @param destResc   resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param targetPath target path target path
      * @param objPath    path to the object in the data grid
      * @param filePath   physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
-    void execManifestFileRule(String destResc, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execManifestFileRule(String host, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from Illumina files rule.
