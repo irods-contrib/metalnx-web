@@ -1790,18 +1790,23 @@ footer {
     margin-top: 15px;
 }
 
-#totalStorageDiv{
-}
 #serverListPanel{
 	height: 300px;
 }
-#serverListPanel .panel{
+
+#serverListPanel .panel {
 	height: 280px;
+}
+
+#serverListPanel .panel .panel-body {
+	height: 230px;
 	overflow: auto;
 }
+
 #msiAPIVersionPanel .popover{
     max-width: 550px;
 }
+
 #mlxMsiPanel table td{
     overflow: auto;
     text-overflow: initial;

@@ -32,20 +32,18 @@
 			</table>
 			<a th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" class="pull-right">View All Servers</a>
 		</div>
-		<div th:if="${isRMDRunningOnAllServers == false}" class="panel-footer">
+		<div class="panel-footer">
 			<div th:if="${isRMDRunningOnAllServers == false}">
 				<div class="serverIcon">
-					<i class="fa fa-exclamation-triangle" id="servers-panel-footer-image"></i>	
+					<i class="fa fa-exclamation-triangle"></i>
 				</div>
 				<p>
-					<small title="Please check network connectivity to the server. Manually verify that iRODS and the RMD package are running on the servers.">
-						Unable to communicate with MetaLnx remote monitor. 							
-					</small>
+					<small th:text="#{dashboard.card.rmd.no.communication}"></small>
 				</p>
 			</div>
 			<div th:if="${isServerResponding == false}">
 				<div class="serverIcon">
-					<i class="fa fa-exclamation-triangle" id="servers-panel-footer-image"></i>	
+					<i class="fa fa-exclamation-triangle"></i>
 				</div>
 				<p>
 					<small title="Please check network connectivity to the server. Manually verify that iRODS and the RMD package are running on the servers.">
