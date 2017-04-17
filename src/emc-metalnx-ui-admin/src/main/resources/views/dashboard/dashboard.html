@@ -46,8 +46,6 @@
 				<a id="dashboard-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
 			</div>
 
-			<!-- <div class="col-xs-12 col-md-12 col-lg-12">
-				<div class="row"> -->
 			<!-- System Health -->
 			<div class="col-xs-12 col-md-12 col-lg-12 dashboardWidget" id="systemHealth">					
 				<div class="table-loader">
@@ -81,8 +79,6 @@
 				
 				<!-- Total Storage -->
 				<div class="dashboardWidget" id="totalStorageDiv">
-					<!-- <div class="row">
-						<div class="col-xs-12"> -->
 					<div id="table-loader-storage" class="table-loader">
 						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
 						<p class="text-center" th:text="#{loading.total.storage}"></p>
@@ -97,26 +93,24 @@
 									<tr><td title="Used storage:">Used: </td><td>  <span id="totalStorageUsed"></span></td></tr>
 									<tr><td title="Free storage">Free: </td><td>  <span id="totalStorageAvailable"></span></td></tr>
 									<tr><td title="Total capacity">Total Capacity: </td><td>  <span id="totalStorage"></span></td></tr>
-									<!-- <tr><td title="Total number of files">Total number of files: </td><td>  <span th:text="${ totalNumberOfFiles }"></span></td></tr> -->
 								</tbody>
 							</table>
 						</div>
 						<div class="panel-footer">
-							<div class="" id="totalStorageErrorMsg" style="visibility: hidden;">
+							<div class="hideElement">
 								<div class="serverIcon">
-									<i class="fa fa-exclamation-triangle"></i>	
+									<i class="fa fa-exclamation-triangle"></i>
 								</div>
-								<p>
-									<small th:title="#{dashboard.panel.total.storage.error.title}"
-										th:text="#{dashboard.panel.total.storage.error.label}">	
-									</small>
-								</p>
+                                <p>
+                                    <small th:text="#{dashboard.card.rmd.no.communication}"></small>
+                                </p>
 							</div>
 						</div>
 					</div>	
 				</div>
 			</div>
-			<div class="col-md-3 col-sm-12 col-xs-12">
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
 				<div class="row">
 					<!-- Users -->
 					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
@@ -182,6 +176,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-xs-12 col-md-6 ">
 				<div class="dashboardWidget" id="msiAPIVersionPanel">
 					<div class="table-loader">
@@ -190,6 +185,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-xs-12 col-md-3 ">
 				<div class="dashboardWidget" id="isilonServerListPanel">
 					<div class="table-loader">
@@ -291,7 +287,7 @@
 				var totalStorageAvailable = storage[1];
 				var totalStorage = storage[2];
 				var usagePercentage = storage[3];					
-				var isRMDRunningOnAllServers = storage[4];				
+				var isRMDRunningOnAllServers = storage[4] != "false";
 				var barType = "success";	
 								
 				if(usagePercentage >= 95 ){
@@ -310,9 +306,9 @@
 		    	.value(usagePercentage)
 		        	.render();
 				
-				if (isRMDRunningOnAllServers == "false"){					
-					$("#totalStorageDiv .panel-footer .hideElement").css('visibility', 'visible');
-				}	 
+				if (!isRMDRunningOnAllServers){
+					$("#totalStorageDiv .panel-footer *").removeClass("hideElement");
+				}
 			}
 		</script>
 	</div> 
