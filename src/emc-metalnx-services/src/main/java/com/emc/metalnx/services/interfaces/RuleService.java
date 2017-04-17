@@ -75,13 +75,13 @@ public interface RuleService {
     /**
      * Execute metadata extraction from image files rule.
      *
-     * @param destResc resource to run the rule
+     * @param host hostname of the machine to run the rule
      * @param objPath  path to the object in the data grid
      * @param filePath physical file path physical file path
      * @throws DataGridRuleException              if rule exection failed.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid if Metalnx cannot connect to the data grid
      */
-    void execImageRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
+    void execImageRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException;
 
     /**
      * Execute metadata extraction from VCF files rule.

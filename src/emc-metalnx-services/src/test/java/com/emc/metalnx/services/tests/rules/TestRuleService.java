@@ -242,9 +242,7 @@ public class TestRuleService {
 
     @Test
     public void testImageRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        ruleService.execImageRule("demoResc", "/zone/home/rods/test.jpg", "/var/lib/irods/test.jpg");
-
-        verify(resourceService, times(1)).find(anyString());
+        ruleService.execImageRule(HOST, "/zone/home/rods/test.jpg", "/var/lib/irods/test.jpg");
         verify(ruleService, times(1)).executeRule(anyString());
     }
 

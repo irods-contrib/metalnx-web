@@ -80,13 +80,12 @@ public class RuleServiceImpl implements RuleService {
         executeRule(rule.toString());
     }
 
-    public void execImageRule(String destResc, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
+    public void execImageRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
         if (!DataGridCoreUtils.isImageFile(objPath)) return;
 
         logger.info("Get Image Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, dgResc.getHost());
+        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, host);
         rule.setInputRuleParams(objPath, filePath);
 
         executeRule(rule.toString());
