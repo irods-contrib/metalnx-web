@@ -90,7 +90,7 @@ public class TestAddDataGridMetadataListToObjs {
             String filepath = String.format("%s/%s", path, filename);
 
             file = new MockMultipartFile(filename, "Hello World Transfer".getBytes());
-            us.tranferFileDirectlyToJargon(filename, file, path, false, false, "", RESOURCE, false);
+            us.upload(file, path, false, false, "", RESOURCE, false);
 
             metadataService.addMetadataToPath(filepath, expectedMetadataList);
         }

@@ -74,11 +74,15 @@ public class TestAddMetadataToObjs {
 
     private List<String> expectedMetadataList;
 
+    private long time;
+
     @Before
     public void setUp() throws DataGridException {
+        time = System.currentTimeMillis();
+
         parentPath = String.format("/%s/home/%s", zone, username);
-        srcPath = String.format("%s/test-metadata-transfer", parentPath);
-        dstPath = String.format("%s/dst-test-metadata-transfer", parentPath);
+        srcPath = String.format("%s/test-metadata-transfer-%d", parentPath, time);
+        dstPath = String.format("%s/dst-test-metadata-transfer-%d", parentPath, time);
 
         fos.deleteCollection(srcPath, true);
         fos.deleteCollection(dstPath, true);
@@ -94,7 +98,8 @@ public class TestAddMetadataToObjs {
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
 
             file = new MockMultipartFile(filename, "Hello World Transfer".getBytes());
-            us.tranferFileDirectlyToJargon(filename, file, srcPath, false, false, "", RESOURCE, false);
+            fos.deleteDataObject(fileSrcPath, true);
+            us.upload(file, srcPath, false, false, "", RESOURCE, false);
 
             for(String metadataStr: expectedMetadataList) {
                 String[] metadata = metadataStr.split(" ");

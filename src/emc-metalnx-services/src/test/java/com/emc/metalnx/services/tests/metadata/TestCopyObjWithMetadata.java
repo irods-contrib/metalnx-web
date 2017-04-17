@@ -99,7 +99,7 @@ public class TestCopyObjWithMetadata {
             String fileSrcPath = String.format("%s/%s", srcPath, filename);
 
             file = new MockMultipartFile(filename, content.getBytes());
-            us.tranferFileDirectlyToJargon(filename, file, srcPath, false, false, "", RESOURCE, false);
+            us.upload(file, srcPath, false, false, "", RESOURCE, false);
 
             for(String s: expectedMetadataList) {
                 String[] metadata = s.split(" ");

@@ -131,7 +131,7 @@ public class TestReadPermissionOnFiles {
         for(int i = 0; i < NUMBER_OF_FILES; i++) {
             String filename = BASE_FILE_NAME + i;
             MockMultipartFile file = new MockMultipartFile(filename, "Hello World".getBytes());
-            us.tranferFileDirectlyToJargon(filename, file, targetPath, false, false, "", RESOURCE, false);
+            us.upload(file, targetPath, false, false, "", RESOURCE, false);
         }
     }
 }
