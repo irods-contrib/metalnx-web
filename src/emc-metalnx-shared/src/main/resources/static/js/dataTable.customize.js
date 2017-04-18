@@ -130,3 +130,7 @@ function resetDataTablesStart () {
 		}
 	}
 }
+
+$.fn.dataTable.ext.errMode = function(xhr, textStatus) {
+    location.reload();
+};
