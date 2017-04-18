@@ -363,18 +363,6 @@
 
         $(document).ready(function(e){  
         	
-			// Add tooltip on Upload button
-	        $('#uploadIcon').tooltip({
-	    		content:[[#{collections.upload.button.tooltip}]],
-	   			trigger: 'hover',
-	       		placement: 'bottom',
-	   		});
-	        // Add tooltip on Add Collection
-	        $('#showCollectionFormBtn').tooltip({
-	    		content:[[#{collections.management.add.button.tooltip}]],
-	   			trigger: 'hover',
-	       		placement: 'bottom',
-	   		});
 	        // Add tooltip on Empty Trash button
 	        $('#emptyTrashBtn').tooltip({
 	        	content:[[#{collections.empty.trash.button.tooltip}]],
@@ -408,7 +396,7 @@
     	            if(datatable.data().length == 0) {
     	            	$("#emptyTrashBtn").addClass("disabled");
     	            	$("#emptyTrashBtn").prop("disabled", true);
-    	            	$("#actions").hide();
+    	            	$("#actions button").prop("disabled", true);
     	            	$("#actionsWait").hide();
     	            	$('input[name=selectAllCheckboxes]').prop("disabled", true);
     	            }
@@ -489,8 +477,8 @@
                    	}
                 ]
     		} );
-    						
         	addCollectionActions('treeViewTable', datatable);
+            $("input[type=checkbox]").prop("disabled", false);
         });
 		
 		$("body").on("change", "input[name=selectAllCheckboxes]", function(){
@@ -498,6 +486,7 @@
 			
 			//select all collections
 			if($(this).is(":checked")){
+				$("#actions button").prop("disabled", true);
 				$("#actionsWait").show();
 				$('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
 				url = "/emc-metalnx-web/collections/addArrayToSourcePaths/";
@@ -533,6 +522,7 @@
 						null);
 				
 				$("#actions button").prop("disabled", true);
+				$("#actionsWait").hide();
 			}
 		});
 		
@@ -574,7 +564,6 @@
 					$("#actions #modifyBtn").hide();					
 				}
 				else {
-					$("#actions a").hide();
 					$("#actions button").prop("disabled", true);
 				}
 				ajaxEncapsulation(url, "POST", {path: path}, handleActionPermissionsWhenRemovingPaths, null, null);
@@ -667,6 +656,8 @@
         	e.preventDefault();
         	$("#uploadIcon").prop("disabled", true);
             $("#uploadIcon").addClass("disabled");
+            $("input[name=selectAllCheckboxes]").prop("disabled", true);
+            $("input[type=checkbox]").prop("disabled", true);
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	$("#actionsWait").show();
@@ -701,6 +692,8 @@
             $("#showCollectionFormBtn").removeClass("disabled");
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("checked", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("disabled", false);
+        	$("#treeViewTable input[name=selectAllCheckboxes]").prop("disabled", false);
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
         	window.location.href = "/emc-metalnx-web/fileOperation/download/";
         }
@@ -794,11 +787,14 @@
         }
 
 		function emptyTrash() {
+			$("#actionsWait").show();
+			$('#actionLabel').html([[#{collections.empty.trash.status}]]);
 			var url ="/emc-metalnx-web/fileOperation/emptyTrash/";
 			ajaxEncapsulation(url, "POST", null, emptyTrashSuccess, emptyTrashFailure, null, null);
 		}
 
 		function emptyTrashSuccess() {
+			$("#actionsWait").hide();
 			$("#trashNotEmptiedSuccessfully").addClass("hideElement");
 			$("#trashEmptiedSuccessfully").removeClass("hideElement");
 			getSubDirectories([[${ trashColl }]]);
