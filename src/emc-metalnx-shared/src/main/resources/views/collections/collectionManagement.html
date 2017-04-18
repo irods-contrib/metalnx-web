@@ -720,7 +720,7 @@
 	        
 	        function deleteAction(){
 	        	setOperationInProgress();
-	        	$("#actions a").hide();
+	        	$("#actions button").prop("disabled", true);
 	        	$('#actionsWait').show();
 	        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
 	        	$("#uploadIcon").prop("disabled", true);
