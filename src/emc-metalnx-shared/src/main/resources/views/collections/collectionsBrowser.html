@@ -363,13 +363,6 @@
 
         $(document).ready(function(e){  
         	
-	        // Add tooltip on Empty Trash button
-	        $('#emptyTrashBtn').tooltip({
-	        	content:[[#{collections.empty.trash.button.tooltip}]],
-	   			trigger: 'hover',
-	       		placement: 'bottom',
-	        });
-        	
         	if(![[${isCurrentPathCollection}]]){
         		getInfoDetails([[${currentPath}]]);
         		return;
@@ -480,7 +473,15 @@
         	addCollectionActions('treeViewTable', datatable);
             $("input[type=checkbox]").prop("disabled", false);
         });
-		
+		$('#treeViewTable').on('page.dt', function (){
+		    $("#actions button").prop("disabled", true);
+            $("#actionsWait").hide();
+		})
+		$('#treeViewTable').on( 'length.dt', function ( e, settings, len ) {
+            $("#actions button").prop("disabled", true);
+            $("#actionsWait").hide();
+        });
+
 		$("body").on("change", "input[name=selectAllCheckboxes]", function(){
 			var paths = new Array();
 			
