@@ -787,11 +787,14 @@
         }
 
 		function emptyTrash() {
+			$("#actionsWait").show();
+			$('#actionLabel').html([[#{collections.empty.trash.status}]]);
 			var url ="/emc-metalnx-web/fileOperation/emptyTrash/";
 			ajaxEncapsulation(url, "POST", null, emptyTrashSuccess, emptyTrashFailure, null, null);
 		}
 
 		function emptyTrashSuccess() {
+			$("#actionsWait").hide();
 			$("#trashNotEmptiedSuccessfully").addClass("hideElement");
 			$("#trashEmptiedSuccessfully").removeClass("hideElement");
 			getSubDirectories([[${ trashColl }]]);

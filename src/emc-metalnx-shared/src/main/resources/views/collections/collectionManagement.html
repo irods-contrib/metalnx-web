@@ -603,7 +603,7 @@
 			}
 			
 	        function getSubDirectoriesOldTree(directoryName, directoryPath){
-	        	$("#moveModal img[name='" + directoryPath + "']").attr("src", "../images/spinner-16.gif");	
+	        	$("#moveModal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/spinner-16.gif");
 				var groupName = $("#collectionInfoGroupName").text();
 				
 				ajaxEncapsulation(
@@ -614,7 +614,7 @@
 						$(".modal a[name='" + directoryPath + "']").attr("onclick", "retractElement('" + directoryName + "', '" + directoryPath + "');");
 						$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 						$(".modal a[name='" + directoryPath + "']").parent().after(data);
-						$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-open-16.png");
+						$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-open-16.png");
 						
 						targetPath = directoryPath;	
 						$('.targetPathInfoSpan').html(targetPath);
@@ -625,7 +625,7 @@
 	        function retractElement(directoryName, directoryPath) {
 	        	$(".modal a[name='" + directoryPath + "']").attr("onclick", "getSubDirectoriesOldTree('" + directoryName + "', '" + directoryPath + "');");
 				$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
-				$(".modal img[name='" + directoryPath + "']").attr("src", "../images/folder-16.png");
+				$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-16.png");
 				
 				targetPath = directoryPath;	
 				$('.targetPathInfoSpan').html(targetPath);
@@ -732,17 +732,15 @@
 	        		"POST", 
 	        		"", 
 	        		function (data) {
-		        		$("#actionsWait").hide();
 		        		unsetOperationInProgress();
-		        		
 		        		resetDataTablesStart();	
-		        		
 	        			$("#tree-view-panel-body").html(data);
+
 					}, null, null, null
 				);
-				
+                console.log("fileOperation - delete");
 				$("#deleteModal").modal("hide");
-				
+
 				cleanModals();
 	        }
 	        
