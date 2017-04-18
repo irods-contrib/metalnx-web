@@ -41,7 +41,7 @@ public class HttpErrorControler {
     public String show404CustomizedPage(Model model) {
         logger.error("404 - Page not found");
 
-        return "errors/404";
+        return "httpErrors/404";
     }
 
     /**
@@ -54,7 +54,7 @@ public class HttpErrorControler {
     public String show403CustomizedPage(Model model) {
         logger.error("403 - Access denied");
 
-        return "errors/403";
+        return "httpErrors/403";
     }
 
     /**
@@ -67,7 +67,7 @@ public class HttpErrorControler {
     public String show500CustomizedPage(Model model) {
         logger.error("500 - Internal Server Error");
 
-        return "errors/500";
+        return "httpErrors/500";
     }
 
     /**
@@ -80,6 +80,6 @@ public class HttpErrorControler {
     public String showServerNotRespondingCustomizedPage(Model model) {
         logger.error("503 - Connect Exception (iCAT Server not responding)");
 
-        return "errors/serverNotResponding";
+        return "httpErrors/serverNotResponding";
     }
 }
