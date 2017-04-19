@@ -58,19 +58,29 @@
                                 <td th:text="${userPermission.getUserSystemRole()}"></td>
                                 <td th:unless="${userCanModify}" th:text="${userPermission.getPermission()}"></td>
                                 <td th:if="${userCanModify}">
-                                    <select class="userOptionForPermission" th:title="#{permission.table.permission.column}">
-                                        <option th:each="permission : ${permissions}"
-                                            th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
-                                            th:text="${permission}" th:title="${permission}"
-                                            th:selected="${userPermission.getPermission() == permission}"></option>
-                                    </select>
-                                    <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
-                                        <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
-                                        <div class="pull-right">
-                                            <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)"></button>
-                                            <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)"></button>
+                                    <th:block th:if="${collectionAndDataObject.isCollection()}">
+                                        <select class="userOptionForPermission" th:title="#{permission.table.permission.column}">
+                                            <option th:each="permission : ${permissions}"
+                                                    th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
+                                                    th:text="${permission}" th:title="${permission}"
+                                                    th:selected="${userPermission.getPermission() == permission}"></option>
+                                        </select>
+                                        <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
+                                            <span title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
+                                            <div class="buttons">
+                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)"></button>
+                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)"></button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </th:block>
+                                    <th:block th:unless="${collectionAndDataObject.isCollection()}">
+                                        <select class="userOptionForFilePermission" th:title="#{permission.table.permission.column}">
+                                            <option th:each="permission : ${permissions}"
+                                                    th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
+                                                    th:text="${permission}" th:title="${permission}"
+                                                    th:selected="${userPermission.getPermission() == permission}"></option>
+                                        </select>
+                                    </th:block>
                                 </td>
                                 <td th:if="${userCanModify}">
                                     <input
@@ -89,19 +99,29 @@
                                 <td><span th:text="#{permissions.table.group.label}"></span></td>
                                 <td th:unless="${userCanModify}" th:text="${groupPermission.getPermission()}"></td>
                                 <td th:if="${userCanModify}">
-                                    <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
-                                        <option th:each="permission : ${permissions}"
-                                            th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
-                                            th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
-                                            th:title="${permission}"></option>
-                                    </select>
-                                    <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
-                                        <span class="pull-left" title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
-                                        <div class="pull-right">
-                                            <button type="button" class="btn-xs btn btn-default confirm-msg-table-no" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)"></button>
-                                            <button type="button" class="btn-xs btn btn-default confirm-msg-table-yes" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)"></button>
+                                    <th:block th:if="${collectionAndDataObject.isCollection()}">
+                                        <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
+                                            <option th:each="permission : ${permissions}"
+                                                th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
+                                                th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
+                                                th:title="${permission}"></option>
+                                        </select>
+                                        <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
+                                            <span title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
+                                            <div class="buttons">
+                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-no" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)"></button>
+                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-yes" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)"></button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </th:block>
+                                    <th:block th:unless="${collectionAndDataObject.isCollection()}">
+                                        <select class="groupOptionForFilePermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
+                                            <option th:each="permission : ${permissions}"
+                                                    th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
+                                                    th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
+                                                    th:title="${permission}"></option>
+                                        </select>
+                                    </th:block>
                                 </td>
                                 <td th:if="${userCanModify}">
                                     <input
@@ -332,6 +352,14 @@
                 /**********************************************************************/
                 /**************************** PERMISSIONS *****************************/
                 /**********************************************************************/
+                $('.userOptionForFilePermission').change(function(){
+                    var selected = $(this);
+                    setPermissionAndRecursion(selected, false);
+                });
+                $('.groupOptionForFilePermission').change(function(){
+                    var selected = $(this);
+                    setPermissionAndRecursion(selected, false);
+                });
 
                 $('.userOptionForPermission').change(function(){
                     $(this).addClass('hideElement');
