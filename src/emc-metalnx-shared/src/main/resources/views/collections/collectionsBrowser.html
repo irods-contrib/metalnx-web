@@ -361,7 +361,7 @@
         var currentPermissionTab = "groups";
         var datatable;
 
-        $(document).ready(function(e){  
+        $(document).ready(function(e){
         	
         	if(![[${isCurrentPathCollection}]]){
         		getInfoDetails([[${currentPath}]]);
@@ -482,7 +482,7 @@
             $("#actionsWait").hide();
         });
 
-		$("body").on("change", "input[name=selectAllCheckboxes]", function(){
+		$("input[type='checkbox'][name='selectAllCheckboxes']").on("change", function(){
 			var paths = new Array();
 			
 			//select all collections
@@ -491,7 +491,6 @@
 				$("#actionsWait").show();
 				$('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
 				url = "/emc-metalnx-web/collections/addArrayToSourcePaths/";
-				
 				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
 					paths.push($(this).attr("value"));
 					$(this).prop("checked", true);
@@ -597,13 +596,15 @@
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#downloadBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
 					case "read":
 						$("#actions button").prop("disabled", false);
 						$("#applyTemplatesBtn").parent("li").addClass("hideElement");	
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
-						$("#deleteBtn").parent("li").addClass("hideElement");				
+						$("#deleteBtn").parent("li").addClass("hideElement");
+                        $("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
 					case "write":
 						//write permissions let users download, copy, replicate and apply templates
@@ -611,6 +612,7 @@
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
 					case "own":
 						$("#actions button").prop("disabled", false);
@@ -618,7 +620,7 @@
 				}
 			}
 		}
-		
+
 		function handleActionPermissionsWhenRemovingPaths(mostRestrictivePermission) {
 			$("#actionsWait").hide();
 			$("#actions").show();
@@ -636,7 +638,8 @@
 						$("#applyTemplatesBtn").parent("li").addClass("hideElement");	
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
-						$("#deleteBtn").parent("li").addClass("hideElement");				
+						$("#deleteBtn").parent("li").addClass("hideElement");
+                        $("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
 					case "write": //write permissions let users download, copy, replicate and apply templates	
 						$("#actions button").prop("disabled", false);
@@ -644,6 +647,7 @@
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
 					case "own":
 						$("#actions button").prop("disabled", false);

@@ -679,10 +679,6 @@ div.dataTables_wrapper .toolbar .input-group{
 	font-weight: normal; 
 	margin-left: 5px;
 }
-/* 
-#templateFieldsListTable_wrapper .row:nth-of-type(2) > div{
-	overflow-x: hidden;
-} */
 
 /**************************************************************************************************/
 .required:BEFORE {
@@ -702,6 +698,9 @@ div.dataTables_wrapper .toolbar .input-group{
 #actions .btn-group, #addPermissionButtonDiv{
 	margin: 0 15px 0 0;
 	padding: 0;
+}
+#actions .dropdown-menu .divider{
+    margin: 5px 0;
 }
 
 #addPermissionButtonDiv .dropdown-menu{
