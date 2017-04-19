@@ -31,7 +31,7 @@ body {
 	left: -10px;
 	top: -8px;
 	font-size: 10px;
-	padding: 2px 4px;
+	padding: 3px 3px;
 	position: relative;
 }
 
@@ -1449,8 +1449,16 @@ i.fa-user.menu-icon{
     font-size: 25px;
 }
 
+#uploadStatusIcon{
+    padding-right: 0;
+    position: absolute;
+    top: 0;
+    right: 100px;
+}
 #uploadStatusIcon li a{
-	color: #333;
+	color: #656363;
+	padding-right: 0;
+	top:-1;
 }
 
 ul.navbar-top-links > li.dropdown > .dropdown-toggle:hover, 

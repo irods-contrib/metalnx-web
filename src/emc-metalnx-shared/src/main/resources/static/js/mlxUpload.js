@@ -67,17 +67,17 @@ $("#uploadButton").click(function(){
 	//var uploadItems = "";
 	//var currFilePos = 0;
 
-    $('#uploadStatusIcon').removeClass('hide');
+    $('#uploadStatusIcon').removeClass("hide");
     $('#uploadStatusIcon ul.dropdown-menu').empty();
     var uploadItems = "";
 
     $.each(files, function(index, file){
         uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
         '<input type="hidden" class="paused" value="false" />'+
-        '<div class="col-sm-4" style="float:left; margin-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
+        '<div class="col-sm-8" style="float:left; padding-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
             '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
         '</div>'+
-        '<div class="col-sm-7 progressWrapper">'+
+        '<div class="col-sm-4 progressWrapper">'+
             '<div class="progress" style="">'+
                 '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>'+
             '</div>'+
@@ -209,7 +209,6 @@ function showTransferMsg(fileId, icon, msg) {
         htmlMsg +=  '<span class="glyphicon ' + icon + '" aria-hidden="true"></span> ';
         htmlMsg +=  msg;
         htmlMsg += '</p>';
-
     updateBadge();
 
     $(progressWrapper).html(htmlMsg);
