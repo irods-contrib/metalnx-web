@@ -27,6 +27,14 @@ import java.util.List;
 public interface PermissionsService {
 
     /**
+     * Finds the most restrictive permission from a list of paths.
+     *
+     * @return string containing the most restrictive permission ("none", "read", "write", or "own")
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    DataGridPermType findMostRestrictivePermission(String... paths) throws DataGridConnectionRefusedException;
+
+    /**
      * Retrieves all permissions information about a given path for a given user.
      * This path can be a collection or a data object. It also parses the
      * results down to groups and users so there are no duplicate results.

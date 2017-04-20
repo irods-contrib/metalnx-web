@@ -22,6 +22,7 @@ import com.emc.metalnx.core.domain.entity.*;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import org.irods.jargon.core.exception.FileNotFoundException;
@@ -55,18 +56,46 @@ public class PermissionsServiceImpl implements PermissionsService {
      */
 
     @Autowired
-    IRODSServices irodsServices;
+    private IRODSServices irodsServices;
 
     @Autowired
-    GroupBookmarkDao groupBookmarkDao;
+    private GroupBookmarkDao groupBookmarkDao;
 
     @Autowired
-    GroupDao groupDao;
+    private GroupDao groupDao;
+
+    @Autowired
+    private CollectionService collectionService;
 
     // String representing the rodsgroup type on the UserFilePermission enum
     private static final String RODS_GROUP = "rodsgroup";
 
     private static final Logger logger = LoggerFactory.getLogger(PermissionsServiceImpl.class);
+
+    @Override
+    public DataGridPermType findMostRestrictivePermission(String... paths) throws DataGridConnectionRefusedException {
+        DataGridPermType mostRestrictivePermission = DataGridPermType.NONE;
+        Set<String> permissions = new HashSet<>();
+
+        for (String path : paths) {
+            permissions.add(collectionService.getPermissionsForPath(path));
+        }
+
+        if (permissions.contains("none")) {
+            mostRestrictivePermission = DataGridPermType.NONE;
+        }
+        else if (permissions.contains("read")) {
+            mostRestrictivePermission = DataGridPermType.READ;
+        }
+        else if (permissions.contains("write")) {
+            mostRestrictivePermission = DataGridPermType.WRITE;
+        }
+        else if(permissions.contains("own")){
+            mostRestrictivePermission = DataGridPermType.OWN;
+        }
+
+        return mostRestrictivePermission;
+    }
 
     @Override
     public List<DataGridFilePermission> getPathPermissionDetails(String path, String username) throws JargonException,
