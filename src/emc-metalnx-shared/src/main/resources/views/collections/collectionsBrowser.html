@@ -492,30 +492,6 @@
             });
         }
 
-		function findPathsSelected() {
-            var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
-            var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
-
-            if(totalCheckboxesChecked == 1) $("#actions #modifyBtn").show();
-            else $("#actions #modifyBtn").hide();
-
-		    var paths = new Array();
-
-		    $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
-		        var cb = $(this);
-
-                if(cb.is(":checked")) {
-                    paths.push(cb.attr("value"));
-                    $(this).parent().parent().addClass("info");
-                }
-                else $(this).parent().parent().removeClass("info");
-
-                if(cb.attr('collection') == 'true') $('#replicateBtn').hide();
-            });
-
-            return paths;
-        }
-
 		$("input[type='checkbox'][name='selectAllCheckboxes']").on("change", function(){
 			if($(this).is(":checked")){
 				$("#actions button").prop("disabled", true);

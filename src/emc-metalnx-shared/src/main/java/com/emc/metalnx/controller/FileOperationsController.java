@@ -50,22 +50,31 @@ public class FileOperationsController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
     private static String TRASH_PATH;
+
     @Autowired
     private CollectionController collectionController;
+
     @Autowired
     private CollectionService collectionService;
+
     @Autowired
     private IRODSServices irodsServices;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private FileOperationService fileOperationService;
+
     @Autowired
     private LoggedUserUtils loggedUserUtils;
+
     @Autowired
     private UploadService us;
+
     // contains the path to the file that will be downloaded
     private String filePathToDownload;
+
     // checks if it's necessary to remove any temporary collections created for downloading
     private boolean removeTempCollection;
 
@@ -227,29 +236,27 @@ public class FileOperationsController {
         }
     }
 
-    @RequestMapping(value = "delete/", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public String deleteCollectionAndDataObject(Model model) throws DataGridException, JargonException {
+    public String deleteCollectionAndDataObject(Model model, @RequestParam("paths[]") String[] paths)
+            throws DataGridException, JargonException {
         boolean forceRemove;
-        List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedDeletions = new ArrayList<>();
         String fileDeleted = null;
 
-        for (String path : sourcePaths) {
+        for (String path : paths) {
             forceRemove = path.startsWith(TRASH_PATH);
             
             if (!fileOperationService.deleteItem(path, forceRemove)) {
                 String item = path.substring(path.lastIndexOf("/") + 1, path.length());
                 failedDeletions.add(item);
             } 
-            else if (sourcePaths.size() == 1) {
+            else if (paths.length == 1) {
                 fileDeleted = path.substring(path.lastIndexOf("/") + 1, path.length());
             }
             
             collectionController.removePathFromHistory(path);
         }
-
-        sourcePaths.clear();
 
         if (fileDeleted != null) {
             model.addAttribute("fileDeleted", fileDeleted);
