@@ -427,7 +427,7 @@
   		    	"columnDefs": [
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return '<input type="checkbox" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
+    						return '<input type="checkbox" class="treeViewTableItemCheckbox" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
     					},
     					"className": "dt-center",
     					"width": "25px",
@@ -436,7 +436,7 @@
                     },
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return '<a href="#" name="' + full.path + 
+    						return '<a href="#" name="' + full.path +
 								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
 								'"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
     					},
@@ -473,10 +473,12 @@
         	addCollectionActions('treeViewTable', datatable);
             $("input[type=checkbox]").prop("disabled", false);
         });
+
 		$('#treeViewTable').on('page.dt', function (){
 		    $("#actions button").prop("disabled", true);
             $("#actionsWait").hide();
-		})
+		});
+
 		$('#treeViewTable').on( 'length.dt', function ( e, settings, len ) {
             $("#actions button").prop("disabled", true);
             $("#actionsWait").hide();
@@ -490,7 +492,9 @@
 				$("#actions button").prop("disabled", true);
 				$("#actionsWait").show();
 				$('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
-				url = "/emc-metalnx-web/collections/addArrayToSourcePaths/";
+
+				url = "/emc-metalnx-web/permissions/findMostRestrictive/";
+
 				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
 					paths.push($(this).attr("value"));
 					$(this).prop("checked", true);
@@ -499,28 +503,14 @@
 				
 				ajaxEncapsulation(url, "POST", {paths: paths}, handleActionPermissionsWhenAddingPaths, null, null);
 				
-				//hiding the rename button
 				$("#actions #modifyBtn").hide();
-
 			}
-			//unselect all collections
 			else {
-				url = "/emc-metalnx-web/collections/removeArrayFromSourcePaths/";
-				
 				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
-					paths.push($(this).attr("value"));
 					$(this).prop("checked", false);
 					$(this).parent().parent().removeClass("info");
-				});	
-				
-				ajaxEncapsulation(
-						url, 
-						"POST", 
-						{paths: paths}, 
-						function() { $("#actions button").prop("disabled", true); }, 
-						null, 
-						null);
-				
+				});
+
 				$("#actions button").prop("disabled", true);
 				$("#actionsWait").hide();
 			}
@@ -533,13 +523,13 @@
 			}
 			else {
 				$("input[name=selectAllCheckboxes]").prop("checked", false);
-			}			
+			}
 			path = $(this).attr("value");
 			
 			if($(this).is(":checked")){
 				$(this).parent().parent().addClass("info");
 				$("#actions a").show();
-				url = "/emc-metalnx-web/collections/addToSourcePaths/";
+				url = "/emc-metalnx-web/permissions/findMostRestrictive/";
 				var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
 				
 				if($("#treeViewTable tbody input[type=checkbox]:checked").length > 1) {
@@ -549,26 +539,25 @@
 				if($(this).attr('collection') == 'true'){
 				    $('#replicateBtn').hide();
 				}
+
 				ajaxEncapsulation(url, "POST", {path: path}, handleActionPermissionsWhenAddingPaths, null, null);
 			}
-			else {	
+			else {
 				$(this).parent().parent().removeClass("info");
-				url = "/emc-metalnx-web/collections/removeFromSourcePaths/";
 				var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
 				if(totalCheckboxesChecked == 1) {
-					$("#actions a").show();	
+					$("#actions a").show();
 					$("#actions button").prop("disabled", false);
 				}
 				else if (totalCheckboxesChecked > 1){
-					$("#actions a").show();	
-					$("#actions #modifyBtn").hide();					
+					$("#actions a").show();
+					$("#actions #modifyBtn").hide();
 				}
 				else {
 					$("#actions button").prop("disabled", true);
 				}
-				ajaxEncapsulation(url, "POST", {path: path}, handleActionPermissionsWhenRemovingPaths, null, null);
 			}
-			
+
 			if($('#treeViewTable tbody input[collection="true"]:checked').length == 0){
 			    $('#replicateBtn').show();
 			}
