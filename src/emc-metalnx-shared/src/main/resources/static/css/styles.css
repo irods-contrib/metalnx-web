@@ -1767,6 +1767,10 @@ footer {
 #systemHealth .panel .panel-body{
 	padding: 0;
 }
+.rmd-status-msg{
+    padding: 0 10px;
+    color: #f0ad4e;
+}
 #systemHealth .panel .panel-body h4{
 	margin-top: 0;
 	margin-bottom: 0;
@@ -1782,6 +1786,9 @@ footer {
 }
 #totalStorageDiv #totalStorageSum table{
 	width: 100%;
+}
+.panel.totalStorage{
+    height: 310px;
 }
 #totalStorageSum table > tbody > tr > td:first-child {
     text-align: right;
