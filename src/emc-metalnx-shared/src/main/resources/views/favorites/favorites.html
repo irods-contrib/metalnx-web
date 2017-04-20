@@ -54,7 +54,6 @@
 						<tr>
 							<th th:text="#{favorites.table.name.label}"></th>
 							<th th:text="#{favorites.table.path.label}"></th>
-							<th th:text="#{favorites.table.created.at.label}"></th>
 							<th th:text="#{favorites.table.type.label}"></th>
 							<th ></th>
 						</tr>
@@ -62,11 +61,6 @@
 				</table>
              </div>
              
-             <!-- <div class="col-sm-12 table-responsive" th:unless="${not #lists.isEmpty(userFavorites)}">
-             	 <div class="text-center" role="alert">
-			        <span th:text="#{favorites.empty.table}"></span>
-			    </div>
-             </div>  -->
         </div>
 			
 		<script th:inline="javascript">	
@@ -109,33 +103,28 @@
                 	"render": function ( data, type, full, meta ) {
 						return '<a href="#" onclick="redirectToCollections(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
 					},
-					"width": "28%",
+					"width": "35%",
 					"targets": 0
                 },
                 {
                 	"data": "path", 
-                	"width": "40%", 
+                	"width": "40%",
                 	"targets": 1
-               	},
-                {
-               		"data": "createTsFormatted", 
-               		"width": "15%", 
-               		"targets": 2
                	},
                 {
                		"render": function (data, type, full, meta){
                 		return full.isCollection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
                 	},
                		"width": "15%", 
-               		"targets": 3
+               		"targets": 2
                	},
                 {
                 	"render": function (data, type, full, meta){
-                		return '<a href="#" onclick="unstarItem(\''+full.path+'\')"><i class="fa fa-trash-o"></i></a>';
+                		return '<a href="#" class="btn btn-default btn-xs" onclick="unstarItem(\''+full.path+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
                 	},
-                	"width": "2%",
+                	"width": "10%",
                 	"orderable": false,
-                	"targets": 4
+                	"targets": 3
                 }
             ]
 		});
