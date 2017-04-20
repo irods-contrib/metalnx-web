@@ -294,23 +294,15 @@ public class CollectionController {
 
         logger.info("Get subdirectories of {}", path);
         DataGridCollectionAndDataObject obj = null;
-        boolean isCollection = false;
-        boolean isDataObj = false;
 
         try {
             obj = cs.findByName(path);
-            isCollection = cs.isCollection(path);
-            isDataObj = cs.isDataObject(path);
         }
         catch (DataGridException e) {
             logger.error("Path {} doesn't exist or user does not have access permission", path);
         }
-        if (obj == null && !isCollection && !isDataObj) {
+        if (obj == null) {
             model.addAttribute("invalidPath", path);
-            path = currentPath;
-        }
-        else if (obj == null && (isCollection || isDataObj)) {
-            model.addAttribute("pathPermissionDenied", path);
             path = currentPath;
         }
 
