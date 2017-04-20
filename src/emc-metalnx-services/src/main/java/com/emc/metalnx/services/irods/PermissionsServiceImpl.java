@@ -74,10 +74,13 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public DataGridPermType findMostRestrictivePermission(String... paths) throws DataGridConnectionRefusedException {
+        logger.info("Find most restrictive permission");
+
         DataGridPermType mostRestrictivePermission = DataGridPermType.NONE;
         Set<String> permissions = new HashSet<>();
 
         for (String path : paths) {
+            logger.info("Get permission for {}", path);
             permissions.add(collectionService.getPermissionsForPath(path));
         }
 
@@ -93,6 +96,8 @@ public class PermissionsServiceImpl implements PermissionsService {
         else if(permissions.contains("own")){
             mostRestrictivePermission = DataGridPermType.OWN;
         }
+
+        logger.info("Most restrictive permission: {}", mostRestrictivePermission);
 
         return mostRestrictivePermission;
     }
