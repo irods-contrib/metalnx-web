@@ -109,6 +109,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 
     @Override
     public boolean deleteItem(String path, boolean force) throws DataGridConnectionRefusedException {
+        if(path == null || path.isEmpty()) return false;
 
         IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
         IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
@@ -120,20 +121,24 @@ public class FileOperationServiceImpl implements FileOperationService {
             if (irodsFileSystemAO.isDirectory(itemToBeRemoved)) {
                 // if force set to true, we do an irm -rf
                 if (force) {
+                    logger.info("Deleting directory (force) {}", path);
                     irodsFileSystemAO.directoryDeleteForce(itemToBeRemoved);
                 }
                 // irm
                 else {
+                    logger.info("Deleting directory {}", path);
                     irodsFileSystemAO.directoryDeleteNoForce(itemToBeRemoved);
                 }
             }
             else {
                 // if force set to false, we do an irm
                 if (force) {
+                    logger.info("Deleting data obj (force) {}", path);
                     irodsFileSystemAO.fileDeleteForce(itemToBeRemoved);
                 }
                 // irm
                 else {
+                    logger.info("Deleting data obj {}", path);
                     irodsFileSystemAO.fileDeleteNoForce(itemToBeRemoved);
                 }
             }
