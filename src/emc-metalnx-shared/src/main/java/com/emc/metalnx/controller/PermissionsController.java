@@ -28,10 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -41,25 +38,25 @@ import java.util.*;
 public class PermissionsController {
 
     @Autowired
-    UserService us;
+    private UserService us;
 
     @Autowired
-    GroupService gs;
+    private GroupService gs;
 
     @Autowired
-    GroupBookmarkService gBMS;
+    private GroupBookmarkService gBMS;
 
     @Autowired
-    UserBookmarkService uBMS;
+    private UserBookmarkService uBMS;
 
     @Autowired
-    PermissionsService ps;
+    private PermissionsService ps;
 
     @Autowired
-    LoggedUserUtils luu;
+    private LoggedUserUtils luu;
 
     @Autowired
-    CollectionService cs;
+    private CollectionService cs;
 
     private DataGridUser loggedUser;
 
@@ -72,6 +69,27 @@ public class PermissionsController {
     private static final String REQUEST_OK = "OK";
     private static final String REQUEST_ERROR = "ERROR";
     private static final Logger logger = LoggerFactory.getLogger(PermissionsController.class);
+
+    /**
+     * Finds the most restrictive permission on paths selected on the UI.
+     *
+     * @return string containing the most restrictive permission ("none", "read", "write", or "own")
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    @RequestMapping(value = "/findMostRestrictive/", method = RequestMethod.POST, produces = { "text/plain" })
+    @ResponseBody
+    private String findMostRestrictivePermission(@RequestParam("paths[]") String[] paths)
+            throws DataGridConnectionRefusedException {
+
+        DataGridPermType mostRestrictivePermission = ps.findMostRestrictivePermission(paths);
+
+        boolean isAdmin = luu.getLoggedDataGridUser().isAdmin();
+        boolean isPermNone = mostRestrictivePermission.equals(DataGridPermType.NONE);
+
+        if (isPermNone && isAdmin) mostRestrictivePermission = DataGridPermType.IRODS_ADMIN;
+
+        return mostRestrictivePermission.toString().toLowerCase();
+    }
 
     /**
      * Gives permission details related to a collection or file that is passed as a parameter

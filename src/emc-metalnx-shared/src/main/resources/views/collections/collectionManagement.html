@@ -717,6 +717,30 @@
 	        $("#replicateButton").click(function(){
 	        	$("#replicateForm").submit();
 			});
+
+			function findPathsSelected() {
+				var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
+				var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
+
+				if(totalCheckboxesChecked == 1) $("#actions #modifyBtn").show();
+				else $("#actions #modifyBtn").hide();
+
+				var paths = new Array();
+
+				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
+					var cb = $(this);
+
+					if(cb.is(":checked")) {
+						paths.push(cb.attr("value"));
+						$(this).parent().parent().addClass("info");
+					}
+					else $(this).parent().parent().removeClass("info");
+
+					if(cb.attr('collection') == 'true') $('#replicateBtn').hide();
+				});
+
+				return paths;
+			}
 	        
 	        function deleteAction(){
 	        	setOperationInProgress();
@@ -727,19 +751,23 @@
             	$("#uploadIcon").addClass("disabled");
             	$("#showCollectionFormBtn").prop("disabled", true);
             	$("#showCollectionFormBtn").addClass("disabled");
+
+            	var paths = findPathsSelected();
+            	var url = "/emc-metalnx-web/fileOperation/delete/";
+
 	        	ajaxEncapsulation(
-	        		"/emc-metalnx-web/fileOperation/delete/", 
+	        		url,
 	        		"POST", 
-	        		"", 
+	        		{paths: paths},
 	        		function (data) {
 		        		unsetOperationInProgress();
 		        		resetDataTablesStart();	
 	        			$("#tree-view-panel-body").html(data);
 
-					}, null, null, null
+					}
 				);
-				$("#deleteModal").modal("hide");
 
+				$("#deleteModal").modal("hide");
 				cleanModals();
 	        }
 	        

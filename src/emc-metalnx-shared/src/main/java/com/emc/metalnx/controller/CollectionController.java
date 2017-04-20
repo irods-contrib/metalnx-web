@@ -18,7 +18,6 @@ package com.emc.metalnx.controller;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.*;
-import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
@@ -295,23 +294,15 @@ public class CollectionController {
 
         logger.info("Get subdirectories of {}", path);
         DataGridCollectionAndDataObject obj = null;
-        boolean isCollection = false;
-        boolean isDataObj = false;
 
         try {
             obj = cs.findByName(path);
-            isCollection = cs.isCollection(path);
-            isDataObj = cs.isDataObject(path);
         }
         catch (DataGridException e) {
             logger.error("Path {} doesn't exist or user does not have access permission", path);
         }
-        if (obj == null && !isCollection && !isDataObj) {
+        if (obj == null) {
             model.addAttribute("invalidPath", path);
-            path = currentPath;
-        }
-        else if (obj == null && (isCollection || isDataObj)) {
-            model.addAttribute("pathPermissionDenied", path);
             path = currentPath;
         }
 
@@ -807,69 +798,6 @@ public class CollectionController {
     }
 
     /*
-     * *************************************************************************
-     * ************************** HANDLING SESSION *****************************
-     * *************************************************************************
-     */
-
-    /**
-     * Method that adds a path to the list of paths to perform download, copy, move, or other types
-     * of operations.
-     *
-     * @param path
-     * @return the permission the user has on the path given as the parameter
-     * @throws DataGridConnectionRefusedException
-     */
-    @RequestMapping(value = "/addToSourcePaths/", method = RequestMethod.POST, produces = { "text/plain" })
-    @ResponseBody
-    synchronized public String addToSourcePaths(@RequestParam("path") String path) throws DataGridConnectionRefusedException {
-        if (path != null && !path.isEmpty() && !sourcePaths.contains(path)) {
-            sourcePaths.add(path);
-        }
-        return getMostRestrictivePermission();
-    }
-
-    @RequestMapping(value = "/removeFromSourcePaths/", method = RequestMethod.POST, produces = { "text/plain" })
-    @ResponseBody
-    synchronized public String removeFromSourcePaths(@RequestParam("path") String path) throws DataGridConnectionRefusedException {
-        if (path != null && !path.isEmpty() && sourcePaths.contains(path)) {
-            sourcePaths.remove(path);
-        }
-        return getMostRestrictivePermission();
-    }
-
-    /**
-     * Method that adds a path to the list of paths to perform download, copy, move, or other types
-     * of operations.
-     *
-     * @param paths
-     * @return the permission the user has on the path given as the parameter
-     * @throws DataGridConnectionRefusedException
-     */
-    @RequestMapping(value = "/addArrayToSourcePaths/", method = RequestMethod.POST, produces = { "text/plain" })
-    @ResponseBody
-    synchronized public String addToSourcePaths(@RequestParam("paths[]") String[] paths) throws DataGridConnectionRefusedException {
-        if (paths != null && paths.length > 0) {
-            for (String path : paths) {
-                if (!sourcePaths.contains(path)) {
-                    sourcePaths.add(path);
-                }
-            }
-        }
-
-        return getMostRestrictivePermission();
-    }
-
-    @RequestMapping(value = "/removeArrayFromSourcePaths/", method = RequestMethod.POST, produces = { "text/plain" })
-    @ResponseBody
-    synchronized public String removeFromSourcePaths(@RequestParam("paths[]") String[] paths) throws DataGridConnectionRefusedException {
-        if (paths != null && paths.length > 0) {
-            sourcePaths.removeAll(Arrays.asList(paths));
-        }
-        return getMostRestrictivePermission();
-    }
-
-    /*
      * *****************************************************************************
      * ******************************** VALIDATION *********************************
      * *****************************************************************************
@@ -902,59 +830,6 @@ public class CollectionController {
      * ******************************** UTILS **********************************
      * *************************************************************************
      */
-
-    /**
-     * Method that returns the most restrictive permission existing in the list of paths to operate
-     * on.
-     *
-     * @return string containing the most restrictive permission ("none", "read", "write", or "own")
-     * @throws DataGridConnectionRefusedException
-     */
-    synchronized private String getMostRestrictivePermission() throws DataGridConnectionRefusedException {
-        DataGridPermType mostRestrictivePermission = DataGridPermType.NONE;
-        String currPermission = "";
-        List<String> srcPathsPermissions = new ArrayList<>();
-
-        try {
-            for (String path : sourcePaths) {
-                currPermission = cs.getPermissionsForPath(path);
-
-                if (!srcPathsPermissions.contains(currPermission)) {
-                    srcPathsPermissions.add(currPermission);
-                    if ("none".equalsIgnoreCase(currPermission)) {
-                        break;
-                    }
-                }
-            }
-
-            if (srcPathsPermissions.contains("none")) {
-                mostRestrictivePermission = DataGridPermType.NONE;
-            }
-            else if (srcPathsPermissions.contains("read")) {
-                mostRestrictivePermission = DataGridPermType.READ;
-            }
-            else if (srcPathsPermissions.contains("write")) {
-                mostRestrictivePermission = DataGridPermType.WRITE;
-            }
-            else if(srcPathsPermissions.contains("own")){
-                mostRestrictivePermission = DataGridPermType.OWN;
-            }
-        }
-        catch (DataGridConnectionRefusedException e) {
-            logger.error("Could not connect to the data grid.");
-            throw e;
-        }
-        catch (Exception e) {
-            logger.error("Could not get the most restrictive permission. Setting it to 'none'. {}", e.getMessage());
-        }
-
-        boolean isAdmin = loggedUserUtils.getLoggedDataGridUser().isAdmin();
-        boolean isPermNone = mostRestrictivePermission.equals(DataGridPermType.NONE);
-
-        if (isPermNone && isAdmin) mostRestrictivePermission = DataGridPermType.IRODS_ADMIN;
-
-        return mostRestrictivePermission.toString().toLowerCase();
-    }
 
     /**
      * Finds all collections and data objects existing under a certain path
