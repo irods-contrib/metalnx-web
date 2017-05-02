@@ -19,6 +19,7 @@ package com.emc.metalnx.services.tests.resource;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.services.interfaces.ResourceService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +85,15 @@ public class TestResourceService {
         childResc.setHost(host);
 
         resourceService.createResource(parentResc);
+    }
+
+    @After
+    public void tearDown() throws DataGridConnectionRefusedException {
+        if (resourceService.find(parentRescName) != null)
+            resourceService.deleteResource(parentRescName);
+
+        if (resourceService.find(childRescName) != null)
+            resourceService.deleteResource(childRescName);
     }
 
     @Test
