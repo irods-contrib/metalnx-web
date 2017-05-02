@@ -34,6 +34,8 @@ import java.util.List;
 
 import static org.junit.Assert.fail;
 
+@Deprecated
+@Ignore
 public class MetadataSearchWithDifferentOperatorsTest {
     private static final Logger logger = LoggerFactory.getLogger(MetadataSearchWithDifferentOperatorsTest.class);
     private static WebDriver driver = null;

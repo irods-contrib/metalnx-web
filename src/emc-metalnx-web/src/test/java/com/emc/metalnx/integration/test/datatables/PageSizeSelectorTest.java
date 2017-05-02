@@ -24,6 +24,9 @@ import org.openqa.selenium.WebDriver;
 /**
  * Class that tests the application of a template with metadata fields on files.
  */
+
+@Deprecated
+@Ignore
 public class PageSizeSelectorTest {
 
     private static WebDriver driver = null;

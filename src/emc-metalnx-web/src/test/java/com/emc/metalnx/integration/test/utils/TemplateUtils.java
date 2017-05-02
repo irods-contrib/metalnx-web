@@ -32,6 +32,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
 public class TemplateUtils {
     private static final Logger logger = LoggerFactory.getLogger(TemplateUtils.class);
 

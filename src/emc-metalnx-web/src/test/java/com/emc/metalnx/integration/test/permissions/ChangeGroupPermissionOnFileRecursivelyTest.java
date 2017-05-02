@@ -31,6 +31,8 @@ import org.openqa.selenium.WebDriver;
  * permission is applied using the recursive option.
  *
  */
+@Deprecated
+@Ignore
 public class ChangeGroupPermissionOnFileRecursivelyTest {
 
     private static WebDriver driver = null;

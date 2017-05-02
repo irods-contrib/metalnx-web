@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
+@Ignore
 public class RemoveProfileTest {
     private static final Logger logger = LoggerFactory.getLogger(RemoveProfileTest.class);
 

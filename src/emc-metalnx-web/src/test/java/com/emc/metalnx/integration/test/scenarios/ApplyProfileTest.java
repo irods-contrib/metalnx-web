@@ -34,6 +34,8 @@ import java.net.MalformedURLException;
  * Test class that represents the creation of a profile scenario.
  *
  */
+@Deprecated
+@Ignore
 public class ApplyProfileTest {
 
     private static String pwd = "webdriver";

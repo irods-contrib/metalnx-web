@@ -30,6 +30,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Test class that checks if a user who is not in any group can access the My Groups page.
  *
  */
+@Deprecated
+@Ignore
 public class RodsAdminNotInAnyGroupTest {
 
     private static String pwd = "webdriver";

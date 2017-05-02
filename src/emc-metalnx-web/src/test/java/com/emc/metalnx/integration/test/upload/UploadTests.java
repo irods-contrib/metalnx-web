@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Set;
 
+@Deprecated
+@Ignore
 public class UploadTests {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadTests.class);

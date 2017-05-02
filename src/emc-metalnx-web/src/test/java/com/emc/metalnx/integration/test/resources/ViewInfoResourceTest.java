@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
+@Deprecated
+@Ignore
 public class ViewInfoResourceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ViewInfoResourceTest.class);

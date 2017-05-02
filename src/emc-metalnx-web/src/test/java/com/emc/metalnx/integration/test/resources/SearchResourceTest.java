@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+@Deprecated
+@Ignore
 public class SearchResourceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchResourceTest.class);

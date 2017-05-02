@@ -31,6 +31,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
+@Deprecated
+@Ignore
 public class ReplicateFileTest {
 	private static int NUMBER_OF_ITERATIONS = 100;
     private static WebDriver driver = null;

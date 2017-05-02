@@ -25,6 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
+@Deprecated
 public class ProfileUtils {
     public static void accessAddNewProfileForm(WebDriver driver) {
         driver.get(UITest.PROFILES_URL);

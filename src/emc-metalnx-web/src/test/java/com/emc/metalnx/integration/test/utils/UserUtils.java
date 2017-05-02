@@ -33,6 +33,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@Deprecated
 public class UserUtils {
     private static final Logger logger = LoggerFactory.getLogger(UserUtils.class);
 

@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 
+@Deprecated
+@Ignore
 public class MetadataSearchUnitsTest {
     private static final Logger logger = LoggerFactory.getLogger(MetadataSearchUnitsTest.class);
 

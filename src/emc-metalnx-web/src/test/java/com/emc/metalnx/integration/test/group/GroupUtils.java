@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 public class GroupUtils {
 
     private static final By GROUP_FILTER_INPUT = By.cssSelector("#groupsListTable_filter input");

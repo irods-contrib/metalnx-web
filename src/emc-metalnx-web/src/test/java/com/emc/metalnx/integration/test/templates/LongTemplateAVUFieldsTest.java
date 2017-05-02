@@ -29,6 +29,8 @@ import org.openqa.selenium.WebDriver;
  * Test adding a long attribute field to a template.
  *
  */
+@Deprecated
+@Ignore
 public class LongTemplateAVUFieldsTest {
     private static WebDriver driver = null;
     private static String templateName = null;

@@ -30,6 +30,8 @@ import org.openqa.selenium.WebDriver;
  * an existing user.
  *
  */
+@Deprecated
+@Ignore
 public class ExistingUserAdditionalPermissionTest {
 
     private String uname = "existingUserAdditionalPermission" + System.currentTimeMillis();

@@ -26,6 +26,8 @@ import org.openqa.selenium.WebDriver;
 /**
  * Tests that check group permissions for files.
  */
+@Deprecated
+@Ignore
 public class ExistingGroupPermissionsOnFilesTest {
 
     private String rodsUserName = "rodsuseradditionalpermissionforgroup" + System.currentTimeMillis();

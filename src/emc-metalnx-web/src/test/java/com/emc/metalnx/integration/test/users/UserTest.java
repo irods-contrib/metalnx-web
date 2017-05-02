@@ -31,6 +31,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@Deprecated
+@Ignore
 public class UserTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UserTest.class);

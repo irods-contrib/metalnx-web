@@ -36,6 +36,8 @@ import java.util.List;
 /**
  * Class that tests the cancel option when the user is applying a template on files.
  */
+@Deprecated
+@Ignore
 public class CancelApplyTemplateOnFilesTest {
     private static final Logger logger = LoggerFactory.getLogger(TemplateTest.class);
 

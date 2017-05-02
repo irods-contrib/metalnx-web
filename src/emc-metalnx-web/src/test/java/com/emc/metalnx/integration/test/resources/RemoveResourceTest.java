@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
+@Ignore
 public class RemoveResourceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoveResourceTest.class);

@@ -25,6 +25,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+@Deprecated
+@Ignore
 public class DashboardIsilonTest {
 
     private static WebDriver driver = null;

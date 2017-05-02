@@ -29,6 +29,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
+@Ignore
 public class FilePropertiesSearchTest {
     private static final Logger logger = LoggerFactory.getLogger(FilePropertiesSearchTest.class);
     private static WebDriver driver = null;

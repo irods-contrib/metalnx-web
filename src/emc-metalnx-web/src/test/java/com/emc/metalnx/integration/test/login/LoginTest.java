@@ -17,10 +17,7 @@
 package com.emc.metalnx.integration.test.login;
 
 import com.emc.metalnx.test.generic.UITest;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
+@Deprecated
+@Ignore
 public class LoginTest {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginTest.class);

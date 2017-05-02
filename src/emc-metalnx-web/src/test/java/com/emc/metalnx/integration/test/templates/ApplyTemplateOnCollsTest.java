@@ -34,6 +34,8 @@ import java.util.List;
 /**
  * Class that tests the application of a template with metadata fields on collections.
  */
+@Deprecated
+@Ignore
 public class ApplyTemplateOnCollsTest {
     private static final Logger logger = LoggerFactory.getLogger(TemplateTest.class);
 

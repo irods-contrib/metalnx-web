@@ -26,6 +26,8 @@ import org.openqa.selenium.WebDriver;
 /**
  * Tests that check group permissions for collections.
  */
+@Deprecated
+@Ignore
 public class ExistingGroupPermissionsOnCollsTest {
 
     private String rodsUserName = "rodsuseradditionalpermissionforgroup" + System.currentTimeMillis();

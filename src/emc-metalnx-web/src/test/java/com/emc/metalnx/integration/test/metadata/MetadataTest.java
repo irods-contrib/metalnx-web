@@ -37,6 +37,8 @@ import java.util.List;
 
 import static org.junit.Assert.fail;
 
+@Deprecated
+@Ignore
 public class MetadataTest {
     private static final Logger logger = LoggerFactory.getLogger(MetadataTest.class);
 

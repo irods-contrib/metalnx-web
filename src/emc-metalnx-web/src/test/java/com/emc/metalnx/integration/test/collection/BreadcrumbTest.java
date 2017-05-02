@@ -33,6 +33,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Random;
 
+@Deprecated
+@Ignore
 public class BreadcrumbTest {
 
     private static WebDriver driver = null;

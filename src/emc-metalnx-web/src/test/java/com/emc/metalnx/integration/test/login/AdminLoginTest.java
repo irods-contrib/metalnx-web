@@ -20,11 +20,14 @@ import com.emc.metalnx.test.generic.UITest;
 import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
+@Ignore
 public class AdminLoginTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminLoginTest.class);

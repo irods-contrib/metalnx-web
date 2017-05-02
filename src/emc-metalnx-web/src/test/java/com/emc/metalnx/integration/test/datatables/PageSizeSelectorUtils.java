@@ -27,6 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class PageSizeSelectorUtils {
 
     public static final String[] PAGE_SIZES = { "10", "25", "50", "100" };

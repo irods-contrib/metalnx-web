@@ -22,10 +22,7 @@ import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
 import com.emc.metalnx.test.generic.UITest;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -40,6 +37,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
+@Ignore
 public class FilePermissionTest {
 
     private static String uname = "collectionPermission" + System.currentTimeMillis();

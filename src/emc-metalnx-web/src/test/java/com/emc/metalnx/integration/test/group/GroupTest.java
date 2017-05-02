@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
+@Ignore
 public class GroupTest {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupTest.class);

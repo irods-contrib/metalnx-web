@@ -35,6 +35,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Class that tests the application of a template with metadata fields on files.
  */
+@Deprecated
+@Ignore
 public class ApplyTemplateOnFilesTest {
     private static final Logger logger = LoggerFactory.getLogger(TemplateTest.class);
 

@@ -30,6 +30,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
+@Ignore
 public class EmptyTrashTest {
     private static final Logger logger = LoggerFactory.getLogger(EmptyTrashTest.class);
     private static WebDriver driver = null;

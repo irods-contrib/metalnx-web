@@ -17,6 +17,7 @@
 package com.emc.metalnx.integration.test.utils;
 
 import com.emc.metalnx.test.generic.UITest;
+import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +32,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
+@Ignore
 public class CollectionUtils {
     private static final Logger logger = LoggerFactory.getLogger(CollectionUtils.class);
     private static By publicSidebarBtnCssSelectorAdmin = By.cssSelector("#side-menu li a[href='/emc-metalnx-web/collections/public/']");

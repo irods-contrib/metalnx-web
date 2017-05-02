@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
  * Class that tests the application of an empty template (template with no metadata fields) on files
  * and collections.
  */
+@Deprecated
+@Ignore
 public class ApplyEmptyTemplateTest {
     private static final Logger logger = LoggerFactory.getLogger(TemplateTest.class);
 

@@ -30,6 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
+@Deprecated
 public class ResourceUtils {
     public static final String RESC_COMPOUND = "compound";
     public static final String RESC_LOAD_BAL = "load_balanced";

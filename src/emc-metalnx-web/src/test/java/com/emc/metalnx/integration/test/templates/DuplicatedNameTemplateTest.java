@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
  * template.
  *
  */
+@Deprecated
+@Ignore
 public class DuplicatedNameTemplateTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DuplicatedNameTemplateTest.class);

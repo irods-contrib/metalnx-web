@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
+@Ignore
 public class HistoryStackTest {
     private static WebDriver driver = null;
     private static WebDriverWait wait = null;
