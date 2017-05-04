@@ -989,15 +989,11 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     private String getCollBrowserView(Model model, String path) throws DataGridException {
-        String permissionType = "none";
-        boolean isCurrentPathCollection = false;
-        boolean isTrash = false;
-        boolean inheritance = false;
-        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
+        String permissionType = cs.getPermissionsForPath(path);
+        boolean isCurrentPathCollection = cs.isCollection(path);
+        boolean inheritance = cs.getInheritanceOptionForCollection(currentPath);
 
-        permissionType = cs.getPermissionsForPath(path);
-        isCurrentPathCollection = cs.isCollection(path);
-        inheritance = cs.getInheritanceOptionForCollection(currentPath);
+        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
         collectionForm.setInheritOption(inheritance);
 
         if (path.isEmpty()) {
@@ -1012,8 +1008,9 @@ public class CollectionController {
 
         setBreadcrumbToModel(model, path);
 
-        DataGridCollectionAndDataObject dataGridObj = new DataGridCollectionAndDataObject();
+        DataGridCollectionAndDataObject dataGridObj;
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+
         try {
             dataGridObj = cs.findByName(path);
             if (dataGridObj != null && !dataGridObj.isCollection()) {
@@ -1024,6 +1021,7 @@ public class CollectionController {
             permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
         }
         catch (DataGridException e) {
+            dataGridObj = new DataGridCollectionAndDataObject();
             dataGridObj.setPath(path);
             dataGridObj.setCollection(false);
             dataGridObj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
@@ -1031,19 +1029,19 @@ public class CollectionController {
             logger.error("Could not get file info for {}", path, e);
         }
 
-        if(zoneTrashPath == null || zoneTrashPath.equals("")){
+        if(zoneTrashPath == null || zoneTrashPath.isEmpty()){
             zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
         }
-        isTrash = path.contains(zoneTrashPath) && ("own".equals(permissionType) || user.isAdmin());
 
+        boolean isTrash = path.contains(zoneTrashPath) && ("own".equals(permissionType) || user.isAdmin());
+
+        model.addAttribute("isTrash", isTrash);
         model.addAttribute("collectionAndDataObject", dataGridObj);
         model.addAttribute("permissionType", permissionType);
         model.addAttribute("currentPath", currentPath);
         model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
         model.addAttribute("user", user);
-        model.addAttribute("isTrash", isTrash);
         model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
-
         model.addAttribute("inheritanceDisabled", !"own".equals(permissionType) && inheritance);
         model.addAttribute("collection", collectionForm);
         model.addAttribute("requestMapping", "/collections/add/action/");
