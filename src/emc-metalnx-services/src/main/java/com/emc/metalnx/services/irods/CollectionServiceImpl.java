@@ -91,32 +91,37 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public boolean isCollection(String path) throws DataGridConnectionRefusedException {
-        IRODSFileFactory irodsFileFactory = null;
-        IRODSFile file = null;
+        IRODSFileFactory irodsFileFactory;
+        IRODSFile file;
+        boolean isColl = false;
 
         try {
             irodsFileFactory = irodsServices.getIRODSFileFactory();
             file = irodsFileFactory.instanceIRODSFile(path);
+            isColl =  file.isDirectory();
         }
-        catch (JargonException e) {
+        catch (JargonException | IllegalArgumentException e) {
             logger.error("Could not check whether {} is a collection: {}", path, e.getMessage());
         }
 
-        return file != null && file.isDirectory();
+        return isColl;
     }
 
     @Override
     public boolean isDataObject(String path) throws DataGridConnectionRefusedException {
-        IRODSFileFactory irodsFileFactory = null;
-        IRODSFile file = null;
+        IRODSFileFactory irodsFileFactory;
+        IRODSFile file;
+        boolean isFile = false;
+
         try {
             irodsFileFactory = irodsServices.getIRODSFileFactory();
             file = irodsFileFactory.instanceIRODSFile(path);
+            isFile = file.isFile();
         }
-        catch (JargonException e) {
+        catch (JargonException | IllegalArgumentException e) {
             logger.error("Could not check if path is data object: {}", e.getMessage());
         }
-        return file != null && file.isFile();
+        return isFile;
     }
 
     @Override
