@@ -17,10 +17,7 @@
 package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.*;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
@@ -85,12 +82,22 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public boolean isPathValid(String path) throws DataGridConnectionRefusedException {
-        return path != null && !path.isEmpty() && (isCollection(path) || isDataObject(path));
+    public boolean isPathValid(String path) {
+        boolean isValid = false;
+
+        try {
+            isValid = isCollection(path) || isDataObject(path);
+        } catch (DataGridException e) {
+            logger.error("Invalid path {}: {}", path, e.getMessage());
+        }
+
+        return isValid;
     }
 
     @Override
-    public boolean isCollection(String path) throws DataGridConnectionRefusedException {
+    public boolean isCollection(String path) throws DataGridException {
+        if (path == null || path.isEmpty()) return false;
+
         IRODSFileFactory irodsFileFactory;
         IRODSFile file;
         boolean isColl = false;
@@ -100,15 +107,21 @@ public class CollectionServiceImpl implements CollectionService {
             file = irodsFileFactory.instanceIRODSFile(path);
             isColl =  file.isDirectory();
         }
-        catch (JargonException | IllegalArgumentException e) {
-            logger.error("Could not check whether {} is a collection: {}", path, e.getMessage());
+        catch (JargonException e) {
+            logger.error("Could not check if {} is a collection: {}", path, e.getMessage());
+        }
+        catch (IllegalArgumentException e) {
+            logger.error("Invalid path for collection: {}", path, e.getMessage());
+            throw new DataGridInvalidPathException();
         }
 
         return isColl;
     }
 
     @Override
-    public boolean isDataObject(String path) throws DataGridConnectionRefusedException {
+    public boolean isDataObject(String path) throws DataGridException {
+        if (path == null || path.isEmpty()) return false;
+
         IRODSFileFactory irodsFileFactory;
         IRODSFile file;
         boolean isFile = false;
@@ -118,9 +131,14 @@ public class CollectionServiceImpl implements CollectionService {
             file = irodsFileFactory.instanceIRODSFile(path);
             isFile = file.isFile();
         }
-        catch (JargonException | IllegalArgumentException e) {
-            logger.error("Could not check if path is data object: {}", e.getMessage());
+        catch (JargonException e) {
+            logger.error("Could not check if {} is data object: {}", path, e.getMessage());
         }
+        catch (IllegalArgumentException e) {
+            logger.error("Invalid path for data object: {}", path, e.getMessage());
+            throw new DataGridInvalidPathException();
+        }
+
         return isFile;
     }
 

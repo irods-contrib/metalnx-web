@@ -20,6 +20,7 @@ import com.emc.metalnx.core.domain.dao.GroupDao;
 import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.*;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.JargonException;
@@ -308,7 +309,7 @@ public class GroupServiceImpl implements GroupService {
             }
             return true;
         }
-        catch (JargonException e) {
+        catch (JargonException | DataGridException e) {
             logger.error("Could not set read permission:", e);
         }
         return false;
@@ -342,7 +343,7 @@ public class GroupServiceImpl implements GroupService {
             }
             return true;
         }
-        catch (JargonException e) {
+        catch (JargonException | DataGridException e) {
             logger.error("Could not set read permission:", e);
         }
         return false;
@@ -374,7 +375,7 @@ public class GroupServiceImpl implements GroupService {
             }
             return true;
         }
-        catch (JargonException e) {
+        catch (JargonException | DataGridException e) {
             logger.error("Could not set ownership:", e);
         }
         return false;

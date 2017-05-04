@@ -47,27 +47,26 @@ public interface CollectionService {
      * @param path
      *            file or collection path to be validated
      * @return True, if the path exists in the grid (path is a file or collection). False, otherwise.
-     * @throws DataGridConnectionRefusedException
      */
-    boolean isPathValid(String path) throws DataGridConnectionRefusedException;
+    boolean isPathValid(String path);
 
     /**
      * Checks whether or not a given path is a path for a collection.
      *
      * @param path
      * @return True, if the given path is a collection path. False, otherwise.
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridException
      */
-    boolean isCollection(String path) throws DataGridConnectionRefusedException;
+    boolean isCollection(String path) throws DataGridException;
 
     /**
      * Checks whether or not a given path is a path for a data object.
      *
      * @param path
      * @return True, if the given path is a data object path. False, otherwise.
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridException
      */
-    boolean isDataObject(String path) throws DataGridConnectionRefusedException;
+    boolean isDataObject(String path) throws DataGridException;
 
     /**
      * Retrieves all collections and data objects that match a search term. All results are
