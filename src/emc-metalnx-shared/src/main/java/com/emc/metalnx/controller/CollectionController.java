@@ -300,18 +300,6 @@ public class CollectionController {
         return getCollBrowserView(model, path);
     }
 
-    private void addPathToHistory(String path) throws DataGridException {
-        if (path.equals(currentPath)) return;
-
-        while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-            collectionHistoryBack.remove(0);
-        }
-
-        collectionHistoryBack.push(currentPath);
-
-        if (!collectionHistoryForward.isEmpty()) collectionHistoryForward.clear();
-    }
-
     /**
      * Goes back in collection historic stack
      *
@@ -1040,5 +1028,21 @@ public class CollectionController {
         setBreadcrumbToModel(model, dataGridObj);
 
         return "collections/collectionsBrowser";
+    }
+
+    /**
+     * Adds a given path to the list of paths visited by the user
+     * @param path path to a collection or data object to be added to history
+     */
+    private void addPathToHistory(String path) {
+        if (path.equals(currentPath)) return;
+
+        while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
+            collectionHistoryBack.remove(0);
+        }
+
+        collectionHistoryBack.push(currentPath);
+
+        if (!collectionHistoryForward.isEmpty()) collectionHistoryForward.clear();
     }
 }
