@@ -402,11 +402,16 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public DataGridCollectionAndDataObject findByName(String path) throws DataGridException {
+        if(path == null) {
+            logger.info("Could not find collection or data object by name: path is null");
+            return null;
+        }
 
-        DataGridCollectionAndDataObject dataGridCollectionAndDataObject = null;
+        logger.info("Find collection or data object by name: {}", path);
+
         CollectionAndDataObjectListAndSearchAO objectsAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
         DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
-        logger.info("find collection or data object by name");
+        DataGridCollectionAndDataObject dataGridCollectionAndDataObject;
 
         try {
             CollectionAndDataObjectListingEntry entry = objectsAO.getCollectionAndDataObjectListingEntryAtGivenAbsolutePath(path);

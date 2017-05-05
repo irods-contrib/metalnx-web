@@ -280,9 +280,9 @@ public class CollectionController {
      * underneath a certain path
      *
      * @param model
-     * @param path
+     * @param path path to find all subdirectories and objects
      * @return treeView template that renders all nodes of certain path (parent)
-     * @throws DataGridException
+     * @throws DataGridException if Metalnx cannot find collections and objects inside the path
      */
     @RequestMapping(value = "/getSubDirectories/", method = RequestMethod.POST)
     public String getSubDirectories(Model model, @RequestParam("path") String path) throws DataGridException {
@@ -293,31 +293,23 @@ public class CollectionController {
         }
 
         logger.info("Get subdirectories of {}", path);
-        DataGridCollectionAndDataObject obj = null;
-
-        try {
-            obj = cs.findByName(path);
-        }
-        catch (DataGridException e) {
-            logger.error("Path {} doesn't exist or user does not have access permission", path);
-        }
-        if (obj == null) {
-            model.addAttribute("invalidPath", path);
-            path = currentPath;
-        }
 
         // put old path in collection history stack
-        if (!path.equals(currentPath)) {
-            while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-                collectionHistoryBack.remove(0);
-            }
-            collectionHistoryBack.push(currentPath);
-            if (!collectionHistoryForward.isEmpty()) {
-                collectionHistoryForward.clear();
-            }
-        }
+        addPathToHistory(path);
 
         return getCollBrowserView(model, path);
+    }
+
+    private void addPathToHistory(String path) throws DataGridException {
+        if (path.equals(currentPath)) return;
+
+        while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
+            collectionHistoryBack.remove(0);
+        }
+
+        collectionHistoryBack.push(currentPath);
+
+        if (!collectionHistoryForward.isEmpty()) collectionHistoryForward.clear();
     }
 
     /**
@@ -781,7 +773,7 @@ public class CollectionController {
             if (path.endsWith("/") && path.compareTo("/") != 0) {
                 path = path.substring(0, path.length() - 1);
             }
-            if (!currentPath.equals(path) && (collectionHistoryBack.isEmpty() || !currentPath.equals(collectionHistoryBack.peek()))) {
+            if (!path.equals(currentPath) && (collectionHistoryBack.isEmpty() || !currentPath.equals(collectionHistoryBack.peek()))) {
                 while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
                     collectionHistoryBack.remove(0);
                 }
@@ -946,18 +938,16 @@ public class CollectionController {
     /**
      * Creates the breadcrumb based on a given path.
      *
-     * @param model
-     *            Model attribute to set variables to be used in the view
-     * @param path
-     *            path that will be displayed in the breadcrumb
+     * @param model Model attribute to set variables to be used in the view
+     * @param path path that will be displayed in the breadcrumb
      */
     private void setBreadcrumbToModel(Model model, String path) {
-
-        DataGridCollectionAndDataObject obj = new DataGridCollectionAndDataObject();
+        DataGridCollectionAndDataObject obj;
         try {
             obj = cs.findByName(path);
         }
         catch (DataGridException e) {
+            obj = new DataGridCollectionAndDataObject();
             obj.setPath(path);
             obj.setCollection(false);
             obj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
@@ -965,9 +955,23 @@ public class CollectionController {
             logger.error("Could not find DataGridCollectionAndDataObject by path: {}", e.getMessage());
         }
 
+        setBreadcrumbToModel(model, obj);
+    }
+
+    /**
+     * Creates the breadcrumb based on a given path.
+     *
+     * @param model Model attribute to set variables to be used in the view
+     * @param obj {@code DataGridCollectionAndDataObject} object
+     */
+    private void setBreadcrumbToModel(Model model, DataGridCollectionAndDataObject obj) {
         ArrayList<String> listHistoryBack = new ArrayList<String>(collectionHistoryBack);
         Collections.reverse(listHistoryBack);
 
+        DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+        boolean isPathFavorite = favoritesService.isPathFavoriteForUser(user, obj.getPath());
+
+        model.addAttribute("starredPath", isPathFavorite);
         model.addAttribute("collectionPastHistory", listHistoryBack);
         model.addAttribute("collectionPastHistoryEmpty", collectionHistoryBack.isEmpty());
         model.addAttribute("collectionForwardHistory", collectionHistoryForward);
@@ -975,7 +979,6 @@ public class CollectionController {
         model.addAttribute("collectionForwardHistory", collectionHistoryForward);
         model.addAttribute("collectionAndDataObject", obj);
         model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
-        model.addAttribute("starredPath", favoritesService.isPathFavoriteForUser(loggedUserUtils.getLoggedDataGridUser(), path));
         model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
     }
 
@@ -989,63 +992,53 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     private String getCollBrowserView(Model model, String path) throws DataGridException {
-        String permissionType = cs.getPermissionsForPath(path);
-        boolean isCurrentPathCollection = cs.isCollection(path);
-        boolean inheritance = cs.getInheritanceOptionForCollection(currentPath);
-
-        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
-        collectionForm.setInheritOption(inheritance);
-
-        if (path.isEmpty()) {
-            path = currentPath;
-        }
-        else {
+        if(cs.isPathValid(path)) {
             if (path.endsWith("/") && path.compareTo("/") != 0) {
                 path = path.substring(0, path.length() - 1);
             }
             currentPath = path;
         }
+        else {
+            model.addAttribute("invalidPath", path);
+            path = currentPath;
+        }
 
-        setBreadcrumbToModel(model, path);
-
-        DataGridCollectionAndDataObject dataGridObj;
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+        DataGridCollectionAndDataObject dataGridObj = cs.findByName(path);
 
-        try {
-            dataGridObj = cs.findByName(path);
-            if (dataGridObj != null && !dataGridObj.isCollection()) {
-                dataGridObj.setChecksum(cs.getChecksum(path));
-                dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
-                dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
-            }
-            permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
+        if (!dataGridObj.isCollection()) {
+            dataGridObj.setChecksum(cs.getChecksum(path));
+            dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
+            dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
         }
-        catch (DataGridException e) {
-            dataGridObj = new DataGridCollectionAndDataObject();
-            dataGridObj.setPath(path);
-            dataGridObj.setCollection(false);
-            dataGridObj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
-            dataGridObj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
-            logger.error("Could not get file info for {}", path, e);
-        }
+
+        permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
 
         if(zoneTrashPath == null || zoneTrashPath.isEmpty()){
             zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
         }
 
-        boolean isTrash = path.contains(zoneTrashPath) && ("own".equals(permissionType) || user.isAdmin());
+        CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
+        collectionForm.setInheritOption(cs.getInheritanceOptionForCollection(currentPath));
 
-        model.addAttribute("isTrash", isTrash);
+        String permissionType = cs.getPermissionsForPath(path);
+        boolean isPermissionOwn = "own".equals(permissionType);
+        boolean isTrash = path.contains(zoneTrashPath) && (isPermissionOwn || user.isAdmin());
+        boolean inheritanceDisabled = !isPermissionOwn && collectionForm.getInheritOption();
+
         model.addAttribute("collectionAndDataObject", dataGridObj);
+        model.addAttribute("isTrash", isTrash);
         model.addAttribute("permissionType", permissionType);
         model.addAttribute("currentPath", currentPath);
-        model.addAttribute("isCurrentPathCollection", isCurrentPathCollection);
+        model.addAttribute("isCurrentPathCollection", cs.isCollection(path));
         model.addAttribute("user", user);
         model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
-        model.addAttribute("inheritanceDisabled", !"own".equals(permissionType) && inheritance);
         model.addAttribute("collection", collectionForm);
+        model.addAttribute("inheritanceDisabled", inheritanceDisabled);
         model.addAttribute("requestMapping", "/collections/add/action/");
         model.addAttribute("parentPath", parentPath);
+
+        setBreadcrumbToModel(model, dataGridObj);
 
         return "collections/collectionsBrowser";
     }
