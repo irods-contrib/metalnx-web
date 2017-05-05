@@ -130,6 +130,14 @@ public class DataGridCollectionAndDataObject implements Serializable {
     }
 
     /**
+     * Checks if current object corresponds data object in the grid.
+     * @return True, if current object is a data object in the grid. False, otherwise.
+     */
+    public boolean isDataObject() {
+        return !isCollection;
+    }
+
+    /**
      * @param isCollection
      *            the isCollection to set
      */

@@ -986,10 +986,9 @@ public class CollectionController {
      * Finds all collections and data objects existing under a certain path
      *
      * @param model
-     * @param path
-     *            path to get all directories from
+     * @param path path to get all directories and data objects from
      * @return collections browser template that renders all items of certain path (parent)
-     * @throws DataGridConnectionRefusedException
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
      */
     private String getCollBrowserView(Model model, String path) throws DataGridException {
         if(cs.isPathValid(path)) {
@@ -1006,7 +1005,7 @@ public class CollectionController {
         DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
         DataGridCollectionAndDataObject dataGridObj = cs.findByName(path);
 
-        if (!dataGridObj.isCollection()) {
+        if (dataGridObj.isDataObject()) {
             dataGridObj.setChecksum(cs.getChecksum(path));
             dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
             dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
