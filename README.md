@@ -1,40 +1,17 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-Metalnx is a web application designed to work alongside the iRODS ([integrated Rule-Oriented Data System](http://www.irods.org)). It provides a graphical UI that can help simplify most administration, collection management, and metadata management tasks removing the need to memorize the long list of icommands.
+Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration, 
+collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
-## Core Features
+### Install Metalnx
 
-- Dashboard (Data grid health status)
-- Resource Administration
-- Users and Groups Management
-- Access Control
-- Interactive File Browser
-- Metadata management and search
-- Metadata Template
-- Shared Links (quick access to files from other users that you have permission)
-- Favorites (mark your favorite collections)
+Check out [Getting-Started](https://github.com/Metalnx/metalnx-web/wiki/Getting-Started) for installation instructions.
 
-## Documentation
+### Documentation
 
-Metalnx has documentation to help with building and using the tool. Please, check our [wiki](https://github.com/Metalnx/metalnx-web/wiki) and the following links for further information.
+Check out the [Metalnx Wiki](https://github.com/Metalnx/metalnx-web/wiki) for further information.
 
-### Installing Metalnx
-
-The full documentation on how to install Metalnx using `.rpm` and `.deb` packages along with project [dependencies](docs/INSTALL.md#dependencies) is available in the [INSTALL](docs/INSTALL.md) document.
-
-### How to build Metalnx and deploy the WAR file
-
-Documentation on how to build Metalnx and deploy the Metalnx app (WAR file) is available in the [BUILD](docs/BUILD.md) file. 
-
-### Metalnx RPM and DEB packages
-
-Metalnx is also provided as **RPM** and **DEB** packages. Information on how to build these packages in included in the [BUILD](docs/BUILD.md) file under the **Building the RPM and DEB packages** section.
-
-### How to build and deploy the Metalnx Docker container
-
-Metalnx is available in a Docker container that automates the deployment of the Web app. You can find more information about this in the [DOCKER](docs/DOCKER.md) file.
-
-## License
+### License
 
 Copyright © 2015-2017, Dell EMC.
 
