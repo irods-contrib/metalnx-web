@@ -48,10 +48,17 @@
         </div>
         <div class="row">
 			<!-- System Health -->
-			<div class="col-xs-12 col-md-12 col-lg-12 dashboardWidget" id="systemHealth">					
+			<div class="col-xs-12 col-md-9 col-lg-9 dashboardWidget" id="systemHealth">
 				<div class="table-loader">
 					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
 					<p class="text-center" th:text="#{loading.system.health.status}"></p>
+				</div>
+			</div>
+			<!-- iRODS Version -->
+			<div class="col-xs-12 col-md-3 col-lg-3" id="irodsVersion">
+				<div class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.irods.version}"></p>
 				</div>
 			</div>
         </div>
@@ -220,8 +227,14 @@
 				url = "/emc-metalnx-web/dashboard/servers/";
 				
 				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, 
-						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap, ajaxCallForIsilonServer, ajaxCallForMSIAPIVersion]);
+						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap,
+						ajaxCallForIsilonServer, ajaxCallForMSIAPIVersion, ajaxCallForIRodsVersion]);
 			});
+
+			function ajaxCallForIRodsVersion() {
+				url = "/emc-metalnx-web/dashboard/irodsversion/";
+				ajaxEncapsulation(url, "GET", "", displayIRodsVersionPanel, null, null);
+			}
 
 			function ajaxCallForMSIAPIVersion() {
 				url = "/emc-metalnx-web/dashboard/msiPackageVersion/";
@@ -253,6 +266,10 @@
 			function ajaxCallForResourceMap(){
 			    url = "/emc-metalnx-web/resources/mapForDashboard/";
 				ajaxEncapsulation(url, "GET", "", displayResourceMap, null, null);
+			}
+
+			function displayIRodsVersionPanel(data) {
+				$("#irodsVersion").html(data);
 			}
 			
 			function displayResourceMap(data){

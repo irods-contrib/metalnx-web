@@ -44,34 +44,37 @@ import java.util.List;
 public class DashboardController {
 
     @Autowired
-    UserService userService;
+    private IRODSServices irodsServices;
 
     @Autowired
-    GroupService groupService;
+    private UserService userService;
 
     @Autowired
-    CollectionService collectionService;
+    private GroupService groupService;
 
     @Autowired
-    ResourceService resourceService;
+    private CollectionService collectionService;
 
     @Autowired
-    StorageService storageService;
+    private ResourceService resourceService;
 
     @Autowired
-    ServerService serverService;
+    private StorageService storageService;
 
     @Autowired
-    UserProfileService profileService;
+    private ServerService serverService;
 
     @Autowired
-    TemplateService templateService;
+    private UserProfileService profileService;
 
     @Autowired
-    RuleService rs;
+    private TemplateService templateService;
 
     @Autowired
-    MSIService msiService;
+    private RuleService rs;
+
+    @Autowired
+    private MSIService msiService;
 
     @Value("${msi.api.version}")
     private String msiAPIVersionSupported;
@@ -132,6 +135,16 @@ public class DashboardController {
         model.addAttribute("totalNumberOfTemplates", totalNumberOfTemplates);
 
         return "dashboard/dashboard";
+    }
+
+    @RequestMapping(value = "/irodsversion", method = RequestMethod.GET)
+    public String findIRodsVersion(Model model) throws DataGridConnectionRefusedException {
+        logger.info("Find iRODS verison of the grid");
+
+        String irodsVersion = irodsServices.findIRodsVersion();
+
+        model.addAttribute("irodsVersion", irodsVersion);
+        return "dashboard/irodsVersion :: irodsVersion";
     }
 
     @RequestMapping(value = "/servers/", method = RequestMethod.GET)
