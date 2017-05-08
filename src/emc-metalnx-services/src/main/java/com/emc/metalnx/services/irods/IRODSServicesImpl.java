@@ -20,6 +20,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.connection.IrodsVersion;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
@@ -55,6 +56,25 @@ public class IRODSServicesImpl implements IRODSServices {
 
     public IRODSServicesImpl(IRODSAccount acct) {
         this.irodsAccount = acct;
+    }
+
+    @Override
+    public String findIRodsVersion() throws DataGridConnectionRefusedException {
+        String version = "";
+
+        try {
+            EnvironmentalInfoAO envInfoAO = irodsAccessObjectFactory.getEnvironmentalInfoAO(irodsAccount);
+            IrodsVersion iv = envInfoAO.getIRODSServerPropertiesFromIRODSServer().getIrodsVersion();
+            version = String.format("%s.%s.%s", iv.getMajorAsString(), iv.getMinorAsString(), iv.getPatchAsString());
+        } catch (JargonException e) {
+            logger.error("Could not find iRODS version: ", e);
+
+            if (e.getCause() instanceof ConnectException) {
+                throw new DataGridConnectionRefusedException(e.getMessage());
+            }
+        }
+
+        return version;
     }
 
     @Override

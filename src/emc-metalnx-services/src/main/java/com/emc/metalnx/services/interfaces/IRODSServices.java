@@ -27,6 +27,13 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 public interface IRODSServices {
 
     /**
+     * Finds what version of iRODS Metalnx is running against.
+     * @return a String representing the version of iRODS. (major.minor.path)
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    String findIRodsVersion() throws DataGridConnectionRefusedException;
+
+    /**
      * Gets BulkFileOperationsAO from iRODS. Used for multiple files download.
      *
      * @return BulkFileOperationsAO instance
