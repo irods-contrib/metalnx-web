@@ -211,6 +211,13 @@
                             	&nbsp; <span th:text="#{sidebar.user.favorites}"></span>
                             </a>
                         </li>
+						<!-- Tickets -->
+						<li>
+							<a th:href="@{ ${urlMap.URL_TICKETS} }">
+								<i class="fa fa-list"></i>
+								&nbsp; <span th:text="#{sidebar.tickets}"></span>
+							</a>
+						</li>
                         <!-- Public sidebar item -->
                         <li> 
                             <a th:href="@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }">
