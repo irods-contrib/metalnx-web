@@ -19,12 +19,20 @@ package com.emc.metalnx.services.interfaces;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.ticket.TicketAdminService;
 
 /**
  * Service that allows the user to get an instance of each iRODS AO by session.
  *
  */
 public interface IRODSServices {
+
+    /**
+     * Gets an instance of the ticket admin service.
+     * @return TicketAdminService instance
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
+     */
+    TicketAdminService getTicketAdminService() throws DataGridConnectionRefusedException;
 
     /**
      * Finds what version of iRODS Metalnx is running against.

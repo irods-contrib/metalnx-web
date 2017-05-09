@@ -24,6 +24,9 @@ import org.irods.jargon.core.connection.IrodsVersion;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.*;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.ticket.TicketAdminService;
+import org.irods.jargon.ticket.TicketServiceFactory;
+import org.irods.jargon.ticket.TicketServiceFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,24 @@ public class IRODSServicesImpl implements IRODSServices {
 
     public IRODSServicesImpl(IRODSAccount acct) {
         this.irodsAccount = acct;
+    }
+
+    @Override
+    public TicketAdminService getTicketAdminService() throws DataGridConnectionRefusedException {
+        TicketAdminService tas = null;
+
+        try {
+            TicketServiceFactory tsf = new TicketServiceFactoryImpl(irodsAccessObjectFactory);
+            tas = tsf.instanceTicketAdminService(irodsAccount);
+        } catch (JargonException e) {
+            logger.error("Could not instantiate ticket admin service: ", e.getMessage());
+
+            if (e.getCause() instanceof ConnectException) {
+                throw new DataGridConnectionRefusedException(e.getMessage());
+            }
+        }
+
+        return tas;
     }
 
     @Override
