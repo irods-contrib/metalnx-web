@@ -17,6 +17,7 @@
 package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public interface TicketService {
      * The tickets found depend on the user who requests the list of tickets. RODS_ADMINs can see all tickets while
      * RODS_USERs can only see the tickets they have created.
      * @return List of tickets if any found. Empty list is returned if no tickets are found.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
      */
-    List<DataGridTicket> findAll();
+    List<DataGridTicket> findAll() throws DataGridConnectionRefusedException;
 }

@@ -28,6 +28,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 
 /**
@@ -45,5 +46,12 @@ public class TestListTickets {
     public void testListingAllTickets() throws DataGridConnectionRefusedException {
         List<DataGridTicket> tickets = ticketService.findAll();
         assertNotNull(tickets);
+        assertFalse(tickets.isEmpty());
+
+        for(DataGridTicket t: tickets) {
+            assertFalse(t.getTicketString().isEmpty());
+            assertFalse(t.getOwner().isEmpty());
+            assertFalse(t.getTicketString().isEmpty());
+        }
     }
 }
