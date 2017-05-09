@@ -49,6 +49,7 @@ public class TestListTickets {
         assertFalse(tickets.isEmpty());
 
         for(DataGridTicket t: tickets) {
+            assertNotNull(t.getPath());
             assertFalse(t.getTicketString().isEmpty());
             assertFalse(t.getOwner().isEmpty());
             assertFalse(t.getTicketString().isEmpty());

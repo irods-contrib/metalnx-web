@@ -16,16 +16,24 @@
 
 package com.emc.metalnx.core.domain.entity;
 
+import java.io.Serializable;
+
 /**
  * Class that represents a ticket.
  */
-public class DataGridTicket {
+public class DataGridTicket implements Serializable {
     private String ticketString, path, owner;
     private TicketType type;
     private boolean isCollection;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
+    }
+
+    public DataGridTicket() {
+        ticketString = "";
+        path = "";
+        owner = "";
     }
 
     public void setTicketString(String ticketString) {
@@ -53,14 +61,17 @@ public class DataGridTicket {
     }
 
     public String getTicketString() {
+        if(ticketString == null) ticketString = "";
         return ticketString;
     }
 
     public String getPath() {
+        if(path == null) path = "";
         return path;
     }
 
     public String getOwner() {
+        if(owner == null) owner = "";
         return owner;
     }
 
