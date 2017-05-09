@@ -155,6 +155,11 @@
 				<artifactId>jargon-ruleservice</artifactId>
 				<version>${jargon.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-ticket</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
 
 			<!-- Spring libraries -->
 			<dependency>
