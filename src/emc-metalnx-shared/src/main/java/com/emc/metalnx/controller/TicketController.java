@@ -25,7 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +48,7 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String index() throws DataGridConnectionRefusedException {
         List<DataGridTicket> tickets = ticketService.findAll();
@@ -60,5 +64,27 @@ public class TicketController {
         }
 
         return ticketsAsJSON;
+    }
+
+    @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
+        boolean ticketDeleted = ticketService.delete(ticketId);
+        String json = "";
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> jsonResponse = new HashMap<>();
+            jsonResponse.put("ticketId", ticketId);
+            jsonResponse.put("ticketDeleted", ticketDeleted);
+            json = mapper.writeValueAsString(jsonResponse);
+        } catch (JsonProcessingException e) {
+            logger.error("Could not parse hashmap to find all tickets: {}", e.getMessage());
+        }
+
+        ResponseEntity<String> response;
+        if(ticketDeleted) response = new ResponseEntity<>(json, HttpStatus.OK);
+        else response = new ResponseEntity<>(HttpStatus.NO_CONTENT); // Ticket was not deleted -> HTTP 204 returned
+
+        return response;
     }
 }
