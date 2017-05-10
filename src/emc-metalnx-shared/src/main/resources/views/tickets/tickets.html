@@ -73,6 +73,44 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Delete this ticket? This action cannot be undone. </p>
+
+                        <table style="width:100%;">
+                            <tr>
+                                <td>Ticket String</td>
+                                <td><span id="elementToBeRemoved" style="font-weight:bold;"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Permission</td>
+                                <td><span id="elementToBeRemovedPermission" style="font-weight:bold;"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Owner</td>
+                                <td><span id="elementToBeRemovedOwner" style="font-weight:bold;"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Type</td>
+                                <td><span id="elementToBeRemovedType" style="font-weight:bold;"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary">Delete this Ticket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
@@ -86,6 +124,7 @@
 			    "ajax": {
 			        url: '/emc-metalnx-web/tickets/findAll',
 			    },
+			    "rowId": 'ticketString',
 			    "order": [[ 3, 'desc' ], [1, 'asc']],
 			    "initComplete": function(settings){
     	            $('#ticketsTable tbody td').each(function () {
@@ -107,34 +146,53 @@
     						else  return 'file';
     					},
 	                	"width": "10%",
-	                	"targets": 0
+	                	"targets": 0,
+	                	 className: "objectType"
 	               	},
 	                {
 	                	"data": "ticketString",
 	                	"width": "20%",
-	                	"targets": 1
+	                	"targets": 1,
+	                	 className: "ticketString"
 	               	},
 	               	{
 	               		"data": "type",
 	               		"width": "15%",
-	               		"targets":2
+	               		"targets":2,
+	               		 className: "permission"
 	               	},
 	               	{
 	               		"data": "owner",
 	               		"width": "15%",
-	               		"targets": 3
+	               		"targets": 3,
+	               		 className: "owner"
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            return '<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#editTicket" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</button><a href="#" class="btn btn-default btn-xs" onclick="deleteTicket(\''+full.ticketString+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
+                            return '<button type="button" class="btn btn-default btn-xs hidden" data-toggle="modal" data-target="#editTicket" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</button><a href="#" class="btn btn-default btn-xs" onclick="deleteTicket(\''+full.ticketString+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
                         },
                         "width": "10%",
                         "orderable": false,
-                        "targets": 4
+                        "targets": 4,
+                         className: "actionsColumn"
                     }
 	            ]
 			} );
+
 		});
+		function deleteTicket(ticketString){
+            console.log("Delete: " + ticketString);
+            $("#elementToBeRemoved").html(ticketString);
+            var permission = $("#"+ticketString).children(".permission").text();
+            $("#elementToBeRemovedPermission").html(permission);
+            var owner = $("#"+ticketString).children(".owner").text();
+            $("#elementToBeRemovedOwner").html(owner);
+            var type = $("#"+ticketString).children(".objectType").text();
+            $("#elementToBeRemovedType").html(type);
+            console.log(permission);
+			$("#deleteTicket").modal("show");
+
+		}
 		/*]]>*/
 		</script>
     </div> <!-- /. Page Content -->
