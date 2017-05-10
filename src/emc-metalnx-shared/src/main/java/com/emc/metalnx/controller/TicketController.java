@@ -45,8 +45,14 @@ public class TicketController {
     private TicketService ticketService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
     public String index() throws DataGridConnectionRefusedException {
+
+        return "tickets/tickets";
+    }
+
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @ResponseBody
+    public String findAll() throws DataGridConnectionRefusedException {
         List<DataGridTicket> tickets = ticketService.findAll();
         String ticketsAsJSON = "";
 
