@@ -18,6 +18,7 @@ package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicket;
 
 import java.util.List;
 
@@ -41,4 +42,13 @@ public interface TicketService {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
     boolean delete(String ticketId) throws DataGridConnectionRefusedException;
+
+    /**
+     * Creates a ticket in the grid
+     * @param dgTicket Ticket to be created.
+     * @return True, if ticket was created successfully. False, otherwise.
+     * @throws DataGridMissingPathOnTicket thrown when the path is missing on the ticket
+     * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
+     */
+    boolean create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException;
 }

@@ -18,9 +18,11 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicket;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.Ticket;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
@@ -42,7 +44,8 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
 
     private static final Logger logger = LoggerFactory.getLogger(TicketServiceImpl.class);
-    public static final int OFFSET = 0;
+    private static final int OFFSET = 0;
+    private static final String GRID_FILE_SEPARATOR = "/";
 
     @Autowired
     private IRODSServices irodsServices;
@@ -85,6 +88,39 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return ticketDeleted;
+    }
+
+    @Override
+    public boolean create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
+        if(dgTicket == null) {
+            logger.error("Could not create ticket: null ticket provided.");
+            return false;
+        }
+
+        if(dgTicket.getPath().isEmpty()) throw new DataGridMissingPathOnTicket("Ticket path missing");
+
+        TicketCreateModeEnum ticketType = TicketCreateModeEnum.UNKNOWN;
+        if(dgTicket.getType() == DataGridTicket.TicketType.READ) ticketType = TicketCreateModeEnum.READ;
+        if(dgTicket.getType() == DataGridTicket.TicketType.WRITE) ticketType = TicketCreateModeEnum.WRITE;
+
+        String path = dgTicket.getPath();
+        int idxOfSeparator = path.lastIndexOf(GRID_FILE_SEPARATOR);
+        String parentPath = path.substring(0, idxOfSeparator);
+        String item = path.substring(idxOfSeparator + 1, path.length());
+
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+        boolean ticketCreated = false;
+        
+        try {
+            IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
+            String ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
+            dgTicket.setTicketString(ticketString); // set ticket string created by the grid
+            ticketCreated = true;
+        } catch (JargonException e) {
+            logger.error("Could not create a ticket: {}", e);
+        }
+
+        return ticketCreated;
     }
 
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {
