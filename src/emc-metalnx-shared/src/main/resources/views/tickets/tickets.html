@@ -37,6 +37,17 @@
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
             </div>
         </div>
+        <!-- Ticket deletion succeed -->
+        <div class="row">
+            <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
+                <div class="alert alert-success alert-dismissible text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                    <i class="fa fa-check" aria-hidden="true"></i><span> The ticket was deleted successfully.</span>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12 table-responsive" >
                 <table class="table table-hover" id="ticketsTable">
@@ -83,30 +94,31 @@
                         <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Delete this ticket? This action cannot be undone. </p>
-
-                        <table style="width:100%;">
-                            <tr>
-                                <td>Ticket String</td>
-                                <td><span id="elementToBeRemoved" style="font-weight:bold;"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Permission</td>
-                                <td><span id="elementToBeRemovedPermission" style="font-weight:bold;"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Owner</td>
-                                <td><span id="elementToBeRemovedOwner" style="font-weight:bold;"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Type</td>
-                                <td><span id="elementToBeRemovedType" style="font-weight:bold;"></span></td>
-                            </tr>
-                        </table>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>Delete this ticket? This action cannot be undone. </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Ticket String</div>
+                            <div class="col-md-7"><span id="elementToBeRemoved" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Permission</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedPermission" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Owner</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedOwner" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Type</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedType" style="font-weight:bold;"></span></div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Delete this Ticket</button>
+                        <button type="button" class="btn btn-primary" onclick="removeElement();">Delete this Ticket</button>
                     </div>
                 </div>
             </div>
@@ -178,7 +190,6 @@
                     }
 	            ]
 			} );
-
 		});
 		function deleteTicket(ticketString){
             console.log("Delete: " + ticketString);
@@ -193,6 +204,19 @@
 			$("#deleteTicket").modal("show");
 
 		}
+		function removeElement() {
+            var ticketString = $("#elementToBeRemoved").html();
+            var url = [[${urlMap.URL_TICKETS_DELETE}]] + ticketString;
+            ajaxEncapsulation(url, "DELETE", null, ticketsFeedbackMsg, null,null);
+        }
+
+		function ticketsFeedbackMsg(data){
+            $("#deleteTicket").modal("hide");
+            $('#ticketsTable').DataTable().ajax.reload();
+            $("#ticketDeletedSuccessfully").removeClass("hideElement");
+
+		}
+
 		/*]]>*/
 		</script>
     </div> <!-- /. Page Content -->

@@ -48,9 +48,15 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() throws DataGridConnectionRefusedException {
+
+        return "tickets/tickets";
+    }
+
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @ResponseBody
+    public String findAll() throws DataGridConnectionRefusedException {
         List<DataGridTicket> tickets = ticketService.findAll();
         String ticketsAsJSON = "";
 
@@ -65,6 +71,7 @@ public class TicketController {
 
         return ticketsAsJSON;
     }
+
 
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
