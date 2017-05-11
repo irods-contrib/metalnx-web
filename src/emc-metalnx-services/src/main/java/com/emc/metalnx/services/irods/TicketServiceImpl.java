@@ -19,6 +19,7 @@ package com.emc.metalnx.services.irods;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -91,15 +92,14 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException {
+    public DataGridTicket create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
+            DataGridConnectionRefusedException, DataGridNullTicketException {
         if(dgTicket == null) {
-            logger.error("Could not create ticket: null ticket provided.");
-            return "";
+            throw new DataGridNullTicketException("Could not create ticket: null ticket provided.");
         }
 
         if(dgTicket.getPath().isEmpty()) {
-            logger.error("Could not create ticket: path is empty");
-            throw new DataGridMissingPathOnTicketException("Ticket path missing");
+            throw new DataGridMissingPathOnTicketException("Could not create ticket: path is empty");
         }
 
         TicketCreateModeEnum ticketType = TicketCreateModeEnum.UNKNOWN;
@@ -118,11 +118,12 @@ public class TicketServiceImpl implements TicketService {
             IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
             ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
             dgTicket.setTicketString(ticketString); // set ticket string created by the grid
+            dgTicket.setTicketCreated(true);
         } catch (JargonException e) {
             logger.error("Could not create a ticket: {}", e);
         }
 
-        return ticketString;
+        return dgTicket;
     }
 
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {

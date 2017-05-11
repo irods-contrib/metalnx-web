@@ -20,6 +20,7 @@ import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.TicketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,13 +92,14 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
+        DataGridTicket newTicket = null;
         try {
             ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
-            ticketService.create(ticket);
-        } catch (DataGridMissingPathOnTicketException e) {
-            logger.error("Could not create ticket: {}", e.getMessage());
+            newTicket = ticketService.create(ticket);
+        } catch (DataGridMissingPathOnTicketException | DataGridNullTicketException e) {
+            logger.error("Could not create ticket: {}", e);
         }
 
-        return ticket;
+        return newTicket;
     }
 }
