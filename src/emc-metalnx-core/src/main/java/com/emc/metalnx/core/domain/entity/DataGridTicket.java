@@ -30,10 +30,22 @@ public class DataGridTicket implements Serializable {
         READ, WRITE, UNKNOWN;
     }
 
+    /**
+     * Empty constructor
+     */
     public DataGridTicket() {
+        this("");
+    }
+
+    /**
+     * Constructor.
+     * @param path path in the grid that the ticket
+     */
+    public DataGridTicket(String path) {
+        this.path = path;
         ticketString = "";
-        path = "";
         owner = "";
+        type = TicketType.READ;
     }
 
     public void setTicketString(String ticketString) {
