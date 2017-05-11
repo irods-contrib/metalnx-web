@@ -19,7 +19,7 @@ package com.emc.metalnx.services.tests.tickets;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicket;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -65,7 +65,7 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException, JargonException {
+    public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException, JargonException {
         DataGridTicket dgt = new DataGridTicket(targetPath);
         String ticketString = ticketService.create(dgt);
         assertFalse(ticketString.isEmpty());
@@ -73,13 +73,13 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateNullTicket() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
+    public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException {
         String ticketString = ticketService.create(null);
         assertTrue(ticketString.isEmpty());
     }
 
-    @Test(expected = DataGridMissingPathOnTicket.class)
-    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
+    @Test(expected = DataGridMissingPathOnTicketException.class)
+    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException {
         ticketService.create(new DataGridTicket());
     }
 }

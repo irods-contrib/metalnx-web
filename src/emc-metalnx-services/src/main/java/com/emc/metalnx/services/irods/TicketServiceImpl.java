@@ -18,7 +18,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicket;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -91,7 +91,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
+    public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException {
         if(dgTicket == null) {
             logger.error("Could not create ticket: null ticket provided.");
             return "";
@@ -99,7 +99,7 @@ public class TicketServiceImpl implements TicketService {
 
         if(dgTicket.getPath().isEmpty()) {
             logger.error("Could not create ticket: path is empty");
-            throw new DataGridMissingPathOnTicket("Ticket path missing");
+            throw new DataGridMissingPathOnTicketException("Ticket path missing");
         }
 
         TicketCreateModeEnum ticketType = TicketCreateModeEnum.UNKNOWN;

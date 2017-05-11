@@ -19,8 +19,8 @@ package com.emc.metalnx.core.domain.exceptions;
 /**
  * Exception thrown when a ticket has no path assigned.
  */
-public class DataGridMissingPathOnTicket extends DataGridException {
-    public DataGridMissingPathOnTicket(String message) {
+public class DataGridMissingPathOnTicketException extends DataGridException {
+    public DataGridMissingPathOnTicketException(String message) {
         super(message);
     }
 }
