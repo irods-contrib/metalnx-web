@@ -91,13 +91,16 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
+    public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
         if(dgTicket == null) {
             logger.error("Could not create ticket: null ticket provided.");
-            return false;
+            return "";
         }
 
-        if(dgTicket.getPath().isEmpty()) throw new DataGridMissingPathOnTicket("Ticket path missing");
+        if(dgTicket.getPath().isEmpty()) {
+            logger.error("Could not create ticket: path is empty");
+            throw new DataGridMissingPathOnTicket("Ticket path missing");
+        }
 
         TicketCreateModeEnum ticketType = TicketCreateModeEnum.UNKNOWN;
         if(dgTicket.getType() == DataGridTicket.TicketType.READ) ticketType = TicketCreateModeEnum.READ;
@@ -109,18 +112,17 @@ public class TicketServiceImpl implements TicketService {
         String item = path.substring(idxOfSeparator + 1, path.length());
 
         TicketAdminService tas = irodsServices.getTicketAdminService();
-        boolean ticketCreated = false;
+        String ticketString = "";
         
         try {
             IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
-            String ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
+            ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
             dgTicket.setTicketString(ticketString); // set ticket string created by the grid
-            ticketCreated = true;
         } catch (JargonException e) {
             logger.error("Could not create a ticket: {}", e);
         }
 
-        return ticketCreated;
+        return ticketString;
     }
 
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {

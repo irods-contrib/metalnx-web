@@ -33,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test iRODS services.
@@ -55,27 +55,27 @@ public class TestCreateTicket {
     private IRODSServices irodsServices;
 
     private String targetPath;
-    private long time;
     private TestTicketUtils ticketUtils;
 
     @Before
     public void setUp() throws DataGridException, JargonException {
-        time = System.currentTimeMillis();
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
-
         ticketUtils = new TestTicketUtils(irodsServices);
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
-        assertTrue(ticketService.create(new DataGridTicket(targetPath)));
-        //ticketUtils.deleteTicket(ticketString);
+    public void testCreateTicket() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException, JargonException {
+        DataGridTicket dgt = new DataGridTicket(targetPath);
+        String ticketString = ticketService.create(dgt);
+        assertFalse(ticketString.isEmpty());
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateNullTicket() throws DataGridMissingPathOnTicket, DataGridConnectionRefusedException {
-        assertFalse(ticketService.create(null));
+        String ticketString = ticketService.create(null);
+        assertTrue(ticketString.isEmpty());
     }
 
     @Test(expected = DataGridMissingPathOnTicket.class)
