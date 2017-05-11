@@ -33,4 +33,12 @@ public interface TicketService {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
      */
     List<DataGridTicket> findAll() throws DataGridConnectionRefusedException;
+
+    /**
+     * Deletes a ticket from the grid by the ticket string
+     * @param ticketId string that identifies the ticket uniquely (String or ID)
+     * @return True, if the ticket was deleted successfully. False, otherwise.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    boolean delete(String ticketId) throws DataGridConnectionRefusedException;
 }

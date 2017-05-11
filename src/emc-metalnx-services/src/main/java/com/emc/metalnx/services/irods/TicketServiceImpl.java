@@ -67,6 +67,26 @@ public class TicketServiceImpl implements TicketService {
         return dgTickets;
     }
 
+    @Override
+    public boolean delete(String ticketId) throws DataGridConnectionRefusedException {
+        if(ticketId == null || ticketId.isEmpty()) {
+            logger.error("Could not delete ticket: Ticket ID null or emtpy");
+            return false;
+        }
+
+        boolean ticketDeleted = false;
+
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+
+        try {
+            ticketDeleted = tas.deleteTicket(ticketId);
+        } catch (JargonException e) {
+            logger.info("Could not delete ticket {}: {}.", ticketId, e.getMessage());
+        }
+
+        return ticketDeleted;
+    }
+
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {
         List<DataGridTicket> dgTickets = new ArrayList<>();
 
