@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.controller;
 
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
@@ -44,6 +45,9 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    LoggedUserUtils loggedUserUtils;
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -88,6 +92,7 @@ public class TicketController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
         try {
+            ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
             ticketService.create(ticket);
         } catch (DataGridMissingPathOnTicketException e) {
             logger.error("Could not create ticket: {}", e.getMessage());
