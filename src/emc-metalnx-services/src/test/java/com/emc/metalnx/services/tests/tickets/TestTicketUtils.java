@@ -22,6 +22,8 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 
+import java.util.Date;
+
 /**
  * Utils class for ticket operations during tests.
  */
@@ -44,5 +46,10 @@ public class TestTicketUtils {
     public void setUsesLimit(String ticketString, int usesLimit) throws DataGridConnectionRefusedException,
             JargonException {
         irodsServices.getTicketAdminService().setTicketUsesLimit(ticketString, usesLimit);
+    }
+
+    public void setExpirationDate(String ticketString, Date expirationDate)
+            throws DataGridConnectionRefusedException, JargonException {
+        irodsServices.getTicketAdminService().setTicketExpiration(ticketString, expirationDate);
     }
 }
