@@ -165,6 +165,7 @@ public class TicketServiceImpl implements TicketService {
         dgTicket.setPath(t.getIrodsAbsolutePath());
         dgTicket.setTicketString(t.getTicketString());
         dgTicket.setUsesLimit(t.getUsesLimit());
+        dgTicket.setExpirationDate(t.getExpireTime());
 
         DataGridTicket.TicketType dgTicketType;
 

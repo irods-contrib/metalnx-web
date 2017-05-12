@@ -17,6 +17,7 @@
 package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Class that represents a ticket.
@@ -27,6 +28,7 @@ public class DataGridTicket implements Serializable {
     private boolean isCollection;
     private boolean ticketCreated;
     private int usesLimit;
+    private Date expirationDate;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -53,6 +55,10 @@ public class DataGridTicket implements Serializable {
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 
     public void setUsesLimit(int usesLimit) {
         this.usesLimit = usesLimit;
@@ -84,6 +90,10 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
     public int getUsesLimit() {

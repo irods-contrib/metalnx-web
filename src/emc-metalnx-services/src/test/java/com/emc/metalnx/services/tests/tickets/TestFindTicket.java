@@ -33,6 +33,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static junit.framework.Assert.*;
 import static org.junit.Assert.assertTrue;
 
@@ -44,6 +47,7 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 public class TestFindTicket {
     private static final int USES_LIMIT = 5;
+    private static final Date EXPIRATION_DATE = new Date();
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -68,6 +72,8 @@ public class TestFindTicket {
 
         ticketString = ticketUtils.createTicket(ticketString, parentPath, username);
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
+
+        ticketUtils.setExpirationDate(ticketString, EXPIRATION_DATE);
     }
 
     @After
@@ -83,11 +89,30 @@ public class TestFindTicket {
         assertTrue(dgt.getPath().equals(targetPath));
         assertTrue(dgt.getOwner().equals(username));
         assertEquals(USES_LIMIT, dgt.getUsesLimit());
+        assertDates(EXPIRATION_DATE, dgt.getExpirationDate());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
     public void testFindNonExistentTicket() throws DataGridConnectionRefusedException, DataGridTicketNotFoundException {
         String random = "" + System.currentTimeMillis();
         ticketService.find(random);
+    }
+
+    public void assertDates(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+
+        boolean sameYear = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+        boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+        boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        boolean sameTime = cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE);
+
+        assertTrue(sameYear);
+        assertTrue(sameMonth);
+        assertTrue(sameDay);
+        assertTrue(sameTime);
     }
 }
