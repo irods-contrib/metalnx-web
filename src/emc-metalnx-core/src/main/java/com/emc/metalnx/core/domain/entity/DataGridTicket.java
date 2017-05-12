@@ -17,7 +17,9 @@
 package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Class that represents a ticket.
@@ -34,6 +36,7 @@ public class DataGridTicket implements Serializable {
     private long writeByteCount;
     private int writeFileLimit;
     private int writeFileCount;
+    private List<String> hosts;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -58,9 +61,14 @@ public class DataGridTicket implements Serializable {
         ticketCreated = false;
         usesLimit = 0;
         writeByteLimit = 0;
+        hosts = new ArrayList<>();
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setHosts(List<String> hosts) {
+        this.hosts = hosts;
+    }
 
     public void setWriteFileLimit(int writeFileLimit) {
         this.writeFileLimit = writeFileLimit;
@@ -116,6 +124,10 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public List<String> getHosts() {
+        return hosts;
     }
 
     public int getWriteFileLimit() {

@@ -62,4 +62,9 @@ public class TestTicketUtils {
             JargonException {
         irodsServices.getTicketAdminService().setTicketFileWriteLimit(ticketString, writeFileLimit);
     }
+
+    public void addHostRestriction(String ticketString, String host) throws DataGridConnectionRefusedException,
+            JargonException {
+        irodsServices.getTicketAdminService().addTicketHostRestriction(ticketString, host);
+    }
 }
