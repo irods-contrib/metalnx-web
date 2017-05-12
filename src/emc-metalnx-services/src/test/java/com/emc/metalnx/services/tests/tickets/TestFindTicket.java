@@ -48,6 +48,8 @@ import static org.junit.Assert.assertTrue;
 public class TestFindTicket {
     private static final int USES_LIMIT = 5;
     private static final Date EXPIRATION_DATE = new Date();
+    private static final long WRITE_BYTE_LIMIT = 1024;
+    public static final int USES_COUNT = 0;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -72,8 +74,8 @@ public class TestFindTicket {
 
         ticketString = ticketUtils.createTicket(ticketString, parentPath, username);
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
-
         ticketUtils.setExpirationDate(ticketString, EXPIRATION_DATE);
+        ticketUtils.setWriteByteLimit(ticketString, WRITE_BYTE_LIMIT);
     }
 
     @After
@@ -90,7 +92,8 @@ public class TestFindTicket {
         assertTrue(dgt.getOwner().equals(username));
         assertDates(EXPIRATION_DATE, dgt.getExpirationDate());
         assertEquals(USES_LIMIT, dgt.getUsesLimit());
-        assertEquals(0, dgt.getUsesCount());
+        assertEquals(USES_COUNT, dgt.getUsesCount());
+        assertEquals(WRITE_BYTE_LIMIT, dgt.getWriteByteLimit());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)

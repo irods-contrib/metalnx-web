@@ -167,8 +167,8 @@ public class TicketServiceImpl implements TicketService {
         dgTicket.setExpirationDate(t.getExpireTime());
         dgTicket.setUsesLimit(t.getUsesLimit());
         dgTicket.setUsesCount(t.getUsesCount());
-        /*dgTicket.setWriteByteCount(t.getWriteByteCount());
         dgTicket.setWriteByteLimit(t.getWriteByteLimit());
+        /*dgTicket.setWriteByteCount(t.getWriteByteCount());
         dgTicket.setWriteFileCount(t.getWriteFileCount());
         dgTicket.setWriteFileLimit(t.getWriteFileLimit());*/
 

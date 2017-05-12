@@ -30,6 +30,7 @@ public class DataGridTicket implements Serializable {
     private int usesLimit;
     private Date expirationDate;
     private int usesCount;
+    private long writeByteLimit;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -53,9 +54,14 @@ public class DataGridTicket implements Serializable {
         type = TicketType.READ;
         ticketCreated = false;
         usesLimit = 0;
+        writeByteLimit = 0;
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setWriteByteLimit(long writeByteLimit) {
+        this.writeByteLimit = writeByteLimit;
+    }
 
     public void setUsesCount(int usesCount) {
         this.usesCount = usesCount;
@@ -95,6 +101,10 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public long getWriteByteLimit() {
+        return writeByteLimit;
     }
 
     public int getUsesCount() {

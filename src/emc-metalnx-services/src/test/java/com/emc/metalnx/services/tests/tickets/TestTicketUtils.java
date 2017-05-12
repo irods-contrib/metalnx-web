@@ -52,4 +52,9 @@ public class TestTicketUtils {
             throws DataGridConnectionRefusedException, JargonException {
         irodsServices.getTicketAdminService().setTicketExpiration(ticketString, expirationDate);
     }
+
+    public void setWriteByteLimit(String ticketString, long writeByteLimit) throws DataGridConnectionRefusedException,
+            JargonException {
+        irodsServices.getTicketAdminService().setTicketByteWriteLimit(ticketString, writeByteLimit);
+    }
 }
