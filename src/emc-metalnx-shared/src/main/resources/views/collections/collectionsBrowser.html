@@ -339,40 +339,6 @@
 	</div>
 </div>
 
-<!-- Create Ticket Modal -->
-<div class="modal fade" id="createTicketModal" tabindex="-1" role="dialog"
-     aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title">Create Ticket</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="inputTicketString">Ticket String (optional)</label>
-                    <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String">
-                </div>
-                <div class="form-group">
-                    <label for="permissionType">Permission</label>
-                    <select id="permissionType" class="form-control">
-                        <option>READ</option>
-                        <option>WRITE</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"
-                        th:text="#{confirmation.message.cancel}"></button>
-                <button id= "createTicketConfBtn" onclick="createTicket();" type="button" class="btn btn-primary"
-                        data-dismiss="modal">Create New Ticket</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -797,16 +763,6 @@
 			$("#trashEmptiedSuccessfully").addClass("hideElement");
 			$("#trashNotEmptiedSuccessfully").removeClass("hideElement");
 			getSubDirectories([[${ currentPath }]]);
-		}
-
-		function createTicketModal(){
-
-		}
-
-		function createTicket(){
-		    var ticketString = $("#elementToBeRemoved").html();
-            var url = [[${urlMap.URL_TICKETS_CREATE}]] + ticketString;
-            ajaxEncapsulation(url, "PUT", null, ticketsFeedbackMsg, null,null);
 		}
 
     /*]]>*/
