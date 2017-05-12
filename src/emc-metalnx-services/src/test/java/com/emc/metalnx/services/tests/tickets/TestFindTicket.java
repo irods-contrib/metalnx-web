@@ -50,6 +50,7 @@ public class TestFindTicket {
     private static final Date EXPIRATION_DATE = new Date();
     private static final long WRITE_BYTE_LIMIT = 1024;
     public static final int USES_COUNT = 0;
+    public static final int WRITE_BYTE_COUNT = 0;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -94,6 +95,7 @@ public class TestFindTicket {
         assertEquals(USES_LIMIT, dgt.getUsesLimit());
         assertEquals(USES_COUNT, dgt.getUsesCount());
         assertEquals(WRITE_BYTE_LIMIT, dgt.getWriteByteLimit());
+        assertEquals(WRITE_BYTE_COUNT, dgt.getWriteByteCount());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
