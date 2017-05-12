@@ -16,8 +16,11 @@
 
 package com.emc.metalnx.controller;
 
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.TicketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,18 +31,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/tickets")
 public class TicketController {
@@ -48,7 +47,11 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @Autowired
+    LoggedUserUtils loggedUserUtils;
+
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public String index() throws DataGridConnectionRefusedException {
 
         return "tickets/tickets";
@@ -72,7 +75,6 @@ public class TicketController {
         return ticketsAsJSON;
     }
 
-
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
         boolean ticketDeleted = ticketService.delete(ticketId);
@@ -93,5 +95,18 @@ public class TicketController {
         else response = new ResponseEntity<>(HttpStatus.NO_CONTENT); // Ticket was not deleted -> HTTP 204 returned
 
         return response;
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
+        DataGridTicket newTicket = null;
+        try {
+            ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
+            newTicket = ticketService.create(ticket);
+        } catch (DataGridMissingPathOnTicketException | DataGridNullTicketException e) {
+            logger.error("Could not create ticket: {}", e);
+        }
+
+        return newTicket;
     }
 }

@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2015-2017, Dell EMC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package com.emc.metalnx.services.tests.tickets;
+
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.io.IRODSFile;
+import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
+
+/**
+ * Utils class for ticket operations during tests.
+ */
+public class TestTicketUtils {
+    private IRODSServices irodsServices;
+
+    public TestTicketUtils(IRODSServices irodsServices) {
+        this.irodsServices = irodsServices;
+    }
+
+    public void createTicket(String ticketString, String parentPath, String item) throws JargonException, DataGridConnectionRefusedException {
+        IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
+        irodsServices.getTicketAdminService().createTicket(TicketCreateModeEnum.READ, irodsFile, ticketString);
+    }
+
+    public void deleteTicket(String ticketString) throws JargonException, DataGridConnectionRefusedException {
+        irodsServices.getTicketAdminService().deleteTicket(ticketString);
+    }
+}

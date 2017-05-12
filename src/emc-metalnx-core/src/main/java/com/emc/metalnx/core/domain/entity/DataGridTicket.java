@@ -25,15 +25,35 @@ public class DataGridTicket implements Serializable {
     private String ticketString, path, owner;
     private TicketType type;
     private boolean isCollection;
+    private boolean ticketCreated;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
     }
 
+    /**
+     * Empty constructor
+     */
     public DataGridTicket() {
+        this("");
+    }
+
+    /**
+     * Constructor.
+     * @param path path in the grid that the ticket
+     */
+    public DataGridTicket(String path) {
+        this.path = path;
         ticketString = "";
-        path = "";
         owner = "";
+        type = TicketType.READ;
+        ticketCreated = false;
+    }
+
+    public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setTicketCreated(boolean ticketCreated) {
+        this.ticketCreated = ticketCreated;
     }
 
     public void setTicketString(String ticketString) {
