@@ -40,4 +40,9 @@ public class TestTicketUtils {
     public void deleteTicket(String ticketString) throws JargonException, DataGridConnectionRefusedException {
         irodsServices.getTicketAdminService().deleteTicket(ticketString);
     }
+
+    public void setUsesLimit(String ticketString, int usesLimit) throws DataGridConnectionRefusedException,
+            JargonException {
+        irodsServices.getTicketAdminService().setTicketUsesLimit(ticketString, usesLimit);
+    }
 }
