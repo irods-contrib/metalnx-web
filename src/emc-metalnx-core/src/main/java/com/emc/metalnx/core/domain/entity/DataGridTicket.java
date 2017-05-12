@@ -32,6 +32,8 @@ public class DataGridTicket implements Serializable {
     private int usesCount;
     private long writeByteLimit;
     private long writeByteCount;
+    private int writeFileLimit;
+    private int writeFileCount;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -59,6 +61,14 @@ public class DataGridTicket implements Serializable {
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setWriteFileLimit(int writeFileLimit) {
+        this.writeFileLimit = writeFileLimit;
+    }
+
+    public void setWriteFileCount(int writeFileCount) {
+        this.writeFileCount = writeFileCount;
+    }
 
     public void setWriteByteLimit(long writeByteLimit) {
         this.writeByteLimit = writeByteLimit;
@@ -106,6 +116,14 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public int getWriteFileLimit() {
+        return writeFileLimit;
+    }
+
+    public int getWriteFileCount() {
+        return writeFileCount;
     }
 
     public long getWriteByteCount() {
