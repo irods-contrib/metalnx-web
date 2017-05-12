@@ -49,8 +49,8 @@ public class TestFindTicket {
     private static final int USES_LIMIT = 5;
     private static final Date EXPIRATION_DATE = new Date();
     private static final long WRITE_BYTE_LIMIT = 1024;
-    public static final int USES_COUNT = 0;
-    public static final int WRITE_BYTE_COUNT = 0;
+    private static final int USES_COUNT = 0;
+    private static final int WRITE_BYTE_COUNT = 0;
     private static final int WRITE_FILE_LIMIT = 5;
     private static final int WRITE_FILE_COUNT = 0;
 
