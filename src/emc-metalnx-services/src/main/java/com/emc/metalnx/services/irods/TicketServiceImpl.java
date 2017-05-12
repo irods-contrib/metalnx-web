@@ -20,8 +20,10 @@ import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
 import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
+import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.Ticket;
@@ -126,6 +128,25 @@ public class TicketServiceImpl implements TicketService {
         return dgTicket;
     }
 
+    @Override
+    public DataGridTicket find(String ticketId) throws DataGridConnectionRefusedException,
+            DataGridTicketNotFoundException {
+        DataGridTicket dgTicket = null;
+
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+
+        try {
+            Ticket t = tas.getTicketForSpecifiedTicketString(ticketId);
+            dgTicket = convertTicketToDataGridTicket(t);
+        }catch (DataNotFoundException e) {
+            throw new DataGridTicketNotFoundException("Ticket does not exist");
+        } catch (JargonException e) {
+            logger.error("Could not find ticket with string: {}", ticketId);
+        }
+
+        return dgTicket;
+    }
+
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {
         List<DataGridTicket> dgTickets = new ArrayList<>();
 
@@ -141,6 +162,8 @@ public class TicketServiceImpl implements TicketService {
 
         dgTicket.setTicketString(t.getTicketString());
         dgTicket.setOwner(t.getOwnerName());
+        dgTicket.setPath(t.getIrodsAbsolutePath());
+        dgTicket.setTicketString(t.getTicketString());
 
         DataGridTicket.TicketType dgTicketType;
 

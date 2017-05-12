@@ -20,6 +20,7 @@ import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
 import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 
 import java.util.List;
 
@@ -53,5 +54,15 @@ public interface TicketService {
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
      * @throws DataGridNullTicketException if a null ticket is given as a parameter
      */
-    DataGridTicket create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException, DataGridNullTicketException;
+    DataGridTicket create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
+            DataGridConnectionRefusedException, DataGridNullTicketException;
+
+    /**
+     * Finds a specific ticket by its id or string.
+     * @param ticketId ticket ID or string
+     * @return Ticket object if a ticket with the given ID exists. Null is returned otherwise.
+     * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to the grid
+     * @throws DataGridTicketNotFoundException thrown if ticket cannot be found
+     */
+    DataGridTicket find(String ticketId) throws DataGridConnectionRefusedException, DataGridTicketNotFoundException;
 }
