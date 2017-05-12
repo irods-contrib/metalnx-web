@@ -29,6 +29,7 @@ public class DataGridTicket implements Serializable {
     private boolean ticketCreated;
     private int usesLimit;
     private Date expirationDate;
+    private int usesCount;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -55,6 +56,10 @@ public class DataGridTicket implements Serializable {
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setUsesCount(int usesCount) {
+        this.usesCount = usesCount;
+    }
 
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
@@ -90,6 +95,10 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public int getUsesCount() {
+        return usesCount;
     }
 
     public Date getExpirationDate() {

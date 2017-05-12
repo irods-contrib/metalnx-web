@@ -88,8 +88,9 @@ public class TestFindTicket {
         assertFalse(dgt.getTicketString().isEmpty());
         assertTrue(dgt.getPath().equals(targetPath));
         assertTrue(dgt.getOwner().equals(username));
-        assertEquals(USES_LIMIT, dgt.getUsesLimit());
         assertDates(EXPIRATION_DATE, dgt.getExpirationDate());
+        assertEquals(USES_LIMIT, dgt.getUsesLimit());
+        assertEquals(0, dgt.getUsesCount());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
