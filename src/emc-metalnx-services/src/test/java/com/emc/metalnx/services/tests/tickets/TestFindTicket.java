@@ -33,8 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -44,6 +43,8 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestFindTicket {
+    private static final int USES_LIMIT = 5;
+
     @Value("${irods.zoneName}")
     private String zone;
 
@@ -66,6 +67,7 @@ public class TestFindTicket {
         ticketUtils = new TestTicketUtils(irodsServices);
 
         ticketString = ticketUtils.createTicket(ticketString, parentPath, username);
+        ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
     }
 
     @After
@@ -80,6 +82,7 @@ public class TestFindTicket {
         assertFalse(dgt.getTicketString().isEmpty());
         assertTrue(dgt.getPath().equals(targetPath));
         assertTrue(dgt.getOwner().equals(username));
+        assertEquals(USES_LIMIT, dgt.getUsesLimit());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
