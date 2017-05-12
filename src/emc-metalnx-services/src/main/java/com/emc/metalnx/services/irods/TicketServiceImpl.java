@@ -139,8 +139,9 @@ public class TicketServiceImpl implements TicketService {
             Ticket t = tas.getTicketForSpecifiedTicketString(ticketId);
             dgTicket = convertTicketToDataGridTicket(t);
 
-            dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketId, 0));
-            dgTicket.setUsers(tas.listAllUserRestrictionsForSpecifiedTicket(ticketId, 0));
+            dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketId, OFFSET));
+            dgTicket.setUsers(tas.listAllUserRestrictionsForSpecifiedTicket(ticketId, OFFSET));
+            dgTicket.setGroups(tas.listAllGroupRestrictionsForSpecifiedTicket(ticketId, OFFSET));
         }catch (DataNotFoundException e) {
             throw new DataGridTicketNotFoundException("Ticket does not exist");
         } catch (JargonException e) {

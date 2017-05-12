@@ -54,6 +54,7 @@ public class TestFindTicket {
     private static final int WRITE_FILE_LIMIT = 5;
     private static final int WRITE_FILE_COUNT = 0;
     private static final String[] HOSTS = {"test-ticket-host1", "test-ticket-host2"};
+    private static final String PUBLIC_GROUP = "public";
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -86,6 +87,7 @@ public class TestFindTicket {
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
         ticketUtils.addHostRestriction(ticketString, host);
         ticketUtils.addUserRestriction(ticketString, username);
+        ticketUtils.addGroupRestriction(ticketString, PUBLIC_GROUP);
     }
 
     @After
@@ -110,6 +112,7 @@ public class TestFindTicket {
         assertEquals(1, dgt.getHosts().size());
         assertEquals(1, dgt.getUsers().size());
         assertTrue(dgt.getUsers().contains(username));
+        assertTrue(dgt.getGroups().contains(PUBLIC_GROUP));
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
