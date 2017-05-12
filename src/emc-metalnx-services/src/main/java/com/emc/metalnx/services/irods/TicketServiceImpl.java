@@ -164,8 +164,13 @@ public class TicketServiceImpl implements TicketService {
         dgTicket.setOwner(t.getOwnerName());
         dgTicket.setPath(t.getIrodsAbsolutePath());
         dgTicket.setTicketString(t.getTicketString());
-        dgTicket.setUsesLimit(t.getUsesLimit());
         dgTicket.setExpirationDate(t.getExpireTime());
+        dgTicket.setUsesLimit(t.getUsesLimit());
+        dgTicket.setUsesCount(t.getUsesCount());
+        /*dgTicket.setWriteByteCount(t.getWriteByteCount());
+        dgTicket.setWriteByteLimit(t.getWriteByteLimit());
+        dgTicket.setWriteFileCount(t.getWriteFileCount());
+        dgTicket.setWriteFileLimit(t.getWriteFileLimit());*/
 
         DataGridTicket.TicketType dgTicketType;
 
