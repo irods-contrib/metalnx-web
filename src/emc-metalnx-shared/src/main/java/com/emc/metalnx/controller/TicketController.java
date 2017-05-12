@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -38,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/tickets")
 public class TicketController {
@@ -50,10 +51,8 @@ public class TicketController {
     @Autowired
     LoggedUserUtils loggedUserUtils;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() throws DataGridConnectionRefusedException {
-
         return "tickets/tickets";
     }
 
@@ -98,6 +97,7 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
         DataGridTicket newTicket = null;
         try {
