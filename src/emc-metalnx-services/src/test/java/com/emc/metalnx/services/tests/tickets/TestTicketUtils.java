@@ -67,4 +67,9 @@ public class TestTicketUtils {
             JargonException {
         irodsServices.getTicketAdminService().addTicketHostRestriction(ticketString, host);
     }
+
+    public void addUserRestriction(String ticketString, String username) throws DataGridConnectionRefusedException,
+            JargonException {
+        irodsServices.getTicketAdminService().addTicketUserRestriction(ticketString, username);
+    }
 }

@@ -36,7 +36,10 @@ public class DataGridTicket implements Serializable {
     private long writeByteCount;
     private int writeFileLimit;
     private int writeFileCount;
+
+    // Ticket restrictions
     private List<String> hosts;
+    private List<String> users;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -62,9 +65,14 @@ public class DataGridTicket implements Serializable {
         usesLimit = 0;
         writeByteLimit = 0;
         hosts = new ArrayList<>();
+        users = new ArrayList<>();
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public void setUsers(List<String> users) {
+        this.users = users;
+    }
 
     public void setHosts(List<String> hosts) {
         this.hosts = hosts;
@@ -124,6 +132,10 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public List<String> getUsers() {
+        return users;
     }
 
     public List<String> getHosts() {

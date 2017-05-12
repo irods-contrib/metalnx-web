@@ -85,6 +85,7 @@ public class TestFindTicket {
         ticketUtils.setWriteByteLimit(ticketString, WRITE_BYTE_LIMIT);
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
         ticketUtils.addHostRestriction(ticketString, host);
+        ticketUtils.addUserRestriction(ticketString, username);
     }
 
     @After
@@ -107,6 +108,8 @@ public class TestFindTicket {
         assertEquals(WRITE_FILE_LIMIT, dgt.getWriteFileLimit());
         assertEquals(WRITE_FILE_COUNT, dgt.getWriteFileCount());
         assertEquals(1, dgt.getHosts().size());
+        assertEquals(1, dgt.getUsers().size());
+        assertTrue(dgt.getUsers().contains(username));
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
