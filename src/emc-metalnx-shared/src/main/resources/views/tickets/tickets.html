@@ -44,7 +44,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
-                    <i class="fa fa-check" aria-hidden="true"></i><span> The ticket was deleted successfully.</span>
+                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{tickets.delete.feedback.success}"></span>
                 </div>
             </div>
         </div>
@@ -59,10 +59,7 @@
                             <th th:text="#{tickets.table.owner.label}"></th>
                             <th></th>
                         </tr>
-
-
                     </thead>
-
                 </table>
             </div>
         </div>
@@ -86,17 +83,17 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="deleteTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="deleteTicketConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+                        <h4 class="modal-title" id="deleteTicketConfirmLabel" th:text="#{tickets.delete.confirm.modal.title}"></h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Delete this ticket? This action cannot be undone. </p>
+                                <p th:text="#{tickets.delete.confirm.modal.msg}"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -117,8 +114,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="removeElement();">Delete this Ticket</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{tickets.delete.confirm.modal.button.cancel}"></button>
+                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{tickets.delete.confirm.modal.button.delete}"></button>
                     </div>
                 </div>
             </div>
@@ -192,7 +189,6 @@
 			} );
 		});
 		function deleteTicket(ticketString){
-            console.log("Delete: " + ticketString);
             $("#elementToBeRemoved").html(ticketString);
             var permission = $("#"+ticketString).children(".permission").text();
             $("#elementToBeRemovedPermission").html(permission);
@@ -200,8 +196,7 @@
             $("#elementToBeRemovedOwner").html(owner);
             var type = $("#"+ticketString).children(".objectType").text();
             $("#elementToBeRemovedType").html(type);
-            console.log(permission);
-			$("#deleteTicket").modal("show");
+			$("#deleteTicketConfirm").modal("show");
 
 		}
 		function removeElement() {
@@ -211,7 +206,7 @@
         }
 
 		function ticketsFeedbackMsg(data){
-            $("#deleteTicket").modal("hide");
+            $("#deleteTicketConfirm").modal("hide");
             $('#ticketsTable').DataTable().ajax.reload();
             $("#ticketDeletedSuccessfully").removeClass("hideElement");
 

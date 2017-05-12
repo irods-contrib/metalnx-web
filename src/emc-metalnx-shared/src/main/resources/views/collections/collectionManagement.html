@@ -722,9 +722,14 @@
 				var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
 				var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
 
-				if(totalCheckboxesChecked == 1) $("#actions #modifyBtn").show();
-				else $("#actions #modifyBtn").hide();
-
+				if(totalCheckboxesChecked == 1){
+					$("#actions #modifyBtn").show();
+					$("#actions #createTicketBtn").show();
+				}
+				else{
+					$("#actions #modifyBtn").hide();
+					$("#actions #createTicketBtn").hide();
+				}
 				var paths = new Array();
 
 				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
