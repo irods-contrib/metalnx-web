@@ -54,25 +54,19 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() throws DataGridConnectionRefusedException {
+        logger.info("Get tickets page");
         return "tickets/tickets";
     }
 
-    @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public DataGridTicket find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
-        DataGridTicket dgTicket = null;
-
-        try {
-            dgTicket = ticketService.find(ticketId);
-        } catch (DataGridTicketNotFoundException e) {
-            logger.error("Could not find ticket with id: {}", ticketId);
-        }
-        return dgTicket;
-    }
-
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    /**
+     * Finds all tickets in the grid.
+     * @return List of tickets in JSON
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String findAll() throws DataGridConnectionRefusedException {
+        logger.info("Find all tickets");
         List<DataGridTicket> tickets = ticketService.findAll();
         String ticketsAsJSON = "";
 
@@ -86,6 +80,25 @@ public class TicketController {
         }
 
         return ticketsAsJSON;
+    }
+
+    /**
+     * Finds a specific ticket in the grid by its id or string
+     * @param ticketId ticket id or string
+     * @return Ticket as JSON
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public DataGridTicket find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
+        DataGridTicket dgTicket = null;
+
+        try {
+            dgTicket = ticketService.find(ticketId);
+        } catch (DataGridTicketNotFoundException e) {
+            logger.error("Could not find ticket with id: {}", ticketId);
+        }
+        return dgTicket;
     }
 
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
