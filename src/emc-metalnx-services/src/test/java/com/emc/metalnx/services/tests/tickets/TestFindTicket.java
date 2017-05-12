@@ -51,6 +51,8 @@ public class TestFindTicket {
     private static final long WRITE_BYTE_LIMIT = 1024;
     public static final int USES_COUNT = 0;
     public static final int WRITE_BYTE_COUNT = 0;
+    private static final int WRITE_FILE_LIMIT = 5;
+    private static final int WRITE_FILE_COUNT = 0;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -77,6 +79,7 @@ public class TestFindTicket {
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
         ticketUtils.setExpirationDate(ticketString, EXPIRATION_DATE);
         ticketUtils.setWriteByteLimit(ticketString, WRITE_BYTE_LIMIT);
+        ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
     }
 
     @After
@@ -96,6 +99,8 @@ public class TestFindTicket {
         assertEquals(USES_COUNT, dgt.getUsesCount());
         assertEquals(WRITE_BYTE_LIMIT, dgt.getWriteByteLimit());
         assertEquals(WRITE_BYTE_COUNT, dgt.getWriteByteCount());
+        assertEquals(WRITE_FILE_LIMIT, dgt.getWriteFileLimit());
+        assertEquals(WRITE_FILE_COUNT, dgt.getWriteFileCount());
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
