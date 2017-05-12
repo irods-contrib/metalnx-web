@@ -107,7 +107,6 @@ public class TestFindTicket {
         assertEquals(WRITE_FILE_LIMIT, dgt.getWriteFileLimit());
         assertEquals(WRITE_FILE_COUNT, dgt.getWriteFileCount());
         assertEquals(1, dgt.getHosts().size());
-        assertTrue(dgt.getHosts().contains(host));
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
