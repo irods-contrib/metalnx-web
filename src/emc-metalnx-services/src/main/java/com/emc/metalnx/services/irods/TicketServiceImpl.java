@@ -168,8 +168,8 @@ public class TicketServiceImpl implements TicketService {
         dgTicket.setUsesLimit(t.getUsesLimit());
         dgTicket.setUsesCount(t.getUsesCount());
         dgTicket.setWriteByteLimit(t.getWriteByteLimit());
-        /*dgTicket.setWriteByteCount(t.getWriteByteCount());
-        dgTicket.setWriteFileCount(t.getWriteFileCount());
+        dgTicket.setWriteByteCount(t.getWriteByteCount());
+        /*dgTicket.setWriteFileCount(t.getWriteFileCount());
         dgTicket.setWriteFileLimit(t.getWriteFileLimit());*/
 
         DataGridTicket.TicketType dgTicketType;
