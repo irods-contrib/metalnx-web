@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.thymeleaf.org"
+        lang="en"
+        layout:decorator="template">
+
+<head>
+    <title th:text="#{tab.title.tickets}"></title>
+</head>
+
+<body>
+    <!-- Page Content -->
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 class="page-header pull-left">
+                    <span th:text="#{tickets.page.title}"></span>
+                </h1>
+                <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+            </div>
+        </div>
+        <!-- Ticket deletion succeed -->
+        <div class="row">
+            <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
+                <div class="alert alert-success alert-dismissible text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{tickets.delete.feedback.success}"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 table-responsive" >
+                <table class="table table-hover" id="ticketsTable">
+                    <thead>
+                        <tr>
+                            <th th:text="#{tickets.table.type.label}"></th>
+                            <th th:text="#{tickets.table.string.label}"></th>
+                            <th th:text="#{tickets.table.permission.label}"></th>
+                            <th th:text="#{tickets.table.owner.label}"></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="editTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-pencil" style="margin-right: 5px;"></i>Edit Ticket</h4>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteTicketConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteTicketConfirmLabel" th:text="#{tickets.delete.confirm.modal.title}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p th:text="#{tickets.delete.confirm.modal.msg}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Ticket String</div>
+                            <div class="col-md-7"><span id="elementToBeRemoved" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Permission</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedPermission" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Owner</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedOwner" style="font-weight:bold;"></span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">Type</div>
+                            <div class="col-md-7"><span id="elementToBeRemovedType" style="font-weight:bold;"></span></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{tickets.delete.confirm.modal.button.cancel}"></button>
+                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{tickets.delete.confirm.modal.button.delete}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+		/*<![CDATA[*/
+        $(document).ready(function(e){
+		    var datatable;
+			datatable = $('#ticketsTable').DataTable( {
+			    "serverSide": false,
+			    "dom": dtPatternMlxStandard,
+			    "language": i18n,
+			    "destroy": false,
+			    "autoWidth": false,
+			    "ajax": {
+			        url: '/emc-metalnx-web/tickets/findAll',
+			    },
+			    "rowId": 'ticketString',
+			    "order": [[ 3, 'desc' ], [1, 'asc']],
+			    "initComplete": function(settings){
+    	            $('#ticketsTable tbody td').each(function () {
+    	            	$(this).attr('title', $(this).text().trim());
+    	            });
+    	        },
+    	        "drawCallback": function(){
+    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+    	            $('.dataTables_paginate.paging_simple_numbers')
+    	            .css( 'display', this.api().data().length <= 0 ?
+    	                 'none' :
+    	                 'block'
+    	            )
+    	        },
+			    "columnDefs": [
+			        {
+	                	"render": function ( data, type, full, meta ) {
+    						if (full.collection) return 'collection'
+    						else  return 'file';
+    					},
+	                	"width": "10%",
+	                	"targets": 0,
+	                	 className: "objectType"
+	               	},
+	                {
+	                	"data": "ticketString",
+	                	"width": "20%",
+	                	"targets": 1,
+	                	 className: "ticketString"
+	               	},
+	               	{
+	               		"data": "type",
+	               		"width": "15%",
+	               		"targets":2,
+	               		 className: "permission"
+	               	},
+	               	{
+	               		"data": "owner",
+	               		"width": "15%",
+	               		"targets": 3,
+	               		 className: "owner"
+	               	},
+	               	{
+                        "render": function (data, type, full, meta){
+                            return '<button type="button" class="btn btn-default btn-xs hidden" data-toggle="modal" data-target="#editTicket" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</button><a href="#" class="btn btn-default btn-xs" onclick="deleteTicket(\''+full.ticketString+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
+                        },
+                        "width": "10%",
+                        "orderable": false,
+                        "targets": 4,
+                         className: "actionsColumn"
+                    }
+	            ]
+			} );
+		});
+		function deleteTicket(ticketString){
+            $("#elementToBeRemoved").html(ticketString);
+            var permission = $("#"+ticketString).children(".permission").text();
+            $("#elementToBeRemovedPermission").html(permission);
+            var owner = $("#"+ticketString).children(".owner").text();
+            $("#elementToBeRemovedOwner").html(owner);
+            var type = $("#"+ticketString).children(".objectType").text();
+            $("#elementToBeRemovedType").html(type);
+			$("#deleteTicketConfirm").modal("show");
+
+		}
+		function removeElement() {
+            var ticketString = $("#elementToBeRemoved").html();
+            var url = [[${urlMap.URL_TICKETS_DELETE}]] + ticketString;
+            ajaxEncapsulation(url, "DELETE", null, ticketsFeedbackMsg, null,null);
+        }
+
+		function ticketsFeedbackMsg(data){
+            $("#deleteTicketConfirm").modal("hide");
+            $('#ticketsTable').DataTable().ajax.reload();
+            $("#ticketDeletedSuccessfully").removeClass("hideElement");
+
+		}
+
+		/*]]>*/
+		</script>
+    </div> <!-- /. Page Content -->
+
+</body>
+
+</html>
