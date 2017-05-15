@@ -91,6 +91,7 @@ public class TicketController {
     @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public DataGridTicket find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
+        logger.info("Find ticket by its ID or String");
         DataGridTicket dgTicket = null;
 
         try {
@@ -103,6 +104,7 @@ public class TicketController {
 
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
+        logger.info("Delete ticket by its ID or String");
         boolean ticketDeleted = ticketService.delete(ticketId);
         String json = "";
 
@@ -126,6 +128,7 @@ public class TicketController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
+        logger.info("Create new ticket");
         DataGridTicket newTicket = null;
         try {
             ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
