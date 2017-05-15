@@ -164,9 +164,9 @@ public class TicketServiceImpl implements TicketService {
         TicketAdminService tas = irodsServices.getTicketAdminService();
         DataGridTicket dgTicket = null;
         try {
-            addHostRestriction(t);
-            addUserRestriction(t);
-            addGroupRestriction(t);
+            updateHostRestrictions(t);
+            updateUserRestrictions(t);
+            updateGroupRestrictions(t);
 
             Ticket ticketUpdated = tas.compareGivenTicketToActualAndUpdateAsNeeded(convertDataGridTicketToTicket(t));
             dgTicket = convertTicketToDataGridTicket(ticketUpdated);
@@ -185,7 +185,7 @@ public class TicketServiceImpl implements TicketService {
         return dgTicket;
     }
 
-    private void addHostRestriction(DataGridTicket t) throws JargonException,
+    private void updateHostRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
@@ -200,7 +200,7 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    private void addUserRestriction(DataGridTicket t) throws JargonException,
+    private void updateUserRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
@@ -215,7 +215,7 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    private void addGroupRestriction(DataGridTicket t) throws JargonException,
+    private void updateGroupRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
