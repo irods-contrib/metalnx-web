@@ -31,6 +31,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
@@ -45,7 +47,6 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 public class TestModifyTicket {
     private static final int USES_LIMIT = 5;
-    private static final Date EXPIRATION_DATE = new Date();
     private static final long WRITE_BYTE_LIMIT = 1024;
     private static final int WRITE_FILE_LIMIT = 5;
     private static final String PUBLIC_GROUP = "public";
@@ -67,6 +68,7 @@ public class TestModifyTicket {
 
     private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Before
     public void setUp() throws DataGridException, JargonException {
@@ -80,6 +82,27 @@ public class TestModifyTicket {
     @After
     public void tearDown() throws DataGridConnectionRefusedException, JargonException {
         ticketUtils.deleteTicket(ticketString);
+    }
+
+    @Test
+    public void testModifyTicketExpireDate() throws DataGridNullTicketException,
+            DataGridMissingTicketString, DataGridConnectionRefusedException,
+            DataGridTicketNotFoundException {
+        Date date = new Date();
+        DataGridTicket dgt = new DataGridTicket(targetPath);
+        dgt.setTicketString(ticketString);
+        dgt.setExpirationDate(date);
+
+        DataGridTicket dgtModified = ticketService.modify(dgt);
+
+        String currDate = dateFormat.format(date);
+        String ticketModifiedDate = dateFormat.format(dgtModified.getExpirationDate());
+
+        assertEquals(currDate, ticketModifiedDate);
+        assertFalse(dgtModified.getTicketString().isEmpty());
+        assertTrue(dgtModified.getPath().equals(targetPath));
+        assertTrue(dgtModified.getOwner().equals(username));
+        assertTrue(dgtModified.isTicketModified());
     }
 
     @Test
