@@ -64,7 +64,7 @@ function addCollectionActions(table_id, datatable){
         '           <a href="#" id="modifyBtn" class="hideElement" onclick="showModifyForm();"><span><i class="fa fa-pencil-square-o"> </i></span> <span>Edit</span></a>'+
         '       </li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a>'+
         '       </li>'+
-        '       <li><a href="#" id="createTicketBtn" class="hideElement" onclick="createTicketForm();"><span><i class="fa fa-list-alt"> </i></span> <span>Create Ticket</span></a></li>'+
+        '       <li><a href="#" id="createTicketBtn" class="hideElement" onclick="getTicketCreationForm();"><span><i class="fa fa-list-alt"> </i></span> <span>Create Ticket</span></a></li>'+
         '       <li> <a id="downloadBtn" href="/emc-metalnx-web/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
         '       </li>'+
         '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+

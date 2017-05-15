@@ -92,6 +92,15 @@
 	</div>
 </div>
 
+<!-- Ticket creation success message -->
+<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
+    <div class="alert alert-success alert-dismissible text-center" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+        </button>
+        <span>Ticket successfully created.</span>
+    </div>
+</div>
 <!-- All items moved -->
 <div class="col-sm-12">
 	<div th:if="${failedMoves != null and #lists.isEmpty(failedMoves)}"
@@ -339,12 +348,38 @@
 	</div>
 </div>
 
+<!-- Ticket Form -->
+<div class="col-md-10 col-sm-9 col-xs-12">
+    <div class="modal fade" id="ticketCreationForm" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">Create Ticket</h4>
+                </div>
+                <div class="modal-body">
+                   <div id="ticketFormPanel"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            th:text="#{confirmation.message.cancel}"></button>
+                    <button id= "createTicketBtn" onclick="createTicket();" type="button" class="btn btn-primary"
+                            data-dismiss="modal">Create New Ticket</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
 		var url;
-		
+
 		var permission = null;
         var groupsToHavePermissionsGranted = null;
         var usersToHavePermissionsGranted = null;
@@ -354,7 +389,7 @@
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
 
         $(document).ready(function(e){
-        	
+
         	if(![[${isCurrentPathCollection}]]){
         		getInfoDetails([[${currentPath}]]);
         		return;
@@ -436,27 +471,27 @@
     					"targets": 1
                     },
                     {
-                    	"data": "owner", 
-                    	"width": "10%", 
+                    	"data": "owner",
+                    	"width": "10%",
                     	"targets": 2
                    	},
                     {
                     	"render": function ( data, type, full, meta ){
                     		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
-                    	}, 
+                    	},
                     	"width": "10%",
                     	"targets": 3,
                     	"orderable": false
                    	},
                     {
-                    	"data": "modifiedAtFormatted", 
+                    	"data": "modifiedAtFormatted",
                     	"width": "15%",
                     	"targets": 4
                    	},
                     {
                     	"render": function ( data, type, full, meta ){
                     		return full.collection? "-" : full.displaySize
-                    	}, 
+                    	},
                     	"width": "13%",
                     	"targets": 5
                    	}
@@ -493,7 +528,7 @@
 				var paths = findPathsSelected();
 
 				ajaxEncapsulation(mostRestrictivePermURL, "POST", {paths: paths}, handleActionPermissionsWhenAddingPaths);
-				
+
 				$("#actions #modifyBtn").hide();
 				$("#actions #createTicketBtn").hide();
 			}
@@ -535,7 +570,7 @@
 					case "none":
 						if(!$("#actions button").is(":disabled")) {
 							$("#actions button").prop("disabled", true);
-						}					
+						}
 						break;
 					case "admin":
 						$("#actions button").prop("disabled", false);
@@ -550,7 +585,7 @@
 						break;
 					case "read":
 						$("#actions button").prop("disabled", false);
-						$("#applyTemplatesBtn").parent("li").addClass("hideElement");	
+						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
@@ -576,7 +611,7 @@
 		function handleActionPermissionsWhenRemovingPaths(mostRestrictivePermission) {
 			$("#actionsWait").hide();
 			$("#actions").show();
-			
+
 			if(0 >= $("#treeViewTable tbody input[type=checkbox]:checked").length){
 				$("#actions button").prop("disabled", true);
 			}
@@ -585,16 +620,16 @@
 					case "none":
 						$("#actions button").prop("disabled", true);
 						break;
-					case "read": //read permissions let users download, copy, replicate 
+					case "read": //read permissions let users download, copy, replicate
 						$("#actions button").prop("disabled", false);
-						$("#applyTemplatesBtn").parent("li").addClass("hideElement");	
+						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
                         $("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
-					case "write": //write permissions let users download, copy, replicate and apply templates	
+					case "write": //write permissions let users download, copy, replicate and apply templates
 						$("#actions button").prop("disabled", false);
 						$("#actions li").removeClass("hideElement");
 						$("#moveBtn").parent("li").addClass("hideElement");
@@ -642,7 +677,7 @@
 				submitForm();
 			}
 		});
-        
+
         function handleDownload() {
         	$("#actionsWait").hide();
         	$("#uploadIcon").prop("disabled", false);
@@ -656,14 +691,14 @@
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
         	window.location.href = "/emc-metalnx-web/fileOperation/download/";
         }
-        
+
 		function handleDownloadFailure() {
         	$("#actionsWait").hide();
         	$("#downloadFailureMessage").show();
         	$("input[name=selectAllCheckboxes]").prop('checked', false);
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }
-        
+
         function getPermDetails(path){
             $('#table-loader').nextAll().remove();
         	$('#table-loader').show();
@@ -672,7 +707,7 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
-        	
+
         	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
 		}
 
@@ -718,7 +753,7 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
 		}
-        
+
         function displayPermDetails(data){
             $('#table-loader').hide();
             $("#table-loader").after(data);
@@ -727,7 +762,7 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         }
-        
+
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);
         	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
@@ -764,6 +799,20 @@
 			$("#trashNotEmptiedSuccessfully").removeClass("hideElement");
 			getSubDirectories([[${ currentPath }]]);
 		}
+		function getTicketCreationForm(){
+            ajaxEncapsulation("/emc-metalnx-web/tickets/ticketForm", "GET", null, populateTicketCreationForm, null, null, null);
+            $("#ticketCreationForm").modal("show");
+		}
+		function populateTicketCreationForm(ticketForm){
+		    $("#ticketFormPanel").html(ticketForm);
+		    $("#selectedPath").text($("input[name='collectionPathCheckboxes']:checked").val());
+		}
+		function createTicket(){
+		    displayTicketCreationFeedback();
+		}
+		function displayTicketCreationFeedback(){
+            $("#ticketCreationSuccessMessage").removeClass("hideElement");
+		}
 
     /*]]>*/
-	</script>
+</script>

@@ -1,0 +1,23 @@
+<!-- Create Ticket Form -->
+<form role="form" class="container-fluid registerForm"
+      method="POST" th:object="${ticket}"
+      th:action="@{${requestMapping}}">
+    <div class="form-group">
+        <label class="control-label">Path</label>
+        <span id="selectedPath"></span>
+    </div>
+    <div class="form-group">
+        <label for="inputTicketString" class="control-label">Ticket String (optional)</label>
+        <div class="">
+            <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="input-permission" class="control-label">Permission</label>
+        <div class="">
+            <select id="input-permission" class="form-control" th:field="*{type}">
+                <option value="READ">READ</option>
+                <option value="WRITE">WRITE</option>
+            </select>
+        </div></div>
+</form>

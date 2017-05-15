@@ -32,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -109,4 +110,13 @@ public class TicketController {
 
         return newTicket;
     }
+
+    @RequestMapping(value = "/ticketForm", method = RequestMethod.GET)
+    public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
+        DataGridTicket ticket = new DataGridTicket();
+        model.addAttribute("ticket", ticket);
+        return "tickets/ticketForm";
+    }
+
+
 }
