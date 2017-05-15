@@ -177,7 +177,29 @@ public class TicketServiceImpl implements TicketService {
                 if(!t.getHosts().contains(host)) tas.removeTicketHostRestriction(ticketString, host);
             }
 
+            List<String> currUsers = tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+            for(String user: t.getUsers()) {
+                if(!currUsers.contains(user)) tas.addTicketUserRestriction(ticketString, user);
+            }
+
+            for(String user: currUsers) {
+                if(!t.getUsers().contains(user)) tas.removeTicketUserRestriction(ticketString, user);
+            }
+
+            List<String> currGroups = tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+            for(String group: t.getGroups()) {
+                if(!currGroups.contains(group)) tas.addTicketGroupRestriction(ticketString, group);
+            }
+
+            for(String group: currGroups) {
+                if(!t.getGroups().contains(group)) tas.removeTicketGroupRestriction(ticketString, group);
+            }
+
             dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET));
+            dgTicket.setUsers(tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET));
+            dgTicket.setGroups(tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET));
         } catch (DataNotFoundException e) {
             throw new DataGridTicketNotFoundException("Ticket does not exist");
         } catch (JargonException e) {

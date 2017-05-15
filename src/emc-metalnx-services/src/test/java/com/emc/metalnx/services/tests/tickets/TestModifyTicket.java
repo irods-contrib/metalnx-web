@@ -152,4 +152,38 @@ public class TestModifyTicket {
         assertTrue(ticketModified.getOwner().equals(username));
     }
 
+    @Test
+    public void testModifyTicketUsers() throws DataGridConnectionRefusedException,
+            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+
+        DataGridTicket dgt = new DataGridTicket(targetPath);
+        dgt.setTicketString(ticketString);
+        dgt.addUser(username);
+
+        DataGridTicket ticketModified = ticketService.modify(dgt);
+
+        assertEquals(1, ticketModified.getUsers().size());
+        assertTrue(ticketModified.getUsers().contains(username));
+        assertFalse(ticketModified.getTicketString().isEmpty());
+        assertTrue(ticketModified.getPath().equals(targetPath));
+        assertTrue(ticketModified.getOwner().equals(username));
+    }
+
+    @Test
+    public void testModifyTicketGroups() throws DataGridConnectionRefusedException,
+            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+
+        DataGridTicket dgt = new DataGridTicket(targetPath);
+        dgt.setTicketString(ticketString);
+        dgt.addGroup(PUBLIC_GROUP);
+
+        DataGridTicket ticketModified = ticketService.modify(dgt);
+
+        assertEquals(1, ticketModified.getGroups().size());
+        assertTrue(ticketModified.getGroups().contains(PUBLIC_GROUP));
+        assertFalse(ticketModified.getTicketString().isEmpty());
+        assertTrue(ticketModified.getPath().equals(targetPath));
+        assertTrue(ticketModified.getOwner().equals(username));
+    }
+
 }
