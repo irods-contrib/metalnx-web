@@ -164,38 +164,12 @@ public class TicketServiceImpl implements TicketService {
         TicketAdminService tas = irodsServices.getTicketAdminService();
         DataGridTicket dgTicket = null;
         try {
+            addHostRestriction(t);
+            addUserRestriction(t);
+            addGroupRestriction(t);
+
             Ticket ticketUpdated = tas.compareGivenTicketToActualAndUpdateAsNeeded(convertDataGridTicketToTicket(t));
             dgTicket = convertTicketToDataGridTicket(ticketUpdated);
-
-            List<String> currHosts = tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET);
-
-            for(String host: t.getHosts()) {
-                if(!currHosts.contains(host)) tas.addTicketHostRestriction(ticketString, host);
-            }
-
-            for(String host: currHosts) {
-                if(!t.getHosts().contains(host)) tas.removeTicketHostRestriction(ticketString, host);
-            }
-
-            List<String> currUsers = tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET);
-
-            for(String user: t.getUsers()) {
-                if(!currUsers.contains(user)) tas.addTicketUserRestriction(ticketString, user);
-            }
-
-            for(String user: currUsers) {
-                if(!t.getUsers().contains(user)) tas.removeTicketUserRestriction(ticketString, user);
-            }
-
-            List<String> currGroups = tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET);
-
-            for(String group: t.getGroups()) {
-                if(!currGroups.contains(group)) tas.addTicketGroupRestriction(ticketString, group);
-            }
-
-            for(String group: currGroups) {
-                if(!t.getGroups().contains(group)) tas.removeTicketGroupRestriction(ticketString, group);
-            }
 
             dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET));
             dgTicket.setUsers(tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET));
@@ -209,6 +183,51 @@ public class TicketServiceImpl implements TicketService {
         if(dgTicket != null) dgTicket.setTicketModified(true);
 
         return dgTicket;
+    }
+
+    private void addHostRestriction(DataGridTicket t) throws JargonException,
+            DataGridConnectionRefusedException {
+        String ticketString = t.getTicketString();
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+        List<String> currHosts = tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+        for(String host: t.getHosts()) {
+            if(!currHosts.contains(host)) tas.addTicketHostRestriction(ticketString, host);
+        }
+
+        for(String host: currHosts) {
+            if(!t.getHosts().contains(host)) tas.removeTicketHostRestriction(ticketString, host);
+        }
+    }
+
+    private void addUserRestriction(DataGridTicket t) throws JargonException,
+            DataGridConnectionRefusedException {
+        String ticketString = t.getTicketString();
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+        List<String> currUsers = tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+        for(String user: t.getUsers()) {
+            if(!currUsers.contains(user)) tas.addTicketUserRestriction(ticketString, user);
+        }
+
+        for(String user: currUsers) {
+            if(!t.getUsers().contains(user)) tas.removeTicketUserRestriction(ticketString, user);
+        }
+    }
+
+    private void addGroupRestriction(DataGridTicket t) throws JargonException,
+            DataGridConnectionRefusedException {
+        String ticketString = t.getTicketString();
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+        List<String> currGroups = tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+        for(String group: t.getGroups()) {
+            if(!currGroups.contains(group)) tas.addTicketGroupRestriction(ticketString, group);
+        }
+
+        for(String group: currGroups) {
+            if(!t.getGroups().contains(group)) tas.removeTicketGroupRestriction(ticketString, group);
+        }
     }
 
     private List<DataGridTicket> convertListOfTickets(List<Ticket> tickets) {
