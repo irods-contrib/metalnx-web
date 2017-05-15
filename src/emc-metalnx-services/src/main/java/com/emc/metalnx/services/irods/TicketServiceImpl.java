@@ -17,10 +17,7 @@
 package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.DataNotFoundException;
@@ -142,11 +139,52 @@ public class TicketServiceImpl implements TicketService {
             dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketId, OFFSET));
             dgTicket.setUsers(tas.listAllUserRestrictionsForSpecifiedTicket(ticketId, OFFSET));
             dgTicket.setGroups(tas.listAllGroupRestrictionsForSpecifiedTicket(ticketId, OFFSET));
-        }catch (DataNotFoundException e) {
+        } catch (DataNotFoundException e) {
             throw new DataGridTicketNotFoundException("Ticket does not exist");
         } catch (JargonException e) {
             logger.error("Could not find ticket with string: {}", ticketId);
         }
+
+        return dgTicket;
+    }
+
+    @Override
+    public DataGridTicket modify(DataGridTicket t) throws DataGridConnectionRefusedException,
+            DataGridNullTicketException, DataGridMissingTicketString, DataGridTicketNotFoundException {
+        if(t == null) {
+            throw new DataGridNullTicketException("Null ticket instance");
+        }
+
+        if(t.getTicketString().isEmpty()) {
+            throw new DataGridMissingTicketString("Ticket ID or String missing");
+        }
+
+        String ticketString = t.getTicketString();
+
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+        DataGridTicket dgTicket = null;
+        try {
+            Ticket ticketUpdated = tas.compareGivenTicketToActualAndUpdateAsNeeded(convertDataGridTicketToTicket(t));
+            dgTicket = convertTicketToDataGridTicket(ticketUpdated);
+
+            List<String> currHosts = tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET);
+
+            for(String host: t.getHosts()) {
+                if(!currHosts.contains(host)) tas.addTicketHostRestriction(ticketString, host);
+            }
+
+            for(String host: currHosts) {
+                if(!t.getHosts().contains(host)) tas.removeTicketHostRestriction(ticketString, host);
+            }
+
+            dgTicket.setHosts(tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET));
+        } catch (DataNotFoundException e) {
+            throw new DataGridTicketNotFoundException("Ticket does not exist");
+        } catch (JargonException e) {
+            logger.error("Could not modify ticket");
+        }
+
+        if(dgTicket != null) dgTicket.setTicketModified(true);
 
         return dgTicket;
     }
@@ -194,5 +232,33 @@ public class TicketServiceImpl implements TicketService {
             dgTicket.setIsCollection(true);
 
         return dgTicket;
+    }
+
+    private Ticket convertDataGridTicketToTicket(DataGridTicket dgTicket) {
+        Ticket ticket = new Ticket();
+
+        ticket.setTicketString(dgTicket.getTicketString());
+        ticket.setOwnerName(dgTicket.getOwner());
+        ticket.setIrodsAbsolutePath(dgTicket.getPath());
+        ticket.setTicketString(dgTicket.getTicketString());
+        ticket.setExpireTime(dgTicket.getExpirationDate());
+        ticket.setUsesLimit(dgTicket.getUsesLimit());
+        ticket.setUsesCount(dgTicket.getUsesCount());
+        ticket.setWriteByteLimit(dgTicket.getWriteByteLimit());
+        ticket.setWriteByteCount(dgTicket.getWriteByteCount());
+        ticket.setWriteFileLimit(dgTicket.getWriteFileLimit());
+        ticket.setWriteFileCount(dgTicket.getWriteFileCount());
+
+        TicketCreateModeEnum ticketMode;
+
+        if(dgTicket.getType() == DataGridTicket.TicketType.READ) ticketMode = TicketCreateModeEnum.READ;
+        else if (dgTicket.getType() == DataGridTicket.TicketType.WRITE) ticketMode = TicketCreateModeEnum.WRITE;
+        else ticketMode = TicketCreateModeEnum.UNKNOWN;
+
+        ticket.setType(ticketMode);
+
+        if(dgTicket.isCollection()) ticket.setObjectType(Ticket.TicketObjectType.COLLECTION);
+
+        return ticket;
     }
 }

@@ -29,6 +29,7 @@ public class DataGridTicket implements Serializable {
     private TicketType type;
     private boolean isCollection;
     private boolean ticketCreated;
+    private boolean ticketModified;
     private int usesLimit;
     private Date expirationDate;
     private int usesCount;
@@ -70,7 +71,28 @@ public class DataGridTicket implements Serializable {
         groups = new ArrayList<>();
     }
 
+    public void addHost(String newHost) {
+        if(hosts == null) hosts = new ArrayList<>();
+        if(!hosts.contains(newHost)) hosts.add(newHost);
+    }
+
+    public void addUser(String user) {
+        if(users == null) users = new ArrayList<>();
+        if(!users.contains(user)) users.add(user);
+    }
+
+    public void addGroup(String group) {
+        if(groups == null) groups = new ArrayList<>();
+        if(!groups.contains(group)) groups.add(group);
+    }
+
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public boolean isTicketModified() { return this.ticketModified; }
+
+    public void setTicketModified(boolean ticketModified) {
+        this.ticketModified = ticketModified;
+    }
 
     public void setGroups(List<String> groups) {
         this.groups = groups;
