@@ -103,27 +103,14 @@ public class TicketController {
         return dgTicket;
     }
 
-    @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
         logger.info("Delete ticket by its ID or String");
         boolean ticketDeleted = ticketService.delete(ticketId);
-        String json = "";
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> jsonResponse = new HashMap<>();
-            jsonResponse.put("ticketId", ticketId);
-            jsonResponse.put("ticketDeleted", ticketDeleted);
-            json = mapper.writeValueAsString(jsonResponse);
-        } catch (JsonProcessingException e) {
-            logger.error("Could not parse hashmap to find all tickets: {}", e.getMessage());
-        }
+        if(!ticketDeleted) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        ResponseEntity<String> response;
-        if(ticketDeleted) response = new ResponseEntity<>(json, HttpStatus.OK);
-        else response = new ResponseEntity<>(HttpStatus.NO_CONTENT); // Ticket was not deleted -> HTTP 204 returned
-
-        return response;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
