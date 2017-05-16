@@ -24,6 +24,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,13 +66,17 @@ public class TestCreateTicket {
         ticketUtils = new TestTicketUtils(irodsServices);
     }
 
+    @After
+    public void tearDown() throws JargonException {
+        ticketUtils.deleteAllTickets();
+    }
+
     @Test
     public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
             JargonException, DataGridNullTicketException {
         DataGridTicket dgt = ticketService.create(new DataGridTicket(targetPath));
         assertFalse(dgt.getTicketString().isEmpty());
         assertTrue(dgt.isTicketCreated());
-        ticketUtils.deleteTicket(dgt.getTicketString());
     }
 
     @Test(expected = DataGridNullTicketException.class)

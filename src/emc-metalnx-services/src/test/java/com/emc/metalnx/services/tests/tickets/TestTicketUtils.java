@@ -20,46 +20,67 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
+import org.irods.jargon.ticket.Ticket;
+import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Utils class for ticket operations during tests.
  */
 public class TestTicketUtils {
     private IRODSServices irodsServices;
+    private TicketAdminService ticketAdminService;
 
-    public TestTicketUtils(IRODSServices irodsServices) {
+    public TestTicketUtils(IRODSServices irodsServices) throws DataGridConnectionRefusedException {
         this.irodsServices = irodsServices;
+        this.ticketAdminService = irodsServices.getTicketAdminService();
     }
 
     public String createTicket(String ticketString, String parentPath, String item) throws JargonException, DataGridConnectionRefusedException {
         IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
-        return irodsServices.getTicketAdminService().createTicket(TicketCreateModeEnum.READ, irodsFile, ticketString);
+        return ticketAdminService.createTicket(TicketCreateModeEnum.READ, irodsFile, ticketString);
     }
 
-    public void deleteTicket(String ticketString) throws JargonException, DataGridConnectionRefusedException {
-        irodsServices.getTicketAdminService().deleteTicket(ticketString);
+    public void deleteTicket(String ticketString) throws JargonException {
+        ticketAdminService.deleteTicket(ticketString);
     }
 
-    public void setUsesLimit(String ticketString, int usesLimit) throws DataGridConnectionRefusedException,
-            JargonException {
-        irodsServices.getTicketAdminService().setTicketUsesLimit(ticketString, usesLimit);
+    public void setUsesLimit(String ticketString, int usesLimit) throws JargonException {
+        ticketAdminService.setTicketUsesLimit(ticketString, usesLimit);
     }
 
     public void setExpirationDate(String ticketString, Date expirationDate)
             throws DataGridConnectionRefusedException, JargonException {
-        irodsServices.getTicketAdminService().setTicketExpiration(ticketString, expirationDate);
+        ticketAdminService.setTicketExpiration(ticketString, expirationDate);
     }
 
-    public void setWriteByteLimit(String ticketString, long writeByteLimit) throws DataGridConnectionRefusedException,
-            JargonException {
-        irodsServices.getTicketAdminService().setTicketByteWriteLimit(ticketString, writeByteLimit);
+    public void setWriteByteLimit(String ticketString, long writeByteLimit) throws JargonException {
+        ticketAdminService.setTicketByteWriteLimit(ticketString, writeByteLimit);
     }
 
-    public void setWriteFileLimit(String ticketString, int writeFileLimit) throws DataGridConnectionRefusedException,
-            JargonException {
-        irodsServices.getTicketAdminService().setTicketFileWriteLimit(ticketString, writeFileLimit);
+    public void setWriteFileLimit(String ticketString, int writeFileLimit) throws JargonException {
+        ticketAdminService.setTicketFileWriteLimit(ticketString, writeFileLimit);
+    }
+
+    public void addHostRestriction(String ticketString, String host) throws JargonException {
+        ticketAdminService.addTicketHostRestriction(ticketString, host);
+    }
+
+    public void addUserRestriction(String ticketString, String username) throws JargonException {
+        ticketAdminService.addTicketUserRestriction(ticketString, username);
+    }
+
+    public void addGroupRestriction(String ticketString, String group) throws JargonException {
+        ticketAdminService.addTicketGroupRestriction(ticketString, group);
+    }
+
+    public void deleteAllTickets() throws JargonException {
+        List<Ticket> ticketList = ticketAdminService.listAllTickets(0);
+
+        for(Ticket t: ticketList)
+            ticketAdminService.deleteTicket(t.getTicketString());
     }
 }

@@ -21,6 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridTicket;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
 import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 import com.emc.metalnx.services.interfaces.TicketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,12 +55,19 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() throws DataGridConnectionRefusedException {
+        logger.info("Get tickets page");
         return "tickets/tickets";
     }
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    /**
+     * Finds all tickets in the grid.
+     * @return List of tickets in JSON
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String findAll() throws DataGridConnectionRefusedException {
+        logger.info("Find all tickets");
         List<DataGridTicket> tickets = ticketService.findAll();
         String ticketsAsJSON = "";
 
@@ -75,8 +83,29 @@ public class TicketController {
         return ticketsAsJSON;
     }
 
+    /**
+     * Finds a specific ticket in the grid by its id or string
+     * @param ticketId ticket id or string
+     * @return Ticket as JSON
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
+     */
+    @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public DataGridTicket find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
+        logger.info("Find ticket by its ID or String");
+        DataGridTicket dgTicket = null;
+
+        try {
+            dgTicket = ticketService.find(ticketId);
+        } catch (DataGridTicketNotFoundException e) {
+            logger.error("Could not find ticket with id: {}", ticketId);
+        }
+        return dgTicket;
+    }
+
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
+        logger.info("Delete ticket by its ID or String");
         boolean ticketDeleted = ticketService.delete(ticketId);
         String json = "";
 
@@ -100,6 +129,7 @@ public class TicketController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException {
+        logger.info("Create new ticket");
         DataGridTicket newTicket = null;
         try {
             ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());

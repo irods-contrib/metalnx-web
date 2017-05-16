@@ -53,12 +53,17 @@ public class TestFindTicket {
     private static final int WRITE_BYTE_COUNT = 0;
     private static final int WRITE_FILE_LIMIT = 5;
     private static final int WRITE_FILE_COUNT = 0;
+    private static final String[] HOSTS = {"test-ticket-host1", "test-ticket-host2"};
+    private static final String PUBLIC_GROUP = "public";
 
     @Value("${irods.zoneName}")
     private String zone;
 
     @Value("${jobs.irods.username}")
     private String username;
+
+    @Value("${irods.host}")
+    private String host;
 
     @Autowired
     private TicketService ticketService;
@@ -80,6 +85,9 @@ public class TestFindTicket {
         ticketUtils.setExpirationDate(ticketString, EXPIRATION_DATE);
         ticketUtils.setWriteByteLimit(ticketString, WRITE_BYTE_LIMIT);
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
+        ticketUtils.addHostRestriction(ticketString, host);
+        ticketUtils.addUserRestriction(ticketString, username);
+        ticketUtils.addGroupRestriction(ticketString, PUBLIC_GROUP);
     }
 
     @After
@@ -94,13 +102,17 @@ public class TestFindTicket {
         assertFalse(dgt.getTicketString().isEmpty());
         assertTrue(dgt.getPath().equals(targetPath));
         assertTrue(dgt.getOwner().equals(username));
-        assertDates(EXPIRATION_DATE, dgt.getExpirationDate());
+        assertDate(EXPIRATION_DATE, dgt.getExpirationDate());
         assertEquals(USES_LIMIT, dgt.getUsesLimit());
         assertEquals(USES_COUNT, dgt.getUsesCount());
         assertEquals(WRITE_BYTE_LIMIT, dgt.getWriteByteLimit());
         assertEquals(WRITE_BYTE_COUNT, dgt.getWriteByteCount());
         assertEquals(WRITE_FILE_LIMIT, dgt.getWriteFileLimit());
         assertEquals(WRITE_FILE_COUNT, dgt.getWriteFileCount());
+        assertEquals(1, dgt.getHosts().size());
+        assertEquals(1, dgt.getUsers().size());
+        assertTrue(dgt.getUsers().contains(username));
+        assertTrue(dgt.getGroups().contains(PUBLIC_GROUP));
     }
 
     @Test(expected = DataGridTicketNotFoundException.class)
@@ -109,7 +121,7 @@ public class TestFindTicket {
         ticketService.find(random);
     }
 
-    public void assertDates(Date date1, Date date2) {
+    public void assertDate(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(date1);

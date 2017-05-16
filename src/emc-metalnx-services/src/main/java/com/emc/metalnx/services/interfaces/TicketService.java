@@ -17,10 +17,7 @@
 package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.*;
 
 import java.util.List;
 
@@ -65,4 +62,17 @@ public interface TicketService {
      * @throws DataGridTicketNotFoundException thrown if ticket cannot be found
      */
     DataGridTicket find(String ticketId) throws DataGridConnectionRefusedException, DataGridTicketNotFoundException;
+
+    /**
+     * Modifies a ticket in the grid
+     * @param t Ticket to be modified.
+     *                 Ticket ID or String has to exist in the grid in order for the ticket to be modified.
+     * @return DataGridTicket representing the ticket just modified.
+     *  Null is returned if the ticket was not modified.
+     * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
+     * @throws DataGridNullTicketException thrown if a null ticket is given as a parameter
+     * @throws DataGridMissingTicketString thrown if a ticket does not have an ID or String
+     */
+    DataGridTicket modify(DataGridTicket t) throws  DataGridConnectionRefusedException,
+            DataGridNullTicketException, DataGridMissingTicketString, DataGridTicketNotFoundException;
 }

@@ -17,7 +17,9 @@
 package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Class that represents a ticket.
@@ -27,6 +29,7 @@ public class DataGridTicket implements Serializable {
     private TicketType type;
     private boolean isCollection;
     private boolean ticketCreated;
+    private boolean ticketModified;
     private int usesLimit;
     private Date expirationDate;
     private int usesCount;
@@ -34,6 +37,11 @@ public class DataGridTicket implements Serializable {
     private long writeByteCount;
     private int writeFileLimit;
     private int writeFileCount;
+
+    // Ticket restrictions
+    private List<String> hosts;
+    private List<String> users;
+    private List<String> groups;
 
     public enum TicketType {
         READ, WRITE, UNKNOWN;
@@ -58,9 +66,45 @@ public class DataGridTicket implements Serializable {
         ticketCreated = false;
         usesLimit = 0;
         writeByteLimit = 0;
+        hosts = new ArrayList<>();
+        users = new ArrayList<>();
+        groups = new ArrayList<>();
+    }
+
+    public void addHost(String newHost) {
+        if(hosts == null) hosts = new ArrayList<>();
+        if(!hosts.contains(newHost)) hosts.add(newHost);
+    }
+
+    public void addUser(String user) {
+        if(users == null) users = new ArrayList<>();
+        if(!users.contains(user)) users.add(user);
+    }
+
+    public void addGroup(String group) {
+        if(groups == null) groups = new ArrayList<>();
+        if(!groups.contains(group)) groups.add(group);
     }
 
     public boolean isTicketCreated() { return this.ticketCreated; }
+
+    public boolean isTicketModified() { return this.ticketModified; }
+
+    public void setTicketModified(boolean ticketModified) {
+        this.ticketModified = ticketModified;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
+    public void setUsers(List<String> users) {
+        this.users = users;
+    }
+
+    public void setHosts(List<String> hosts) {
+        this.hosts = hosts;
+    }
 
     public void setWriteFileLimit(int writeFileLimit) {
         this.writeFileLimit = writeFileLimit;
@@ -116,6 +160,18 @@ public class DataGridTicket implements Serializable {
      */
     public void setIsCollection(boolean isTicketForCollection) {
         isCollection = isTicketForCollection;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public List<String> getUsers() {
+        return users;
+    }
+
+    public List<String> getHosts() {
+        return hosts;
     }
 
     public int getWriteFileLimit() {
