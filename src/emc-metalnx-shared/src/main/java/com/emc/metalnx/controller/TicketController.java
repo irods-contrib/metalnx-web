@@ -51,12 +51,20 @@ public class TicketController {
     private TicketService ticketService;
 
     @Autowired
-    LoggedUserUtils loggedUserUtils;
+    private LoggedUserUtils loggedUserUtils;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() throws DataGridConnectionRefusedException {
         logger.info("Get tickets page");
         return "tickets/tickets";
+    }
+
+    @RequestMapping(value = "/ticketForm", method = RequestMethod.GET)
+    public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
+        DataGridTicket ticket = new DataGridTicket();
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("requestMapping","tickets/");
+        return "tickets/ticketForm";
     }
 
     /**
@@ -66,21 +74,14 @@ public class TicketController {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String findAll() throws DataGridConnectionRefusedException {
+    public String findAll() throws DataGridConnectionRefusedException, JsonProcessingException {
         logger.info("Find all tickets");
         List<DataGridTicket> tickets = ticketService.findAll();
-        String ticketsAsJSON = "";
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> jsonResponse = new HashMap<>();
-            jsonResponse.put("data", tickets);
-            ticketsAsJSON = mapper.writeValueAsString(jsonResponse);
-        } catch (JsonProcessingException e) {
-            logger.error("Could not parse hashmap to find all tickets: {}", e.getMessage());
-        }
+        Map<String, Object> ticketsAsJSON = new HashMap<>();
+        ticketsAsJSON.put("data", tickets);
 
-        return ticketsAsJSON;
+        return new ObjectMapper().writeValueAsString(ticketsAsJSON);
     }
 
     /**
@@ -91,7 +92,8 @@ public class TicketController {
      */
     @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<DataGridTicket> find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
+    public ResponseEntity<DataGridTicket> find(@PathVariable("ticketid") String ticketId) throws
+            DataGridConnectionRefusedException {
         logger.info("Find ticket by its ID or String");
         DataGridTicket dgTicket = null;
 
@@ -130,14 +132,4 @@ public class TicketController {
 
         return newTicket;
     }
-
-    @RequestMapping(value = "/ticketForm", method = RequestMethod.GET)
-    public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
-        DataGridTicket ticket = new DataGridTicket();
-        model.addAttribute("ticket", ticket);
-        model.addAttribute("requestMapping","tickets/");
-        return "tickets/ticketForm";
-    }
-
-
 }
