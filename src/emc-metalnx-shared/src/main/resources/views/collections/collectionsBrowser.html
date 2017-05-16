@@ -92,15 +92,7 @@
 	</div>
 </div>
 
-<!-- Ticket creation success message -->
-<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
-    <div class="alert alert-success alert-dismissible text-center" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-        </button>
-        <span>Ticket successfully created.</span>
-    </div>
-</div>
+
 <!-- All items moved -->
 <div class="col-sm-12">
 	<div th:if="${failedMoves != null and #lists.isEmpty(failedMoves)}"
@@ -799,20 +791,21 @@
 			$("#trashNotEmptiedSuccessfully").removeClass("hideElement");
 			getSubDirectories([[${ currentPath }]]);
 		}
-		function getTicketCreationForm(){
+
+        function getTicketCreationForm(){
             ajaxEncapsulation("/emc-metalnx-web/tickets/ticketForm", "GET", null, populateTicketCreationForm, null, null, null);
             $("#ticketCreationForm").modal("show");
 		}
+
 		function populateTicketCreationForm(ticketForm){
 		    $("#ticketFormPanel").html(ticketForm);
 		    $("#selectedPath").text($("input[name='collectionPathCheckboxes']:checked").val());
 		    $("#inputPath").val($("input[name='collectionPathCheckboxes']:checked").val());
 		}
+
 		function createTicket(){
 		    var newTicket = JSON.stringify(serializeTicketForm());
 		    console.log(newTicket);
-		    // ajaxEncapsulation("/emc-metalnx-web/tickets/", "POST", newTicket, displayTicketCreationFeedback, null, "json", null);
-		    //var newTicket = JSON.stringify({"ticketString":"xxx","path":"/tempZone/home/rods","owner":"rods","type":"READ","collection":true});
 		    $.ajax({   
 		        url: '/emc-metalnx-web/tickets/',   
 		        type: 'POST',
@@ -820,7 +813,10 @@
                 dataType: 'json',           
                 data: newTicket,   
                 success: function(response){                       
-                    $("#ticketCreationSuccessMessage").removeClass("hideElement").delay(12000).fadeOut('slow');    
+                    /*$("#ticketCreationSuccessMessage").removeClass("hideElement").delay(12000).fadeOut('slow');*/ 
+                    $("#ticketCreationSuccessMessage").css( "display", "block" ).delay(10000);
+                    $("#ticketCreationSuccessMessage .alert").css( "display", "block" ).fadeIn('slow').delay(10000).fadeOut('slow');
+                    console.log("new ticket created. :)");   
                 },
                 error: function(err){
                     console.log(err);
@@ -830,7 +826,20 @@
 
 		function serializeTicketForm(){
             var ticket = {};
-            var form = $("#ticketFormPanel form").serializeArray();
+            var form;
+
+            if ($("#inputUsesLimit").val()==''){
+                $("#inputUsesLimit").val(0);
+            }
+            if ($("#inputWriteByteLimit").val()==''){
+                $("#inputWriteByteLimit").val(0);
+            }
+            if ($("#inputWriteFileLimit").val()==''){
+                $("#inputWriteFileLimit").val(0);
+            }
+
+            form = $("#ticketFormPanel form").serializeArray();
+
             $.each(form, function () {
                 if (ticket[this.name]) {
                     if (!ticket[this.name].push) {

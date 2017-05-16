@@ -46,8 +46,16 @@
         </div>
         
 		<div class="row" th:unless="${unexpectedError}">
-        
-            <!-- Empty trash succeed -->
+			<!-- Ticket creation success message -->
+			<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
+				<div class="alert alert-success text-center" role="alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<span>Ticket successfully created.</span>
+				</div>
+			</div>
+            <!-- Upload Status Information -->
             <div th:if="${uploadNewTab}" class="col-sm-12" id="">
                 <div class="alert alert-info alert-dismissible text-center" role="alert">
                     <button type="button" class="close" data-dismiss="alert">

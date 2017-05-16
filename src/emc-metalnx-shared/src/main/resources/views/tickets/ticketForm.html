@@ -8,17 +8,68 @@
         <span id="selectedPath"></span>
     </div>
     <div class="form-group">
-        <label for="inputTicketString" class="control-label">Ticket String (optional)</label>
-        <div class="">
-            <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String" th:field="*{ticketString}"/>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="input-permission" class="control-label">Permission</label>
         <div class="">
             <select id="input-permission" class="form-control" th:field="*{type}">
                 <option value="READ">READ</option>
                 <option value="WRITE">WRITE</option>
             </select>
-        </div></div>
+        </div>
+    </div>
+    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right">Advanced Settings</button>
+    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden">Hide Advanced Settings</button>
+    <div class="advanced-settings hidden" style="clear:both;">
+        <div class="form-group">
+            <label for="inputTicketString" class="control-label">Ticket String</label>
+            <div class="">
+                <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String" th:field="*{ticketString}" value=""/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputUsesLimit" class="control-label">Max number of uses for this ticket</label>
+            <div class="">
+                <input type="text" class="form-control" id="inputUsesLimit" placeholder="How many times this ticket can be used?" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputWriteByteLimit" class="control-label">Max number of bytes changed</label>
+            <div class="">
+                <input type="text" class="form-control" id="inputWriteByteLimit" placeholder="Set a unique name for this ticket." th:field="*{writeByteLimit}" value=""/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputWriteFileLimit" class="control-label">Max number of files changed</label>
+            <div class="">
+                <input type="text" class="form-control" id="inputWriteFileLimit" placeholder="Maximum number of bytes that can be written with this ticket." th:field="*{writeFileLimit}" value=""/>
+            </div>
+        </div>
+    </div>
 </form>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    $(document).ready(function(e){
+        if ($("#inputUsesLimit").val()==0){
+            $("#inputUsesLimit").val('');
+        }
+        if ($("#inputWriteByteLimit").val()==0){
+            $("#inputWriteByteLimit").val('');
+        }
+        if ($("#inputWriteFileLimit").val()==0){
+            $("#inputWriteFileLimit").val('');
+        }
+
+         $("#btnShowAdvancedSettings").click(function(){
+                $(".advanced-settings").removeClass("hidden");
+                $(this).addClass("hidden");
+                $("#btnHideAdvancedSettings").removeClass("hidden");
+            });
+
+            $("#btnHideAdvancedSettings").click(function(){
+                $(".advanced-settings").addClass("hidden");
+                $(this).addClass("hidden");
+                $("#btnShowAdvancedSettings").removeClass("hidden");
+            })
+    });
+/*]]>*/
+</script>
