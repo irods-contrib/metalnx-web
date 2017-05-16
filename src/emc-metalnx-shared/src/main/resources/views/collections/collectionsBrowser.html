@@ -820,7 +820,7 @@
                 dataType: 'json',           
                 data: newTicket,   
                 success: function(response){                       
-                    console.log(response);           
+                    $("#ticketCreationSuccessMessage").removeClass("hideElement").delay(12000).fadeOut('slow');    
                 },
                 error: function(err){
                     console.log(err);
@@ -842,10 +842,6 @@
                 }
             });
             return ticket;
-		}
-
-		function displayTicketCreationFeedback(){
-            $("#ticketCreationSuccessMessage").removeClass("hideElement");
 		}
 
     /*]]>*/
