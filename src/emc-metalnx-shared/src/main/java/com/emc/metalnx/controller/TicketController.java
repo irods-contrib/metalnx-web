@@ -91,7 +91,7 @@ public class TicketController {
      */
     @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public DataGridTicket find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
+    public ResponseEntity<DataGridTicket> find(@PathVariable("ticketid") String ticketId) throws DataGridConnectionRefusedException {
         logger.info("Find ticket by its ID or String");
         DataGridTicket dgTicket = null;
 
@@ -100,7 +100,10 @@ public class TicketController {
         } catch (DataGridTicketNotFoundException e) {
             logger.error("Could not find ticket with id: {}", ticketId);
         }
-        return dgTicket;
+
+        if(dgTicket == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(dgTicket, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE)
