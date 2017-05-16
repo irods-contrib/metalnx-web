@@ -806,10 +806,44 @@
 		function populateTicketCreationForm(ticketForm){
 		    $("#ticketFormPanel").html(ticketForm);
 		    $("#selectedPath").text($("input[name='collectionPathCheckboxes']:checked").val());
+		    $("#inputPath").val($("input[name='collectionPathCheckboxes']:checked").val());
 		}
 		function createTicket(){
-		    displayTicketCreationFeedback();
+		    var newTicket = JSON.stringify(serializeTicketForm());
+		    console.log(newTicket);
+		    // ajaxEncapsulation("/emc-metalnx-web/tickets/", "POST", newTicket, displayTicketCreationFeedback, null, "json", null);
+		    //var newTicket = JSON.stringify({"ticketString":"xxx","path":"/tempZone/home/rods","owner":"rods","type":"READ","collection":true});
+		    $.ajax({   
+		        url: '/emc-metalnx-web/tickets/',   
+		        type: 'POST',
+		        contentType: "application/json; charset=utf-8",            
+                dataType: 'json',           
+                data: newTicket,   
+                success: function(response){                       
+                    console.log(response);           
+                },
+                error: function(err){
+                    console.log(err);
+                }                
+            });
 		}
+
+		function serializeTicketForm(){
+            var ticket = {};
+            var form = $("#ticketFormPanel form").serializeArray();
+            $.each(form, function () {
+                if (ticket[this.name]) {
+                    if (!ticket[this.name].push) {
+                        ticket[this.name] = [ticket[this.name]];
+                    }
+                    ticket[this.name].push(this.value || '');
+                } else {
+                    ticket[this.name] = this.value || '';
+                }
+            });
+            return ticket;
+		}
+
 		function displayTicketCreationFeedback(){
             $("#ticketCreationSuccessMessage").removeClass("hideElement");
 		}

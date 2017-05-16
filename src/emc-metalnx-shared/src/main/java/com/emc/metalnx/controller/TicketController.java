@@ -115,6 +115,7 @@ public class TicketController {
     public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
         DataGridTicket ticket = new DataGridTicket();
         model.addAttribute("ticket", ticket);
+        model.addAttribute("requestMapping","tickets/");
         return "tickets/ticketForm";
     }
 

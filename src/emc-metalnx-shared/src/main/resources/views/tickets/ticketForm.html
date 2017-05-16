@@ -2,6 +2,7 @@
 <form role="form" class="container-fluid registerForm"
       method="POST" th:object="${ticket}"
       th:action="@{${requestMapping}}">
+    <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <div class="form-group">
         <label class="control-label">Path</label>
         <span id="selectedPath"></span>
@@ -9,7 +10,7 @@
     <div class="form-group">
         <label for="inputTicketString" class="control-label">Ticket String (optional)</label>
         <div class="">
-            <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String"/>
+            <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String" th:field="*{ticketString}"/>
         </div>
     </div>
     <div class="form-group">
