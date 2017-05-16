@@ -20,10 +20,12 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
+import org.irods.jargon.ticket.Ticket;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Utils class for ticket operations during tests.
@@ -73,5 +75,12 @@ public class TestTicketUtils {
 
     public void addGroupRestriction(String ticketString, String group) throws JargonException {
         ticketAdminService.addTicketGroupRestriction(ticketString, group);
+    }
+
+    public void deleteAllTickets() throws JargonException {
+        List<Ticket> ticketList = ticketAdminService.listAllTickets(0);
+
+        for(Ticket t: ticketList)
+            ticketAdminService.deleteTicket(t.getTicketString());
     }
 }

@@ -117,8 +117,10 @@ public class TicketServiceImpl implements TicketService {
             IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
             ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
             dgTicket.setTicketString(ticketString); // set ticket string created by the grid
+
+            dgTicket = modify(dgTicket);
             dgTicket.setTicketCreated(true);
-        } catch (JargonException e) {
+        } catch (JargonException | DataGridMissingTicketString | DataGridTicketNotFoundException e) {
             logger.error("Could not create a ticket: {}", e);
         }
 
