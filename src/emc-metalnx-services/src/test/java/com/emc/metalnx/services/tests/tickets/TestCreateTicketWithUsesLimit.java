@@ -24,6 +24,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.ticket.Ticket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test iRODS services.
@@ -42,7 +45,9 @@ import static junit.framework.Assert.assertFalse;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestCreateTicket {
+public class TestCreateTicketWithUsesLimit {
+    private static final int USES_LIMIT = 5;
+
     @Value("${irods.zoneName}")
     private String zone;
 
@@ -57,12 +62,16 @@ public class TestCreateTicket {
 
     private String targetPath;
     private TestTicketUtils ticketUtils;
+    private DataGridTicket dgt;
 
     @Before
     public void setUp() throws DataGridException, JargonException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
+
+        dgt = new DataGridTicket(targetPath);
+        dgt.setUsesLimit(USES_LIMIT);
     }
 
     @After
@@ -71,21 +80,13 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        String ticketString = ticketService.create(new DataGridTicket(targetPath));
-        assertFalse(ticketString.isEmpty());
-    }
+    public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
+        Ticket ticketWithUses = ticketUtils.findTicket(ticketService.create(dgt));
 
-    @Test(expected = DataGridNullTicketException.class)
-    public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        ticketService.create(null);
-    }
-
-    @Test(expected = DataGridMissingPathOnTicketException.class)
-    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException {
-        ticketService.create(new DataGridTicket());
+        assertEquals(USES_LIMIT, ticketWithUses.getUsesLimit());
+        assertFalse(ticketWithUses.getTicketString().isEmpty());
+        assertTrue(ticketWithUses.getIrodsAbsolutePath().equals(targetPath));
+        assertTrue(ticketWithUses.getOwnerName().equals(username));
     }
 }

@@ -91,7 +91,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public DataGridTicket create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
+    public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
             DataGridConnectionRefusedException, DataGridNullTicketException {
         if(dgTicket == null) {
             throw new DataGridNullTicketException("Could not create ticket: null ticket provided.");
@@ -118,13 +118,12 @@ public class TicketServiceImpl implements TicketService {
             ticketString = tas.createTicket(ticketType, irodsFile, dgTicket.getTicketString());
             dgTicket.setTicketString(ticketString); // set ticket string created by the grid
 
-            dgTicket = modify(dgTicket);
-            dgTicket.setTicketCreated(true);
+            modify(dgTicket);
         } catch (JargonException | DataGridMissingTicketString | DataGridTicketNotFoundException e) {
             logger.error("Could not create a ticket: {}", e);
         }
 
-        return dgTicket;
+        return ticketString;
     }
 
     @Override

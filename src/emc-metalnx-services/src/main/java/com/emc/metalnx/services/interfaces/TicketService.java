@@ -45,14 +45,13 @@ public interface TicketService {
     /**
      * Creates a ticket in the grid
      * @param dgTicket Ticket to be created.
-     * @return DataGridTicket representing the ticket just created.
-     *  Null is returned if the ticket was not created.
-     * @throws DataGridMissingPathOnTicketException thrown when the path is missing on the ticket
+     * @return String representing the ticket string.
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
+     * @throws DataGridMissingPathOnTicketException thrown when the path is missing on the ticket
      * @throws DataGridNullTicketException if a null ticket is given as a parameter
      */
-    DataGridTicket create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException;
+    String create(DataGridTicket dgTicket) throws DataGridConnectionRefusedException,
+            DataGridMissingPathOnTicketException, DataGridNullTicketException;
 
     /**
      * Finds a specific ticket by its id or string.

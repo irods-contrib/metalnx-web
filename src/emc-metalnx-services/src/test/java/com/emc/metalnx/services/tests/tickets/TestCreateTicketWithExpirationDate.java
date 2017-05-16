@@ -24,6 +24,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.ticket.Ticket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test iRODS services.
@@ -42,7 +49,7 @@ import static junit.framework.Assert.assertFalse;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestCreateTicket {
+public class TestCreateTicketWithExpirationDate {
     @Value("${irods.zoneName}")
     private String zone;
 
@@ -55,14 +62,21 @@ public class TestCreateTicket {
     @Autowired
     private IRODSServices irodsServices;
 
+    private Date date;
     private String targetPath;
     private TestTicketUtils ticketUtils;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private DataGridTicket dgt;
 
     @Before
     public void setUp() throws DataGridException, JargonException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
+
+        date = new Date();
+        dgt = new DataGridTicket(targetPath);
+        dgt.setExpirationDate(date);
     }
 
     @After
@@ -71,21 +85,16 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        String ticketString = ticketService.create(new DataGridTicket(targetPath));
-        assertFalse(ticketString.isEmpty());
-    }
+    public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
+        Ticket ticketWithExpirationDate = ticketUtils.findTicket(ticketService.create(dgt));
 
-    @Test(expected = DataGridNullTicketException.class)
-    public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        ticketService.create(null);
-    }
+        String currDate = dateFormat.format(date);
+        String ticketCreatedDate = dateFormat.format(ticketWithExpirationDate.getExpireTime());
 
-    @Test(expected = DataGridMissingPathOnTicketException.class)
-    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException {
-        ticketService.create(new DataGridTicket());
+        assertEquals(currDate, ticketCreatedDate);
+        assertFalse(ticketWithExpirationDate.getTicketString().isEmpty());
+        assertTrue(ticketWithExpirationDate.getIrodsAbsolutePath().equals(targetPath));
+        assertTrue(ticketWithExpirationDate.getOwnerName().equals(username));
     }
 }
