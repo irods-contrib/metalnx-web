@@ -16,10 +16,7 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,5 +53,11 @@ public class ExceptionController {
     public ResponseEntity<String> handleTicketNotFoundException() {
         logger.error("Ticket not found");
         return new ResponseEntity<>("Ticket not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataGridMissingTicketString.class)
+    public ResponseEntity<String> handleMissingTicketStringException() {
+        logger.error("Ticket does not have a ticket string");
+        return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);
     }
 }

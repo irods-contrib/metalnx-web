@@ -18,10 +18,7 @@ package com.emc.metalnx.controller;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.TicketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -116,5 +113,13 @@ public class TicketController {
         logger.info("Create new ticket");
         ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
         ticketService.create(ticket);
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void modifyTicket(@RequestBody DataGridTicket ticket) throws DataGridNullTicketException,
+            DataGridMissingTicketString, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+        logger.info("Modify ticket");
+        ticketService.modify(ticket);
     }
 }
