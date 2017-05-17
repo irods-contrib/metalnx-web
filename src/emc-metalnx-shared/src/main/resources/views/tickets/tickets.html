@@ -40,11 +40,8 @@
         <!-- Ticket deletion succeed -->
         <div class="row">
             <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
-                <div class="alert alert-success alert-dismissible text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-                    </button>
-                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{tickets.delete.feedback.success}"></span>
+                <div class="alert alert-success text-center" role="alert">
+                    <span th:text="#{tickets.delete.feedback.success}"></span>
                 </div>
             </div>
         </div>
@@ -190,10 +187,10 @@
 		function ticketsFeedbackMsg(data){
             $("#deleteTicketConfirm").modal("hide");
             $('#ticketsTable').DataTable().ajax.reload();
-            $("#ticketDeletedSuccessfully").removeClass("hideElement");
+            $("#ticketDeletedSuccessfully").css( "display", "block" ).delay(10000);
+            $("#ticketDeletedSuccessfully .alert").css( "display", "block" ).fadeIn('slow').delay(10000).fadeOut('slow');
 
 		}
-
 		/*]]>*/
 		</script>
     </div> <!-- /. Page Content -->
