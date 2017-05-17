@@ -34,7 +34,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static junit.framework.Assert.assertFalse;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Test iRODS services.
@@ -42,12 +44,15 @@ import static junit.framework.Assert.assertFalse;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestCreateTicket {
+public class TestCreateTicketWithHostRestriction {
     @Value("${irods.zoneName}")
     private String zone;
 
     @Value("${jobs.irods.username}")
     private String username;
+
+    @Value("${irods.host}")
+    private String host;
 
     @Autowired
     private TicketService ticketService;
@@ -57,12 +62,16 @@ public class TestCreateTicket {
 
     private String targetPath;
     private TestTicketUtils ticketUtils;
+    private DataGridTicket dgt;
 
     @Before
     public void setUp() throws DataGridException, JargonException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
+
+        dgt = new DataGridTicket(targetPath);
+        dgt.addHost(host);
     }
 
     @After
@@ -71,21 +80,9 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        String ticketString = ticketService.create(new DataGridTicket(targetPath));
-        assertFalse(ticketString.isEmpty());
-    }
-
-    @Test(expected = DataGridNullTicketException.class)
-    public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException {
-        ticketService.create(null);
-    }
-
-    @Test(expected = DataGridMissingPathOnTicketException.class)
-    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException {
-        ticketService.create(new DataGridTicket());
+    public void testCreateTicketWithHostRestriction() throws DataGridConnectionRefusedException,
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
+        List<String> hosts = ticketUtils.listAllHostRestrictionsForSpecifiedTicket(ticketService.create(dgt));
+        assertEquals(1, hosts.size());
     }
 }

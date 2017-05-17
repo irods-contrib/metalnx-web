@@ -83,4 +83,20 @@ public class TestTicketUtils {
         for(Ticket t: ticketList)
             ticketAdminService.deleteTicket(t.getTicketString());
     }
+
+    public Ticket findTicket(String ticketString) throws JargonException {
+        return ticketAdminService.getTicketForSpecifiedTicketString(ticketString);
+    }
+
+    public List<String> listAllHostRestrictionsForSpecifiedTicket(String ticketString) throws JargonException {
+        return ticketAdminService.listAllHostRestrictionsForSpecifiedTicket(ticketString, 0);
+    }
+
+    public List<String> listAllUserRestrictionsForSpecifiedTicket(String ticketString) throws JargonException {
+        return ticketAdminService.listAllUserRestrictionsForSpecifiedTicket(ticketString, 0);
+    }
+
+    public List<String> listAllGroupRestrictionsForSpecifiedTicket(String ticketString) throws JargonException {
+        return ticketAdminService.listAllGroupRestrictionsForSpecifiedTicket(ticketString, 0);
+    }
 }

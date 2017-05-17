@@ -44,6 +44,15 @@
                     <span th:text="#{tickets.delete.feedback.success}"></span>
                 </div>
             </div>
+
+            <div class="col-sm-12 hideElement" id="ticketNotDeletedSuccessfully">
+                <div class="alert alert-danger alert-dismissible text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{tickets.delete.feedback.error}"></span>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-sm-12 table-responsive" >
@@ -181,16 +190,22 @@
 		function removeElement() {
             var ticketString = $("#elementToBeRemoved").html();
             var url = [[${urlMap.URL_TICKETS_DELETE}]] + ticketString;
-            ajaxEncapsulation(url, "DELETE", null, ticketsFeedbackMsg, null,null);
+            ajaxEncapsulation(url, "DELETE", null, ticketsSuccessFeedbackMsg, ticketsFailureFeedbackMsg, null);
         }
 
-		function ticketsFeedbackMsg(data){
+		function ticketsSuccessFeedbackMsg(){
             $("#deleteTicketConfirm").modal("hide");
             $('#ticketsTable').DataTable().ajax.reload();
             $("#ticketDeletedSuccessfully").css( "display", "block" ).delay(10000);
             $("#ticketDeletedSuccessfully .alert").css( "display", "block" ).fadeIn('slow').delay(10000).fadeOut('slow');
 
 		}
+
+		function ticketsFailureFeedbackMsg(){
+            $("#deleteTicketConfirm").modal("hide");
+            $("#ticketNotDeletedSuccessfully").removeClass("hideElement");
+		}
+
 		/*]]>*/
 		</script>
     </div> <!-- /. Page Content -->

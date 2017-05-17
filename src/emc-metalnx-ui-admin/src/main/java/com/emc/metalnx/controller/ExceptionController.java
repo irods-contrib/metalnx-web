@@ -16,8 +16,11 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -25,11 +28,36 @@ import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class ExceptionController {
+    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
 	@ExceptionHandler(DataGridConnectionRefusedException.class)
-	public String handleConnectionRefusedException(HttpServletResponse response) {	
+	public String handleConnectionRefusedException(HttpServletResponse response) {
+        logger.error("Connection refused");
 		response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-		
 		return "errors/serverNotResponding";
 	}
+
+	@ExceptionHandler(DataGridNullTicketException.class)
+	public ResponseEntity<String> handleNullTicketException() {
+        logger.error("Ticket is null");
+		return new ResponseEntity<>("Ticket is null", HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(DataGridMissingPathOnTicketException.class)
+	public ResponseEntity<String> handleMissingPathOnTicketException() {
+        logger.error("Ticket missing path");
+		return new ResponseEntity<>("Ticket missing path", HttpStatus.CONFLICT);
+	}
+
+    @ExceptionHandler(DataGridTicketNotFoundException.class)
+    public ResponseEntity<String> handleTicketNotFoundException() {
+        logger.error("Ticket not found");
+        return new ResponseEntity<>("Ticket not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataGridMissingTicketString.class)
+    public ResponseEntity<String> handleMissingTicketStringException() {
+        logger.error("Ticket does not have a ticket string");
+        return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);
+    }
 }
