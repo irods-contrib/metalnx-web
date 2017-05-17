@@ -809,13 +809,14 @@
 		        url: '/emc-metalnx-web/tickets/',   
 		        type: 'POST',
 		        contentType: "application/json; charset=utf-8",            
-                dataType: 'json',           
                 data: newTicket,   
                 success: function(response){                       
                     $("#ticketCreationSuccessMessage").css( "display", "block" ).delay(10000);
                     $("#ticketCreationSuccessMessage .alert").css( "display", "block" ).fadeIn('slow').delay(10000).fadeOut('slow');
                 },
                 error: function(err){
+                    $("#ticketCreationFailureMessage").css( "display", "block" ).delay(10000);
+                    $("#ticketCreationFailureMessage .alert").css( "display", "block" ).fadeIn('slow').delay(10000).fadeOut('slow');
                 }                
             });
 		}
