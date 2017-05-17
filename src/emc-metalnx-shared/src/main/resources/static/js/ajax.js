@@ -19,10 +19,15 @@
  * JS file that has an Ajax method that encapsulates all Ajax calls. In this encapsulated call,
  * we handle success, errors and session expired exceptions.
  */
-function ajaxEncapsulation(url, method, params, successFunction, errorFunction, dataType, callbackFunctions){
+function ajaxEncapsulation(url, method, params, successFunction, errorFunction, dataType, contentType){
+    if (contentType == null || typeof contentType === 'undefined') {
+        contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    }
+
     $.ajax({
         url: url,
         type: method,
+        contentType: contentType,
         dataType: dataType,
         data: params,
         async: true,
@@ -51,7 +56,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
                 window.location= "/emc-metalnx-web/httpError/serverNotResponding/";
             }
         }		
-    }).done(callbackFunctions);
+    });
 }
 
 function pageNotFound(response){
