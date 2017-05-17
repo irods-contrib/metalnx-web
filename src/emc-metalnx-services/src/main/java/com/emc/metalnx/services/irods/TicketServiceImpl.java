@@ -181,8 +181,6 @@ public class TicketServiceImpl implements TicketService {
             logger.error("Could not modify ticket");
         }
 
-        if(dgTicket != null) dgTicket.setTicketModified(true);
-
         return dgTicket;
     }
 

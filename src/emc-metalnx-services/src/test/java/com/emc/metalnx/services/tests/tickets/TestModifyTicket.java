@@ -102,7 +102,6 @@ public class TestModifyTicket {
         assertFalse(dgtModified.getTicketString().isEmpty());
         assertTrue(dgtModified.getPath().equals(targetPath));
         assertTrue(dgtModified.getOwner().equals(username));
-        assertTrue(dgtModified.isTicketModified());
     }
 
     @Test
@@ -120,7 +119,6 @@ public class TestModifyTicket {
         assertFalse(ticketModified.getTicketString().isEmpty());
         assertTrue(ticketModified.getPath().equals(targetPath));
         assertTrue(ticketModified.getOwner().equals(username));
-        assertTrue(ticketModified.isTicketModified());
     }
 
     @Test
@@ -138,7 +136,6 @@ public class TestModifyTicket {
         assertFalse(ticketModified.getTicketString().isEmpty());
         assertTrue(ticketModified.getPath().equals(targetPath));
         assertTrue(ticketModified.getOwner().equals(username));
-        assertTrue(ticketModified.isTicketModified());
     }
 
     @Test
@@ -156,7 +153,6 @@ public class TestModifyTicket {
         assertFalse(ticketModified.getTicketString().isEmpty());
         assertTrue(ticketModified.getPath().equals(targetPath));
         assertTrue(ticketModified.getOwner().equals(username));
-        assertTrue(ticketModified.isTicketModified());
     }
 
     @Test
