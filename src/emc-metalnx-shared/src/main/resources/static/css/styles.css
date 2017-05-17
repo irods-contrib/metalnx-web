@@ -1961,6 +1961,10 @@ footer {
 	margin-left: 15px;
 }
 
+form.registerForm input.form-control::placeholder {
+    color:#a3a3a3;
+}
+
 form.registerForm .panel-default > .panel-heading {
 	background-color: #fff;
 	border-top: 3px solid #5faee5;
@@ -1986,6 +1990,12 @@ form.registerForm > .pull-right > .btn{
 	min-width: 80px;
     margin-left: 10px;
     margin-bottom: 15px;
+}
+.advanced-settings{
+    clear: both;
+    padding: 15px;
+    border-radius: 5px;
+    background: #f8f8f8;
 }
 #collectionsViewForUser .breadcrumb, #collectionsViewForGroup .breadcrumb{
 	margin-left: 0px;

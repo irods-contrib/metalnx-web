@@ -4,43 +4,43 @@
       th:action="@{${requestMapping}}">
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <div class="form-group">
-        <label class="control-label">Path</label>
+        <label class="control-label" th:text="#{tickets.form.path.label}"></label>
         <span id="selectedPath"></span>
     </div>
     <div class="form-group">
-        <label for="input-permission" class="control-label">Permission</label>
+        <label for="input-permission" class="control-label" th:text="#{tickets.form.permission.label}"></label>
         <div class="">
             <select id="input-permission" class="form-control" th:field="*{type}">
-                <option value="READ">READ</option>
-                <option value="WRITE">WRITE</option>
+                <option value="READ" th:text="#{tickets.form.permission.option.read.label}"></option>
+                <option value="WRITE" th:text="#{tickets.form.permission.option.write.label}"></option>
             </select>
         </div>
     </div>
-    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right">Advanced Settings</button>
-    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden">Hide Advanced Settings</button>
-    <div class="advanced-settings hidden" style="clear:both;">
+    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{tickets.form.show.advanced.settings.button}"></button>
+    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{tickets.form.hide.advanced.settings.button}"></button>
+    <div class="advanced-settings hidden">
         <div class="form-group">
-            <label for="inputTicketString" class="control-label">Ticket String</label>
+            <label for="inputTicketString" class="control-label" th:text="#{tickets.form.ticket.string.label}"></label>
             <div class="">
-                <input type="text" class="form-control" id="inputTicketString" placeholder="Ticket String" th:field="*{ticketString}" value=""/>
+                <input type="text" class="form-control" id="inputTicketString" th:placeholder="#{tickets.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
             </div>
         </div>
         <div class="form-group">
-            <label for="inputUsesLimit" class="control-label">Max number of uses for this ticket</label>
+            <label for="inputUsesLimit" class="control-label" th:text="#{tickets.form.uses.limit.label}"></label>
             <div class="">
-                <input type="text" class="form-control" id="inputUsesLimit" placeholder="How many times this ticket can be used?" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
+                <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{tickets.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="inputWriteByteLimit" class="control-label">Max number of bytes changed</label>
+            <label for="inputWriteByteLimit" class="control-label" th:text="#{tickets.form.write.byte.limit.label}"></label>
             <div class="">
-                <input type="text" class="form-control" id="inputWriteByteLimit" placeholder="Set a unique name for this ticket." th:field="*{writeByteLimit}" value=""/>
+                <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{tickets.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
             </div>
         </div>
         <div class="form-group">
-            <label for="inputWriteFileLimit" class="control-label">Max number of files changed</label>
+            <label for="inputWriteFileLimit" class="control-label" th:text="#{tickets.form.write.file.limit.label}"></label>
             <div class="">
-                <input type="text" class="form-control" id="inputWriteFileLimit" placeholder="Maximum number of bytes that can be written with this ticket." th:field="*{writeFileLimit}" value=""/>
+                <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{tickets.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
             </div>
         </div>
     </div>
