@@ -15,10 +15,13 @@
   ~  limitations under the License.
   -->
 
-<html lang="en"
-	layout:decorator="template">
+<html lang="en" layout:decorator="template">
 
 <head>
+	<!-- JQuery UI CSS -->
+	<link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
+	<!-- jQuery UI Version 1.11.4 -->
+	<script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
 	<title th:text="#{tab.title.collections}">EMC Metalnx - Collections</title>
 </head>
 

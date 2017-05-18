@@ -804,6 +804,7 @@
 		}
 
 		function createTicket(){
+			console.log($("#inputExpirationDate").val());
 		    var newTicket = JSON.stringify(serializeTicketForm());
 		    $.ajax({   
 		        url: '/emc-metalnx-web/tickets/',   

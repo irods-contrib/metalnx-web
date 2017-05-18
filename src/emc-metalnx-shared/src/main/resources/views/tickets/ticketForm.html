@@ -43,6 +43,12 @@
                 <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{tickets.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
             </div>
         </div>
+        <div class="form-group">
+            <label for="inputExpirationDate" class="control-label" th:text="#{tickets.form.expiration.date.label}"></label>
+            <div class="">
+                <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{tickets.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
+            </div>
+        </div>
     </div>
 </form>
 
@@ -69,7 +75,12 @@
             $(".advanced-settings").addClass("hidden");
             $(this).addClass("hidden");
             $("#btnShowAdvancedSettings").removeClass("hidden");
-        })
+        });
+
+        $("#inputExpirationDate").datepicker({
+				dateFormat: "yy-mm-dd",
+				minDate: 1
+        });
     });
 /*]]>*/
 </script>
