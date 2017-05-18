@@ -226,7 +226,7 @@
 				$("#summaryTable").tablesorter(); 
 				url = "/emc-metalnx-web/dashboard/servers/";
 				
-				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, 
+				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, null,
 						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap,
 						ajaxCallForIsilonServer, ajaxCallForMSIAPIVersion, ajaxCallForIRodsVersion]);
 			});
