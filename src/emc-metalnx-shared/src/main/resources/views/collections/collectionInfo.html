@@ -56,7 +56,7 @@
     </div>
     <!-- Permission none -->
     <div th:if="${collectionAndDataObject == null}">
-        <div id="collections-content" class="panel property">
+        <div class="panel property">
             <div class="text-center" role="alert">
                 <span>You do not have permissions to access information in the target collection or for the selected object.</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -69,7 +69,7 @@
 
 
     <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
-        <div id="collections-content" class="panel property">
+        <div class="panel property">
             <div class="row">
                 <h4 class="property-title"><i class="fa fa-info-circle"></i>Info</h4>
                 <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
