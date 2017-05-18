@@ -55,6 +55,11 @@
 					<span th:text="#{tickets.feedback.message.creation.success}"></span>
 				</div>
 			</div>
+			<div class="col-sm-12 hideElement" id="ticketCreationFailureMessage">
+				<div class="alert alert-danger text-center" role="alert">
+					<span th:text="#{tickets.feedback.message.creation.failure}"></span>
+				</div>
+			</div>
             <!-- Upload Status Information -->
             <div th:if="${uploadNewTab}" class="col-sm-12" id="">
                 <div class="alert alert-info alert-dismissible text-center" role="alert">
