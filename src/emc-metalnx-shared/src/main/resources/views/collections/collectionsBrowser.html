@@ -815,11 +815,15 @@
 
 		function createTicketSuccess(response){                       
 			$("#ticketCreationSuccessMessage").css("display", "block");
+			$("#ticketCreationSuccessMessage .alert").css("display", "block");
+			$("#actions button").prop("disabled", true);
 
 		}
 
 		function createTicketFailure(err){
 			$("#ticketCreationFailureMessage").css("display", "block");
+			$("#ticketCreationFailureMessage .alert").css("display", "block");
+			$("#actions button").prop("disabled", true);
 		}      
 
 		function serializeTicketForm(){
