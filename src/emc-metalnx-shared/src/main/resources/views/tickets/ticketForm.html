@@ -19,31 +19,31 @@
     <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{ticket.form.show.advanced.settings.button}"></button>
     <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{ticket.form.hide.advanced.settings.button}"></button>
     <div class="advanced-settings hidden">
-        <div class="form-group">
+        <div class="form-group optional">
             <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
             <input type="text" class="form-control" id="inputTicketString" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidTicketStringIcon"></i>
             <small class="help-block hideElement" id="ticketStringInvalidMsg" th:text="#{ticket.form.validation.input.ticket.string.not.valid}"></small>
         </div>
-        <div class="form-group">
+        <div class="form-group optional">
             <label for="inputUsesLimit" class="control-label" th:text="#{ticket.form.uses.limit.label}"></label>
             <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{ticket.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputUsesLimitIcon"></i>
             <small class="help-block hideElement" id="usesLimitNotNumberMsg" th:text="#{ticket.form.validation.input.uses.limit.not.number}"></small>
         </div>
-        <div class="form-group">
+        <div class="form-group optional">
             <label for="inputWriteByteLimit" class="control-label" th:text="#{ticket.form.write.byte.limit.label}"></label>
             <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{ticket.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteByteLimitIcon"></i>
             <small class="help-block hideElement" id="writeByteNotNumberMsg" th:text="#{ticket.form.validation.input.write.byte.limit.not.number}"></small>
         </div>
-        <div class="form-group">
+        <div class="form-group optional">
             <label for="inputWriteFileLimit" class="control-label" th:text="#{ticket.form.write.file.limit.label}"></label>
             <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{ticket.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteFiletIcon"></i>
             <small class="help-block hideElement" id="writeFileNotNumberMsg" th:text="#{ticket.form.validation.input.write.file.limit.not.number}"></small>
         </div>
-        <div class="form-group">
+        <div class="form-group optional">
             <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
             <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
         </div>
@@ -79,9 +79,7 @@
         });
     });
 
-    /*
-    * Validates Ticket String
-    */
+
     function isValidTicketString(ticketString) {
         var isValidTicketString;
         var ticketRE = /^[0-9a-zA-Z]+$/;
@@ -90,64 +88,78 @@
     }
 
     function isInteger(limit){
-      console.log(limit);
-      var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
-      console.log(isInt);
-      return isInt;
+        var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
+        return isInt;
     }
 
-    /*
-    * Validates input type for Write Byte, Write File and Limit Uses fields
-    */
+    function allFieldsValidated(){
+        var validated = !$('.form-group').hasClass("has-feedback has-error");
+        return validated;
+    }
 
     $("#inputTicketString").focusout(function(){
-        if(!isValidTicketString($(this).val())){
-                $("#inputTicketString").parent().addClass("has-feedback has-error");
-                $("#invalidTicketStringIcon").show();
-                $("#ticketStringInvalidMsg").show();
-            }
-            else {
-                $("#inputTicketString").parent().removeClass("has-feedback has-error");
-                $("#invalidTicketStringIcon").hide();
-                $("#ticketStringInvalidMsg").hide();
-            }
+        if(!isValidTicketString($(this).val()) && !($(this).val()=='')){
+            $("#inputTicketString").parent().addClass("has-feedback has-error");
+            $("#invalidTicketStringIcon").show();
+            $("#ticketStringInvalidMsg").show();
+            $("#createTicketFormBtn").addClass("disabled");
+            $("#createTicketFormBtn").prop("disabled", true);
+        }
+        else {
+            $("#inputTicketString").parent().removeClass("has-feedback has-error");
+            $("#invalidTicketStringIcon").hide();
+            $("#ticketStringInvalidMsg").hide();
+            $("#createTicketFormBtn").prop("disabled", false);
+            $("#createTicketFormBtn").removeClass("disabled");
+        }
     });
     $("#inputUsesLimit").focusout(function(){
-            if(!isInteger($(this).val())){
-                $("#inputUsesLimit").parent().addClass("has-feedback has-error");
-                $("#invalidInputUsesLimitIcon").show();
-                $("#usesLimitNotNumberMsg").show();
-            }
-            else {
-                $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
-                $("#invalidInputUsesLimitIcon").hide();
-                $("#usesLimitNotNumberMsg").hide();
-            }
+        if(!isInteger($(this).val()) && !($(this).val()=='')){
+            $("#inputUsesLimit").parent().addClass("has-feedback has-error");
+            $("#invalidInputUsesLimitIcon").show();
+            $("#usesLimitNotNumberMsg").show();
+            $("#createTicketFormBtn").addClass("disabled");
+            $("#createTicketFormBtn").prop("disabled", true);
+        }
+        else {
+            $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
+            $("#invalidInputUsesLimitIcon").hide();
+            $("#usesLimitNotNumberMsg").hide();
+            $("#createTicketFormBtn").prop("disabled", false);
+            $("#createTicketFormBtn").removeClass("disabled");
+        }
     });
     $("#inputWriteByteLimit").focusout(function(){
-            if(!isInteger($(this).val())){
-                $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
-                $("#invalidInputWriteByteLimitIcon").show();
-                $("#writeByteNotNumberMsg").show();
-            }
-            else {
-                $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
-                $("#invalidInputWriteByteLimitIcon").hide();
-                $("#writeByteNotNumberMsg").hide();
-            }
+        if(!isInteger($(this).val()) && !($(this).val()=='')){
+            $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
+            $("#invalidInputWriteByteLimitIcon").show();
+            $("#writeByteNotNumberMsg").show();
+            $("#createTicketFormBtn").addClass("disabled");
+            $("#createTicketFormBtn").prop("disabled", true);
+        }
+        else {
+            $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
+            $("#invalidInputWriteByteLimitIcon").hide();
+            $("#writeByteNotNumberMsg").hide();
+            $("#createTicketFormBtn").prop("disabled", false);
+            $("#createTicketFormBtn").removeClass("disabled");
+        }
     });
     $("#inputWriteFileLimit").focusout(function(){
-            if(!isInteger($(this).val())){
-                $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
-                $("#invalidInputWriteFiletIcon").show();
-                $("#writeFileNotNumberMsg").show();
-            }
-            else {
-                $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
-                $("#invalidInputWriteFiletIcon").hide();
-                $("#writeFileNotNumberMsg").hide();
-            }
+        if(!isInteger($(this).val()) && !($(this).val()=='')){
+            $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
+            $("#invalidInputWriteFiletIcon").show();
+            $("#writeFileNotNumberMsg").show();
+            $("#createTicketFormBtn").addClass("disabled");
+            $("#createTicketFormBtn").prop("disabled", true);
+        }
+        else {
+            $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
+            $("#invalidInputWriteFiletIcon").hide();
+            $("#writeFileNotNumberMsg").hide();
+            $("#createTicketFormBtn").prop("disabled", false);
+            $("#createTicketFormBtn").removeClass("disabled");
+        }
     });
-
 /*]]>*/
 </script>

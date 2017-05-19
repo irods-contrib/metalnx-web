@@ -358,7 +358,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"
                             th:text="#{ticket.form.button.cancel}"></button>
-                    <button id= "createTicketBtn" onclick="createTicket();" type="button" class="btn btn-primary"
+                    <button id="createTicketFormBtn" onclick="createTicket();" type="button" class="btn btn-primary"
                             data-dismiss="modal" th:text="#{ticket.form.button.create}"></button>
                 </div>
             </div>
@@ -804,13 +804,15 @@
 		}
 
 		function createTicket(){
-			$("input[name='collectionPathCheckboxes']").prop('checked', false);
-			$("input[name='collectionPathCheckboxes']").parent().parent().removeClass("info");
+		    if(allFieldsValidated()){
+                $("input[name='collectionPathCheckboxes']").prop('checked', false);
+                $("input[name='collectionPathCheckboxes']").parent().parent().removeClass("info");
 
-		    var newTicket = JSON.stringify(serializeTicketForm());
-		    var url = '/emc-metalnx-web/tickets/';
-		    var contentType = "application/json; charset=utf-8";
-		    ajaxEncapsulation(url, 'POST', newTicket, createTicketSuccess, createTicketFailure, null, contentType);
+                var newTicket = JSON.stringify(serializeTicketForm());
+                var url = '/emc-metalnx-web/tickets/';
+                var contentType = "application/json; charset=utf-8";
+                ajaxEncapsulation(url, 'POST', newTicket, createTicketSuccess, createTicketFailure, null, contentType);
+		    }
 		}
 
 		function createTicketSuccess(response){                       

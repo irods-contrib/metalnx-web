@@ -1960,6 +1960,9 @@ footer {
 #treeViewCollectionsTable tr td .recursiveQuestion .recursiveQuestionButtonsWrapper{
 	margin-left: 15px;
 }
+.form-group.optional{
+    height: 70px;
+}
 
 form.registerForm input.form-control::placeholder {
     color:#a3a3a3;
