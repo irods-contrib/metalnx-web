@@ -22,6 +22,10 @@
 	<link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
 	<!-- jQuery UI Version 1.11.4 -->
 	<script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
+    <!-- Bootstrap Validator -->
+    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet" th:href="@{/css/bootstrapValidator.min.css}"/>
+    <!-- Bootstrap Validator JS -->
+    <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
 	<title th:text="#{tab.title.collections}">EMC Metalnx - Collections</title>
 </head>
 
@@ -52,12 +56,12 @@
 			<!-- Ticket creation success message -->
 			<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
 				<div class="alert alert-success text-center" role="alert">
-					<span th:text="#{tickets.feedback.message.creation.success}"></span>
+					<span th:text="#{ticket.feedback.message.creation.success}"></span>
 				</div>
 			</div>
 			<div class="col-sm-12 hideElement" id="ticketCreationFailureMessage">
 				<div class="alert alert-danger text-center" role="alert">
-					<span th:text="#{tickets.feedback.message.creation.failure}"></span>
+					<span th:text="#{ticket.feedback.message.creation.failure}"></span>
 				</div>
 			</div>
             <!-- Upload Status Information -->

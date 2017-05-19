@@ -4,54 +4,53 @@
       th:action="@{${requestMapping}}">
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <div class="form-group">
-        <label class="control-label" th:text="#{tickets.form.path.label}"></label>
+        <label class="control-label" th:text="#{ticket.form.path.label}"></label>
         <span id="selectedPath"></span>
     </div>
     <div class="form-group">
-        <label for="input-permission" class="control-label" th:text="#{tickets.form.permission.label}"></label>
+        <label for="input-permission" class="control-label" th:text="#{ticket.form.permission.label}"></label>
         <div class="">
             <select id="input-permission" class="form-control" th:field="*{type}">
-                <option value="READ" th:text="#{tickets.form.permission.option.read.label}"></option>
-                <option value="WRITE" th:text="#{tickets.form.permission.option.write.label}"></option>
+                <option value="READ" th:text="#{ticket.form.permission.option.read.label}"></option>
+                <option value="WRITE" th:text="#{ticket.form.permission.option.write.label}"></option>
             </select>
         </div>
     </div>
-    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{tickets.form.show.advanced.settings.button}"></button>
-    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{tickets.form.hide.advanced.settings.button}"></button>
+    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{ticket.form.show.advanced.settings.button}"></button>
+    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{ticket.form.hide.advanced.settings.button}"></button>
     <div class="advanced-settings hidden">
         <div class="form-group">
-            <label for="inputTicketString" class="control-label" th:text="#{tickets.form.ticket.string.label}"></label>
-            <div class="">
-                <input type="text" class="form-control" id="inputTicketString" th:placeholder="#{tickets.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
-            </div>
+            <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
+            <input type="text" class="form-control" id="inputTicketString" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidTicketStringIcon"></i>
+            <small class="help-block hideElement" id="ticketStringInvalidMsg" th:text="#{ticket.form.validation.input.ticket.string.not.valid}"></small>
         </div>
         <div class="form-group">
-            <label for="inputUsesLimit" class="control-label" th:text="#{tickets.form.uses.limit.label}"></label>
-            <div class="">
-                <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{tickets.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
-            </div>
+            <label for="inputUsesLimit" class="control-label" th:text="#{ticket.form.uses.limit.label}"></label>
+            <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{ticket.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputUsesLimitIcon"></i>
+            <small class="help-block hideElement" id="usesLimitNotNumberMsg" th:text="#{ticket.form.validation.input.uses.limit.not.number}"></small>
         </div>
         <div class="form-group">
-            <label for="inputWriteByteLimit" class="control-label" th:text="#{tickets.form.write.byte.limit.label}"></label>
-            <div class="">
-                <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{tickets.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
-            </div>
+            <label for="inputWriteByteLimit" class="control-label" th:text="#{ticket.form.write.byte.limit.label}"></label>
+            <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{ticket.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteByteLimitIcon"></i>
+            <small class="help-block hideElement" id="writeByteNotNumberMsg" th:text="#{ticket.form.validation.input.write.byte.limit.not.number}"></small>
         </div>
         <div class="form-group">
-            <label for="inputWriteFileLimit" class="control-label" th:text="#{tickets.form.write.file.limit.label}"></label>
-            <div class="">
-                <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{tickets.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
-            </div>
+            <label for="inputWriteFileLimit" class="control-label" th:text="#{ticket.form.write.file.limit.label}"></label>
+            <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{ticket.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteFiletIcon"></i>
+            <small class="help-block hideElement" id="writeFileNotNumberMsg" th:text="#{ticket.form.validation.input.write.file.limit.not.number}"></small>
         </div>
         <div class="form-group">
-            <label for="inputExpirationDate" class="control-label" th:text="#{tickets.form.expiration.date.label}"></label>
-            <div class="">
-                <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{tickets.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
-            </div>
+            <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
+            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
         </div>
     </div>
 </form>
 
+<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     $(document).ready(function(e){
@@ -64,23 +63,91 @@
         if ($("#inputWriteFileLimit").val()==0){
             $("#inputWriteFileLimit").val('');
         }
-
         $("#btnShowAdvancedSettings").click(function(){
             $(".advanced-settings").removeClass("hidden");
             $(this).addClass("hidden");
             $("#btnHideAdvancedSettings").removeClass("hidden");
         });
-
         $("#btnHideAdvancedSettings").click(function(){
             $(".advanced-settings").addClass("hidden");
             $(this).addClass("hidden");
             $("#btnShowAdvancedSettings").removeClass("hidden");
         });
-
         $("#inputExpirationDate").datepicker({
             dateFormat: "yy-mm-dd",
             minDate: 1
         });
     });
+
+    /*
+    * Validates Ticket String
+    */
+    function isValidTicketString(ticketString) {
+        var isValidTicketString;
+        var ticketRE = /^[0-9a-zA-Z]+$/;
+        isValidTicketString = (isNaN(ticketString)) &&(ticketString.match(ticketRE));
+        return isValidTicketString;
+    }
+
+    function isInteger(limit){
+      console.log(limit);
+      var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
+      console.log(isInt);
+      return isInt;
+    }
+
+    /*
+    * Validates input type for Write Byte, Write File and Limit Uses fields
+    */
+
+    $("#inputTicketString").focusout(function(){
+        if(!isValidTicketString($(this).val())){
+                $("#inputTicketString").parent().addClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").show();
+                $("#ticketStringInvalidMsg").show();
+            }
+            else {
+                $("#inputTicketString").parent().removeClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").hide();
+                $("#ticketStringInvalidMsg").hide();
+            }
+    });
+    $("#inputUsesLimit").focusout(function(){
+            if(!isInteger($(this).val())){
+                $("#inputUsesLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").show();
+                $("#usesLimitNotNumberMsg").show();
+            }
+            else {
+                $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").hide();
+                $("#usesLimitNotNumberMsg").hide();
+            }
+    });
+    $("#inputWriteByteLimit").focusout(function(){
+            if(!isInteger($(this).val())){
+                $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").show();
+                $("#writeByteNotNumberMsg").show();
+            }
+            else {
+                $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").hide();
+                $("#writeByteNotNumberMsg").hide();
+            }
+    });
+    $("#inputWriteFileLimit").focusout(function(){
+            if(!isInteger($(this).val())){
+                $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").show();
+                $("#writeFileNotNumberMsg").show();
+            }
+            else {
+                $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").hide();
+                $("#writeFileNotNumberMsg").hide();
+            }
+    });
+
 /*]]>*/
 </script>

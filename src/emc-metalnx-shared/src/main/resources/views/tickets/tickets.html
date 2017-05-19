@@ -32,7 +32,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h1 class="page-header pull-left">
-                    <span th:text="#{tickets.page.title}"></span>
+                    <span th:text="#{ticket.page.title}"></span>
                 </h1>
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
             </div>
@@ -41,7 +41,7 @@
         <div class="row">
             <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
                 <div class="alert alert-success text-center" role="alert">
-                    <span th:text="#{tickets.delete.feedback.success}"></span>
+                    <span th:text="#{ticket.delete.feedback.success}"></span>
                 </div>
             </div>
 
@@ -50,7 +50,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
-                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{tickets.delete.feedback.error}"></span>
+                    <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{ticket.delete.feedback.error}"></span>
                 </div>
             </div>
         </div>
@@ -59,10 +59,10 @@
                 <table class="table table-hover" id="ticketsTable">
                     <thead>
                         <tr>
-                            <th th:text="#{tickets.table.type.label}"></th>
-                            <th th:text="#{tickets.table.string.label}"></th>
-                            <th th:text="#{tickets.table.permission.label}"></th>
-                            <th th:text="#{tickets.table.owner.label}"></th>
+                            <th th:text="#{ticket.table.type.label}"></th>
+                            <th th:text="#{ticket.table.string.label}"></th>
+                            <th th:text="#{ticket.table.permission.label}"></th>
+                            <th th:text="#{ticket.table.owner.label}"></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -76,12 +76,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteTicketConfirmLabel" th:text="#{tickets.delete.confirm.modal.title}"></h4>
+                        <h4 class="modal-title" id="deleteTicketConfirmLabel" th:text="#{ticket.delete.confirm.modal.title}"></h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <p th:text="#{tickets.delete.confirm.modal.msg}"></p>
+                                <p th:text="#{ticket.delete.confirm.modal.msg}"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -102,8 +102,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{tickets.delete.confirm.modal.button.cancel}"></button>
-                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{tickets.delete.confirm.modal.button.delete}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{ticket.delete.confirm.modal.button.cancel}"></button>
+                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{ticket.delete.confirm.modal.button.delete}"></button>
                     </div>
                 </div>
             </div>
