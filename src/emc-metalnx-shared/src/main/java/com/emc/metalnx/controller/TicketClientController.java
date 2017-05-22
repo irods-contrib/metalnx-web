@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -55,7 +56,7 @@ public class TicketClientController {
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
-            throws DataGridConnectionRefusedException {
+            throws DataGridConnectionRefusedException, IOException {
         logger.info("Uploading files using ticket: {}", ticketString);
 
         if (!(request instanceof MultipartHttpServletRequest)) {
@@ -67,7 +68,8 @@ public class TicketClientController {
         MultipartFile multipartFile = multipartRequest.getFile("file");
         String destPath = multipartRequest.getParameter("destPath");
 
-        ticketClientService.transferFileToIRODSUsingTicket(ticketString, multipartFile, destPath);
+        File file = multipartToFile(multipartFile);
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, file, destPath);
     }
 
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
@@ -77,5 +79,18 @@ public class TicketClientController {
         InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
         FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
         ticketClientService.deleteTempTicketDir();
+    }
+
+    /**
+     * Converts a multipart file comming from an HTTP request into a File instance.
+     * @param multipartFile file uploaded
+     * @return File instance
+     * @throws IllegalStateException
+     * @throws IOException
+     */
+    private File multipartToFile(MultipartFile multipartFile) throws IllegalStateException, IOException {
+        File convFile = new File(multipartFile.getName());
+        multipartFile.transferTo(convFile);
+        return convFile;
     }
 }

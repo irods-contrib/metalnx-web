@@ -16,8 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,10 +28,10 @@ public interface TicketClientService {
     /**
      * Transfers a file to the grid using a ticket.
      * @param ticketString ticket string
-     * @param multipartFile multipart file to be transferred to the grid
+     * @param file file to be transferred to the grid
      * @param destPath path where the file will be uploaded to
      */
-    void transferFileToIRODSUsingTicket(String ticketString, MultipartFile multipartFile, String destPath);
+    void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath);
 
     /**
      * Gets a file from the grid.

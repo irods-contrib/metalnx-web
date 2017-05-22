@@ -36,7 +36,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -72,13 +71,12 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public void transferFileToIRODSUsingTicket(String ticketString, MultipartFile multipartFile, String destPath) {
+    public void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath) {
         try {
-            File file = multipartToFile(multipartFile);
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(destPath);
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, file, irodsFile, null, null);
-        } catch (JargonException | IOException e) {
+        } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
         }
     }
@@ -134,18 +132,5 @@ public class TicketClientServiceImpl implements TicketClientService {
         } catch (JargonException e) {
             logger.error("Could not set up anonymous access");
         }
-    }
-
-    /**
-     * Converts a multipart file comming from an HTTP request into a File instance.
-     * @param multipartFile file uploaded
-     * @return File instance
-     * @throws IllegalStateException
-     * @throws IOException
-     */
-    private File multipartToFile(MultipartFile multipartFile) throws IllegalStateException, IOException {
-        File convFile = new File(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(convFile);
-        return convFile;
     }
 }

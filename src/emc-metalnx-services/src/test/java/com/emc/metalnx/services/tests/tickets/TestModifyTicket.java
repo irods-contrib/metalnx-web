@@ -76,7 +76,7 @@ public class TestModifyTicket {
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
 
-        ticketString = ticketUtils.createTicket(ticketString, parentPath, username);
+        ticketString = ticketUtils.createTicket(parentPath, username);
     }
 
     @After
