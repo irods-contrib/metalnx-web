@@ -48,14 +48,17 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
                            final ModelAndView modelAndView) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (modelAndView != null && auth != null && auth instanceof UsernamePasswordAuthenticationToken) {
+        if (modelAndView != null && auth != null) {
             if(urlMap == null) urlMap = new URLMap();
             if(emcmetalnxVersion == null) emcmetalnxVersion = new EmcMetalnxVersion();
-            userTokenDetails = (UserTokenDetails) auth.getDetails();
 
-            modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
             modelAndView.getModelMap().addAttribute("urlMap", urlMap);
             modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
+
+            if (auth instanceof UsernamePasswordAuthenticationToken) {
+                userTokenDetails = (UserTokenDetails) auth.getDetails();
+                modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
+            }
         }
 
         // closing sessions to avoid idle agents

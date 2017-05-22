@@ -1421,13 +1421,13 @@ alert-dialog {
     width: 100%;
 }
 
-#page-wrapper {
+#page-wrapper, #page-wrapper-tickets {
     padding: 0 15px;
     min-height: 568px;
     background-color: #f2f6f9;
 }
 
-#page-wrapper:last-child {
+#page-wrapper:last-child, #page-wrapper-tickets:last-child{
 	margin-bottom: 10%;
 }
 
