@@ -27,6 +27,7 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.ticket.TicketClientOperations;
 import org.irods.jargon.ticket.TicketServiceFactory;
 import org.irods.jargon.ticket.TicketServiceFactoryImpl;
+import org.irods.jargon.ticket.io.FileStreamAndInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +41,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class TicketClientServiceImpl implements TicketClientService {
     private static final Logger logger = LoggerFactory.getLogger(TicketClientServiceImpl.class);
+    private static final String TEMP_TICKET_DIR = "tmp-ticket-files";
 
     @Autowired
     private ConfigService configService;
@@ -76,7 +79,43 @@ public class TicketClientServiceImpl implements TicketClientService {
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(destPath);
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, file, irodsFile, null, null);
         } catch (JargonException | IOException e) {
-            e.printStackTrace();
+            logger.error("Could not transfer file to the grid using a ticket: {}", e);
+        }
+    }
+
+    @Override
+    public InputStream getFileFromIRODSUsingTicket(String ticketString, String path) throws IOException {
+        InputStream inputStream = null;
+
+        File tempDir = new File(TEMP_TICKET_DIR);
+
+        if (!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+
+        try {
+            IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
+            IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);
+            FileStreamAndInfo fileStreamAndInfo  = ticketClientOperations.redeemTicketGetDataObjectAndStreamBack(
+                    ticketString, irodsFile, tempDir);
+            inputStream = fileStreamAndInfo.getInputStream();
+        } catch (JargonException e) {
+            logger.error("Could not get file from grid using ticket: {}", e);
+        }
+
+        if (inputStream == null) {
+            deleteTempTicketDir();
+        }
+
+        return inputStream;
+    }
+
+    @Override
+    public void deleteTempTicketDir() {
+        File tempDir = new File(TEMP_TICKET_DIR);
+
+        if (tempDir.exists()) {
+            tempDir.delete();
         }
     }
 

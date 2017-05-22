@@ -18,6 +18,9 @@ package com.emc.metalnx.services.interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Client access to the grid via Tickets.
  */
@@ -30,4 +33,17 @@ public interface TicketClientService {
      * @param destPath path where the file will be uploaded to
      */
     void transferFileToIRODSUsingTicket(String ticketString, MultipartFile multipartFile, String destPath);
+
+    /**
+     * Gets a file from the grid.
+     * @param ticketString ticket string to access a collection or an object
+     * @param path path to get files from
+     * @return {@code InputStream} to stream the content
+     */
+    InputStream getFileFromIRODSUsingTicket(String ticketString, String path) throws IOException;
+
+    /**
+     * Deletes the temporary directory created after downloading files from the grid using a ticket.
+     */
+    void deleteTempTicketDir();
 }

@@ -24,15 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Controller that will handle anonymous access to collections and data objects using tickets.
@@ -67,5 +68,14 @@ public class TicketClientController {
         String destPath = multipartRequest.getParameter("destPath");
 
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, multipartFile, destPath);
+    }
+
+    @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
+    public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
+                       HttpServletResponse response) throws DataGridConnectionRefusedException, IOException {
+        logger.info("Getting files using ticket: {}", ticketString);
+        InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
+        FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
+        ticketClientService.deleteTempTicketDir();
     }
 }
