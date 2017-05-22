@@ -3,6 +3,7 @@
       method="POST" th:object="${ticket}"
       th:action="@{${requestMapping}}">
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
+    <input type="hidden" class="form-control" id="usersList"/>
     <div class="form-group">
         <label class="control-label" th:text="#{ticket.form.path.label}"></label>
         <span id="selectedPath"></span>
@@ -47,13 +48,90 @@
             <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
             <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
         </div>
+
+        <div class="form-group optional">
+            <label for="usersToBeAdded" th:text="#{ticket.form.users.label}"></label>
+            <br />
+            <input type="search" class="form-control col-md-12" id="usersToBeAdded" name="usersToBeAdded" autocomplete="off"
+                   data-provide="typeahead"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentUsernameError" id="nonexistentUsernameIcon"></i>
+            <small class="help-block hideElement nonexistentUsernameError" id="nonexistentUsernameMsg"
+                   th:text="#{permission.validation.username.nonexistent}"></small>
+        </div>
     </div>
 </form>
 
 <script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
+    // Check if all fiels are valid
+    function allFieldsValidated(){
+        var validated = !$('.form-group').hasClass("has-feedback has-error");
+        return validated;
+    }
     $(document).ready(function(e){
+
+        // Users restriction settings
+        // Creates bloodhound instance for querying requests
+        function createBloodhoundInstance(url, filterFunction) {
+            return new Bloodhound({
+
+                datumTokenizer : function(datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.value);
+                },
+
+                queryTokenizer : Bloodhound.tokenizers.whitespace,
+                remote : {
+                    url : url,
+                    wildcard : '%QUERY',
+                    filter : filterFunction
+                }
+            });
+        }
+
+        // Configures the data source for the tag input on the users modal
+        function filterUsers(users) {
+            return $.map(users.results, function(user) {
+                return {
+                    name: user.first_name + " " + user.last_name,
+                    username: user.username
+                };
+            });
+        }
+
+        var usersSource = createBloodhoundInstance('/emc-metalnx-web/users/query/%QUERY/', filterUsers);
+
+        if(!$("#usersToBeAdded").val()){
+            $("#usersToBeAdded").attr("placeholder", [[#{ticket.form.users.placeholder}]]);
+        }
+
+        // Sets the text input on the group modal to be a tag input
+        $('#usersToBeAdded').tagsinput({
+            tagClass : 'label label-primary',
+            typeaheadjs : {
+                displayKey: 'username',
+                valueKey: 'username',
+                source : usersSource,
+                options: {
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                templates: {
+                    empty: [
+                      '<div class="empty-message">',
+                        'Unable to find any user that match the current query',
+                      '</div>'
+                    ].join('\n')
+                }
+            }
+        });
+
+        $("#usersToBeAdded").on('itemAdded', function(event) {
+            $('.tt-input').attr('placeholder','');
+        });
+
+        // Replace value '0' for a placeholder on fields: Uses Limit, Write Byte and Write File Limit
         if ($("#inputUsesLimit").val()==0){
             $("#inputUsesLimit").val('');
         }
@@ -63,6 +141,8 @@
         if ($("#inputWriteFileLimit").val()==0){
             $("#inputWriteFileLimit").val('');
         }
+
+        // Toggle advanced settings buttons visibility
         $("#btnShowAdvancedSettings").click(function(){
             $(".advanced-settings").removeClass("hidden");
             $(this).addClass("hidden");
@@ -73,93 +153,98 @@
             $(this).addClass("hidden");
             $("#btnShowAdvancedSettings").removeClass("hidden");
         });
+
+        // Set date format for Expiration Date field
         $("#inputExpirationDate").datepicker({
             dateFormat: "yy-mm-dd",
             minDate: 1
         });
-    });
 
+        //Checks if input is a valid Ticket String
+        function isValidTicketString(ticketString) {
+            var isValidTicketString;
+            var ticketRE = /^[0-9a-zA-Z]+$/;
+            isValidTicketString = (isNaN(ticketString)) &&(ticketString.match(ticketRE));
+            return isValidTicketString;
+        }
 
-    function isValidTicketString(ticketString) {
-        var isValidTicketString;
-        var ticketRE = /^[0-9a-zA-Z]+$/;
-        isValidTicketString = (isNaN(ticketString)) &&(ticketString.match(ticketRE));
-        return isValidTicketString;
-    }
+        //Check if input is an Integer
+        function isInteger(limit){
+            var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
+            return isInt;
+        }
 
-    function isInteger(limit){
-        var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
-        return isInt;
-    }
+        // Ticket String field validation
+        $("#inputTicketString").on('input propertychange',function(){
+            if(!isValidTicketString($(this).val()) && !($(this).val()=='')){
+                $("#inputTicketString").parent().addClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").show();
+                $("#ticketStringInvalidMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputTicketString").parent().removeClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").hide();
+                $("#ticketStringInvalidMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
 
-    function allFieldsValidated(){
-        var validated = !$('.form-group').hasClass("has-feedback has-error");
-        return validated;
-    }
+        // Uses Limit field validation
+        $("#inputUsesLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputUsesLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").show();
+                $("#usesLimitNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").hide();
+                $("#usesLimitNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
 
-    $("#inputTicketString").on('input propertychange',function(){
-        if(!isValidTicketString($(this).val()) && !($(this).val()=='')){
-            $("#inputTicketString").parent().addClass("has-feedback has-error");
-            $("#invalidTicketStringIcon").show();
-            $("#ticketStringInvalidMsg").show();
-            $("#createTicketFormBtn").addClass("disabled");
-            $("#createTicketFormBtn").prop("disabled", true);
-        }
-        else {
-            $("#inputTicketString").parent().removeClass("has-feedback has-error");
-            $("#invalidTicketStringIcon").hide();
-            $("#ticketStringInvalidMsg").hide();
-            $("#createTicketFormBtn").prop("disabled", false);
-            $("#createTicketFormBtn").removeClass("disabled");
-        }
-    });
-    $("#inputUsesLimit").on('input propertychange',function(){
-        if(!isInteger($(this).val()) && !($(this).val()=='')){
-            $("#inputUsesLimit").parent().addClass("has-feedback has-error");
-            $("#invalidInputUsesLimitIcon").show();
-            $("#usesLimitNotNumberMsg").show();
-            $("#createTicketFormBtn").addClass("disabled");
-            $("#createTicketFormBtn").prop("disabled", true);
-        }
-        else {
-            $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
-            $("#invalidInputUsesLimitIcon").hide();
-            $("#usesLimitNotNumberMsg").hide();
-            $("#createTicketFormBtn").prop("disabled", false);
-            $("#createTicketFormBtn").removeClass("disabled");
-        }
-    });
-    $("#inputWriteByteLimit").on('input propertychange',function(){
-        if(!isInteger($(this).val()) && !($(this).val()=='')){
-            $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
-            $("#invalidInputWriteByteLimitIcon").show();
-            $("#writeByteNotNumberMsg").show();
-            $("#createTicketFormBtn").addClass("disabled");
-            $("#createTicketFormBtn").prop("disabled", true);
-        }
-        else {
-            $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
-            $("#invalidInputWriteByteLimitIcon").hide();
-            $("#writeByteNotNumberMsg").hide();
-            $("#createTicketFormBtn").prop("disabled", false);
-            $("#createTicketFormBtn").removeClass("disabled");
-        }
-    });
-    $("#inputWriteFileLimit").on('input propertychange',function(){
-        if(!isInteger($(this).val()) && !($(this).val()=='')){
-            $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
-            $("#invalidInputWriteFiletIcon").show();
-            $("#writeFileNotNumberMsg").show();
-            $("#createTicketFormBtn").addClass("disabled");
-            $("#createTicketFormBtn").prop("disabled", true);
-        }
-        else {
-            $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
-            $("#invalidInputWriteFiletIcon").hide();
-            $("#writeFileNotNumberMsg").hide();
-            $("#createTicketFormBtn").prop("disabled", false);
-            $("#createTicketFormBtn").removeClass("disabled");
-        }
+        // Write Byte field validation
+        $("#inputWriteByteLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").show();
+                $("#writeByteNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").hide();
+                $("#writeByteNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
+
+        // Write File field validation
+        $("#inputWriteFileLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").show();
+                $("#writeFileNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").hide();
+                $("#writeFileNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
     });
 /*]]>*/
 </script>

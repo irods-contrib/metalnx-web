@@ -1964,8 +1964,13 @@ footer {
     height: 70px;
 }
 
-form.registerForm input.form-control::placeholder {
+form.registerForm input.form-control::placeholder,
+form.registerForm input.tt-input::placeholder {
     color:#a3a3a3;
+}
+
+form.registerForm input.tt-input{
+    width: 100%; !important
 }
 
 form.registerForm .panel-default > .panel-heading {
