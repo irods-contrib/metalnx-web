@@ -97,7 +97,7 @@
         return validated;
     }
 
-    $("#inputTicketString").focusout(function(){
+    $("#inputTicketString").on('input propertychange',function(){
         if(!isValidTicketString($(this).val()) && !($(this).val()=='')){
             $("#inputTicketString").parent().addClass("has-feedback has-error");
             $("#invalidTicketStringIcon").show();
@@ -113,7 +113,7 @@
             $("#createTicketFormBtn").removeClass("disabled");
         }
     });
-    $("#inputUsesLimit").focusout(function(){
+    $("#inputUsesLimit").on('input propertychange',function(){
         if(!isInteger($(this).val()) && !($(this).val()=='')){
             $("#inputUsesLimit").parent().addClass("has-feedback has-error");
             $("#invalidInputUsesLimitIcon").show();
@@ -129,7 +129,7 @@
             $("#createTicketFormBtn").removeClass("disabled");
         }
     });
-    $("#inputWriteByteLimit").focusout(function(){
+    $("#inputWriteByteLimit").on('input propertychange',function(){
         if(!isInteger($(this).val()) && !($(this).val()=='')){
             $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
             $("#invalidInputWriteByteLimitIcon").show();
@@ -145,7 +145,7 @@
             $("#createTicketFormBtn").removeClass("disabled");
         }
     });
-    $("#inputWriteFileLimit").focusout(function(){
+    $("#inputWriteFileLimit").on('input propertychange',function(){
         if(!isInteger($(this).val()) && !($(this).val()=='')){
             $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
             $("#invalidInputWriteFiletIcon").show();
