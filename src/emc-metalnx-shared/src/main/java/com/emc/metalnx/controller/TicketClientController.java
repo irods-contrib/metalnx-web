@@ -22,10 +22,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller that will handle anonymous access to collections and data objects using tickets.
@@ -44,7 +51,21 @@ public class TicketClientController {
         return "tickets/ticketclient";
     }
 
-    @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET)
-    public void upload() throws DataGridConnectionRefusedException {
+    @RequestMapping(value = "/{ticketstring}", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
+            throws DataGridConnectionRefusedException {
+        logger.info("Uploading files using ticket: {}", ticketString);
+
+        if (!(request instanceof MultipartHttpServletRequest)) {
+            logger.error("Request is not a multipart request. Stop.");
+            return;
+        }
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile multipartFile = multipartRequest.getFile("file");
+        String destPath = multipartRequest.getParameter("destPath");
+
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, multipartFile, destPath);
     }
 }
