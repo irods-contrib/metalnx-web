@@ -44,7 +44,11 @@ import java.io.InputStream;
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/ticketclient")
 public class TicketClientController {
+    private static final String CONTENT_TYPE = "application/octet-stream";
+    private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
     private static final Logger logger = LoggerFactory.getLogger(TicketClientController.class);
+    public static final String IRODS_PATH_SEPARATOR = "/";
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
 
     @Autowired
     private TicketClientService ticketClientService;
@@ -54,6 +58,8 @@ public class TicketClientController {
                         @RequestParam("ticketpath") String path)
             throws DataGridConnectionRefusedException {
         logger.info("Accessing ticket {} on {}", ticketString, path);
+        String objName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
+        model.addAttribute("objName", objName);
         model.addAttribute("ticketString", ticketString);
         model.addAttribute("path", path);
         return "tickets/ticketclient";
@@ -83,6 +89,9 @@ public class TicketClientController {
                        HttpServletResponse response) throws DataGridConnectionRefusedException, IOException {
         logger.info("Getting files using ticket: {}", ticketString);
         InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
+        String filename = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
+        response.setContentType(CONTENT_TYPE);
+        response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
         FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
         ticketClientService.deleteTempTicketDir();
     }
