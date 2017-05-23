@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
@@ -49,9 +50,12 @@ public class TicketClientController {
     private TicketClientService ticketClientService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(@RequestParam("ticketstring") String ticketString, @RequestParam("ticketpath") String path)
+    public String index(Model model, @RequestParam("ticketstring") String ticketString,
+                        @RequestParam("ticketpath") String path)
             throws DataGridConnectionRefusedException {
         logger.info("Accessing ticket {} on {}", ticketString, path);
+        model.addAttribute("ticketString", ticketString);
+        model.addAttribute("path", path);
         return "tickets/ticketclient";
     }
 

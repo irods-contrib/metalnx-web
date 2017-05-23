@@ -127,8 +127,25 @@
     <div id="page-wrapper-tickets">
         <div class="row">
             <div class="col-sm-12" layout:fragment="content">
-                <h1 class="page-header">Title here</h1>
+                <h1 class="page-header">Ticket</h1>
 
+                <p>
+                    <label>Ticket String</label> <br />
+                    <span th:text="${ticketString}"></span>
+                </p>
+
+                <p>
+                    <label>Path</label> <br />
+                    <span th:text="${path}"></span>
+                </p>
+
+                <form method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
+                    <input type="hidden" name="path" th:value="${path}" />
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                        Download
+                    </button>
+                </form>
             </div>
         </div>
     </div>
