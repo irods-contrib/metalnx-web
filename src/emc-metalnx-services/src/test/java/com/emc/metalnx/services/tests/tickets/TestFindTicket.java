@@ -80,7 +80,7 @@ public class TestFindTicket {
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
 
-        ticketString = ticketUtils.createTicket(ticketString, parentPath, username);
+        ticketString = ticketUtils.createTicket(parentPath, username);
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
         ticketUtils.setExpirationDate(ticketString, EXPIRATION_DATE);
         ticketUtils.setWriteByteLimit(ticketString, WRITE_BYTE_LIMIT);

@@ -39,9 +39,13 @@ public class TestTicketUtils {
         this.ticketAdminService = irodsServices.getTicketAdminService();
     }
 
-    public String createTicket(String ticketString, String parentPath, String item) throws JargonException, DataGridConnectionRefusedException {
+    public String createTicket(String parentPath, String item, TicketCreateModeEnum type) throws JargonException, DataGridConnectionRefusedException {
         IRODSFile irodsFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(parentPath, item);
-        return ticketAdminService.createTicket(TicketCreateModeEnum.READ, irodsFile, ticketString);
+        return ticketAdminService.createTicket(type, irodsFile, "");
+    }
+
+    public String createTicket(String parentPath, String item) throws JargonException, DataGridConnectionRefusedException {
+        return createTicket(parentPath, item, TicketCreateModeEnum.READ);
     }
 
     public void deleteTicket(String ticketString) throws JargonException {

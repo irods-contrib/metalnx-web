@@ -62,13 +62,9 @@ public class TestTicketService {
     @Before
     public void setUp() throws DataGridException, JargonException {
         time = System.currentTimeMillis();
-
         parentPath = String.format("/%s/home", zone);
-
-        ticketString = String.format("ticket-%d", time);
-
         ticketUtils = new TestTicketUtils(irodsServices);
-        ticketUtils.createTicket(ticketString, parentPath, username);
+        ticketString = ticketUtils.createTicket(parentPath, username);
     }
 
     @After
