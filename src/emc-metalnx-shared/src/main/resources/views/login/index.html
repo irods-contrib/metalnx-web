@@ -67,7 +67,7 @@
                     </div>
                 </form>
 
-                <form action="#" th:action="@{/ticketclient/}" method="POST" id="anonymousLogin" class="hidden">
+                <form action="#" th:action="@{/ticketclient/}" method="GET" id="anonymousLogin" class="hidden">
                     <div class="login_fields_user">
                         <div class="icon"><i class="fa fa-ticket" aria-hidden="true"></i></div>
                         <input type="text" placeholder="ticket string" name="ticketString" id="inputTicketString" />
@@ -79,17 +79,20 @@
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_submit">
-                        <input type="submit" value="Access"/>
+                        <input type="submit" value="Access" />
                         <a href="#" onclick="showAuthLogin();" id="login-link">Login</a>
                     </div>
                 </form>
             </div>
 
             <div class="login_msgs">
-                <i th:if="${usernameOrPasswordInvalid != null or serverNotResponding != null or databaseNotResponding != null}" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <i class="fa fa-exclamation-triangle"
+                   th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? hidden"
+                   aria-hidden="true"></i>
                 <span th:if="${usernameOrPasswordInvalid}">Invalid username or password</span>
                 <span th:if="${serverNotResponding}">iRODS not responding</span>
                 <span th:if="${databaseNotResponding}">Database not responding</span>
+                <span class="hidden" id="invalidTicketMsg">Invalid ticket string or path</span>
             </div>
 
             <div class="login_copyright">
@@ -129,7 +132,34 @@
             });
     	});
 
+    	$("#anonymousLogin").submit(function(e){
+    	    var ticketString = $("#inputTicketString").val();
+    	    var path = $("#inputTicketPath").val();
+
+    	    if (path == '' || ticketString == '') {
+    	        showInvalidTicketMsg();
+    	    } else {
+    	        hideInvalidTicketMsg();
+    	    }
+
+    	    var url = $(this).attr('action') + ticketString;
+            return false;
+        });
+
+        function showInvalidTicketMsg() {
+            $("#invalidTicketMsg").removeClass("hidden");
+    	    $(".login_msgs i").removeClass("hidden");
+        }
+
+        function hideInvalidTicketMsg() {
+            $("#invalidTicketMsg").addClass("hidden");
+    	    $(".login_msgs i").addClass("hidden");
+        }
+
     	function showAnonymousLogin() {
+    	    $(".login_msgs span").addClass("hidden");
+    	    $(".login_msgs i").addClass("hidden");
+
     	    $("#authLogin").addClass("hidden");
     	    $("#anonymousLogin").removeClass("hidden");
     	    $("#ticket-link").addClass("hidden");
@@ -137,6 +167,9 @@
     	}
 
     	function showAuthLogin() {
+    	    $(".login_msgs span").addClass("hidden");
+    	    $(".login_msgs i").addClass("hidden");
+
     	    $("#authLogin").removeClass("hidden");
     	    $("#anonymousLogin").addClass("hidden");
     	    $("#ticket-link").removeClass("hidden");
