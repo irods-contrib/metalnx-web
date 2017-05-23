@@ -50,18 +50,38 @@
                 <img alt="EMC logo" th:src="@{/images/logo-blue.svg}" />
             </div>
             <div class="login_fields">
-                <form action="#" th:action="@{/login/authenticate/}" method="POST">
+                <form action="#" th:action="@{/login/authenticate/}" method="POST" id="authLogin">
                     <div class="login_fields_user">
                         <div class="icon"><i class="fa fa-user" aria-hidden="true"></i></div>
                         <input type="text" placeholder="username" name="username" id="inputUsernameLogin" />
-                        <div class="icon-username-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
+                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_password">
                         <div class="icon"><i class="fa fa-lock" aria-hidden="true"></i></div>
                         <input type="password" placeholder="password" name="password" id="inputPasswordLogin" />
-                        <div class="icon-password-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
+                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
-                    <div class="login_fields_submit"><input type="submit" value="Login"/></div>
+                    <div class="login_fields_submit">
+                        <input type="submit" value="Login" id="loginBtn"/>
+                        <a href="#" onclick="showAnonymousLogin();">I have a ticket</a>
+                    </div>
+                </form>
+
+                <form action="#" th:action="@{/ticketclient/}" method="POST" id="anonymousLogin" class="hidden">
+                    <div class="login_fields_user">
+                        <div class="icon"><i class="fa fa-ticket" aria-hidden="true"></i></div>
+                        <input type="text" placeholder="ticket string" name="ticketString" id="inputTicketString" />
+                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
+                    </div>
+                    <div class="login_fields_password">
+                        <div class="icon"><i class="fa fa-map-marker" aria-hidden="true"></i></div>
+                        <input type="text" placeholder="path" name="ticketPath" id="inputTicketPath" />
+                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
+                    </div>
+                    <div class="login_fields_submit">
+                        <input type="submit" value="Access"/>
+                        <a href="#" onclick="showAuthLogin();" id="login-link">Login</a>
+                    </div>
                 </form>
             </div>
 
@@ -94,30 +114,36 @@
     			localStorage.removeItem(mlxKeys[i]);
     		}
 
-            $("#inputUsernameLogin").keyup(function() {
-                if ($("#inputUsernameLogin").val() != ''){
-                    $(".icon-username-check").removeClass("hidden");
-                    $(".icon-username-check").addClass("visible");
+            $(".login form input").keyup(function() {
+                var input = $(this);
+                var inputCheck = input.next("div.icon-input-check");
+
+                if (input.val() != ''){
+                    inputCheck.removeClass("hidden");
+                    inputCheck.addClass("visible");
                 }
                 else {
-                    $(".icon-username-check").addClass("hidden");
-                    $(".icon-username-check").removeClass("visible");
-                }
-            });
-
-            $("#inputPasswordLogin").keyup(function() {
-                if ($("#inputPasswordLogin").val() != ''){
-                    $(".icon-password-check").removeClass("hidden");
-                    $(".icon-password-check").addClass("visible");
-
-                }
-                else {
-                    $(".icon-password-check").addClass("hidden");
-                    $(".icon-password-check").removeClass("visible");
-
+                    inputCheck.addClass("hidden");
+                    inputCheck.removeClass("visible");
                 }
             });
     	});
+
+    	function showAnonymousLogin() {
+    	    $("#authLogin").addClass("hidden");
+    	    $("#anonymousLogin").removeClass("hidden");
+    	    $("#ticket-link").addClass("hidden");
+    	    $("#login-link").removeClass("hidden");
+    	}
+
+    	function showAuthLogin() {
+    	    $("#authLogin").removeClass("hidden");
+    	    $("#anonymousLogin").addClass("hidden");
+    	    $("#ticket-link").removeClass("hidden");
+    	    $("#login-link").addClass("hidden");
+    	    $("#loginBtn").removeClass("hidden");
+    	    $("#ticketAccessBtn").addClass("hidden");
+    	}
     /*]]>*/
 	</script>
 	
