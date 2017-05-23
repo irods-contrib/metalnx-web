@@ -49,7 +49,9 @@ public class TicketClientController {
     private TicketClientService ticketClientService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index() throws DataGridConnectionRefusedException {
+    public String index(@RequestParam("ticketstring") String ticketString, @RequestParam("ticketpath") String path)
+            throws DataGridConnectionRefusedException {
+        logger.info("Accessing ticket {} on {}", ticketString, path);
         return "tickets/ticketclient";
     }
 

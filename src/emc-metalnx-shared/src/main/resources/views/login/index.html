@@ -70,12 +70,12 @@
                 <form action="#" th:action="@{/ticketclient/}" method="GET" id="anonymousLogin" class="hidden">
                     <div class="login_fields_user">
                         <div class="icon"><i class="fa fa-ticket" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="ticket string" name="ticketString" id="inputTicketString" />
+                        <input type="text" placeholder="ticket string" name="ticketstring" id="inputTicketString" />
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_password">
                         <div class="icon"><i class="fa fa-map-marker" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="path" name="ticketPath" id="inputTicketPath" />
+                        <input type="text" placeholder="path" name="ticketpath" id="inputTicketPath" />
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_submit">
@@ -138,12 +138,12 @@
 
     	    if (path == '' || ticketString == '') {
     	        showInvalidTicketMsg();
-    	    } else {
-    	        hideInvalidTicketMsg();
+                return false;
     	    }
 
+    	    hideInvalidTicketMsg();
     	    var url = $(this).attr('action') + ticketString;
-            return false;
+    	    $(this).submit();
         });
 
         function showInvalidTicketMsg() {
