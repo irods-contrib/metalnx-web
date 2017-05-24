@@ -16,13 +16,10 @@
 
 package com.emc.metalnx.services.tests.tickets;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketClientService;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -41,6 +38,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,10 +105,11 @@ public class TestDownloadWithTicket {
 
     @Test
     public void testDownloadFileUsingATicket() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException, JargonException, IOException {
-        InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
-        assertNotNull(inputStream);
-        assertEquals(FILE_CONTENT, IOUtils.toString(inputStream));
+            DataGridConnectionRefusedException, DataGridNullTicketException, JargonException, IOException,
+            DataGridFileNotFoundException {
+        File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
+        assertNotNull(file);
+        assertEquals(FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));
     }
 
     private void createLocalFile() throws IOException {
