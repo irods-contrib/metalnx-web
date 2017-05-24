@@ -107,12 +107,13 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
+    @ResponseBody
+    public ResponseEntity<String> createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
             DataGridNullTicketException, DataGridMissingPathOnTicketException {
         logger.info("Create new ticket");
         ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
-        ticketService.create(ticket);
+        String ticketString = ticketService.create(ticket);
+        return new ResponseEntity<>(ticketString, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)

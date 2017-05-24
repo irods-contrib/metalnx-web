@@ -366,7 +366,6 @@
     </div>
 </div>
 
-
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
@@ -815,12 +814,21 @@
 		    }
 		}
 
-		function createTicketSuccess(response){                       
+		function createTicketSuccess(ticketString){                       
+			var ticketStringMail = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created" + "&body=Ticket%20String:%20"+ ticketString;
+			var newTicketInfo = " "+ ticketString;
 			$("#ticketCreationSuccessMessage").css("display", "block");
 			$("#ticketCreationSuccessMessage .alert").css("display", "block");
 			$("#actions button").prop("disabled", true);
-
+			$("#newTicketInfoMsg").html(newTicketInfo);
+			$("#sendTicketStringBtn").attr("href", ticketStringMail);
+			setCopyTicketBtn();
 		}
+
+        $("#closeTicketCreationSuccessMessage").click(function(){
+            $("#ticketCreationSuccessMessage").css("display", "none");
+			$("#ticketCreationSuccessMessage .alert").css("display", "none");
+        });
 
 		function createTicketFailure(err){
 			$("#ticketCreationFailureMessage").css("display", "block");

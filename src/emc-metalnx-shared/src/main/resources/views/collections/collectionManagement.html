@@ -26,6 +26,8 @@
     <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet" th:href="@{/css/bootstrapValidator.min.css}"/>
     <!-- Bootstrap Validator JS -->
     <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
+    <!-- Copy to clipboard JS-->
+    <script src="../static/js/copyToClipboard.js" th:src="@{/js/copyToClipboard.js}"></script>
 	<title th:text="#{tab.title.collections}">EMC Metalnx - Collections</title>
 </head>
 
@@ -57,6 +59,12 @@
 			<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
 				<div class="alert alert-success text-center" role="alert">
 					<span th:text="#{ticket.feedback.message.creation.success}"></span>
+                    <span id= "newTicketInfoMsg"  class="newTicketInfo"></span>
+                    <button type="button" class="close pull-right" id="closeTicketCreationSuccessMessage" >
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+                    <a href="#" id="copyTicketStringBtn" class="btn btn-link btn-xs copyTicketBtn" style="margin-left: 20px;"><i class="fa fa-clone" aria-hidden="true" style="margin-right:2px;"></i>Copy Ticket</a>
+                    <a href="#" id="sendTicketStringBtn" class=" btn btn-link btn-xs"><i class="fa fa-envelope-o" aria-hidden="true" style="margin-right:2px;"></i>E-mail Ticket</a>
 				</div>
 			</div>
 			<div class="col-sm-12 hideElement" id="ticketCreationFailureMessage">
@@ -557,7 +565,7 @@
 			var unexpectedError = [[${unexpectedError}]] != null;
 		
 			$(document).ready(function(){	
-				
+
 				// Add popover on page title
 		        $('#collections-page-title').popover({
 		    		title:[[#{collections.management.page.title}]],
