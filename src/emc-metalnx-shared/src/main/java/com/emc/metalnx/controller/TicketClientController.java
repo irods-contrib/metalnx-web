@@ -34,9 +34,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Controller that will handle anonymous access to collections and data objects using tickets.
@@ -87,17 +85,15 @@ public class TicketClientController {
 
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
     public String download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
-                         HttpServletResponse response, Model model)
-            throws IOException, DataGridConnectionRefusedException {
+                         HttpServletResponse response, Model model) throws DataGridConnectionRefusedException {
         logger.info("Getting files using ticket: {}", ticketString);
 
         try {
-            InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
-            String filename = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
-            response.setContentType(APPLICATION_OCTET_STREAM);
-            response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
-            FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
-        } catch (DataGridFileNotFoundException e) {
+            File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
+            if (file != null) {
+                setResponseStream(response, file);
+            }
+        } catch (DataGridFileNotFoundException | IOException e) {
             model.addAttribute("fileNotFound", true);
         } finally {
             ticketClientService.deleteTempTicketDir();
@@ -108,6 +104,29 @@ public class TicketClientController {
         model.addAttribute("ticketString", ticketString);
         model.addAttribute("path", path);
         return "tickets/ticketclient";
+    }
+
+    /**
+     * Sets the HTTP response stream.
+     * @param response HTTP response
+     * @param file file to be sent back with the HTTP response
+     * @throws IOException if Metalnx cannot stream the file
+     */
+    private void setResponseStream(HttpServletResponse response, File file) throws IOException {
+        String filename = file.getName();
+        response.setContentType(APPLICATION_OCTET_STREAM);
+        response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
+        FileCopyUtils.copy(getInputStream(file), response.getOutputStream()); // takes care of closing streams
+    }
+
+    /**
+     * Gets an input stream from a file within a directory
+     * @param file file to get the stream from
+     * @return stream for the file
+     * @throws FileNotFoundException
+     */
+    private InputStream getInputStream(File file) throws FileNotFoundException {
+        return new FileInputStream(file);
     }
 
     /**
