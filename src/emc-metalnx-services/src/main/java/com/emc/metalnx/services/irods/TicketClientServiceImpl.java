@@ -16,9 +16,11 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
@@ -39,7 +41,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 @Service
@@ -82,7 +83,8 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public InputStream getFileFromIRODSUsingTicket(String ticketString, String path) throws IOException {
+    public InputStream getFileFromIRODSUsingTicket(String ticketString, String path)
+            throws DataGridFileNotFoundException {
         InputStream inputStream = null;
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -97,6 +99,9 @@ public class TicketClientServiceImpl implements TicketClientService {
             FileStreamAndInfo fileStreamAndInfo  = ticketClientOperations.redeemTicketGetDataObjectAndStreamBack(
                     ticketString, irodsFile, tempDir);
             inputStream = fileStreamAndInfo.getInputStream();
+        } catch (FileNotFoundException e) {
+            logger.error("Get file using a ticket: File Not Found: {}", e);
+            throw new DataGridFileNotFoundException(e.getMessage());
         } catch (JargonException e) {
             logger.error("Could not get file from grid using ticket: {}", e);
         }

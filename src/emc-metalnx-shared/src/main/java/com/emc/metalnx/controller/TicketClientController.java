@@ -17,6 +17,7 @@
 package com.emc.metalnx.controller;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,15 +86,28 @@ public class TicketClientController {
     }
 
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
-    public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
-                       HttpServletResponse response) throws DataGridConnectionRefusedException, IOException {
+    public String download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
+                         HttpServletResponse response, Model model)
+            throws IOException, DataGridConnectionRefusedException {
         logger.info("Getting files using ticket: {}", ticketString);
-        InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
-        String filename = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
-        response.setContentType(CONTENT_TYPE);
-        response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
-        FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
-        ticketClientService.deleteTempTicketDir();
+
+        try {
+            InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
+            String filename = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
+            response.setContentType(CONTENT_TYPE);
+            response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
+            FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
+        } catch (DataGridFileNotFoundException e) {
+            model.addAttribute("fileNotFound", true);
+        } finally {
+            ticketClientService.deleteTempTicketDir();
+        }
+
+        String objName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
+        model.addAttribute("objName", objName);
+        model.addAttribute("ticketString", ticketString);
+        model.addAttribute("path", path);
+        return "tickets/ticketclient";
     }
 
     /**

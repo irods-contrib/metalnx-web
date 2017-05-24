@@ -106,6 +106,10 @@
         </div>
 
         <div class="panel loading col-xs-12 col-sm-12 col-md-4">
+            <div class="alert alert-danger text-center" role="alert" th:if="${fileNotFound}">
+                <span>Sorry, Metalnx could not find a matching collection or data object.</span>
+            </div>
+
             <h4 class="property-title">
                 <i class="fa fa-file"></i>
                 <span th:text="${objName}"></span>
