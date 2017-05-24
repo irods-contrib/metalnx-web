@@ -22,7 +22,6 @@ import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
-import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
@@ -87,8 +86,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public File getFileFromIRODSUsingTicket(String ticketString, String path)
-            throws DataGridFileNotFoundException {
+    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -110,11 +108,9 @@ public class TicketClientServiceImpl implements TicketClientService {
             if (obj.isDirectory()) {
                 file = zipService.createZip(tempDir, obj);
             }
-        } catch (FileNotFoundException e) {
+        } catch (JargonException e) {
             logger.error("Get file using a ticket: File Not Found: {}", e);
             throw new DataGridFileNotFoundException(e.getMessage());
-        } catch (JargonException e) {
-            logger.error("Could not get file from grid using ticket: {}", e);
         }
 
         return file;

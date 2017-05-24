@@ -84,26 +84,18 @@ public class TicketClientController {
     }
 
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
-    public String download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
-                         HttpServletResponse response, Model model) throws DataGridConnectionRefusedException {
+    public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
+                         HttpServletResponse response)
+            throws DataGridConnectionRefusedException, DataGridFileNotFoundException, IOException {
         logger.info("Getting files using ticket: {}", ticketString);
 
-        try {
-            File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
-            if (file != null) {
-                setResponseStream(response, file);
-            }
-        } catch (DataGridFileNotFoundException | IOException e) {
-            model.addAttribute("fileNotFound", true);
-        } finally {
-            ticketClientService.deleteTempTicketDir();
+        File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
+
+        if (file != null) {
+            setResponseStream(response, file);
         }
 
-        String objName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
-        model.addAttribute("objName", objName);
-        model.addAttribute("ticketString", ticketString);
-        model.addAttribute("path", path);
-        return "tickets/ticketclient";
+        ticketClientService.deleteTempTicketDir();
     }
 
     /**
