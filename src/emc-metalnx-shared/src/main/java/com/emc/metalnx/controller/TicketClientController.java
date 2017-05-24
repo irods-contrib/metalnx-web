@@ -45,7 +45,7 @@ import java.io.InputStream;
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/ticketclient")
 public class TicketClientController {
-    private static final String CONTENT_TYPE = "application/octet-stream";
+    private static final String APPLICATION_OCTET_STREAM = "text/octet-stream";
     private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
     private static final Logger logger = LoggerFactory.getLogger(TicketClientController.class);
     public static final String IRODS_PATH_SEPARATOR = "/";
@@ -94,7 +94,7 @@ public class TicketClientController {
         try {
             InputStream inputStream = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
             String filename = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
-            response.setContentType(CONTENT_TYPE);
+            response.setContentType(APPLICATION_OCTET_STREAM);
             response.setHeader(CONTENT_DISPOSITION, String.format(HEADER_FORMAT, filename));
             FileCopyUtils.copy(inputStream, response.getOutputStream()); // takes care of closing streams
         } catch (DataGridFileNotFoundException e) {
