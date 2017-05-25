@@ -108,6 +108,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="ticketModifyForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                th:text="#{ticket.form.button.cancel}"></button>
+                        <button id="modifyTicketFormBtn" onclick="modifyTicket();" type="button" class="btn btn-primary"
+                                data-dismiss="modal" th:text="#{ticket.form.button.modify}">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
@@ -166,7 +188,9 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            return '<button type="button" class="btn btn-default btn-xs hidden" data-toggle="modal" data-target="#editTicket" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</button><a href="#" class="btn btn-default btn-xs" onclick="deleteTicket(\''+full.ticketString+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
+                            var modifyBtn = '<a href="#" onclick="modifyTicket(\''+full.ticketString+'\')" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
+                            var deleteBtn = '<a href="#" onclick="deleteTicket(\''+full.ticketString+'\')" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                            return modifyBtn + deleteBtn;
                         },
                         "width": "10%",
                         "orderable": false,
@@ -176,6 +200,11 @@
 	            ]
 			} );
 		});
+
+		function modifyTicket(ticketString) {
+		    alert(ticketString);
+		}
+
 		function deleteTicket(ticketString){
             $("#elementToBeRemoved").html(ticketString);
             var permission = $("#"+ticketString).children(".permission").text();
