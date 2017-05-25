@@ -191,7 +191,9 @@ public class TicketServiceImpl implements TicketService {
         List<String> currHosts = tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET);
 
         for(String host: t.getHosts()) {
-            if(!currHosts.contains(host)) tas.addTicketHostRestriction(ticketString, host);
+            if(!host.isEmpty() && !currHosts.contains(host)) {
+                tas.addTicketHostRestriction(ticketString, host);
+            }
         }
 
         for(String host: currHosts) {
@@ -206,7 +208,9 @@ public class TicketServiceImpl implements TicketService {
         List<String> currUsers = tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET);
 
         for(String user: t.getUsers()) {
-            if(!currUsers.contains(user)) tas.addTicketUserRestriction(ticketString, user);
+            if(!user.isEmpty() && !currUsers.contains(user)) {
+                tas.addTicketUserRestriction(ticketString, user);
+            }
         }
 
         for(String user: currUsers) {
@@ -221,7 +225,9 @@ public class TicketServiceImpl implements TicketService {
         List<String> currGroups = tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET);
 
         for(String group: t.getGroups()) {
-            if(!currGroups.contains(group)) tas.addTicketGroupRestriction(ticketString, group);
+            if(!group.isEmpty() && !currGroups.contains(group)) {
+                tas.addTicketGroupRestriction(ticketString, group);
+            }
         }
 
         for(String group: currGroups) {
