@@ -70,6 +70,12 @@
     }
     $(document).ready(function(e){
 
+        var inputPathVal = $("#inputPath").val();
+
+        if (inputPathVal != '') {
+            $("#selectedPath").text(inputPathVal);
+        }
+
         // Users restriction settings
         // Creates bloodhound instance for querying requests
         function createBloodhoundInstance(url, filterFunction) {

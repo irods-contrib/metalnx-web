@@ -23,6 +23,10 @@
         layout:decorator="template">
 
 <head>
+    <link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
+    <script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
+    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet" th:href="@{/css/bootstrapValidator.min.css}"/>
+    <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
     <title th:text="#{tab.title.tickets}"></title>
 </head>
 
@@ -188,8 +192,8 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            var modifyBtn = '<a href="#" onclick="modifyTicket(\''+full.ticketString+'\')" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
-                            var deleteBtn = '<a href="#" onclick="deleteTicket(\''+full.ticketString+'\')" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
+                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
                             return modifyBtn + deleteBtn;
                         },
                         "width": "10%",
@@ -202,7 +206,13 @@
 		});
 
 		function modifyTicket(ticketString) {
-		    alert(ticketString);
+		    var url = [[${urlMap.URL_TICKETS_FORM}]];
+            ajaxEncapsulation(url, "GET", {ticketstring: ticketString}, showModifyTicketForm);
+		}
+
+		function showModifyTicketForm(form) {
+		    $("#ticketModifyForm .modal-body").html(form);
+			$("#ticketModifyForm").modal("show");
 		}
 
 		function deleteTicket(ticketString){
