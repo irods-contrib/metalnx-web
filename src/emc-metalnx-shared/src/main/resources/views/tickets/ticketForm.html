@@ -52,8 +52,7 @@
         <div class="form-group optional">
             <label for="usersToBeAdded" th:text="#{ticket.form.users.label}"></label>
             <br />
-            <input type="search" class="form-control col-md-12" id="usersToBeAdded" name="usersToBeAdded" autocomplete="off"
-                   data-provide="typeahead"/>
+            <input type="search" class="form-control col-md-12" id="usersToBeAdded" th:field="*{users}" autocomplete="off" data-provide="typeahead"/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentUsernameError" id="nonexistentUsernameIcon"></i>
             <small class="help-block hideElement nonexistentUsernameError" id="nonexistentUsernameMsg"
                    th:text="#{permission.validation.username.nonexistent}"></small>

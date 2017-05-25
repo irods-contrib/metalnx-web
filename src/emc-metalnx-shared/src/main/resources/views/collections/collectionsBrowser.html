@@ -829,9 +829,6 @@
 		}      
 
 		function serializeTicketForm(){
-            var ticket = {};
-            var form;
-
             if ($("#inputUsesLimit").val()==''){
                 $("#inputUsesLimit").val(0);
             }
@@ -842,20 +839,22 @@
                 $("#inputWriteFileLimit").val(0);
             }
 
-            form = $("#ticketFormPanel form").serializeArray();
+            var form = $("#ticketFormPanel form").serializeArray();
+            var ticket = {};
+            for (var i = 0; i < form.length; i++) {
+                var name = form[i]['name'];
+                var values = form[i]['value'].split(',');
 
-            $.each(form, function () {
-                if (ticket[this.name]) {
-                    if (!ticket[this.name].push) {
-                        ticket[this.name] = [ticket[this.name]];
+                if (name == 'users' || name == 'groups' || name == 'hosts') {
+                    ticket[name] = [];
+                    for (var v = 0; v < values.length; v++) {
+                        ticket[name].push(values[v]);
                     }
-                    ticket[this.name].push(this.value || '');
                 } else {
-                    ticket[this.name] = this.value || '';
+                    ticket[name] = values[0];
                 }
-            });
+            }
             return ticket;
 		}
-
     /*]]>*/
 </script>
