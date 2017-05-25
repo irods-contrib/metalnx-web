@@ -16,6 +16,9 @@
 
 package com.emc.metalnx.core.domain.entity;
 
+import com.emc.metalnx.core.domain.utils.DataGridJsonDateDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,12 +32,14 @@ public class DataGridTicket implements Serializable {
     private TicketType type;
     private boolean isCollection;
     private int usesLimit;
-    private Date expirationDate;
     private int usesCount;
     private long writeByteLimit;
     private long writeByteCount;
     private int writeFileLimit;
     private int writeFileCount;
+
+    @JsonDeserialize(using = DataGridJsonDateDeserializer.class)
+    private Date expirationDate;
 
     // Ticket restrictions
     private List<String> hosts;
@@ -148,14 +153,17 @@ public class DataGridTicket implements Serializable {
     }
 
     public List<String> getGroups() {
+        if(groups == null) users = new ArrayList<>();
         return groups;
     }
 
     public List<String> getUsers() {
+        if(users == null) users = new ArrayList<>();
         return users;
     }
 
     public List<String> getHosts() {
+        if(hosts == null) users = new ArrayList<>();
         return hosts;
     }
 
