@@ -2007,6 +2007,9 @@ form.registerForm > .pull-right > .btn{
     margin-left: 10px;
     margin-bottom: 15px;
 }
+form.registerForm .bootstrap-tagsinput {
+    width: 100%;
+}
 .advanced-settings{
     clear: both;
     padding: 15px;
