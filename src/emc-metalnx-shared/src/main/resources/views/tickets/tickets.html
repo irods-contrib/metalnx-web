@@ -40,6 +40,19 @@
                 </h1>
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
             </div>
+
+            <!-- Ticket creation success message -->
+            <div class="col-sm-12 hidden" id="ticketModifySuccessMessage">
+                <div class="alert alert-success text-center" role="alert">
+                    <span th:text="#{ticket.feedback.message.creation.success}"></span>
+                </div>
+            </div>
+            <div class="col-sm-12 hidden" id="ticketModifyFailureMessage">
+                <div class="alert alert-danger text-center" role="alert">
+                    <span th:text="#{ticket.feedback.message.creation.failure}"></span>
+                </div>
+            </div>
+
         </div>
         <!-- Ticket deletion succeed -->
         <div class="row">
@@ -122,11 +135,11 @@
                         </button>
                         <h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
                     </div>
-                    <div class="modal-body"></div>
+                    <div class="modal-body"><div id="ticketFormPanel"></div></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
                                 th:text="#{ticket.form.button.cancel}"></button>
-                        <button id="modifyTicketFormBtn" onclick="modifyTicket();" type="button" class="btn btn-primary"
+                        <button id="modifyTicketFormBtn" type="submit" class="btn btn-primary"
                                 data-dismiss="modal" th:text="#{ticket.form.button.modify}">
                         </button>
                     </div>
@@ -134,6 +147,7 @@
             </div>
         </div>
 
+        <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
@@ -211,8 +225,32 @@
 		}
 
 		function showModifyTicketForm(form) {
-		    $("#ticketModifyForm .modal-body").html(form);
+		    $("#ticketModifyForm #ticketFormPanel").html(form);
 			$("#ticketModifyForm").modal("show");
+		}
+
+		$("#modifyTicketFormBtn").click(function(e) {
+		    event.preventDefault();
+
+            if(allFieldsValidated()){
+			    $("#ticketModifyForm").modal("hide");
+                var ticket = JSON.stringify(serializeTicketForm());
+                var url = '/emc-metalnx-web/tickets/';
+                var contentType = "application/json; charset=utf-8";
+                ajaxEncapsulation(url, 'PUT', ticket, modifyTicketSuccess, modifyTicketFailure, null, contentType);
+		    }
+
+            return false;
+		});
+
+		function modifyTicketSuccess(response){                       
+			$("#ticketModifySuccessMessage").css("display", "block");
+			$("#ticketModifySuccessMessage .alert").css("display", "block");
+		}
+
+		function modifyTicketFailure(err){
+			$("#ticketModifyFailureMessage").css("display", "block");
+			$("#ticketModifyFailureMessage .alert").css("display", "block");
 		}
 
 		function deleteTicket(ticketString){

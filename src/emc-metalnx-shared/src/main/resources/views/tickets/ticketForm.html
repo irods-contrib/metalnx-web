@@ -1,7 +1,5 @@
 <!-- Create Ticket Form -->
-<form role="form" class="container-fluid registerForm"
-      method="POST" th:object="${ticket}"
-      th:action="@{${requestMapping}}">
+<form role="form" class="container-fluid registerForm" method="POST" th:object="${ticket}" th:action="@{${requestMapping}}">
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <input type="hidden" class="form-control" id="usersList"/>
     <div class="form-group">
@@ -60,7 +58,7 @@
     </div>
 </form>
 
-<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
+<script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     // Check if all fiels are valid

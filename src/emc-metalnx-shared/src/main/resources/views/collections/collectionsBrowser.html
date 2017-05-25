@@ -366,7 +366,7 @@
     </div>
 </div>
 
-
+<script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
@@ -827,34 +827,5 @@
 			$("#ticketCreationFailureMessage .alert").css("display", "block");
 			$("#actions button").prop("disabled", true);
 		}      
-
-		function serializeTicketForm(){
-            if ($("#inputUsesLimit").val()==''){
-                $("#inputUsesLimit").val(0);
-            }
-            if ($("#inputWriteByteLimit").val()==''){
-                $("#inputWriteByteLimit").val(0);
-            }
-            if ($("#inputWriteFileLimit").val()==''){
-                $("#inputWriteFileLimit").val(0);
-            }
-
-            var form = $("#ticketFormPanel form").serializeArray();
-            var ticket = {};
-            for (var i = 0; i < form.length; i++) {
-                var name = form[i]['name'];
-                var values = form[i]['value'].split(',');
-
-                if (name == 'users' || name == 'groups' || name == 'hosts') {
-                    ticket[name] = [];
-                    for (var v = 0; v < values.length; v++) {
-                        ticket[name].push(values[v]);
-                    }
-                } else {
-                    ticket[name] = values[0];
-                }
-            }
-            return ticket;
-		}
     /*]]>*/
 </script>
