@@ -16,8 +16,11 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
+import com.emc.metalnx.services.interfaces.ZipService;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -27,7 +30,6 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.ticket.TicketClientOperations;
 import org.irods.jargon.ticket.TicketServiceFactory;
 import org.irods.jargon.ticket.TicketServiceFactoryImpl;
-import org.irods.jargon.ticket.io.FileStreamAndInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FilenameFilter;
 
 @Service
 @Transactional
@@ -51,6 +52,9 @@ public class TicketClientServiceImpl implements TicketClientService {
 
     @Autowired
     private ConfigService configService;
+
+    @Autowired
+    private ZipService zipService;
 
     private static final String ANONYMOUS_HOME_DIRECTORY = "";
 
@@ -82,8 +86,8 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public InputStream getFileFromIRODSUsingTicket(String ticketString, String path) throws IOException {
-        InputStream inputStream = null;
+    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException {
+        deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
 
@@ -91,30 +95,51 @@ public class TicketClientServiceImpl implements TicketClientService {
             tempDir.mkdir();
         }
 
+        File file = null;
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);
-            FileStreamAndInfo fileStreamAndInfo  = ticketClientOperations.redeemTicketGetDataObjectAndStreamBack(
-                    ticketString, irodsFile, tempDir);
-            inputStream = fileStreamAndInfo.getInputStream();
+            ticketClientOperations.getOperationFromIRODSUsingTicket(ticketString, irodsFile, tempDir, null, null);
+
+            String filename = path.substring(path.lastIndexOf("/") + 1, path.length());
+            File obj = findFileInDirectory(tempDir, filename);
+            file = obj;
+
+            if (obj.isDirectory()) {
+                file = zipService.createZip(tempDir, obj);
+            }
         } catch (JargonException e) {
-            logger.error("Could not get file from grid using ticket: {}", e);
+            logger.error("Get file using a ticket: File Not Found: {}", e);
+            throw new DataGridFileNotFoundException(e.getMessage());
         }
 
-        if (inputStream == null) {
-            deleteTempTicketDir();
-        }
-
-        return inputStream;
+        return file;
     }
 
     @Override
     public void deleteTempTicketDir() {
-        File tempDir = new File(TEMP_TICKET_DIR);
+        FileUtils.deleteQuietly(new File(TEMP_TICKET_DIR));
+    }
 
-        if (tempDir.exists()) {
-            tempDir.delete();
+    /**
+     * Finds a file/directory within another directory
+     * @param directory directory to look for files
+     * @param filename file where are looking for
+     * @return File representing the file found within the given directory
+     * @throws DataGridFileNotFoundException if Metalnx cannot find the file locally
+     */
+    private File findFileInDirectory(File directory, String filename) throws DataGridFileNotFoundException {
+        File[] files = directory.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return filename.equals(name);
+            }
+        });
+
+        if (files == null || files.length == 0) {
+            throw new DataGridFileNotFoundException("Could not find files locally");
         }
+
+        return files[0];
     }
 
     /**

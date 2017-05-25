@@ -164,8 +164,7 @@ input{
     font-size: 16px;
 }
 
-.icon-username-check,
-.icon-password-check {
+.icon-input-check {
     position: absolute;
     z-index: 1;
     right: 15px;

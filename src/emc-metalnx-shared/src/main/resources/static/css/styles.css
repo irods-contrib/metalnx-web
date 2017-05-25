@@ -13,6 +13,14 @@ body {
    	color: #656363;
 }
 
+#page-wrapper-tickets .panel.loading p {
+    clear: both;
+}
+
+#page-wrapper-tickets .property-title {
+    margin-left: 0;
+}
+
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn{
 	opacity: 1 !important;
 	border-color: lightgray;
@@ -2123,10 +2131,13 @@ form.registerForm > .pull-right > .btn{
 	.sidebar.nano > .nano-pane > .nano-slider{
 		background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0;
 	}
-	#page-wrapper {
+	#page-wrapper, #page-wrapper-tickets {
 		position: inherit;
-		margin: 0 0 0px 100px;
 		padding: 0 30px;
+	}
+
+	#page-wrapper {
+		margin: 0 0 0px 100px;
 		border-left: 1px solid #e7e7e7;
 	}
 	#side-menu li a span.fa-stack.fa-lg
