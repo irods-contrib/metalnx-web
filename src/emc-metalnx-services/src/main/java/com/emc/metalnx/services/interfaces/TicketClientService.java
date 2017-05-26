@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 
 import java.io.File;
 
@@ -38,9 +38,9 @@ public interface TicketClientService {
      * @param ticketString ticket string to access a collection or an object
      * @param path path to get files from
      * @return {@code File} file
-     * @throws DataGridFileNotFoundException if path cannot be found
+     * @throws DataGridTicketFileNotFound if path cannot be found
      */
-    File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException;
+    File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound;
 
     /**
      * Deletes the temporary directory created after downloading files from the grid using a ticket.

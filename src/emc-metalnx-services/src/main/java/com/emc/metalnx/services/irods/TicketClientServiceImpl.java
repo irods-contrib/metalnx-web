@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
@@ -86,7 +86,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException {
+    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -103,6 +103,11 @@ public class TicketClientServiceImpl implements TicketClientService {
 
             String filename = path.substring(path.lastIndexOf("/") + 1, path.length());
             File obj = findFileInDirectory(tempDir, filename);
+
+            if (obj == null) {
+                throw new DataGridTicketFileNotFound("Could not find files locally", path, ticketString);
+            }
+
             file = obj;
 
             if (obj.isDirectory()) {
@@ -110,7 +115,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
         } catch (JargonException e) {
             logger.error("Get file using a ticket: File Not Found: {}", e);
-            throw new DataGridFileNotFoundException(e.getMessage());
+            throw new DataGridTicketFileNotFound(e.getMessage(), path, ticketString);
         }
 
         return file;
@@ -126,18 +131,15 @@ public class TicketClientServiceImpl implements TicketClientService {
      * @param directory directory to look for files
      * @param filename file where are looking for
      * @return File representing the file found within the given directory
-     * @throws DataGridFileNotFoundException if Metalnx cannot find the file locally
      */
-    private File findFileInDirectory(File directory, String filename) throws DataGridFileNotFoundException {
+    private File findFileInDirectory(File directory, String filename) {
         File[] files = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return filename.equals(name);
             }
         });
 
-        if (files == null || files.length == 0) {
-            throw new DataGridFileNotFoundException("Could not find files locally");
-        }
+        if (files == null || files.length == 0) return null;
 
         return files[0];
     }

@@ -106,7 +106,7 @@ public class TestDownloadWithTicket {
     @Test
     public void testDownloadFileUsingATicket() throws DataGridMissingPathOnTicketException,
             DataGridConnectionRefusedException, DataGridNullTicketException, JargonException, IOException,
-            DataGridFileNotFoundException {
+            DataGridTicketFileNotFound {
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
         assertNotNull(file);
         assertEquals(FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));

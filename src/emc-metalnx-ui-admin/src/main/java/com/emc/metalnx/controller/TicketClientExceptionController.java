@@ -16,15 +16,14 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.io.IOException;
+import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {
@@ -33,10 +32,17 @@ public class TicketClientExceptionController {
     @Autowired
     private TicketClientService ticketClientService;
 
-	@ExceptionHandler({DataGridFileNotFoundException.class, IOException.class})
-	public String handleTicketFileNotFound() {
+	@ExceptionHandler({DataGridTicketFileNotFound.class})
+	public ModelAndView handleTicketFileNotFound(DataGridTicketFileNotFound fileNotFound) {
         logger.error("Ticket - file not found");
         ticketClientService.deleteTempTicketDir();
-		return "tickets/ticketclienterror";
+        String path = fileNotFound.getPath();
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("error", true);
+        mav.addObject("objName", path.substring(0, path.lastIndexOf("/")));
+        mav.addObject("path", path);
+        mav.addObject("ticketString", fileNotFound.getTicketString());
+        mav.setViewName("tickets/ticketclient");
+		return mav;
 	}
 }
