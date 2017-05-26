@@ -92,6 +92,7 @@ public class URLMap {
     public static final String URL_LOGOUT = "/logout/";
 
     public static final String URL_TICKETS = "/tickets/";
+    public static final String URL_TICKETS_FORM = "/emc-metalnx-web/tickets/ticketForm";
     public static final String URL_TICKETS_DELETE = "/emc-metalnx-web/tickets/";
     public static final String URL_TICKETS_CLIENT = "/ticketclient/";
 }

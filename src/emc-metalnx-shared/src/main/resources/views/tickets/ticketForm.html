@@ -1,7 +1,5 @@
 <!-- Create Ticket Form -->
-<form role="form" class="container-fluid registerForm"
-      method="POST" th:object="${ticket}"
-      th:action="@{${requestMapping}}">
+<form role="form" class="container-fluid registerForm" method="POST" th:object="${ticket}" th:action="@{${requestMapping}}">
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <input type="hidden" class="form-control" id="usersList"/>
     <div class="form-group">
@@ -46,7 +44,7 @@
         </div>
         <div class="form-group optional">
             <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
-            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
+            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDateStr}" th:value="*{expirationDateStr}"/>
         </div>
         <div class="form-group optional">
             <label for="usersToBeAdded" th:text="#{ticket.form.users.label}"></label>
@@ -67,7 +65,7 @@
     </div>
 </form>
 
-<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
+<script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     // Check if all fiels are valid
@@ -76,6 +74,12 @@
         return validated;
     }
     $(document).ready(function(e){
+
+        var inputPathVal = $("#inputPath").val();
+
+        if (inputPathVal != '') {
+            $("#selectedPath").text(inputPathVal);
+        }
 
         // Users restriction settings
         // Creates bloodhound instance for querying requests

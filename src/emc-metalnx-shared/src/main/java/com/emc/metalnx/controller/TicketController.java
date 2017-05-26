@@ -57,8 +57,18 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/ticketForm", method = RequestMethod.GET)
-    public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
-        DataGridTicket ticket = new DataGridTicket();
+    public String createTicketForm(Model model,
+                                   @RequestParam(value = "ticketstring", required = false) String ticketString)
+            throws DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+
+        DataGridTicket ticket;
+
+        if(ticketString != null && !ticketString.isEmpty()) {
+            ticket = ticketService.find(ticketString);
+        } else {
+            ticket = new DataGridTicket();
+        }
+
         model.addAttribute("ticket", ticket);
         model.addAttribute("requestMapping","tickets/");
         return "tickets/ticketForm";
