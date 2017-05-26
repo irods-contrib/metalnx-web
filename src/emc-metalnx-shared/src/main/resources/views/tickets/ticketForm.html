@@ -44,7 +44,7 @@
         </div>
         <div class="form-group optional">
             <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
-            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDate}" value=""/>
+            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDateStr}" th:value="*{expirationDateStr}"/>
         </div>
 
         <div class="form-group optional">

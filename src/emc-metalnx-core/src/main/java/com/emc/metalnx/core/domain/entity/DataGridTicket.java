@@ -18,8 +18,12 @@ package com.emc.metalnx.core.domain.entity;
 
 import com.emc.metalnx.core.domain.utils.DataGridJsonDateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +32,9 @@ import java.util.List;
  * Class that represents a ticket.
  */
 public class DataGridTicket implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(DataGridTicket.class);
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     private String ticketString, path, owner;
     private TicketType type;
     private boolean isCollection;
@@ -40,6 +47,8 @@ public class DataGridTicket implements Serializable {
 
     @JsonDeserialize(using = DataGridJsonDateDeserializer.class)
     private Date expirationDate;
+
+    private String expirationDateStr;
 
     // Ticket restrictions
     private List<String> hosts;
@@ -65,6 +74,7 @@ public class DataGridTicket implements Serializable {
         this.path = path;
         ticketString = "";
         owner = "";
+        expirationDateStr = "";
         type = TicketType.READ;
         usesLimit = 0;
         writeByteLimit = 0;
@@ -122,6 +132,14 @@ public class DataGridTicket implements Serializable {
 
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public void setExpirationDateStr(String expirationDateStr) {
+        if (expirationDateStr == null) {
+            this.expirationDateStr = "";
+            return;
+        }
+        this.expirationDateStr = expirationDateStr;
     }
 
     public void setUsesLimit(int usesLimit) {
@@ -187,7 +205,24 @@ public class DataGridTicket implements Serializable {
         return usesCount;
     }
 
+    public String getExpirationDateStr() {
+        if (expirationDate != null) {
+            expirationDateStr = sdf.format(expirationDate);
+        } else if (expirationDate == null && expirationDateStr.isEmpty()) {
+            expirationDateStr = "";
+        }
+        return expirationDateStr;
+    }
+
     public Date getExpirationDate() {
+        if (!expirationDateStr.isEmpty()) {
+            try {
+                expirationDate = sdf.parse(expirationDateStr);
+            } catch (ParseException e) {
+                logger.error("Could not parse expiration date");
+            }
+        }
+
         return expirationDate;
     }
 
