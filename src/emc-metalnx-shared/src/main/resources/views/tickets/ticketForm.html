@@ -22,7 +22,7 @@
     <div class="advanced-settings hidden">
         <div class="form-group optional">
             <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
-            <input type="text" class="form-control" id="inputTicketString" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
+            <input type="text" class="form-control" id="inputTicketString" maxlength="15" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidTicketStringIcon"></i>
             <small class="help-block hideElement" id="ticketStringInvalidMsg" th:text="#{ticket.form.validation.input.ticket.string.not.valid}"></small>
         </div>

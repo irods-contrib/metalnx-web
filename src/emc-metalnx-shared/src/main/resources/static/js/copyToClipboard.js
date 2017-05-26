@@ -18,10 +18,9 @@
 function setCopyTicketBtn(){
     var copyTicketBtn = document.querySelector('.copyTicketBtn');
     copyTicketBtn.addEventListener('click', function(event) {
-        var ticketString = document.querySelector('.newTicketInfo');
-        console.log(ticketString);
+        var ticketInfo = document.querySelector('#newTicketInfoCopy');
         var range = document.createRange();
-        range.selectNode(ticketString);
+        range.selectNode(ticketInfo);
         window.getSelection().addRange(range);
         document.execCommand('copy');
         window.getSelection().removeAllRanges();

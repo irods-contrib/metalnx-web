@@ -814,15 +814,17 @@
 		    }
 		}
 
-		function createTicketSuccess(ticketString){                       
-			var ticketStringMail = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created" + "&body=Ticket%20String:%20"+ ticketString;
-			var newTicketInfo = " "+ ticketString;
+		function createTicketSuccess(ticket){     
+			var ticketStringMail = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created" + "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20"+ ticket.ticketString + "%0D%0APath:%20"+ ticket.path;
+			var newTicketInfo = " "+ ticket.ticketString;
+			var newTicketInfoCopy = " Ticket String:"+ ticket.ticketString + " | Path: " + ticket.path;
 			$("#ticketCreationSuccessMessage").css("display", "block");
 			$("#ticketCreationSuccessMessage .alert").css("display", "block");
 			$("#actions button").prop("disabled", true);
 			$("#newTicketInfoMsg").html(newTicketInfo);
 			$("#sendTicketStringBtn").attr("href", ticketStringMail);
-			setCopyTicketBtn();
+			$("#newTicketInfoCopy").html(newTicketInfoCopy);
+			setCopyTicketBtn(newTicketInfo);
 		}
 
         $("#closeTicketCreationSuccessMessage").click(function(){
