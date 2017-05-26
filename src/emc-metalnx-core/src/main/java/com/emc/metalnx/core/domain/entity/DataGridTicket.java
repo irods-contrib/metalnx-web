@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class DataGridTicket implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DataGridTicket.class);
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private String ticketString, path, owner;
     private TicketType type;
@@ -207,8 +207,8 @@ public class DataGridTicket implements Serializable {
 
     public String getExpirationDateStr() {
         if (expirationDate != null) {
-            expirationDateStr = sdf.format(expirationDate);
-        } else if (expirationDate == null && expirationDateStr.isEmpty()) {
+            expirationDateStr = dateFormat.format(expirationDate);
+        } else if (expirationDateStr.isEmpty()) {
             expirationDateStr = "";
         }
         return expirationDateStr;
@@ -217,7 +217,7 @@ public class DataGridTicket implements Serializable {
     public Date getExpirationDate() {
         if (!expirationDateStr.isEmpty()) {
             try {
-                expirationDate = sdf.parse(expirationDateStr);
+                expirationDate = dateFormat.parse(expirationDateStr);
             } catch (ParseException e) {
                 logger.error("Could not parse expiration date");
             }

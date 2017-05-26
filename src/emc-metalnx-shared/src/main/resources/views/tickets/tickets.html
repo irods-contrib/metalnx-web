@@ -44,12 +44,12 @@
             <!-- Ticket creation success message -->
             <div class="col-sm-12 hidden" id="ticketModifySuccessMessage">
                 <div class="alert alert-success text-center" role="alert">
-                    <span th:text="#{ticket.feedback.message.creation.success}"></span>
+                    <span th:text="#{ticket.feedback.message.modify.success}"></span>
                 </div>
             </div>
             <div class="col-sm-12 hidden" id="ticketModifyFailureMessage">
                 <div class="alert alert-danger text-center" role="alert">
-                    <span th:text="#{ticket.feedback.message.creation.failure}"></span>
+                    <span th:text="#{ticket.feedback.message.modify.failure}"></span>
                 </div>
             </div>
 
@@ -243,12 +243,15 @@
             return false;
 		});
 
-		function modifyTicketSuccess(response){                       
+		function modifyTicketSuccess(response){       
+			$("#ticketModifySuccessMessage").removeClass("hidden");               
 			$("#ticketModifySuccessMessage").css("display", "block");
 			$("#ticketModifySuccessMessage .alert").css("display", "block");
+            $('#ticketsTable').DataTable().ajax.reload();
 		}
 
 		function modifyTicketFailure(err){
+			$("#ticketModifyFailureMessage").removeClass("hidden");   
 			$("#ticketModifyFailureMessage").css("display", "block");
 			$("#ticketModifyFailureMessage .alert").css("display", "block");
 		}
