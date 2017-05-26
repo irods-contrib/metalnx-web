@@ -1,3 +1,10 @@
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
 @font-face {
 	font-family: websiteFont;
 	src: url("../fonts/Lato-Regular.ttf");
@@ -2015,6 +2022,7 @@ form.registerForm .bootstrap-tagsinput {
     padding: 15px;
     border-radius: 5px;
     background: #f8f8f8;
+    height: 840px;
 }
 #collectionsViewForUser .breadcrumb, #collectionsViewForGroup .breadcrumb{
 	margin-left: 0px;

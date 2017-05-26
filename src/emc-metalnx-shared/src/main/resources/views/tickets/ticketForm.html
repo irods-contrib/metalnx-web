@@ -64,6 +64,25 @@
             <small class="help-block hideElement nonexistentGroupError" id="nonexistentGroupMsg"
                    th:text="#{permission.validation.group.nonexistent}"></small>
         </div>
+        <div class="form-group optional">
+            <label for="inputHostnames" class="control-label" style="width:100%;">Hostname</label>
+            <input type="text" class="form-control pull-left" id="inputNewHostname" style="width:78%;margin-bottom:10px;"/>
+            <button id="addHostname" class="btn btn-default pull-right"><i class="fa fa-plus-circle" aria-hidden="true"></i>Add Host</button>
+            <small class="help-block hideElement nonexistentGroupError" id="nonexistentGroupMsg"
+                   th:text="#{permission.validation.group.nonexistent}"></small>
+            <div class="panel-hostnames" style="clear:both;height: 140px; overflow: scroll; background: #fff; border: 1px solid #ccc; margin-top: 8px; border-radius: 5px;box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);">
+                <ul id="list-hostnames" style="padding: 2px;">
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                    <li style="border-bottom: 1px dotted lightgray; padding: 10px;"><span class="">hostname....</span><button class="btn btn-link pull-right" style="margin-top:-5px;"><i class="fa fa-minus-circle text-danger" aria-hidden="true"></i></button></li>
+                </ul>
+                <input type="hidden" id="hostnames"/>
+            </div>
+        </div>
     </div>
 </form>
 
