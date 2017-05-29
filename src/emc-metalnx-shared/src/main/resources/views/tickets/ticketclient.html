@@ -244,6 +244,12 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
     function showTicketUploadModal() {
+        $("#filesList").empty();
+        $("#numberFilesUpload").html(0);
+        $("#browseButton").show();
+
+        var input = $("input[name='files']");
+        input.replaceWith(input.val('').clone(true));
         $("#ticketUploadModal").modal("show");
     }
 
