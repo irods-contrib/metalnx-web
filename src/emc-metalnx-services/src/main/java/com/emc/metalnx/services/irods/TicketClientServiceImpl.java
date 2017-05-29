@@ -77,22 +77,25 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath)
+    public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
             throws DataGridMissingTicketString, DataGridMissingPathOnTicketException, DataGridTicketFileNotFound {
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridMissingTicketString("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
             throw new DataGridMissingPathOnTicketException("Ticket path not provided");
-        } else if (file == null) {
+        } else if (localFile == null) {
             throw new DataGridTicketFileNotFound("File not provided", destPath, ticketString);
         }
 
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
-            IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(destPath);
-            ticketClientOperations.putFileToIRODSUsingTicket(ticketString, file, irodsFile, null, null);
+            String targetPath = String.format("%s/%s", destPath, localFile.getName());
+            IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
+            ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
+        } finally {
+            FileUtils.deleteQuietly(localFile);
         }
     }
 
@@ -106,7 +109,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             tempDir.mkdir();
         }
 
-        File file = null;
+        File file;
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);

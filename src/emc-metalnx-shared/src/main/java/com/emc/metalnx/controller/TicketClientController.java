@@ -132,7 +132,7 @@ public class TicketClientController {
      * @throws IOException
      */
     private File multipartToFile(MultipartFile multipartFile) throws IllegalStateException, IOException {
-        File convFile = new File(multipartFile.getName());
+        File convFile = new File(multipartFile.getOriginalFilename());
         multipartFile.transferTo(convFile);
         return convFile;
     }

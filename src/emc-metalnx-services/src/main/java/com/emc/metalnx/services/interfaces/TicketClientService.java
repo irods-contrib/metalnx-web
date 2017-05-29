@@ -30,13 +30,13 @@ public interface TicketClientService {
     /**
      * Transfers a file to the grid using a ticket.
      * @param ticketString ticket string
-     * @param file file to be transferred to the grid
+     * @param localFile local file to be transferred to the grid
      * @param destPath path where the file will be uploaded to
      * @throws DataGridMissingTicketString if ticket string is not provided
      * @throws DataGridMissingPathOnTicketException if path is not provided
      * @throws DataGridTicketFileNotFound if file is null
      */
-    void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath)
+    void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
             throws DataGridMissingTicketString, DataGridMissingPathOnTicketException, DataGridTicketFileNotFound;
 
     /**

@@ -115,17 +115,17 @@ function uploadAndUpdateStatus(file, index, totalFiles){
             return xhr;
         },
         success: function (res) {
-            /*var response = $.parseJSON(res);
-            var path = response.path;
-            var msg = response.msg;
-            showTransferCompletedMsg(index, msg);
+            //var response = $.parseJSON(res);
+            //var path = response.path;
+            //var msg = response.msg;
+            showTransferCompletedMsg(index, "File transferred");
             if((index+1) < totalFiles){
                 uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
             else if((index+1) == totalFiles){
                 unsetOperationInProgress();
                 $('title').html(originalPagetitle);
-            }*/
+            }
         },
         error: function(xhr, status, error){
             var error_response = $.parseJSON(xhr.responseText);
