@@ -28,7 +28,6 @@ var originalPagetitle = $('title').html();
 
 $("input[name='files']").change(function () {
 	resolvedFileNames = [];
-    console.log("hehrehree");
 	files = $("input[name='files']").prop("files");
 	$('#numberFilesUpload').html(files.length);
 	$('#browseButton').hide();
