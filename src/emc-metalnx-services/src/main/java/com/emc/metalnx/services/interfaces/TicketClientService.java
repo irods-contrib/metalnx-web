@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.services.interfaces;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 
 import java.io.File;
@@ -30,8 +32,12 @@ public interface TicketClientService {
      * @param ticketString ticket string
      * @param file file to be transferred to the grid
      * @param destPath path where the file will be uploaded to
+     * @throws DataGridMissingTicketString if ticket string is not provided
+     * @throws DataGridMissingPathOnTicketException if path is not provided
+     * @throws DataGridTicketFileNotFound if file is null
      */
-    void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath);
+    void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath)
+            throws DataGridMissingTicketString, DataGridMissingPathOnTicketException, DataGridTicketFileNotFound;
 
     /**
      * Gets a file from the grid.

@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
@@ -75,7 +77,16 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath) {
+    public void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath)
+            throws DataGridMissingTicketString, DataGridMissingPathOnTicketException, DataGridTicketFileNotFound {
+        if (ticketString == null || ticketString.isEmpty()) {
+            throw new DataGridMissingTicketString("Ticket String not provided");
+        } else if (destPath == null || destPath.isEmpty()) {
+            throw new DataGridMissingPathOnTicketException("Ticket path not provided");
+        } else if (file == null) {
+            throw new DataGridTicketFileNotFound("File not provided", destPath, ticketString);
+        }
+
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(destPath);

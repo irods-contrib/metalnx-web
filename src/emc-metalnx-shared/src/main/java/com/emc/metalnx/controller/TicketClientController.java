@@ -17,6 +17,8 @@
 package com.emc.metalnx.controller;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
@@ -67,7 +69,8 @@ public class TicketClientController {
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
-            throws DataGridConnectionRefusedException, IOException {
+            throws DataGridConnectionRefusedException, IOException, DataGridMissingTicketString,
+            DataGridMissingPathOnTicketException, DataGridTicketFileNotFound {
         logger.info("Uploading files using ticket: {}", ticketString);
 
         if (!(request instanceof MultipartHttpServletRequest)) {
@@ -77,7 +80,7 @@ public class TicketClientController {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartRequest.getFile("file");
-        String destPath = multipartRequest.getParameter("destPath");
+        String destPath = multipartRequest.getParameter("path");
 
         File file = multipartToFile(multipartFile);
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, file, destPath);

@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.controller;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
@@ -32,7 +36,8 @@ public class TicketClientExceptionController {
     @Autowired
     private TicketClientService ticketClientService;
 
-	@ExceptionHandler({DataGridTicketFileNotFound.class})
+	@ExceptionHandler({DataGridMissingTicketString.class, DataGridMissingPathOnTicketException.class,
+            DataGridTicketFileNotFound.class, IOException.class})
 	public ModelAndView handleTicketFileNotFound(DataGridTicketFileNotFound fileNotFound) {
         logger.error("Ticket - file not found");
         ticketClientService.deleteTempTicketDir();
