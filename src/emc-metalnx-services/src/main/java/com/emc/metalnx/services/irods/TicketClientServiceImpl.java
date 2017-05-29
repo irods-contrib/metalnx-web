@@ -104,6 +104,8 @@ public class TicketClientServiceImpl implements TicketClientService {
             int code = e.getUnderlyingIRODSExceptionCode();
             if (code == -892000) {
                 throw new DataGridTicketUploadException("Ticket uses exceeded");
+            } else if (code == -896000) {
+                throw new DataGridTicketUploadException("Ticket write uses exceeded");
             }
         } finally {
             FileUtils.deleteQuietly(localFile);
