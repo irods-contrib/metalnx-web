@@ -93,11 +93,18 @@ public class TicketClientServiceImpl implements TicketClientService {
             String targetPath = String.format("%s/%s", destPath, localFile.getName());
             IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
-        } catch (OverwriteException | CatNoAccessException e) {
+        } catch (OverwriteException e) {
             logger.error("Could not transfer file to the grid. File already exists: {}", e);
+            throw new DataGridTicketUploadException("File already exists");
+        } catch(CatNoAccessException e) {
+            logger.error("Could not transfer file to the grid. Cat no access: {}", e);
             throw new DataGridTicketUploadException(e.getMessage());
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
+            int code = e.getUnderlyingIRODSExceptionCode();
+            if (code == -892000) {
+                throw new DataGridTicketUploadException("Ticket uses exceeded");
+            }
         } finally {
             FileUtils.deleteQuietly(localFile);
         }
