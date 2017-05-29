@@ -23,6 +23,7 @@ import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.exception.CatNoAccessException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.OverwriteException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -92,9 +93,9 @@ public class TicketClientServiceImpl implements TicketClientService {
             String targetPath = String.format("%s/%s", destPath, localFile.getName());
             IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
-        } catch (OverwriteException e) {
+        } catch (OverwriteException | CatNoAccessException e) {
             logger.error("Could not transfer file to the grid. File already exists: {}", e);
-            throw new DataGridTicketUploadException("File already exists");
+            throw new DataGridTicketUploadException(e.getMessage());
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
         } finally {
