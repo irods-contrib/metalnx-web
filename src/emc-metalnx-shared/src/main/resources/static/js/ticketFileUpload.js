@@ -58,21 +58,16 @@ $("#ticketUploadButton").click(function(){
 	$('.progress-bar.progress-bar-striped.active').css('width', '0%');
 	$('.progress-bar.progress-bar-striped.active').attr('aria-valuenow', 0);
 	$('.progress-bar.progress-bar-striped.active').html('0%');
-	$('#uploadModal').modal('hide');
+	$('#ticketUploadModal').modal('hide');
 	$('#uploadIcon').hide();
-	$('#showCollectionFormBtn').hide();
-	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);
-
-	//var uploadItems = "";
-	//var currFilePos = 0;
 
     $('#uploadStatusIcon').removeClass("hide");
     $('#uploadStatusIcon ul.dropdown-menu').empty();
     var uploadItems = "";
 
     $.each(files, function(index, file){
-        uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
+        uploadItems += '<li id="' + index + '"><a class="col-sm-12">'+
         '<input type="hidden" class="paused" value="false" />'+
         '<div class="col-sm-8" style="float:left; padding-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
             '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
@@ -120,7 +115,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
             return xhr;
         },
         success: function (res) {
-            var response = $.parseJSON(res);
+            /*var response = $.parseJSON(res);
             var path = response.path;
             var msg = response.msg;
             showTransferCompletedMsg(index, msg);
@@ -128,10 +123,9 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                 uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
             else if((index+1) == totalFiles){
-                getSubDirectories(path);
                 unsetOperationInProgress();
                 $('title').html(originalPagetitle);
-            }
+            }*/
         },
         error: function(xhr, status, error){
             var error_response = $.parseJSON(xhr.responseText);
@@ -141,8 +135,6 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                 uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
             else if((index+1) == totalFiles) {
-                //resolvedFileNames = [];
-                getSubDirectories(error_response.path);
                 unsetOperationInProgress();
                 $('title').html(originalPagetitle);
             }
