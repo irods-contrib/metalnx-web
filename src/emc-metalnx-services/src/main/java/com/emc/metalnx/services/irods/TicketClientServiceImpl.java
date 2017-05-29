@@ -16,9 +16,8 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
@@ -78,13 +77,13 @@ public class TicketClientServiceImpl implements TicketClientService {
 
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
-            throws DataGridMissingTicketString, DataGridMissingPathOnTicketException, DataGridTicketFileNotFound {
+            throws DataGridTicketUploadException {
         if (ticketString == null || ticketString.isEmpty()) {
-            throw new DataGridMissingTicketString("Ticket String not provided");
+            throw new DataGridTicketUploadException("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
-            throw new DataGridMissingPathOnTicketException("Ticket path not provided");
+            throw new DataGridTicketUploadException("Ticket path not provided");
         } else if (localFile == null) {
-            throw new DataGridTicketFileNotFound("File not provided", destPath, ticketString);
+            throw new DataGridTicketUploadException("File not provided");
         }
 
         try {

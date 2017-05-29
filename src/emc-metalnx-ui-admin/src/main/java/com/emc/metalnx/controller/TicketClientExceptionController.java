@@ -16,15 +16,17 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingTicketString;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -36,10 +38,8 @@ public class TicketClientExceptionController {
     @Autowired
     private TicketClientService ticketClientService;
 
-	@ExceptionHandler({DataGridMissingTicketString.class, DataGridMissingPathOnTicketException.class,
-            DataGridTicketFileNotFound.class, IOException.class})
+	@ExceptionHandler({DataGridTicketFileNotFound.class, IOException.class})
 	public ModelAndView handleTicketFileNotFound(DataGridTicketFileNotFound fileNotFound) {
-        logger.error("Ticket - file not found");
         ticketClientService.deleteTempTicketDir();
         String path = fileNotFound.getPath();
         ModelAndView mav = new ModelAndView();
@@ -50,4 +50,12 @@ public class TicketClientExceptionController {
         mav.setViewName("tickets/ticketclient");
 		return mav;
 	}
+
+    @ExceptionHandler({DataGridTicketUploadException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public String handleTicketFileUploadError(DataGridTicketUploadException e) {
+        ticketClientService.deleteTempTicketDir();
+        return e.getMessage();
+    }
 }

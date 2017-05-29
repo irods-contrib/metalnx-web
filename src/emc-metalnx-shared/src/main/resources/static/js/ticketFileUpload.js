@@ -125,9 +125,8 @@ function uploadAndUpdateStatus(file, index, totalFiles){
             }
         },
         error: function(xhr, status, error){
-            var error_response = $.parseJSON(xhr.responseText);
-
-            showUploadErrorMsg(index, error_response.msg, error_response.errorType);
+            var error_response = xhr.responseText;
+            showUploadErrorMsg(index, error_response, error_response.errorType);
             if((index+1) < totalFiles){
                 uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
@@ -151,10 +150,10 @@ function uploadAndUpdateStatus(file, index, totalFiles){
 function showUploadErrorMsg(fileId, errorMsg, type) {
     var id = '#' + fileId + ' .progressWrapper';
 
-    var icon = type.indexOf(uploadWarning) != -1 ? 'ok' : 'remove';
-    var textColor = type.indexOf(uploadWarning) != -1 ? uploadWarning : uploadDanger;
+    var icon = 'remove';
+    var textColor = uploadDanger;
 
-    updateBadge(true, type);
+    updateBadge(true);
 
     $(id).html(
         '<p class="text-' + textColor + '">'+
@@ -199,29 +198,24 @@ function showTransferMsg(fileId, icon, msg) {
 }
 
 var uploadSuccess = 'success';
-var uploadWarning = 'warning';
 var uploadDanger = 'danger';
 
 function resetBadge() {
     var badge = $('#uploadStatusIcon .badge');
     badge.removeClass(uploadSuccess);
-    badge.removeClass(uploadWarning);
     badge.removeClass(uploadDanger);
 }
 
-function updateBadge(hasError, errorType) {
+function updateBadge(hasError) {
     var badge = $('#uploadStatusIcon .badge');
     var badgeColor = uploadSuccess;
 
-    if (hasError) badgeColor = errorType.indexOf(uploadWarning) != -1 ? uploadWarning : uploadDanger;
-
-    if(badgeColor == uploadWarning && badge.hasClass(uploadDanger)) return;
-    if(badgeColor == uploadSuccess && (badge.hasClass(uploadWarning) || badge.hasClass(uploadDanger))) return;
+    if (hasError) badgeColor = uploadDanger;
+    if (badge.hasClass(uploadDanger)) return;
+    if (badgeColor == uploadSuccess && (badge.hasClass(uploadDanger))) return;
 
     badge.removeClass(uploadDanger);
-    badge.removeClass(uploadWarning);
     badge.removeClass(uploadSuccess);
-
     badge.addClass(badgeColor);
 }
 
