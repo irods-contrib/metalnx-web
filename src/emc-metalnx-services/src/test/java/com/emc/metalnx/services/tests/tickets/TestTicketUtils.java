@@ -18,12 +18,15 @@ package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.Ticket;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -102,5 +105,15 @@ public class TestTicketUtils {
 
     public List<String> listAllGroupRestrictionsForSpecifiedTicket(String ticketString) throws JargonException {
         return ticketAdminService.listAllGroupRestrictionsForSpecifiedTicket(ticketString, 0);
+    }
+
+    public File createLocalFile(String filename) throws IOException {
+        File file = new File(filename);
+        FileUtils.writeByteArrayToFile(file, "This is a test for ticket".getBytes());
+        return file;
+    }
+
+    public File createLocalFile() throws IOException {
+        return createLocalFile("test-ticket-file-" + System.currentTimeMillis());
     }
 }
