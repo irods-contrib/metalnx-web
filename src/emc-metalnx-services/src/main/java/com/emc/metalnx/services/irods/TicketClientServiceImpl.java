@@ -106,6 +106,8 @@ public class TicketClientServiceImpl implements TicketClientService {
                 throw new DataGridTicketUploadException("Ticket uses exceeded");
             } else if (code == -896000) {
                 throw new DataGridTicketUploadException("Ticket write uses exceeded");
+            } else if (code == -893000) {
+                throw new DataGridTicketUploadException("Ticket user excluded");
             }
         } finally {
             FileUtils.deleteQuietly(localFile);
