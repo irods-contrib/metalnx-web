@@ -45,6 +45,8 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -67,6 +69,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     private IRODSAccessObjectFactory irodsAccessObjectFactory;
     private String host, zone, defaultStorageResource;
     private int port;
+    private Map<Integer, String> ticketErroCodeMap;
 
     @PostConstruct
     public void init() {
@@ -75,6 +78,11 @@ public class TicketClientServiceImpl implements TicketClientService {
         port = Integer.valueOf(configService.getIrodsPort());
         defaultStorageResource = "";
         setUpAnonymousAccess();
+        ticketErroCodeMap = new HashMap<>();
+        ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
+        ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
+        ticketErroCodeMap.put(-893000, "Ticket user excluded");
+        ticketErroCodeMap.put(-895000, "Ticket group excluded");
     }
 
     @Override
@@ -102,14 +110,8 @@ public class TicketClientServiceImpl implements TicketClientService {
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
             int code = e.getUnderlyingIRODSExceptionCode();
-            if (code == -892000) {
-                throw new DataGridTicketUploadException("Ticket uses exceeded");
-            } else if (code == -896000) {
-                throw new DataGridTicketUploadException("Ticket write uses exceeded");
-            } else if (code == -893000) {
-                throw new DataGridTicketUploadException("Ticket user excluded");
-            } else if (code == -895000) {
-                throw new DataGridTicketUploadException("Ticket group excluded");
+            if (ticketErroCodeMap.containsKey(code)) {
+                throw new DataGridTicketUploadException(ticketErroCodeMap.get(code));
             }
         } finally {
             FileUtils.deleteQuietly(localFile);
