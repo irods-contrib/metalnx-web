@@ -172,12 +172,12 @@
 
             <p>
                 <label>Ticket String</label> <br />
-                <span th:text="${ticketString}"></span>
+                <span id="ticketString" th:text="${ticketString}"></span>
             </p>
 
             <p>
                 <label>Path</label> <br />
-                <span th:text="${path}"></span>
+                <span id="ticketPath" th:text="${path}"></span>
             </p>
 
             <div class="row">
@@ -236,24 +236,11 @@
     </div>
 </div>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="../static/js/bootstrap.min.js"
-        th:src="@{/js/bootstrap.min.js}"></script>
-
-<!-- Metis Menu Plugin JavaScript -->
-<script src="../static/js/metisMenu.min.js"
-        th:src="@{/js/metisMenu.min.js}"></script>
-
-<!-- Custom Theme JavaScript -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../static/js/metisMenu.min.js" th:src="@{/js/metisMenu.min.js}"></script>
 <script src="../static/js/sb-admin-2.js" th:src="@{/js/sb-admin-2.js}"></script>
-
-<!-- Template switch -->
-<script src="../static/js/switchTemplate.js"
-        th:src="@{/js/switchTemplate.js}"></script>
-
-<!-- Upload -->
-<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
-
+<script src="../static/js/switchTemplate.js" th:src="@{/js/switchTemplate.js}"></script>
+<script type="text/javascript" th:src="@{/js/ticketFileUpload.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     function showTicketUploadModal() {
