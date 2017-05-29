@@ -2268,3 +2268,36 @@ form.registerForm .bootstrap-tagsinput {
 #sendTicketStringBtn > i {
     margin-right:2px;
 }
+
+#hostnamesLabel{
+    width: 100%;
+}
+
+#inputNewHostname{
+    width:78%;
+    margin-bottom:10px;
+}
+
+#panelHostnames {
+    clear:both;
+    height: 140px;
+    overflow: scroll;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+#listHostnames{
+    padding: 2px;
+}
+
+#listHostnames li{
+    border-bottom: 1px dotted lightgray;
+    padding: 10px;
+}
+
+#listHostnames li button.btn {
+    margin-top:-5px;
+}
