@@ -79,6 +79,7 @@ public class TicketClientServiceImpl implements TicketClientService {
         defaultStorageResource = "";
         setUpAnonymousAccess();
         ticketErroCodeMap = new HashMap<>();
+        ticketErroCodeMap.put(-891000, "Ticket expired");
         ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
         ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
         ticketErroCodeMap.put(-893000, "Ticket user excluded");
