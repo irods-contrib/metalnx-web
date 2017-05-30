@@ -23,6 +23,7 @@ import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.tests.tickets.TestTicketUtils;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class TestTicketWithFilesLimit {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
-        ticketString = ticketUtils.createTicket(parentPath, username);
+        ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
         localFile1 = ticketUtils.createLocalFile();
         localFile2 = ticketUtils.createLocalFile("test-ticket-2-" + System.currentTimeMillis());
