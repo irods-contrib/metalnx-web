@@ -320,8 +320,9 @@
         });
 
         $("#addHostname").on('click', function () {
-            var removeBtn = "<button class='btn btn-link pull-right btn-remove'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></button>";
-            var newElement = "<li><span>" + $("#inputNewHostname").val() + "</span>"+ removeBtn+ "</li>";
+            var inputValue = $("#inputNewHostname").val();
+            var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
+            var newElement = "<li id='"+$("#inputNewHostname").val()+"'><span>" + $("#inputNewHostname").val() + "</span>"+ removeBtn+ "</li>";
             $("ul#listHostnames").append(newElement);
             $("#hostnames").append($("#inputNewHostname").val()+",");
             $("#hostnames").val($("#hostnames").text());
@@ -330,5 +331,10 @@
             $("#addHostname").addClass("disabled");
         });
     });
+    function removeHost(hostname){
+        var listItem = document.getElementById(hostname);
+        var list = listItem.parentElement;
+        list.removeChild(listItem);
+    }
 /*]]>*/
 </script>
