@@ -36,10 +36,18 @@ import java.util.List;
 public class TestTicketUtils {
     private IRODSServices irodsServices;
     private TicketAdminService ticketAdminService;
+    public static final String TICKET_FILE_CONTENT = "This is a test for ticket";
 
     public TestTicketUtils(IRODSServices irodsServices) throws DataGridConnectionRefusedException {
         this.irodsServices = irodsServices;
         this.ticketAdminService = irodsServices.getTicketAdminService();
+    }
+
+    public void deleteIRODSFile(String path) throws JargonException, DataGridConnectionRefusedException {
+        IRODSFile ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
+        if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
+            irodsServices.getIRODSFileSystemAO().fileDeleteForce(ticketIRODSFile);
+        }
     }
 
     public String createTicket(String parentPath, String item, TicketCreateModeEnum type) throws JargonException, DataGridConnectionRefusedException {
@@ -102,7 +110,7 @@ public class TestTicketUtils {
 
     public File createLocalFile(String filename) throws IOException {
         File file = new File(filename);
-        FileUtils.writeByteArrayToFile(file, "This is a test for ticket".getBytes());
+        FileUtils.writeByteArrayToFile(file, TICKET_FILE_CONTENT.getBytes());
         return file;
     }
 
