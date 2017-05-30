@@ -44,7 +44,7 @@ import java.io.IOException;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestTicketWithFilesLimit {
-    private static final int WRITE_FILE_LIMIT = 50;
+    private static final int WRITE_FILE_LIMIT = 1;
 
     @Value("${irods.zoneName}")
     private String zone;
