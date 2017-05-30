@@ -81,9 +81,10 @@ public class TicketClientServiceImpl implements TicketClientService {
         ticketErroCodeMap = new HashMap<>();
         ticketErroCodeMap.put(-891000, "Ticket expired");
         ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
-        ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
         ticketErroCodeMap.put(-893000, "Ticket user excluded");
+        ticketErroCodeMap.put(-894000, "Ticket host excluded");
         ticketErroCodeMap.put(-895000, "Ticket group excluded");
+        ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
     }
 
     @Override
