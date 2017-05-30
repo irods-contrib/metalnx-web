@@ -70,7 +70,7 @@ public class TestTicketWithUsesLimit {
         ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
         localFile1 = ticketUtils.createLocalFile();
-        localFile1 = ticketUtils.createLocalFile("test-ticket-file-2-" + System.currentTimeMillis());
+        localFile2 = ticketUtils.createLocalFile("test-ticket-file-2-" + System.currentTimeMillis());
     }
 
     @After
@@ -81,7 +81,7 @@ public class TestTicketWithUsesLimit {
     }
 
     @Test(expected = DataGridTicketUploadException.class)
-    public void testCreateTicketWithExpirationDate() throws DataGridTicketUploadException {
+    public void testCreateTicketWithUsesLimit() throws DataGridTicketUploadException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile1, targetPath);
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile2, targetPath);
     }
