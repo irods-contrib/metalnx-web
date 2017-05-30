@@ -39,9 +39,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -55,7 +52,6 @@ import static junit.framework.Assert.assertNotNull;
 public class TestDownloadWithTicket {
     private static final String FILE_CONTENT = "Test for ticket";
     private static final int BUFFER_SIZE = 4 * 1024 * 1024;
-    private static final String TEST_FILE_NAME = "test-ticket.txt";
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -71,34 +67,24 @@ public class TestDownloadWithTicket {
 
     private String targetPath, filePath, ticketString;
     private TestTicketUtils ticketUtils;
-    private IRODSFile ticketIRODSFile;
     private File localFile;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
-        filePath = String.format("%s/%s", targetPath, TEST_FILE_NAME);
         ticketUtils = new TestTicketUtils(irodsServices);
+        localFile = ticketUtils.createLocalFile();
         ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.READ);
-
-        createLocalFile();
-
-        localFile = new File(TEST_FILE_NAME);
-
         uploadFileToIRODS(targetPath, localFile);
+        filePath = String.format("%s/%s", targetPath, localFile.getName());
     }
 
     @After
     public void tearDown() throws JargonException, DataGridConnectionRefusedException {
         FileUtils.deleteQuietly(localFile);
-
         ticketUtils.deleteTicket(ticketString);
-
-        ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
-        if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
-            irodsServices.getIRODSFileSystemAO().fileDeleteForce(ticketIRODSFile);
-        }
+        ticketUtils.deleteIRODSFile(filePath);
     }
 
     @Test
@@ -107,12 +93,7 @@ public class TestDownloadWithTicket {
             DataGridTicketFileNotFound {
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
         assertNotNull(file);
-        assertEquals(FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));
-    }
-
-    private void createLocalFile() throws IOException {
-        Path path = Paths.get(TEST_FILE_NAME);
-        Files.write(path, FILE_CONTENT.getBytes());
+        assertEquals(TestTicketUtils.TICKET_FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));
     }
 
     private void uploadFileToIRODS(String path, File file) throws DataGridConnectionRefusedException, JargonException,
