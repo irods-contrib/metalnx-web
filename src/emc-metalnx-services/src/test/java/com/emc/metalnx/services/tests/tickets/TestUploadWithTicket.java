@@ -37,9 +37,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -66,39 +63,29 @@ public class TestUploadWithTicket {
 
     private String targetPath, filePath, ticketString;
     private TestTicketUtils ticketUtils;
-    private IRODSFile ticketIRODSFile;
     private File localFile;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
-        filePath = String.format("%s/%s", targetPath, TEST_FILE_NAME);
         ticketUtils = new TestTicketUtils(irodsServices);
         ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
-
-        Path path = Paths.get(TEST_FILE_NAME);
-        String data = "Test for ticket";
-        Files.write(path, data.getBytes());
-
-        localFile = new File(TEST_FILE_NAME);
+        localFile = ticketUtils.createLocalFile();
+        filePath = String.format("%s/%s", targetPath, localFile.getName());
     }
 
     @After
     public void tearDown() throws JargonException, DataGridConnectionRefusedException {
         FileUtils.deleteQuietly(localFile);
-
         ticketUtils.deleteTicket(ticketString);
-
-        if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
-            irodsServices.getIRODSFileSystemAO().fileDeleteForce(ticketIRODSFile);
-        }
+        ticketUtils.deleteIRODSFile(filePath);
     }
 
     @Test
     public void testUploadFileUsingATicket() throws DataGridConnectionRefusedException, JargonException, DataGridTicketUploadException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
-        ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
+        IRODSFile ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
         assertTrue(ticketIRODSFile.exists());
     }
 }
