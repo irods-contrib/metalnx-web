@@ -60,7 +60,7 @@ public class TestCreateTicketWithUsesLimit {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DataGridTicket dgt;
 
@@ -76,13 +76,14 @@ public class TestCreateTicketWithUsesLimit {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        Ticket ticketWithUses = ticketUtils.findTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        Ticket ticketWithUses = ticketUtils.findTicket(ticketString);
 
         assertEquals(USES_LIMIT, ticketWithUses.getUsesLimit());
         assertFalse(ticketWithUses.getTicketString().isEmpty());

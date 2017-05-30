@@ -60,7 +60,7 @@ public class TestCreateTicketWithHostRestriction {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DataGridTicket dgt;
 
@@ -69,20 +69,20 @@ public class TestCreateTicketWithHostRestriction {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
-
         dgt = new DataGridTicket(targetPath);
         dgt.addHost(host);
     }
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithHostRestriction() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        List<String> hosts = ticketUtils.listAllHostRestrictionsForSpecifiedTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        List<String> hosts = ticketUtils.listAllHostRestrictionsForSpecifiedTicket(ticketString);
         assertEquals(1, hosts.size());
     }
 }

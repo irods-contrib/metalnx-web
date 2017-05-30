@@ -72,7 +72,7 @@ public class TestDownloadWithTicket {
     private String targetPath, filePath, ticketString;
     private TestTicketUtils ticketUtils;
     private IRODSFile ticketIRODSFile;
-    private File ticketLocalFile;
+    private File localFile;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
@@ -84,18 +84,16 @@ public class TestDownloadWithTicket {
 
         createLocalFile();
 
-        ticketLocalFile = new File(TEST_FILE_NAME);
+        localFile = new File(TEST_FILE_NAME);
 
-        uploadFileToIRODS(targetPath, ticketLocalFile);
+        uploadFileToIRODS(targetPath, localFile);
     }
 
     @After
     public void tearDown() throws JargonException, DataGridConnectionRefusedException {
-        if (ticketLocalFile.exists()) {
-            ticketLocalFile.delete();
-        }
+        FileUtils.deleteQuietly(localFile);
 
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
 
         ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
         if(ticketIRODSFile != null && ticketIRODSFile.exists()) {

@@ -26,6 +26,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +59,9 @@ public class TestTicketWithUsesLimit {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath, ticketString;
+    private String ticketString, targetPath;
     private TestTicketUtils ticketUtils;
-    private File localFile1, localFile2;
+    private File localFile, localFile2;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
@@ -69,20 +70,21 @@ public class TestTicketWithUsesLimit {
         ticketUtils = new TestTicketUtils(irodsServices);
         ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
         ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
-        localFile1 = ticketUtils.createLocalFile();
-        localFile2 = ticketUtils.createLocalFile("test-ticket-file-2-" + System.currentTimeMillis());
+        localFile = ticketUtils.createLocalFile();
+        localFile2 = ticketUtils.createLocalFile("ticket-file-2-" + System.currentTimeMillis());
     }
 
     @After
     public void tearDown() throws JargonException {
-        FileUtils.deleteQuietly(localFile1);
+        FileUtils.deleteQuietly(localFile);
         FileUtils.deleteQuietly(localFile2);
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
+    @Ignore
     @Test(expected = DataGridTicketUploadException.class)
-    public void testCreateTicketWithUsesLimit() throws DataGridTicketUploadException {
-        ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile1, targetPath);
+    public void testTicketWithUsesLimit() throws DataGridTicketUploadException {
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile2, targetPath);
     }
 }

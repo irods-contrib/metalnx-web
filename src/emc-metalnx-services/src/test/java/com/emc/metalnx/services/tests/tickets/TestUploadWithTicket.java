@@ -21,6 +21,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketClientService;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
@@ -66,7 +67,7 @@ public class TestUploadWithTicket {
     private String targetPath, filePath, ticketString;
     private TestTicketUtils ticketUtils;
     private IRODSFile ticketIRODSFile;
-    private File ticketLocalFile;
+    private File localFile;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
@@ -80,16 +81,14 @@ public class TestUploadWithTicket {
         String data = "Test for ticket";
         Files.write(path, data.getBytes());
 
-        ticketLocalFile = new File(TEST_FILE_NAME);
+        localFile = new File(TEST_FILE_NAME);
     }
 
     @After
     public void tearDown() throws JargonException, DataGridConnectionRefusedException {
-        if (ticketLocalFile.exists()) {
-            ticketLocalFile.delete();
-        }
+        FileUtils.deleteQuietly(localFile);
 
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
 
         if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
             irodsServices.getIRODSFileSystemAO().fileDeleteForce(ticketIRODSFile);
@@ -98,7 +97,7 @@ public class TestUploadWithTicket {
 
     @Test
     public void testUploadFileUsingATicket() throws DataGridConnectionRefusedException, JargonException, DataGridTicketUploadException {
-        ticketClientService.transferFileToIRODSUsingTicket(ticketString, ticketLocalFile, targetPath);
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
         ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
         assertTrue(ticketIRODSFile.exists());
     }

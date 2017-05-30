@@ -77,7 +77,7 @@ public class TestTicketWithFilesLimit {
     public void tearDown() throws JargonException {
         FileUtils.deleteQuietly(localFile1);
         FileUtils.deleteQuietly(localFile2);
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test(expected = DataGridTicketUploadException.class)

@@ -55,7 +55,7 @@ public class TestCreateTicket {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
 
     @Before
@@ -67,25 +67,27 @@ public class TestCreateTicket {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        if (ticketString != null && !ticketString.isEmpty() ) {
+            ticketUtils.deleteTicket(ticketString);
+        }
     }
 
     @Test
     public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
             DataGridNullTicketException {
-        String ticketString = ticketService.create(new DataGridTicket(targetPath));
+        ticketString = ticketService.create(new DataGridTicket(targetPath));
         assertFalse(ticketString.isEmpty());
     }
 
     @Test(expected = DataGridNullTicketException.class)
     public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
             DataGridNullTicketException {
-        ticketService.create(null);
+        ticketString = ticketService.create(null);
     }
 
     @Test(expected = DataGridMissingPathOnTicketException.class)
     public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
             DataGridConnectionRefusedException, DataGridNullTicketException {
-        ticketService.create(new DataGridTicket());
+        ticketString = ticketService.create(new DataGridTicket());
     }
 }

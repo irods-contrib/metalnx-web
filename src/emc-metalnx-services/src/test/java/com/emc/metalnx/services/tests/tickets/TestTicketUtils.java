@@ -84,13 +84,6 @@ public class TestTicketUtils {
         ticketAdminService.addTicketGroupRestriction(ticketString, group);
     }
 
-    public void deleteAllTickets() throws JargonException {
-        List<Ticket> ticketList = ticketAdminService.listAllTickets(0);
-
-        for(Ticket t: ticketList)
-            ticketAdminService.deleteTicket(t.getTicketString());
-    }
-
     public Ticket findTicket(String ticketString) throws JargonException {
         return ticketAdminService.getTicketForSpecifiedTicketString(ticketString);
     }

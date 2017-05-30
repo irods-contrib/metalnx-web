@@ -76,7 +76,7 @@ public class TestTicketWithHostRestriction {
     @After
     public void tearDown() throws JargonException {
         FileUtils.deleteQuietly(localFile);
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test(expected = DataGridTicketUploadException.class)
