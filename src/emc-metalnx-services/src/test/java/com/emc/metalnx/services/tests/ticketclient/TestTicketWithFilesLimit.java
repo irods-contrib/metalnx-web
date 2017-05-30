@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.tests.ticketclient;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -58,7 +59,7 @@ public class TestTicketWithFilesLimit {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath, ticketString;
+    private String targetPath, ticketString, filePath1, filePath2;
     private TestTicketUtils ticketUtils;
     private File localFile1, localFile2;
 
@@ -71,13 +72,17 @@ public class TestTicketWithFilesLimit {
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
         localFile1 = ticketUtils.createLocalFile();
         localFile2 = ticketUtils.createLocalFile("test-ticket-2-" + System.currentTimeMillis());
+        filePath1 = String.format("%s/%s", targetPath, localFile1.getName());
+        filePath2 = String.format("%s/%s", targetPath, localFile2.getName());
     }
 
     @After
-    public void tearDown() throws JargonException {
+    public void tearDown() throws JargonException, DataGridConnectionRefusedException {
         FileUtils.deleteQuietly(localFile1);
         FileUtils.deleteQuietly(localFile2);
         ticketUtils.deleteTicket(ticketString);
+        ticketUtils.deleteIRODSFile(filePath1);
+        ticketUtils.deleteIRODSFile(filePath2);
     }
 
     @Test(expected = DataGridTicketUploadException.class)
