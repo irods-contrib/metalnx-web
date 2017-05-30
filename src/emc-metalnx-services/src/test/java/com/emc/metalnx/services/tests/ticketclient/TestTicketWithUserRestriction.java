@@ -60,12 +60,13 @@ public class TestTicketWithUserRestriction {
     private File localFile;
 
     @Before
-    public void setUp() throws DataGridException, JargonException {
+    public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
         ticketString = ticketUtils.createTicket(parentPath, username);
         ticketUtils.addUserRestriction(ticketString, username);
+        localFile = ticketUtils.createLocalFile();
     }
 
     @After
@@ -75,8 +76,7 @@ public class TestTicketWithUserRestriction {
     }
 
     @Test(expected = DataGridTicketUploadException.class)
-    public void testTicketWithUserRestriction() throws IOException, DataGridTicketUploadException {
-        localFile = ticketUtils.createLocalFile();
+    public void testTicketWithUserRestriction() throws DataGridTicketUploadException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
     }
 }

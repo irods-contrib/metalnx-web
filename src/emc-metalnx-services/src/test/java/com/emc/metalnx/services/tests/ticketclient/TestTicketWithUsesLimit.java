@@ -16,16 +16,14 @@
 
 package com.emc.metalnx.services.tests.ticketclient;
 
-import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridMissingPathOnTicketException;
-import com.emc.metalnx.core.domain.exceptions.DataGridNullTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.TicketService;
+import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.tests.tickets.TestTicketUtils;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.ticket.Ticket;
+import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +34,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Test iRODS services.
@@ -47,7 +44,7 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestTicketWithUsesLimit {
-    private static final int USES_LIMIT = 5;
+    private static final int USES_LIMIT = 1;
 
     @Value("${irods.zoneName}")
     private String zone;
@@ -56,38 +53,36 @@ public class TestTicketWithUsesLimit {
     private String username;
 
     @Autowired
-    private TicketService ticketService;
+    private TicketClientService ticketClientService;
 
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
-    private DataGridTicket dgt;
+    private File localFile1, localFile2;
 
     @Before
-    public void setUp() throws DataGridException, JargonException {
+    public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
-
-        dgt = new DataGridTicket(targetPath);
-        dgt.setUsesLimit(USES_LIMIT);
+        ticketString = ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
+        ticketUtils.setUsesLimit(ticketString, USES_LIMIT);
+        localFile1 = ticketUtils.createLocalFile();
+        localFile1 = ticketUtils.createLocalFile("test-ticket-file-2-" + System.currentTimeMillis());
     }
 
     @After
     public void tearDown() throws JargonException {
+        FileUtils.deleteQuietly(localFile1);
+        FileUtils.deleteQuietly(localFile2);
         ticketUtils.deleteAllTickets();
     }
 
-    @Test
-    public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        Ticket ticketWithUses = ticketUtils.findTicket(ticketService.create(dgt));
-
-        assertEquals(USES_LIMIT, ticketWithUses.getUsesLimit());
-        assertFalse(ticketWithUses.getTicketString().isEmpty());
-        assertTrue(ticketWithUses.getIrodsAbsolutePath().equals(targetPath));
-        assertTrue(ticketWithUses.getOwnerName().equals(username));
+    @Test(expected = DataGridTicketUploadException.class)
+    public void testCreateTicketWithExpirationDate() throws DataGridTicketUploadException {
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile1, targetPath);
+        ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile2, targetPath);
     }
 }

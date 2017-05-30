@@ -64,12 +64,13 @@ public class TestTicketWithExpirationDate {
     private File localFile;
 
     @Before
-    public void setUp() throws DataGridException, JargonException {
+    public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
         ticketString = ticketUtils.createTicket(parentPath, username);
         ticketUtils.setExpirationDate(ticketString, yesterday());
+        localFile = ticketUtils.createLocalFile();
     }
 
     @After
@@ -79,8 +80,7 @@ public class TestTicketWithExpirationDate {
     }
 
     @Test(expected = DataGridTicketUploadException.class)
-    public void testTicketWithExpirationDate() throws IOException, DataGridTicketUploadException {
-        localFile = ticketUtils.createLocalFile("test-ticket-" + System.currentTimeMillis());
+    public void testTicketWithExpirationDate() throws DataGridTicketUploadException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
     }
 

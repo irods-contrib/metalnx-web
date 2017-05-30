@@ -62,12 +62,14 @@ public class TestTicketWithFilesLimit {
     private File localFile1, localFile2;
 
     @Before
-    public void setUp() throws DataGridException, JargonException {
+    public void setUp() throws DataGridException, JargonException, IOException {
         String parentPath = String.format("/%s/home", zone);
         targetPath = String.format("%s/%s", parentPath, username);
         ticketUtils = new TestTicketUtils(irodsServices);
         ticketString = ticketUtils.createTicket(parentPath, username);
         ticketUtils.setWriteFileLimit(ticketString, WRITE_FILE_LIMIT);
+        localFile1 = ticketUtils.createLocalFile();
+        localFile2 = ticketUtils.createLocalFile("test-ticket-2-" + System.currentTimeMillis());
     }
 
     @After
@@ -78,9 +80,7 @@ public class TestTicketWithFilesLimit {
     }
 
     @Test(expected = DataGridTicketUploadException.class)
-    public void testTicketWithFileLimit() throws IOException, DataGridTicketUploadException {
-        localFile1 = ticketUtils.createLocalFile();
-        localFile2 = ticketUtils.createLocalFile("test-ticket-2-" + System.currentTimeMillis());
+    public void testTicketWithFileLimit() throws DataGridTicketUploadException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile1, targetPath);
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile2, targetPath);
     }
