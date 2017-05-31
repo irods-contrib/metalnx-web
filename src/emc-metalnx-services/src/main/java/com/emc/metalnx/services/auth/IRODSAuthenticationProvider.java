@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IRODSAuthenticationProvider implements AuthenticationProviderService, Serializable {
+    private static final String IRODS_ANONYMOUS_ACCOUNT = "anonymous";
 
     @Autowired
     UserDao userDao;
@@ -75,8 +76,8 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        AuthResponse authResponse = null;
-        UsernamePasswordAuthenticationToken authObject = null;
+        AuthResponse authResponse;
+        UsernamePasswordAuthenticationToken authObject;
 
         logger.debug("Setting username {} and password {}.", username, password);
 
@@ -138,6 +139,8 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
     private AuthResponse authenticateAgainstIRODS(String username, String password) throws JargonException {
         if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
             throw new DataGridAuthenticationException("Username or password invalid: null or empty value(s) provided");
+        } else if (username.equalsIgnoreCase(IRODS_ANONYMOUS_ACCOUNT)) {
+            throw new DataGridAuthenticationException("Cannot log in as anonymous");
         }
 
         AuthResponse authResponse;
