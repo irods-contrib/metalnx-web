@@ -24,10 +24,7 @@ import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
-import org.irods.jargon.core.exception.CatNoAccessException;
-import org.irods.jargon.core.exception.InvalidUserException;
-import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.exception.OverwriteException;
+import org.irods.jargon.core.exception.*;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -87,6 +84,7 @@ public class TicketClientServiceImpl implements TicketClientService {
         ticketErroCodeMap.put(-894000, "Ticket host excluded");
         ticketErroCodeMap.put(-895000, "Ticket group excluded");
         ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
+        ticketErroCodeMap.put(-526020, "Destination not a directory");
     }
 
     @Override
@@ -108,18 +106,23 @@ public class TicketClientServiceImpl implements TicketClientService {
         } catch (InvalidUserException e) {
             logger.error("Invalid user. Cannot download files as anonymous.");
             throw new DataGridTicketInvalidUser("Invalid user anonymous");
-        } catch (OverwriteException e) {
+        } catch (OverwriteException | DuplicateDataException e) {
             logger.error("Could not transfer file to the grid. File already exists: {}", e);
             throw new DataGridTicketUploadException("File already exists");
         } catch(CatNoAccessException e) {
             logger.error("Could not transfer file to the grid. Cat no access: {}", e);
             throw new DataGridTicketUploadException(e.getMessage());
+        } catch (DataNotFoundException e) {
+            logger.error("Could not transfer file to the grid. File not found: {}", e);
+            throw new DataGridTicketUploadException("File not found");
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
             int code = e.getUnderlyingIRODSExceptionCode();
+            String msg = "Transfer failed";
             if (ticketErroCodeMap.containsKey(code)) {
-                throw new DataGridTicketUploadException(ticketErroCodeMap.get(code));
+                msg = ticketErroCodeMap.get(code);
             }
+            throw new DataGridTicketUploadException(msg);
         } finally {
             FileUtils.deleteQuietly(localFile);
         }
