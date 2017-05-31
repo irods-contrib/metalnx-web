@@ -34,6 +34,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,5 +135,24 @@ public class TicketController {
             DataGridMissingTicketString, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
         logger.info("Modify ticket");
         ticketService.modify(ticket);
+    }
+
+    @RequestMapping(value = "/validatehost", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public HostInfo validateTicketHostname(@RequestParam("hostname") String hostname) throws UnknownHostException {
+        logger.info("Validating ticket hostname {}", hostname);
+        return new HostInfo(hostname);
+    }
+
+    private class HostInfo {
+        private String hostname;
+        private String ip;
+
+        HostInfo(String hostname) throws UnknownHostException {
+            InetAddress address = InetAddress.getByName(hostname);
+            this.hostname = hostname;
+            this.ip = address.getHostAddress();
+        }
     }
 }

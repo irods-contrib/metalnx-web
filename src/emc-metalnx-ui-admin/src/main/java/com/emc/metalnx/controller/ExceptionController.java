@@ -23,8 +23,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.UnknownHostException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -59,5 +61,11 @@ public class ExceptionController {
     public ResponseEntity<String> handleMissingTicketStringException() {
         logger.error("Ticket does not have a ticket string");
         return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({UnknownHostException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void handleTicketUnknownHostError() {
+        logger.error("Unknown ticket host");
     }
 }
