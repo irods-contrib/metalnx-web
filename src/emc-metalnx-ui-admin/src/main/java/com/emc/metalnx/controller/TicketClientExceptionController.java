@@ -53,6 +53,7 @@ public class TicketClientExceptionController {
 	}
 
 	@ExceptionHandler({DataGridTicketInvalidUser.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleTicketInvalidUserException() {
         return "tickets/ticketinvaliduser";
     }

@@ -135,6 +135,9 @@ function uploadAndUpdateStatus(file, index, totalFiles){
             }
         },
         statusCode: {
+            401: function(){
+                window.location= "/emc-metalnx-web/ticketclient/invaliduser";
+            },
             408: function(response){
                 window.location= "/emc-metalnx-web/login/";
             },

@@ -66,10 +66,16 @@ public class TicketClientController {
         return "tickets/ticketclient";
     }
 
+    @RequestMapping(value = "/invaliduser", method = RequestMethod.GET)
+    public String invalidUser() {
+        return "tickets/ticketinvaliduser";
+    }
+
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
-            throws DataGridConnectionRefusedException, DataGridTicketUploadException, IOException {
+            throws DataGridConnectionRefusedException, DataGridTicketUploadException, IOException,
+            DataGridTicketInvalidUser {
         logger.info("Uploading files using ticket: {}", ticketString);
 
         if (!(request instanceof MultipartHttpServletRequest)) {

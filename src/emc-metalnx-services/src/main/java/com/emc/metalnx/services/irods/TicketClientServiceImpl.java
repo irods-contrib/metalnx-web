@@ -91,7 +91,7 @@ public class TicketClientServiceImpl implements TicketClientService {
 
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
-            throws DataGridTicketUploadException {
+            throws DataGridTicketUploadException, DataGridTicketInvalidUser {
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridTicketUploadException("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
@@ -105,6 +105,9 @@ public class TicketClientServiceImpl implements TicketClientService {
             String targetPath = String.format("%s/%s", destPath, localFile.getName());
             IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
+        } catch (InvalidUserException e) {
+            logger.error("Invalid user. Cannot download files as anonymous.");
+            throw new DataGridTicketInvalidUser("Invalid user anonymous");
         } catch (OverwriteException e) {
             logger.error("Could not transfer file to the grid. File already exists: {}", e);
             throw new DataGridTicketUploadException("File already exists");
