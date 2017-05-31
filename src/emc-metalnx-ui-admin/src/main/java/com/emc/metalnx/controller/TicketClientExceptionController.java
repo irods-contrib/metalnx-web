@@ -17,6 +17,7 @@
 package com.emc.metalnx.controller;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
@@ -50,6 +51,11 @@ public class TicketClientExceptionController {
         mav.setViewName("tickets/ticketclient");
 		return mav;
 	}
+
+	@ExceptionHandler({DataGridTicketInvalidUser.class})
+    public String handleTicketInvalidUserException() {
+        return "tickets/ticketinvaliduser";
+    }
 
     @ExceptionHandler({DataGridTicketUploadException.class})
     @ResponseStatus(HttpStatus.CONFLICT)

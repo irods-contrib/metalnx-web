@@ -17,6 +17,7 @@
 package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
@@ -24,6 +25,7 @@ import com.emc.metalnx.services.interfaces.ZipService;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.CatNoAccessException;
+import org.irods.jargon.core.exception.InvalidUserException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.OverwriteException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -121,7 +123,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound {
+    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound, DataGridTicketInvalidUser {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -148,6 +150,9 @@ public class TicketClientServiceImpl implements TicketClientService {
             if (obj.isDirectory()) {
                 file = zipService.createZip(tempDir, obj);
             }
+        } catch (InvalidUserException e) {
+            logger.error("Invalid user. Cannot download files as anonymous.");
+            throw new DataGridTicketInvalidUser("Invalid user anonymous");
         } catch (JargonException e) {
             logger.error("Get file using a ticket: File Not Found: {}", e);
             throw new DataGridTicketFileNotFound(e.getMessage(), path, ticketString);
