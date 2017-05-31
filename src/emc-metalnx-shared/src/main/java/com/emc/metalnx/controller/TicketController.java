@@ -137,22 +137,31 @@ public class TicketController {
         ticketService.modify(ticket);
     }
 
-    @RequestMapping(value = "/validatehost", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/validatehost", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public HostInfo validateTicketHostname(@RequestParam("hostname") String hostname) throws UnknownHostException {
+    public HostInfo validateTicketHostname(@RequestParam("hostname") String hostname)
+            throws UnknownHostException {
         logger.info("Validating ticket hostname {}", hostname);
         return new HostInfo(hostname);
     }
+}
 
-    private class HostInfo {
-        private String hostname;
-        private String ip;
+class HostInfo {
 
-        HostInfo(String hostname) throws UnknownHostException {
-            InetAddress address = InetAddress.getByName(hostname);
-            this.hostname = hostname;
-            this.ip = address.getHostAddress();
-        }
+    private String hostname;
+    private String ip;
+
+    HostInfo(String hostname) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(hostname);
+        this.hostname = hostname;
+        this.ip = address.getHostAddress();
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public String getIp() {
+        return ip;
     }
 }
