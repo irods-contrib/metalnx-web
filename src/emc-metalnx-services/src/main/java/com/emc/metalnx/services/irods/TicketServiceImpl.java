@@ -21,6 +21,7 @@ import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.DataNotFoundException;
+import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.Ticket;
@@ -92,7 +93,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException {
+            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicket {
         if(dgTicket == null) {
             throw new DataGridNullTicketException("Could not create ticket: null ticket provided.");
         }
@@ -119,6 +120,9 @@ public class TicketServiceImpl implements TicketService {
             dgTicket.setTicketString(ticketString); // set ticket string created by the grid
 
             modify(dgTicket);
+        } catch (DuplicateDataException e) {
+            logger.error("Duplicated ticket: {}", e);
+            throw new DataGridDuplicatedTicket(e.getMessage());
         } catch (JargonException | DataGridMissingTicketString | DataGridTicketNotFoundException e) {
             logger.error("Could not create a ticket: {}", e);
         }

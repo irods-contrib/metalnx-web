@@ -122,7 +122,7 @@ public class TicketController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingPathOnTicketException {
+            DataGridNullTicketException, DataGridMissingPathOnTicketException, DataGridDuplicatedTicket {
         logger.info("Create new ticket");
         ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
         ticketService.create(ticket);

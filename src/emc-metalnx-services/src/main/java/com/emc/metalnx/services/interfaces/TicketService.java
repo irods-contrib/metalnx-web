@@ -49,9 +49,10 @@ public interface TicketService {
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
      * @throws DataGridMissingPathOnTicketException thrown when the path is missing on the ticket
      * @throws DataGridNullTicketException if a null ticket is given as a parameter
+     * @throws DataGridDuplicatedTicket if another ticket with the same name already exists
      */
     String create(DataGridTicket dgTicket) throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException;
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, DataGridDuplicatedTicket;
 
     /**
      * Finds a specific ticket by its id or string.

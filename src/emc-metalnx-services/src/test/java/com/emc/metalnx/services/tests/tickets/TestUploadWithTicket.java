@@ -18,6 +18,7 @@ package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketClientService;
@@ -83,7 +84,8 @@ public class TestUploadWithTicket {
     }
 
     @Test
-    public void testUploadFileUsingATicket() throws DataGridConnectionRefusedException, JargonException, DataGridTicketUploadException {
+    public void testUploadFileUsingATicket() throws DataGridConnectionRefusedException,
+            DataGridTicketUploadException, DataGridTicketInvalidUser, JargonException {
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, localFile, targetPath);
         IRODSFile ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(filePath);
         assertTrue(ticketIRODSFile.exists());
