@@ -67,7 +67,7 @@
         <div class="form-group optional">
             <label id="hostnamesLabel" for="inputHostnames" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
             <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
-            <a id="addHostname" class="btn btn-default pull-right disabled"><i class="fa fa-plus-circle" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
+            <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus-circle" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
             <div id="panelHostnames">
                 <ul id="listHostnames">
                 </ul>
@@ -85,8 +85,6 @@
         return validated;
     }
     $(document).ready(function(e){
-
-        $("#addHostname").prop("disabled", true);
 
         // Users restriction settings
         // Creates bloodhound instance for querying requests
@@ -309,11 +307,11 @@
 
         $("#inputNewHostname").on('input propertychange', function(){
             if ($("#inputNewHostname").val() != '') {
-                $("#addHostname").prop("disabled", false);
+                $("#addHostname").attr("disabled", false);
                 $("#addHostname").removeClass("disabled");
             }
             else {
-                $("#addHostname").prop("disabled", true);
+                $("#addHostname").attr("disabled", true);
                 $("#addHostname").addClass("disabled");
             }
         });
