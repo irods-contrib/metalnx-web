@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -220,8 +221,7 @@ public class FileOperationsController {
         }
     }
 
-    @RequestMapping(value = "/download/", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(HttpServletResponse response) throws DataGridConnectionRefusedException {
 
         try {
