@@ -298,6 +298,16 @@ public interface CollectionService {
     /**
      * Prepares files to be downloaded by compressing them into a single file.
      *
+     * @param paths array of strings that represent all paths that will be downloaded
+     * @return Path to the compressed file, if any. Empty string, otherwise.
+     * @throws IOException
+     * @throws DataGridException
+     */
+    String prepareFilesForDownload(String[] paths) throws IOException, DataGridException;
+
+    /**
+     * Prepares files to be downloaded by compressing them into a single file.
+     *
      * @param sourcePaths
      *            list of files to compress into a single file
      * @return Path to the compressed file, if any. Empty string, otherwise.

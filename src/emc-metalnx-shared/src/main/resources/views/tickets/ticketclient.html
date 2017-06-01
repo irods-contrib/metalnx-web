@@ -105,6 +105,53 @@
         </div>
     </nav>
 
+    <!-- Upload Modal -->
+    <div class="modal fade" id="ticketUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" th:text="#{upload.label}"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="hideElement" id="uploadMinMessage">
+                        <div class="alert alert-warning alert-dismissible text-center"
+                             role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                            </button>
+                            <span>Select at least one file</span>
+                        </div>
+                    </div>
+
+                    <form th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}" method="POST"
+                          role="form" enctype="multipart/form-data" id="uploadForm">
+                        <input type="hidden" name="path" th:value="${path}" />
+                        <p class="text-right">
+                            <span id="numberFilesUpload">No</span><span>&nbsp;file(s) selected</span>
+                        </p>
+                        <div class="well">
+                            <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+                                <span th:text="#{select.files.upload}"></span>
+                            </button>
+                            <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" />
+                            <div id="filesList"></div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
+                    <a type="button" class="btn btn-primary" id="ticketUploadButton">
+                        <i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Page Content -->
     <div id="page-wrapper-tickets">
         <div class="row">
@@ -114,6 +161,10 @@
         </div>
 
         <div class="panel loading col-xs-12 col-sm-12 col-md-4">
+            <div class="alert alert-danger text-center" role="alert" th:if="${error}">
+                <span>Sorry, Metalnx could not find a matching collection or data object.</span>
+            </div>
+
             <h4 class="property-title">
                 <i class="fa fa-file"></i>
                 <span th:text="${objName}"></span>
@@ -121,21 +172,32 @@
 
             <p>
                 <label>Ticket String</label> <br />
-                <span th:text="${ticketString}"></span>
+                <span id="ticketString" th:text="${ticketString}"></span>
             </p>
 
             <p>
                 <label>Path</label> <br />
-                <span th:text="${path}"></span>
+                <span id="ticketPath" th:text="${path}"></span>
             </p>
 
-            <form method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
-                <input type="hidden" name="path" th:value="${path}" />
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-download" aria-hidden="true"></i>
-                    Download
-                </button>
-            </form>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <form method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
+                        <input type="hidden" name="path" th:value="${path}" />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            Download
+                        </button>
+                    </form>
+                </div>
+
+                <div class="col-xs-6 col-md-3">
+                    <button type="button" class="btn btn-primary" onclick="showTicketUploadModal();">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        <span th:text="#{collections.management.btn.action.upload}"></span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -174,23 +236,29 @@
     </div>
 </div>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="../static/js/bootstrap.min.js"
-        th:src="@{/js/bootstrap.min.js}"></script>
-
-<!-- Metis Menu Plugin JavaScript -->
-<script src="../static/js/metisMenu.min.js"
-        th:src="@{/js/metisMenu.min.js}"></script>
-
-<!-- Custom Theme JavaScript -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../static/js/metisMenu.min.js" th:src="@{/js/metisMenu.min.js}"></script>
 <script src="../static/js/sb-admin-2.js" th:src="@{/js/sb-admin-2.js}"></script>
+<script src="../static/js/switchTemplate.js" th:src="@{/js/switchTemplate.js}"></script>
+<script type="text/javascript" th:src="@{/js/ticketFileUpload.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    function showTicketUploadModal() {
+        $("#filesList").empty();
+        $("#numberFilesUpload").html(0);
+        $("#browseButton").show();
 
-<!-- Template switch -->
-<script src="../static/js/switchTemplate.js"
-        th:src="@{/js/switchTemplate.js}"></script>
+        var input = $("input[name='files']");
+        input.replaceWith(input.val('').clone(true));
+        $("#ticketUploadModal").modal("show");
+    }
 
-<!-- Upload -->
-<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+    $("#browseButton").click(function(){
+        $("input[name='files']").click();
+    });
+
+    /*]]>*/
+</script>
 
 </body>
 

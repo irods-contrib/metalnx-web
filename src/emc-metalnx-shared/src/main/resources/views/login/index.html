@@ -118,6 +118,8 @@
     		}
 
             $(".login form input").keyup(function() {
+                hideInvalidTicketMsg();
+
                 var input = $(this);
                 var inputCheck = input.next("div.icon-input-check");
 
@@ -136,15 +138,19 @@
     	    var ticketString = $("#inputTicketString").val();
     	    var path = $("#inputTicketPath").val();
 
-    	    if (path == '' || ticketString == '') {
+
+    	    if (isValidPath(path) == '' || ticketString == '') {
     	        showInvalidTicketMsg();
                 return false;
     	    }
-
     	    hideInvalidTicketMsg();
     	    var url = $(this).attr('action') + ticketString;
     	    $(this).submit();
         });
+
+        function isValidPath(path) {
+            return path != '' && path.indexOf("/") >= 0 && path.indexOf("/") != path.length -1;
+        }
 
         function showInvalidTicketMsg() {
             $("#invalidTicketMsg").removeClass("hidden");

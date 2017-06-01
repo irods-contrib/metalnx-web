@@ -16,13 +16,19 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -33,10 +39,30 @@ public class TicketClientExceptionController {
     @Autowired
     private TicketClientService ticketClientService;
 
-	@ExceptionHandler({DataGridFileNotFoundException.class, IOException.class})
-	public String handleTicketFileNotFound() {
-        logger.error("Ticket - file not found");
+	@ExceptionHandler({DataGridTicketFileNotFound.class, IOException.class})
+	public ModelAndView handleTicketFileNotFound(DataGridTicketFileNotFound fileNotFound) {
         ticketClientService.deleteTempTicketDir();
-		return "tickets/ticketclienterror";
+        String path = fileNotFound.getPath();
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("error", true);
+        mav.addObject("objName", path.substring(0, path.lastIndexOf("/")));
+        mav.addObject("path", path);
+        mav.addObject("ticketString", fileNotFound.getTicketString());
+        mav.setViewName("tickets/ticketclient");
+		return mav;
 	}
+
+	@ExceptionHandler({DataGridTicketInvalidUser.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleTicketInvalidUserException() {
+        return "tickets/ticketinvaliduser";
+    }
+
+    @ExceptionHandler({DataGridTicketUploadException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public String handleTicketFileUploadError(DataGridTicketUploadException e) {
+        ticketClientService.deleteTempTicketDir();
+        return e.getMessage();
+    }
 }

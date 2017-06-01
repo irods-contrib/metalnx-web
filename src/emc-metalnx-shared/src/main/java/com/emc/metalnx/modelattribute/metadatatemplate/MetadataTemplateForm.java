@@ -30,12 +30,21 @@ public class MetadataTemplateForm {
 	private List<String> avuAttributes;
 	private List<String> avuValues;
 	private List<String> avuUnits;
-	
+	private List<String> paths;
+
+	public List<String> getPaths() {
+		return paths;
+	}
+
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
+	}
+
+	public void setPaths(List<String> paths) {
+		this.paths = paths;
 	}
 
 	/**

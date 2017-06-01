@@ -611,6 +611,11 @@ public class CollectionServiceImpl implements CollectionService {
      */
 
     @Override
+    public String prepareFilesForDownload(String[] paths) throws IOException, DataGridException {
+        return prepareFilesForDownload(Arrays.asList(paths));
+    }
+
+    @Override
     public String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException {
         logger.info("Preparing files for download");
         if (sourcePaths == null || sourcePaths.isEmpty()) {

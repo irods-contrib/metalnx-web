@@ -34,6 +34,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +59,18 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/ticketForm", method = RequestMethod.GET)
-    public String createTicketForm(Model model) throws DataGridConnectionRefusedException {
-        DataGridTicket ticket = new DataGridTicket();
+    public String createTicketForm(Model model,
+                                   @RequestParam(value = "ticketstring", required = false) String ticketString)
+            throws DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+
+        DataGridTicket ticket;
+
+        if(ticketString != null && !ticketString.isEmpty()) {
+            ticket = ticketService.find(ticketString);
+        } else {
+            ticket = new DataGridTicket();
+        }
+
         model.addAttribute("ticket", ticket);
         model.addAttribute("requestMapping","tickets/");
         return "tickets/ticketForm";
@@ -123,5 +135,33 @@ public class TicketController {
             DataGridMissingTicketString, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
         logger.info("Modify ticket");
         ticketService.modify(ticket);
+    }
+
+    @RequestMapping(value = "/validatehost", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public HostInfo validateTicketHostname(@RequestParam("hostname") String hostname)
+            throws UnknownHostException {
+        logger.info("Validating ticket hostname {}", hostname);
+        return new HostInfo(hostname);
+    }
+}
+
+class HostInfo {
+
+    private String hostname;
+    private String ip;
+
+    HostInfo(String hostname) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(hostname);
+        this.hostname = hostname;
+        this.ip = address.getHostAddress();
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public String getIp() {
+        return ip;
     }
 }

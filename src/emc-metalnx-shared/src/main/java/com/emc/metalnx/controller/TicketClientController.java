@@ -17,7 +17,9 @@
 package com.emc.metalnx.controller;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +48,8 @@ public class TicketClientController {
     private static final String APPLICATION_OCTET_STREAM = "text/octet-stream";
     private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
     private static final Logger logger = LoggerFactory.getLogger(TicketClientController.class);
-    public static final String IRODS_PATH_SEPARATOR = "/";
-    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String IRODS_PATH_SEPARATOR = "/";
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
 
     @Autowired
     private TicketClientService ticketClientService;
@@ -64,10 +66,16 @@ public class TicketClientController {
         return "tickets/ticketclient";
     }
 
+    @RequestMapping(value = "/invaliduser", method = RequestMethod.GET)
+    public String invalidUser() {
+        return "tickets/ticketinvaliduser";
+    }
+
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
-            throws DataGridConnectionRefusedException, IOException {
+            throws DataGridConnectionRefusedException, DataGridTicketUploadException, IOException,
+            DataGridTicketInvalidUser {
         logger.info("Uploading files using ticket: {}", ticketString);
 
         if (!(request instanceof MultipartHttpServletRequest)) {
@@ -77,7 +85,7 @@ public class TicketClientController {
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartRequest.getFile("file");
-        String destPath = multipartRequest.getParameter("destPath");
+        String destPath = multipartRequest.getParameter("path");
 
         File file = multipartToFile(multipartFile);
         ticketClientService.transferFileToIRODSUsingTicket(ticketString, file, destPath);
@@ -86,7 +94,7 @@ public class TicketClientController {
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
     public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
                          HttpServletResponse response)
-            throws DataGridConnectionRefusedException, DataGridFileNotFoundException, IOException {
+            throws DataGridConnectionRefusedException, DataGridTicketFileNotFound, IOException, DataGridTicketInvalidUser {
         logger.info("Getting files using ticket: {}", ticketString);
 
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
@@ -129,7 +137,7 @@ public class TicketClientController {
      * @throws IOException
      */
     private File multipartToFile(MultipartFile multipartFile) throws IllegalStateException, IOException {
-        File convFile = new File(multipartFile.getName());
+        File convFile = new File(multipartFile.getOriginalFilename());
         multipartFile.transferTo(convFile);
         return convFile;
     }

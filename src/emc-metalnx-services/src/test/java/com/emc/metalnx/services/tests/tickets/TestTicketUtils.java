@@ -18,12 +18,15 @@ package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.ticket.Ticket;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.packinstr.TicketCreateModeEnum;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +36,18 @@ import java.util.List;
 public class TestTicketUtils {
     private IRODSServices irodsServices;
     private TicketAdminService ticketAdminService;
+    public static final String TICKET_FILE_CONTENT = "This is a test for ticket";
 
     public TestTicketUtils(IRODSServices irodsServices) throws DataGridConnectionRefusedException {
         this.irodsServices = irodsServices;
         this.ticketAdminService = irodsServices.getTicketAdminService();
+    }
+
+    public void deleteIRODSFile(String path) throws JargonException, DataGridConnectionRefusedException {
+        IRODSFile ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
+        if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
+            irodsServices.getIRODSFileSystemAO().fileDeleteForce(ticketIRODSFile);
+        }
     }
 
     public String createTicket(String parentPath, String item, TicketCreateModeEnum type) throws JargonException, DataGridConnectionRefusedException {
@@ -81,13 +92,6 @@ public class TestTicketUtils {
         ticketAdminService.addTicketGroupRestriction(ticketString, group);
     }
 
-    public void deleteAllTickets() throws JargonException {
-        List<Ticket> ticketList = ticketAdminService.listAllTickets(0);
-
-        for(Ticket t: ticketList)
-            ticketAdminService.deleteTicket(t.getTicketString());
-    }
-
     public Ticket findTicket(String ticketString) throws JargonException {
         return ticketAdminService.getTicketForSpecifiedTicketString(ticketString);
     }
@@ -102,5 +106,15 @@ public class TestTicketUtils {
 
     public List<String> listAllGroupRestrictionsForSpecifiedTicket(String ticketString) throws JargonException {
         return ticketAdminService.listAllGroupRestrictionsForSpecifiedTicket(ticketString, 0);
+    }
+
+    public File createLocalFile(String filename) throws IOException {
+        File file = new File(filename);
+        FileUtils.writeByteArrayToFile(file, TICKET_FILE_CONTENT.getBytes());
+        return file;
+    }
+
+    public File createLocalFile() throws IOException {
+        return createLocalFile("test-ticket-file-" + System.currentTimeMillis());
     }
 }

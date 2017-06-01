@@ -16,7 +16,7 @@
 
 <div class="row template-fields-content templates" id="templateFieldsList">
 	<div class="modal-dialog modal-lg">
-	<form th:action="@{${requestMapping}}" th:object="${templateForm}" method="POST" role="form">
+	<form th:action="@{${requestMapping}}" th:object="${templateForm}" method="POST" role="form" id="applyTemplateForm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
@@ -26,7 +26,7 @@
 			</div>
 			
 			<div class="modal-body">
-				<div class="" th:if="${foundTemplateFields}" >
+				<div th:if="${foundTemplateFields}" >
 					<table class="table" id="templateFieldsListTable">
 						<thead>
 							<tr>
@@ -41,7 +41,6 @@
 						</thead>
 						
 						<tbody id="">
-							
 							<tr th:each="templateField : ${templateFields}" th:id="${templateField.id} ? ${templateField.id} : ${'pos_' + templateField.formListPosition}" th:class="${templateField.id == null} ? 'info'">
 								<td class="text-center" th:unless="${templateField.id != null}">
 									<input type="checkbox" name="templateFieldCheckboxes" th:value="${templateField.formListPosition}"/>
@@ -94,6 +93,7 @@
 	        if([[${not foundTemplateFields}]] || $('#templateFieldsList form input[name="avuValues"][value=""]').length > 0){
 	            $('#submitTemplateBtn').prop('disabled', true);
 	        }
+
 	        $('#templateFieldsList form input[name="avuValues"]').keyup(function(){
 		        var allValues = $('#templateFieldsList form input[name="avuValues"]');
 		        var emtpyValues = $('#templateFieldsList form input[name="avuValues"]').filter(function() { return $(this).val() == ""; });
@@ -103,8 +103,16 @@
 	                $('#submitTemplateBtn').prop('disabled', true);
 	            }
 	        });
+
+	        $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'paths',
+                    value: $(this).val()
+                }).appendTo('#applyTemplateForm');
+            });
 	    });
-	           
+
 		var datatable = $("#templateFieldsListTable").DataTable({
 			"dom": dtPatternMetadataTemplate,
 		    "language": i18n,

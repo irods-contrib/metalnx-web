@@ -19,6 +19,7 @@ package com.emc.metalnx.controller;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
@@ -30,10 +31,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -85,18 +90,19 @@ public class FileOperationsController {
 
     @RequestMapping(value = "/move", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public String move(Model model, @RequestParam("targetPath") String targetPath) throws DataGridException, JargonException {
+    public String move(Model model, @RequestParam("targetPath") String targetPath,
+                       @RequestParam("paths[]") String[] paths)
+            throws DataGridException, JargonException {
 
-        List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedMoves = new ArrayList<>();
         String fileMoved = "";
 
         try {
-            for (String sourcePathItem : sourcePaths) {
-                String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-                if (!fileOperationService.move(sourcePathItem, targetPath)) {
+            for (String p : paths) {
+                String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+                if (!fileOperationService.move(p, targetPath)) {
                     failedMoves.add(item);
-                } else if (sourcePaths.size() == 1) {
+                } else if (paths.length == 1) {
                     fileMoved = item;
                 }
             }
@@ -107,7 +113,6 @@ public class FileOperationsController {
         if (!fileMoved.isEmpty()) model.addAttribute("fileMoved", fileMoved);
 
         model.addAttribute("failedMoves", failedMoves);
-        sourcePaths.clear();
 
         return collectionController.getSubDirectories(model, targetPath);
     }
@@ -115,18 +120,18 @@ public class FileOperationsController {
     @RequestMapping(value = "/copy", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public String copy(Model model, @RequestParam("targetPath") String targetPath,
-                       @RequestParam("copyWithMetadata") boolean copyWithMetadata)
+                       @RequestParam("copyWithMetadata") boolean copyWithMetadata,
+                       @RequestParam("paths[]") String[] paths)
             throws DataGridException, JargonException {
 
-        List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedCopies = new ArrayList<>();
         String fileCopied = "";
 
-        for (String sourcePathItem : sourcePaths) {
-            String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-            if (!fileOperationService.copy(sourcePathItem, targetPath, copyWithMetadata)) {
+        for (String p : paths) {
+            String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+            if (!fileOperationService.copy(p, targetPath, copyWithMetadata)) {
                 failedCopies.add(item);
-            } else if (sourcePaths.size() == 1) {
+            } else if (paths.length == 1) {
                 fileCopied = item;
             }
         }
@@ -134,7 +139,6 @@ public class FileOperationsController {
         if (!fileCopied.isEmpty()) model.addAttribute("fileCopied", fileCopied);
 
         model.addAttribute("failedCopies", failedCopies);
-        sourcePaths.clear();
 
         return collectionController.getSubDirectories(model, targetPath);
     }
@@ -191,40 +195,32 @@ public class FileOperationsController {
         return collectionController.index(model, request, false);
     }
 
-    @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET, produces = {"text/plain"})
-    @ResponseBody
-    public String prepareFilesForDownload(HttpServletResponse response) throws DataGridConnectionRefusedException {
-
-        List<String> sourcePaths = collectionController.getSourcePaths();
+    @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
+    public void prepareFilesForDownload(HttpServletResponse response, @RequestParam("paths[]") String[] paths)
+            throws DataGridConnectionRefusedException {
 
         try {
-            // if a single file was selected, it will be transferred directly
-            // through the HTTP response
-            if (sourcePaths.size() == 1 && collectionService.isDataObject(sourcePaths.get(0))) {
+            if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
+                filePathToDownload = collectionService.prepareFilesForDownload(paths);
+                removeTempCollection = true;
+            } else {
+                // if a single file was selected, it will be transferred directly through the HTTP response
                 removeTempCollection = false;
-                filePathToDownload = sourcePaths.get(0);
+                filePathToDownload = paths[0];
                 String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
-                if (permissionType.equalsIgnoreCase("none")) {
+                if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
                     throw new DataGridException("Lack of permission to download file " + filePathToDownload);
                 }
-            } else {
-                filePathToDownload = collectionService.prepareFilesForDownload(sourcePaths);
-                removeTempCollection = true;
             }
-
-            sourcePaths.clear();
         } catch (DataGridConnectionRefusedException e) {
             throw e;
         } catch (DataGridException | IOException e) {
             logger.error("Could not download selected items: ", e.getMessage());
             response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
-
-        return "";
     }
 
-    @RequestMapping(value = "/download/", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(HttpServletResponse response) throws DataGridConnectionRefusedException {
 
         try {

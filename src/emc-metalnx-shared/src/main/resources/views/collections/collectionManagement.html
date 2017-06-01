@@ -705,12 +705,20 @@
 	        }
 	        
 	        $("#moveBtn").click(function() {
-		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath}, callbackMoveAndCopy, null, null, null);
+	            var paths = [];
+                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                    paths.push($(this).val());
+                });
+		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath, paths: paths}, callbackMoveAndCopy);
 	        });
 	        
 	        $("#copyBtn").click(function() {
 	            var copyWithMetadata = $("#inputCopyWithMetadata").is(":checked");
-	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata};
+	            var paths = [];
+                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                    paths.push($(this).val());
+                });
+	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata, paths: paths};
 	            var url = "/emc-metalnx-web/fileOperation/copy/";
 	        	ajaxEncapsulation(url, "POST", params, callbackMoveAndCopy, null, null, null);
 	        });
@@ -841,10 +849,10 @@
 	        }
 	        
 	        function getTemplatesToBeApplied() {
-	        	var templateIDsList = $("#templatesListTable input[type=checkbox]:checked").map(function() {
+	        	var templateIDsList = $("#templatesListTable input[name='templateCheckboxes']:checked").map(function() {
 	        		return $(this).val();
-	        	}).get().join(); 
-	        	
+	        	}).get().join();
+
 	        	return templateIDsList;
 	        }
 	        function goBackToTemplatesList() {

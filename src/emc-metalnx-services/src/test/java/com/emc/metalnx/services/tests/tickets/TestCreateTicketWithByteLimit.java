@@ -60,7 +60,7 @@ public class TestCreateTicketWithByteLimit {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DataGridTicket dgt;
 
@@ -76,13 +76,14 @@ public class TestCreateTicketWithByteLimit {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithWriteByteLimit() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        Ticket ticketWithByteLimit = ticketUtils.findTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        Ticket ticketWithByteLimit = ticketUtils.findTicket(ticketString);
 
         assertEquals(WRITE_BYTE_LIMIT, ticketWithByteLimit.getWriteByteLimit());
         assertFalse(ticketWithByteLimit.getTicketString().isEmpty());

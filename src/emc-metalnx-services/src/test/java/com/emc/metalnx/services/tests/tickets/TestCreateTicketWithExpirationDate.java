@@ -63,7 +63,7 @@ public class TestCreateTicketWithExpirationDate {
     private IRODSServices irodsServices;
 
     private Date date;
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private DataGridTicket dgt;
@@ -81,13 +81,14 @@ public class TestCreateTicketWithExpirationDate {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        Ticket ticketWithExpirationDate = ticketUtils.findTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        Ticket ticketWithExpirationDate = ticketUtils.findTicket(ticketString);
 
         String currDate = dateFormat.format(date);
         String ticketCreatedDate = dateFormat.format(ticketWithExpirationDate.getExpireTime());

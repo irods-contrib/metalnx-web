@@ -30,24 +30,11 @@
 
     <title>Tickets</title>
 
-    <!-- jQuery Version 1.11.0 -->
     <script src="../static/js/jquery-1.11.0.js" th:src="@{/js/jquery.min.js}"></script>
-
-    <!-- Bootstrap Core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-
-    <!-- Custom Fonts -->
     <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}" />
-
     <link href="../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}" />
 
-    <script type="text/javascript">
-        var uri = window.location.toString();
-        if (uri.indexOf("?") > 0) {
-            var clean_uri = uri.substring(0, uri.indexOf("?"));
-            window.history.replaceState({}, document.title, clean_uri);
-        }
-    </script>
 </head>
 
 <body>
@@ -105,7 +92,6 @@
         </div>
     </nav>
 
-    <!-- Page Content -->
     <div id="page-wrapper-tickets">
         <div class="row">
             <div class="col-sm-12">
@@ -114,7 +100,8 @@
         </div>
 
         <div class="panel loading col-xs-12 col-sm-12 col-md-4">
-            <span>Sorry, Metalnx could not find a matching collection or data object.</span>
+            Sorry, <b>anonymous</b> is not a valid account. Please, contact your system administrator.
+            <a href="/emc-metalnx-web/login/">Back</a>
         </div>
     </div>
 
@@ -153,23 +140,29 @@
     </div>
 </div>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="../static/js/bootstrap.min.js"
-        th:src="@{/js/bootstrap.min.js}"></script>
-
-<!-- Metis Menu Plugin JavaScript -->
-<script src="../static/js/metisMenu.min.js"
-        th:src="@{/js/metisMenu.min.js}"></script>
-
-<!-- Custom Theme JavaScript -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../static/js/metisMenu.min.js" th:src="@{/js/metisMenu.min.js}"></script>
 <script src="../static/js/sb-admin-2.js" th:src="@{/js/sb-admin-2.js}"></script>
+<script src="../static/js/switchTemplate.js" th:src="@{/js/switchTemplate.js}"></script>
+<script type="text/javascript" th:src="@{/js/ticketFileUpload.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    function showTicketUploadModal() {
+        $("#filesList").empty();
+        $("#numberFilesUpload").html(0);
+        $("#browseButton").show();
 
-<!-- Template switch -->
-<script src="../static/js/switchTemplate.js"
-        th:src="@{/js/switchTemplate.js}"></script>
+        var input = $("input[name='files']");
+        input.replaceWith(input.val('').clone(true));
+        $("#ticketUploadModal").modal("show");
+    }
 
-<!-- Upload -->
-<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+    $("#browseButton").click(function(){
+        $("input[name='files']").click();
+    });
+
+    /*]]>*/
+</script>
 
 </body>
 

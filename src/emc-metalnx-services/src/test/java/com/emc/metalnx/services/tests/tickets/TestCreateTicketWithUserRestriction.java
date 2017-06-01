@@ -58,7 +58,7 @@ public class TestCreateTicketWithUserRestriction {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DataGridTicket dgt;
 
@@ -74,13 +74,14 @@ public class TestCreateTicketWithUserRestriction {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithHostRestriction() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        List<String> users = ticketUtils.listAllUserRestrictionsForSpecifiedTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        List<String> users = ticketUtils.listAllUserRestrictionsForSpecifiedTicket(ticketString);
 
         assertEquals(1, users.size());
         assertTrue(users.contains(username));

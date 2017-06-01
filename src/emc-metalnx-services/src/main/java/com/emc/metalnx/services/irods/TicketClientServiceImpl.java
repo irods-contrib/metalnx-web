@@ -16,13 +16,15 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
 import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
-import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.*;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -42,6 +44,8 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -64,6 +68,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     private IRODSAccessObjectFactory irodsAccessObjectFactory;
     private String host, zone, defaultStorageResource;
     private int port;
+    private Map<Integer, String> ticketErroCodeMap;
 
     @PostConstruct
     public void init() {
@@ -72,21 +77,59 @@ public class TicketClientServiceImpl implements TicketClientService {
         port = Integer.valueOf(configService.getIrodsPort());
         defaultStorageResource = "";
         setUpAnonymousAccess();
+        ticketErroCodeMap = new HashMap<>();
+        ticketErroCodeMap.put(-891000, "Ticket expired");
+        ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
+        ticketErroCodeMap.put(-893000, "Ticket user excluded");
+        ticketErroCodeMap.put(-894000, "Ticket host excluded");
+        ticketErroCodeMap.put(-895000, "Ticket group excluded");
+        ticketErroCodeMap.put(-896000, "Ticket write uses exceeded");
+        ticketErroCodeMap.put(-526020, "Destination not a directory");
     }
 
     @Override
-    public void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath) {
+    public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
+            throws DataGridTicketUploadException, DataGridTicketInvalidUser {
+        if (ticketString == null || ticketString.isEmpty()) {
+            throw new DataGridTicketUploadException("Ticket String not provided");
+        } else if (destPath == null || destPath.isEmpty()) {
+            throw new DataGridTicketUploadException("Ticket path not provided");
+        } else if (localFile == null) {
+            throw new DataGridTicketUploadException("File not provided");
+        }
+
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
-            IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(destPath);
-            ticketClientOperations.putFileToIRODSUsingTicket(ticketString, file, irodsFile, null, null);
+            String targetPath = String.format("%s/%s", destPath, localFile.getName());
+            IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
+            ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
+        } catch (InvalidUserException e) {
+            logger.error("Invalid user. Cannot download files as anonymous.");
+            throw new DataGridTicketInvalidUser("Invalid user anonymous");
+        } catch (OverwriteException | DuplicateDataException e) {
+            logger.error("Could not transfer file to the grid. File already exists: {}", e);
+            throw new DataGridTicketUploadException("File already exists");
+        } catch(CatNoAccessException e) {
+            logger.error("Could not transfer file to the grid. Cat no access: {}", e);
+            throw new DataGridTicketUploadException(e.getMessage());
+        } catch (DataNotFoundException e) {
+            logger.error("Could not transfer file to the grid. File not found: {}", e);
+            throw new DataGridTicketUploadException("File not found");
         } catch (JargonException e) {
             logger.error("Could not transfer file to the grid using a ticket: {}", e);
+            int code = e.getUnderlyingIRODSExceptionCode();
+            String msg = "Transfer failed";
+            if (ticketErroCodeMap.containsKey(code)) {
+                msg = ticketErroCodeMap.get(code);
+            }
+            throw new DataGridTicketUploadException(msg);
+        } finally {
+            FileUtils.deleteQuietly(localFile);
         }
     }
 
     @Override
-    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException {
+    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound, DataGridTicketInvalidUser {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -95,7 +138,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             tempDir.mkdir();
         }
 
-        File file = null;
+        File file;
         try {
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);
@@ -103,14 +146,22 @@ public class TicketClientServiceImpl implements TicketClientService {
 
             String filename = path.substring(path.lastIndexOf("/") + 1, path.length());
             File obj = findFileInDirectory(tempDir, filename);
+
+            if (obj == null) {
+                throw new DataGridTicketFileNotFound("Could not find files locally", path, ticketString);
+            }
+
             file = obj;
 
             if (obj.isDirectory()) {
                 file = zipService.createZip(tempDir, obj);
             }
+        } catch (InvalidUserException e) {
+            logger.error("Invalid user. Cannot download files as anonymous.");
+            throw new DataGridTicketInvalidUser("Invalid user anonymous");
         } catch (JargonException e) {
             logger.error("Get file using a ticket: File Not Found: {}", e);
-            throw new DataGridFileNotFoundException(e.getMessage());
+            throw new DataGridTicketFileNotFound(e.getMessage(), path, ticketString);
         }
 
         return file;
@@ -126,18 +177,15 @@ public class TicketClientServiceImpl implements TicketClientService {
      * @param directory directory to look for files
      * @param filename file where are looking for
      * @return File representing the file found within the given directory
-     * @throws DataGridFileNotFoundException if Metalnx cannot find the file locally
      */
-    private File findFileInDirectory(File directory, String filename) throws DataGridFileNotFoundException {
+    private File findFileInDirectory(File directory, String filename) {
         File[] files = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return filename.equals(name);
             }
         });
 
-        if (files == null || files.length == 0) {
-            throw new DataGridFileNotFoundException("Could not find files locally");
-        }
+        if (files == null || files.length == 0) return null;
 
         return files[0];
     }

@@ -101,11 +101,17 @@
 
 			$("input[name='templateCheckboxes']").change(function() {
 				var totalCheckboxesChecked = $("input[name='templateCheckboxes']:checked").length;
-				if(0 >= totalCheckboxesChecked) {
+				if(totalCheckboxesChecked == 0) {
+				    $("#templatesListTable input[name='selectAllCheckboxes']").prop('checked', false);
 			    	$("#listTemplateFieldsBtn").prop("disabled", true);
-				}else{
+				} else {
 			    	$("#listTemplateFieldsBtn").prop("disabled", false);
 				}
+		    });
+
+		    $("#templatesListTable input[name='selectAllCheckboxes']").change(function() {
+                var isChecked = $(this).is(":checked");
+                $("input[name='templateCheckboxes']").prop('checked', isChecked).change();
 		    });
 		});
 	/*]]>*/

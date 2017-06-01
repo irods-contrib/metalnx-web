@@ -16,7 +16,9 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridFileNotFoundException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 
 import java.io.File;
 
@@ -28,19 +30,24 @@ public interface TicketClientService {
     /**
      * Transfers a file to the grid using a ticket.
      * @param ticketString ticket string
-     * @param file file to be transferred to the grid
+     * @param localFile local file to be transferred to the grid
      * @param destPath path where the file will be uploaded to
+     * @throws DataGridTicketUploadException if ticket string, local file or destination path are not provided
+     * @throws DataGridTicketInvalidUser if anonymous account is not valid (account does not exist)
      */
-    void transferFileToIRODSUsingTicket(String ticketString, File file, String destPath);
+    void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
+            throws DataGridTicketUploadException, DataGridTicketInvalidUser;
 
     /**
      * Gets a file from the grid.
      * @param ticketString ticket string to access a collection or an object
      * @param path path to get files from
      * @return {@code File} file
-     * @throws DataGridFileNotFoundException if path cannot be found
+     * @throws DataGridTicketFileNotFound if path cannot be found
+     * @throws DataGridTicketInvalidUser if anonymous account is not valid (account does not exist)
      */
-    File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridFileNotFoundException;
+    File getFileFromIRODSUsingTicket(String ticketString, String path)
+            throws DataGridTicketFileNotFound, DataGridTicketInvalidUser;
 
     /**
      * Deletes the temporary directory created after downloading files from the grid using a ticket.

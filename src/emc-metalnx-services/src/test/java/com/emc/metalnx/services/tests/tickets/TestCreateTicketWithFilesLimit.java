@@ -60,7 +60,7 @@ public class TestCreateTicketWithFilesLimit {
     @Autowired
     private IRODSServices irodsServices;
 
-    private String targetPath;
+    private String targetPath, ticketString;
     private TestTicketUtils ticketUtils;
     private DataGridTicket dgt;
 
@@ -76,13 +76,14 @@ public class TestCreateTicketWithFilesLimit {
 
     @After
     public void tearDown() throws JargonException {
-        ticketUtils.deleteAllTickets();
+        ticketUtils.deleteTicket(ticketString);
     }
 
     @Test
     public void testCreateTicketWithWriteFileLimit() throws DataGridConnectionRefusedException,
             DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException {
-        Ticket ticketWithFileLimit = ticketUtils.findTicket(ticketService.create(dgt));
+        ticketString = ticketService.create(dgt);
+        Ticket ticketWithFileLimit = ticketUtils.findTicket(ticketString);
 
         assertEquals(WRITE_FILE_LIMIT, ticketWithFileLimit.getWriteFileLimit());
         assertFalse(ticketWithFileLimit.getTicketString().isEmpty());
