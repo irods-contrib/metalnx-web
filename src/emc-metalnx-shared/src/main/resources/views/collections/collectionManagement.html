@@ -710,7 +710,11 @@
 	        
 	        $("#copyBtn").click(function() {
 	            var copyWithMetadata = $("#inputCopyWithMetadata").is(":checked");
-	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata};
+	            var paths = [];
+                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                    paths.push($(this).val());
+                });
+	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata, paths: paths};
 	            var url = "/emc-metalnx-web/fileOperation/copy/";
 	        	ajaxEncapsulation(url, "POST", params, callbackMoveAndCopy, null, null, null);
 	        });

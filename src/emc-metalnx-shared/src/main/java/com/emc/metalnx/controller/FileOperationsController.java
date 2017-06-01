@@ -120,18 +120,18 @@ public class FileOperationsController {
     @RequestMapping(value = "/copy", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public String copy(Model model, @RequestParam("targetPath") String targetPath,
-                       @RequestParam("copyWithMetadata") boolean copyWithMetadata)
+                       @RequestParam("copyWithMetadata") boolean copyWithMetadata,
+                       @RequestParam("paths[]") String[] paths)
             throws DataGridException, JargonException {
 
-        List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedCopies = new ArrayList<>();
         String fileCopied = "";
 
-        for (String sourcePathItem : sourcePaths) {
-            String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-            if (!fileOperationService.copy(sourcePathItem, targetPath, copyWithMetadata)) {
+        for (String p : paths) {
+            String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+            if (!fileOperationService.copy(p, targetPath, copyWithMetadata)) {
                 failedCopies.add(item);
-            } else if (sourcePaths.size() == 1) {
+            } else if (paths.length == 1) {
                 fileCopied = item;
             }
         }
@@ -139,7 +139,6 @@ public class FileOperationsController {
         if (!fileCopied.isEmpty()) model.addAttribute("fileCopied", fileCopied);
 
         model.addAttribute("failedCopies", failedCopies);
-        sourcePaths.clear();
 
         return collectionController.getSubDirectories(model, targetPath);
     }
