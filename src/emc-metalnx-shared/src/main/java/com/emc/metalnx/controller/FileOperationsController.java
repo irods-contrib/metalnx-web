@@ -90,18 +90,19 @@ public class FileOperationsController {
 
     @RequestMapping(value = "/move", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public String move(Model model, @RequestParam("targetPath") String targetPath) throws DataGridException, JargonException {
+    public String move(Model model, @RequestParam("targetPath") String targetPath,
+                       @RequestParam("paths[]") String[] paths)
+            throws DataGridException, JargonException {
 
-        List<String> sourcePaths = collectionController.getSourcePaths();
         List<String> failedMoves = new ArrayList<>();
         String fileMoved = "";
 
         try {
-            for (String sourcePathItem : sourcePaths) {
-                String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-                if (!fileOperationService.move(sourcePathItem, targetPath)) {
+            for (String p : paths) {
+                String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+                if (!fileOperationService.move(p, targetPath)) {
                     failedMoves.add(item);
-                } else if (sourcePaths.size() == 1) {
+                } else if (paths.length == 1) {
                     fileMoved = item;
                 }
             }
@@ -112,7 +113,6 @@ public class FileOperationsController {
         if (!fileMoved.isEmpty()) model.addAttribute("fileMoved", fileMoved);
 
         model.addAttribute("failedMoves", failedMoves);
-        sourcePaths.clear();
 
         return collectionController.getSubDirectories(model, targetPath);
     }

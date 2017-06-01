@@ -705,7 +705,11 @@
 	        }
 	        
 	        $("#moveBtn").click(function() {
-		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath}, callbackMoveAndCopy, null, null, null);
+	            var paths = [];
+                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                    paths.push($(this).val());
+                });
+		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath, paths: paths}, callbackMoveAndCopy);
 	        });
 	        
 	        $("#copyBtn").click(function() {
