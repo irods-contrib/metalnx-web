@@ -19,6 +19,7 @@ package com.emc.metalnx.controller;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
@@ -33,7 +34,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -191,36 +195,29 @@ public class FileOperationsController {
         return collectionController.index(model, request, false);
     }
 
-    @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET, produces = {"text/plain"})
-    @ResponseBody
-    public String prepareFilesForDownload(HttpServletResponse response) throws DataGridConnectionRefusedException {
-
-        List<String> sourcePaths = collectionController.getSourcePaths();
+    @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
+    public void prepareFilesForDownload(HttpServletResponse response, @RequestParam("paths[]") String[] paths)
+            throws DataGridConnectionRefusedException {
 
         try {
-            // if a single file was selected, it will be transferred directly
-            // through the HTTP response
-            if (sourcePaths.size() == 1 && collectionService.isDataObject(sourcePaths.get(0))) {
+            if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
+                filePathToDownload = collectionService.prepareFilesForDownload(paths);
+                removeTempCollection = true;
+            } else {
+                // if a single file was selected, it will be transferred directly through the HTTP response
                 removeTempCollection = false;
-                filePathToDownload = sourcePaths.get(0);
+                filePathToDownload = paths[0];
                 String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
-                if (permissionType.equalsIgnoreCase("none")) {
+                if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
                     throw new DataGridException("Lack of permission to download file " + filePathToDownload);
                 }
-            } else {
-                filePathToDownload = collectionService.prepareFilesForDownload(sourcePaths);
-                removeTempCollection = true;
             }
-
-            sourcePaths.clear();
         } catch (DataGridConnectionRefusedException e) {
             throw e;
         } catch (DataGridException | IOException e) {
             logger.error("Could not download selected items: ", e.getMessage());
             response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
-
-        return "";
     }
 
     @RequestMapping(value = "/download/", method = RequestMethod.GET)

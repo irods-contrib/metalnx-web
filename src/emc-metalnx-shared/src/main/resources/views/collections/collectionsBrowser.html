@@ -647,8 +647,14 @@
             $("#showCollectionFormBtn").addClass("disabled");
         	$("#actionsWait").show();
         	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
-        	var downloadURL = $("#downloadBtn").attr("href");
-        	ajaxEncapsulation(downloadURL, "GET", null, handleDownload, handleDownloadFailure, null, null);
+        	var prepareDownloadURL = $("#downloadBtn").attr("href");
+
+			var paths = [];
+        	$("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+				paths.push($(this).val());
+			});
+
+        	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
 			$("#actions button").prop("disabled", true);
         });
 
