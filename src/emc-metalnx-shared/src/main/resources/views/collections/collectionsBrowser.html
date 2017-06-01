@@ -851,16 +851,20 @@
 
             var form = $("#ticketFormPanel form").serializeArray();
             var ticket = {};
+            ticket['hosts'] = []
             for (var i = 0; i < form.length; i++) {
                 var name = form[i]['name'];
                 var values = form[i]['value'].split(',');
-
-                if (name == 'users' || name == 'groups' || name == 'hosts') {
+                if (name == 'users' || name == 'groups') {
                     ticket[name] = [];
                     for (var v = 0; v < values.length; v++) {
                         ticket[name].push(values[v]);
                     }
-                } else {
+                }
+                else if(name == 'hosts'){
+                    ticket[name].push(values[0]);
+                }
+                else {
                     ticket[name] = values[0];
                 }
             }
