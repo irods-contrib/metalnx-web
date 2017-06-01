@@ -71,7 +71,6 @@
             <div id="panelHostnames">
                 <ul id="listHostnames">
                 </ul>
-                <input type="hidden" id="hostnames"/>
             </div>
         </div>
     </div>
@@ -323,9 +322,12 @@
             var inputValue = $("#inputNewHostname").val();
             var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
             var newElement = "<li id='"+$("#inputNewHostname").val()+"'><span>" + $("#inputNewHostname").val() + "</span>"+ removeBtn+ "</li>";
+            var inputHost = "<input type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
+            console.log(inputHost);
             $("ul#listHostnames").append(newElement);
             $("#hostnames").append($("#inputNewHostname").val()+",");
             $("#hostnames").val($("#hostnames").text());
+            $("#panelHostnames").append(inputHost);
             $("#inputNewHostname").val('');
             $("#addHostname").prop("disabled", true);
             $("#addHostname").addClass("disabled");
