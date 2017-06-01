@@ -647,19 +647,19 @@ public class CollectionController {
     }
 
     @RequestMapping(value = "applyTemplatesToCollections/", method = RequestMethod.POST)
-    public String applyTemplatesToCollections(Model model, RedirectAttributes redirectAttributes, @ModelAttribute MetadataTemplateForm templateForm)
+    public String applyTemplatesToCollections(RedirectAttributes redirectAttributes,
+                                              @ModelAttribute MetadataTemplateForm template)
             throws DataGridConnectionRefusedException {
-        boolean templatesAppliedSuccessfully = applyTemplatesToPath(templateForm, sourcePaths);
-        sourcePaths.clear();
+        boolean templatesAppliedSuccessfully = applyTemplatesToPath(template);
         redirectAttributes.addFlashAttribute("templatesAppliedSuccessfully", templatesAppliedSuccessfully);
         return "redirect:/collections/";
     }
 
-    public boolean applyTemplatesToPath(MetadataTemplateForm templateForm, List<String> paths) throws DataGridConnectionRefusedException {
+    private boolean applyTemplatesToPath(MetadataTemplateForm template) throws DataGridConnectionRefusedException {
         boolean allMetadataAdded = true;
-        List<String> attributes = templateForm.getAvuAttributes();
-        List<String> values = templateForm.getAvuValues();
-        List<String> units = templateForm.getAvuUnits();
+        List<String> attributes = template.getAvuAttributes();
+        List<String> values = template.getAvuValues();
+        List<String> units = template.getAvuUnits();
 
         if (attributes == null || values == null || units == null) {
             return false;
@@ -669,7 +669,7 @@ public class CollectionController {
             String attr = attributes.isEmpty() ? "" : attributes.get(i);
             String val = values.isEmpty() ? "" : values.get(i);
             String unit = units.isEmpty() ? "" : units.get(i);
-            for (String path : paths) {
+            for (String path : template.getPaths()) {
                 boolean isMetadadaAdded = metadataService.addMetadataToPath(path, attr, val, unit);
                 if (!isMetadadaAdded) {
                     allMetadataAdded = false;
