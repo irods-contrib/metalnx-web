@@ -841,10 +841,10 @@
 	        }
 	        
 	        function getTemplatesToBeApplied() {
-	        	var templateIDsList = $("#templatesListTable input[type=checkbox]:checked").map(function() {
+	        	var templateIDsList = $("#templatesListTable input[name='templateCheckboxes']:checked").map(function() {
 	        		return $(this).val();
-	        	}).get().join(); 
-	        	
+	        	}).get().join();
+
 	        	return templateIDsList;
 	        }
 	        function goBackToTemplatesList() {
