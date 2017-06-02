@@ -206,9 +206,10 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
+                            var mailBtn = '<a href="#" onclick="mailTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Email</a>';
                             var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
                             var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
-                            return modifyBtn + deleteBtn;
+                            return mailBtn + modifyBtn + deleteBtn;
                         },
                         "width": "10%",
                         "orderable": false,
@@ -218,6 +219,18 @@
 	            ]
 			} );
 		});
+
+		function mailTicket(ticketString) {
+            var url = '/emc-metalnx-web/tickets/' + ticketString;
+            var contentType = "application/json; charset=utf-8";
+            ajaxEncapsulation(url, "GET", null, openMailTicketAssistent, null, null, contentType);
+		}
+
+		function openMailTicketAssistent(ticket) {
+		    var subject = "[Metalnx]%20New%20Ticket%20Created";
+		    var body = "Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20"+ ticket.ticketString + "%0D%0APath:%20"+ ticket.path;
+			window.location.href = "mailto:arthur.guerra@emc.com?Subject=" + subject + "&body=" + body;
+		}
 
 		function modifyTicket(ticketString) {
 		    var url = [[${urlMap.URL_TICKETS_FORM}]];
