@@ -147,6 +147,44 @@
             </div>
         </div>
 
+        <div class="modal fade" id="ticketShareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{ticket.share.title}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <span id="newTicketInfoCopy"></span>
+
+                        <p>
+                            <b>Ticket String</b><br />
+                            <span id="ticketString"></span>
+                        </p>
+
+                        <p>
+                            <b>Ticket Path</b><br />
+                            <span id="ticketPath"></span>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                th:text="#{ticket.form.button.cancel}">
+                        </button>
+                        <a href="#" id="emailTicketBtn" type="button" class="btn btn-primary" data-dismiss="modal"
+                                th:text="#{ticket.share.button.email}">
+                        </a>
+                        <button id="copyTicketBtn" onclick="copyTextToClipboard();" type="button" class="btn btn-primary"
+                                th:text="#{ticket.share.button.copy}" th:title="#{ticket.share.button.copy.title}">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
         <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script th:inline="javascript">
 		/*<![CDATA[*/
@@ -206,10 +244,10 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            var mailBtn = '<a href="#" onclick="mailTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Email</a>';
+                            var shareBtn = '<a href="#" id="shareBtn" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
                             var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
                             var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
-                            return mailBtn + modifyBtn + deleteBtn;
+                            return shareBtn + modifyBtn + deleteBtn;
                         },
                         "width": "10%",
                         "orderable": false,
@@ -218,18 +256,28 @@
                     }
 	            ]
 			} );
+
+			$("body").tooltip({
+                selector: "[id=copyTicketBtn]",
+                trigger: "hover",
+                position: "bottom",
+			});
 		});
 
-		function mailTicket(ticketString) {
+		function shareTicket(ticketString) {
             var url = '/emc-metalnx-web/tickets/' + ticketString;
             var contentType = "application/json; charset=utf-8";
-            ajaxEncapsulation(url, "GET", null, openMailTicketAssistent, null, null, contentType);
+            ajaxEncapsulation(url, "GET", null, showShareTicketModal, null, null, contentType);
 		}
 
-		function openMailTicketAssistent(ticket) {
-		    var subject = "[Metalnx]%20New%20Ticket%20Created";
-		    var body = "Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20"+ ticket.ticketString + "%0D%0APath:%20"+ ticket.path;
-			window.location.href = "mailto:?Subject=" + subject + "&body=" + body;
+		function showShareTicketModal(ticket) {
+		    var ticketStringMail = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created" + "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20"+ ticket.ticketString + "%0D%0APath:%20"+ ticket.path;
+			var newTicketInfoCopy = "Ticket String: "+ ticket.ticketString + " | Path: " + ticket.path;
+			$("#ticketString").html(ticket.ticketString);
+			$("#ticketPath").html(ticket.path);
+			$("#emailTicketBtn").attr("href", ticketStringMail);
+			$("#newTicketInfoCopy").html(newTicketInfoCopy);
+			$("#ticketShareModal").modal("show");
 		}
 
 		function modifyTicket(ticketString) {

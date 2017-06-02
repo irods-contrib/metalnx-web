@@ -18,11 +18,15 @@
 function setCopyTicketBtn(){
     var copyTicketBtn = document.querySelector('.copyTicketBtn');
     copyTicketBtn.addEventListener('click', function(event) {
-        var ticketInfo = document.querySelector('#newTicketInfoCopy');
-        var range = document.createRange();
-        range.selectNode(ticketInfo);
-        window.getSelection().addRange(range);
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
+        copyTextToClipboard();
     });
+}
+
+function copyTextToClipboard() {
+    var ticketInfo = document.querySelector('#newTicketInfoCopy');
+    var range = document.createRange();
+    range.selectNode(ticketInfo);
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
 }
