@@ -65,11 +65,15 @@
         <div class="form-group optional">
             <label id="hostnamesLabel" for="inputHostnames" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
             <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
-            <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus-circle" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
-            <div id="panelHostnames">
-                <ul id="listHostnames">
-                </ul>
-            </div>
+            <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
+                <div id="panelHostnames">
+                    <ul id="listHostnames">
+                        <th:block th:each="host: ${ticket.hosts}">
+                            <li th:id="li_+${host}"><span th:text="${host}"></span><a class='btn btn-link pull-right btn-remove' th:onclick="'javascript:removeHost(\'' + ${host} + '\');'"><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a></li>
+                            <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts'/>
+                        </th:block>
+                    </ul>
+                </div>
         </div>
     </div>
 </form>
@@ -308,37 +312,32 @@
                 $("#createTicketFormBtn").removeClass("disabled");
             }
         });
-
         $("#inputNewHostname").on('input propertychange', function(){
-            if ($("#inputNewHostname").val() != '') {
-                $("#addHostname").attr("disabled", false);
-                $("#addHostname").removeClass("disabled");
-            }
-            else {
-                $("#addHostname").attr("disabled", true);
-                $("#addHostname").addClass("disabled");
-            }
-        });
+         if ($("#inputNewHostname").val() != '') {
+             $("#addHostname").attr("disabled", false);
+             $("#addHostname").removeClass("disabled");
+         }
+         else {
+             $("#addHostname").attr("disabled", true);
+             $("#addHostname").addClass("disabled");
+         }
+     });
 
-        $("#addHostname").on('click', function () {
-            var inputValue = $("#inputNewHostname").val();
-            var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
-            var newElement = "<li id='"+$("#inputNewHostname").val()+"'><span>" + $("#inputNewHostname").val() + "</span>"+ removeBtn+ "</li>";
-            var inputHost = "<input type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
-            console.log(inputHost);
-            $("ul#listHostnames").append(newElement);
-            $("#hostnames").append($("#inputNewHostname").val()+",");
-            $("#hostnames").val($("#hostnames").text());
-            $("#panelHostnames").append(inputHost);
-            $("#inputNewHostname").val('');
-            $("#addHostname").prop("disabled", true);
-            $("#addHostname").addClass("disabled");
-        });
+     $("#addHostname").on('click', function () {
+         var inputValue = $("#inputNewHostname").val();
+         var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
+         var newElement = "<li id=li_" + inputValue+ "><span>" + inputValue + "</span>"+ removeBtn+ "</li>";
+         var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
+         $("ul#listHostnames").append(newElement);
+         $("#hostnames").append($("#inputNewHostname").val()+",");
+         $("#hostnames").val($("#hostnames").text());
+         $("ul#listHostnames").append(inputHost);
+         $("#inputNewHostname").val('');
+         $("#addHostname").prop("disabled", true);
+         $("#addHostname").addClass("disabled");
+     });
+
     });
-    function removeHost(hostname){
-        var listItem = document.getElementById(hostname);
-        var list = listItem.parentElement;
-        list.removeChild(listItem);
-    }
+
 /*]]>*/
 </script>
