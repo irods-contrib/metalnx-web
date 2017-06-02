@@ -89,9 +89,9 @@
                 <i class="fa fa-exclamation-triangle"
                    th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? hidden"
                    aria-hidden="true"></i>
-                <span th:if="${usernameOrPasswordInvalid}">Invalid username or password</span>
-                <span th:if="${serverNotResponding}">iRODS not responding</span>
-                <span th:if="${databaseNotResponding}">Database not responding</span>
+                <span th:if="${usernameOrPasswordInvalid}" class="invalidLogin">Invalid username or password</span>
+                <span th:if="${serverNotResponding}" class="invalidLogin">iRODS not responding</span>
+                <span th:if="${databaseNotResponding}" class="invalidLogin">Database not responding</span>
                 <span class="hidden" id="invalidTicketMsg">Invalid ticket string or path</span>
             </div>
 
@@ -118,6 +118,7 @@
     		}
 
             $(".login form input").keyup(function() {
+                hideInvalidLoginMsg();
                 hideInvalidTicketMsg();
 
                 var input = $(this);
@@ -159,6 +160,11 @@
 
         function hideInvalidTicketMsg() {
             $("#invalidTicketMsg").addClass("hidden");
+    	    $(".login_msgs i").addClass("hidden");
+        }
+
+        function hideInvalidLoginMsg() {
+            $(".invalidLogin").addClass("hidden");
     	    $(".login_msgs i").addClass("hidden");
         }
 
