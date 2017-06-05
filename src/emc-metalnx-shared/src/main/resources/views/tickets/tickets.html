@@ -244,7 +244,7 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            var shareBtn = '<a href="#" id="shareBtn" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
+                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
                             var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
                             var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
                             return shareBtn + modifyBtn + deleteBtn;
@@ -256,12 +256,6 @@
                     }
 	            ]
 			} );
-
-			$("body").tooltip({
-                selector: "[id=copyTicketBtn]",
-                trigger: "hover",
-                position: "bottom",
-			});
 		});
 
 		function shareTicket(ticketString) {
@@ -270,7 +264,9 @@
             ajaxEncapsulation(
                 url, "GET", null,
                 function(ticket) {
-                    $("#shareBtn").popover({
+                    var shareBtn = $("#share" + ticketString);
+                    shareBtn.popover({
+                        placement: "bottom",
                         title: "Share Ticket",
                         html: true,
                         content: function () {
@@ -298,7 +294,6 @@
                                 html += "</button>";
                             return html;
                         },
-                        position: "left",
                     }).popover("show");
                 },
                 null, null, contentType
