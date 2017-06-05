@@ -162,7 +162,8 @@
 
         <div class="panel loading col-xs-12 col-sm-12 col-md-4">
             <div class="alert alert-danger text-center" role="alert" th:if="${error}">
-                <span>Sorry, Metalnx could not find a matching collection or data object.</span>
+                <span th:text="#{ticket.download.error.message}"></span>
+                <span th:text="${error}"></span>.
             </div>
 
             <h4 class="property-title">

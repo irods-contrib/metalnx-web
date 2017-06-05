@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 
@@ -43,11 +43,11 @@ public interface TicketClientService {
      * @param ticketString ticket string to access a collection or an object
      * @param path path to get files from
      * @return {@code File} file
-     * @throws DataGridTicketFileNotFound if path cannot be found
      * @throws DataGridTicketInvalidUser if anonymous account is not valid (account does not exist)
+     * @throws DataGridTicketDownloadException if any other error happens during download
      */
     File getFileFromIRODSUsingTicket(String ticketString, String path)
-            throws DataGridTicketFileNotFound, DataGridTicketInvalidUser;
+            throws DataGridTicketInvalidUser, DataGridTicketDownloadException;
 
     /**
      * Deletes the temporary directory created after downloading files from the grid using a ticket.

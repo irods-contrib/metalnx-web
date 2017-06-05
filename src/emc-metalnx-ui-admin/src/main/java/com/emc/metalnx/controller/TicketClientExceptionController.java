@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
@@ -39,15 +37,15 @@ public class TicketClientExceptionController {
     @Autowired
     private TicketClientService ticketClientService;
 
-	@ExceptionHandler({DataGridTicketFileNotFound.class, IOException.class})
-	public ModelAndView handleTicketFileNotFound(DataGridTicketFileNotFound fileNotFound) {
+	@ExceptionHandler({DataGridTicketDownloadException.class})
+	public ModelAndView handleTicketFileNotFound(DataGridTicketDownloadException e) {
         ticketClientService.deleteTempTicketDir();
-        String path = fileNotFound.getPath();
+        String path = e.getPath();
         ModelAndView mav = new ModelAndView();
-        mav.addObject("error", true);
+        mav.addObject("error", e.getMessage());
         mav.addObject("objName", path.substring(0, path.lastIndexOf("/")));
         mav.addObject("path", path);
-        mav.addObject("ticketString", fileNotFound.getTicketString());
+        mav.addObject("ticketString", e.getTicketString());
         mav.setViewName("tickets/ticketclient");
 		return mav;
 	}

@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.ConfigService;
@@ -129,7 +129,8 @@ public class TicketClientServiceImpl implements TicketClientService {
     }
 
     @Override
-    public File getFileFromIRODSUsingTicket(String ticketString, String path) throws DataGridTicketFileNotFound, DataGridTicketInvalidUser {
+    public File getFileFromIRODSUsingTicket(String ticketString, String path)
+            throws DataGridTicketInvalidUser, DataGridTicketDownloadException {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -148,7 +149,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             File obj = findFileInDirectory(tempDir, filename);
 
             if (obj == null) {
-                throw new DataGridTicketFileNotFound("Could not find files locally", path, ticketString);
+                throw new DataGridTicketDownloadException("File not found", path, ticketString);
             }
 
             file = obj;
@@ -161,7 +162,14 @@ public class TicketClientServiceImpl implements TicketClientService {
             throw new DataGridTicketInvalidUser("Invalid user anonymous");
         } catch (JargonException e) {
             logger.error("Get file using a ticket: File Not Found: {}", e);
-            throw new DataGridTicketFileNotFound(e.getMessage(), path, ticketString);
+            int code = e.getUnderlyingIRODSExceptionCode();
+
+            String msg = "Transfer failed";
+            if (ticketErroCodeMap.containsKey(code)) {
+                msg = ticketErroCodeMap.get(code);
+            }
+
+            throw new DataGridTicketDownloadException(msg, path, ticketString);
         }
 
         return file;

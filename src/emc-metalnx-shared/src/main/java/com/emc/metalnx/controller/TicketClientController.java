@@ -16,10 +16,7 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketFileNotFound;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
+import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +91,8 @@ public class TicketClientController {
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
     public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
                          HttpServletResponse response)
-            throws DataGridConnectionRefusedException, DataGridTicketFileNotFound, IOException, DataGridTicketInvalidUser {
+            throws DataGridConnectionRefusedException, DataGridTicketFileNotFound, IOException,
+            DataGridTicketInvalidUser, DataGridTicketDownloadException {
         logger.info("Getting files using ticket: {}", ticketString);
 
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);
