@@ -263,6 +263,21 @@
             );
 		}
 
+		$(document).on('click', function(e) {
+            hideAllPopovers();
+        });
+
+		function hideAllPopovers() {
+            $(".popover").each(function() {
+                $(this).popover("hide");
+            });
+        }
+
+        $('.popover').off('click').on('click', function(e) {
+            e.stopPropagation();
+            $(this).popover("hide");
+        });
+
 		function modifyTicket(ticketString) {
 		    var url = [[${urlMap.URL_TICKETS_FORM}]];
             ajaxEncapsulation(url, "GET", {ticketstring: ticketString}, showModifyTicketForm);
