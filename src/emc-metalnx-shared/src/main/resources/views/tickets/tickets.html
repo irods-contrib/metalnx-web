@@ -267,7 +267,42 @@
 		function shareTicket(ticketString) {
             var url = '/emc-metalnx-web/tickets/' + ticketString;
             var contentType = "application/json; charset=utf-8";
-            ajaxEncapsulation(url, "GET", null, showShareTicketModal, null, null, contentType);
+            ajaxEncapsulation(
+                url, "GET", null,
+                function(ticket) {
+                    $("#shareBtn").popover({
+                        title: "Share Ticket",
+                        html: true,
+                        content: function () {
+                            var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
+                            email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
+                            email += ticket.ticketString;
+                            email += "%0D%0APath:%20"+ ticket.path;
+
+                            var html = "<span id='newTicketInfoCopy'>";
+                                html += "Ticket String: "+ ticket.ticketString + " | Path: " + ticket.path;
+                                html += "</span>";
+                                html += "<p>";
+                                html += "<b>Ticket String</b><br />";
+                                html += ticket.ticketString;
+                                html += "</p>";
+                                html += "<p>";
+                                html += "<b>Ticket Path</b><br />";
+                                html += ticket.path;
+                                html += "</p>";
+                                html += "<a href='" + email + "' type='button' class='btn btn-primary'>";
+                                html += "Email";
+                                html += "</a>";
+                                html += "<button onclick='copyTextToClipboard();' type='button' class='btn btn-primary'>";
+                                html += "Copy";
+                                html += "</button>";
+                            return html;
+                        },
+                        position: "left",
+                    }).popover("show");
+                },
+                null, null, contentType
+            );
 		}
 
 		function showShareTicketModal(ticket) {
@@ -277,7 +312,8 @@
 			$("#ticketPath").html(ticket.path);
 			$("#emailTicketBtn").attr("href", ticketStringMail);
 			$("#newTicketInfoCopy").html(newTicketInfoCopy);
-			$("#ticketShareModal").modal("show");
+			//$("#ticketShareModal").modal("show");
+			$("#shareBtn").popover('show');
 		}
 
 		function modifyTicket(ticketString) {
