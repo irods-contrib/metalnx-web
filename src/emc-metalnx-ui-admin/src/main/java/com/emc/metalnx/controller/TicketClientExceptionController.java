@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {
+    private static final String IRODS_PATH_SEPARATOR = "/";
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
     @Autowired
@@ -41,9 +42,10 @@ public class TicketClientExceptionController {
 	public ModelAndView handleTicketFileNotFound(DataGridTicketDownloadException e) {
         ticketClientService.deleteTempTicketDir();
         String path = e.getPath();
+        String objName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
         ModelAndView mav = new ModelAndView();
         mav.addObject("error", e.getMessage());
-        mav.addObject("objName", path.substring(0, path.lastIndexOf("/")));
+        mav.addObject("objName", objName);
         mav.addObject("path", path);
         mav.addObject("ticketString", e.getTicketString());
         mav.setViewName("tickets/ticketclient");
