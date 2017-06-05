@@ -164,7 +164,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             logger.error("Get file using a ticket: File Not Found: {}", e);
             int code = e.getUnderlyingIRODSExceptionCode();
 
-            String msg = "Transfer failed";
+            String msg = "Download failed";
             if (ticketErroCodeMap.containsKey(code)) {
                 msg = ticketErroCodeMap.get(code);
             }
