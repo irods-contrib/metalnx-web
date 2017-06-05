@@ -2301,3 +2301,7 @@ form.registerForm .bootstrap-tagsinput {
 #listHostnames li button.btn {
     margin-top:-5px;
 }
+
+#emailBtn {
+    margin-right: 10px;
+}
