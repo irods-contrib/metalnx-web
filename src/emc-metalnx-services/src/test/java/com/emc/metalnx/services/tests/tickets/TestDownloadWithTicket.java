@@ -16,7 +16,10 @@
 
 package com.emc.metalnx.services.tests.tickets;
 
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.apache.commons.io.FileUtils;
@@ -88,9 +91,8 @@ public class TestDownloadWithTicket {
     }
 
     @Test
-    public void testDownloadFileUsingATicket() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException, JargonException, IOException,
-            DataGridTicketFileNotFound, DataGridTicketInvalidUser {
+    public void testDownloadFileUsingATicket() throws DataGridTicketDownloadException, DataGridTicketInvalidUser,
+            IOException {
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
         assertNotNull(file);
         assertEquals(TestTicketUtils.TICKET_FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));
