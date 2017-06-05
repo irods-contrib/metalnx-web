@@ -249,11 +249,11 @@
                                 html += "<b>Ticket Path</b><br />";
                                 html += ticket.path;
                                 html += "</p>";
-                                html += "<a href='" + email + "' type='button' class='btn btn-primary' id='emailBtn'>";
-                                html += "Email";
+                                html += "<a href='" + email + "' type='button' class='btn btn-primary btn-sm' id='emailBtn'>";
+                                html += "<i class='fa fa-envelope-o'></i>Email";
                                 html += "</a>";
-                                html += "<button onclick='copyTextToClipboard();' type='button' class='btn btn-primary'>";
-                                html += "Copy";
+                                html += "<button onclick='copyTextToClipboard();' type='button' class='btn btn-primary btn-sm'>";
+                                html += "<i class='fa fa-clone'></i>Copy";
                                 html += "</button>";
                             return html;
                         },
