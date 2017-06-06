@@ -57,7 +57,7 @@ public class ExceptionController {
         return new ResponseEntity<>("Ticket not found", HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(DataGridMissingTicketString.class)
+    @ExceptionHandler(DataGridMissingTicketStringException.class)
     public ResponseEntity<String> handleMissingTicketStringException() {
         logger.error("Ticket does not have a ticket string");
         return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);

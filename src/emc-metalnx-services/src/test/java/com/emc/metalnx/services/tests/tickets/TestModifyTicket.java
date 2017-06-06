@@ -86,7 +86,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketExpireDate() throws DataGridNullTicketException,
-            DataGridMissingTicketString, DataGridConnectionRefusedException,
+            DataGridMissingTicketStringException, DataGridConnectionRefusedException,
             DataGridTicketNotFoundException {
         Date date = new Date();
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -106,7 +106,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketUsesLimit() throws DataGridConnectionRefusedException, DataGridTicketNotFoundException,
-            DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridMissingTicketStringException, DataGridNullTicketException {
 
         int newUsesLimit = USES_LIMIT + 1;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -123,7 +123,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketWriteByteLimit() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
 
         long newWriteByteLimit = 2 * WRITE_BYTE_LIMIT;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -140,7 +140,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketWriteFileLimit() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
 
         int newWriteFileLimit = WRITE_FILE_LIMIT + 1;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -157,7 +157,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketHosts() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
@@ -173,7 +173,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketUsers() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
@@ -190,7 +190,7 @@ public class TestModifyTicket {
 
     @Test
     public void testModifyTicketGroups() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketString, DataGridNullTicketException {
+            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);

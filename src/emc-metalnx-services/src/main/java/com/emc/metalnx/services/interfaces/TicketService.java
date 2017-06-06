@@ -71,8 +71,8 @@ public interface TicketService {
      *  Null is returned if the ticket was not modified.
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
      * @throws DataGridNullTicketException thrown if a null ticket is given as a parameter
-     * @throws DataGridMissingTicketString thrown if a ticket does not have an ID or String
+     * @throws DataGridMissingTicketStringException thrown if a ticket does not have an ID or String
      */
     DataGridTicket modify(DataGridTicket t) throws  DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingTicketString, DataGridTicketNotFoundException;
+            DataGridNullTicketException, DataGridMissingTicketStringException, DataGridTicketNotFoundException;
 }

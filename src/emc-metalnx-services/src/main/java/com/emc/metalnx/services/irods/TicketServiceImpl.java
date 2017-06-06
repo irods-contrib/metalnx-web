@@ -123,7 +123,7 @@ public class TicketServiceImpl implements TicketService {
         } catch (DuplicateDataException e) {
             logger.error("Duplicated ticket: {}", e);
             throw new DataGridDuplicatedTicket(e.getMessage());
-        } catch (JargonException | DataGridMissingTicketString | DataGridTicketNotFoundException e) {
+        } catch (JargonException | DataGridMissingTicketStringException | DataGridTicketNotFoundException e) {
             logger.error("Could not create a ticket: {}", e);
         }
 
@@ -155,13 +155,13 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public DataGridTicket modify(DataGridTicket t) throws DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingTicketString, DataGridTicketNotFoundException {
+            DataGridNullTicketException, DataGridMissingTicketStringException, DataGridTicketNotFoundException {
         if(t == null) {
             throw new DataGridNullTicketException("Null ticket instance");
         }
 
         if(t.getTicketString().isEmpty()) {
-            throw new DataGridMissingTicketString("Ticket ID or String missing");
+            throw new DataGridMissingTicketStringException("Ticket ID or String missing");
         }
 
         String ticketString = t.getTicketString();

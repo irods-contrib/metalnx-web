@@ -19,8 +19,8 @@ package com.emc.metalnx.core.domain.exceptions;
 /**
  * Exception thrown when a ticket does not have a ticket ID or string.
  */
-public class DataGridMissingTicketString extends DataGridException {
-    public DataGridMissingTicketString(String msg) {
+public class DataGridMissingTicketStringException extends DataGridException {
+    public DataGridMissingTicketStringException(String msg) {
         super(msg);
     }
 }

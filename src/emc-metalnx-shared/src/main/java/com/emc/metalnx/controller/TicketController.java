@@ -132,7 +132,7 @@ public class TicketController {
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void modifyTicket(@RequestBody DataGridTicket ticket) throws DataGridNullTicketException,
-            DataGridMissingTicketString, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+            DataGridMissingTicketStringException, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
         logger.info("Modify ticket");
         ticketService.modify(ticket);
     }
