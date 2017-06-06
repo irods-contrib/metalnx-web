@@ -86,6 +86,15 @@ function addCollectionActions(table_id, datatable){
 	$("#"+table_id+"_length").addClass("pull-right");
 }
 
+//Adds delete all tickets button on tickets table
+function addDeleteAllTickets(){
+    $("div.toolbar").html(
+        '   <button id="showDeleteTicketsModalBtn" type="button" class="btn btn-default" disabled="true" onclick="showDeleteTicketsModal();">' +
+        '       Delete' +
+        '   </button> '
+    );
+}
+
 //Adds Action button on Collection table
 function addCollectionMetadataDelBtn(table_id, datatable){
     $("div.toolbar").html(
@@ -93,7 +102,7 @@ function addCollectionMetadataDelBtn(table_id, datatable){
         '   id="delMetadataBtn" class="btn btn-default btn-property" href="#">' +
         '        <i class="fa fa-trash-o"></i> <span id="delMetadataBtnLabel"></span>' +
         '</button>'
-        );
+    );
 }
 
 //Adds Action button on Template table

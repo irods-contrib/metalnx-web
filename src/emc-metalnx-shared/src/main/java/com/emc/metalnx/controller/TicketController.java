@@ -120,7 +120,7 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllTickets(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
+    public void deleteAllTickets() throws DataGridConnectionRefusedException {
         logger.info("Delete all tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
         ticketService.deleteAll();
     }

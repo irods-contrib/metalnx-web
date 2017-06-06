@@ -41,6 +41,12 @@
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
             </div>
 
+            <div class="col-sm-12 hidden" id="deleteAllTicketsSuccessMessage">
+                <div class="alert alert-success text-center" role="alert">
+                    <span th:text="#{ticket.feedback.message.delete.all.success}"></span>
+                </div>
+            </div>
+
             <!-- Ticket creation success message -->
             <div class="col-sm-12 hidden" id="ticketModifySuccessMessage">
                 <div class="alert alert-success text-center" role="alert">
@@ -76,6 +82,7 @@
                 <table class="table table-hover" id="ticketsTable">
                     <thead>
                         <tr>
+                            <th class="tableCheckBoxCol"><input type="checkbox" id="selectAllTicketsCheckboxes" value="1" /></th>
                             <th th:text="#{ticket.table.string.label}"></th>
                             <th th:text="#{ticket.table.permission.label}"></th>
                             <th th:text="#{ticket.table.owner.label}"></th>
@@ -146,18 +153,43 @@
             </div>
         </div>
 
+        <div class="modal fade" id="deleteAllTicketsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{tickets.delete.all.label}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <span th:utext="#{tickets.deletion.confirmation}"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                th:text="#{confirmation.message.cancel}"></button>
+                        <button onclick="deleteAllTickets();" type="button" class="btn btn-primary"
+                                data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
         <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
-		    var datatable;
-			datatable = $('#ticketsTable').DataTable( {
-			    "serverSide": false,
+			var datatable = $('#ticketsTable').DataTable( {
+			    "serverSide": true,
 			    "dom": dtPatternMlxStandard,
 			    "language": i18n,
 			    "destroy": false,
 			    "autoWidth": false,
+    		    "processing": true,
+    		    "stateSaveParams": function (settings, data) {
+    		    	data.search.search = "";
+    		    },
 			    "ajax": {
 			        url: '/emc-metalnx-web/tickets/',
 			    },
@@ -174,25 +206,35 @@
     	            .css( 'display', this.api().data().length <= 0 ?
     	                 'none' :
     	                 'block'
-    	            )
+    	            );
+    	            $('input[id=selectAllTicketsCheckboxes]').prop("checked", false);
     	        },
 			    "columnDefs": [
+                    {
+                    	"render": function ( data, type, full, meta ) {
+    						return '<input type="checkbox" name="ticketCheckboxes" value="'+full.ticketString+'" id="'+full.ticketString+'"/>';
+    					},
+    					"className": "dt-center",
+    					"width": "25px",
+    					"targets": 0,
+    					"orderable": false
+                    },
 	                {
 	                	"data": "ticketString",
 	                	"width": "17%",
-	                	"targets": 0,
+	                	"targets": 1,
 	                	 className: "ticketString"
 	               	},
 	               	{
 	               		"data": "type",
 	               		"width": "8%",
-	               		"targets":1,
+	               		"targets": 2,
 	               		 className: "permission"
 	               	},
 	               	{
 	               		"data": "owner",
 	               		"width": "10%",
-	               		"targets": 2,
+	               		"targets": 3,
 	               		 className: "owner"
 	               	},
 	               	{
@@ -204,15 +246,38 @@
                         },
                         "width": "15%",
                         "orderable": false,
-                        "targets": 3,
+                        "targets": 4,
                          className: "actionsColumn"
                     }
 	            ]
 			} );
+
+			addDeleteAllTickets();
 		});
 
+        var ticketsURL = '/emc-metalnx-web/tickets/';
+
+		$("#selectAllTicketsCheckboxes").change(function() {
+            var isChecked = $(this).is(":checked");
+            $('input[name="ticketCheckboxes"]').prop("checked", isChecked);
+            $('#showDeleteTicketsModalBtn').prop('disabled', !isChecked);
+		});
+
+        function showDeleteTicketsModal() {
+		    $("#deleteAllTicketsModal").modal("show");
+		}
+
+		function deleteAllTickets() {
+		    ajaxEncapsulation(ticketsURL, "DELETE", null, deleteAllTicketsSuccessHandler);
+		}
+
+		function deleteAllTicketsSuccessHandler() {
+            $('#ticketsTable').DataTable().ajax.reload();
+		    $("#deleteAllTicketsSuccessMessage").removeClass("hidden");
+		}
+
 		function shareTicket(ticketString) {
-            var url = '/emc-metalnx-web/tickets/' + ticketString;
+            var url = ticketsURL + ticketString;
             var contentType = "application/json; charset=utf-8";
             ajaxEncapsulation(
                 url, "GET", null,
@@ -318,7 +383,7 @@
 		}
 		function removeElement() {
             var ticketString = $("#elementToBeRemoved").html();
-            var url = [[${urlMap.URL_TICKETS_DELETE}]] + ticketString;
+            var url = ticketsURL + ticketString;
             ajaxEncapsulation(url, "DELETE", null, ticketsSuccessFeedbackMsg, ticketsFailureFeedbackMsg, null);
         }
 
@@ -337,6 +402,7 @@
 
 		/*]]>*/
 		</script>
+        <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
     </div> <!-- /. Page Content -->
 
 </body>
