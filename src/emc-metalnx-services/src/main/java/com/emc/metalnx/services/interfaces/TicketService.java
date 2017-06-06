@@ -25,6 +25,15 @@ import java.util.List;
  * Service for tickets in the grid.
  */
 public interface TicketService {
+
+    /**
+     * Deletes all tickets of a particular user.
+     *
+     * Obs: if the user is a rods admin, all tickets existing in the grid can be deleted.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
+     */
+    void deleteAll() throws DataGridConnectionRefusedException;
+
     /**
      * Finds all tickets existing in the system.
      * The tickets found depend on the user who requests the list of tickets. RODS_ADMINs can see all tickets while

@@ -118,6 +118,13 @@ public class TicketController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllTickets() throws DataGridConnectionRefusedException {
+        logger.info("Delete all tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
+        ticketService.deleteAll();
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     @ResponseBody

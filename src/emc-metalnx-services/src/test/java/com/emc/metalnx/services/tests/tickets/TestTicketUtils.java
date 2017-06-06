@@ -43,6 +43,10 @@ public class TestTicketUtils {
         this.ticketAdminService = irodsServices.getTicketAdminService();
     }
 
+    public List<Ticket> listAllTicketsForUser() throws JargonException {
+        return ticketAdminService.listAllTickets(0);
+    }
+
     public void deleteIRODSFile(String path) throws JargonException, DataGridConnectionRefusedException {
         IRODSFile ticketIRODSFile = irodsServices.getIRODSFileFactory().instanceIRODSFile(path);
         if(ticketIRODSFile != null && ticketIRODSFile.exists()) {
@@ -61,6 +65,10 @@ public class TestTicketUtils {
 
     public void deleteTicket(String ticketString) throws JargonException {
         ticketAdminService.deleteTicket(ticketString);
+    }
+
+    public void deleteAllTicketsForThisUser() throws JargonException {
+        ticketAdminService.deleteAllTicketsForThisUser();
     }
 
     public void setUsesLimit(String ticketString, int usesLimit) throws JargonException {

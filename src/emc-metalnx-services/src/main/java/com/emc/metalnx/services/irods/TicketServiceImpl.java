@@ -51,6 +51,19 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private IRODSServices irodsServices;
 
+
+    @Override
+    public void deleteAll() throws DataGridConnectionRefusedException {
+        logger.info("Delete all tickets");
+        TicketAdminService tas = irodsServices.getTicketAdminService();
+
+        try {
+            tas.deleteAllTicketsForThisUser();
+        } catch (JargonException e) {
+            logger.info("Could not delete all tickets: {}.", e.getMessage());
+        }
+    }
+
     @Override
     public List<DataGridTicket> findAll() throws DataGridConnectionRefusedException {
         logger.info("Find all tickets");
