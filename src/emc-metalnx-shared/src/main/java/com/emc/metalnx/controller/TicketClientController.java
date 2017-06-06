@@ -72,7 +72,7 @@ public class TicketClientController {
     @ResponseStatus(value = HttpStatus.OK)
     public void upload(@PathVariable("ticketstring") String ticketString, HttpServletRequest request)
             throws DataGridConnectionRefusedException, DataGridTicketUploadException, IOException,
-            DataGridTicketInvalidUser {
+            DataGridTicketInvalidUserException {
         logger.info("Uploading files using ticket: {}", ticketString);
 
         if (!(request instanceof MultipartHttpServletRequest)) {
@@ -92,7 +92,7 @@ public class TicketClientController {
     public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
                          HttpServletResponse response)
             throws DataGridConnectionRefusedException, DataGridTicketFileNotFound, IOException,
-            DataGridTicketInvalidUser, DataGridTicketDownloadException {
+            DataGridTicketInvalidUserException, DataGridTicketDownloadException {
         logger.info("Getting files using ticket: {}", ticketString);
 
         File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, path);

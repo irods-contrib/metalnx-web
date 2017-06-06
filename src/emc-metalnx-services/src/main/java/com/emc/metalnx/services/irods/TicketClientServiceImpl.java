@@ -17,7 +17,7 @@
 package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
@@ -89,7 +89,7 @@ public class TicketClientServiceImpl implements TicketClientService {
 
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
-            throws DataGridTicketUploadException, DataGridTicketInvalidUser {
+            throws DataGridTicketUploadException, DataGridTicketInvalidUserException {
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridTicketUploadException("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
@@ -105,7 +105,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             ticketClientOperations.putFileToIRODSUsingTicket(ticketString, localFile, targetFile, null, null);
         } catch (InvalidUserException e) {
             logger.error("Invalid user. Cannot download files as anonymous.");
-            throw new DataGridTicketInvalidUser("Invalid user anonymous");
+            throw new DataGridTicketInvalidUserException("Invalid user anonymous");
         } catch (OverwriteException | DuplicateDataException e) {
             logger.error("Could not transfer file to the grid. File already exists: {}", e);
             throw new DataGridTicketUploadException("File already exists");
@@ -130,7 +130,7 @@ public class TicketClientServiceImpl implements TicketClientService {
 
     @Override
     public File getFileFromIRODSUsingTicket(String ticketString, String path)
-            throws DataGridTicketInvalidUser, DataGridTicketDownloadException {
+            throws DataGridTicketInvalidUserException, DataGridTicketDownloadException {
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -159,7 +159,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
         } catch (InvalidUserException e) {
             logger.error("Invalid user. Cannot download files as anonymous.");
-            throw new DataGridTicketInvalidUser("Invalid user anonymous");
+            throw new DataGridTicketInvalidUserException("Invalid user anonymous");
         } catch (FileNotFoundException e) {
             logger.error("Could not get file using ticket. File not found: {}", e);
             throw new DataGridTicketDownloadException("File not found", path, ticketString);

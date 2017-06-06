@@ -17,7 +17,7 @@
 package com.emc.metalnx.controller;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class TicketClientExceptionController {
 		return mav;
 	}
 
-	@ExceptionHandler({DataGridTicketInvalidUser.class})
+	@ExceptionHandler({DataGridTicketInvalidUserException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleTicketInvalidUserException() {
         return "tickets/ticketinvaliduser";

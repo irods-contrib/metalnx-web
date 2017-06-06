@@ -19,8 +19,8 @@ package com.emc.metalnx.core.domain.exceptions;
 /**
  * Exception thrown when a not-authenticated user (anonymous) tries to access a file/collection via ticket.
  */
-public class DataGridTicketInvalidUser extends DataGridException {
-    public DataGridTicketInvalidUser(String message) {
+public class DataGridTicketInvalidUserException extends DataGridException {
+    public DataGridTicketInvalidUserException(String message) {
         super(message);
     }
 }
