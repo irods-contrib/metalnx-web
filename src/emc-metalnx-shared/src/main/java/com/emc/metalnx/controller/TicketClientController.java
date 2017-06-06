@@ -91,7 +91,7 @@ public class TicketClientController {
     @RequestMapping(value = "/{ticketstring}", method = RequestMethod.GET)
     public void download(@PathVariable("ticketstring") String ticketString, @RequestParam("path") String path,
                          HttpServletResponse response)
-            throws DataGridConnectionRefusedException, DataGridTicketFileNotFound, IOException,
+            throws DataGridConnectionRefusedException, DataGridTicketFileNotFoundException, IOException,
             DataGridTicketInvalidUserException, DataGridTicketDownloadException {
         logger.info("Getting files using ticket: {}", ticketString);
 

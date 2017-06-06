@@ -16,13 +16,13 @@
 
 package com.emc.metalnx.core.domain.exceptions;
 
-public class DataGridTicketFileNotFound extends DataGridException {
+public class DataGridTicketFileNotFoundException extends DataGridException {
 
     private static final long serialVersionUID = 1L;
 
     private String path, ticketString;
 
-    public DataGridTicketFileNotFound(String msg, String path, String ticketString) {
+    public DataGridTicketFileNotFoundException(String msg, String path, String ticketString) {
         super(msg);
         this.path = path;
         this.ticketString = ticketString;
