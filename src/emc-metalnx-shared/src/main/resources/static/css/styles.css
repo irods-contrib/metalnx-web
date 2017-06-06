@@ -2302,6 +2302,10 @@ form.registerForm .bootstrap-tagsinput {
     margin-top:-5px;
 }
 
-#emailBtn {
-    margin-right: 10px;
+#emailBtn, #ticketDownloadBtn {
+    margin-right: 5px;
+}
+
+#ticketAccessForm button{
+    min-width:120px;
 }
