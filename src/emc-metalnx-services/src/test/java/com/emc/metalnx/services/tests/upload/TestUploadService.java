@@ -19,7 +19,7 @@ package com.emc.metalnx.services.tests.upload;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
+import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExistsException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.UploadService;
@@ -98,7 +98,7 @@ public class TestUploadService {
         assertTrue(fileUploaded);
     }
 
-    @Test(expected = DataGridFileAlreadyExists.class)
+    @Test(expected = DataGridFileAlreadyExistsException.class)
     public void testExistingFileTransfer() throws DataGridException {
         MockMultipartFile file = new MockMultipartFile(TEST_FILE_NAME, "Hello World".getBytes());
 

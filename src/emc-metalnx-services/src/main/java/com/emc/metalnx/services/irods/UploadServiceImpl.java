@@ -18,7 +18,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExists;
+import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExistsException;
 import com.emc.metalnx.services.interfaces.*;
 import com.emc.metalnx.services.machine.util.DataGridUtils;
 import org.irods.jargon.core.exception.JargonException;
@@ -111,7 +111,7 @@ public class UploadServiceImpl implements UploadService {
             if (targetFile.exists() && !overwrite) {
                 String msg = "File already exists. Not overwriting it.";
                 logger.info(msg);
-                throw new DataGridFileAlreadyExists(msg);
+                throw new DataGridFileAlreadyExistsException(msg);
             }
 
             // Transfering file to iRODS filesystem
