@@ -76,7 +76,6 @@
                 <table class="table table-hover" id="ticketsTable">
                     <thead>
                         <tr>
-                            <th th:text="#{ticket.table.type.label}"></th>
                             <th th:text="#{ticket.table.string.label}"></th>
                             <th th:text="#{ticket.table.permission.label}"></th>
                             <th th:text="#{ticket.table.owner.label}"></th>
@@ -178,31 +177,22 @@
     	            )
     	        },
 			    "columnDefs": [
-			        {
-	                	"render": function ( data, type, full, meta ) {
-    						if (full.collection) return 'collection'
-    						else  return 'file';
-    					},
-	                	"width": "10%",
-	                	"targets": 0,
-	                	 className: "objectType"
-	               	},
 	                {
 	                	"data": "ticketString",
-	                	"width": "20%",
-	                	"targets": 1,
+	                	"width": "17%",
+	                	"targets": 0,
 	                	 className: "ticketString"
 	               	},
 	               	{
 	               		"data": "type",
-	               		"width": "15%",
-	               		"targets":2,
+	               		"width": "8%",
+	               		"targets":1,
 	               		 className: "permission"
 	               	},
 	               	{
 	               		"data": "owner",
-	               		"width": "15%",
-	               		"targets": 3,
+	               		"width": "10%",
+	               		"targets": 2,
 	               		 className: "owner"
 	               	},
 	               	{
@@ -212,9 +202,9 @@
                             var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
                             return shareBtn + modifyBtn + deleteBtn;
                         },
-                        "width": "10%",
+                        "width": "15%",
                         "orderable": false,
-                        "targets": 4,
+                        "targets": 3,
                          className: "actionsColumn"
                     }
 	            ]
