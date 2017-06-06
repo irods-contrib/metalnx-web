@@ -76,7 +76,7 @@ public class TestCreateTicketWithUserRestriction {
 
     @Test
     public void testCreateTicketWithHostRestriction() throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicket {
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(dgt);
         List<String> users = ticketUtils.listAllUserRestrictionsForSpecifiedTicket(ticketString);
 

@@ -71,20 +71,20 @@ public class TestCreateTicket {
 
     @Test
     public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicket {
+            DataGridNullTicketException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(new DataGridTicket(targetPath));
         assertFalse(ticketString.isEmpty());
     }
 
     @Test(expected = DataGridNullTicketException.class)
     public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicket {
+            DataGridNullTicketException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(null);
     }
 
     @Test(expected = DataGridMissingPathOnTicketException.class)
     public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicket {
+            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(new DataGridTicket());
     }
 }

@@ -63,7 +63,7 @@ public class ExceptionController {
         return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(DataGridDuplicatedTicket.class)
+    @ExceptionHandler(DataGridDuplicatedTicketException.class)
     public ResponseEntity<String> handleDuplicatedTicketException() {
         logger.error("Ticket with the same name already exists");
         return new ResponseEntity<>("Ticket with the same name already exists", HttpStatus.CONFLICT);

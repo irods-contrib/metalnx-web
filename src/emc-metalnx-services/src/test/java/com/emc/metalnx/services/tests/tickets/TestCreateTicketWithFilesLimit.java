@@ -78,7 +78,7 @@ public class TestCreateTicketWithFilesLimit {
 
     @Test
     public void testCreateTicketWithWriteFileLimit() throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicket {
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(dgt);
         Ticket ticketWithFileLimit = ticketUtils.findTicket(ticketString);
 

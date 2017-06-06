@@ -19,8 +19,8 @@ package com.emc.metalnx.core.domain.exceptions;
 /**
  * Exception thrown when the user tries to create a ticket with the same name of an existing ticket.
  */
-public class DataGridDuplicatedTicket extends DataGridException {
-    public DataGridDuplicatedTicket(String message) {
+public class DataGridDuplicatedTicketException extends DataGridException {
+    public DataGridDuplicatedTicketException(String message) {
         super(message);
     }
 }

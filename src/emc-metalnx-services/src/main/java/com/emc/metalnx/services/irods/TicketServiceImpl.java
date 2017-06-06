@@ -93,7 +93,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicket {
+            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicketException {
         if(dgTicket == null) {
             throw new DataGridNullTicketException("Could not create ticket: null ticket provided.");
         }
@@ -122,7 +122,7 @@ public class TicketServiceImpl implements TicketService {
             modify(dgTicket);
         } catch (DuplicateDataException e) {
             logger.error("Duplicated ticket: {}", e);
-            throw new DataGridDuplicatedTicket(e.getMessage());
+            throw new DataGridDuplicatedTicketException(e.getMessage());
         } catch (JargonException | DataGridMissingTicketStringException | DataGridTicketNotFoundException e) {
             logger.error("Could not create a ticket: {}", e);
         }

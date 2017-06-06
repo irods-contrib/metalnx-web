@@ -67,9 +67,9 @@ public class TestCreateDuplicatedTicket {
         ticketUtils.deleteTicket(ticketString);
     }
 
-    @Test(expected = DataGridDuplicatedTicket.class)
+    @Test(expected = DataGridDuplicatedTicketException.class)
     public void testCreateDuplicatedTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicket {
+            DataGridNullTicketException, DataGridDuplicatedTicketException {
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
         ticketService.create(dgt);

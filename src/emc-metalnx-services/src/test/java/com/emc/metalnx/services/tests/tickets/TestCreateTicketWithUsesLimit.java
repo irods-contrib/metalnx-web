@@ -78,7 +78,7 @@ public class TestCreateTicketWithUsesLimit {
 
     @Test
     public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicket {
+            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicketException {
         ticketString = ticketService.create(dgt);
         Ticket ticketWithUses = ticketUtils.findTicket(ticketString);
 
