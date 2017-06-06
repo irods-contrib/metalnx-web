@@ -190,3 +190,8 @@ img {
 :-moz-placeholder { /* Firefox 18- */
   color: #a4a6b5;
 }
+
+#haveTicketBtn {
+    margin-left: 50px;
+    font-size: 16px;
+}
