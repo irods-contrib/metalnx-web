@@ -172,33 +172,26 @@
             </h4>
 
             <p>
-                <label>Ticket String</label> <br />
+                <label th:text="#{ticket.table.string.label}"></label> <br />
                 <span id="ticketString" th:text="${ticketString}"></span>
             </p>
 
             <p>
-                <label>Path</label> <br />
+                <label th:text="#{resources.table.path.label}"></label> <br />
                 <span id="ticketPath" th:text="${path}"></span>
             </p>
 
-            <div class="row">
-                <div class="col-xs-6 col-md-3">
-                    <form method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
-                        <input type="hidden" name="path" th:value="${path}" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-download" aria-hidden="true"></i>
-                            Download
-                        </button>
-                    </form>
-                </div>
-
-                <div class="col-xs-6 col-md-3">
-                    <button type="button" class="btn btn-primary" onclick="showTicketUploadModal();">
-                        <i class="fa fa-upload" aria-hidden="true"></i>
-                        <span th:text="#{collections.management.btn.action.upload}"></span>
-                    </button>
-                </div>
-            </div>
+            <form method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
+                <input type="hidden" name="path" th:value="${path}" />
+                <button type="submit" class="btn btn-primary" id="ticketDownloadBtn">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    <span th:text="#{collections.management.btn.action.download}"></span>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="showTicketUploadModal();">
+                    <i class="fa fa-upload" aria-hidden="true"></i>
+                    <span th:text="#{collections.management.btn.action.upload}"></span>
+                </button>
+            </form>
         </div>
     </div>
 
