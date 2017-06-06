@@ -70,7 +70,7 @@ public class TestDownloadWithTicket {
 
     private String targetPath, filePath, ticketString;
     private TestTicketUtils ticketUtils;
-    private File localFile;
+    private File localFile, fileFromIRods;
 
     @Before
     public void setUp() throws DataGridException, JargonException, IOException {
@@ -86,6 +86,7 @@ public class TestDownloadWithTicket {
     @After
     public void tearDown() throws JargonException, DataGridConnectionRefusedException {
         FileUtils.deleteQuietly(localFile);
+        FileUtils.deleteQuietly(fileFromIRods);
         ticketUtils.deleteTicket(ticketString);
         ticketUtils.deleteIRODSFile(filePath);
     }
@@ -93,9 +94,9 @@ public class TestDownloadWithTicket {
     @Test
     public void testDownloadFileUsingATicket() throws DataGridTicketDownloadException, DataGridTicketInvalidUserException,
             IOException {
-        File file = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
-        assertNotNull(file);
-        assertEquals(TestTicketUtils.TICKET_FILE_CONTENT, FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()));
+        fileFromIRods = ticketClientService.getFileFromIRODSUsingTicket(ticketString, filePath);
+        assertNotNull(fileFromIRods);
+        assertEquals(TestTicketUtils.TICKET_FILE_CONTENT, FileUtils.readFileToString(fileFromIRods, StandardCharsets.UTF_8.name()));
     }
 
     private void uploadFileToIRODS(String path, File file) throws DataGridConnectionRefusedException, JargonException,
