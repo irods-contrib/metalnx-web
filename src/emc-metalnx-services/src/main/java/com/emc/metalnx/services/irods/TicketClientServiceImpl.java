@@ -160,8 +160,11 @@ public class TicketClientServiceImpl implements TicketClientService {
         } catch (InvalidUserException e) {
             logger.error("Invalid user. Cannot download files as anonymous.");
             throw new DataGridTicketInvalidUser("Invalid user anonymous");
+        } catch (FileNotFoundException e) {
+            logger.error("Could not get file using ticket. File not found: {}", e);
+            throw new DataGridTicketDownloadException("File not found", path, ticketString);
         } catch (JargonException e) {
-            logger.error("Get file using a ticket: File Not Found: {}", e);
+            logger.error("Get file using a ticket caused an error: {}", e);
             int code = e.getUnderlyingIRODSExceptionCode();
 
             String msg = "Download failed";
