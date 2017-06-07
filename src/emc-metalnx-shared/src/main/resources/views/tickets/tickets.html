@@ -256,6 +256,7 @@
 		});
 
         var ticketsURL = '/emc-metalnx-web/tickets/';
+        var jsonContentType = "application/json; charset=utf-8";
 
 		$("#selectAllTicketsCheckboxes").change(function() {
             var isChecked = $(this).is(":checked");
@@ -280,13 +281,12 @@
 		    $('input[name="ticketCheckboxes"]:checked').each(function() {
 		        tickets.push($(this).val());
 		    });
-            var contentType = "application/json; charset=utf-8";
 
 		    ajaxEncapsulation(ticketsURL,
 		                        "DELETE",
 		                        JSON.stringify(tickets),
 		                        deleteTicketsSuccessHandler,
-		                        null, "json", contentType);
+		                        null, "json", jsonContentType);
 		}
 
 		function deleteTicketsSuccessHandler() {
@@ -296,7 +296,6 @@
 
 		function shareTicket(ticketString) {
             var url = ticketsURL + ticketString;
-            var contentType = "application/json; charset=utf-8";
             ajaxEncapsulation(
                 url, "GET", null,
                 function(ticket) {
@@ -332,7 +331,7 @@
                         },
                     }).popover("show");
                 },
-                null, null, contentType
+                null, null, jsonContentType
             );
 		}
 
@@ -368,8 +367,7 @@
 			    $("#ticketModifyForm").modal("hide");
                 var ticket = JSON.stringify(serializeTicketForm());
                 var url = '/emc-metalnx-web/tickets/';
-                var contentType = "application/json; charset=utf-8";
-                ajaxEncapsulation(url, 'PUT', ticket, modifyTicketSuccess, modifyTicketFailure, null, contentType);
+                ajaxEncapsulation(url, 'PUT', ticket, modifyTicketSuccess, modifyTicketFailure, null, jsonContentType);
 		    }
 
             return false;
