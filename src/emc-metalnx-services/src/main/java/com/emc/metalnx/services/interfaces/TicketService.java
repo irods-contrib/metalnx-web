@@ -45,11 +45,11 @@ public interface TicketService {
 
     /**
      * Deletes a ticket from the grid by the ticket string
-     * @param ticketId string that identifies the ticket uniquely (String or ID)
+     * @param ticketString string that identifies the ticket uniquely
      * @return True, if the ticket was deleted successfully. False, otherwise.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
-    boolean delete(String ticketId) throws DataGridConnectionRefusedException;
+    boolean delete(String ticketString) throws DataGridConnectionRefusedException;
 
     /**
      * Creates a ticket in the grid
