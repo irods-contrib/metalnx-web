@@ -64,16 +64,21 @@
         </div>
         <div class="form-group optional">
             <label id="hostnamesLabel" for="inputHostnames" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
+
             <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="existingIpIcon"></i>
+
             <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
-                <div id="panelHostnames">
-                    <ul id="listHostnames">
-                        <th:block th:each="host: ${ticket.hosts}">
-                            <li th:id="li_+${host}"><span th:text="${host}"></span><a class='btn btn-link pull-right btn-remove' th:onclick="'javascript:removeHost(\'' + ${host} + '\');'"><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a></li>
-                            <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts'/>
-                        </th:block>
-                    </ul>
-                </div>
+            <small class="help-block hideElement nonexistentGroupError" id="existingIPMsg"
+                   th:text="#{ticket.form.host.already.exists}"></small>
+            <div id="panelHostnames">
+                <ul id="listHostnames">
+                    <th:block th:each="host: ${ticket.hosts}">
+                        <li th:id="li_+${host}"><span th:text="${host}"></span><a class='btn btn-link pull-right btn-remove' th:onclick="'javascript:removeHost(\'' + ${host} + '\');'"><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a></li>
+                        <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts'/>
+                    </th:block>
+                </ul>
+            </div>
         </div>
     </div>
 </form>
@@ -312,32 +317,61 @@
                 $("#createTicketFormBtn").removeClass("disabled");
             }
         });
-        $("#inputNewHostname").on('input propertychange', function(){
-         if ($("#inputNewHostname").val() != '') {
-             $("#addHostname").attr("disabled", false);
-             $("#addHostname").removeClass("disabled");
-         }
-         else {
-             $("#addHostname").attr("disabled", true);
-             $("#addHostname").addClass("disabled");
-         }
-     });
 
-     $("#addHostname").on('click', function () {
-         var inputValue = $("#inputNewHostname").val();
-         var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
-         var newElement = "<li id=li_" + inputValue+ "><span>" + inputValue + "</span>"+ removeBtn+ "</li>";
-         var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
-         $("ul#listHostnames").append(newElement);
-         $("#hostnames").append($("#inputNewHostname").val()+",");
-         $("#hostnames").val($("#hostnames").text());
-         $("ul#listHostnames").append(inputHost);
-         $("#inputNewHostname").val('');
-         $("#addHostname").prop("disabled", true);
-         $("#addHostname").addClass("disabled");
-     });
+        $("#inputNewHostname").on('input propertychange', function(){
+             if ($("#inputNewHostname").val() != '') {
+                 $("#addHostname").attr("disabled", false);
+                 $("#addHostname").removeClass("disabled");
+             }
+             else {
+                 $("#addHostname").attr("disabled", true);
+                 $("#addHostname").addClass("disabled");
+                 $("#inputNewHostname").parent().removeClass("has-feedback has-error");
+                 $("#existingIPMsg").hide();
+                 $("#existingIpIcon").hide();
+             }
+        });
+
+         $("#addHostname").on('click', function () {
+             var inputValue = $.trim($("#inputNewHostname").val());
+             var repeated = false;
+             $.each($("input[name=hosts]"), function(){
+                if($(this).val() == inputValue){
+                    repeated = true;
+                    return false;
+                }
+             });
+             if(!repeated){
+                addHost(inputValue);
+             }
+             else{
+                console.log($("input[name=hosts]").val());
+                $("#inputNewHostname").parent().addClass("has-feedback has-error");
+                $("#existingIPMsg").show();
+                $("#existingIpIcon").show();
+                $("#existingIpIcon").on('click', function(){
+                    $("#inputNewHostname").val('');
+                    $("#inputNewHostname").parent().removeClass("has-feedback has-error");
+                    $("#existingIPMsg").hide();
+                    $("#existingIpIcon").hide();
+                });
+             }
+         });
+
 
     });
 
+    function addHost(inputValue){
+        var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
+             var newElement = "<li id=li_" + inputValue+ "><span>" + inputValue + "</span>"+ removeBtn+ "</li>";
+             var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
+             $("ul#listHostnames").append(newElement);
+             $("#hostnames").append(inputValue+",");
+             $("#hostnames").val($("#hostnames").text());
+             $("ul#listHostnames").append(inputHost);
+             $("#inputNewHostname").val('');
+             $("#addHostname").prop("disabled", true);
+             $("#addHostname").addClass("disabled");
+    }
 /*]]>*/
 </script>
