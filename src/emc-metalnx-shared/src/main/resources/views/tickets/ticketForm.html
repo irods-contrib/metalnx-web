@@ -332,46 +332,43 @@
              }
         });
 
-         $("#addHostname").on('click', function () {
-             var inputValue = $.trim($("#inputNewHostname").val());
-             var repeated = false;
-             $.each($("input[name=hosts]"), function(){
-                if($(this).val() == inputValue){
-                    repeated = true;
-                    return false;
-                }
-             });
-             if(!repeated){
-                addHost(inputValue);
-             }
-             else{
-                console.log($("input[name=hosts]").val());
-                $("#inputNewHostname").parent().addClass("has-feedback has-error");
-                $("#existingIPMsg").show();
-                $("#existingIpIcon").show();
-                $("#existingIpIcon").on('click', function(){
-                    $("#inputNewHostname").val('');
-                    $("#inputNewHostname").parent().removeClass("has-feedback has-error");
-                    $("#existingIPMsg").hide();
-                    $("#existingIpIcon").hide();
-                });
-             }
+        $("#addHostname").on('click', function () {
+         var inputValue = $.trim($("#inputNewHostname").val());
+         var repeated = false;
+         $.each($("input[name=hosts]"), function(){
+            if($(this).val() == inputValue){
+                repeated = true;
+                return false;
+            }
          });
-
-
+         if(!repeated){
+            addHost(inputValue);
+         }
+         else{
+            $("#inputNewHostname").parent().addClass("has-feedback has-error");
+            $("#existingIPMsg").show();
+            $("#existingIpIcon").show();
+            $("#existingIpIcon").on('click', function(){
+                $("#inputNewHostname").val('');
+                $("#inputNewHostname").parent().removeClass("has-feedback has-error");
+                $("#existingIPMsg").hide();
+                $("#existingIpIcon").hide();
+            });
+         }
+        });
     });
 
     function addHost(inputValue){
         var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
-             var newElement = "<li id=li_" + inputValue+ "><span>" + inputValue + "</span>"+ removeBtn+ "</li>";
-             var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
-             $("ul#listHostnames").append(newElement);
-             $("#hostnames").append(inputValue+",");
-             $("#hostnames").val($("#hostnames").text());
-             $("ul#listHostnames").append(inputHost);
-             $("#inputNewHostname").val('');
-             $("#addHostname").prop("disabled", true);
-             $("#addHostname").addClass("disabled");
+        var newElement = "<li id=li_" + inputValue+ ">"+"<span>" + inputValue + "</span>"+ removeBtn+ "</li>";
+        var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
+        $("ul#listHostnames").append(newElement);
+        $("#hostnames").append(inputValue+",");
+        $("#hostnames").val($("#hostnames").text());
+        $("ul#listHostnames").append(inputHost);
+        $("#inputNewHostname").val('');
+        $("#addHostname").prop("disabled", true);
+        $("#addHostname").addClass("disabled");
     }
 /*]]>*/
 </script>
