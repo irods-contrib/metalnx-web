@@ -122,7 +122,7 @@ public class TicketController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> bulkDeleteTickets(@RequestBody List<String> ticketStrings) throws DataGridConnectionRefusedException {
         logger.info("Delete tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
-        boolean ticketsDeleted = ticketService.delete(ticketStrings);
+        boolean ticketsDeleted = ticketService.bulkDelete(ticketStrings);
         if(!ticketsDeleted) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

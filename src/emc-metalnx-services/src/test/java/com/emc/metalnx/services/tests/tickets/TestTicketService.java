@@ -34,7 +34,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 
 /**
  * Test iRODS services.
@@ -84,15 +85,5 @@ public class TestTicketService {
             assertFalse(t.getOwner().isEmpty());
             assertFalse(t.getTicketString().isEmpty());
         }
-    }
-
-    @Test
-    public void testDeleteTicket() throws DataGridConnectionRefusedException {
-        assertTrue(ticketService.delete(ticketString));
-    }
-
-    @Test
-    public void testDeleteTicketWithEmptyString() throws DataGridConnectionRefusedException {
-        assertFalse(ticketService.delete(""));
     }
 }

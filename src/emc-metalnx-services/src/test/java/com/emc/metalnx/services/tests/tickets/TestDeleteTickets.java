@@ -35,6 +35,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -74,8 +75,24 @@ public class TestDeleteTickets {
     }
 
     @Test
-    public void testDeleteTickets() throws DataGridConnectionRefusedException, JargonException {
-        ticketService.delete(ticketStrings);
+    public void testBulkDelete() throws DataGridConnectionRefusedException, JargonException {
+        ticketService.bulkDelete(ticketStrings);
         assertTrue(ticketUtils.listAllTicketsForUser().isEmpty());
+    }
+
+    @Test
+    public void testDeleteSingleTicket() throws DataGridConnectionRefusedException, JargonException {
+        ticketService.delete(ticketStrings.get(0));
+        assertFalse(ticketUtils.listAllTicketsForUser().isEmpty());
+    }
+
+    @Test
+    public void testDeleteWithNullString() throws DataGridConnectionRefusedException {
+        assertFalse(ticketService.delete(null));
+    }
+
+    @Test
+    public void testBulkDeleteWithNullString() throws DataGridConnectionRefusedException {
+        assertFalse(ticketService.bulkDelete(null));
     }
 }

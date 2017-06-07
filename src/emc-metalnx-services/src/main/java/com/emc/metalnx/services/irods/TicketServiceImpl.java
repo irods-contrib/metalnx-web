@@ -95,8 +95,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean delete(List<String> ticketStrings) throws DataGridConnectionRefusedException {
+    public boolean bulkDelete(List<String> ticketStrings) throws DataGridConnectionRefusedException {
         logger.info("Delete list of tickets");
+
+        if (ticketStrings == null || ticketStrings.isEmpty()) {
+            logger.error("Could not bulk delete tickets: Null or empty list provided.");
+            return false;
+        }
 
         boolean ticketsDeleted = true;
 

@@ -44,14 +44,14 @@ public interface TicketService {
     boolean delete(String ticketString) throws DataGridConnectionRefusedException;
 
     /**
-     * Deletes tickets of a particular user.
+     * Deletes a list of tickets from the grid.
      *
      * Obs: if the user is a rods admin, all tickets existing in the grid can be deleted.
      * @param ticketStrings list of ticket strings that will be deleted
      * @return True, if all given tickets were deleted successfully. False, otherwise.
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
      */
-    boolean delete(List<String> ticketStrings) throws DataGridConnectionRefusedException;
+    boolean bulkDelete(List<String> ticketStrings) throws DataGridConnectionRefusedException;
 
     /**
      * Creates a ticket in the grid
