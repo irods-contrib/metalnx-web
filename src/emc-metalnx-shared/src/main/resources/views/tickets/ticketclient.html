@@ -214,6 +214,7 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
     function showTicketUploadModal() {
+        $(".alert").addClass("hidden");
         $("#filesList").empty();
         $("#numberFilesUpload").html(0);
         $("#browseButton").show();
