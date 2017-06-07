@@ -9,7 +9,7 @@
     <div class="form-group">
         <label for="input-permission" class="control-label" th:text="#{ticket.form.permission.label}"></label>
         <div class="">
-            <select id="input-permission" class="form-control" th:field="*{type}">
+            <select id="input-permission" class="form-control" th:field="*{type}" th:disabled="${!#strings.isEmpty(ticket.ticketString)}">
                 <option value="READ" th:text="#{ticket.form.permission.option.read.label}"></option>
                 <option value="WRITE" th:text="#{ticket.form.permission.option.write.label}"></option>
             </select>
@@ -20,7 +20,7 @@
     <div class="advanced-settings hidden">
         <div class="form-group optional">
             <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
-            <input type="text" class="form-control" id="inputTicketString" maxlength="15" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" value=""/>
+            <input type="text" class="form-control" id="inputTicketString" maxlength="15" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" th:disabled="${!#strings.isEmpty(ticket.ticketString)}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidTicketStringIcon"></i>
             <small class="help-block hideElement" id="ticketStringInvalidMsg" th:text="#{ticket.form.validation.input.ticket.string.not.valid}"></small>
         </div>
@@ -63,7 +63,7 @@
                    th:text="#{permission.validation.group.nonexistent}"></small>
         </div>
         <div class="form-group optional">
-            <label id="hostnamesLabel" for="inputHostnames" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
+            <label id="hostnamesLabel" for="inputNewHostname" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
             <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
             <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
                 <div id="panelHostnames">
