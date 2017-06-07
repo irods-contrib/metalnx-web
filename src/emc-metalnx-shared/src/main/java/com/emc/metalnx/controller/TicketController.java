@@ -120,11 +120,11 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void bulkDeleteTickets(@RequestBody List<String> ticketStrings) throws DataGridConnectionRefusedException {
-        logger.info("Delete all tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
-        for (String ticketString: ticketStrings) {
-            ticketService.delete(ticketString);
-        }
+    public ResponseEntity<String> bulkDeleteTickets(@RequestBody List<String> ticketStrings) throws DataGridConnectionRefusedException {
+        logger.info("Delete tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
+        boolean ticketsDeleted = ticketService.delete(ticketStrings);
+        if(!ticketsDeleted) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

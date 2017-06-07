@@ -32,6 +32,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -40,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
-public class TestDeleteAllTickets {
+public class TestDeleteTickets {
     @Value("${irods.zoneName}")
     private String zone;
 
@@ -54,13 +57,15 @@ public class TestDeleteAllTickets {
     private IRODSServices irodsServices;
 
     private TestTicketUtils ticketUtils;
+    private List<String> ticketStrings;
 
     @Before
     public void setUp() throws DataGridException, JargonException {
         String parentPath = String.format("/%s/home", zone);
         ticketUtils = new TestTicketUtils(irodsServices);
-        ticketUtils.createTicket(parentPath, username);
-        ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE);
+        ticketStrings = new ArrayList<>();
+        ticketStrings.add(ticketUtils.createTicket(parentPath, username));
+        ticketStrings.add(ticketUtils.createTicket(parentPath, username, TicketCreateModeEnum.WRITE));
     }
 
     @After
@@ -69,8 +74,8 @@ public class TestDeleteAllTickets {
     }
 
     @Test
-    public void testDeleteAllTicketsForUser() throws DataGridConnectionRefusedException, JargonException {
-        ticketService.deleteAll();
+    public void testDeleteTickets() throws DataGridConnectionRefusedException, JargonException {
+        ticketService.delete(ticketStrings);
         assertTrue(ticketUtils.listAllTicketsForUser().isEmpty());
     }
 }

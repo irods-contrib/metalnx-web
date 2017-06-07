@@ -95,9 +95,4 @@ public class TestTicketService {
     public void testDeleteTicketWithEmptyString() throws DataGridConnectionRefusedException {
         assertFalse(ticketService.delete(""));
     }
-
-    @Test
-    public void testDeleteTicketWithNullString() throws DataGridConnectionRefusedException {
-        assertFalse(ticketService.delete(null));
-    }
 }

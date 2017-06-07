@@ -27,14 +27,6 @@ import java.util.List;
 public interface TicketService {
 
     /**
-     * Deletes all tickets of a particular user.
-     *
-     * Obs: if the user is a rods admin, all tickets existing in the grid can be deleted.
-     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
-     */
-    void deleteAll() throws DataGridConnectionRefusedException;
-
-    /**
      * Finds all tickets existing in the system.
      * The tickets found depend on the user who requests the list of tickets. RODS_ADMINs can see all tickets while
      * RODS_USERs can only see the tickets they have created.
@@ -50,6 +42,16 @@ public interface TicketService {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid
      */
     boolean delete(String ticketString) throws DataGridConnectionRefusedException;
+
+    /**
+     * Deletes tickets of a particular user.
+     *
+     * Obs: if the user is a rods admin, all tickets existing in the grid can be deleted.
+     * @param ticketStrings list of ticket strings that will be deleted
+     * @return True, if all given tickets were deleted successfully. False, otherwise.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the grid.
+     */
+    boolean delete(List<String> ticketStrings) throws DataGridConnectionRefusedException;
 
     /**
      * Creates a ticket in the grid
