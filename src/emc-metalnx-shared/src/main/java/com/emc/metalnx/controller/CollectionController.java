@@ -620,27 +620,23 @@ public class CollectionController {
      * @throws DataGridConnectionRefusedException
      */
     @RequestMapping(value = "modify/action", method = RequestMethod.POST)
-    public String modifyAction(@ModelAttribute CollectionOrDataObjectForm collectionForm, Model model, RedirectAttributes redirectAttributes)
+    public String modifyAction(@ModelAttribute CollectionOrDataObjectForm collForm,
+                               RedirectAttributes redirectAttributes)
             throws DataGridException {
-        boolean modificationSuccessful = false;
-        if (sourcePaths.size() != 1) {
-            throw new DataGridException("Cannot rename more than one element at a time.");
-        }
+        String previousPath = collForm.getPath();
+        String parentPath = previousPath.substring(0, previousPath.lastIndexOf("/"));
+        String newPath = String.format("%s/%s", parentPath, collForm.getCollectionName());
 
-        String targetPath = sourcePaths.get(0);
-        String path = targetPath.substring(0, targetPath.lastIndexOf("/"));
-        String newPath = String.format("%s/%s", path, collectionForm.getCollectionName());
+        logger.info("Modify action for " + previousPath + "/" + newPath);
+        boolean modificationSuccessful = cs.modifyCollectionAndDataObject(previousPath, newPath, collForm.getInheritOption());
 
-        logger.info("Modify action for " + targetPath + "/" + newPath);
-        modificationSuccessful = cs.modifyCollectionAndDataObject(targetPath, newPath, collectionForm.getInheritOption());
-        
         if (modificationSuccessful) {
-            logger.debug("Collection/Data Object {} modified to {}", targetPath, newPath);
-            
-        	userBookmarkService.updateBookmark(targetPath, newPath);
-        	groupBookmarkService.updateBookmark(targetPath, newPath);
-        	
-            redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collectionForm.getCollectionName());
+            logger.debug("Collection/Data Object {} modified to {}", previousPath, newPath);
+
+        	userBookmarkService.updateBookmark(previousPath, newPath);
+        	groupBookmarkService.updateBookmark(previousPath, newPath);
+
+            redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
         }
 
         return "redirect:/collections/";

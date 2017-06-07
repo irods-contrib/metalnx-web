@@ -669,9 +669,14 @@
 				$("#addAndModifyModal").modal("show");
 	        }
 	        
-	        function showModifyForm() {	        	        	
-	        	var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
-		        ajaxEncapsulation(url, "GET", "", displayModifyForm, null, null, null);	 
+	        function showModifyForm() {
+	        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
+
+	        	if (cbChecked > 1) return;
+
+                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
+                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
+                ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
 			} 
 	        
 	        function submitForm() {

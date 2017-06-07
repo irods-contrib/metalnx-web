@@ -284,20 +284,15 @@ public class FileOperationsController {
      * @throws DataGridException if item cannot be modified
      */
     @RequestMapping(value = "modify/", method = RequestMethod.GET)
-    public String showModifyForm(Model model) throws DataGridException {
-        List<String> sourcePaths = collectionController.getSourcePaths();
+    public String showModifyForm(Model model, @RequestParam("path") String path) throws DataGridException {
         String currentPath = collectionController.getCurrentPath();
         String parentPath = collectionController.getParentPath();
-        if (sourcePaths.size() != 1) {
-            throw new DataGridException("Cannot rename more than one element at a time.");
-        }
 
         String formType = "editDataObjectForm";
-        String targetPath = sourcePaths.get(0);
         CollectionOrDataObjectForm targetForm = new CollectionOrDataObjectForm();
-        DataGridCollectionAndDataObject dataGridCollectionAndDataObject = collectionService.findByName(targetPath);
+        DataGridCollectionAndDataObject dataGridCollectionAndDataObject = collectionService.findByName(path);
 
-        logger.info("Modify form for {}", targetPath);
+        logger.info("Modify form for {}", path);
 
         targetForm.setCollectionName(dataGridCollectionAndDataObject.getName());
         targetForm.setPath(dataGridCollectionAndDataObject.getPath());
@@ -306,7 +301,7 @@ public class FileOperationsController {
         if (dataGridCollectionAndDataObject.isCollection()) {
             formType = "editCollectionForm";
             targetForm.setCollection(true);
-            logger.info("Setting inheritance for {}", targetPath);
+            logger.info("Setting inheritance for {}", path);
             targetForm.setInheritOption(collectionService.getInheritanceOptionForCollection(targetForm.getPath()));
         }
 
