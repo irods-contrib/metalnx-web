@@ -87,7 +87,7 @@ function addCollectionActions(table_id, datatable){
 }
 
 //Adds delete all tickets button on tickets table
-function addDeleteAllTickets(){
+function addDeleteTickets(){
     $("div.toolbar").html(
         '   <button id="showDeleteTicketsModalBtn" type="button" class="btn btn-default" disabled="true" onclick="showDeleteTicketsModal();">' +
         '       Delete' +

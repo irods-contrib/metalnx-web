@@ -41,7 +41,7 @@
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
             </div>
 
-            <div class="col-sm-12 hidden" id="deleteAllTicketsSuccessMessage">
+            <div class="col-sm-12 hidden" id="deleteTicketsSuccessMessage">
                 <div class="alert alert-success text-center" role="alert">
                     <span th:text="#{ticket.feedback.message.delete.all.success}"></span>
                 </div>
@@ -153,7 +153,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="deleteAllTicketsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteTicketsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -168,7 +168,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
                                 th:text="#{confirmation.message.cancel}"></button>
-                        <button onclick="deleteAllTickets();" type="button" class="btn btn-primary"
+                        <button onclick="deleteTickets();" type="button" class="btn btn-primary"
                                 data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
 	            ]
 			} );
 
-			addDeleteAllTickets();
+			addDeleteTickets();
 		});
 
         var ticketsURL = '/emc-metalnx-web/tickets/';
@@ -263,17 +263,35 @@
             $('#showDeleteTicketsModalBtn').prop('disabled', !isChecked);
 		});
 
+		$("body").on("change", "input[type='checkbox'][name='ticketCheckboxes']", function() {
+		    var tcb = $('input[name="ticketCheckboxes"]').length;
+		    var tcbChecked = $('input[name="ticketCheckboxes"]:checked').length;
+		    $("#selectAllTicketsCheckboxes").prop("checked", tcb == tcbChecked);
+		    $("#showDeleteTicketsModalBtn").prop("disabled", tcbChecked < 1);
+		});
+
         function showDeleteTicketsModal() {
-		    $("#deleteAllTicketsModal").modal("show");
+		    $("#deleteTicketsModal").modal("show");
 		}
 
-		function deleteAllTickets() {
-		    ajaxEncapsulation(ticketsURL, "DELETE", null, deleteAllTicketsSuccessHandler);
+		function deleteTickets() {
+		    var tickets = [];
+
+		    $('input[name="ticketCheckboxes"]:checked').each(function() {
+		        tickets.push($(this).val());
+		    });
+            var contentType = "application/json; charset=utf-8";
+
+		    ajaxEncapsulation(ticketsURL,
+		                        "DELETE",
+		                        JSON.stringify(tickets),
+		                        deleteTicketsSuccessHandler,
+		                        null, "json", contentType);
 		}
 
-		function deleteAllTicketsSuccessHandler() {
+		function deleteTicketsSuccessHandler() {
             $('#ticketsTable').DataTable().ajax.reload();
-		    $("#deleteAllTicketsSuccessMessage").removeClass("hidden");
+		    $("#deleteTicketsSuccessMessage").removeClass("hidden");
 		}
 
 		function shareTicket(ticketString) {
