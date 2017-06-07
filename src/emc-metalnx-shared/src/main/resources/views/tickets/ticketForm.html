@@ -26,6 +26,7 @@
         </div>
         <div class="form-group optional">
             <label for="inputUsesLimit" class="control-label" th:text="#{ticket.form.uses.limit.label}"></label>
+            <a id="usesLimitHint" href="#">[?]</a>
             <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{ticket.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputUsesLimitIcon"></i>
             <small class="help-block hideElement" id="usesLimitNotNumberMsg" th:text="#{ticket.form.validation.input.uses.limit.not.number}"></small>
@@ -66,7 +67,6 @@
             <label id="hostnamesLabel" for="inputNewHostname" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
             <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="existingIpIcon"></i>
-
             <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
             <small class="help-block hideElement nonexistentGroupError" id="existingIPMsg"
                    th:text="#{ticket.form.host.already.exists}"></small>
@@ -91,6 +91,12 @@
         return validated;
     }
     $(document).ready(function(e){
+
+        $('#usesLimitHint').popover({
+            content:[[#{ticket.form.uses.limit.hint}]],
+            trigger: 'hover click',
+            placement: 'right',
+        });
 
         var inputPathVal = $("#inputPath").val();
 
