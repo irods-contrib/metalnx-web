@@ -31,13 +31,13 @@
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputUsesLimitIcon"></i>
             <small class="help-block hideElement" id="usesLimitNotNumberMsg" th:text="#{ticket.form.validation.input.uses.limit.not.number}"></small>
         </div>
-        <div class="form-group optional">
+        <div id="writeByteLimit" class="form-group optional">
             <label for="inputWriteByteLimit" class="control-label" th:text="#{ticket.form.write.byte.limit.label}"></label>
             <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{ticket.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteByteLimitIcon"></i>
             <small class="help-block hideElement" id="writeByteNotNumberMsg" th:text="#{ticket.form.validation.input.write.byte.limit.not.number}"></small>
         </div>
-        <div class="form-group optional">
+        <div id="writeFileLimit" class="form-group optional">
             <label for="inputWriteFileLimit" class="control-label" th:text="#{ticket.form.write.file.limit.label}"></label>
             <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{ticket.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
             <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteFiletIcon"></i>
@@ -218,6 +218,29 @@
         if ($("#inputWriteFileLimit").val()==0){
             $("#inputWriteFileLimit").val('');
         }
+
+
+        $("#input-permission").ready(function() {
+            if ($("#input-permission").val()=='READ'){
+                $("#writeByteLimit").addClass("hidden");
+                $("#writeFileLimit").addClass("hidden");
+            }
+            else if($("#input-permission").val()=='WRITE'){
+                $("#writeByteLimit").removeClass("hidden");
+                $("#writeFileLimit").removeClass("hidden");
+            }
+        });
+
+        $("#input-permission").change(function(){
+            if ($("#input-permission").val()=='READ'){
+                $("#writeByteLimit").addClass("hidden");
+                $("#writeFileLimit").addClass("hidden");
+            }
+            else if($("#input-permission").val()=='WRITE'){
+                $("#writeByteLimit").removeClass("hidden");
+                $("#writeFileLimit").removeClass("hidden");
+            }
+        });
 
         // Toggle advanced settings buttons visibility
         $("#btnShowAdvancedSettings").click(function(){
