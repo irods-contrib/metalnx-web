@@ -19,6 +19,7 @@ package com.emc.metalnx.services.irods;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
@@ -26,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.*;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.ticket.TicketClientOperations;
@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -53,6 +55,8 @@ import java.util.Map;
 public class TicketClientServiceImpl implements TicketClientService {
     private static final Logger logger = LoggerFactory.getLogger(TicketClientServiceImpl.class);
     private static final String TEMP_TICKET_DIR = "tmp-ticket-files";
+    private static final String RESOURCE = "";
+    private static final String ANONYMOUS_HOME_DIRECTORY = "";
 
     @Autowired
     private ConfigService configService;
@@ -60,13 +64,12 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Autowired
     private ZipService zipService;
 
-    private static final String ANONYMOUS_HOME_DIRECTORY = "";
+    @Autowired
+    private IRODSAccessObjectFactory irodsAccessObjectFactory;
 
-    private TicketServiceFactory ticketServiceFactory;
     private TicketClientOperations ticketClientOperations;
     private IRODSAccount irodsAccount;
-    private IRODSAccessObjectFactory irodsAccessObjectFactory;
-    private String host, zone, defaultStorageResource;
+    private String host, zone;
     private int port;
     private Map<Integer, String> ticketErroCodeMap;
 
@@ -75,7 +78,6 @@ public class TicketClientServiceImpl implements TicketClientService {
         host = configService.getIrodsHost();
         zone = configService.getIrodsZone();
         port = Integer.valueOf(configService.getIrodsPort());
-        defaultStorageResource = "";
         setUpAnonymousAccess();
         ticketErroCodeMap = new HashMap<>();
         ticketErroCodeMap.put(-891000, "Ticket expired");
@@ -207,11 +209,16 @@ public class TicketClientServiceImpl implements TicketClientService {
      */
     private void setUpAnonymousAccess() {
         try {
-            IRODSFileSystem irodsFileSystem = IRODSFileSystem.instance();
-            irodsAccessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
-            irodsAccount = IRODSAccount.instanceForAnonymous(host, port, ANONYMOUS_HOME_DIRECTORY, zone,
-                    defaultStorageResource);
-            ticketServiceFactory = new TicketServiceFactoryImpl(irodsAccessObjectFactory);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(authentication == null || !(authentication.getDetails() instanceof UserTokenDetails)) {
+                logger.warn("Accessing files and collections with tickets using anonymous account");
+                irodsAccount = IRODSAccount.instanceForAnonymous(host, port, ANONYMOUS_HOME_DIRECTORY, zone, RESOURCE);
+            } else {
+                logger.warn("Accessing files and collections with tickets as authenticated user");
+                irodsAccount = ((UserTokenDetails) authentication.getDetails()).getIrodsAccount();
+            }
+
+            TicketServiceFactory ticketServiceFactory = new TicketServiceFactoryImpl(irodsAccessObjectFactory);
             ticketClientOperations = ticketServiceFactory.instanceTicketClientOperations(irodsAccount);
         } catch (JargonException e) {
             logger.error("Could not set up anonymous access");
