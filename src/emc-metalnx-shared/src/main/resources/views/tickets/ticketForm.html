@@ -222,23 +222,25 @@
 
         $("#input-permission").ready(function() {
             if ($("#input-permission").val()=='READ'){
-                $("#writeByteLimit").addClass("hidden");
-                $("#writeFileLimit").addClass("hidden");
+                $("#inputWriteByteLimit").attr("disabled", true);
+                $("#inputWriteFileLimit").attr("disabled", true);
             }
             else if($("#input-permission").val()=='WRITE'){
-                $("#writeByteLimit").removeClass("hidden");
-                $("#writeFileLimit").removeClass("hidden");
+                $("#inputWriteByteLimit").attr("disabled", false);
+                $("#inputWriteFileLimit").attr("disabled", false);
             }
         });
 
         $("#input-permission").change(function(){
             if ($("#input-permission").val()=='READ'){
-                $("#writeByteLimit").addClass("hidden");
-                $("#writeFileLimit").addClass("hidden");
+                $("#inputWriteByteLimit").attr("disabled", true);
+                $("#inputWriteFileLimit").attr("disabled", true);
+                $("#inputWriteByteLimit").val('');
+                $("#inputWriteFileLimit").val('');
             }
             else if($("#input-permission").val()=='WRITE'){
-                $("#writeByteLimit").removeClass("hidden");
-                $("#writeFileLimit").removeClass("hidden");
+                $("#inputWriteByteLimit").attr("disabled", false);
+                $("#inputWriteFileLimit").attr("disabled", false);
             }
         });
 
