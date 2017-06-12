@@ -180,6 +180,15 @@
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
+            // Add popover on page title
+            $('#tickets-page-title').popover({
+                title:[[#{ticket.page.title}]],
+                content:[[#{tickets.title.popover}]],
+                trigger: 'hover click',
+                placement: 'left',
+            });
+
+
 			var datatable = $('#ticketsTable').DataTable( {
 			    "serverSide": false,
 			    "dom": dtPatternMlxStandard,
