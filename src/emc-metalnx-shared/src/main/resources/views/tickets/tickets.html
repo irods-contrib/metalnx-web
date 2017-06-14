@@ -349,12 +349,8 @@
                         placement: "bottom",
                         title: "Share Ticket",
                         html: true,
-                        trigger: "click",
+                        trigger: "manual",
                         content: function () {
-                            $(".popover:visible").each(function() {
-                                $(this).popover("hide");
-                            });
-
                             var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
                             email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
                             email += ticket.ticketString;
@@ -379,7 +375,7 @@
                                 html += "</button>";
                             return html;
                         },
-                    });
+                    }).popover("toggle");
                 },
                 null, null, jsonContentType
             );
