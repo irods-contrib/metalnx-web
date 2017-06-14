@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.controller;
 
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.*;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
@@ -51,16 +53,21 @@ public class TicketClientController {
     @Autowired
     private TicketClientService ticketClientService;
 
+    @Autowired
+    private LoggedUserUtils loggedUserUtils;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model, @RequestParam("ticketstring") String ticketString,
-                        @RequestParam("ticketpath") String path)
-            throws DataGridConnectionRefusedException {
+                        @RequestParam("ticketpath") String path) throws DataGridConnectionRefusedException {
         logger.info("Accessing ticket {} on {}", ticketString, path);
         String objName = path.substring(path.lastIndexOf(IRODS_PATH_SEPARATOR) + 1, path.length());
         model.addAttribute("objName", objName);
         model.addAttribute("ticketString", ticketString);
         model.addAttribute("path", path);
-        return "tickets/ticketclient";
+
+        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+
+        return loggedUser == null ? "tickets/ticketclient" : "tickets/ticketAuthAccess";
     }
 
     @RequestMapping(value = "/invaliduser", method = RequestMethod.GET)

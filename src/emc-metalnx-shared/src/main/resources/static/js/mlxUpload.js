@@ -26,16 +26,16 @@ var originalPagetitle = $('title').html();
  * Function that checks when the users selects files for upload.
  */
 
-$("input[name='files']").change(function () {
+$("#uploadModal input[name='files']").change(function () {
 	resolvedFileNames = [];
 
-	files = $("input[name='files']").prop("files");
-	$('#numberFilesUpload').html(files.length);
-	$('#browseButton').hide();
+	files = $("#uploadModal input[name='files']").prop("files");
+	$('#uploadModal #numberFilesUpload').html(files.length);
+	$('#uploadModal #browseButton').hide();
 
 	$.each(files, function(index, file){
 		var fileName = resolveFileName(file.name);
-		$("#filesList").append('<p>' + fileName + '</p>');
+		$("#uploadModal #filesList").append('<p>' + fileName + '</p>');
 		resolvedFileNames.push(fileName);
 	});
 
@@ -47,8 +47,8 @@ $("input[name='files']").change(function () {
  * Handles onclick event when the user clicks on uploading a set of files.
  */
 $("#uploadButton").click(function(){
-	if($("input[name='files']").prop("files").length == 0 ){
-		$('#uploadMinMessage').show();
+	if($("#uploadModal input[name='files']").prop("files").length == 0 ){
+		$('#uploadModal #uploadMinMessage').show();
 		return;
 	}
 
@@ -63,9 +63,6 @@ $("#uploadButton").click(function(){
 	$('#showCollectionFormBtn').hide();
 	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);
-
-	//var uploadItems = "";
-	//var currFilePos = 0;
 
     $('#uploadStatusIcon').removeClass("hide");
     $('#uploadStatusIcon ul.dropdown-menu').empty();

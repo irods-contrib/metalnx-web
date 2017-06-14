@@ -26,15 +26,15 @@ var originalPagetitle = $('title').html();
  * Function that checks when the users selects files for upload.
  */
 
-$("input[name='files']").change(function () {
+$("#ticketUploadModal input[name='files']").change(function () {
 	resolvedFileNames = [];
-	files = $("input[name='files']").prop("files");
-	$('#numberFilesUpload').html(files.length);
-	$('#browseButton').hide();
+	files = $("#ticketUploadModal input[name='files']").prop("files");
+	$('#ticketUploadModal #numberFilesUpload').html(files.length);
+	$('#ticketUploadModal #browseButton').hide();
 
 	$.each(files, function(index, file){
 		var fileName = resolveFileName(file.name);
-		$("#filesList").append('<p>' + fileName + '</p>');
+		$("#ticketUploadModal #filesList").append('<p>' + fileName + '</p>');
 		resolvedFileNames.push(fileName);
 	});
 
@@ -46,8 +46,8 @@ $("input[name='files']").change(function () {
  * Handles onclick event when the user clicks on uploading a set of files.
  */
 $("#ticketUploadButton").click(function(){
-	if($("input[name='files']").prop("files").length == 0 ){
-		$('#uploadMinMessage').show();
+	if($("#ticketUploadModal input[name='files']").prop("files").length == 0 ){
+		$('#ticketUploadModal #uploadMinMessage').show();
 		return;
 	}
 
@@ -81,11 +81,11 @@ $("#ticketUploadButton").click(function(){
     });
     $('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
 
-	uploadAndUpdateStatus(files[0], 0, files.length)
+	ticketUploadAndUpdateStatus(files[0], 0, files.length)
 
 });
 
-function uploadAndUpdateStatus(file, index, totalFiles){
+function ticketUploadAndUpdateStatus(file, index, totalFiles){
     var url = "/emc-metalnx-web/ticketclient/" + $('#ticketString').text();
     var formData = new FormData();
     formData.append('file', file);
@@ -116,7 +116,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
         success: function (res) {
             showTransferCompletedMsg(index, "File transferred");
             if((index+1) < totalFiles){
-                uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
+                ticketUploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
             else if((index+1) == totalFiles){
                 unsetOperationInProgress();
@@ -127,7 +127,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
             var error_response = xhr.responseText;
             showUploadErrorMsg(index, error_response, error_response.errorType);
             if((index+1) < totalFiles){
-                uploadAndUpdateStatus(files[index+1], index+1, totalFiles)
+                ticketUploadAndUpdateStatus(files[index+1], index+1, totalFiles)
             }
             else if((index+1) == totalFiles) {
                 unsetOperationInProgress();
