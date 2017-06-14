@@ -64,7 +64,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <button type="button" id="ticketLoggedAccessBtn" class="btn btn-primary btn-sm pull-right"
-                        th:text="#{ticket.access.label}" style="margin-bottom: 10px;">
+                        th:text="#{ticket.use.label}" style="margin-bottom: 10px;">
                 </button>
             </div>
         </div>
@@ -274,18 +274,15 @@
                     });
 
                     var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
-                        html += "<div class='form-group optional'>";
                         html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
                         html += "<br />";
                         html += "<input id='ticketLoggedAccessPath' type='text' class='form-control' name='ticketpath' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.path.label}]] + "'/>";
-                        html += "</div>";
-                        html += "<div class='form-group optional'>";
+                        html += "<br />";
                         html += "<button id='ticketLoggedAccessPopoverBtn' class='btn btn-primary btn-sm' type='submit'>";
                         html += "<i class='fa fa-clone'></i>" + [[#{ticket.access.label}]];
                         html += "</button>";
-                        html += "</div>";
                         html += "</form>";
                     return html;
                 },
