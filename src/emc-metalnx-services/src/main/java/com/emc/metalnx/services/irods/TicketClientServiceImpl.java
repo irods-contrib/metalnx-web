@@ -78,7 +78,6 @@ public class TicketClientServiceImpl implements TicketClientService {
         host = configService.getIrodsHost();
         zone = configService.getIrodsZone();
         port = Integer.valueOf(configService.getIrodsPort());
-        setUpAnonymousAccess();
         ticketErroCodeMap = new HashMap<>();
         ticketErroCodeMap.put(-891000, "Ticket expired");
         ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
@@ -89,9 +88,23 @@ public class TicketClientServiceImpl implements TicketClientService {
         ticketErroCodeMap.put(-526020, "Destination not a directory");
     }
 
+    /**
+     * Close whoever has access to iRODS using this service.
+     */
+    public void closeAccess() {
+        if (irodsAccessObjectFactory == null) {
+            return;
+        }
+
+        logger.info("Destroying ticket client access");
+        irodsAccessObjectFactory.closeSessionAndEatExceptions();
+    }
+
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
             throws DataGridTicketUploadException, DataGridTicketInvalidUserException {
+        setUpAnonymousAccess();
+
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridTicketUploadException("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
@@ -126,6 +139,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
             throw new DataGridTicketUploadException(msg);
         } finally {
+            closeAccess();
             FileUtils.deleteQuietly(localFile);
         }
     }
@@ -133,6 +147,8 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Override
     public File getFileFromIRODSUsingTicket(String ticketString, String path)
             throws DataGridTicketInvalidUserException, DataGridTicketDownloadException {
+        setUpAnonymousAccess();
+
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -175,6 +191,8 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
 
             throw new DataGridTicketDownloadException(msg, path, ticketString);
+        } finally {
+            closeAccess();
         }
 
         return file;
