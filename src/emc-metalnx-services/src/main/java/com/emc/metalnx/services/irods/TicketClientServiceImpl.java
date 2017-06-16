@@ -45,7 +45,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -210,11 +209,7 @@ public class TicketClientServiceImpl implements TicketClientService {
      * @return File representing the file found within the given directory
      */
     private File findFileInDirectory(File directory, String filename) {
-        File[] files = directory.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return filename.equals(name);
-            }
-        });
+        File[] files = directory.listFiles((dir, name) -> name.equals(filename));
 
         if (files == null || files.length == 0) return null;
 
