@@ -278,10 +278,6 @@
                 trigger: "click",
                 title: [[#{ticket.access.label}]],
                 content: function () {
-                    $(".popover:visible").each(function() {
-                        $(this).popover("hide");
-                    });
-
                     var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
                         html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
@@ -295,7 +291,12 @@
                         html += "</form>";
                     return html;
                 },
-            });
+            }).popover("show");
+                    $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                    $('.close').click(function(e){
+                        $('.popover.in').hide();
+                    });
+
 		});
 
         var ticketsURL = '/emc-metalnx-web/tickets/';
@@ -384,7 +385,12 @@
                                 html += "</button>";
                             return html;
                         },
-                    }).popover("toggle");
+                    }).popover("show");
+                    $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                    $('.close').click(function(e){
+                        $('.popover.in').hide();
+                    });
+
                 },
                 null, null, jsonContentType
             );
