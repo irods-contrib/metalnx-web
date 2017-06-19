@@ -87,22 +87,9 @@ public class TicketClientServiceImpl implements TicketClientService {
         ticketErroCodeMap.put(-526020, "Destination not a directory");
     }
 
-    /**
-     * Close whoever has access to iRODS using this service.
-     */
-    public void closeAccess() {
-        if (irodsAccessObjectFactory == null) {
-            return;
-        }
-
-        logger.info("Destroying ticket client access");
-        irodsAccessObjectFactory.closeSessionAndEatExceptions();
-    }
-
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
             throws DataGridTicketUploadException, DataGridTicketInvalidUserException {
-        setUpAnonymousAccess();
 
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridTicketUploadException("Ticket String not provided");
@@ -113,6 +100,8 @@ public class TicketClientServiceImpl implements TicketClientService {
         }
 
         try {
+            setUpAccess();
+
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             String targetPath = String.format("%s/%s", destPath, localFile.getName());
             IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
@@ -146,7 +135,6 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Override
     public File getFileFromIRODSUsingTicket(String ticketString, String path)
             throws DataGridTicketInvalidUserException, DataGridTicketDownloadException {
-        setUpAnonymousAccess();
 
         deleteTempTicketDir();
 
@@ -158,6 +146,8 @@ public class TicketClientServiceImpl implements TicketClientService {
 
         File file;
         try {
+            setUpAccess();
+
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);
             ticketClientOperations.getOperationFromIRODSUsingTicket(ticketString, irodsFile, tempDir, null, null);
@@ -220,7 +210,7 @@ public class TicketClientServiceImpl implements TicketClientService {
      * Sets up all necessary stuff for an anonymous user to be able to interact with the grid. This interaction means
      * iput & iget.
      */
-    private void setUpAnonymousAccess() {
+    private void setUpAccess() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if(authentication == null || !(authentication.getDetails() instanceof UserTokenDetails)) {
@@ -236,5 +226,17 @@ public class TicketClientServiceImpl implements TicketClientService {
         } catch (JargonException e) {
             logger.error("Could not set up anonymous access");
         }
+    }
+
+    /**
+     * Close connection of whoever has access to iRODS using this service.
+     */
+    private void closeAccess() {
+        if (irodsAccessObjectFactory == null) {
+            return;
+        }
+
+        logger.info("Destroying ticket client access");
+        irodsAccessObjectFactory.closeSessionAndEatExceptions();
     }
 }
