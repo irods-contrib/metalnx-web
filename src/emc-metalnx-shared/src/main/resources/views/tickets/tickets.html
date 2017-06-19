@@ -354,10 +354,7 @@
 		        tickets.push($(this).val());
 		    });
 
-		    ajaxEncapsulation(ticketsURL,
-		                        "DELETE",
-		                        JSON.stringify(tickets),
-		                        deleteTicketsSuccessHandler,
+		    ajaxEncapsulation(ticketsURL, "DELETE", JSON.stringify(tickets), deleteTicketsSuccessHandler,
 		                        null, "json", jsonContentType);
 		}
 
@@ -392,7 +389,9 @@
                                 html += "</p>";
                                 html += "<p>";
                                 html += "<b>Ticket Path</b><br />";
+                                html += "<span style=\"word-wrap:break-word\">";
                                 html += ticket.path;
+                                html += "</span>";
                                 html += "</p>";
                                 html += "<a href='" + email + "' type='button' class='btn btn-primary btn-sm' id='emailBtn'>";
                                 html += "<i class='fa fa-envelope-o'></i>Email";
