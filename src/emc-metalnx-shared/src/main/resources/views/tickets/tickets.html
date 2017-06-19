@@ -331,9 +331,9 @@
         });
 
 		$("#selectAllTicketsCheckboxes").change(function() {
-            var isChecked = $(this).is(":checked");
-            $('input[name="ticketCheckboxes"]').prop("checked", isChecked);
-            $('#showDeleteTicketsModalBtn').prop('disabled', !isChecked);
+            var isSelectAllChecked = $(this).is(":checked");
+            $('input[name="ticketCheckboxes"]:enabled').prop("checked", isSelectAllChecked);
+            $('#showDeleteTicketsModalBtn').prop('disabled', !isSelectAllChecked);
 		});
 
 		$("body").on("change", "input[type='checkbox'][name='ticketCheckboxes']", function() {
