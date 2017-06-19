@@ -184,8 +184,6 @@
             </div>
         </div>
 
-        <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
-        <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
@@ -232,8 +230,6 @@
                     	"render": function ( data, type, full, meta ) {
                     	    var isOwner = full.owner == [[${userDetails.getUsername()}]];
 
-                    	    console.log(full.ticketString + " " + isOwner);
-
                     	    var html =  '<input type="checkbox" name="ticketCheckboxes" ';
                             html += 'value="' + full.ticketString + '" id="' + full.ticketString + '" ';
                     	    if (!isOwner) html += 'disabled="true"';
@@ -266,9 +262,22 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
+                            var isOwner = full.owner == [[${userDetails.getUsername()}]];
+
+                            var disabledProp = '';
+
+                            if (!isOwner) disabledProp = 'disabled="true"';
+
+                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" ' +
+                                'class="btn btn-default btn-xs" style="margin-right:5px;" ' +  disabledProp +
+                                '><i class="fa fa-pencil"></i>Edit</a>';
+
+                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" ' +
+                                'class="btn btn-default btn-xs" ' +  disabledProp +
+                                '><i class="fa fa-trash-o"></i>Delete</a>';
+
                             var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
-                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
-                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+
                             return shareBtn + modifyBtn + deleteBtn;
                         },
                         "width": "15%",
@@ -467,6 +476,8 @@
 
 		/*]]>*/
 		</script>
+        <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
+        <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
     </div> <!-- /. Page Content -->
 
