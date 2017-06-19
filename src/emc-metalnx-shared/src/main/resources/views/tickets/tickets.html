@@ -230,7 +230,16 @@
 			    "columnDefs": [
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return '<input type="checkbox" name="ticketCheckboxes" value="'+full.ticketString+'" id="'+full.ticketString+'"/>';
+                    	    var isOwner = full.owner == [[${userDetails.getUsername()}]];
+
+                    	    console.log(full.ticketString + " " + isOwner);
+
+                    	    var html =  '<input type="checkbox" name="ticketCheckboxes" ';
+                            html += 'value="' + full.ticketString + '" id="' + full.ticketString + '" ';
+                    	    if (!isOwner) html += 'disabled="true"';
+                            html += '/>';
+
+    						return html;
     					},
     					"className": "dt-center",
     					"width": "25px",
