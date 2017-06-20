@@ -18,7 +18,9 @@ package com.emc.metalnx.controller;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 import com.emc.metalnx.services.interfaces.TicketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,15 +103,16 @@ public class TicketController {
      */
     @RequestMapping(value = "/{ticketid}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<DataGridTicket> find(@PathVariable("ticketid") String ticketId) throws
-            DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+    public ResponseEntity<DataGridTicket> find(@PathVariable("ticketid") String ticketId)
+            throws DataGridConnectionRefusedException, DataGridTicketNotFoundException {
         logger.info("Find ticket by its ID or String");
         DataGridTicket dgTicket = ticketService.find(ticketId);
         return new ResponseEntity<>(dgTicket, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) throws DataGridConnectionRefusedException {
+    public ResponseEntity<String> deleteTicket(@PathVariable String ticketId)
+            throws DataGridConnectionRefusedException {
         logger.info("Delete ticket by its ID or String");
         boolean ticketDeleted = ticketService.delete(ticketId);
 
@@ -120,7 +123,8 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> bulkDeleteTickets(@RequestBody List<String> ticketStrings) throws DataGridConnectionRefusedException {
+    public ResponseEntity<String> bulkDeleteTickets(@RequestBody List<String> ticketStrings)
+            throws DataGridConnectionRefusedException {
         logger.info("Delete tickets of user: {}", loggedUserUtils.getLoggedDataGridUser().getUsername());
         boolean ticketsDeleted = ticketService.bulkDelete(ticketStrings);
         if(!ticketsDeleted) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -131,7 +135,7 @@ public class TicketController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingPathOnTicketException, DataGridDuplicatedTicketException, DataGridTicketException {
+            DataGridTicketException {
         logger.info("Create new ticket");
         ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
         ticketService.create(ticket);
@@ -140,8 +144,8 @@ public class TicketController {
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void modifyTicket(@RequestBody DataGridTicket ticket) throws DataGridNullTicketException,
-            DataGridMissingTicketStringException, DataGridConnectionRefusedException, DataGridTicketNotFoundException, DataGridTicketException {
+    public void modifyTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
+            DataGridTicketException {
         logger.info("Modify ticket");
         ticketService.modify(ticket);
     }

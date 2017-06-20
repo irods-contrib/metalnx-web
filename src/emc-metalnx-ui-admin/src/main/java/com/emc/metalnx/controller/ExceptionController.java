@@ -16,7 +16,9 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -45,28 +47,10 @@ public class ExceptionController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-	@ExceptionHandler(DataGridMissingPathOnTicketException.class)
-	public ResponseEntity<String> handleMissingPathOnTicketException() {
-        logger.error("Ticket missing path");
-		return new ResponseEntity<>("Ticket missing path", HttpStatus.CONFLICT);
-	}
-
     @ExceptionHandler(DataGridTicketNotFoundException.class)
     public ResponseEntity<String> handleTicketNotFoundException() {
         logger.error("Ticket not found");
         return new ResponseEntity<>("Ticket not found", HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DataGridMissingTicketStringException.class)
-    public ResponseEntity<String> handleMissingTicketStringException() {
-        logger.error("Ticket does not have a ticket string");
-        return new ResponseEntity<>("Ticket does not have a ticket string", HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(DataGridDuplicatedTicketException.class)
-    public ResponseEntity<String> handleDuplicatedTicketException() {
-        logger.error("Ticket with the same name already exists");
-        return new ResponseEntity<>("Ticket with the same name already exists", HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({UnknownHostException.class})
