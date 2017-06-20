@@ -115,11 +115,15 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public String create(DataGridTicket dgTicket) throws DataGridMissingPathOnTicketException,
             DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicketException {
+        logger.info("Create ticket");
+
         if(dgTicket == null) {
+            logger.info("Could not create ticket: Null ticket provided.");
             throw new DataGridNullTicketException("Could not create ticket: null ticket provided.");
         }
 
         if(dgTicket.getPath().isEmpty()) {
+            logger.info("Could not create ticket: Ticket with no path.");
             throw new DataGridMissingPathOnTicketException("Could not create ticket: path is empty");
         }
 
@@ -154,6 +158,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public DataGridTicket find(String ticketId) throws DataGridConnectionRefusedException,
             DataGridTicketNotFoundException {
+        logger.info("Find ticket {}", ticketId);
+
         DataGridTicket dgTicket = null;
 
         TicketAdminService tas = irodsServices.getTicketAdminService();
@@ -177,11 +183,15 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public DataGridTicket modify(DataGridTicket t) throws DataGridConnectionRefusedException,
             DataGridNullTicketException, DataGridMissingTicketStringException, DataGridTicketNotFoundException {
+        logger.info("Modify ticket");
+
         if(t == null) {
+            logger.error("Null ticket provided.");
             throw new DataGridNullTicketException("Null ticket instance");
         }
 
         if(t.getTicketString().isEmpty()) {
+            logger.error("Ticket with empty string provided.");
             throw new DataGridMissingTicketStringException("Ticket ID or String missing");
         }
 
@@ -211,6 +221,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void updateHostRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
+        logger.info("Update host restrictions for ticket {}", t.getTicketString());
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
         List<String> currHosts = tas.listAllHostRestrictionsForSpecifiedTicket(ticketString, OFFSET);
@@ -228,6 +239,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void updateUserRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
+        logger.info("Update user restrictions for ticket {}", t.getTicketString());
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
         List<String> currUsers = tas.listAllUserRestrictionsForSpecifiedTicket(ticketString, OFFSET);
@@ -245,6 +257,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void updateGroupRestrictions(DataGridTicket t) throws JargonException,
             DataGridConnectionRefusedException {
+        logger.info("Update group restrictions for ticket {}", t.getTicketString());
         String ticketString = t.getTicketString();
         TicketAdminService tas = irodsServices.getTicketAdminService();
         List<String> currGroups = tas.listAllGroupRestrictionsForSpecifiedTicket(ticketString, OFFSET);
