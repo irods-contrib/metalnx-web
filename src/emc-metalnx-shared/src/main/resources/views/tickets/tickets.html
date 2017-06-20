@@ -197,7 +197,6 @@
                 placement: 'left',
             });
 
-
 			var datatable = $('#ticketsTable').DataTable( {
 			    "serverSide": false,
 			    "dom": dtPatternMlxStandard,
@@ -257,9 +256,9 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
-                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
-                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                            var shareBtn = '<button id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</button>';
+                            var modifyBtn = '<button onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</button>';
+                            var deleteBtn = '<button onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</button>';
                             return shareBtn + modifyBtn + deleteBtn;
                         },
                         "width": "15%",
@@ -275,9 +274,12 @@
 			$("#ticketLoggedAccessBtn").popover({
                 placement: "left",
                 html: true,
-                trigger: "click",
+                trigger: "manual",
                 title: [[#{ticket.access.label}]],
                 content: function () {
+                    $(".popover:visible").each(function() {
+                        $(this).popover("hide");
+                    });
                     var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
                         html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
@@ -291,12 +293,13 @@
                         html += "</form>";
                     return html;
                 },
-            }).popover("show");
-                    $('.popover-title').append('<button type="button" class="close">&times;</button>');
-                    $('.close').click(function(e){
-                        $('.popover.in').hide();
-                    });
-
+            }).click(function(e){
+                $(this).popover("show");
+                $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                $('.close').click(function(e){
+                    $('.popover.in').popover("hide");
+                });
+            });
 		});
 
         var ticketsURL = '/emc-metalnx-web/tickets/';
@@ -361,6 +364,9 @@
                         html: true,
                         trigger: "manual",
                         content: function () {
+                            $(".popover:visible").each(function() {
+                               $(this).popover("hide");
+                            });
                             var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
                             email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
                             email += ticket.ticketString;
@@ -385,12 +391,13 @@
                                 html += "</button>";
                             return html;
                         },
-                    }).popover("show");
-                    $('.popover-title').append('<button type="button" class="close">&times;</button>');
-                    $('.close').click(function(e){
-                        $('.popover.in').hide();
+                    }).each(function(e){
+                        $(this).popover("show");
+                        $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                        $('.close').click(function(e){
+                            $('.popover.in').popover("hide");
+                        });
                     });
-
                 },
                 null, null, jsonContentType
             );
