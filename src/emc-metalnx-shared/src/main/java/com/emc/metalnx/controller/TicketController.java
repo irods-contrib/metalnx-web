@@ -131,7 +131,7 @@ public class TicketController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ResponseBody
     public DataGridTicket createTicket(@RequestBody DataGridTicket ticket) throws DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingPathOnTicketException, DataGridDuplicatedTicketException {
+            DataGridNullTicketException, DataGridMissingPathOnTicketException, DataGridDuplicatedTicketException, DataGridTicketException {
         logger.info("Create new ticket");
         ticket.setOwner(loggedUserUtils.getLoggedDataGridUser().getUsername());
         ticketService.create(ticket);
@@ -141,7 +141,7 @@ public class TicketController {
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void modifyTicket(@RequestBody DataGridTicket ticket) throws DataGridNullTicketException,
-            DataGridMissingTicketStringException, DataGridConnectionRefusedException, DataGridTicketNotFoundException {
+            DataGridMissingTicketStringException, DataGridConnectionRefusedException, DataGridTicketNotFoundException, DataGridTicketException {
         logger.info("Modify ticket");
         ticketService.modify(ticket);
     }

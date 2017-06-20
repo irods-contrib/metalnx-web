@@ -17,7 +17,9 @@
 package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -85,9 +87,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketExpireDate() throws DataGridNullTicketException,
-            DataGridMissingTicketStringException, DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException {
+    public void testModifyTicketExpireDate() throws DataGridConnectionRefusedException, DataGridTicketException {
         Date date = new Date();
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
@@ -105,8 +105,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketUsesLimit() throws DataGridConnectionRefusedException, DataGridTicketNotFoundException,
-            DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketUsesLimit() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         int newUsesLimit = USES_LIMIT + 1;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -122,8 +121,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketWriteByteLimit() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketWriteByteLimit() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         long newWriteByteLimit = 2 * WRITE_BYTE_LIMIT;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -139,8 +137,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketWriteFileLimit() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketWriteFileLimit() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         int newWriteFileLimit = WRITE_FILE_LIMIT + 1;
         DataGridTicket dgt = new DataGridTicket(targetPath);
@@ -156,8 +153,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketHosts() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketHosts() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
@@ -172,8 +168,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketUsers() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketUsers() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
@@ -189,8 +184,7 @@ public class TestModifyTicket {
     }
 
     @Test
-    public void testModifyTicketGroups() throws DataGridConnectionRefusedException,
-            DataGridTicketNotFoundException, DataGridMissingTicketStringException, DataGridNullTicketException {
+    public void testModifyTicketGroups() throws DataGridConnectionRefusedException, DataGridTicketException {
 
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);

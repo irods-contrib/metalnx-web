@@ -39,11 +39,11 @@ public class ExceptionController {
 		return "errors/serverNotResponding";
 	}
 
-	@ExceptionHandler(DataGridNullTicketException.class)
-	public ResponseEntity<String> handleNullTicketException() {
-        logger.error("Ticket is null");
-		return new ResponseEntity<>("Ticket is null", HttpStatus.CONFLICT);
-	}
+    @ExceptionHandler(DataGridTicketException.class)
+    public ResponseEntity<String> handleticketException(DataGridTicketException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
 
 	@ExceptionHandler(DataGridMissingPathOnTicketException.class)
 	public ResponseEntity<String> handleMissingPathOnTicketException() {
