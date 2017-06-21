@@ -195,7 +195,6 @@
                 placement: 'left',
             });
 
-
 			var datatable = $('#ticketsTable').DataTable( {
 			    "serverSide": false,
 			    "dom": dtPatternMlxStandard,
@@ -293,13 +292,12 @@
 			$("#ticketLoggedAccessBtn").popover({
                 placement: "left",
                 html: true,
-                trigger: "click",
+                trigger: "manual",
                 title: [[#{ticket.access.label}]],
                 content: function () {
                     $(".popover:visible").each(function() {
                         $(this).popover("hide");
                     });
-
                     var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
                         html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
@@ -313,6 +311,12 @@
                         html += "</form>";
                     return html;
                 },
+            }).click(function(e){
+                $(this).popover("show");
+                $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                $('.close').click(function(e){
+                    $('.popover.in').popover("hide");
+                });
             });
 		});
 
@@ -375,6 +379,9 @@
                         html: true,
                         trigger: "manual",
                         content: function () {
+                            $(".popover:visible").each(function() {
+                               $(this).popover("hide");
+                            });
                             var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
                             email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
                             email += ticket.ticketString;
@@ -401,7 +408,13 @@
                                 html += "</button>";
                             return html;
                         },
-                    }).popover("toggle");
+                    }).each(function(e){
+                        $(this).popover("show");
+                        $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                        $('.close').click(function(e){
+                            $('.popover.in').popover("hide");
+                        });
+                    });
                 },
                 null, null, jsonContentType
             );
