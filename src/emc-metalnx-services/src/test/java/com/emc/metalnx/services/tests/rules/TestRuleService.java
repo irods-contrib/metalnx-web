@@ -271,4 +271,26 @@ public class TestRuleService {
         // these two methods should never be called since there is no objects under the test path
         verify(ruleService, atMost(2)).executeRule(anyString());
     }
+
+    @Test
+    public void testDeploymentRule() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(irodsServices.isAtLeastIrods420()).thenReturn(true);
+
+        DataGridResource dgDestResc = resourceService.find(RESOURCE);
+        String ruleName = "test_deployment_rule.re";
+        String ruleVaultPath = String.format("/var/lib/irods/Vault/.rulecache/%s", ruleName);
+        ruleService.execDeploymentRule(dgDestResc, ruleName, ruleVaultPath);
+        verify(ruleService, times(1)).executeRule(anyString());
+    }
+
+    @Test
+    public void testDeploymentRuleNotIRods42() throws DataGridConnectionRefusedException, DataGridRuleException {
+        when(irodsServices.isAtLeastIrods420()).thenReturn(false);
+
+        DataGridResource dgDestResc = resourceService.find(RESOURCE);
+        String ruleName = "test_deployment_rule.re";
+        String ruleVaultPath = String.format("/var/lib/irods/Vault/.rulecache/%s", ruleName);
+        ruleService.execDeploymentRule(dgDestResc, ruleName, ruleVaultPath);
+        verify(ruleService, never()).executeRule(anyString());
+    }
 }

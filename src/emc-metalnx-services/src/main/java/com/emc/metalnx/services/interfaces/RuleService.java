@@ -137,4 +137,14 @@ public interface RuleService {
      * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
      */
     Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException;
+
+    /**
+     * Executes the deployment rule (for deploying other rules in the grid)
+     * @param dgDestResc resource to run the rule
+     * @param ruleName name of the rule being deployed
+     * @param ruleVaultPath physical rule path into the grid's Vault directory
+     * @throws DataGridRuleException if rule exection failed.
+     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
+     */
+    void execDeploymentRule(DataGridResource dgDestResc, String ruleName, String ruleVaultPath) throws DataGridRuleException, DataGridConnectionRefusedException;
 }

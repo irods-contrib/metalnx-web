@@ -51,6 +51,7 @@ public class DataGridRule {
     public static final String TAR_RULE = "extractTar";
     public static final String GET_MSIS_RULE = "getMicroservices";
     public static final String EMPTY_TRASH_RULE = "emptyTrash";
+    public static final String DEPLOYMENT_RULE = "deploymentRule";
 
     // Maps rules for their respective microservices
     private static final Map<String, String> rulesMap;
@@ -68,6 +69,7 @@ public class DataGridRule {
         map.put(TAR_RULE, "msiTarFileExtract");
         map.put(GET_MSIS_RULE, "msiobjget_microservices");
         map.put(EMPTY_TRASH_RULE, "msiRmColl");
+        map.put(DEPLOYMENT_RULE, "msirule_deployment");
         rulesMap = Collections.unmodifiableMap(map);
     }
 
