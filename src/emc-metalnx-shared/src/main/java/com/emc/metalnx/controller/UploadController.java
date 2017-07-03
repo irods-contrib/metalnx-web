@@ -47,6 +47,7 @@ public class UploadController {
     private static final String WARNING = "warning";
     private static final String FATAL = "fatal";
     private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
+    public static final String METADATA_EXTRACTION_FAILED_MSG = "Metadata extraction failed.";
 
     @Autowired
     private CollectionController cc;
@@ -110,13 +111,17 @@ public class UploadController {
 
         try {
             us.upload(multipartFile, destPath, checksum, replica, resources, resourcesToUpload, overwrite);
-        } catch (DataGridReplicateException | DataGridRuleException e) {
+        } catch (DataGridReplicateException e) {
             uploadMessage += e.getMessage();
+            errorType = WARNING;
+        } catch (DataGridRuleException e) {
+            uploadMessage += METADATA_EXTRACTION_FAILED_MSG;
             errorType = WARNING;
         } catch (DataGridException e) {
             uploadMessage = e.getMessage();
             errorType = FATAL;
         }
+
         return getUploadResponse(uploadMessage, errorType);
     }
 }

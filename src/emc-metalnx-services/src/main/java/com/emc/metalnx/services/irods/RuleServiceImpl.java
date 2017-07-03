@@ -209,8 +209,9 @@ public class RuleServiceImpl implements RuleService {
             IRODSRuleExecResult result = is.getRuleProcessingAO().executeRule(rule);
             ruleResultMap = result.getOutputParameterResults();
         } catch (JargonException e) {
-            logger.error("Could not execute rule {}: {}.", rule, e.getMessage());
-            throw new DataGridRuleException("Metadata extraction failed.");
+            String error = String.format("Could not execute rule %s: %s", rule, e.getMessage());
+            logger.error(error);
+            throw new DataGridRuleException(error);
         }
 
         return ruleResultMap;
