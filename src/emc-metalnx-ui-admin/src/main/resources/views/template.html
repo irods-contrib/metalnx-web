@@ -160,6 +160,12 @@
 									<span th:text="#{resources.menu.title}"></span><!--  <span class="fa arrow"></span> -->
 								</a>
 							</li>
+							<!-- Rules -->
+							<li><a th:href="@{ ${urlMap.URL_RULES} }">
+								  <i class="fa fa-file"></i>
+								<span th:text="#{rules.menu.title}"></span>
+							</a>
+							</li>
 							<!-- Users sidebar item -->
 							<li><a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }"> <i
 								class="fa fa-user"></i> &nbsp; <span
