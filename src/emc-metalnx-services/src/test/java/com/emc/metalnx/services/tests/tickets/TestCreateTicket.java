@@ -17,7 +17,9 @@
 package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -70,21 +72,18 @@ public class TestCreateTicket {
     }
 
     @Test
-    public void testCreateTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicketException {
+    public void testCreateTicket() throws DataGridConnectionRefusedException, DataGridTicketException {
         ticketString = ticketService.create(new DataGridTicket(targetPath));
         assertFalse(ticketString.isEmpty());
     }
 
-    @Test(expected = DataGridNullTicketException.class)
-    public void testCreateNullTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicketException {
+    @Test(expected = DataGridTicketException.class)
+    public void testCreateNullTicket() throws DataGridConnectionRefusedException, DataGridTicketException {
         ticketString = ticketService.create(null);
     }
 
-    @Test(expected = DataGridMissingPathOnTicketException.class)
-    public void testCreateTicketWithMissingPath() throws DataGridMissingPathOnTicketException,
-            DataGridConnectionRefusedException, DataGridNullTicketException, DataGridDuplicatedTicketException {
+    @Test(expected = DataGridTicketException.class)
+    public void testCreateTicketWithMissingPath() throws DataGridConnectionRefusedException, DataGridTicketException {
         ticketString = ticketService.create(new DataGridTicket());
     }
 }

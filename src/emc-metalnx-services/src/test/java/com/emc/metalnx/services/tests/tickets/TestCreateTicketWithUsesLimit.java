@@ -17,7 +17,9 @@
 package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -77,8 +79,8 @@ public class TestCreateTicketWithUsesLimit {
     }
 
     @Test
-    public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, JargonException, DataGridDuplicatedTicketException {
+    public void testCreateTicketWithExpirationDate() throws DataGridConnectionRefusedException, DataGridTicketException,
+            JargonException {
         ticketString = ticketService.create(dgt);
         Ticket ticketWithUses = ticketUtils.findTicket(ticketString);
 

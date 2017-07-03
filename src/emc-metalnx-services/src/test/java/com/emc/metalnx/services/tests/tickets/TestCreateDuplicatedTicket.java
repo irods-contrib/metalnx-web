@@ -17,7 +17,9 @@
 package com.emc.metalnx.services.tests.tickets;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.TicketService;
 import org.irods.jargon.core.exception.JargonException;
@@ -67,9 +69,8 @@ public class TestCreateDuplicatedTicket {
         ticketUtils.deleteTicket(ticketString);
     }
 
-    @Test(expected = DataGridDuplicatedTicketException.class)
-    public void testCreateDuplicatedTicket() throws DataGridMissingPathOnTicketException, DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridDuplicatedTicketException {
+    @Test(expected = DataGridTicketException.class)
+    public void testCreateDuplicatedTicket() throws DataGridConnectionRefusedException, DataGridTicketException {
         DataGridTicket dgt = new DataGridTicket(targetPath);
         dgt.setTicketString(ticketString);
         ticketService.create(dgt);

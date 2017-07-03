@@ -17,7 +17,9 @@
 package com.emc.metalnx.services.interfaces;
 
 import com.emc.metalnx.core.domain.entity.DataGridTicket;
-import com.emc.metalnx.core.domain.exceptions.*;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
 
 import java.util.List;
 
@@ -58,12 +60,9 @@ public interface TicketService {
      * @param dgTicket Ticket to be created.
      * @return String representing the ticket string.
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
-     * @throws DataGridMissingPathOnTicketException thrown when the path is missing on the ticket
-     * @throws DataGridNullTicketException if a null ticket is given as a parameter
-     * @throws DataGridDuplicatedTicketException if another ticket with the same name already exists
+     * @throws DataGridTicketException thrown if an error occurs when setting any ticket parameter
      */
-    String create(DataGridTicket dgTicket) throws DataGridConnectionRefusedException,
-            DataGridMissingPathOnTicketException, DataGridNullTicketException, DataGridDuplicatedTicketException;
+    String create(DataGridTicket dgTicket) throws DataGridConnectionRefusedException, DataGridTicketException;
 
     /**
      * Finds a specific ticket by its id or string.
@@ -81,9 +80,7 @@ public interface TicketService {
      * @return DataGridTicket representing the ticket just modified.
      *  Null is returned if the ticket was not modified.
      * @throws DataGridConnectionRefusedException thrown if Metalnx cannot connect to Metalnx
-     * @throws DataGridNullTicketException thrown if a null ticket is given as a parameter
-     * @throws DataGridMissingTicketStringException thrown if a ticket does not have an ID or String
+     * @throws DataGridTicketException thrown if an error occurs when modifying any ticket parameter
      */
-    DataGridTicket modify(DataGridTicket t) throws  DataGridConnectionRefusedException,
-            DataGridNullTicketException, DataGridMissingTicketStringException, DataGridTicketNotFoundException;
+    DataGridTicket modify(DataGridTicket t) throws DataGridConnectionRefusedException, DataGridTicketException;
 }

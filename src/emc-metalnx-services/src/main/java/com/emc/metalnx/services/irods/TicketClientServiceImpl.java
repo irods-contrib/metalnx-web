@@ -19,6 +19,7 @@ package com.emc.metalnx.services.irods;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.TicketClientService;
 import com.emc.metalnx.services.interfaces.ZipService;
@@ -26,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.*;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
-import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.ticket.TicketClientOperations;
@@ -37,13 +37,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +54,8 @@ import java.util.Map;
 public class TicketClientServiceImpl implements TicketClientService {
     private static final Logger logger = LoggerFactory.getLogger(TicketClientServiceImpl.class);
     private static final String TEMP_TICKET_DIR = "tmp-ticket-files";
+    private static final String RESOURCE = "";
+    private static final String ANONYMOUS_HOME_DIRECTORY = "";
 
     @Autowired
     private ConfigService configService;
@@ -60,13 +63,12 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Autowired
     private ZipService zipService;
 
-    private static final String ANONYMOUS_HOME_DIRECTORY = "";
+    @Autowired
+    private IRODSAccessObjectFactory irodsAccessObjectFactory;
 
-    private TicketServiceFactory ticketServiceFactory;
     private TicketClientOperations ticketClientOperations;
     private IRODSAccount irodsAccount;
-    private IRODSAccessObjectFactory irodsAccessObjectFactory;
-    private String host, zone, defaultStorageResource;
+    private String host, zone;
     private int port;
     private Map<Integer, String> ticketErroCodeMap;
 
@@ -75,8 +77,6 @@ public class TicketClientServiceImpl implements TicketClientService {
         host = configService.getIrodsHost();
         zone = configService.getIrodsZone();
         port = Integer.valueOf(configService.getIrodsPort());
-        defaultStorageResource = "";
-        setUpAnonymousAccess();
         ticketErroCodeMap = new HashMap<>();
         ticketErroCodeMap.put(-891000, "Ticket expired");
         ticketErroCodeMap.put(-892000, "Ticket uses exceeded");
@@ -90,6 +90,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Override
     public void transferFileToIRODSUsingTicket(String ticketString, File localFile, String destPath)
             throws DataGridTicketUploadException, DataGridTicketInvalidUserException {
+
         if (ticketString == null || ticketString.isEmpty()) {
             throw new DataGridTicketUploadException("Ticket String not provided");
         } else if (destPath == null || destPath.isEmpty()) {
@@ -99,6 +100,8 @@ public class TicketClientServiceImpl implements TicketClientService {
         }
 
         try {
+            setUpAccess();
+
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             String targetPath = String.format("%s/%s", destPath, localFile.getName());
             IRODSFile targetFile = irodsFileFactory.instanceIRODSFile(targetPath);
@@ -124,6 +127,7 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
             throw new DataGridTicketUploadException(msg);
         } finally {
+            closeAccess();
             FileUtils.deleteQuietly(localFile);
         }
     }
@@ -131,6 +135,7 @@ public class TicketClientServiceImpl implements TicketClientService {
     @Override
     public File getFileFromIRODSUsingTicket(String ticketString, String path)
             throws DataGridTicketInvalidUserException, DataGridTicketDownloadException {
+
         deleteTempTicketDir();
 
         File tempDir = new File(TEMP_TICKET_DIR);
@@ -141,6 +146,8 @@ public class TicketClientServiceImpl implements TicketClientService {
 
         File file;
         try {
+            setUpAccess();
+
             IRODSFileFactory irodsFileFactory = irodsAccessObjectFactory.getIRODSFileFactory(irodsAccount);
             IRODSFile irodsFile = irodsFileFactory.instanceIRODSFile(path);
             ticketClientOperations.getOperationFromIRODSUsingTicket(ticketString, irodsFile, tempDir, null, null);
@@ -173,6 +180,8 @@ public class TicketClientServiceImpl implements TicketClientService {
             }
 
             throw new DataGridTicketDownloadException(msg, path, ticketString);
+        } finally {
+            closeAccess();
         }
 
         return file;
@@ -190,11 +199,7 @@ public class TicketClientServiceImpl implements TicketClientService {
      * @return File representing the file found within the given directory
      */
     private File findFileInDirectory(File directory, String filename) {
-        File[] files = directory.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return filename.equals(name);
-            }
-        });
+        File[] files = directory.listFiles((dir, name) -> name.equals(filename));
 
         if (files == null || files.length == 0) return null;
 
@@ -205,16 +210,33 @@ public class TicketClientServiceImpl implements TicketClientService {
      * Sets up all necessary stuff for an anonymous user to be able to interact with the grid. This interaction means
      * iput & iget.
      */
-    private void setUpAnonymousAccess() {
+    private void setUpAccess() {
         try {
-            IRODSFileSystem irodsFileSystem = IRODSFileSystem.instance();
-            irodsAccessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
-            irodsAccount = IRODSAccount.instanceForAnonymous(host, port, ANONYMOUS_HOME_DIRECTORY, zone,
-                    defaultStorageResource);
-            ticketServiceFactory = new TicketServiceFactoryImpl(irodsAccessObjectFactory);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(authentication == null || !(authentication.getDetails() instanceof UserTokenDetails)) {
+                logger.warn("Accessing files and collections with tickets using anonymous account");
+                irodsAccount = IRODSAccount.instanceForAnonymous(host, port, ANONYMOUS_HOME_DIRECTORY, zone, RESOURCE);
+            } else {
+                logger.warn("Accessing files and collections with tickets as authenticated user");
+                irodsAccount = ((UserTokenDetails) authentication.getDetails()).getIrodsAccount();
+            }
+
+            TicketServiceFactory ticketServiceFactory = new TicketServiceFactoryImpl(irodsAccessObjectFactory);
             ticketClientOperations = ticketServiceFactory.instanceTicketClientOperations(irodsAccount);
         } catch (JargonException e) {
             logger.error("Could not set up anonymous access");
         }
+    }
+
+    /**
+     * Close connection of whoever has access to iRODS using this service.
+     */
+    private void closeAccess() {
+        if (irodsAccessObjectFactory == null) {
+            return;
+        }
+
+        logger.info("Destroying ticket client access");
+        irodsAccessObjectFactory.closeSessionAndEatExceptions();
     }
 }

@@ -60,6 +60,15 @@
             </div>
 
         </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" id="ticketLoggedAccessBtn" class="btn btn-primary btn-sm pull-right"
+                        th:text="#{ticket.use.label}" style="margin-bottom: 10px;">
+                </button>
+            </div>
+        </div>
+
         <!-- Ticket deletion succeed -->
         <div class="row">
             <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
@@ -175,11 +184,17 @@
             </div>
         </div>
 
-        <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
-        <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
         <script th:inline="javascript">
 		/*<![CDATA[*/
         $(document).ready(function(e){
+            // Add popover on page title
+            $('#tickets-page-title').popover({
+                title:[[#{ticket.page.title}]],
+                content:[[#{tickets.title.popover}]],
+                trigger: 'hover click',
+                placement: 'left',
+            });
+
 			var datatable = $('#ticketsTable').DataTable( {
 			    "serverSide": false,
 			    "dom": dtPatternMlxStandard,
@@ -212,7 +227,14 @@
 			    "columnDefs": [
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return '<input type="checkbox" name="ticketCheckboxes" value="'+full.ticketString+'" id="'+full.ticketString+'"/>';
+                    	    var isOwner = full.owner == [[${userDetails.getUsername()}]];
+
+                    	    var html =  '<input type="checkbox" name="ticketCheckboxes" ';
+                            html += 'value="' + full.ticketString + '" id="' + full.ticketString + '" ';
+                    	    if (!isOwner) html += 'disabled="true"';
+                            html += '/>';
+
+    						return html;
     					},
     					"className": "dt-center",
     					"width": "25px",
@@ -239,9 +261,22 @@
 	               	},
 	               	{
                         "render": function (data, type, full, meta){
-                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
-                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs" style="margin-right:5px;"><i class="fa fa-pencil"></i>Edit</a>';
-                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                            var isOwner = full.owner == [[${userDetails.getUsername()}]];
+
+                            var disabledProp = '';
+
+                            if (!isOwner) disabledProp = 'disabled="true"';
+
+                            var modifyBtn = '<a href="#" onclick="modifyTicket(\'' + full.ticketString + '\');" ' +
+                                'class="btn btn-default btn-xs" style="margin-right:5px;" ' +  disabledProp +
+                                '><i class="fa fa-pencil"></i>Edit</a>';
+
+                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" ' +
+                                'class="btn btn-default btn-xs" ' +  disabledProp +
+                                '><i class="fa fa-trash-o"></i>Delete</a>';
+
+                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
+
                             return shareBtn + modifyBtn + deleteBtn;
                         },
                         "width": "15%",
@@ -253,15 +288,56 @@
 			} );
 
 			addDeleteTickets();
+
+			$("#ticketLoggedAccessBtn").popover({
+                placement: "left",
+                html: true,
+                trigger: "manual",
+                title: [[#{ticket.access.label}]],
+                content: function () {
+                    $(".popover:visible").each(function() {
+                        $(this).popover("hide");
+                    });
+                    var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
+                        html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
+                        html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
+                        html += "<br />";
+                        html += "<input id='ticketLoggedAccessPath' type='text' class='form-control' name='ticketpath' ";
+                        html += "placeholder='" + [[#{ticket.form.ticket.path.label}]] + "'/>";
+                        html += "<br />";
+                        html += "<button id='ticketLoggedAccessPopoverBtn' class='btn btn-primary btn-sm' type='submit'>";
+                        html += "<i class='fa fa-clone'></i>" + [[#{ticket.access.label}]];
+                        html += "</button>";
+                        html += "</form>";
+                    return html;
+                },
+            }).click(function(e){
+                $(this).popover("show");
+                $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                $('.close').click(function(e){
+                    $('.popover.in').popover("hide");
+                });
+            });
 		});
 
         var ticketsURL = '/emc-metalnx-web/tickets/';
+        var ticketClientURL = '/emc-metalnx-web/ticketClient/';
         var jsonContentType = "application/json; charset=utf-8";
 
+        $("body").on("click", "#ticketLoggedAccessPopoverBtn", function(e){
+            e.preventDefault();
+            var ticketString = $("#ticketLoggedAccessString").val();
+            var ticketPath = $("#ticketLoggedAccessPath").val();
+
+            if (ticketString == '' || ticketPath == '') return false;
+
+            $("#ticketLoggedAccessForm").submit();
+        });
+
 		$("#selectAllTicketsCheckboxes").change(function() {
-            var isChecked = $(this).is(":checked");
-            $('input[name="ticketCheckboxes"]').prop("checked", isChecked);
-            $('#showDeleteTicketsModalBtn').prop('disabled', !isChecked);
+            var isSelectAllChecked = $(this).is(":checked");
+            $('input[name="ticketCheckboxes"]:enabled').prop("checked", isSelectAllChecked);
+            $('#showDeleteTicketsModalBtn').prop('disabled', !isSelectAllChecked);
 		});
 
 		$("body").on("change", "input[type='checkbox'][name='ticketCheckboxes']", function() {
@@ -282,10 +358,7 @@
 		        tickets.push($(this).val());
 		    });
 
-		    ajaxEncapsulation(ticketsURL,
-		                        "DELETE",
-		                        JSON.stringify(tickets),
-		                        deleteTicketsSuccessHandler,
+		    ajaxEncapsulation(ticketsURL, "DELETE", JSON.stringify(tickets), deleteTicketsSuccessHandler,
 		                        null, "json", jsonContentType);
 		}
 
@@ -304,7 +377,11 @@
                         placement: "bottom",
                         title: "Share Ticket",
                         html: true,
+                        trigger: "manual",
                         content: function () {
+                            $(".popover:visible").each(function() {
+                               $(this).popover("hide");
+                            });
                             var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
                             email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
                             email += ticket.ticketString;
@@ -319,7 +396,9 @@
                                 html += "</p>";
                                 html += "<p>";
                                 html += "<b>Ticket Path</b><br />";
+                                html += "<span style=\"word-wrap:break-word\">";
                                 html += ticket.path;
+                                html += "</span>";
                                 html += "</p>";
                                 html += "<a href='" + email + "' type='button' class='btn btn-primary btn-sm' id='emailBtn'>";
                                 html += "<i class='fa fa-envelope-o'></i>Email";
@@ -329,26 +408,17 @@
                                 html += "</button>";
                             return html;
                         },
-                    }).popover("show");
+                    }).each(function(e){
+                        $(this).popover("show");
+                        $('.popover-title').append('<button type="button" class="close">&times;</button>');
+                        $('.close').click(function(e){
+                            $('.popover.in').popover("hide");
+                        });
+                    });
                 },
                 null, null, jsonContentType
             );
 		}
-
-		$(document).on('click', function(e) {
-            hideAllPopovers();
-        });
-
-		function hideAllPopovers() {
-            $(".popover").each(function() {
-                $(this).popover("hide");
-            });
-        }
-
-        $('.popover').off('click').on('click', function(e) {
-            e.stopPropagation();
-            $(this).popover("hide");
-        });
 
 		function modifyTicket(ticketString) {
 		    var url = [[${urlMap.URL_TICKETS_FORM}]];
@@ -361,7 +431,7 @@
 		}
 
 		$("#modifyTicketFormBtn").click(function(e) {
-		    event.preventDefault();
+		    e.preventDefault();
 
             if(allFieldsValidated()){
 			    $("#ticketModifyForm").modal("hide");
@@ -418,6 +488,7 @@
 
 		/*]]>*/
 		</script>
+        <script type="text/javascript" th:src="@{/js/copyToClipboard.js}"></script>
         <script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
     </div> <!-- /. Page Content -->
 
