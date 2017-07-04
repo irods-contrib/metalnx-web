@@ -186,14 +186,14 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public void execDeploymentRule(DataGridResource dgResc, String ruleName, String ruleVaultPath)
+    public void execDeploymentRule(String host, String ruleName, String ruleVaultPath)
             throws DataGridRuleException, DataGridConnectionRefusedException {
         logger.info("Deploy Rule called");
 
         if (ruleName == null || ruleName.isEmpty() || ruleVaultPath == null || ruleVaultPath.isEmpty() ||
                 !is.isAtLeastIrods420()) return;
 
-        DataGridRule rule = new DataGridRule(DataGridRule.DEPLOYMENT_RULE, dgResc.getHost(), false);
+        DataGridRule rule = new DataGridRule(DataGridRule.DEPLOYMENT_RULE, host, false);
 
         rule.setInputRuleParams(ruleName, ruleVaultPath);
         executeRule(rule.toString());

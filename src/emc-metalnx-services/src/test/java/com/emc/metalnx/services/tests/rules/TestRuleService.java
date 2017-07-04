@@ -279,7 +279,7 @@ public class TestRuleService {
         DataGridResource dgDestResc = resourceService.find(RESOURCE);
         String ruleName = "test_deployment_rule.re";
         String ruleVaultPath = String.format("/var/lib/irods/Vault/.rulecache/%s", ruleName);
-        ruleService.execDeploymentRule(dgDestResc, ruleName, ruleVaultPath);
+        ruleService.execDeploymentRule(configService.getIrodsHost(), ruleName, ruleVaultPath);
         verify(ruleService, times(1)).executeRule(anyString());
     }
 
@@ -290,7 +290,7 @@ public class TestRuleService {
         DataGridResource dgDestResc = resourceService.find(RESOURCE);
         String ruleName = "test_deployment_rule.re";
         String ruleVaultPath = String.format("/var/lib/irods/Vault/.rulecache/%s", ruleName);
-        ruleService.execDeploymentRule(dgDestResc, ruleName, ruleVaultPath);
+        ruleService.execDeploymentRule(configService.getIrodsHost(), ruleName, ruleVaultPath);
         verify(ruleService, never()).executeRule(anyString());
     }
 
@@ -302,7 +302,7 @@ public class TestRuleService {
         DataGridResource dgDestResc = resourceService.find(RESOURCE);
         String ruleName = "test_deployment_rule.re";
         String ruleVaultPath = String.format("/var/lib/irods/Vault/.rulecache/%s", ruleName);
-        ruleService.execDeploymentRule(dgDestResc, ruleName, ruleVaultPath);
+        ruleService.execDeploymentRule(configService.getIrodsHost(), ruleName, ruleVaultPath);
         verify(ruleService, times(1)).executeRule(anyString());
     }
 }
