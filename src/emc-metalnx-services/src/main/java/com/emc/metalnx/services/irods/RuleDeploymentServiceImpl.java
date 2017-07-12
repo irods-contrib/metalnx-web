@@ -18,6 +18,7 @@ package com.emc.metalnx.services.irods;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.*;
+import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.domain.Resource;
@@ -67,8 +68,8 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
         logger.info("Deploying rule");
 
         if (file == null) {
-            logger.error("File could not be sent to the data grid.");
-            return;
+            logger.error("File could not be sent to the data grid. Rule file is null.");
+            throw new DataGridException("Rule file is null.");
         }
 
         InputStream inputStream;
@@ -86,7 +87,7 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 
         try {
             String ruleCacheDirPath = String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
-            String ruleName = file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename();
+            String ruleName = FilenameUtils.removeExtension(file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename());
             targetFile = irodsFileFactory.instanceIRODSFile(ruleCacheDirPath, ruleName);
 
             stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
