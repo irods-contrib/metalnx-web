@@ -23,10 +23,6 @@
         layout:decorator="template">
 
 <head>
-    <link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
-    <script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
-    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet" th:href="@{/css/bootstrapValidator.min.css}"/>
-    <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
     <title th:text="#{tab.title.rules}"></title>
 </head>
 
@@ -152,38 +148,48 @@
             </div>
         </div>
     </div>
-    <script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
     $(document).ready(function(){
-         var datatable = $('#rulesTable').DataTable( {
-			    "serverSide": false,
-			    "dom": dtPatternMlxStandard,
-			    "language": i18n,
-			    "destroy": false,
-			    "autoWidth": false,
-    		    "processing": true,
-    		    "stateSaveParams": function (settings, data) {
-    		    	data.search.search = "";
-    		    },
-			    "columnDefs": [
-                    {
-    					"targets": 0,
-                    },
+        // Add popover on page title
+        $('#rules-page-title').popover({
+            title:[[#{rules.page.title}]],
+            content:[[#{rules.title.popover}]],
+            trigger: 'hover click',
+            placement: 'left',
+        });
+    });
 
-	               	{
-                        "render": function (data, type, full, meta){
-                            var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
-                            return deleteBtn;
-                        },
-                        "width": "80px",
-                        "orderable": false,
-                        "targets": 1,
-                         className: "actionsColumn"
-                    }
-	            ]
-		});
+     var datatable = $('#rulesTable').DataTable( {
+            "serverSide": false,
+            "dom": dtPatternMlxStandard,
+            "language": i18n,
+            "destroy": false,
+            "autoWidth": false,
+            "processing": true,
+            "stateSaveParams": function (settings, data) {
+                data.search.search = "";
+            },
+            "columnDefs": [
+                {
+                    "targets": 0,
+                },
+
+                {
+                    "render": function (data, type, full, meta){
+                        var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                        return deleteBtn;
+                    },
+                    "width": "80px",
+                    "orderable": false,
+                    "targets": 1,
+                     className: "actionsColumn"
+                }
+            ]
     });
 
 
+    /*]]>*/
     </script>
 </div> <!-- /. Page Content -->
 
