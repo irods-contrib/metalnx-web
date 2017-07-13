@@ -85,6 +85,9 @@ public class CollectionController {
     @Autowired
     LoggedUserUtils loggedUserUtils;
 
+    @Autowired
+    RuleDeploymentService ruleDeploymentService;
+
     // parent path of the current directory in the tree view
     private String parentPath;
 
@@ -817,7 +820,7 @@ public class CollectionController {
     @RequestMapping(value = "getPaginatedJSONObjs/")
     @ResponseBody
     public String getPaginatedJSONObjs(HttpServletRequest request) throws DataGridConnectionRefusedException {
-        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
+        List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects;
 
         int draw = Integer.parseInt(request.getParameter("draw"));
         int start = Integer.parseInt(request.getParameter("start"));
@@ -825,6 +828,7 @@ public class CollectionController {
         String searchString = request.getParameter("search[value]");
         int orderColumn = Integer.parseInt(request.getParameter("order[0][column]"));
         String orderDir = request.getParameter("order[0][dir]");
+        boolean deployRule = request.getParameter("rulesdeployment") != null;
 
         // Pagination context to get the sequence number for the listed items
         DataGridPageContext pageContext = new DataGridPageContext();
@@ -839,9 +843,15 @@ public class CollectionController {
 
 
         try {
+            String path = currentPath;
+            if(deployRule) {
+                path = ruleDeploymentService.getRuleCachePath();
+            }
+
             Double startPage = Math.floor(start / length) + 1;
-            dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(currentPath,
-                    searchString, startPage.intValue(), length, orderColumn, orderDir, pageContext);
+            dataGridCollectionAndDataObjects =
+                    cs.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(path, searchString,
+                            startPage.intValue(), length, orderColumn, orderDir, pageContext);
             totalObjsForCurrentSearch = pageContext.getTotalNumberOfItems();
             totalObjsForCurrentPath = pageContext.getTotalNumberOfItems();
 
