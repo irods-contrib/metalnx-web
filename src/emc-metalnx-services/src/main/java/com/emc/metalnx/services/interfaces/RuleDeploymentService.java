@@ -26,4 +26,10 @@ public interface RuleDeploymentService {
      * @param file rule file to deploy
      */
     void deployRule(MultipartFile file) throws DataGridException;
+
+    /**
+     * Finds the rule cache directory in the grid
+     * @return String representing the rule cache directory in the grid
+     */
+    String getRuleCachePath();
 }

@@ -86,7 +86,7 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
         IRODSFile targetFile = null;
 
         try {
-            String ruleCacheDirPath = String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
+            String ruleCacheDirPath = getRuleCachePath();
             String ruleName = file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename();
             targetFile = irodsFileFactory.instanceIRODSFile(ruleCacheDirPath, ruleName);
 
@@ -112,5 +112,10 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
                 logger.error("Could close stream: ", e.getMessage());
             }
         }
+    }
+
+    @Override
+    public String getRuleCachePath() {
+        return String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
     }
 }
