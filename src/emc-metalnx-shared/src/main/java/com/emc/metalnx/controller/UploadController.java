@@ -20,6 +20,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import com.emc.metalnx.services.interfaces.UploadService;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -54,6 +55,9 @@ public class UploadController {
 
     @Autowired
     private UploadService us;
+
+    @Autowired
+    private RuleDeploymentService ruleDeploymentService;
 
     /**
      * Sets the HTTP response text and status for an upload request.
@@ -102,6 +106,7 @@ public class UploadController {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartRequest.getFile("file");
 
+        boolean isRuleDeployment = Boolean.parseBoolean(multipartRequest.getParameter("ruleDeployment"));
         boolean checksum = Boolean.parseBoolean(multipartRequest.getParameter("checksum"));
         boolean replica = Boolean.parseBoolean(multipartRequest.getParameter("replica"));
         boolean overwrite = Boolean.parseBoolean(multipartRequest.getParameter("overwriteDuplicateFiles"));
@@ -110,7 +115,11 @@ public class UploadController {
         String destPath = multipartRequest.getParameter("uploadDestinationPath");
 
         try {
-            us.upload(multipartFile, destPath, checksum, replica, resources, resourcesToUpload, overwrite);
+            if(isRuleDeployment) {
+                ruleDeploymentService.deployRule(multipartFile);
+            } else {
+                us.upload(multipartFile, destPath, checksum, replica, resources, resourcesToUpload, overwrite);
+            }
         } catch (DataGridReplicateException e) {
             uploadMessage += e.getMessage();
             errorType = WARNING;

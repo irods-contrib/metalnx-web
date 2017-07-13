@@ -28,6 +28,13 @@
         <h1 class="page-header pull-left" th:text="#{rules.menu.title}"></h1>
 
         <div class="row" th:unless="${unexpectedError}">
+            <div class="col-xs-12">
+                <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+                   data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
+                    <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                </a>
+            </div>
+
             <div class="col-xs-12" th:if="${permissionType != 'none' or user.isAdmin()}">
                 <div class="row browse-collection-files-content">
                     <div id="table-loader" class="table-loader col-sm-12 hideElement">
@@ -53,168 +60,246 @@
             </div>
         </div>
 
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-            var url;
-            var datatable;
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{upload.label}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="hideElement" id="uploadMinMessage">
+                            <div class="alert alert-warning alert-dismissible text-center"
+                                 role="alert">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                                </button>
+                                <span>Select at least one file</span>
+                            </div>
+                        </div>
+                        <!-- Form submitted as soon as the user selects all files to be uploaded -->
+                        <form action="/emc-metalnx-web/upload/" method="POST"
+                              role="form" enctype="multipart/form-data" id="uploadForm">
+                            <input type="hidden" id="ruleDeployment" />
 
-            $(document).ready(function(e){
-                datatable = $('#treeViewTable').DataTable( {
-                    "serverSide": true,
-                    "dom": dtPatternMlxCollections,
-                    "language": i18n,
-                    "destroy": true,
-                    "stateSave": true,
-                    "autoWidth": false,
-                    "processing": true,
-                    "stateSaveParams": function (settings, data) {
-                        data.search.search = "";
-                    },
-                    "ajax": {
-                        url: '/emc-metalnx-web/collections/getPaginatedJSONObjs/',
-                        data: {'rulesdeployment': true}
-                    },
-                    "initComplete": function(settings){
-                        $('#treeViewTable tbody td').each(function () {
-                           $(this).attr('title', $(this).text().trim());
-                        });
+                            <p class="text-right">
+                                <span id="numberFilesUpload">No</span><span>&nbsp;file(s) selected</span>
+                            </p>
+                            <div class="well">
+                                <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+                                    <span th:text="#{select.files.upload}"></span>
+                                </button>
+                                <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" />
+                                <div id="filesList"> </div>
+                            </div>
 
-                        if(datatable.data().length == 0) {
-                            $("#actions button").prop("disabled", true);
-                            $("#actionsWait").hide();
-                            $('input[name=selectAllCheckboxes]').prop("disabled", true);
-                        }
-                        else {
-                            $('input[name=selectAllCheckboxes]').prop("disabled", false);
-                            if (datatable.data().length == 1){
-                                $("#treeViewTable_processing").removeClass("loading-md");
-                                $("#treeViewTable_processing").removeClass("loading-sm");
-                                $("#treeViewTable_processing").addClass("loading-xs");
-                            }
-                            else if (datatable.data().length == 2){
-                                $("#treeViewTable_processing").removeClass("loading-xs");
-                                $("#treeViewTable_processing").removeClass("loading-md");
-                                $("#treeViewTable_processing").addClass("loading-sm");
+                            <div id="uploadControlOptions">
+                                <input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <input type="checkbox" id="inputOverwriteDuplicateFiles"
+                                               name="inputOverwriteDuplicateFiles"
+                                               th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;
+                                        <span>Overwrite duplicate files</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                th:text="#{forms.cancel.action.button}"></button>
+                        <a type="button" class="btn btn-primary" id="uploadButton" target="_blank" href="?uploadNewTab=true">
+                            <i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+                var url;
+                var datatable;
+
+                $(document).ready(function(e){
+                    datatable = $('#treeViewTable').DataTable( {
+                        "serverSide": true,
+                        "dom": dtPatternMlxCollections,
+                        "language": i18n,
+                        "destroy": true,
+                        "stateSave": true,
+                        "autoWidth": false,
+                        "processing": true,
+                        "stateSaveParams": function (settings, data) {
+                            data.search.search = "";
+                        },
+                        "ajax": {
+                            url: '/emc-metalnx-web/collections/getPaginatedJSONObjs/',
+                            data: {'rulesdeployment': true}
+                        },
+                        "initComplete": function(settings){
+                            $('#treeViewTable tbody td').each(function () {
+                               $(this).attr('title', $(this).text().trim());
+                            });
+
+                            if(datatable.data().length == 0) {
+                                $("#actions button").prop("disabled", true);
+                                $("#actionsWait").hide();
+                                $('input[name=selectAllCheckboxes]').prop("disabled", true);
                             }
                             else {
-                                $("#treeViewTable_processing").removeClass("loading-xs");
-                                $("#treeViewTable_processing").removeClass("loading-sm");
-                                $("#treeViewTable_processing").addClass("loading-md");
+                                $('input[name=selectAllCheckboxes]').prop("disabled", false);
+                                if (datatable.data().length == 1){
+                                    $("#treeViewTable_processing").removeClass("loading-md");
+                                    $("#treeViewTable_processing").removeClass("loading-sm");
+                                    $("#treeViewTable_processing").addClass("loading-xs");
+                                }
+                                else if (datatable.data().length == 2){
+                                    $("#treeViewTable_processing").removeClass("loading-xs");
+                                    $("#treeViewTable_processing").removeClass("loading-md");
+                                    $("#treeViewTable_processing").addClass("loading-sm");
+                                }
+                                else {
+                                    $("#treeViewTable_processing").removeClass("loading-xs");
+                                    $("#treeViewTable_processing").removeClass("loading-sm");
+                                    $("#treeViewTable_processing").addClass("loading-md");
+                                }
                             }
-                        }
-                    },
-                    "drawCallback": function(){
-                        $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
-                        $('.dataTables_paginate.paging_simple_numbers')
-                        .css( 'display', this.api().data().length <= 0 ?
-                             'none' :
-                             'block'
-                        )
-                        $('input[name=selectAllCheckboxes]').prop("checked", false);
-                    },
-                    "columnDefs": [
-                        {
-                            "render": function ( data, type, full, meta ) {
-                                return '<input type="checkbox" onclick="treeViewTableItemOnClick();" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
+                        },
+                        "drawCallback": function(){
+                            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+                            $('.dataTables_paginate.paging_simple_numbers')
+                            .css( 'display', this.api().data().length <= 0 ?
+                                 'none' :
+                                 'block'
+                            )
+                            $('input[name=selectAllCheckboxes]').prop("checked", false);
+                        },
+                        "columnDefs": [
+                            {
+                                "render": function ( data, type, full, meta ) {
+                                    return '<input type="checkbox" onclick="treeViewTableItemOnClick();" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
+                                },
+                                "className": "dt-center",
+                                "width": "25px",
+                                "targets": 0,
+                                "orderable": false
                             },
-                            "className": "dt-center",
-                            "width": "25px",
-                            "targets": 0,
-                            "orderable": false
-                        },
-                        {
-                            "render": function ( data, type, full, meta ) {
-                                return '<a href="#" name="' + full.path +
-                                    '" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
-                                    '"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
+                            {
+                                "render": function ( data, type, full, meta ) {
+                                    return '<a href="#" name="' + full.path +
+                                        '" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
+                                        '"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
+                                },
+                                "width": "50%",
+                                "targets": 1
                             },
-                            "width": "50%",
-                            "targets": 1
-                        },
-                        {
-                            "data": "owner",
-                            "width": "10%",
-                            "targets": 2
-                        },
-                        {
-                            "render": function ( data, type, full, meta ){
-                                return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+                            {
+                                "data": "owner",
+                                "width": "10%",
+                                "targets": 2
                             },
-                            "width": "10%",
-                            "targets": 3,
-                            "orderable": false
-                        },
-                        {
-                            "data": "modifiedAtFormatted",
-                            "width": "15%",
-                            "targets": 4
-                        },
-                        {
-                            "render": function ( data, type, full, meta ){
-                                return full.collection? "-" : full.displaySize
+                            {
+                                "render": function ( data, type, full, meta ){
+                                    return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+                                },
+                                "width": "10%",
+                                "targets": 3,
+                                "orderable": false
                             },
-                            "width": "13%",
-                            "targets": 5
-                        }
-                    ]
-                } );
-                addCollectionActions('treeViewTable', datatable);
-                $("input[type=checkbox]").prop("disabled", false);
-            });
-
-            $('#treeViewTable').on('page.dt', function (){
-                $("#actions button").prop("disabled", true);
-                $("#actionsWait").hide();
-            });
-
-            $('#treeViewTable').on( 'length.dt', function ( e, settings, len ) {
-                $("#actions button").prop("disabled", true);
-                $("#actionsWait").hide();
-            });
-
-            function selectAllCheckboxes() {
-                $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
-                    $(this).prop("checked", true);
-                    $(this).parent().parent().addClass("info");
+                            {
+                                "data": "modifiedAtFormatted",
+                                "width": "15%",
+                                "targets": 4
+                            },
+                            {
+                                "render": function ( data, type, full, meta ){
+                                    return full.collection? "-" : full.displaySize
+                                },
+                                "width": "13%",
+                                "targets": 5
+                            }
+                        ]
+                    } );
+                    addCollectionActions('treeViewTable', datatable);
+                    $("input[type=checkbox]").prop("disabled", false);
                 });
-            }
 
-            $("input[type='checkbox'][name='selectAllCheckboxes']").on("change", function(){
-                if($(this).is(":checked")){
-                    $("#actions button").prop("disabled", true);
-                    $("#actionsWait").show();
-                    $('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
-
-                    selectAllCheckboxes();
-                    var paths = findPathsSelected();
-
-                    $("#actions #modifyBtn").hide();
-                    $("#actions #createTicketBtn").hide();
-                }
-                else {
-                    $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
-                        $(this).prop("checked", false);
-                        $(this).parent().parent().removeClass("info");
-                    });
-
+                $('#treeViewTable').on('page.dt', function (){
                     $("#actions button").prop("disabled", true);
                     $("#actionsWait").hide();
+                });
+
+                $('#treeViewTable').on( 'length.dt', function ( e, settings, len ) {
+                    $("#actions button").prop("disabled", true);
+                    $("#actionsWait").hide();
+                });
+
+                function selectAllCheckboxes() {
+                    $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
+                        $(this).prop("checked", true);
+                        $(this).parent().parent().addClass("info");
+                    });
                 }
-            });
 
-            function treeViewTableItemOnClick() {
-                var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
-                var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
+                $("input[type='checkbox'][name='selectAllCheckboxes']").on("change", function(){
+                    if($(this).is(":checked")){
+                        $("#actions button").prop("disabled", true);
+                        $("#actionsWait").show();
+                        $('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
 
-                $("input[name=selectAllCheckboxes]").prop("checked", totalCheckboxesChecked == totalItemsDisplayed);
+                        selectAllCheckboxes();
+                        var paths = findPathsSelected();
 
-                var anyCollections = $('#treeViewTable tbody input[collection="true"]:checked').length != 0;
+                        $("#actions #modifyBtn").hide();
+                        $("#actions #createTicketBtn").hide();
+                    }
+                    else {
+                        $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
+                            $(this).prop("checked", false);
+                            $(this).parent().parent().removeClass("info");
+                        });
 
-                if(!anyCollections) $('#replicateBtn').show();
-            }
+                        $("#actions button").prop("disabled", true);
+                        $("#actionsWait").hide();
+                    }
+                });
 
-        /*]]>*/
-    </script>
+                function treeViewTableItemOnClick() {
+                    var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
+                    var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
+
+                    $("input[name=selectAllCheckboxes]").prop("checked", totalCheckboxesChecked == totalItemsDisplayed);
+
+                    var anyCollections = $('#treeViewTable tbody input[collection="true"]:checked').length != 0;
+
+                    if(!anyCollections) $('#replicateBtn').show();
+                }
+
+                $('#uploadModal').on('show.bs.modal', function(){
+					$('#uploadForm').each(function(){
+						this.reset();
+					});
+					$('#filesList').html('');
+					$('#numberFilesUpload').html('No');
+					$('#uploadControlOptions').hide();
+					$('#browseButton').show();
+
+					// Hiding the resource selection box on the upload modal
+					$("#selectResource").prop("disabled", true);
+				});
+
+				$("#browseButton").click(function(){
+                    $("input[name='files']").click();
+                });
+
+            /*]]>*/
+        </script>
     </div>
 </body>
 
