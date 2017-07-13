@@ -87,7 +87,7 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 
         try {
             String ruleCacheDirPath = String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
-            String ruleName = FilenameUtils.removeExtension(file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename());
+            String ruleName = file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename();
             targetFile = irodsFileFactory.instanceIRODSFile(ruleCacheDirPath, ruleName);
 
             stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
@@ -99,7 +99,8 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 
             String ruleVaultPath = String.format("%s/%s/%s", vaultPath, RULE_CACHE_DIR_NAME, ruleName);
 
-            ruleService.execDeploymentRule(host, ruleName, ruleVaultPath);
+            String ruleNameWithoutExtension = FilenameUtils.removeExtension(ruleName);
+            ruleService.execDeploymentRule(host, ruleNameWithoutExtension, ruleVaultPath);
         } catch (JargonException e) {
             if (targetFile != null) fos.deleteDataObject(targetFile.getPath(), true);
             logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
