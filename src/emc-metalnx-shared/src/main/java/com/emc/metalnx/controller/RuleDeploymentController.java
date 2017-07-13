@@ -23,16 +23,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@RequestMapping(value = "/rule")
+@RequestMapping(value = "/rules")
 public class RuleDeploymentController {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentController.class);
@@ -40,12 +40,25 @@ public class RuleDeploymentController {
     @Autowired
     private RuleDeploymentService ruleDeploymentService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(MultipartHttpServletRequest multipartRequest)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index() {
+        logger.info("Rules page");
+        return "rules/rulesManagement";
+    }
+
+    @RequestMapping(value = "/findall", method = RequestMethod.GET)
+    public String findAll() {
+        logger.info("Find all rules");
+        return "rules/rulesList";
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.GET)
+    public ResponseEntity<?> upload()
             throws DataGridException {
         logger.info("Uploading rule ...");
 
-        MultipartFile multipartFile = multipartRequest.getFile("file");
+        //MultipartFile multipartFile = multipartRequest.getFile("file");
+        MultipartFile multipartFile =  new MockMultipartFile("TEST_RULE_NAME.re", "Hello World".getBytes());
 
         ruleDeploymentService.deployRule(multipartFile);
         return null;
