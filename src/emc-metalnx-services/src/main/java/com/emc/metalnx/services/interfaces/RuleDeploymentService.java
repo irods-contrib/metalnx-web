@@ -32,4 +32,16 @@ public interface RuleDeploymentService {
      * @return String representing the rule cache directory in the grid
      */
     String getRuleCachePath();
+
+    /**
+     * Creates the rule cache directory in the grid (/<zone>/.rulecache)
+     * @throws DataGridException if the creation of the cache directory fails
+     */
+    void createRuleCache() throws DataGridException;
+
+    /**
+     * Checks whether or not the rule cache directory already exists in the grid.
+     * @return True, if /<zone>/.rulecache path exists. False, otherwise.
+     */
+    boolean ruleCacheExists();
 }

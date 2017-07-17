@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.irods;
 
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.*;
 import org.apache.commons.io.FilenameUtils;
@@ -60,6 +61,9 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
     @Autowired
     private RuleService ruleService;
 
+    @Autowired
+    private CollectionService collectionService;
+
     @Override
     public void deployRule(MultipartFile file) throws DataGridException {
         logger.info("Deploying rule");
@@ -67,6 +71,11 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
         if (file == null) {
             logger.error("File could not be sent to the data grid. Rule file is null.");
             throw new DataGridException("Rule file is null.");
+        }
+
+        if (!ruleCacheExists()) {
+            logger.info("Rule cache does not exist. Creating one.");
+            createRuleCache();
         }
 
         InputStream inputStream;
@@ -114,5 +123,18 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
     @Override
     public String getRuleCachePath() {
         return String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
+    }
+
+    @Override
+    public void createRuleCache() throws DataGridException {
+        String parentPath = String.format("/%s", configService.getIrodsZone());
+        DataGridCollectionAndDataObject ruleCacheDir =
+                new DataGridCollectionAndDataObject(getRuleCachePath(), parentPath, true);
+        collectionService.createCollection(ruleCacheDir);
+    }
+
+    @Override
+    public boolean ruleCacheExists() {
+        return collectionService.isPathValid(getRuleCachePath());
     }
 }
