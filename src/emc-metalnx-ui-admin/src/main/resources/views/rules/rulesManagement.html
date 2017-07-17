@@ -28,7 +28,7 @@
         <h1 class="page-header pull-left" th:text="#{rules.menu.title}"></h1>
 
         <div class="row" th:unless="${unexpectedError}">
-            <div class="col-xs-12">
+            <div class="col-xs-12" style="margin: 5px 0 10px 0;">
                 <a role="button" href="#" class="btn btn-default" data-toggle="modal"
                    data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
                     <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
@@ -91,7 +91,7 @@
                                 <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
                                     <span th:text="#{select.files.upload}"></span>
                                 </button>
-                                <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" />
+                                <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" accept=".re, .r" />
                                 <div id="filesList"> </div>
                             </div>
 
