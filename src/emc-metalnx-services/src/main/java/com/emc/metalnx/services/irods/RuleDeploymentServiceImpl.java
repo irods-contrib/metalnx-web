@@ -55,9 +55,6 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
     private FileOperationService fos;
 
     @Autowired
-    private ResourceService resourceService;
-
-    @Autowired
     private ConfigService configService;
 
     @Autowired
