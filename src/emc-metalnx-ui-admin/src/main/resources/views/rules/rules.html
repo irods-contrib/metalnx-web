@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.thymeleaf.org"
+        lang="en"
+        layout:decorator="template">
+
+<head>
+    <title th:text="#{tab.title.rules}"></title>
+</head>
+
+<body>
+<!-- Page Content -->
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="page-header pull-left">
+                <span th:text="#{rules.page.title}"></span>
+            </h1>
+            <a id="rules-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+        </div>
+    </div>
+
+    <!-- Ticket deletion succeed -->
+    <div class="row">
+        <div class="col-sm-12 hideElement" id="ticketDeletedSuccessfully">
+            <div class="alert alert-success text-center" role="alert">
+                <span th:text="#{ticket.delete.feedback.success}"></span>
+            </div>
+        </div>
+        <div class="col-sm-12 hideElement" id="ticketNotDeletedSuccessfully">
+            <div class="alert alert-danger alert-dismissible text-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{ticket.delete.feedback.error}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules table -->
+    <div class="row">
+        <div class="col-sm-12 table-responsive" >
+            <table class="table table-hover" id="rulesTable">
+                <thead>
+                    <tr>
+                        <th th:text="#{rules.table.string.label}"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>rule01.re</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Rule Upload Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" th:text="#{rules.upload.label}"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="hideElement" id="uploadMinMessage">
+                        <div class="alert alert-warning alert-dismissible text-center"
+                             role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                            </button>
+                            <span>Select a rule file</span>
+                        </div>
+                    </div>
+                    <!-- Form submitted as soon as the user selects all files to be uploaded -->
+                    <form action="/emc-metalnx-web/upload/" method="POST"
+                          role="form" enctype="multipart/form-data" id="uploadForm">
+                        <p class="text-right">
+                            <span id="numberFilesUpload">No</span><span>&nbsp;file(s)
+									selected</span>
+                        </p>
+                        <div class="well">
+                            <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+                                <span th:text="#{select.files.upload}"></span>
+                            </button>
+                            <input type="file" name="files"
+                                   id="inputFiles" class="form-control" />
+                            <div id="filesList">
+                            </div>
+                        </div>
+                        <input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            th:text="#{forms.cancel.action.button}"></button>
+                    <a type="button" class="btn btn-primary" id="uploadButton" target="_blank" href="?uploadNewTab=true">
+                        <i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rule Delete Modal -->
+    <div class="modal fade" id="deleteRuleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" th:text="#{rules.delete.selected.label}"></h4>
+                </div>
+                <div class="modal-body">
+                    <span th:text="#{rules.deletion.confirmation}"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            th:text="#{confirmation.message.cancel}"></button>
+                    <button onclick="deleteRule();" type="button" class="btn btn-primary"
+                            data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function(){
+        // Add popover on page title
+        $('#rules-page-title').popover({
+            title:[[#{rules.page.title}]],
+            content:[[#{rules.title.popover}]],
+            trigger: 'hover click',
+            placement: 'left',
+        });
+    });
+
+     var datatable = $('#rulesTable').DataTable( {
+            "serverSide": false,
+            "dom": dtPatternMlxStandard,
+            "language": i18n,
+            "destroy": false,
+            "autoWidth": false,
+            "processing": true,
+            "stateSaveParams": function (settings, data) {
+                data.search.search = "";
+            },
+            "columnDefs": [
+                {
+                    "targets": 0,
+                },
+
+                {
+                    "render": function (data, type, full, meta){
+                        var deleteBtn = '<a href="#" onclick="deleteTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i>Delete</a>';
+                        return deleteBtn;
+                    },
+                    "width": "80px",
+                    "orderable": false,
+                    "targets": 1,
+                     className: "actionsColumn"
+                }
+            ]
+    });
+
+
+    /*]]>*/
+    </script>
+</div> <!-- /. Page Content -->
+
+</body>
+</html>
