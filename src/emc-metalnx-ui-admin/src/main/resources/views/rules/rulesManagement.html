@@ -46,7 +46,9 @@
                         <table class="table table-hover" id="treeViewTable">
                             <thead>
                             <tr>
-                                <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
+                                <th class="tableCheckBoxCol">
+                                    <input type="checkbox" name="selectAllCheckboxes" value="1" disabled="true"/>
+                                </th>
                                 <th th:text="#{collections.management.table.collection.name.label}"></th>
                                 <th th:text="#{collections.management.table.owner.label}"></th>
                                 <th th:text="#{collections.management.table.kind.label}"></th>
@@ -150,10 +152,8 @@
                             if(datatable.data().length == 0) {
                                 $("#actions button").prop("disabled", true);
                                 $("#actionsWait").hide();
-                                $('input[name=selectAllCheckboxes]').prop("disabled", true);
                             }
                             else {
-                                $('input[name=selectAllCheckboxes]').prop("disabled", false);
                                 if (datatable.data().length == 1){
                                     $("#treeViewTable_processing").removeClass("loading-md");
                                     $("#treeViewTable_processing").removeClass("loading-sm");
@@ -183,7 +183,9 @@
                         "columnDefs": [
                             {
                                 "render": function ( data, type, full, meta ) {
-                                    return '<input type="checkbox" onclick="treeViewTableItemOnClick();" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
+                                    return '<input disabled="true" type="checkbox" onclick="treeViewTableItemOnClick();" ' +
+                                            'name="collectionPathCheckboxes" value="'+full.path+'" id="' + full.name +
+                                            '" collection="' + full.collection + '" />';
                                 },
                                 "className": "dt-center",
                                 "width": "25px",
@@ -192,9 +194,7 @@
                             },
                             {
                                 "render": function ( data, type, full, meta ) {
-                                    return '<a href="#" name="' + full.path +
-                                        '" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
-                                        '"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
+                                    return full.name;
                                 },
                                 "width": "50%",
                                 "targets": 1
@@ -227,7 +227,6 @@
                         ]
                     } );
                     addCollectionActions('treeViewTable', datatable);
-                    $("input[type=checkbox]").prop("disabled", false);
                 });
 
                 $('#treeViewTable').on('page.dt', function (){
