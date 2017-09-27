@@ -9,3 +9,4 @@ target/
 .cproject
 *.iml
 .idea
+*.war
