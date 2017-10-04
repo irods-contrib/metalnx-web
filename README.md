@@ -19,3 +19,13 @@ Check out the [Metalnx Wiki](https://github.com/Metalnx/metalnx-web/wiki) for fu
 Copyright © 2015-2017, Dell EMC.
 
 This software is provided under the Software license provided in the <a href="LICENSE.md"> LICENSE </a> file.
+
+### Changes
+
+#### Add SSL cert management support #2
+
+Add ability to import iRODS SSL self-signed cert into jvm keystore when using SSL transport
+
+#### Investigate formalized schema deployment #5
+
+Adding formalized database schema setup and migration tools
