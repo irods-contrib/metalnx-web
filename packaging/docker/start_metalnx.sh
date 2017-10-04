@@ -67,11 +67,26 @@ __setup_irods() {
 	sed -ir "s|jobs.irods.password=.*$|jobs.irods.password=$IRODS_PASS|" $env_file
 }
 
+# optional setup of ssl cert in java keystore for iRODS SSL, this requires the mount of a server.crt file to /tmp/cert/server.crt inside Docker
+__setup_certs() {
+	
+	if [ -f /tmp/cert/server.crt ];
+		then
+	   		echo "Cert will be imported"
+	   		keytool -delete -noprompt -alias mycert -keystore /usr/lib/jvm/jre/lib/security/cacerts -storepass changeit
+	   		keytool -import -trustcacerts -keystore /usr/lib/jvm/jre/lib/security/cacerts -storepass changeit -noprompt -alias mycert -file /tmp/cert/server.crt
+		else
+	   		echo "No cert to import"
+	fi
+
+}
+
 __run_supervisor() {
   supervisord -n
 }
 
 # Call all functions
+__setup_certs
 __create_user
 __setup_irods
 __run_supervisor
