@@ -1,5 +1,8 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
+#### This is a fork of the open source Metalnx browser as a candidate basis for Cloud Browser II. This is meant to develop as a generalized tool with hooks, plugins, and theming to allow use in a broader community. Please join the project if interested!
+
+
 Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration, 
 collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
