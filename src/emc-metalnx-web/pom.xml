@@ -128,7 +128,7 @@
 						<configuration>
 							<tasks>
 								<echo message="copying war file up to docker"/>
-								  <copy file="target/emc-metalnx-web.war" todir="../../packaging/docker_dfc"/>
+								  <copy file="target/emc-metalnx-web.war" todir="../../packaging/docker"/>
 								
 								
 								<echo message="war file copied "/>
