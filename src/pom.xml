@@ -58,11 +58,11 @@
 
 		<!-- Default Source Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	
+
 		<!-- Files Upload -->
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<commons-io.version>1.4</commons-io.version>
-		
+
 		<!-- Cargo container -->
 		<cargo.version>1.4.11</cargo.version>
 
@@ -78,7 +78,7 @@
 		<maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
 
 		<build.number>DEV</build.number>
-		
+
 	</properties>
 
 	<modules>
@@ -87,6 +87,7 @@
 		<module>emc-metalnx-shared</module>
 		<module>emc-metalnx-ui-admin</module>
 		<module>emc-metalnx-web</module>
+		<module>metalnx-tools</module>
 	</modules>
 
 	<repositories>
@@ -311,27 +312,27 @@
 	           <version>${selenium.version}</version>
 	           <scope>test</scope>
 	       </dependency>
-	       
+
             <!-- Firefox driver for Selenium -->
 	       <dependency>
 	           <groupId>org.seleniumhq.selenium</groupId>
 	           <artifactId>selenium-firefox-driver</artifactId>
                <version>${selenium.version}</version>
 	       </dependency>
-	           
+
 	       <!-- Selenium Support UI -->
 	       <dependency>
 	           <groupId>org.seleniumhq.selenium</groupId>
 	           <artifactId>selenium-support</artifactId>
                <version>${selenium.version}</version>
 	       </dependency>
-	       
+
 	       <!-- Selenium HTML Unit Driver-->
 	       <dependency>
 	           <groupId>org.seleniumhq.selenium</groupId>
 	           <artifactId>selenium-htmlunit-driver</artifactId>
 	           <version>${selenium.version}</version>
-	       </dependency>   
+	       </dependency>
 
 			<!-- Misc -->
 			<dependency>
@@ -350,33 +351,33 @@
 				<version>${servlet.api.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<!-- Files Upload -->
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 			 	<artifactId>commons-fileupload</artifactId>
 			 	<version>${commons-fileupload.version}</version>
 			</dependency>
-			
+
 			<dependency>
 			 	<groupId>commons-io</groupId>
 			 	<artifactId>commons-io</artifactId>
 			 	<version>${commons-io.version}</version>
 			</dependency>
-			
+
 			<!-- Jackson JSON processor -->
 			<dependency>
 			  <groupId>com.fasterxml.jackson.core</groupId>
 			  <artifactId>jackson-core</artifactId>
 			  <version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 			  <groupId>com.fasterxml.jackson.core</groupId>
 			  <artifactId>jackson-annotations</artifactId>
 			  <version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 			  <groupId>com.fasterxml.jackson.core</groupId>
 			  <artifactId>jackson-databind</artifactId>
@@ -448,7 +449,7 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
           		<groupId>org.apache.tomcat.maven</groupId>
           		<artifactId>tomcat7-maven-plugin</artifactId>
