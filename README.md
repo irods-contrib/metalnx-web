@@ -3,7 +3,7 @@
 #### This is a fork of the open source Metalnx browser as a candidate basis for Cloud Browser II. This is meant to develop as a generalized tool with hooks, plugins, and theming to allow use in a broader community. Please join the project if interested!
 
 
-Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration, 
+Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration,
 collection management, and metadata management tasks removing the need to memorize the long list of icommands.
 
 ### Install Metalnx
@@ -29,3 +29,13 @@ Add ability to import iRODS SSL self-signed cert into jvm keystore when using SS
 #### Investigate formalized schema deployment #5
 
 Adding formalized database schema setup and migration tools
+
+#### setting of jargon props (ssl negotiation) via etc properties #10
+
+Added ability to configure SSL negotiation and other properties in metalnx.properties and have them propogate to the settable jargon properties. This may
+eventually be pulled out to a stand alone utilities package for use across mid tier components.
+
+#### Obtain necessary props from irods-ext file #7
+
+Switched to the existing standardized /etc/irods-ext method of defining properties picked up by spring for interpolation in
+bean configuration. This is especially useful for docker deployments as the /etc/irods-ext can be a volume mount for docker
