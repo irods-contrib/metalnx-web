@@ -40,8 +40,24 @@
 		<constructor-arg ref="irodsSession" />
 	</bean>
 	
+	<bean id="startupConfigurator" class="org.irods.jargon.midtier.utils.configuration.StartupConfigurator" init-method="init">
+    	<property name="irodsSession" ref="irodsSession" />
+    	<property name="irodsAccessObjectFactory" ref="irodsAccessObjectFactory" />
+         <property name="midTierConfiguration" ref="midTierConfiguration" />
+    </bean>
+	
 	<context:component-scan base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh
 	    com.emc.metalnx.services.machine com.emc.metalnx.services.configuration com.emc.metalnx.services.zip" />
+	
+	<bean id="midTierConfiguration"
+		class="org.irods.jargon.midtier.utils.configuration.MidTierConfiguration">
+		<property name="utilizePackingStreams" value="${utilize.packing.streams}"/>
+		<property name="authType" value="${auth.type}" /> <!--  STANDARD,PAM -->
+		<property name="defaultStorageResource" value="${default.storage.resource}" />
+		<property name="sslNegotiationPolicy" value="${ssl.negotiation.policy}" />
+		<property name="computeChecksum" value="${compute.checksum}" />
+
+	</bean>
 	
 
 </beans>
