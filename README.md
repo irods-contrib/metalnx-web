@@ -8,6 +8,10 @@ collection management, and metadata management tasks removing the need to memori
 
 ### Install Metalnx
 
+Note that this fork adds a schema configuration and migration tool to set up and migrate the database over versions. This
+actually is a start of a more formalized irods-ext database which will evolve to support an implementation of virtual collections,
+metadata templates, and the like. See the README.md in the metalnx-tools subproject for details on setting up and migrating the database schema.
+
 Check out [Getting-Started](https://github.com/Metalnx/metalnx-web/wiki/Getting-Started) for installation instructions.
 
 ### Documentation
