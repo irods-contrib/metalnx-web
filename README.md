@@ -32,7 +32,8 @@ Add ability to import iRODS SSL self-signed cert into jvm keystore when using SS
 
 #### Investigate formalized schema deployment #5
 
-Adding formalized database schema setup and migration tools
+Adding formalized database schema setup and migration tools using flywaydb. See the metalnx-tools
+subproject and its README for a maven based database setup and migration tool.
 
 #### setting of jargon props (ssl negotiation) via etc properties #10
 
