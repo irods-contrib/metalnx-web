@@ -41,6 +41,8 @@ Using maven properties, set up:
 
 ```
 
-mvn flyway:clean - clean database (destructiver)
-mvn flyway:benchmark - look at existing database to set to a version
-mvn flyway:migrate - do migration, this is the first command to run from 0 on a clean database
+* mvn flyway:clean - clean database (destructive! clears your database)
+
+* mvn flyway:benchmark - look at existing database to set to initial version. This is not for new databases.
+
+* mvn flyway:migrate - do migration, this is the first command to run from 0 on a clean database
