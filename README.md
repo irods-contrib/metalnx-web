@@ -44,3 +44,17 @@ eventually be pulled out to a stand alone utilities package for use across mid t
 
 Switched to the existing standardized /etc/irods-ext method of defining properties picked up by spring for interpolation in
 bean configuration. This is especially useful for docker deployments as the /etc/irods-ext can be a volume mount for docker
+
+#### ticket tests failing when run together, possible iRODS issue #16
+
+Did some cleanup and temporarily put aside several ticket tests for further assessment at the iRODS and Jargon layer. There maybe some
+remaining issues with tickets, see https://github.com/DICE-UNC/jargon/issues/266 so this will be revisited at that
+layer as soon as possible. These changes allow a clean unit test baseline
+
+#### Adjust props,etc so that unit tests are clean before proceding #14
+
+Normalizing the test setup, properties generation scheme to align with cloud browser, rest, jargon, etc. This will allow
+easier setup in iRODS CI, etc. Simplified the spring config propertis references to look at the metalnx.properties in /etc/irods-ext for production in issue #10 and #7, and this change utilizes build of test.metalnx.properties and testing.properties from the pom
+based on settings.xml as in jargon and other libs.
+
+See the DEVELOPER-README.md doc for details on how to set up and run tests.
