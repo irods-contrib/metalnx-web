@@ -26,14 +26,21 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>4.2.0</version>
 				<configuration>
-					<url>jdbc:h2:file:./target/foobar</url>
-					<user>sa</user>
+					<url>${flyway.jdbc.url}</url>
+					<user>${flyway.db.user}</user>
+					<password>${flyway.db.password}</password>
+					<schemas>
+						<schema>${flyway.db.schema}</schema>
+					</schemas>
+					<locations>
+        					<location>classpath:migrations</location>
+    					</locations>
 				</configuration>
 				<dependencies>
 					<dependency>
-						<groupId>com.h2database</groupId>
-						<artifactId>h2</artifactId>
-						<version>1.4.191</version>
+						<groupId>postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>

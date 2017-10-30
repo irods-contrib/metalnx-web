@@ -8,6 +8,10 @@ collection management, and metadata management tasks removing the need to memori
 
 ### Install Metalnx
 
+Note that this fork adds a schema configuration and migration tool to set up and migrate the database over versions. This
+actually is a start of a more formalized irods-ext database which will evolve to support an implementation of virtual collections,
+metadata templates, and the like. See the README.md in the metalnx-tools subproject for details on setting up and migrating the database schema.
+
 Check out [Getting-Started](https://github.com/Metalnx/metalnx-web/wiki/Getting-Started) for installation instructions.
 
 ### Documentation
@@ -28,7 +32,8 @@ Add ability to import iRODS SSL self-signed cert into jvm keystore when using SS
 
 #### Investigate formalized schema deployment #5
 
-Adding formalized database schema setup and migration tools
+Adding formalized database schema setup and migration tools using flywaydb. See the metalnx-tools
+subproject and its README for a maven based database setup and migration tool.
 
 #### setting of jargon props (ssl negotiation) via etc properties #10
 
@@ -39,3 +44,17 @@ eventually be pulled out to a stand alone utilities package for use across mid t
 
 Switched to the existing standardized /etc/irods-ext method of defining properties picked up by spring for interpolation in
 bean configuration. This is especially useful for docker deployments as the /etc/irods-ext can be a volume mount for docker
+
+#### ticket tests failing when run together, possible iRODS issue #16
+
+Did some cleanup and temporarily put aside several ticket tests for further assessment at the iRODS and Jargon layer. There maybe some
+remaining issues with tickets, see https://github.com/DICE-UNC/jargon/issues/266 so this will be revisited at that
+layer as soon as possible. These changes allow a clean unit test baseline
+
+#### Adjust props,etc so that unit tests are clean before proceding #14
+
+Normalizing the test setup, properties generation scheme to align with cloud browser, rest, jargon, etc. This will allow
+easier setup in iRODS CI, etc. Simplified the spring config propertis references to look at the metalnx.properties in /etc/irods-ext for production in issue #10 and #7, and this change utilizes build of test.metalnx.properties and testing.properties from the pom
+based on settings.xml as in jargon and other libs.
+
+See the DEVELOPER-README.md doc for details on how to set up and run tests.
