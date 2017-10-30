@@ -1,7 +1,0 @@
-Package: emc-metalnx-webapp
-Version: {{VERSION-NUMBER}}-{{BUILD-NUMBER}}
-Section: misc
-Priority: optional
-Architecture: all
-Maintainer: Arthur Guerra <arthur.guerra@emc.com>
-Description: EMC MetaLnx Web Application

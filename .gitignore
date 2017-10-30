@@ -9,3 +9,5 @@ target/
 .cproject
 *.iml
 .idea
+*.war
+.DS_Store

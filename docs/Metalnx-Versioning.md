@@ -1,0 +1,1 @@
+Metalnx Web uses Semantic Versioning (SemVer) to set up the version of each release. SemVer is a very straightforward way to define version numbers and it also helps us managing dependencies. For more information about Semantic Versioning, please check out this [link](http://semver.org/).
