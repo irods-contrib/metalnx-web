@@ -11,3 +11,5 @@ target/
 .idea
 *.war
 .DS_Store
+.dbeaver*
+test*.properties
