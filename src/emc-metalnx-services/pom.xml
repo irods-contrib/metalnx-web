@@ -228,6 +228,14 @@
 									msi.irods.42.list=libmsisync_to_archive.so,libmsi_update_unixfilesystem_resource_free_space.so
 
 									msi.other.list=
+																		
+									resource.location.images=/images/,classpath:static/images/
+									resource.location.fonts=/fonts/,classpath:static/fonts/
+									resource.location.css=/css/,classpath:static/css/
+									resource.location.js=/js/,classpath:static/js/
+									resource.location.i18=classpath:i18n/messages
+									resource.location.i18-users=classpath:i18n-users/messages
+									
 
 								</echo>
 							</tasks>

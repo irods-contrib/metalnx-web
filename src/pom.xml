@@ -29,7 +29,7 @@
 		<jargon.version>4.2.1.0-SNAPSHOT</jargon.version>
 
 		<!-- Spring -->
-		<spring.version>4.1.1.RELEASE</spring.version>
+		<spring.version>4.1.9.RELEASE</spring.version>
 		<spring.security.version>3.2.6.RELEASE</spring.security.version>
 		<spring.batch.version>3.0.1.RELEASE</spring.batch.version>
 
