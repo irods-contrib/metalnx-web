@@ -1,5 +1,10 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
+## Version: branch for issue13 (resource pipeline)
+## Git Tag:
+## Date: Oct 27, 2017
+
+
 #### This is a fork of the open source Metalnx browser as a candidate basis for Cloud Browser II. This is meant to develop as a generalized tool with hooks, plugins, and theming to allow use in a broader community. Please join the project if interested!
 
 
@@ -58,3 +63,7 @@ easier setup in iRODS CI, etc. Simplified the spring config propertis references
 based on settings.xml as in jargon and other libs.
 
 See the DEVELOPER-README.md doc for details on how to set up and run tests.
+
+#### Add configurable based resource pipeline #13
+
+Add facilities to allow site-specific customization of the browser (css,logo, resource bundles, etc).
