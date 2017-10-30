@@ -4,46 +4,35 @@ MetaLnx has a bias towards deployment as a Docker image, and will continue to ev
 and scaled horizontally using an orchestration tool such as Kubernetes, as
 part of a suite of mid-tier components that can work together to create a complete CI environment.
 
-Generally, MetaLnx is configured through a metalnx.properties file, documented below. This file is expected to
-be in the /etc/irods-ext directory. Commonly, this is a volume that can be mounted to the Dockerized image
-from an arbitrary location.
+### /etc/irods-ext
 
-In addition, theming via assets provided from a configured location works the same way. The metalnx.properties
-utilizes the resource pipeline features of Spring MVC, and default to the built-in assets (css, images, etc). These
-properties can optionally override the default location within the static web app to favor assets
-mounted under the /opt/irods-ext directory.
+This project contains a sample /etc/irods-ext directory with a metalnx.properties and a metalnxConfig directory.
+These two files must be mounted as a volume at /etc/irods-ext, or be present in the same directory when running
+in a web container directly on the host OS.
+
+Generally, MetaLnx is configured through a metalnx.properties file, documented below. This controls optthe ional behaviors
+and customizations with the exception of theming (custom images, banners, css, messages). The metalnx.properties
+in the provided /etc/irods-ext directory can serve as a template.
+
+In addition, theming via assets is controlled by the required metalnxConfig.xml file. This file must be in /etc/irods-ext or
+you will receive invalid resource messages. The provided file will cause the default theme and messages to be utilized. customizations
+of the resource pipeline are done via standard SpringMVC.  See the 'Web app theming and customization section'.
 
 ## metalnx.properties
 
 metalnx.properties is read from /etc/irods-ext/metalnx.properties during deployment. The Docker
-image thus expects that file to be mounted as a volume.  See the sample-metalnx.properties file in this
+image thus expects that file to be mounted as a volume.  See the metalnx.properties file in this
 repository for a template for the /etc/irods-ext/metalnx.properties file expected by the application.
 
 ## Web app theming and customization
 
 By default, MetaLnx uses the resource support of Spring MVC, e.g. https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-static-resources.
 
-The metalnx.properties file contains default search paths for various static assets that can be used for theming, for example:
-
-```properties
-
-######################################
-# resource Configuration
-######################################
-
-resource.location.images=/images/,classpath:static/images/
-resource.location.fonts=/fonts/,classpath:static/fonts/
-resource.location.css=/css/,classpath:static/css/
-resource.location.js=/js/,classpath:static/js/
-resource.location.i18=classpath:i18n/messages
-resource.location.i18-users=classpath:i18n-users/messages
-
-
-```
+The provided /etc/irods-ext/metalnxConfig.xml can be used as provided to load the default baseline theming, this file must be present.
 
 Note that by default, MetaLnx is looking at internal static files from the webapp and classpath, thus no
 special customization is needed to run the base image. This does allow a site-specific override
-of the css, image, js, as well as the i18n message resource bundles. This is set up so that a custom file:/
-location may be prepended.
+of the css, image, js, as well as the i18n message resource bundles.
 
-TODO: example of this after testing - MC
+In order to customize the themes, it is up to the discretion of the deployer to provide a custom metalnxConfig.xml. The recommended practice is to point to a mounted /opt/irods-ext/metalnx mounted volume or host machine directory with the metalnxConfig based on
+/etc/irods-ext/customMetalnxConfig.xml (the file must be renamed to metalnxConfig.xml).  
