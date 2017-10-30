@@ -1,5 +1,10 @@
 # Developer notes
 
+## API references
+
+* Spring 4.1.9 Ref https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/
+* Spring 4.1.9 API https://docs.spring.io/spring/docs/4.1.9.RELEASE/javadoc-api/
+
 ## Testing setup
 Metalnx has been updated to use the same testing.properties setup and settings.xml from jargon
 tests.  See https://github.com/DICE-UNC/jargon/wiki/Setting-up-unit-tests for some orientation.
