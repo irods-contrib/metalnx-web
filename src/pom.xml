@@ -1,18 +1,12 @@
-<!--
-  ~ Copyright (c) 2015-2017, Dell EMC
-  ~
-  ~  Licensed under the Apache License, Version 2.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
-  ~
-  ~  http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
-  -->
+<?xml version="1.0" encoding="UTF-8"?><!-- ~ Copyright (c) 2015-2017, Dell 
+	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ 
+	you may not use this file except in compliance with the License. ~ You may 
+	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
+	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
+	License for the specific language governing permissions and ~ limitations 
+	under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -29,7 +23,7 @@
 		<jargon.version>4.2.1.0-SNAPSHOT</jargon.version>
 
 		<!-- Spring -->
-		<spring.version>4.1.9.RELEASE</spring.version>
+		<spring.version>4.2.9.RELEASE</spring.version>
 		<spring.security.version>3.2.6.RELEASE</spring.security.version>
 		<spring.batch.version>3.0.1.RELEASE</spring.batch.version>
 
@@ -47,8 +41,8 @@
 		<slf4j.version>1.7.7</slf4j.version>
 		<logback.version>1.1.2</logback.version>
 
-        <!-- Selenium -->
-        <selenium.version>2.45.0</selenium.version>
+		<!-- Selenium -->
+		<selenium.version>2.45.0</selenium.version>
 
 		<!-- Misc -->
 		<mysql.connector.version>5.1.17</mysql.connector.version>
@@ -147,10 +141,10 @@
 				<version>${jargon.version}</version>
 			</dependency>
 			<dependency>
-                <groupId>org.irods.jargon</groupId>
-                <artifactId>jargon-security</artifactId>
-                <version>${jargon.version}</version>
-            </dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-security</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.irods.jargon</groupId>
 				<artifactId>jargon-ruleservice</artifactId>
@@ -205,11 +199,11 @@
 				<artifactId>spring-orm</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-oxm</artifactId>
@@ -305,34 +299,34 @@
 				<version>${thymeleaf.layout.version}</version>
 			</dependency>
 
-            <!-- Selenium -->
-	       <dependency>
-	           <groupId>org.seleniumhq.selenium</groupId>
-	           <artifactId>selenium-java</artifactId>
-	           <version>${selenium.version}</version>
-	           <scope>test</scope>
-	       </dependency>
+			<!-- Selenium -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-java</artifactId>
+				<version>${selenium.version}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <!-- Firefox driver for Selenium -->
-	       <dependency>
-	           <groupId>org.seleniumhq.selenium</groupId>
-	           <artifactId>selenium-firefox-driver</artifactId>
-               <version>${selenium.version}</version>
-	       </dependency>
+			<!-- Firefox driver for Selenium -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-firefox-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
 
-	       <!-- Selenium Support UI -->
-	       <dependency>
-	           <groupId>org.seleniumhq.selenium</groupId>
-	           <artifactId>selenium-support</artifactId>
-               <version>${selenium.version}</version>
-	       </dependency>
+			<!-- Selenium Support UI -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-support</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
 
-	       <!-- Selenium HTML Unit Driver-->
-	       <dependency>
-	           <groupId>org.seleniumhq.selenium</groupId>
-	           <artifactId>selenium-htmlunit-driver</artifactId>
-	           <version>${selenium.version}</version>
-	       </dependency>
+			<!-- Selenium HTML Unit Driver -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-htmlunit-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
 
 			<!-- Misc -->
 			<dependency>
@@ -355,33 +349,33 @@
 			<!-- Files Upload -->
 			<dependency>
 				<groupId>commons-fileupload</groupId>
-			 	<artifactId>commons-fileupload</artifactId>
-			 	<version>${commons-fileupload.version}</version>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
 			</dependency>
 
 			<dependency>
-			 	<groupId>commons-io</groupId>
-			 	<artifactId>commons-io</artifactId>
-			 	<version>${commons-io.version}</version>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
 			</dependency>
 
 			<!-- Jackson JSON processor -->
 			<dependency>
-			  <groupId>com.fasterxml.jackson.core</groupId>
-			  <artifactId>jackson-core</artifactId>
-			  <version>${jackson.version}</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
-			  <groupId>com.fasterxml.jackson.core</groupId>
-			  <artifactId>jackson-annotations</artifactId>
-			  <version>${jackson.version}</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
-			  <groupId>com.fasterxml.jackson.core</groupId>
-			  <artifactId>jackson-databind</artifactId>
-			  <version>${jackson.version}</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<!-- Service layer tests -->
@@ -451,10 +445,10 @@
 			</plugin>
 
 			<plugin>
-          		<groupId>org.apache.tomcat.maven</groupId>
-          		<artifactId>tomcat7-maven-plugin</artifactId>
-          		<version>2.2</version>
-        	</plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
 		</plugins>
 	</build>
 

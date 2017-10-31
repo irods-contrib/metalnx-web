@@ -168,7 +168,7 @@ public class UITest {
 	// CSS
 	protected class SilentHtmlUnitDriver extends HtmlUnitDriver {
 		SilentHtmlUnitDriver() {
-			super(BrowserVersion.FIREFOX_38);
+			super(BrowserVersion.FIREFOX_24);
 			setJavascriptEnabled(true);
 			getWebClient().setCssErrorHandler(new SilentCssErrorHandler());
 		}
