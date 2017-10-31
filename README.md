@@ -1,6 +1,6 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: branch for issue13 (resource pipeline)
+## Version: branch for issue15 (run versus mysql)
 ## Git Tag:
 ## Date: Oct 27, 2017
 
