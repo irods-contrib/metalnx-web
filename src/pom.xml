@@ -34,7 +34,7 @@
 
 		<!-- Thymeleaf -->
 		<thymeleaf.version>2.1.5.RELEASE</thymeleaf.version>
-		<thymeleaf.layout.version>1.2.1</thymeleaf.layout.version>
+		<thymeleaf.layout.version>1.4.0</thymeleaf.layout.version>
 		<jstl.version>1.2</jstl.version>
 
 		<!-- Logging -->
