@@ -36,3 +36,21 @@ of the css, image, js, as well as the i18n message resource bundles.
 
 In order to customize the themes, it is up to the discretion of the deployer to provide a custom metalnxConfig.xml. The recommended practice is to point to a mounted /opt/irods-ext/metalnx mounted volume or host machine directory with the metalnxConfig based on
 /etc/irods-ext/customMetalnxConfig.xml (the file must be renamed to metalnxConfig.xml).  
+
+
+## Running Docker with these configs
+
+
+An example developer run of the docker image with these configs...
+
+
+```
+#!/bin/bash
+docker run -i -t \
+-p 8080:8080 \
+-v /Users/conwaymc/Documents/docker/ml_dfc/etc/irods-ext:/etc/irods-ext \
+-v /Users/conwaymc/Documents/docker/ml_dfc/opt/irods-ext:/opt/irods-ext \
+diceunc/metalnx:dev
+
+
+```
