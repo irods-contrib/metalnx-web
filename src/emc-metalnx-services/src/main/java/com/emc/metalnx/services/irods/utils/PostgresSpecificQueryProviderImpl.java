@@ -201,6 +201,30 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 	@Override
 	public String buildQueryCountItemsMatchingPropertiesSearch(List<DataGridFilePropertySearch> filePropertiesSearch,
 			String zone, boolean searchAgainstColls) {
+
+		StringBuilder query = new StringBuilder();
+		String tableName = "SELECT r_data_main.data_name as name, r_data_main.data_repl_num as repl_num,"
+				+ "	r_data_main.data_owner_name as owner_name, r_data_main.data_owner_zone as owner_zone, "
+				+ "	r_data_main.data_size as size, r_data_main.resc_name, "
+				+ " CASE WHEN r_coll_main.parent_coll_name = '/' THEN '/' || r_data_main.data_name ELSE r_coll_main.coll_name || '/' || r_data_main.data_name END as path, "
+				+ "	r_data_main.data_checksum as checksum, CAST(r_data_main.create_ts AS BIGINT),  "
+				+ "	CAST(r_data_main.modify_ts AS BIGINT) FROM r_data_main INNER JOIN r_coll_main ON "
+				+ "	r_data_main.coll_id = r_coll_main.coll_id";
+		if (searchAgainstColls) {
+			tableName = "SELECT replace(r_coll_main.coll_name, r_coll_main.parent_coll_name || '/', '') AS name, 0 AS repl_num,"
+					+ "	r_coll_main.coll_owner_name AS owner_name, r_coll_main.coll_owner_zone AS owner_zone, 0 AS size, "
+					+ "	'' AS resc_name, r_coll_main.coll_name AS path, '' AS checksum, "
+					+ "	CAST(r_coll_main.create_ts AS BIGINT), CAST(r_coll_main.modify_ts AS BIGINT) FROM r_coll_main  ";
+		}
+		query.append("SELECT COUNT(*) FROM	( " + tableName + " ) AS fileProperties  WHERE");
+
+		for (int i = 0; i < filePropertiesSearch.size(); i++) {
+			query.append(buildQueryForFilePropertiesSearch(filePropertiesSearch, zone, searchAgainstColls, 0, 0));
+
+			if (i < filePropertiesSearch.size() - 1) {
+				query.append(" AND ");
+			}
+		}
 		return null;
 	}
 
@@ -230,10 +254,14 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 			}
 		}
 
-		query.append(" OFFSET ");
-		query.append(offset);
-		query.append(" LIMIT ");
-		query.append(limit);
+		if (offset == 0 && limit == 0) {
+			// ignored
+		} else {
+			query.append(" OFFSET ");
+			query.append(offset);
+			query.append(" LIMIT ");
+			query.append(limit);
+		}
 
 		return query.toString();
 

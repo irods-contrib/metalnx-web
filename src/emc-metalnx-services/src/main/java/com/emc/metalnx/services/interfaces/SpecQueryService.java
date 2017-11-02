@@ -28,6 +28,7 @@ import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.UnsupportedDataGridFeatureException;
 
 public interface SpecQueryService {
 
@@ -127,9 +128,12 @@ public interface SpecQueryService {
 	 * @return total number of collections matching a file properties search
 	 *         criteria
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
+	 * @throws UnsupportedDataGridFeatureException
 	 */
 	public int countCollectionsMatchingFileProperties(List<DataGridFilePropertySearch> filePropertiesSearch,
-			String zone) throws DataGridConnectionRefusedException;
+			String zone)
+			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException;
 
 	/**
 	 * Counts the total number of data objects matching a specific file properties
@@ -142,7 +146,10 @@ public interface SpecQueryService {
 	 * @return total number of data objects matching a file properties search
 	 *         criteria
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
+	 * @throws UnsupportedDataGridFeatureException
 	 */
 	public int countDataObjectsMatchingFileProperties(List<DataGridFilePropertySearch> filePropertiesSearch,
-			String zone) throws DataGridConnectionRefusedException;
+			String zone)
+			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException;
 }

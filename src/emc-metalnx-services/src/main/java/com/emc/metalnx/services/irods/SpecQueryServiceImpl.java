@@ -211,9 +211,12 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	 *            searching data data objects
 	 * @return total number of items matching a file properties search criteria
 	 * @throws DataGridConnectionRefusedException
+	 * @throws UnsupportedDataGridFeatureException
+	 * @throws JargonException
 	 */
 	private int countItemsMatchingFileProperties(List<DataGridFilePropertySearch> filePropertiesSearch, String zone,
-			boolean searchAgainstColls) throws DataGridConnectionRefusedException {
+			boolean searchAgainstColls)
+			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException {
 
 		int totalItems = 0;
 
@@ -222,44 +225,21 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 		SpecificQueryResultSet queryResultSet = null;
 		String userSQLAlias = "metalnxUserQuery_" + System.currentTimeMillis();
 
-		// TODO: put into factory to create statement
-
 		try {
 			specificQueryAO = adminServices.getSpecificQueryAO();
 
-			StringBuilder query = new StringBuilder();
-			String tableName = "SELECT r_data_main.data_name as name, r_data_main.data_repl_num as repl_num,"
-					+ "	r_data_main.data_owner_name as owner_name, r_data_main.data_owner_zone as owner_zone, "
-					+ "	r_data_main.data_size as size, r_data_main.resc_name, "
-					+ " CASE WHEN r_coll_main.parent_coll_name = '/' THEN '/' || r_data_main.data_name ELSE r_coll_main.coll_name || '/' || r_data_main.data_name END as path, "
-					+ "	r_data_main.data_checksum as checksum, CAST(r_data_main.create_ts AS BIGINT),  "
-					+ "	CAST(r_data_main.modify_ts AS BIGINT) FROM r_data_main INNER JOIN r_coll_main ON "
-					+ "	r_data_main.coll_id = r_coll_main.coll_id";
-			if (searchAgainstColls) {
-				tableName = "SELECT replace(r_coll_main.coll_name, r_coll_main.parent_coll_name || '/', '') AS name, 0 AS repl_num,"
-						+ "	r_coll_main.coll_owner_name AS owner_name, r_coll_main.coll_owner_zone AS owner_zone, 0 AS size, "
-						+ "	'' AS resc_name, r_coll_main.coll_name AS path, '' AS checksum, "
-						+ "	CAST(r_coll_main.create_ts AS BIGINT), CAST(r_coll_main.modify_ts AS BIGINT) FROM r_coll_main  ";
-			}
-			query.append("SELECT COUNT(*) FROM	( " + tableName + " ) AS fileProperties  WHERE");
-
-			for (int i = 0; i < filePropertiesSearch.size(); i++) {
-				query.append(filePropertiesSearch.get(i).getWhereClause()); // this is now in spec query provider as
-																			// buildQueryForFilePropertiesSearch
-
-				if (i < filePropertiesSearch.size() - 1) {
-					query.append(" AND ");
-				}
-			}
+			ClientHints clientHints = this.irodsServices.getEnvironmentalInfoAO().retrieveClientHints(false);
+			SpecificQueryProvider provider = specificQueryProviderFactory.instance(clientHints.whatTypeOfIcatIsIt());
+			String query = provider.buildQueryCountItemsMatchingPropertiesSearch(filePropertiesSearch, zone,
+					searchAgainstColls);
 
 			// Creating Specific Query instance
 			SpecificQueryDefinition queryDef = new SpecificQueryDefinition();
 			queryDef.setAlias(userSQLAlias);
-			queryDef.setSql(query.toString());
+			queryDef.setSql(query);
 
 			// Creating spec query on iRODS
 			specificQueryAO.addSpecificQuery(queryDef);
-
 			specQuery = SpecificQuery.instanceWithNoArguments(userSQLAlias, 0, zone);
 
 			logger.info("Specific query: {}", query.toString());
@@ -273,8 +253,10 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 		} catch (JargonException e) {
 			logger.error("Could not get specific query: ", e);
+			throw e;
 		} catch (JargonQueryException e) {
 			logger.error("Could not get specific query: ", e);
+			throw new JargonException(e);
 		}
 
 		return totalItems;
@@ -334,14 +316,16 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 	@Override
 	public int countCollectionsMatchingFileProperties(List<DataGridFilePropertySearch> filePropertiesSearch,
-			String zone) throws DataGridConnectionRefusedException {
+			String zone)
+			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException {
 
 		return countItemsMatchingFileProperties(filePropertiesSearch, zone, true);
 	}
 
 	@Override
 	public int countDataObjectsMatchingFileProperties(List<DataGridFilePropertySearch> filePropertiesSearch,
-			String zone) throws DataGridConnectionRefusedException {
+			String zone)
+			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException {
 
 		return countItemsMatchingFileProperties(filePropertiesSearch, zone, false);
 	}
