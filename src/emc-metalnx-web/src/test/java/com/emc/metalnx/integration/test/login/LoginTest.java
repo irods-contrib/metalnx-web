@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
-@Deprecated
-@Ignore
+
 public class LoginTest {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginTest.class);
@@ -64,8 +63,8 @@ public class LoginTest {
     @Test
     public void testValidUsernameAndPasswordForLogin() throws Exception {
         logger.info("Testing valid username and password for login");
+        //UITest.login(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
         UITest.login(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
-
         // check if after login, the user is redirected to the dashboard page
         assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
 
@@ -84,10 +83,11 @@ public class LoginTest {
 
         UITest.login("ThisIsAnInvalidUsername", "ThisIsAnInvalidPassword");
 
-        WebElement errorMsg = driver.findElement(By.className("errorMsg"));
+        //	There is no error message for invalid login
+        //WebElement errorMsg = driver.findElement(By.className("errorMsg"));
 
         // check if after entering invalid login credentials (username and password),
         // an error message is shown
-        Assert.assertTrue(errorMsg.isDisplayed());
+        Assert.assertEquals(UITest.LOGINERROR_URL, driver.getCurrentUrl());
     }
 }

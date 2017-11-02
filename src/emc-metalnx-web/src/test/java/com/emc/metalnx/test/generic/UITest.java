@@ -22,6 +22,7 @@ import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -34,8 +35,8 @@ import com.emc.metalnx.utils.EmcMetalnxVersion;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
 
-@Deprecated
-@Ignore
+
+
 public class UITest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UITest.class);
@@ -44,13 +45,14 @@ public class UITest {
 
 	// Metalnx URL Connection parts
 	public static final String http = "http://";
-	public static final String HOST = isDevEnv ? "localhost" : "metalnx.localdomain";
+	//public static final String HOST = isDevEnv ? "localhost" : "metalnx.localdomain";
+	public static final String HOST = "localhost";
 	public static final String PORT = "8080";
 	public static final String URL_PREFIX = http + HOST + ":" + PORT;
 
 	// Data Grid Info
-	public static String RODS_USERNAME = "rods";
-	public static String RODS_PASSWORD = "irods@1234";
+	public static String RODS_USERNAME = "test1";
+	public static String RODS_PASSWORD = "test";
 	public static String IRODS_ZONE = isDevEnv ? "tempZone" : "testZone";
 	public static String IRODS_HOST = isDevEnv ? "icat.localdomain" : "icat.prod.localdomain";
 	public static String DEFAULT_RESC = "demoResc";
@@ -58,6 +60,7 @@ public class UITest {
 
 	// Metalnx pages
 	public static String LOGIN_URL = URL_PREFIX + "/emc-metalnx-web/login/";
+	public static String LOGINERROR_URL = URL_PREFIX + "/emc-metalnx-web/login/exception/";
 	public static String DASHBOARD_URL = URL_PREFIX + "/emc-metalnx-web/dashboard/";
 	public static String PREFERENCES_URL = URL_PREFIX + "/emc-metalnx-web/preferences/";
 	public static String USERS_URL = URL_PREFIX + "/emc-metalnx-web/users/";
@@ -82,6 +85,7 @@ public class UITest {
 	public static String RESOURCES_SERVERS_URL = URL_PREFIX + "/emc-metalnx-web/resources/servers/";
 	public static String HTTP_ERROR_500_URL = URL_PREFIX + "/emc-metalnx-web/httpError/500/";
 	public static String MY_GROUPS_PAGE = URL_PREFIX + "/emc-metalnx-web/groupBookmarks/groups/";
+	
 
 	// permission types used in the tests
 	public static final String READ_PERMISSION = "read";
@@ -97,6 +101,7 @@ public class UITest {
 
 	// driver used for testing
 	public static final String FIREFOX = "FIREFOX";
+	public static final String CHROME = "CHROME";
 
 	public static String[] TEST_FILE_NAMES = { "1SeleniumTestUserAdditionalPermission.png" };
 
@@ -104,6 +109,7 @@ public class UITest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\pateldes\\driver\\chromedriver.exe");
 		driver = getDriver();
 	}
 
@@ -133,7 +139,7 @@ public class UITest {
 
 		WebElement inputUsername = driver.findElement(By.id("inputUsernameLogin"));
 		WebElement inputPassword = driver.findElement(By.id("inputPasswordLogin"));
-		WebElement inputSubmit = driver.findElement(By.className("btn"));
+		WebElement inputSubmit = driver.findElement(By.id("loginBtn"));
 
 		inputUsername.sendKeys(uname);
 		inputPassword.sendKeys(pwd);
@@ -153,7 +159,8 @@ public class UITest {
 	}
 
 	public static WebDriver getDriver() {
-		return driver == null ? new FirefoxDriver() : driver;
+		//return driver == null ? new FirefoxDriver() : driver;
+		return driver == null ? new ChromeDriver() : driver;
 	}
 
 	/**
