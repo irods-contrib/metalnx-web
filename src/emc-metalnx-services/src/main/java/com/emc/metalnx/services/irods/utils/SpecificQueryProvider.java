@@ -20,6 +20,66 @@ import com.emc.metalnx.core.domain.entity.enums.FilePropertyField;
 public interface SpecificQueryProvider {
 
 	/**
+	 * Build query for the number of data objects that match the given search term.
+	 *
+	 * @param parentPath
+	 *            <code>String</code> path to the parent collection where you are
+	 *            looking for items that match a search term
+	 * @param searchText
+	 *            <code>String</code> term to be matched
+	 * @return <code>String</code> with the SQL text
+	 */
+	public String buildSelectTotalDataObjectsUnderPathThatMatchSearchText(String parentPath, String searchText);
+
+	/**
+	 * Build query for the number of collections that match the given search term.
+	 *
+	 * @param parentPath
+	 *            <code>String</code> path to the parent collection where you are
+	 *            looking for items that match a search term
+	 * @param searchText
+	 *            <code>String</code> term to be matched
+	 * @return <code>String</code> with the SQL text
+	 */
+	public String buildSelectTotalCollectionsUnderPathThatMatchSearchText(String parentPath, String searchText);
+
+	/**
+	 * Build collection service query of data objects under a parent that match the
+	 * search text
+	 * 
+	 * @param parentPath
+	 *            <code>String</code> path to the parent collection where you are
+	 *            looking for items that match a search term
+	 * @param searchText
+	 *            <code>String</code> with term to be matched
+	 * @param offset
+	 *            <code>int</code> with partial start index
+	 * @param limit
+	 *            <code>int</code> max number of items retrieved
+	 * @return <code>String</code> with the SQL text
+	 **/
+	public String buildSelectDataObjectsUnderPathThatMatchSearchText(String parentPath, String searchText, int offset,
+			int limit, int orderColumn, String orderDir);
+
+	/**
+	 * Build collection service query of collections under a parent that match the
+	 * search text
+	 * 
+	 * @param parentPath
+	 *            <code>String</code> path to the parent collection where you are
+	 *            looking for items that match a search term
+	 * @param searchText
+	 *            <code>String</code> with term to be matched
+	 * @param offset
+	 *            <code>int</code> with partial start index
+	 * @param limit
+	 *            <code>int</code> max number of items retrieved
+	 * @return <code>String</code> with the SQL text
+	 **/
+	public String buildSelectCollectionsUnderPathThatMatchSearchText(String parentPath, String searchText, int offset,
+			int limit, int orderColumn, String orderDir);
+
+	/**
 	 * Creates a specific query based on the metadata search criteria.
 	 *
 	 * @param metadataSearch
@@ -31,7 +91,7 @@ public interface SpecificQueryProvider {
 	 * @param searchAgainstColls
 	 *            <code>boolean</code> Flag set to <code>true</code> when looking
 	 *            for collections. <code>false</code> when looking for data objects.
-	 * @return Specific query string
+	 * @return <code>String</code> with the SQL text
 	 */
 	String buildSpecificQueryForMetadataSearch(List<DataGridMetadataSearch> metadataSearch, String zone,
 			boolean searchAgainstColls);
@@ -100,17 +160,25 @@ public interface SpecificQueryProvider {
 			final String zone, final boolean searchAgainstColls);
 
 	/**
-	 * Build the sql select clause for a data objects properties search
+	 * Build a specific query sql string for searching by file properties, based on
+	 * the search type
 	 * 
-	 * @return <code>String</code> with the select clause
+	 * @param filePropertiesSearch
+	 *            <code>List</code> of {@link DataGridFilePropertySearch} that
+	 *            constitute the query
+	 * @param zone
+	 *            <code>String</code> zone to be looking for data objects or
+	 *            collections
+	 * @param searchAgainstColls
+	 *            <code>boolean</code> Flag set to <code>true</code> when looking
+	 *            for collections. <code>false</code> when looking for data objects.
+	 * @param offset
+	 *            <code>int</code> with query offset
+	 * @param limit
+	 *            <code>int</code> with query results limit
+	 * @return <code>String</code> with the appropriate sql query
 	 */
-	String buildSelectClauseForDataObjectsForPropertiesSearch();
-
-	/**
-	 * Build the sql select clause for a collections properties search
-	 * 
-	 * @return <code>String</code> with the select clause
-	 */
-	String buildSelectClauseForCollectionsForPropertiesSearch();
+	String buildQueryForFilePropertiesSearch(List<DataGridFilePropertySearch> filePropertiesSearches, String zone,
+			boolean searchAgainstColls, int offset, int limit);
 
 }

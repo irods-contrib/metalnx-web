@@ -43,7 +43,7 @@ public class SpecificQueryProviderFactoryImpl implements SpecificQueryProviderFa
 
 		switch (icatTypeEnum) {
 		case POSTGRES:
-			provider = null;
+			provider = new PostgresSpecificQueryProviderImpl();
 			break;
 		case MYSQL:
 			provider = null;
