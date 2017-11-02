@@ -17,6 +17,7 @@
 package com.emc.metalnx.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,7 +117,7 @@ public class FilePropertiesController {
 	public String search(
 			@RequestParam(value = "jsonFilePropertySearch", required = false) String jsonFilePropertySearch,
 			@RequestParam("draw") int draw, @RequestParam("start") int start, @RequestParam("length") int length)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 
 		if (jsonFilePropertySearch != null) {
 			currentPage = (int) (Math.floor(start / length) + 1);
@@ -156,15 +157,28 @@ public class FilePropertiesController {
 			jsonResponse.put("data", dataGridCollectionAndDataObjects);
 
 		} catch (DataGridConnectionRefusedException e) {
+			logger.error("data grid error in search", e);
 			throw e;
-		} catch (Exception e) {
+		} catch (JargonException e) {
 			logger.error("Could not search by metadata: ", e.getMessage());
+			throw e;
+		} catch (ParseException e) {
+			logger.error("Could not search by metadata: ", e.getMessage());
+			throw new JargonException(e);
+		} catch (JsonProcessingException e) {
+			logger.error("Could not search by metadata: ", e.getMessage());
+			throw new JargonException(e);
+		} catch (IOException e) {
+			logger.error("Could not search by metadata: ", e.getMessage());
+			throw new JargonException(e);
 		}
 
 		try {
 			jsonString = mapper.writeValueAsString(jsonResponse);
 		} catch (JsonProcessingException e) {
 			logger.error("Could not parse hashmap in file properties search to json: {}", e.getMessage());
+			throw new JargonException(e);
+
 		}
 
 		return jsonString;

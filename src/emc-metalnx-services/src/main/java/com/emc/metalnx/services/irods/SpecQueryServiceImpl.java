@@ -344,4 +344,19 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	public void setIrodsServices(IRODSServices irodsServices) {
 		this.irodsServices = irodsServices;
 	}
+
+	/**
+	 * @return the adminServices
+	 */
+	public AdminServices getAdminServices() {
+		return adminServices;
+	}
+
+	/**
+	 * @param adminServices
+	 *            the adminServices to set
+	 */
+	public void setAdminServices(AdminServices adminServices) {
+		this.adminServices = adminServices;
+	}
 }
