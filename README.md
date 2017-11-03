@@ -1,6 +1,6 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: branch for issue15 (run versus mysql)
+## Version: 4.2.1.0-SNAPSHOT
 ## Git Tag:
 ## Date: Oct 27, 2017
 
