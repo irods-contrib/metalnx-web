@@ -118,3 +118,11 @@ and database are initially installed and configured, and the properties are all 
 correctly in settings.xml (be sure to activate the appropriate profiles in maven!) You should
 get a clean build running the tests, and once maven has run to get the properties, running
 unit tests in eclipse, etc should also work fine.
+
+### Database Setup
+
+Note that Metalnx needs its own database, and it needs to be initialized. The settings for this initialized
+metalnx database are then reflected in the above metalnx profile.
+
+This involves some plsql to create the database, and the running a tool to initialize or migrate the database.
+This is covered in the README.md in the src/metalnx-tools subproject.

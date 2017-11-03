@@ -24,6 +24,8 @@ metalnx.properties is read from /etc/irods-ext/metalnx.properties during deploym
 image thus expects that file to be mounted as a volume.  See the metalnx.properties file in this
 repository for a template for the /etc/irods-ext/metalnx.properties file expected by the application.
 
+See the DEVELOPER-README.md and the README.md in the src/metalnx-tools for information on configuring the metalnx database.
+
 ## Web app theming and customization
 
 By default, MetaLnx uses the resource support of Spring MVC, e.g. https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-static-resources.

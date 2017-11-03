@@ -459,7 +459,7 @@ public class CollectionController {
         }
 
         List<DataGridCollectionAndDataObject> list = null;
-        list = cs.getSubCollectionsAndDataObjetsUnderPath(path);
+        list = cs.getSubCollectionsAndDataObjectsUnderPath(path);
 
         Set<String> readPermissions = null;
         Set<String> writePermissions = null;
@@ -527,7 +527,7 @@ public class CollectionController {
         if (!isPathEmpty) {
             // When adding a user (there is no username), we still need to be
             // able to walk through the iRODS tree
-            list = cs.getSubCollectionsAndDataObjetsUnderPath(path);
+            list = cs.getSubCollectionsAndDataObjectsUnderPath(path);
 
             if (!isUsernameEmpty) {
                 if (retrievePermissions) {
@@ -850,7 +850,7 @@ public class CollectionController {
 
             Double startPage = Math.floor(start / length) + 1;
             dataGridCollectionAndDataObjects =
-                    cs.getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(path, searchString,
+                    cs.getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(path, searchString,
                             startPage.intValue(), length, orderColumn, orderDir, pageContext);
             totalObjsForCurrentSearch = pageContext.getTotalNumberOfItems();
             totalObjsForCurrentPath = pageContext.getTotalNumberOfItems();
