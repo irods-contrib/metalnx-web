@@ -46,7 +46,6 @@ import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -68,9 +67,6 @@ public class MetadataServiceImpl implements MetadataService {
 
 	@Autowired
 	PermissionsService permissionsService;
-
-	@Autowired
-	private CollectionService collectionService;
 
 	private static final Logger logger = LoggerFactory.getLogger(MetadataServiceImpl.class);
 

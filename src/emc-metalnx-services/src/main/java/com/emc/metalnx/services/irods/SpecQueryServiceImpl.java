@@ -218,6 +218,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			boolean searchAgainstColls)
 			throws DataGridConnectionRefusedException, UnsupportedDataGridFeatureException, JargonException {
 
+		logger.info("countItemsMatchingFileProperties()");
 		int totalItems = 0;
 
 		SpecificQueryAO specificQueryAO = null;
@@ -232,6 +233,8 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			SpecificQueryProvider provider = specificQueryProviderFactory.instance(clientHints.whatTypeOfIcatIsIt());
 			String query = provider.buildQueryCountItemsMatchingPropertiesSearch(filePropertiesSearch, zone,
 					searchAgainstColls);
+
+			logger.debug("query:{}", query);
 
 			// Creating Specific Query instance
 			SpecificQueryDefinition queryDef = new SpecificQueryDefinition();
@@ -290,7 +293,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 			specQuery = SpecificQuery.instanceWithNoArguments(userSQLAlias, 0, zone);
 
-			logger.info("Specific query: {}", query.toString());
+			logger.info("Specific query: {}", query);
 
 			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, 99999, 0);
 		} catch (JargonException e) {

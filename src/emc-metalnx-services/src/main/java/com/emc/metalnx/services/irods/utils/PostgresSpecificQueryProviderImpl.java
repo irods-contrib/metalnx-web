@@ -203,29 +203,28 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 			String zone, boolean searchAgainstColls) {
 
 		StringBuilder query = new StringBuilder();
-		String tableName = "SELECT r_data_main.data_name as name, r_data_main.data_repl_num as repl_num,"
-				+ "	r_data_main.data_owner_name as owner_name, r_data_main.data_owner_zone as owner_zone, "
-				+ "	r_data_main.data_size as size, r_data_main.resc_name, "
-				+ " CASE WHEN r_coll_main.parent_coll_name = '/' THEN '/' || r_data_main.data_name ELSE r_coll_main.coll_name || '/' || r_data_main.data_name END as path, "
-				+ "	r_data_main.data_checksum as checksum, CAST(r_data_main.create_ts AS BIGINT),  "
-				+ "	CAST(r_data_main.modify_ts AS BIGINT) FROM r_data_main INNER JOIN r_coll_main ON "
-				+ "	r_data_main.coll_id = r_coll_main.coll_id";
+		StringBuilder selStringBuilder = new StringBuilder();
+
 		if (searchAgainstColls) {
-			tableName = "SELECT replace(r_coll_main.coll_name, r_coll_main.parent_coll_name || '/', '') AS name, 0 AS repl_num,"
-					+ "	r_coll_main.coll_owner_name AS owner_name, r_coll_main.coll_owner_zone AS owner_zone, 0 AS size, "
-					+ "	'' AS resc_name, r_coll_main.coll_name AS path, '' AS checksum, "
-					+ "	CAST(r_coll_main.create_ts AS BIGINT), CAST(r_coll_main.modify_ts AS BIGINT) FROM r_coll_main  ";
+			selStringBuilder.append(buildSelectClauseForCountCollectionsForPropertiesSearch());
+		} else {
+			selStringBuilder.append(buildSelectClauseForCountDataObjectsForPropertiesSearch());
 		}
-		query.append("SELECT COUNT(*) FROM	( " + tableName + " ) AS fileProperties  WHERE");
+
+		query.append("SELECT COUNT(*) FROM	( ");
+		query.append(selStringBuilder);
+		query.append(" ) AS fileProperties  WHERE ");
 
 		for (int i = 0; i < filePropertiesSearch.size(); i++) {
-			query.append(buildQueryForFilePropertiesSearch(filePropertiesSearch, zone, searchAgainstColls, 0, 0));
+
+			query.append(buildWhereClauseForDataGridPropertySearch(filePropertiesSearch.get(i).getAttribute(),
+					filePropertiesSearch.get(i).getOperator(), filePropertiesSearch.get(i).getValue()));
 
 			if (i < filePropertiesSearch.size() - 1) {
 				query.append(" AND ");
 			}
 		}
-		return null;
+		return query.toString();
 	}
 
 	@Override
@@ -267,6 +266,41 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 
 	}
 
+	/**
+	 * select clause for count data objects matching file properties query
+	 * 
+	 * @return <code>String</code> with select
+	 */
+	private String buildSelectClauseForCountDataObjectsForPropertiesSearch() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT r_data_main.data_name as name, r_data_main.data_repl_num as repl_num,");
+		sb.append("	r_data_main.data_owner_name as owner_name, r_data_main.data_owner_zone as owner_zone, ");
+		sb.append("	r_data_main.data_size as size, r_data_main.resc_name, ");
+		sb.append(
+				" CASE WHEN r_coll_main.parent_coll_name = '/' THEN '/' || r_data_main.data_name ELSE r_coll_main.coll_name || '/' || r_data_main.data_name END as path, ");
+		sb.append("	r_data_main.data_checksum as checksum, CAST(r_data_main.create_ts AS BIGINT),  ");
+		sb.append("	CAST(r_data_main.modify_ts AS BIGINT) FROM r_data_main INNER JOIN r_coll_main ON ");
+		sb.append("	r_data_main.coll_id = r_coll_main.coll_id");
+		return sb.toString();
+
+	}
+
+	/**
+	 * select clause for count collections matching file properties query
+	 * 
+	 * @return <code>String</code> with select
+	 */
+	private String buildSelectClauseForCountCollectionsForPropertiesSearch() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(
+				"SELECT replace(r_coll_main.coll_name, r_coll_main.parent_coll_name || '/', '') AS name, 0 AS repl_num,");
+		sb.append("	r_coll_main.coll_owner_name AS owner_name, r_coll_main.coll_owner_zone AS owner_zone, 0 AS size, ");
+		sb.append("	'' AS resc_name, r_coll_main.coll_name AS path, '' AS checksum, ");
+		sb.append("	CAST(r_coll_main.create_ts AS BIGINT), CAST(r_coll_main.modify_ts AS BIGINT) FROM r_coll_main  ");
+		return sb.toString();
+	}
+
 	private String buildSelectClauseForDataObjectsForPropertiesSearch() {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT * 	FROM ( ");
@@ -294,8 +328,26 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 		return query.toString();
 	}
 
-	public String buildSelectClauseForCollectionsForPropertiesSearch() {
-		return null;
+	private String buildSelectClauseForCollectionsForPropertiesSearch() {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT * 	FROM ( ");
+		query.append("	SELECT");
+		query.append("  	replace(r_coll_main.coll_name, r_coll_main.parent_coll_name || '/', '') AS name, ");
+		query.append(" 		0 AS repl_num, ");
+		query.append("  	r_coll_main.coll_owner_name AS owner_name, ");
+		query.append("  	r_coll_main.coll_owner_zone AS owner_zone, ");
+		query.append("  	0 AS size, ");
+		query.append("  	'' AS resc_name, ");
+		query.append("  	r_coll_main.coll_name AS path, ");
+		query.append("  	'' AS checksum, ");
+		query.append("  	CAST(r_coll_main.create_ts AS BIGINT), ");
+		query.append("  	CAST(r_coll_main.modify_ts AS BIGINT) ");
+		query.append("	FROM");
+		query.append("  	r_coll_main ");
+		query.append(" ) AS fileProperties ");
+		query.append("WHERE ");
+
+		return query.toString();
 	}
 
 	@Override

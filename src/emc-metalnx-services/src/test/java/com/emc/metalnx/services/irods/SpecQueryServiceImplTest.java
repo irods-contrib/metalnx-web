@@ -1,7 +1,5 @@
 package com.emc.metalnx.services.irods;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
 import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
+import com.emc.metalnx.core.domain.entity.enums.FilePropertyField;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 
@@ -57,6 +57,16 @@ public class SpecQueryServiceImplTest {
 
 	public static final String DATA_AVU_ATTR2 = "specQueryData2";
 	public static final String DATA_AVU_VAL2 = "specQueryDataVal2";
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		irodsFileSystem.closeAndEatExceptions();
+	}
+
+	@After
+	public void afterEach() throws Exception {
+		irodsFileSystem.closeAndEatExceptions();
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -124,16 +134,6 @@ public class SpecQueryServiceImplTest {
 				dataObjectAO.addAVUMetadata(childIrods.getAbsolutePath(), dataToAdd);
 			}
 		}
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		irodsFileSystem.closeAndEatExceptions();
-	}
-
-	@After
-	public void afterEach() throws Exception {
-		irodsFileSystem.closeAndEatExceptions();
 	}
 
 	@Test
@@ -245,18 +245,121 @@ public class SpecQueryServiceImplTest {
 	}
 
 	@Test
-	public void testSearchByFileProperties() {
-		fail("Not yet implemented");
+	public void testSearchByFilePropertiesForDataObjects() throws Exception {
+		SpecQueryServiceImpl specQueryService = new SpecQueryServiceImpl();
+		IRODSServices irodsService = Mockito.mock(IRODSServices.class);
+		AdminServices adminServices = Mockito.mock(AdminServices.class);
+
+		IRODSAccount irodsAccount = testingPropertiesHelper.buildIRODSAccountFromTestProperties(testingProperties);
+		IRODSAccount test3Account = testingPropertiesHelper
+				.buildIRODSAccountFromSecondaryTestProperties(testingProperties);
+
+		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getEnvironmentalInfoAO(irodsAccount);
+		SpecificQueryAO specificQueryAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getSpecificQueryAO(irodsAccount);
+
+		Mockito.when(irodsService.getEnvironmentalInfoAO()).thenReturn(environmentalInfoAO);
+		Mockito.when(adminServices.getSpecificQueryAO()).thenReturn(specificQueryAO);
+
+		specQueryService.setIrodsServices(irodsService);
+		specQueryService.setAdminServices(adminServices);
+		List<DataGridFilePropertySearch> filePropertiesSearch = new ArrayList<>();
+		DataGridFilePropertySearch dataSearch = new DataGridFilePropertySearch(FilePropertyField.OWNER_NAME,
+				DataGridSearchOperatorEnum.EQUAL, test3Account.getUserName()); // use test3 because its smaller
+		filePropertiesSearch.add(dataSearch);
+		dataSearch = new DataGridFilePropertySearch(FilePropertyField.SIZE, DataGridSearchOperatorEnum.BIGGER_THAN,
+				"200");
+		filePropertiesSearch.add(dataSearch);
+		SpecificQueryResultSet result = specQueryService.searchByFileProperties(filePropertiesSearch,
+				irodsAccount.getZone(), false, null, 0, 0);
+		Assert.assertFalse("no result", result.getResults().isEmpty());
 	}
 
 	@Test
-	public void testCountCollectionsMatchingFileProperties() {
-		fail("Not yet implemented");
+	public void testSearchByFilePropertiesForCollections() throws Exception {
+		SpecQueryServiceImpl specQueryService = new SpecQueryServiceImpl();
+		IRODSServices irodsService = Mockito.mock(IRODSServices.class);
+		AdminServices adminServices = Mockito.mock(AdminServices.class);
+
+		IRODSAccount irodsAccount = testingPropertiesHelper.buildIRODSAccountFromTestProperties(testingProperties);
+		IRODSAccount test3Account = testingPropertiesHelper
+				.buildIRODSAccountFromSecondaryTestProperties(testingProperties);
+
+		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getEnvironmentalInfoAO(irodsAccount);
+		SpecificQueryAO specificQueryAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getSpecificQueryAO(irodsAccount);
+
+		Mockito.when(irodsService.getEnvironmentalInfoAO()).thenReturn(environmentalInfoAO);
+		Mockito.when(adminServices.getSpecificQueryAO()).thenReturn(specificQueryAO);
+
+		specQueryService.setIrodsServices(irodsService);
+		specQueryService.setAdminServices(adminServices);
+		List<DataGridFilePropertySearch> filePropertiesSearch = new ArrayList<>();
+		DataGridFilePropertySearch dataSearch = new DataGridFilePropertySearch(FilePropertyField.OWNER_NAME,
+				DataGridSearchOperatorEnum.EQUAL, test3Account.getUserName());
+		filePropertiesSearch.add(dataSearch);
+		SpecificQueryResultSet result = specQueryService.searchByFileProperties(filePropertiesSearch,
+				irodsAccount.getZone(), true, null, 0, 0);
+		Assert.assertFalse("no result", result.getResults().isEmpty());
 	}
 
 	@Test
-	public void testCountDataObjectsMatchingFileProperties() {
-		fail("Not yet implemented");
+	public void testCountCollectionsMatchingFileProperties() throws Exception {
+		SpecQueryServiceImpl specQueryService = new SpecQueryServiceImpl();
+		IRODSServices irodsService = Mockito.mock(IRODSServices.class);
+		AdminServices adminServices = Mockito.mock(AdminServices.class);
+
+		IRODSAccount irodsAccount = testingPropertiesHelper.buildIRODSAccountFromTestProperties(testingProperties);
+
+		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getEnvironmentalInfoAO(irodsAccount);
+		SpecificQueryAO specificQueryAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getSpecificQueryAO(irodsAccount);
+
+		Mockito.when(irodsService.getEnvironmentalInfoAO()).thenReturn(environmentalInfoAO);
+		Mockito.when(adminServices.getSpecificQueryAO()).thenReturn(specificQueryAO);
+
+		specQueryService.setIrodsServices(irodsService);
+		specQueryService.setAdminServices(adminServices);
+		List<DataGridFilePropertySearch> filePropertiesSearch = new ArrayList<>();
+		DataGridFilePropertySearch dataSearch = new DataGridFilePropertySearch(FilePropertyField.OWNER_NAME,
+				DataGridSearchOperatorEnum.EQUAL, irodsAccount.getUserName());
+		filePropertiesSearch.add(dataSearch);
+		int count = specQueryService.countCollectionsMatchingFileProperties(filePropertiesSearch,
+				irodsAccount.getZone());
+		Assert.assertTrue("no recs returned", count > 1);
+	}
+
+	@Test
+	public void testCountDataObjectsMatchingFileProperties() throws Exception {
+		SpecQueryServiceImpl specQueryService = new SpecQueryServiceImpl();
+		IRODSServices irodsService = Mockito.mock(IRODSServices.class);
+		AdminServices adminServices = Mockito.mock(AdminServices.class);
+
+		IRODSAccount irodsAccount = testingPropertiesHelper.buildIRODSAccountFromTestProperties(testingProperties);
+
+		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getEnvironmentalInfoAO(irodsAccount);
+		SpecificQueryAO specificQueryAO = irodsFileSystem.getIRODSAccessObjectFactory()
+				.getSpecificQueryAO(irodsAccount);
+
+		Mockito.when(irodsService.getEnvironmentalInfoAO()).thenReturn(environmentalInfoAO);
+		Mockito.when(adminServices.getSpecificQueryAO()).thenReturn(specificQueryAO);
+
+		specQueryService.setIrodsServices(irodsService);
+		specQueryService.setAdminServices(adminServices);
+		List<DataGridFilePropertySearch> filePropertiesSearch = new ArrayList<>();
+		DataGridFilePropertySearch dataSearch = new DataGridFilePropertySearch(FilePropertyField.OWNER_NAME,
+				DataGridSearchOperatorEnum.EQUAL, irodsAccount.getUserName());
+		filePropertiesSearch.add(dataSearch);
+		dataSearch = new DataGridFilePropertySearch(FilePropertyField.SIZE, DataGridSearchOperatorEnum.BIGGER_THAN,
+				"200");
+		filePropertiesSearch.add(dataSearch);
+		int count = specQueryService.countDataObjectsMatchingFileProperties(filePropertiesSearch,
+				irodsAccount.getZone());
+		Assert.assertTrue("no recs returned", count > 1);
 	}
 
 }

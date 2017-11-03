@@ -16,13 +16,12 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExistsException;
-import com.emc.metalnx.services.interfaces.*;
-import com.emc.metalnx.services.machine.util.DataGridUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -34,139 +33,136 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridFileAlreadyExistsException;
+import com.emc.metalnx.services.interfaces.FileOperationService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.ResourceService;
+import com.emc.metalnx.services.interfaces.RuleService;
+import com.emc.metalnx.services.interfaces.UploadService;
+import com.emc.metalnx.services.machine.util.DataGridUtils;
 
 @Service
 @Transactional
 public class UploadServiceImpl implements UploadService {
 
-    private static final int BUFFER_SIZE = 4 * 1024 * 1024;
-    private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
+	private static final int BUFFER_SIZE = 4 * 1024 * 1024;
+	private static final Logger logger = LoggerFactory.getLogger(UploadServiceImpl.class);
 
-    @Autowired
-    private CollectionService cs;
+	@Autowired
+	private RuleService rs;
 
-    @Autowired
-    private RuleService rs;
+	@Autowired
+	private FileOperationService fos;
 
-    @Autowired
-    private FileOperationService fos;
+	@Autowired
+	private IRODSServices is;
 
-    @Autowired
-    private IRODSServices is;
+	@Autowired
+	private ResourceService resourceService;
 
-    @Autowired
-    private MSIService msiService;
+	@Override
+	public boolean upload(MultipartFile file, String targetPath, boolean computeCheckSum, boolean replicateFile,
+			String replicationResc, String destResc, boolean overwrite) throws DataGridException {
 
-    @Autowired
-    private IRODSAccessObjectFactory irodsAccessObjectFactory;
+		if (file == null || file.isEmpty() || "".equals(targetPath) || targetPath == null || "".equals(destResc)
+				|| destResc == null) {
+			logger.error("File could not be sent to the data grid.");
+			return false;
+		}
 
-    @Autowired
-    private ResourceService resourceService;
+		InputStream inputStream;
+		try {
+			inputStream = file.getInputStream();
+		} catch (IOException e) {
+			logger.error("Could not get input stream from file: ", e.getMessage());
+			throw new DataGridException("Could not get input stream from file.");
+		}
 
-    @Override
-    public boolean upload(MultipartFile file, String targetPath, boolean computeCheckSum, boolean replicateFile,
-                          String replicationResc, String destResc, boolean overwrite)
-            throws DataGridException {
+		String defaultStorageResource = is.getDefaultStorageResource();
 
-        if (file == null || file.isEmpty() || "".equals(targetPath) || targetPath == null
-                || "".equals(destResc) || destResc == null) {
-            logger.error("File could not be sent to the data grid.");
-            return false;
-        }
+		logger.info("Setting default resource to {}", destResc);
 
-        InputStream inputStream;
-        try {
-            inputStream = file.getInputStream();
-        } catch (IOException e) {
-            logger.error("Could not get input stream from file: ", e.getMessage());
-            throw new DataGridException("Could not get input stream from file.");
-        }
+		// Setting temporarily the defaultStorageResource for the logged user
+		is.setDefaultStorageResource(destResc);
 
-        String defaultStorageResource = is.getDefaultStorageResource();
+		boolean isFileUploaded;
 
-        logger.info("Setting default resource to {}", destResc);
+		// Getting DataObjectAO in order to create the new file
+		IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
+		Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
+		IRODSFile targetFile = null;
 
-        // Setting temporarily the defaultStorageResource for the logged user
-        is.setDefaultStorageResource(destResc);
+		try {
+			String fileName = file.getOriginalFilename();
 
-        boolean isFileUploaded;
+			if (fileName.isEmpty())
+				fileName = file.getName();
 
-        // Getting DataObjectAO in order to create the new file
-        IRODSFileFactory irodsFileFactory = is.getIRODSFileFactory();
-        Stream2StreamAO stream2StreamA0 = is.getStream2StreamAO();
-        IRODSFile targetFile = null;
+			targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
 
-        try {
-            String fileName = file.getOriginalFilename();
+			// file already exists and we do not want to overwrite it, the transferring is
+			// aborted.
+			if (targetFile.exists() && !overwrite) {
+				String msg = "File already exists. Not overwriting it.";
+				logger.info(msg);
+				throw new DataGridFileAlreadyExistsException(msg);
+			}
 
-            if (fileName.isEmpty()) fileName = file.getName();
+			// Transfering file to iRODS filesystem
+			stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
 
-            targetFile = irodsFileFactory.instanceIRODSFile(targetPath, fileName);
+			// Computing a check sum for this file just uploaded to iRODS
+			if (computeCheckSum)
+				fos.computeChecksum(targetPath, fileName);
 
-            // file already exists and we do not want to overwrite it, the transferring is aborted.
-            if (targetFile.exists() && !overwrite) {
-                String msg = "File already exists. Not overwriting it.";
-                logger.info(msg);
-                throw new DataGridFileAlreadyExistsException(msg);
-            }
+			// Replicating file into desired resource
+			if (replicateFile)
+				fos.replicateDataObject(targetFile.getPath(), replicationResc, false);
 
-            // Transfering file to iRODS filesystem
-            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
+			// Getting list of resources for upload
+			HashMap<String, String> resourceMap = null;
+			try {
+				ResourceAO resourceAO = is.getResourceAO();
+				resourceMap = DataGridUtils.buildMapForResourcesNamesAndMountPoints(resourceAO.findAll());
+			} catch (JargonException e) {
+				logger.error("Could not build Resource map for upload", e);
+				throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
+			}
 
-            // Computing a check sum for this file just uploaded to iRODS
-            if (computeCheckSum) fos.computeChecksum(targetPath, fileName);
+			String objPath = targetFile.getCanonicalPath();
+			String filePath = resourceMap.get(destResc) + objPath.substring(objPath.indexOf("/", 1), objPath.length());
 
-            // Replicating file into desired resource
-            if (replicateFile) fos.replicateDataObject(targetFile.getPath(), replicationResc, false);
+			DataGridResource dgDestResc = resourceService.find(destResc);
+			String host = dgDestResc.getHost();
 
-            // Getting list of resources for upload
-            HashMap<String, String> resourceMap = null;
-            try {
-                ResourceAO resourceAO = is.getResourceAO();
-                resourceMap = DataGridUtils.buildMapForResourcesNamesAndMountPoints(resourceAO.findAll());
-            }
-            catch (JargonException e) {
-                logger.error("Could not build Resource map for upload", e);
-                throw new DataGridException("Procedures not run after upload. Resource Map creation failed.");
-            }
+			rs.execBamCramMetadataRule(host, objPath, filePath);
+			rs.execVCFMetadataRule(host, objPath, filePath);
+			rs.execPopulateMetadataRule(host, objPath);
+			rs.execImageRule(host, objPath, filePath);
+			rs.execIlluminaMetadataRule(dgDestResc, targetPath, objPath);
+			rs.execManifestFileRule(host, targetPath, objPath, filePath);
 
-            String objPath = targetFile.getCanonicalPath();
-            String filePath = resourceMap.get(destResc) +
-                    objPath.substring(objPath.indexOf("/", 1), objPath.length());
+			isFileUploaded = true;
+		} catch (JargonException e) {
+			fos.deleteDataObject(targetFile.getPath(), true);
+			logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
+			throw new DataGridException("Upload failed. Resource(s) might be full.");
+		} catch (IOException e) {
+			logger.error("Could not get canonical path", e.getMessage());
+			throw new DataGridException("Could not get canonical path");
+		} finally {
+			try {
+				inputStream.close(); // Closing streams opened
+			} catch (IOException e) {
+				logger.error("Could close stream: ", e.getMessage());
+			}
+		}
 
-            DataGridResource dgDestResc = resourceService.find(destResc);
-            String host = dgDestResc.getHost();
+		// Setting the default resource back to the original one.
+		is.setDefaultStorageResource(defaultStorageResource);
 
-            rs.execBamCramMetadataRule(host, objPath, filePath);
-            rs.execVCFMetadataRule(host, objPath, filePath);
-            rs.execPopulateMetadataRule(host, objPath);
-            rs.execImageRule(host, objPath, filePath);
-            rs.execIlluminaMetadataRule(dgDestResc, targetPath, objPath);
-            rs.execManifestFileRule(host, targetPath, objPath, filePath);
-
-            isFileUploaded = true;
-        } catch (JargonException e) {
-            fos.deleteDataObject(targetFile.getPath(), true);
-            logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
-            throw new DataGridException("Upload failed. Resource(s) might be full.");
-        } catch (IOException e) {
-            logger.error("Could not get canonical path", e.getMessage());
-            throw new DataGridException("Could not get canonical path");
-        } finally {
-            try {
-                inputStream.close(); // Closing streams opened
-            } catch (IOException e) {
-                logger.error("Could close stream: ", e.getMessage());
-            }
-        }
-
-        // Setting the default resource back to the original one.
-        is.setDefaultStorageResource(defaultStorageResource);
-
-        return isFileUploaded;
-    }
+		return isFileUploaded;
+	}
 }
