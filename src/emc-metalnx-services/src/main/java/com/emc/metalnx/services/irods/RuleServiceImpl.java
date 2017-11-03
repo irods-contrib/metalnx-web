@@ -118,7 +118,7 @@ public class RuleServiceImpl implements RuleService {
 
         DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, host);
 
-        List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
+        List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjectsUnderPath(targetPath);
 
         for (DataGridCollectionAndDataObject obj : objs) {
             logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, obj.getPath());

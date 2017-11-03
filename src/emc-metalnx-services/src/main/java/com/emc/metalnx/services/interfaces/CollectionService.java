@@ -91,7 +91,7 @@ public interface CollectionService {
      * @throws DataGridQueryException
      * @throws DataGridException
      */
-    List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(String path, String searchText,
+    List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(String path, String searchText,
             int pageNum, int pageSize, int orderColumn, String orderDir, DataGridPageContext pageContext)
             throws DataGridDataNotFoundException, DataGridException, DataGridQueryException;
 
@@ -143,7 +143,7 @@ public interface CollectionService {
      * @return list of collections and data objects existing under a path
      * @throws DataGridConnectionRefusedException
      */
-    List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPath(String path) throws DataGridConnectionRefusedException;
+    List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPath(String path) throws DataGridConnectionRefusedException;
 
     /**
      * Create a collection in iRODS

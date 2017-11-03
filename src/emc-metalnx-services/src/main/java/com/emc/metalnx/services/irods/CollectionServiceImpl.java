@@ -106,10 +106,11 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
 			throws DataGridConnectionRefusedException {
+		logger.info("isFileInCollection()");
 		if (filename == null || collectionPath == null)
 			return false;
 
-		List<DataGridCollectionAndDataObject> items = getSubCollectionsAndDataObjetsUnderPath(collectionPath);
+		List<DataGridCollectionAndDataObject> items = getSubCollectionsAndDataObjectsUnderPath(collectionPath);
 
 		for (DataGridCollectionAndDataObject i : items) {
 			if (!i.isCollection() && filename.equals(i.getName()))
@@ -121,6 +122,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean isPathValid(String path) {
+		logger.info("isPathValid()");
+
 		boolean isValid = false;
 
 		try {
@@ -134,6 +137,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean isCollection(String path) throws DataGridException {
+		logger.info("isCollection()");
+
 		if (path == null || path.isEmpty())
 			return false;
 
@@ -157,6 +162,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean isDataObject(String path) throws DataGridException {
+		logger.info("isDataObject()");
+
 		if (path == null || path.isEmpty())
 			return false;
 
@@ -179,10 +186,12 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPathThatMatchSearchTextPaginated(
+	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(
 			String parentPath, String searchText, int pageNum, int pageSize, int orderColumn, String orderDir,
 			DataGridPageContext pageContext)
 			throws DataGridDataNotFoundException, DataGridQueryException, DataGridException {
+
+		logger.info("getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated()");
 
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
 
@@ -248,6 +257,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public String getPermissionsForPath(String path) throws DataGridConnectionRefusedException {
 
+		logger.info("getPermissionsForPath()");
+
 		FilePermissionEnum filePermissionEnum = null;
 		String permissionType = "none";
 
@@ -279,6 +290,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public int getTotalNumberOfReplsForDataObject(String path) throws DataGridException {
 
+		logger.info("getTotalNumberOfReplsForDataObject()");
+
 		int totalNumberOfRepls = 0;
 
 		if (path == null || path.isEmpty()) {
@@ -304,6 +317,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public Map<DataGridCollectionAndDataObject, DataGridResource> listReplicasByResource(String path)
 			throws DataGridConnectionRefusedException {
+
+		logger.info("listReplicasByResource()");
 
 		logger.info("Listing all replicas of " + path);
 		Map<DataGridCollectionAndDataObject, DataGridResource> map = new HashMap<DataGridCollectionAndDataObject, DataGridResource>();
@@ -331,8 +346,10 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjetsUnderPath(String parent)
+	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPath(String parent)
 			throws DataGridConnectionRefusedException {
+
+		logger.info("getSubCollectionsAndDataObjectsUnderPath()");
 
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
@@ -359,6 +376,8 @@ public class CollectionServiceImpl implements CollectionService {
 	public List<DataGridCollectionAndDataObject> getSubCollectionsUnderPath(String parent)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("getSubCollectionsUnderPath()");
+
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = null;
@@ -381,6 +400,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean createCollection(DataGridCollectionAndDataObject collection) throws DataGridException {
+
+		logger.info("createCollection()");
 
 		boolean collCreated;
 
@@ -416,6 +437,8 @@ public class CollectionServiceImpl implements CollectionService {
 	public List<DataGridCollectionAndDataObject> searchCollectionAndDataObjectsByName(String collectionName)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("searchCollectionAndDataObjectsByName()");
+
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
 		List<CollectionAndDataObjectListingEntry> collectionAndDataObjects = null;
@@ -435,6 +458,9 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public DataGridCollectionAndDataObject findByName(String path) throws DataGridException {
+
+		logger.info("findByName()");
+
 		if (path == null) {
 			logger.info("Could not find collection or data object by name: path is null");
 			return null;
@@ -465,6 +491,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public boolean modifyCollectionAndDataObject(String previousPath, String newPath, boolean inheritOption)
 			throws DataGridConnectionRefusedException {
+
+		logger.info("modifyCollectionAndDataObject()");
 
 		IRODSFileSystemAO irodsFileSystemAO = irodsServices.getIRODSFileSystemAO();
 		IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
@@ -559,6 +587,9 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public Set<String> listInheritanceForPath(String path) throws DataGridConnectionRefusedException {
+
+		logger.info("listInheritanceForPath()");
+
 		Set<String> collections = new HashSet<String>();
 
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
@@ -585,6 +616,8 @@ public class CollectionServiceImpl implements CollectionService {
 	public boolean updateInheritanceOptions(Map<String, Boolean> toAdd, Map<String, Boolean> toRemove, String zoneName)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("updateInheritanceOptions()");
+
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
 		try {
 			for (String addColl : toAdd.keySet()) {
@@ -604,6 +637,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public int countAll() throws DataGridConnectionRefusedException {
+		logger.info("countAll()");
+
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
 
 		try {
@@ -619,8 +654,10 @@ public class CollectionServiceImpl implements CollectionService {
 	public Set<String> listWritePermissionsForPathAndGroupRecursive(String path, String groupName)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("listWritePermissionsForPathAndGroupRecursive()");
+
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
-		List<DataGridCollectionAndDataObject> children = getSubCollectionsAndDataObjetsUnderPath(path);
+		List<DataGridCollectionAndDataObject> children = getSubCollectionsAndDataObjectsUnderPath(path);
 		Set<String> list = new HashSet<String>();
 
 		for (DataGridCollectionAndDataObject child : children) {
@@ -650,11 +687,15 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public String prepareFilesForDownload(String[] paths) throws IOException, DataGridException {
+		logger.info("prepareFilesForDownload()");
+
 		return prepareFilesForDownload(Arrays.asList(paths));
 	}
 
 	@Override
 	public String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException {
+		logger.info("prepareFilesForDownload()");
+
 		logger.info("Preparing files for download");
 		if (sourcePaths == null || sourcePaths.isEmpty()) {
 			return "";
@@ -706,6 +747,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean getInheritanceOptionForCollection(String collPath) throws DataGridConnectionRefusedException {
+		logger.info("getInheritanceOptionForCollection()");
+
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
 		try {
 			return collectionAO.isCollectionSetForPermissionInheritance(collPath);
@@ -719,6 +762,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public int getReplicationNumber(String path) throws DataGridConnectionRefusedException {
+		logger.info("getReplicationNumber()");
+
 		logger.debug("Getting replication number of " + path);
 
 		DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
@@ -739,6 +784,8 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public String getChecksum(String path) throws DataGridConnectionRefusedException {
+		logger.info("getChecksum()");
+
 		logger.debug("Getting checksum of " + path);
 		DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
 		DataObject dataObject = null;
@@ -759,6 +806,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public List<DataGridCollectionAndDataObject> mapListingEntryToDataGridCollectionAndDataObject(
 			List<CollectionAndDataObjectListingEntry> entries) {
+		logger.info("mapListingEntryToDataGridCollectionAndDataObject()");
+
 		logger.debug("Mapping a CollectionAndDataObjectListingEntry list into a DataGridCollectionAndDataObject list");
 
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<DataGridCollectionAndDataObject>();
@@ -771,6 +820,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public DataGridCollectionAndDataObject mapListingEntryToDataGridCollectionAndDataObject(
 			CollectionAndDataObjectListingEntry entry) {
+		logger.info("mapListingEntryToDataGridCollectionAndDataObject()");
+
 		logger.debug("Mapping a CollectionAndDataObjectListingEntry into a " + "DataGridCollectionAndDataObject");
 
 		String entryPath = "";
@@ -842,6 +893,8 @@ public class CollectionServiceImpl implements CollectionService {
 	private boolean compressTempFolderIntoDataGrid(String filePathToBeBundled, String bundleFilePathTobeCreated,
 			String resource) throws DataGridConnectionRefusedException {
 
+		logger.info("compressTempFolderIntoDataGrid()");
+
 		boolean isZipFileCreatedSuccessfully = false;
 		BulkFileOperationsAO bulkFileOperationsAO = null;
 
@@ -877,6 +930,14 @@ public class CollectionServiceImpl implements CollectionService {
 	private List<DataGridCollectionAndDataObject> listCollectionsUnderPathThatMatchSearchText(String parentPath,
 			String searchText, int offset, int limit, int orderColumn, String orderDir)
 			throws DataGridConnectionRefusedException {
+
+		logger.info("listCollectionsUnderPathThatMatchSearchText()");
+		logger.info("parentPath:{}", parentPath);
+		logger.info("searchText:{}", searchText);
+		logger.info("offset:{}", offset);
+		logger.info("limit:{}", limit);
+		logger.info("orderColumn:{}", orderColumn);
+		logger.info("orderDir:{}", orderDir);
 
 		SpecificQueryAO specificQueryAO = adminServices.getSpecificQueryAO();
 
@@ -916,6 +977,7 @@ public class CollectionServiceImpl implements CollectionService {
 			args.add(String.valueOf(limit));
 
 			SpecificQuery specQuery = SpecificQuery.instanceArguments(sqlQueryAlias, args, 0, zone);
+			logger.debug("specificQuery for text search:{}", specQuery);
 
 			SpecificQueryResultSet queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery,
 					MAX_RESULTS_PER_PAGE, 0);
@@ -957,6 +1019,15 @@ public class CollectionServiceImpl implements CollectionService {
 	private List<DataGridCollectionAndDataObject> listDataObjectsUnderPathThatMatchSearchText(String parentPath,
 			String searchText, int offset, int limit, int orderColumn, String orderDir)
 			throws DataNotFoundException, JargonQueryException, DataGridConnectionRefusedException {
+
+		logger.info("listDataObjectsUnderPathThatMatchSearchText()");
+
+		logger.info("parentPath:{}", parentPath);
+		logger.info("searchText:{}", searchText);
+		logger.info("offset:{}", offset);
+		logger.info("limit:{}", limit);
+		logger.info("orderColumn:{}", orderColumn);
+		logger.info("orderDir:{}", orderDir);
 
 		SpecificQueryAO specificQueryAO = adminServices.getSpecificQueryAO();
 
@@ -1029,6 +1100,9 @@ public class CollectionServiceImpl implements CollectionService {
 	 */
 	private int getTotalCollectionsUnderPathThatMatchSearchText(String parentPath, String searchText)
 			throws DataGridConnectionRefusedException {
+
+		logger.info("getTotalCollectionsUnderPathThatMatchSearchText()");
+
 		SpecificQueryAO specificQueryAO = adminServices.getSpecificQueryAO();
 
 		int totalNumberOfItems = 0;
@@ -1095,6 +1169,11 @@ public class CollectionServiceImpl implements CollectionService {
 	private int getTotalDataObjectsUnderPathThatMatchSearchText(String parentPath, String searchText)
 			throws DataNotFoundException, JargonQueryException, DataGridConnectionRefusedException {
 
+		logger.info("getTotalCollectionsUnderPathThatMatchSearchText()");
+
+		logger.info("parentPath:{}", parentPath);
+		logger.info("searchText:{}", searchText);
+
 		SpecificQueryAO specificQueryAO = adminServices.getSpecificQueryAO();
 
 		SpecificQueryDefinition queryDef = null;
@@ -1146,11 +1225,15 @@ public class CollectionServiceImpl implements CollectionService {
 
 	private Set<String> listCollectionsWithPermissionsForUser(String path, String entityName,
 			FilePermissionEnum permissionType) throws DataGridConnectionRefusedException {
+		logger.info("listCollectionsWithPermissionsForUser()");
+
 		return listCollectionsWithPermissionsForEntity(path, entityName, permissionType, "user");
 	}
 
 	private Set<String> listCollectionsWithPermissionsForGroup(String path, String entityName,
 			FilePermissionEnum permissionType) throws DataGridConnectionRefusedException {
+		logger.info("listCollectionsWithPermissionsForGroup()");
+
 		return listCollectionsWithPermissionsForEntity(path, entityName, permissionType, "group");
 	}
 
@@ -1172,6 +1255,8 @@ public class CollectionServiceImpl implements CollectionService {
 	 */
 	private Set<String> listCollectionsWithPermissionsForEntity(String path, String entityName,
 			FilePermissionEnum permissionType, String entityType) throws DataGridConnectionRefusedException {
+
+		logger.info("listCollectionsWithPermissionsForEntity()");
 
 		Set<String> collections = new HashSet<String>();
 
@@ -1240,6 +1325,81 @@ public class CollectionServiceImpl implements CollectionService {
 
 		// if trash for path above is not found, user trash collection is used instead
 		return String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
+	}
+
+	/**
+	 * @return the adminServices
+	 */
+	public AdminServices getAdminServices() {
+		return adminServices;
+	}
+
+	/**
+	 * @param adminServices
+	 *            the adminServices to set
+	 */
+	public void setAdminServices(AdminServices adminServices) {
+		this.adminServices = adminServices;
+	}
+
+	/**
+	 * @return the irodsServices
+	 */
+	public IRODSServices getIrodsServices() {
+		return irodsServices;
+	}
+
+	/**
+	 * @param irodsServices
+	 *            the irodsServices to set
+	 */
+	public void setIrodsServices(IRODSServices irodsServices) {
+		this.irodsServices = irodsServices;
+	}
+
+	/**
+	 * @return the resourceService
+	 */
+	public ResourceService getResourceService() {
+		return resourceService;
+	}
+
+	/**
+	 * @param resourceService
+	 *            the resourceService to set
+	 */
+	public void setResourceService(ResourceService resourceService) {
+		this.resourceService = resourceService;
+	}
+
+	/**
+	 * @return the permissionsService
+	 */
+	public PermissionsService getPermissionsService() {
+		return permissionsService;
+	}
+
+	/**
+	 * @param permissionsService
+	 *            the permissionsService to set
+	 */
+	public void setPermissionsService(PermissionsService permissionsService) {
+		this.permissionsService = permissionsService;
+	}
+
+	/**
+	 * @return the fileOperationService
+	 */
+	public FileOperationService getFileOperationService() {
+		return fileOperationService;
+	}
+
+	/**
+	 * @param fileOperationService
+	 *            the fileOperationService to set
+	 */
+	public void setFileOperationService(FileOperationService fileOperationService) {
+		this.fileOperationService = fileOperationService;
 	}
 
 }

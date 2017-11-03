@@ -258,7 +258,7 @@ public class TestRuleService {
 
     @Test
     public void testManifestFileRule() throws DataGridRuleException, DataGridConnectionRefusedException {
-        when(collectionService.getSubCollectionsAndDataObjetsUnderPath(anyString())).thenReturn(new ArrayList<>());
+        when(collectionService.getSubCollectionsAndDataObjectsUnderPath(anyString())).thenReturn(new ArrayList<>());
         ruleService.execManifestFileRule(HOST, "/zone/home/rods", "/zone/home/rods/test.xml", "/var/lib/irods/test.xml");
         verify(ruleService, atMost(1)).executeRule(anyString());
     }
