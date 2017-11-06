@@ -16,78 +16,86 @@
 
 package com.emc.metalnx.integration.test.login;
 
-import com.emc.metalnx.test.generic.UITest;
-import org.junit.*;
-import org.openqa.selenium.By;
+import static org.junit.Assert.assertEquals;
+import java.util.Properties;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertEquals;
-
+import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.testutils.TestingPropertiesHelper;
 
 public class LoginTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginTest.class);
 
-    private static WebDriver driver = null;
+	// to read properties from testing.properties file
+	public static Properties testingProperties = new Properties();
 
-    /************************************* TEST SET UP *************************************/
+	private static WebDriver driver = null;
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-    }
+	/*************************************
+	 * TEST SET UP
+	 * 
+	 * @throws Exception
+	 *************************************/
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		UITest.setUpBeforeClass();
+		driver = UITest.getDriver();
+	}
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
-    /**
-     * Tests a valid username and password for login, and checks if it moves to the dashboard page
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testValidUsernameAndPasswordForLogin() throws Exception {
-        logger.info("Testing valid username and password for login");
-        //UITest.login(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
-        UITest.login(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
-        // check if after login, the user is redirected to the dashboard page
-        assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-        UITest.logout();
-    }
+	/**
+	 * Tests a valid username and password for login, and checks if it moves to the
+	 * dashboard page
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testValidUsernameAndPasswordForLogin() throws Exception {
+		logger.info("Testing valid username and password for login");
+		UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
+				UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
 
-    /**
-     * Tests an invalid username and password for login and checks if an
-     * error is shown
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testInvalidUsernameAndPasswordForLogin() throws Exception {
-        logger.info("Testing invalid username and password for login");
+		// check if after login, the user is redirected to the dashboard page
+		assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
+		UITest.logout();
+	}
 
-        UITest.login("ThisIsAnInvalidUsername", "ThisIsAnInvalidPassword");
+	/**
+	 * Tests an invalid username and password for login and checks if an error is
+	 * shown
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInvalidUsernameAndPasswordForLogin() throws Exception {
+		logger.info("Testing invalid username and password for login");
+		UITest.login("ThisIsAnInvalidUsername", "ThisIsAnInvalidPassword");
 
-        //	There is no error message for invalid login
-        //WebElement errorMsg = driver.findElement(By.className("errorMsg"));
-
-        // check if after entering invalid login credentials (username and password),
-        // an error message is shown
-        Assert.assertEquals(UITest.LOGINERROR_URL, driver.getCurrentUrl());
-    }
+		/*
+		 * There is no error message for invalid login WebElement errorMsg =
+		 * driver.findElement(By.className("errorMsg")); check if after entering invalid
+		 * login credentials (username and password), an error message is shown
+		 */
+		Assert.assertEquals(UITest.LOGINERROR_URL, driver.getCurrentUrl());
+	}
 }

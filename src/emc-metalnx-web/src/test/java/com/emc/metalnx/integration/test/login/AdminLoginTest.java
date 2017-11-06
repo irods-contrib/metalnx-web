@@ -16,36 +16,38 @@
 
 package com.emc.metalnx.integration.test.login;
 
-import com.emc.metalnx.test.generic.UITest;
-import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Deprecated
-@Ignore
+import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.testutils.TestingPropertiesHelper;
+
+import junit.framework.Assert;
+
+
 public class AdminLoginTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminLoginTest.class);
 
     private static WebDriver driver = null;
 
-    /************************************* TEST SET UP *************************************/
+    /************************************* TEST SET UP 
+     * @throws Exception *************************************/
 
     @BeforeClass
-    public static void setUpBeforeClass() {
+    public static void setUpBeforeClass() throws Exception {
         UITest.setUpBeforeClass();
         driver = UITest.getDriver();
     }
 
     /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
     @AfterClass
     public static void tearDownAfterClass() {
@@ -63,8 +65,9 @@ public class AdminLoginTest {
      */
     @Test
     public void testLoginAsAdmin() throws Exception {
-        logger.info("Test logging in as a admin user (rods, irods@1234)");
-        UITest.login("rods", "irods@1234");
+        logger.info("Test logging in as a admin user");
+        UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
+				UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
         Assert.assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
     }
 

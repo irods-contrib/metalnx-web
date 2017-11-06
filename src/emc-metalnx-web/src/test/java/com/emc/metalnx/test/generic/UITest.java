@@ -16,21 +16,22 @@
 
 package com.emc.metalnx.test.generic;
 
+import java.util.Properties;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.css.sac.CSSParseException;
 
+import com.emc.metalnx.testutils.TestingPropertiesHelper;
 import com.emc.metalnx.utils.EmcMetalnxVersion;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
@@ -40,9 +41,13 @@ import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
 public class UITest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UITest.class);
-
 	private static boolean isDevEnv = EmcMetalnxVersion.BUILD_NUMBER.equals("DEV");
-
+	
+	// to read properties from testing.properties file
+		public static Properties testingProperties = new Properties();
+	
+	
+	
 	// Metalnx URL Connection parts
 	public static final String http = "http://";
 	//public static final String HOST = isDevEnv ? "localhost" : "metalnx.localdomain";
@@ -51,8 +56,8 @@ public class UITest {
 	public static final String URL_PREFIX = http + HOST + ":" + PORT;
 
 	// Data Grid Info
-	public static String RODS_USERNAME = "test1";
-	public static String RODS_PASSWORD = "test";
+	public static String RODS_USERNAME = TestingPropertiesHelper.IRODS_USER_KEY;
+	public static String RODS_PASSWORD = TestingPropertiesHelper.IRODS_PASSWORD_KEY;
 	public static String IRODS_ZONE = isDevEnv ? "tempZone" : "testZone";
 	public static String IRODS_HOST = isDevEnv ? "icat.localdomain" : "icat.prod.localdomain";
 	public static String DEFAULT_RESC = "demoResc";
@@ -108,8 +113,13 @@ public class UITest {
 	public static String[] TEST_COLLECTION_NAMES = { "SeleniumTestAdditionalPermCol" };
 
 	@BeforeClass
-	public static void setUpBeforeClass() {
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\pateldes\\driver\\chromedriver.exe");
+	public static void setUpBeforeClass() throws Exception {
+		TestingPropertiesHelper testingPropertiesLoader = new TestingPropertiesHelper();
+		testingProperties = testingPropertiesLoader.getTestProperties();
+		
+		// driver used for testing
+		System.setProperty(testingProperties.getProperty(TestingPropertiesHelper.CHROME_DRIVER),
+				testingProperties.getProperty(TestingPropertiesHelper.CHROME_DRIVER_LOCATION));
 		driver = getDriver();
 	}
 
@@ -134,7 +144,11 @@ public class UITest {
 		}
 
 		driver.get(LOGIN_URL);
-		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		
+		//new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		FluentWait wait = new FluentWait(driver);
+		wait.ignoring(NoSuchElementException.class);
+		
 		Assert.assertEquals(LOGIN_URL, driver.getCurrentUrl());
 
 		WebElement inputUsername = driver.findElement(By.id("inputUsernameLogin"));
@@ -155,7 +169,9 @@ public class UITest {
 
 		getDriver().get(LOGOUT_URL);
 		getDriver().get(LOGIN_URL);
-		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		//new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		FluentWait wait = new FluentWait(driver);
+		wait.ignoring(NoSuchElementException.class);
 	}
 
 	public static WebDriver getDriver() {
