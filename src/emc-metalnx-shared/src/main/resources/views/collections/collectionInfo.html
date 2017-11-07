@@ -24,13 +24,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">Delete Replica</h4>
+                    <h4 class="modal-title">#{collections.replica.delete}</h4>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="path" id="deleteReplicaPath"/>
                     <input type="hidden" name="fileName" id="deleteReplicaFileName"/>
                     <input type="hidden" name="replicaNumber" id="deleteReplicaNumber"/>
-                    <p>Are you really sure you want to delete this replica?</p>
+                    <p>#{collections.replica.delete.confirm}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -45,23 +45,23 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        <p class="text-center">Replica successfully deleted.</p>
+        <p class="text-center">#{collections.replica.delete.success}</p>
     </div>
     <!-- Replica deletion fail message -->
     <div class="alert alert-danger" role="alert" th:if="${delReplReturn} == 'failure'">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        <p class="text-center">Replica deletion failed.</p>
+        <p class="text-center">#{collections.replica.delete.failure}</p>
     </div>
     <!-- Permission none -->
     <div th:if="${collectionAndDataObject == null}">
         <div class="panel property">
             <div class="text-center" role="alert">
-                <span>You do not have permissions to access information in the target collection or for the selected object.</span>
+                <span>#{collections.error.no.permissions}</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="#" onclick="javascript:goBackHistory('1');">
-                    <span>Back</span>
+                    <span>#{text.back}</span>
                 </a>
             </div>
         </div>
@@ -71,7 +71,7 @@
     <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
         <div class="panel property">
             <div class="row">
-                <h4 class="property-title"><i class="fa fa-info-circle"></i>Info</h4>
+                <h4 class="property-title"><i class="fa fa-info-circle"></i>#{text.info}</h4>
                 <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
             </div>
             <div class="panel-info">
@@ -95,7 +95,7 @@
                     <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getModifiedAtFormatted() }"></span></div>
                 </div>
                 <div class="row">
-                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label>Checksum</label></div>
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label>#{collections.management.checksum.label}</label></div>
                     <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getChecksum() }"></span></div>
                 </div>
             </div>
@@ -105,11 +105,11 @@
                     <thead>
                     <tr>
                         <th th:text="#{collections.management.table.replica.number.label}"></th>
-                        <th>Created</th>
-                        <th>Modified</th>
-                        <th>Size</th>
-                        <th>Resource</th>
-                        <th>Path</th>
+                        <th>#{collections.management.table.created.label}</th>
+                        <th>#{collections.management.table.modified.label}</th>
+                        <th>#{collections.management.table.size.label}</th>
+                        <th>#{collections.management.table.resource.label}</th>
+                        <th>#{collections.management.table.path.label}</th>
                         <th></th>
                     </tr>
                     </thead>
