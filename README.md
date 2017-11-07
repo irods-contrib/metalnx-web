@@ -71,4 +71,9 @@ Add facilities to allow site-specific customization of the browser (css,logo, re
 #### metalnx specific queries only operate vs. postgres #15
 
 Isolated specific queries and reference client hints to determine iRODS catalog type, this uses a factory arrangement to obtain a source for SQL queries. This is now scaffolded with unit tests of existing specific queries. MySql semantics are being added...work in progress
+
 Integrated changes from issue 15 in consortium codebase, mapping to issue #43 in NIEHS.
+
+#### Clean out non-internationalized items in views #19
+
+Remove remaining hard coded text in templates and convert to resource bundle refs mapped to niehs issue #46 
