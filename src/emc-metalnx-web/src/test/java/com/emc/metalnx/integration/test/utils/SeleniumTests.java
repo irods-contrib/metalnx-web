@@ -9,5 +9,6 @@ import com.emc.metalnx.integration.test.login.SeleniumLoginTest;
 @RunWith(Suite.class)
 @SuiteClasses({ SeleniumLoginTest.class })
 public class SeleniumTests {
+	
 
 }

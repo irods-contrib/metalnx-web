@@ -39,7 +39,6 @@ public class SeleniumLoginTest {
 	private static final Logger logger = LoggerFactory.getLogger(SeleniumLoginTest.class);
 
 	private static Properties testingProperties = new Properties();
-	private static TestingPropertiesHelper testingPropertiesHelper = new TestingPropertiesHelper();
 	private static ScratchFileUtils scratchFileUtils = null;
 	public static final String IRODS_TEST_SUBDIR_PATH = "SeleniumLoginTest";
 	private static IRODSTestSetupUtilities irodsTestSetupUtilities = null;
@@ -57,6 +56,7 @@ public class SeleniumLoginTest {
 		irodsTestSetupUtilities.initializeIrodsScratchDirectory();
 		irodsTestSetupUtilities.initializeDirectoryForTest(IRODS_TEST_SUBDIR_PATH);
 		irodsFileSystem = IRODSFileSystem.instance();
+		UITest.setUpBeforeClass();
 		driver = UITest.getDriver();
 
 	}
@@ -85,9 +85,8 @@ public class SeleniumLoginTest {
 	@Test
 	public void testValidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing valid username and password for login");
-		UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
-				UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
-
+		//UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY), UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
+		UITest.login("test1", "test");
 		// check if after login, the user is redirected to the dashboard page
 		assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
 		UITest.logout();
