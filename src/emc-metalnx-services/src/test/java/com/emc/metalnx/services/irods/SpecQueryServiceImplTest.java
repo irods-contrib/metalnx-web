@@ -266,7 +266,7 @@ public class SpecQueryServiceImplTest {
 		specQueryService.setAdminServices(adminServices);
 		List<DataGridFilePropertySearch> filePropertiesSearch = new ArrayList<>();
 		DataGridFilePropertySearch dataSearch = new DataGridFilePropertySearch(FilePropertyField.OWNER_NAME,
-				DataGridSearchOperatorEnum.EQUAL, test3Account.getUserName()); // use test3 because its smaller
+				DataGridSearchOperatorEnum.EQUAL, irodsAccount.getUserName()); // use test3 because its smaller
 		filePropertiesSearch.add(dataSearch);
 		dataSearch = new DataGridFilePropertySearch(FilePropertyField.SIZE, DataGridSearchOperatorEnum.BIGGER_THAN,
 				"200");
