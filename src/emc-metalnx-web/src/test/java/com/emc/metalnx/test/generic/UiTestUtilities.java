@@ -26,7 +26,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.css.sac.CSSParseException;
@@ -140,10 +142,9 @@ public class UiTestUtilities {
 
 		driver.get(LOGIN_URL);
 
-		// new WebDriverWait(driver,
-		// 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
-		FluentWait wait = new FluentWait(driver);
-		wait.ignoring(NoSuchElementException.class);
+		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		//FluentWait wait = new FluentWait(driver);
+		//wait.ignoring(NoSuchElementException.class);
 
 		Assert.assertEquals(LOGIN_URL, driver.getCurrentUrl());
 
@@ -165,10 +166,9 @@ public class UiTestUtilities {
 
 		getDriver().get(LOGOUT_URL);
 		getDriver().get(LOGIN_URL);
-		// new WebDriverWait(driver,
-		// 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
-		FluentWait wait = new FluentWait(driver);
-		wait.ignoring(NoSuchElementException.class);
+		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		//FluentWait wait = new FluentWait(driver);
+		//wait.ignoring(NoSuchElementException.class);
 	}
 
 	public static WebDriver getDriver() {
