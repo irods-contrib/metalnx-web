@@ -29,7 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -55,20 +55,20 @@ public class RodsAdminNotInAnyGroupTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 		rodsAdminUsername = "userMyGroupsRodsAdmin" + System.currentTimeMillis();
-		UserUtils.createUser(rodsAdminUsername, pwd, UITest.RODS_USER_TYPE, driver);
+		UserUtils.createUser(rodsAdminUsername, pwd, UiTestUtilities.RODS_USER_TYPE, driver);
 	}
 
 	@Before
 	public void setUp() {
-		UITest.login(rodsAdminUsername, pwd);
+		UiTestUtilities.login(rodsAdminUsername, pwd);
 	}
 
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	@AfterClass
@@ -78,13 +78,13 @@ public class RodsAdminNotInAnyGroupTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
 	@Test
 	public void testRodsUserNotInAnyGroupShouldSeeNothingOnMyGroupsPage() {
-		driver.get(UITest.MY_GROUPS_PAGE);
+		driver.get(UiTestUtilities.MY_GROUPS_PAGE);
 		new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(groupBookmarksTable));
 		new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(groupBookmarksTableBody));
 

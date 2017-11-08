@@ -36,7 +36,7 @@ import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -49,7 +49,7 @@ public class BreadcrumbTest {
 
 	private static By breadcrumbLocator = By.className("breadcrumb");
 	private static By navigationInputLocator = By.id("navigationInput");
-	private static String zoneAndHomePath = "/" + UITest.IRODS_ZONE + "/home";
+	private static String zoneAndHomePath = "/" + UiTestUtilities.IRODS_ZONE + "/home";
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -58,7 +58,7 @@ public class BreadcrumbTest {
 
 	@Before
 	public void setUp() {
-		UITest.login();
+		UiTestUtilities.login();
 
 	}
 
@@ -67,7 +67,7 @@ public class BreadcrumbTest {
 	 */
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class BreadcrumbTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -133,8 +133,8 @@ public class BreadcrumbTest {
 		String pwd = "webdriver";
 
 		// creating a new user
-		driver.get(UITest.ADD_USERS_URL);
-		UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_USER_TYPE, driver);
+		driver.get(UiTestUtilities.ADD_USERS_URL);
+		UserUtils.fillInUserGeneralInformation(uname, pwd, UiTestUtilities.RODS_USER_TYPE, driver);
 		UserUtils.submitUserForm(driver);
 
 		String newUserCollection = zoneAndHomePath + "/" + uname;
@@ -148,7 +148,7 @@ public class BreadcrumbTest {
 						.getText());
 
 		// removing user
-		driver.get(UITest.USERS_URL);
+		driver.get(UiTestUtilities.USERS_URL);
 
 		By removeButton = By.id("btn_remove_" + uname);
 		By removeConfirmationButton = By.id("btnConfUserRemoval_Yes");
@@ -173,7 +173,7 @@ public class BreadcrumbTest {
 		// Upload test files
 		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES[0]);
 
-		String filePath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + TemplateUtils.TEST_FILES[0];
+		String filePath = zoneAndHomePath + "/" + UiTestUtilities.RODS_USERNAME + "/" + TemplateUtils.TEST_FILES[0];
 
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, filePath);
 
@@ -191,7 +191,7 @@ public class BreadcrumbTest {
 		String collectionName = "breadcrumbCollectionTest" + System.currentTimeMillis();
 		CollectionUtils.createCollection(driver, collectionName);
 
-		String collectionPath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + collectionName;
+		String collectionPath = zoneAndHomePath + "/" + UiTestUtilities.RODS_USERNAME + "/" + collectionName;
 
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, collectionPath);
 
@@ -201,7 +201,7 @@ public class BreadcrumbTest {
 
 		Assert.assertEquals(collectionPath, path);
 
-		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/" + UITest.RODS_USERNAME);
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/" + UiTestUtilities.RODS_USERNAME);
 		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 		CollectionUtils.removeColl(driver, collectionName);
 	}

@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 /**
  * Tests that check group permissions for files.
@@ -50,18 +50,18 @@ public class ExistingGroupPermissionsOnFilesTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		driver = UiTestUtilities.getDriver();
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		FileUtils.uploadToDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 
 		UserUtils.createUser(rodsUserName, pwd, "rodsuser", driver);
 		UserUtils.createUser(rodsAdminName, pwd, "rodsadmin", driver);
 
-		UITest.login();
+		UiTestUtilities.login();
 
 		String[] users = { rodsAdminName, rodsUserName };
 		GroupUtils.createGroupWithUsers(gname, users, driver);
@@ -72,15 +72,15 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 
-		UITest.logout();
+		UiTestUtilities.logout();
 		UserUtils.removeUser(rodsUserName, driver);
 		UserUtils.removeUser(rodsAdminName, driver);
 
-		UITest.login();
+		UiTestUtilities.login();
 		GroupUtils.removeGroup(gname, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -93,10 +93,10 @@ public class ExistingGroupPermissionsOnFilesTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws DataGridException {
 		if (driver != null) {
-			FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+			FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -106,8 +106,8 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantReadPermissionOnDataObject() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.READ_PERMISSION,
-				rodsUserName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.READ_PERMISSION,
+				rodsUserName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantWritePermissionOnDataObject() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.WRITE_PERMISSION,
-				rodsUserName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.WRITE_PERMISSION,
+				rodsUserName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -126,8 +126,8 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantOwnershipPermissionOnDataObject() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.OWN_PERMISSION,
-				rodsUserName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.OWN_PERMISSION,
+				rodsUserName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -136,8 +136,8 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantReadPermissionOnDataObjectForAdmin() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.READ_PERMISSION,
-				rodsAdminName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.READ_PERMISSION,
+				rodsAdminName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantWritePermissionOnDataObjectForAdmin() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.WRITE_PERMISSION,
-				rodsAdminName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.WRITE_PERMISSION,
+				rodsAdminName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class ExistingGroupPermissionsOnFilesTest {
 	 */
 	@Test
 	public void grantOwnershipPermissionOnDataObjectForAdmin() {
-		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UITest.OWN_PERMISSION,
-				rodsAdminName, pwd, UITest.TEST_FILE_NAMES);
+		GroupUtils.grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(driver, gname, UiTestUtilities.OWN_PERMISSION,
+				rodsAdminName, pwd, UiTestUtilities.TEST_FILE_NAMES);
 	}
 }

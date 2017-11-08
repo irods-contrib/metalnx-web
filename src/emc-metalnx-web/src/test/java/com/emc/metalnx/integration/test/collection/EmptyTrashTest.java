@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -52,7 +52,7 @@ public class EmptyTrashTest {
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class EmptyTrashTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class EmptyTrashTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -92,12 +92,12 @@ public class EmptyTrashTest {
 		FileUtils.uploadToHomeDirAsAdmin(TEST_FILES);
 		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILES);
 
-		driver.get(UITest.TRASH_URL);
+		driver.get(UiTestUtilities.TRASH_URL);
 
 		CollectionUtils.clickOnEmptyTrash(driver);
 		CollectionUtils.confirmEmptyTrash(driver);
 
-		Assert.assertEquals(UITest.TRASH_URL, driver.getCurrentUrl());
+		Assert.assertEquals(UiTestUtilities.TRASH_URL, driver.getCurrentUrl());
 
 		// check if a feedback message of success is displayed
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("alert-success")));
@@ -120,7 +120,7 @@ public class EmptyTrashTest {
 	public void testIfEmptyTrashButtonIsShown() {
 		logger.info("Testing if empty trash button shows up");
 
-		driver.get(UITest.TRASH_URL);
+		driver.get(UiTestUtilities.TRASH_URL);
 
 		// check if there is any item in the trash
 		driver.findElement(CollectionUtils.COLLS_TABLE);
@@ -145,7 +145,7 @@ public class EmptyTrashTest {
 		FileUtils.uploadToHomeDirAsAdmin(trashTestFile);
 		FileUtils.removeFilesFromHomeAsAdmin(trashTestFile);
 
-		driver.get(UITest.TRASH_URL);
+		driver.get(UiTestUtilities.TRASH_URL);
 
 		wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.EMPTY_TRASH_BTN));
 		driver.findElement(CollectionUtils.EMPTY_TRASH_BTN).click();
@@ -153,7 +153,7 @@ public class EmptyTrashTest {
 		// a confirmation modal should be shown after clicking on the empty trash button
 		Assert.assertNotNull(driver.findElement(CollectionUtils.EMPTY_TRASH_MODAL));
 
-		String trashPath = String.format("/%s/trash/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
+		String trashPath = String.format("/%s/trash/home/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME);
 		FileUtils.forceRemoveFilesFromDirAsAdmin(trashPath, trashTestFile);
 	}
 
@@ -168,7 +168,7 @@ public class EmptyTrashTest {
 	public void testIfEmptyTrashButtonIsNotShownInTheCollPage() {
 		logger.info("Testing if empty trash button is not shown in the collections mgmt. page");
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
 		// if the user is in the collections mgmt. page, the empty trash button must NOT
 		// be shown

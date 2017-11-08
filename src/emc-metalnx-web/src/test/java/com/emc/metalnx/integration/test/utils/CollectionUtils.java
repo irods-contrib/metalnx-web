@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -41,8 +41,8 @@ public class CollectionUtils {
     private static By directoryPathId = By.id("directoryPath");
     private static By inputUsernameLoginId = By.id("inputUsernameLogin");
     private static By homeLinkText = By.linkText("home");
-    private static By publicCollSelectorA = By.cssSelector(String.format("a[title=\"/%s/home/public\"]", UITest.IRODS_ZONE));
-    private static By publicCollSelectorSpan = By.cssSelector(String.format("span[title=\"/%s/home/public\"]", UITest.IRODS_ZONE));
+    private static By publicCollSelectorA = By.cssSelector(String.format("a[title=\"/%s/home/public\"]", UiTestUtilities.IRODS_ZONE));
+    private static By publicCollSelectorSpan = By.cssSelector(String.format("span[title=\"/%s/home/public\"]", UiTestUtilities.IRODS_ZONE));
     private static By breadcrumbLocator = By.className("breadcrumb");
     private static By navigationInputLocator = By.id("navigationInput");
 
@@ -56,7 +56,7 @@ public class CollectionUtils {
     public static final By BROWSE_TAB = By.cssSelector("button[onclick='goBackHistory(1);']");
     public static final By METADATA_TAB = By.id("metadataTab");
     public static final By APPLY_TEMPLATE_BTN = By.id("applyTemplatesBtn");
-    public static String RODS_COLL_PATH = String.format("/%s/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
+    public static String RODS_COLL_PATH = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME);
 
     /**
      * Method that waits for the select action button to be enabled for clicking.
@@ -86,7 +86,7 @@ public class CollectionUtils {
      * @return
      */
     public static By getFileLocatorUnderRodsHome(String item) {
-        return getFileLocator(item, UITest.IRODS_ZONE, UITest.RODS_USERNAME);
+        return getFileLocator(item, UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME);
     }
 
     /**
@@ -97,7 +97,7 @@ public class CollectionUtils {
      * @return
      */
     public static By getFileLocator(String item, String zone, String user) {
-        String collPattern = String.format("/%s/home/%s/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME, item);
+        String collPattern = String.format("/%s/home/%s/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME, item);
         return By.name(collPattern);
     }
 
@@ -117,7 +117,7 @@ public class CollectionUtils {
 
     public static void goToZoneCollection(WebDriver driver, String userType, String uname, String pwd) {
         logger.info("Beggining navigation to the public collection...");
-        if (UITest.RODS_ADMIN_TYPE.equals(userType)) {
+        if (UiTestUtilities.RODS_ADMIN_TYPE.equals(userType)) {
             goToPublicCollectionByAdmin(driver, uname, pwd);
         }
         else {
@@ -141,7 +141,7 @@ public class CollectionUtils {
 
     public static void goToPublicCollection(WebDriver driver, String userType, String uname, String pwd) {
         logger.info("Beggining navigation to the public collection...");
-        if (UITest.RODS_ADMIN_TYPE.equals(userType)) {
+        if (UiTestUtilities.RODS_ADMIN_TYPE.equals(userType)) {
             goToPublicCollectionByAdmin(driver, uname, pwd);
         }
         else {
@@ -182,7 +182,7 @@ public class CollectionUtils {
         By collFormBtn = By.id("showCollectionFormBtn");
         By collNameLoc = By.id("inputCollectionName");
 
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         wait.until(ExpectedConditions.elementToBeClickable(collFormBtn)).click();
 
@@ -205,7 +205,7 @@ public class CollectionUtils {
      */
     public static void createCollectionUnderZone(WebDriver driver, String collName, String zone) {
         WebDriverWait wait = new WebDriverWait(driver, 15);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.linkText(zone))).click();
         wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.COLLS_TABLE));
@@ -232,8 +232,8 @@ public class CollectionUtils {
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
 
-        driver.get(UITest.COLLECTIONS_URL);
-        String collLink = String.format("a[title='/%s/home/%s']", UITest.IRODS_ZONE, user);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
+        String collLink = String.format("a[title='/%s/home/%s']", UiTestUtilities.IRODS_ZONE, user);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(collLink))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#treeViewTable tbody tr td")));
@@ -247,7 +247,7 @@ public class CollectionUtils {
      *            collection name to be removed
      */
     public static void removeColl(WebDriver driver, String collName) {
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         removeItem(driver, collName);
     }
 
@@ -259,7 +259,7 @@ public class CollectionUtils {
      *            collection name to be removed
      */
     public static void removeCollUnderZone(WebDriver driver, String collName, String zone) {
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.linkText(zone))).click();
         removeItem(driver, collName);
     }
@@ -337,7 +337,7 @@ public class CollectionUtils {
      * @param pathToBeWritten
      */
     public static void writeOnEditableBreadCrumb(WebDriver driver, WebDriverWait wait, String pathToBeWritten) {
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         // clicking on breadcrumb
         wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
         driver.findElement(breadcrumbLocator).click();
@@ -358,14 +358,14 @@ public class CollectionUtils {
      */
     public static void cleanUpCollectionsUnderZone(WebDriver driver, String... collections) {
         try {
-            UITest.login();
+            UiTestUtilities.login();
             for (String collName : collections) {
-                CollectionUtils.removeCollUnderZone(driver, collName, UITest.IRODS_ZONE);
+                CollectionUtils.removeCollUnderZone(driver, collName, UiTestUtilities.IRODS_ZONE);
             }
         }
         catch (Exception e) {}
         finally {
-            UITest.logout();
+            UiTestUtilities.logout();
         }
     }
 
@@ -384,12 +384,12 @@ public class CollectionUtils {
         WebDriverWait wait = new WebDriverWait(driver, 15);
         wait.until(ExpectedConditions.presenceOfElementLocated(inputUsernameLoginId));
         if (uname == null) {
-            UITest.login();
+            UiTestUtilities.login();
         }
         else {
-            UITest.login(uname, pwd);
+            UiTestUtilities.login(uname, pwd);
         }
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         // clicking on collections link on the left menu bar
         wait.until(ExpectedConditions.elementToBeClickable(publicSidebarBtnCssSelectorAdmin)).click();
@@ -428,10 +428,10 @@ public class CollectionUtils {
         logger.info("Navigating to public collection by user interface...");
         WebDriverWait wait = new WebDriverWait(driver, 15);
 
-        UITest.logout();
-        UITest.login(uname, pwd);
+        UiTestUtilities.logout();
+        UiTestUtilities.login(uname, pwd);
 
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         // "publicSidebarBtnCssSelector" is being used both by admin and user only because this
         // button is in the same position in both interfaces, but it is possible that eventually its
@@ -472,11 +472,11 @@ public class CollectionUtils {
      *            new permission to be set
      */
     public static void changePermissionOfGroup(WebDriver driver, String group, String permission, String... items) {
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         for (String collection : items) {
             WebDriverWait wait = new WebDriverWait(driver, 10);
-            wait.until(ExpectedConditions.elementToBeClickable(By.linkText(UITest.IRODS_ZONE))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.linkText(UiTestUtilities.IRODS_ZONE))).click();
 
             CollectionUtils.goToCollection(driver, collection);
 
@@ -525,7 +525,7 @@ public class CollectionUtils {
 		By replicateModalBtn = By.id("replicateButton");
 		By replicateModal = By.id("replicateModal");
 		
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		wait.until(ExpectedConditions.elementToBeClickable(fileCheckBox));
 		driver.findElement(fileCheckBox).click();
 		wait.until(ExpectedConditions.elementToBeClickable(selectActionBtn));
@@ -553,7 +553,7 @@ public class CollectionUtils {
 		By file = By.cssSelector("a[name=\"" + irodsFileAbsolutePath +"\"]");
 		By deleteReplicaBtn = By.cssSelector("#deleteReplicaModal button.btn-primary");
 		
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		wait.until(ExpectedConditions.elementToBeClickable(file));
 		driver.findElement(file).click();
 		

@@ -34,7 +34,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -61,18 +61,18 @@ public class HistoryStackTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 5);
 
-		UITest.login();
+		UiTestUtilities.login();
 		createCollectionHistoryTree(driver, wait);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	@Before
 	public void setUp() {
-		UITest.login();
-		driver.get(UITest.COLLECTIONS_URL);
+		UiTestUtilities.login();
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
 		CollectionUtils.goToCollection(driver, collectionName1);
 		CollectionUtils.goToCollection(driver, collectionName2);
@@ -81,24 +81,24 @@ public class HistoryStackTest {
 
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() {
-		UITest.login();
-		driver.get(UITest.COLLECTIONS_URL);
+		UiTestUtilities.login();
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("breadcrumb")));
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, CollectionUtils.RODS_COLL_PATH);
 		wait.until(ExpectedConditions
 				.visibilityOfElementLocated(By.cssSelector("#directoryPath .breadcrumb > li:last-of-type > span")));
 		CollectionUtils.removeColl(driver, collectionName1);
-		UITest.logout();
+		UiTestUtilities.logout();
 
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -158,14 +158,14 @@ public class HistoryStackTest {
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("breadcrumb")));
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, CollectionUtils.RODS_COLL_PATH);
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("breadcrumb")));
-		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, "/" + UITest.IRODS_ZONE);
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, "/" + UiTestUtilities.IRODS_ZONE);
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("breadcrumb")));
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, CollectionUtils.RODS_COLL_PATH);
 
 		// creating the expected stack history
 		List<String> historyStackTemp = new ArrayList<String>(Arrays.asList(arrayPaths));
 		historyStackTemp.add(CollectionUtils.RODS_COLL_PATH);
-		historyStackTemp.add("/" + UITest.IRODS_ZONE);
+		historyStackTemp.add("/" + UiTestUtilities.IRODS_ZONE);
 
 		// checks if current path is correct
 		Assert.assertTrue(checkCurrentPath(driver, wait, CollectionUtils.RODS_COLL_PATH));

@@ -36,7 +36,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -44,8 +44,8 @@ public class ReplicateFileTest {
 	private static int NUMBER_OF_ITERATIONS = 100;
 	private static WebDriver driver = null;
 	private static final String TEST_FILE = "1SeleniumTestMetadataSearch.png";
-	private static String irodsCollectionAbsolutePath = String.format("/%s/home/%s/", UITest.IRODS_ZONE,
-			UITest.RODS_USERNAME);
+	private static String irodsCollectionAbsolutePath = String.format("/%s/home/%s/", UiTestUtilities.IRODS_ZONE,
+			UiTestUtilities.RODS_USERNAME);
 	private static String irodsFileAbsolutePath = String.format("%s%s", irodsCollectionAbsolutePath, TEST_FILE);
 	private static String targetResource = "targetResource";
 	private static WebDriverWait wait;
@@ -53,14 +53,14 @@ public class ReplicateFileTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 10);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class ReplicateFileTest {
 	@After
 	public void tearDown() throws Exception {
 		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -82,13 +82,13 @@ public class ReplicateFileTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
 	@Test
 	public void testUploadAFileAndReplicateIt() throws DataGridException {
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
 		int i;
 		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {
@@ -105,7 +105,7 @@ public class ReplicateFileTest {
 	public void testReplicateFile() throws DataGridException {
 		FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
 		int i;
 		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {
@@ -120,8 +120,8 @@ public class ReplicateFileTest {
 
 	@Test
 	public void testReplicateFileAfterUploadUsingJargonAPIDirectly() throws DataGridException, JargonException {
-		DataObjectAO dataObectAO = FileUtils.getDataObjectAO(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
-		driver.get(UITest.COLLECTIONS_URL);
+		DataObjectAO dataObectAO = FileUtils.getDataObjectAO(UiTestUtilities.RODS_USERNAME, UiTestUtilities.RODS_PASSWORD);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
 		int i;
 		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {

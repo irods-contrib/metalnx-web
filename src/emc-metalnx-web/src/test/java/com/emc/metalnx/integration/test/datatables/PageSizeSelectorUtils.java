@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.datatables;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -40,12 +40,12 @@ public class PageSizeSelectorUtils {
     private static Map<String, By> pageSizeSelectorMap;
     static {
         pageSizeSelectorMap = new HashMap<String, By>();
-        pageSizeSelectorMap.put(UITest.COLLECTIONS_URL, collsPageSizeSelector);
-        pageSizeSelectorMap.put(UITest.TRASH_URL, collsPageSizeSelector);
-        pageSizeSelectorMap.put(UITest.PUBLIC_URL, collsPageSizeSelector);
-        pageSizeSelectorMap.put(UITest.USERS_URL, usersPageSizeSelector);
-        pageSizeSelectorMap.put(UITest.GROUPS_URL, groupsPageSizeSelector);
-        pageSizeSelectorMap.put(UITest.RESOURCES_URL, resourcesPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.COLLECTIONS_URL, collsPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.TRASH_URL, collsPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.PUBLIC_URL, collsPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.USERS_URL, usersPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.GROUPS_URL, groupsPageSizeSelector);
+        pageSizeSelectorMap.put(UiTestUtilities.RESOURCES_URL, resourcesPageSizeSelector);
     }
 
     /**

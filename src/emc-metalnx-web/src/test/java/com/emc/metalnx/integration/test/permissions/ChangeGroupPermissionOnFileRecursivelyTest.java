@@ -28,7 +28,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.group.GroupUtils;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -52,18 +52,18 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-		FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+		FileUtils.uploadToDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 
 		groupName = "grouppermissionrecursive" + System.currentTimeMillis();
-		GroupUtils.createGroupWithPermissions(driver, groupName, "read", UITest.TEST_FILE_NAMES);
+		GroupUtils.createGroupWithPermissions(driver, groupName, "read", UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 	@After
 	public void tearDown() throws Exception {
 		GroupUtils.removeGroup(groupName, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -84,12 +84,12 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws DataGridException {
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
 
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -102,8 +102,8 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 	 */
 	@Test
 	public void testChangePermissionOfGroupToWrite() {
-		CollectionUtils.changePermissionOfGroup(driver, groupName, "write", UITest.TEST_FILE_NAMES[0]);
-		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UITest.HTTP_ERROR_500_URL));
+		CollectionUtils.changePermissionOfGroup(driver, groupName, "write", UiTestUtilities.TEST_FILE_NAMES[0]);
+		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UiTestUtilities.HTTP_ERROR_500_URL));
 	}
 
 	/**
@@ -111,8 +111,8 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 	 */
 	@Test
 	public void testChangePermissionOfGroupToOwn() {
-		CollectionUtils.changePermissionOfGroup(driver, groupName, "own", UITest.TEST_FILE_NAMES[0]);
-		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UITest.HTTP_ERROR_500_URL));
+		CollectionUtils.changePermissionOfGroup(driver, groupName, "own", UiTestUtilities.TEST_FILE_NAMES[0]);
+		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UiTestUtilities.HTTP_ERROR_500_URL));
 	}
 
 	/**
@@ -120,8 +120,8 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 	 */
 	@Test
 	public void testChangePermissionOfGroupToNone() {
-		CollectionUtils.changePermissionOfGroup(driver, groupName, "none", UITest.TEST_FILE_NAMES[0]);
-		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UITest.HTTP_ERROR_500_URL));
+		CollectionUtils.changePermissionOfGroup(driver, groupName, "none", UiTestUtilities.TEST_FILE_NAMES[0]);
+		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UiTestUtilities.HTTP_ERROR_500_URL));
 	}
 
 	/**
@@ -134,9 +134,9 @@ public class ChangeGroupPermissionOnFileRecursivelyTest {
 		 * to exist (different than NONE). Then, since the group is created with READ
 		 * permission, we need to set it to WRITE or OWN to be able to test READ.
 		 */
-		CollectionUtils.changePermissionOfGroup(driver, groupName, "write", UITest.TEST_FILE_NAMES[0]);
+		CollectionUtils.changePermissionOfGroup(driver, groupName, "write", UiTestUtilities.TEST_FILE_NAMES[0]);
 
-		CollectionUtils.changePermissionOfGroup(driver, groupName, "read", UITest.TEST_FILE_NAMES[0]);
-		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UITest.HTTP_ERROR_500_URL));
+		CollectionUtils.changePermissionOfGroup(driver, groupName, "read", UiTestUtilities.TEST_FILE_NAMES[0]);
+		Assert.assertFalse(driver.getCurrentUrl().equalsIgnoreCase(UiTestUtilities.HTTP_ERROR_500_URL));
 	}
 }

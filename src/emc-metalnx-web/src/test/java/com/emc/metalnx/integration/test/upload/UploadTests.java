@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 @Deprecated
@@ -51,7 +51,7 @@ public class UploadTests {
 	public static void setUpBeforeClass() {
 		logger.info("Before class: Creating admin user {}", username);
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 30);
 
 		UserUtils.createUser(username, password, "rodsadmin", driver);
@@ -70,16 +70,16 @@ public class UploadTests {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
 	@Test
 	@Ignore
 	public void test1() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		UITest.login(username, password);
+		UiTestUtilities.login(username, password);
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#treeViewTable tbody tr td")));
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("uploadIcon"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#browseButton")));

@@ -20,7 +20,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.*;
 import org.openqa.selenium.By;
@@ -46,35 +46,35 @@ public class MetadataTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
+        UiTestUtilities.init();
+        driver = UiTestUtilities.getDriver();
         FileUtils.forceRemoveFilesFromHomeAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
         FileUtils.uploadToHomeDirAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
 
-        UITest.login();
+        UiTestUtilities.login();
         WebDriverWait wait = new WebDriverWait(driver, 10);
 
         MetadataUtils.realWaitMethod(driver);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         wait.until(ExpectedConditions.elementToBeClickable(MetadataUtils.TAB_LINKS));
         wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.COLLS_TABLE));
         MetadataUtils.addMetadata(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE, "", MetadataUtils.METADATA_SEARCH_FILES[0]);
 
         MetadataUtils.realWaitMethod(driver);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         wait.until(ExpectedConditions.elementToBeClickable(MetadataUtils.TAB_LINKS));
         wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.COLLS_TABLE));
         MetadataUtils.addMetadata(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE, "", MetadataUtils.METADATA_SEARCH_FILES[1]);
 
         MetadataUtils.realWaitMethod(driver);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         wait.until(ExpectedConditions.elementToBeClickable(MetadataUtils.TAB_LINKS));
         wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.COLLS_TABLE));
         MetadataUtils.addMetadata(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE, "", MetadataUtils.METADATA_SEARCH_FILES[2]);
 
         MetadataUtils.realWaitMethod(driver);
         MetadataUtils.addMetadataToSpecificFiles(driver);
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -82,7 +82,7 @@ public class MetadataTest {
      */
     @Before
     public void setUp() throws Exception {
-        UITest.login();
+        UiTestUtilities.login();
     }
 
     /**
@@ -90,7 +90,7 @@ public class MetadataTest {
      */
     @After
     public void tearDown() throws Exception {
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -106,7 +106,7 @@ public class MetadataTest {
         if (driver != null) {
             driver.quit();
             driver = null;
-            UITest.setDriver(null);
+            UiTestUtilities.setDriver(null);
         }
     }
 
@@ -121,7 +121,7 @@ public class MetadataTest {
     public void testSeleniumAsAttrAndTestAsValue() {
         logger.info("Testing Metadata search");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE);
         MetadataUtils.submitMetadataSearch(driver);
         MetadataUtils.waitForSearchResults(driver);
@@ -148,7 +148,7 @@ public class MetadataTest {
     @Test
     public void testSeleniumTestAsAttrAnd1AsValue() {
         logger.info("Testing Metadata search using Selenium Test as the attribute and 1 as the value");
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_TEST_ATTR, MetadataUtils.SELENIUM_TEST_VAL1);
         MetadataUtils.submitMetadataSearch(driver);
@@ -173,7 +173,7 @@ public class MetadataTest {
     public void testSeleniumTestAsAttrAnd2AsValue() {
         logger.info("Testing Metadata search using Selenium Test as the attribute and 2 as the value");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_TEST_ATTR, MetadataUtils.SELENIUM_TEST_VAL2);
         MetadataUtils.submitMetadataSearch(driver);
         MetadataUtils.waitForSearchResults(driver);
@@ -194,7 +194,7 @@ public class MetadataTest {
     @Test
     public void testSeleniumTestAsAttrAnd3AsValue() {
         logger.info("Testing Metadata search using Selenium Test as the attribute and 3 as the value");
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_TEST_ATTR, MetadataUtils.SELENIUM_TEST_VAL3);
         MetadataUtils.submitMetadataSearch(driver);
@@ -221,7 +221,7 @@ public class MetadataTest {
     public void testSeleniumTestAsAttrAnd12AsValue() {
         logger.info("Testing Metadata search using Selenium Test as the attribute and 12 as the value");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_TEST_ATTR, MetadataUtils.SELENIUM_TEST_VAL12);
         MetadataUtils.submitMetadataSearch(driver);
@@ -250,7 +250,7 @@ public class MetadataTest {
     @Test(expected = TimeoutException.class)
     public void testSearchUsingNonExistentMetadataTags() {
         logger.info("Testing Metadata search using non-existent metadata tags");
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         String attr = RandomStringUtils.randomAlphanumeric(4096);
         String val = RandomStringUtils.randomAlphanumeric(4096);
@@ -275,7 +275,7 @@ public class MetadataTest {
     @Test(expected = TimeoutException.class)
     public void testSearchWithoutSearchCriteria() {
         logger.info("Testing Metadata search using non-existent metadata tags");
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         MetadataUtils.submitMetadataSearch(driver);
 
@@ -307,7 +307,7 @@ public class MetadataTest {
         WebElement metadataSearchMatchColumn = null;
         int[] expectedMatchingCounts = { 3, 2, 1 };
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         logger.info("Entering search criteria.");
         // adding multiples search criteria to the search

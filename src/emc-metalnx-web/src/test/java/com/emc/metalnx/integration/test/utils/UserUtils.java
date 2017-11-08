@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +38,7 @@ public class UserUtils {
     private static final Logger logger = LoggerFactory.getLogger(UserUtils.class);
 
     public static final By BOOKMARKS = By.cssSelector("#userBookmarksTable tbody tr");
-    public static final By ZONE_FOLDER = By.name("/" + UITest.IRODS_ZONE);
+    public static final By ZONE_FOLDER = By.name("/" + UiTestUtilities.IRODS_ZONE);
     public static final By USERNAME_INPUT = By.id("inputUsername");
     public static final By PWD_INPUT = By.id("inputPassword");
     public static final By PWD_CONF_INPUT = By.id("inputPasswordConfirmation");
@@ -58,11 +58,11 @@ public class UserUtils {
      */
     public static void checkIfUserIsInGroup(WebDriver driver, String uname, String... group) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        UITest.login();
-        driver.get(UITest.USERS_URL);
+        UiTestUtilities.login();
+        driver.get(UiTestUtilities.USERS_URL);
         UserUtils.searchUser(driver, uname);
 
-        By MODIFY_USER_BTN = By.id(String.format(userModifyStr, uname, UITest.IRODS_ZONE));
+        By MODIFY_USER_BTN = By.id(String.format(userModifyStr, uname, UiTestUtilities.IRODS_ZONE));
         wait.until(ExpectedConditions.elementToBeClickable(MODIFY_USER_BTN)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(UserUtils.ZONE_FOLDER));
 
@@ -70,7 +70,7 @@ public class UserUtils {
             assertNotNull(driver.findElement(By.id(grp)));
         }
 
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -91,12 +91,12 @@ public class UserUtils {
         List<String> groupNames = new ArrayList<String>();
         groupNames.add(group);
 
-        UITest.login(adminUser, adminPwd);
-        driver.get(UITest.ADD_PROFILES_URL);
+        UiTestUtilities.login(adminUser, adminPwd);
+        driver.get(UiTestUtilities.ADD_PROFILES_URL);
         ProfileUtils.addUserProfile(profile, "profileTestScenarioDesc", groupNames, driver);
         new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.id("userProfilesListTable")));
         assertTrue(driver.findElement(By.className("alert-success")).isDisplayed());
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -110,11 +110,11 @@ public class UserUtils {
      *            driver already logged in the application
      */
     public static void createUser(String uname, String pwd, String userType, WebDriver driver) {
-        UITest.login();
-        driver.get(UITest.ADD_USERS_URL);
+        UiTestUtilities.login();
+        driver.get(UiTestUtilities.ADD_USERS_URL);
         fillInUserGeneralInformation(uname, pwd, userType, driver);
         submitUserForm(driver);
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -134,12 +134,12 @@ public class UserUtils {
      */
     public static void modifyUserAsAdminAndApplyProfile(WebDriver driver, String adminUname, String adminPwd, String uname, String zone,
             String rodsUserType, String profile) {
-        UITest.login(adminUname, adminPwd);
+        UiTestUtilities.login(adminUname, adminPwd);
         modifyUser(uname, zone, driver);
         new WebDriverWait(driver, 15).until(ExpectedConditions.elementToBeClickable(By.id("selectProfile")));
         new Select(driver.findElement(By.id("selectProfile"))).selectByVisibleText(profile);
         submitUserForm(driver);
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -159,15 +159,15 @@ public class UserUtils {
     public static void createUserAsAdminAndApplyProfile(WebDriver driver, String adminUname, String adminPwd, String uname, String pwd,
             String userType, String profile) {
 
-        UITest.login(adminUname, adminPwd);
-        driver.get(UITest.ADD_USERS_URL);
+        UiTestUtilities.login(adminUname, adminPwd);
+        driver.get(UiTestUtilities.ADD_USERS_URL);
         fillInUserGeneralInformation(uname, pwd, userType, driver);
         WebDriverWait wait = new WebDriverWait(driver, 15);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("showGroupsListBtn"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("selectProfile")));
         new Select(driver.findElement(By.id("selectProfile"))).selectByVisibleText(profile);
         submitUserForm(driver);
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -182,8 +182,8 @@ public class UserUtils {
 
         WebDriverWait wait = new WebDriverWait(driver, 15);
 
-        UITest.login();
-        driver.get(UITest.USERS_URL);
+        UiTestUtilities.login();
+        driver.get(UiTestUtilities.USERS_URL);
 
         By removeButton = By.id("btn_remove_" + uname);
         By removeConfirmationButton = By.id("btnConfUserRemoval_Yes");
@@ -200,7 +200,7 @@ public class UserUtils {
         catch (Exception e) {
             logger.error("Could not remove user [{}]", uname);
         }
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     /**
@@ -214,7 +214,7 @@ public class UserUtils {
      *            web driver already logged in the application
      */
     public static void modifyUser(String uname, String zone, WebDriver driver) {
-        driver.get(UITest.USERS_URL);
+        driver.get(UiTestUtilities.USERS_URL);
 
         WebDriverWait wait = new WebDriverWait(driver, 15);
 
@@ -228,7 +228,7 @@ public class UserUtils {
         driver.findElement(modifyButton).click();
 
         // checking if Mlx goes to the user modify form
-        String modifyUserURL = UITest.USERS_URL + String.format(userModifyStr, uname, zone);
+        String modifyUserURL = UiTestUtilities.USERS_URL + String.format(userModifyStr, uname, zone);
         Assert.assertEquals(modifyUserURL, driver.getCurrentUrl());
     }
 
@@ -253,7 +253,7 @@ public class UserUtils {
         logger.info("Test grant read permission and bookmark on a data object to a test user.");
 
         try {
-            driver.get(UITest.ADD_USERS_URL);
+            driver.get(UiTestUtilities.ADD_USERS_URL);
             fillInUserGeneralInformation(uname, pwd, userType, driver);
             grantPermissionToUserAndCheckBookmarks(permType, uname, zone, pwd, testItems, driver);
         }
@@ -291,11 +291,11 @@ public class UserUtils {
     public static void checkIfBookmarksExist(String uname, String pwd, String[] testItems, WebDriver driver) {
 
         // logout from Metalnx and login as the test user
-        UITest.logout();
-        UITest.login(uname, pwd);
+        UiTestUtilities.logout();
+        UiTestUtilities.login(uname, pwd);
 
-        driver.get(UITest.USER_BOOKMARKS_URL);
-        Assert.assertEquals(UITest.USER_BOOKMARKS_URL, driver.getCurrentUrl());
+        driver.get(UiTestUtilities.USER_BOOKMARKS_URL);
+        Assert.assertEquals(UiTestUtilities.USER_BOOKMARKS_URL, driver.getCurrentUrl());
 
         new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(BOOKMARKS));
         List<WebElement> bookmarks = driver.findElements(BOOKMARKS);
@@ -307,8 +307,8 @@ public class UserUtils {
             Assert.assertTrue(bookmarks.get(i).getText().contains(testItems[i]));
         }
 
-        UITest.logout();
-        UITest.login();
+        UiTestUtilities.logout();
+        UiTestUtilities.login();
     }
 
     /**
@@ -329,7 +329,7 @@ public class UserUtils {
         for (String item : testItems) {
 
             By permissionValue = By.id("permission_" + item);
-            By fileItem = By.cssSelector(String.format("input[name='/%s/%s']", UITest.IRODS_ZONE, item));
+            By fileItem = By.cssSelector(String.format("input[name='/%s/%s']", UiTestUtilities.IRODS_ZONE, item));
 
             wait.until(ExpectedConditions.elementToBeClickable(By.id("permission_" + item)));
             new Select(driver.findElement(permissionValue)).selectByValue(permType);
@@ -407,7 +407,7 @@ public class UserUtils {
      */
     public static void submitUserForm(WebDriver driver) {
         driver.findElement(By.id("submitUserFormBtn")).click();
-        Assert.assertEquals(UITest.USERS_URL, driver.getCurrentUrl());
+        Assert.assertEquals(UiTestUtilities.USERS_URL, driver.getCurrentUrl());
     }
 
     /**

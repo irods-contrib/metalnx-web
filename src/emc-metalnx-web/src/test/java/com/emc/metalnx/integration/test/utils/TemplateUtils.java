@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -63,7 +63,7 @@ public class TemplateUtils {
      *            name of the template name to be found
      */
     public static void searchByTemplateName(WebDriver driver, String template) {
-        driver.get(UITest.TEMPLATES_URL);
+        driver.get(UiTestUtilities.TEMPLATES_URL);
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("templatesListTable_filter")));
         driver.findElement(By.cssSelector("#templatesListTable_filter input[type='search']")).click();
@@ -84,7 +84,7 @@ public class TemplateUtils {
         By remoteTemplatesBtn = By.id("removeTemplatesBtn");
         By remoteTemplatesConfBtn = By.cssSelector("#removalModal .btn-primary");
 
-        driver.get(UITest.TEMPLATES_URL);
+        driver.get(UiTestUtilities.TEMPLATES_URL);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(delTemplatesCb));
         driver.findElement(delTemplatesCb).click();
@@ -111,7 +111,7 @@ public class TemplateUtils {
      */
     public static void createTemplateWithNoFields(String template, String desc, String useInfo, String templateType, WebDriver driver) {
         logger.info("Creating a template without any metadata fields");
-        driver.get(UITest.ADD_TEMPLATES_URL);
+        driver.get(UiTestUtilities.ADD_TEMPLATES_URL);
         fillInTemplateInformation(template, desc, useInfo, templateType, driver);
         submitTemplateForm(driver);
     }
@@ -126,7 +126,7 @@ public class TemplateUtils {
      * if this template was created successfully;
      */
     public static void createTemplateWithFields(WebDriver driver, String template, String templateType) {
-        driver.get(UITest.ADD_TEMPLATES_URL);
+        driver.get(UiTestUtilities.ADD_TEMPLATES_URL);
         addFieldsToTemplate(driver);
         fillInTemplateInformation(template, TEMPLATE_TEST_DESC, TEMPLATE_USE_INFO, templateType, driver);
         TemplateUtils.submitTemplateForm(driver);
@@ -140,7 +140,7 @@ public class TemplateUtils {
      */
     public static void createTemplateWithFields(WebDriver driver, String template, String templateType, String[] attrs, String[] values,
             String[] units) {
-        driver.get(UITest.ADD_TEMPLATES_URL);
+        driver.get(UiTestUtilities.ADD_TEMPLATES_URL);
         addFieldsToTemplate(driver, attrs, values, units);
         fillInTemplateInformation(template, TEMPLATE_TEST_DESC, TEMPLATE_USE_INFO, templateType, driver);
         TemplateUtils.submitTemplateForm(driver);
@@ -198,7 +198,7 @@ public class TemplateUtils {
      */
     public static void assertTemplateSuccessfulCreation(WebDriver driver, String template) {
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("templatesListTable")));
-        Assert.assertEquals(UITest.TEMPLATES_URL, driver.getCurrentUrl());
+        Assert.assertEquals(UiTestUtilities.TEMPLATES_URL, driver.getCurrentUrl());
         WebElement divAlertSucess = driver.findElement(By.className("alert-success"));
         assertTrue(divAlertSucess.isDisplayed());
         assertTrue(divAlertSucess.getText().contains(template));
@@ -230,7 +230,7 @@ public class TemplateUtils {
             List<String> units, String... items) {
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         CollectionUtils.waitForItemToLoad(driver, items[items.length - 1]);
         for (String item : items) {

@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,7 +28,7 @@ import java.util.List;
 @Deprecated
 public class ProfileUtils {
     public static void accessAddNewProfileForm(WebDriver driver) {
-        driver.get(UITest.PROFILES_URL);
+        driver.get(UiTestUtilities.PROFILES_URL);
         WebDriverWait wait = new WebDriverWait(driver, 8);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProfileButton")));
 
@@ -56,7 +56,7 @@ public class ProfileUtils {
     }
 
     public static void addUserProfile(String name, String description, List<String> groupsNames, WebDriver driver) {
-        driver.get(UITest.ADD_PROFILES_URL);
+        driver.get(UiTestUtilities.ADD_PROFILES_URL);
         WebDriverWait wait = new WebDriverWait(driver, 8);
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("inputProfileName")));
@@ -66,8 +66,8 @@ public class ProfileUtils {
     }
 
     public static boolean isProfileInList(String name, WebDriver driver) {
-        if (!driver.getCurrentUrl().equals(UITest.PROFILES_URL)) {
-            driver.get(UITest.PROFILES_URL);
+        if (!driver.getCurrentUrl().equals(UiTestUtilities.PROFILES_URL)) {
+            driver.get(UiTestUtilities.PROFILES_URL);
 
         }
         WebDriverWait wait = new WebDriverWait(driver, 8);
@@ -85,8 +85,8 @@ public class ProfileUtils {
     }
 
     public static void clickOnRemoveIcon(String name, WebDriver driver) {
-        if (!driver.getCurrentUrl().equals(UITest.PROFILES_URL)) {
-            driver.get(UITest.PROFILES_URL);
+        if (!driver.getCurrentUrl().equals(UiTestUtilities.PROFILES_URL)) {
+            driver.get(UiTestUtilities.PROFILES_URL);
 
         }
         WebDriverWait wait = new WebDriverWait(driver, 8);

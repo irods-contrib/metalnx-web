@@ -32,7 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 public class SeleniumLoginTest {
 
@@ -56,8 +56,8 @@ public class SeleniumLoginTest {
 		irodsTestSetupUtilities.initializeIrodsScratchDirectory();
 		irodsTestSetupUtilities.initializeDirectoryForTest(IRODS_TEST_SUBDIR_PATH);
 		irodsFileSystem = IRODSFileSystem.instance();
-		UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		UiTestUtilities.init();
+		driver = UiTestUtilities.getDriver();
 
 	}
 
@@ -71,7 +71,7 @@ public class SeleniumLoginTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 			irodsFileSystem.closeAndEatExceptions();
 		}
 	}
@@ -86,10 +86,10 @@ public class SeleniumLoginTest {
 	public void testValidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing valid username and password for login");
 		//UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY), UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
-		UITest.login("test1", "test");
+		UiTestUtilities.login("test1", "test");
 		// check if after login, the user is redirected to the dashboard page
-		assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
-		UITest.logout();
+		assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -101,13 +101,13 @@ public class SeleniumLoginTest {
 	@Test
 	public void testInvalidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing invalid username and password for login");
-		UITest.login("ThisIsAnInvalidUsername", "ThisIsAnInvalidPassword");
+		UiTestUtilities.login("ThisIsAnInvalidUsername", "ThisIsAnInvalidPassword");
 
 		/*
 		 * There is no error message for invalid login WebElement errorMsg =
 		 * driver.findElement(By.className("errorMsg")); check if after entering invalid
 		 * login credentials (username and password), an error message is shown
 		 */
-		Assert.assertEquals(UITest.LOGINERROR_URL, driver.getCurrentUrl());
+		Assert.assertEquals(UiTestUtilities.LOGINERROR_URL, driver.getCurrentUrl());
 	}
 }

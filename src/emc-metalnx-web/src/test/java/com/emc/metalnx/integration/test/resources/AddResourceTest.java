@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.ResourceUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -56,12 +56,12 @@ public class AddResourceTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("page-wrapper")));
 	}
@@ -73,7 +73,7 @@ public class AddResourceTest {
 	public void tearDown() throws Exception {
 		ResourceUtils.removeResource(RESOURCE_NAME, driver);
 		ResourceUtils.removeResource(CHILD_RESOURCE_NAME, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class AddResourceTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -106,13 +106,13 @@ public class AddResourceTest {
 	@Test
 	public void testAddUnixFileSystemResource() {
 		logger.info("Testing add a brand new resource from resource management");
-		driver.get(UITest.RESOURCES_URL);
+		driver.get(UiTestUtilities.RESOURCES_URL);
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addResourceButton")));
 		driver.findElement(By.id("addResourceButton")).click();
 
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_UNIX_FILE_SYSTEM, null, null,
-				UITest.IRODS_HOST, ResourceUtils.RESOURCE_PATH, driver);
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_UNIX_FILE_SYSTEM, null, null,
+				UiTestUtilities.IRODS_HOST, ResourceUtils.RESOURCE_PATH, driver);
 	}
 
 	/**
@@ -125,13 +125,13 @@ public class AddResourceTest {
 	public void testAddSameResourceName() throws Exception {
 		logger.info("Testing add a resource name that already exists");
 
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndSubmitResourceForm(RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null, null,
 				driver);
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 
 		assertTrue(ResourceUtils.errorMessageIsDisplayed("invalidResourceNameMsg", driver));
 	}
@@ -147,13 +147,13 @@ public class AddResourceTest {
 	// d3.select() function in SVG element.
 	public void testAddResourceFromResourceMap() {
 		logger.info("Testing add a brand new resource from resource map");
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
-		ResourceUtils.addResource(UITest.RESOURCES_MAP_URL, CHILD_RESOURCE_NAME, ResourceUtils.RESC_COMPOUND,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_MAP_URL, CHILD_RESOURCE_NAME, ResourceUtils.RESC_COMPOUND,
 				RESOURCE_NAME, null, null, null, driver);
 
-		assertTrue(ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, RESOURCE_NAME, null, driver));
-		assertTrue(ResourceUtils.isInResourcesList(UITest.RESOURCES_MAP_URL, CHILD_RESOURCE_NAME, null, driver));
+		assertTrue(ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, null, driver));
+		assertTrue(ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_MAP_URL, CHILD_RESOURCE_NAME, null, driver));
 	}
 
 	/**
@@ -164,10 +164,10 @@ public class AddResourceTest {
 	public void testAddResourceFromServersView() {
 		logger.info("Testing add a brand new resource from servers view");
 
-		ResourceUtils.addResource(UITest.RESOURCES_SERVERS_URL, RESOURCE_NAME, ResourceUtils.RESC_DEFERRED, null, null,
-				UITest.IRODS_HOST, ResourceUtils.RESOURCE_PATH, driver);
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_SERVERS_URL, RESOURCE_NAME, ResourceUtils.RESC_DEFERRED, null, null,
+				UiTestUtilities.IRODS_HOST, ResourceUtils.RESOURCE_PATH, driver);
 
-		assertTrue(ResourceUtils.isInResourcesList(UITest.RESOURCES_SERVERS_URL, RESOURCE_NAME, UITest.IRODS_HOST,
+		assertTrue(ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_SERVERS_URL, RESOURCE_NAME, UiTestUtilities.IRODS_HOST,
 				driver));
 	}
 
@@ -179,10 +179,10 @@ public class AddResourceTest {
 	@Test
 	public void testAddEmptyResourceName() {
 		logger.info("Testing add empty resource name");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndSubmitResourceForm("", ResourceUtils.RESC_COMPOUND, null, null, null, null, driver);
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 
 		assertTrue(ResourceUtils.errorMessageIsDisplayed("emptyResourceNameMsg", driver));
 	}
@@ -194,11 +194,11 @@ public class AddResourceTest {
 	@Test
 	public void testAddResourceNameWithBlankSpace() {
 		logger.info("Testing add resource name with blank space");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndSubmitResourceForm(RESOURCE_NAME_BLANK_SPACE, ResourceUtils.RESC_COMPOUND, null, null,
 				null, null, driver);
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 
 		assertTrue(ResourceUtils.errorMessageIsDisplayed("invalidResourceNameMsg", driver));
 	}
@@ -210,11 +210,11 @@ public class AddResourceTest {
 	@Test
 	public void testAddStorageResourceWithEmptyHost() {
 		logger.info("Testing add resource with empty host");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndSubmitResourceForm(RESOURCE_NAME, ResourceUtils.RESC_UNIX_FILE_SYSTEM, null, null, "",
 				ResourceUtils.RESOURCE_PATH, driver);
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 
 		assertTrue(ResourceUtils.errorMessageIsDisplayed("emptyResourceHostMsg", driver));
 	}
@@ -226,11 +226,11 @@ public class AddResourceTest {
 	@Test
 	public void testAddStorageResourceWithEmptyPath() {
 		logger.info("Testing add resource with empty path");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndSubmitResourceForm(RESOURCE_NAME, ResourceUtils.RESC_UNIX_FILE_SYSTEM, null, null,
-				UITest.IRODS_HOST, "", driver);
+				UiTestUtilities.IRODS_HOST, "", driver);
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 
 		assertTrue(ResourceUtils.errorMessageIsDisplayed("emptyResourcePathMsg", driver));
 	}
@@ -242,9 +242,9 @@ public class AddResourceTest {
 	@Test
 	public void testConfirmCancelingAddResource() {
 		logger.info("Testing cancel a resource creation");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndCancelResourceForm(RESOURCE_NAME, true, driver);
-		assertTrue(!ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, RESOURCE_NAME, null, driver));
+		assertTrue(!ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, null, driver));
 	}
 
 	/**
@@ -254,12 +254,12 @@ public class AddResourceTest {
 	@Test
 	public void testNotConfirmCancelingAddResource() {
 		logger.info("Testing cancel a resource creation");
-		ResourceUtils.accessAddResourceFormFrom(UITest.RESOURCES_URL, null, driver);
+		ResourceUtils.accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, null, driver);
 		ResourceUtils.fillAndCancelResourceForm(RESOURCE_NAME, false, driver);
 
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("cancelModal")));
 
-		assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
 	}
 }

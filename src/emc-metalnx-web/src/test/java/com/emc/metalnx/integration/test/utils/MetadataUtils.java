@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -97,10 +97,10 @@ public class MetadataUtils {
      *            name of the file that will have the AVU
      */
     public static void addMetadata(WebDriver driver, String attribute, String value, String unit, String file) {
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        String locator = String.format("#treeViewTable a[name='/%s/home/%s/%s']", UITest.IRODS_ZONE, UITest.RODS_USERNAME, file);
+        String locator = String.format("#treeViewTable a[name='/%s/home/%s/%s']", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME, file);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("treeViewTable")));
         driver.findElement(By.cssSelector("#treeViewTable_filter input")).sendKeys(file);
         // driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
@@ -130,7 +130,7 @@ public class MetadataUtils {
         By deleteMetadataModal = By.id("deleteMetadataModal");
         By metadataDelConf = By.cssSelector("#deleteMetadataModal .btn-primary");
 
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
 
         CollectionUtils.waitForItemToLoad(driver, item);
         driver.findElement(CollectionUtils.getFileLocatorUnderRodsHome(item)).click();
@@ -221,7 +221,7 @@ public class MetadataUtils {
      */
     public static void addMetadataToSpecificFiles(WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, 15);
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         wait.until(ExpectedConditions.elementToBeClickable(TAB_LINKS));
 
         for (int i = 0; i < METADATA_SEARCH_FILES.length; i++) {
@@ -366,7 +366,7 @@ public class MetadataUtils {
      * @param driver
      */
     public static void addMaxNumberOfSearchParams(WebDriver driver) {
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("addMetadataSearchRow")));

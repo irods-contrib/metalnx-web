@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -48,7 +48,7 @@ public class FilePropertiesSearchTest {
 
 	public static final String[] SEARCH_FILES = { "1SeleniumTestMetadataSearch.png" };
 
-	private String userHomeColl = String.format("/%s/%s/%s", UITest.IRODS_ZONE, "home", UITest.RODS_USERNAME);
+	private String userHomeColl = String.format("/%s/%s/%s", UiTestUtilities.IRODS_ZONE, "home", UiTestUtilities.RODS_USERNAME);
 	private String filePath = String.format("%s/%s", userHomeColl, SEARCH_FILES[0]);
 
 	private enum AttributeOptions {
@@ -62,20 +62,20 @@ public class FilePropertiesSearchTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 10);
 		FileUtils.uploadToHomeDirAsAdmin(SEARCH_FILES);
 	}
 
 	@Before
 	public void setUp() {
-		UITest.login();
+		UiTestUtilities.login();
 
 	}
 
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	@AfterClass
@@ -85,7 +85,7 @@ public class FilePropertiesSearchTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -294,8 +294,8 @@ public class FilePropertiesSearchTest {
 		// creating user for testing purposes
 		String uname = "filePropertiesSearch" + System.currentTimeMillis();
 		String pwd = "webdriver";
-		driver.get(UITest.ADD_USERS_URL);
-		UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_USER_TYPE, driver);
+		driver.get(UiTestUtilities.ADD_USERS_URL);
+		UserUtils.fillInUserGeneralInformation(uname, pwd, UiTestUtilities.RODS_USER_TYPE, driver);
 		UserUtils.submitUserForm(driver);
 
 		// getting to the file properties search tab
@@ -313,7 +313,7 @@ public class FilePropertiesSearchTest {
 				driver.findElements(By.cssSelector("#treeViewTable tbody > tr > td:first-child > span")).size() != 0);
 
 		// deleting test user
-		UITest.logout();
+		UiTestUtilities.logout();
 		UserUtils.removeUser(uname, driver);
 	}
 
@@ -321,7 +321,7 @@ public class FilePropertiesSearchTest {
 	 * Method to get to file properties search tab
 	 */
 	private void getFilePropertiesSearchTab() {
-		driver.get(UITest.METADATA_SEARCH_URL);
+		driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href=\"#properties-search\"]"))).click();
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("properties-search")));
 	}

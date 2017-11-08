@@ -35,7 +35,7 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -47,7 +47,7 @@ public class GroupTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class GroupTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class GroupTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class GroupTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -97,13 +97,13 @@ public class GroupTest {
 		logger.info("Testing if add button works");
 
 		try {
-			driver.get(UITest.GROUPS_URL);
+			driver.get(UiTestUtilities.GROUPS_URL);
 
 			WebElement addGroupBtn = driver.findElement(By.linkText("Add Group"));
 			addGroupBtn.click();
 
 			// checks if add group button brings the group to the add group page
-			Assert.assertEquals(UITest.ADD_GROUPS_URL, driver.getCurrentUrl());
+			Assert.assertEquals(UiTestUtilities.ADD_GROUPS_URL, driver.getCurrentUrl());
 		} catch (Exception e) {
 			logger.error("Could not run test properly");
 		}
@@ -128,7 +128,7 @@ public class GroupTest {
 		logger.info("Testing add a brand new group");
 
 		try {
-			driver.get(UITest.ADD_GROUPS_URL);
+			driver.get(UiTestUtilities.ADD_GROUPS_URL);
 
 			WebElement inputGroupname = driver.findElement(By.id("inputGroupname"));
 			WebElement btnEditUsers = driver.findElement(By.id("showUsersListBtn"));
@@ -148,7 +148,7 @@ public class GroupTest {
 
 			// checks after adding a Group, if the system returns to previous
 			// screen (Group mgmt.)
-			assertEquals(UITest.GROUPS_URL, driver.getCurrentUrl());
+			assertEquals(UiTestUtilities.GROUPS_URL, driver.getCurrentUrl());
 
 			// checks if a success message is displayed
 			WebElement divAlertSucess = driver.findElement(By.className("alert-success"));
@@ -173,7 +173,7 @@ public class GroupTest {
 
 		try {
 
-			driver.get(UITest.ADD_GROUPS_URL);
+			driver.get(UiTestUtilities.ADD_GROUPS_URL);
 
 			WebElement inputGroupname = driver.findElement(By.id("inputGroupname"));
 			WebElement submitGroupFormBtn = driver.findElement(By.id("submitGroupFormBtn"));
@@ -201,7 +201,7 @@ public class GroupTest {
 
 		try {
 
-			driver.get(UITest.GROUPS_URL);
+			driver.get(UiTestUtilities.GROUPS_URL);
 
 			List<WebElement> groupsList = driver.findElements(By.className("col-groupname"));
 

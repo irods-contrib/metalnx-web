@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.ProfileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -55,12 +55,12 @@ public class RemoveProfileTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("page-wrapper")));
 
@@ -72,7 +72,7 @@ public class RemoveProfileTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class RemoveProfileTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class RemoveProfileTest {
 	public void testRemoveUserProfile() {
 		logger.info("Test for removing a user profile");
 
-		driver.get(UITest.PROFILES_URL);
+		driver.get(UiTestUtilities.PROFILES_URL);
 
 		ProfileUtils.removeProfile(PROFILE_NAME, driver);
 

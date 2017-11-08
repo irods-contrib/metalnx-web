@@ -24,7 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -42,7 +42,7 @@ public class SeleniumAdminLoginTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class SeleniumAdminLoginTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -67,9 +67,9 @@ public class SeleniumAdminLoginTest {
 	@Test
 	public void testLoginAsAdmin() throws Exception {
 		logger.info("Test logging in as a admin user");
-		UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
-				UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
-		Assert.assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
+		UiTestUtilities.login(UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
+				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
+		Assert.assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
 	}
 
 }

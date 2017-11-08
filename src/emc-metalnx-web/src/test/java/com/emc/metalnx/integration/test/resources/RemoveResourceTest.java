@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.ResourceUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -51,16 +51,16 @@ public class RemoveResourceTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("page-wrapper")));
 
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
 	}
 
@@ -70,7 +70,7 @@ public class RemoveResourceTest {
 	@After
 	public void tearDown() throws Exception {
 		ResourceUtils.removeResource(RESOURCE_NAME, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class RemoveResourceTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class RemoveResourceTest {
 
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resourcesListTable")));
-		assertTrue(!ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, RESOURCE_NAME, null, driver));
+		assertTrue(!ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, null, driver));
 	}
 
 	/**
@@ -118,13 +118,13 @@ public class RemoveResourceTest {
 	@Test
 	public void testRejectRemovingResource() {
 		logger.info("Testing reject removing resource");
-		if (ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, RESOURCE_NAME, null, driver)) {
+		if (ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, null, driver)) {
 			ResourceUtils.clickOnResouceRemoveIcon(RESOURCE_NAME, driver);
 			driver.findElement(By.id("btnConfRescRemoval_No")).click();
 		}
 
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resourcesListTable")));
-		assertTrue(ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, RESOURCE_NAME, null, driver));
+		assertTrue(ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, RESOURCE_NAME, null, driver));
 	}
 }

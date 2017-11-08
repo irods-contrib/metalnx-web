@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -55,17 +55,17 @@ public class UserTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class UserTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -97,13 +97,13 @@ public class UserTest {
 	@Test
 	public void testCheckIfAddButtonWorks() {
 		logger.info("Testing if add button works");
-		driver.get(UITest.USERS_URL);
+		driver.get(UiTestUtilities.USERS_URL);
 
 		driver.findElement(By.cssSelector("a[href='add/']")).click();
 
 		// checks if add user button brings the user to the add user page
-		Assert.assertEquals(UITest.ADD_USERS_URL, driver.getCurrentUrl());
-		UITest.logout();
+		Assert.assertEquals(UiTestUtilities.ADD_USERS_URL, driver.getCurrentUrl());
+		UiTestUtilities.logout();
 	}
 
 	/*
@@ -126,8 +126,8 @@ public class UserTest {
 	public void testAddUser() throws Exception {
 		logger.info("Testing add a brand new user");
 
-		driver.get(UITest.ADD_USERS_URL);
-		UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_ADMIN_TYPE, driver);
+		driver.get(UiTestUtilities.ADD_USERS_URL);
+		UserUtils.fillInUserGeneralInformation(uname, pwd, UiTestUtilities.RODS_ADMIN_TYPE, driver);
 		UserUtils.fillInPersonalInfo(driver, "web", "driver", "webdriver@testing.com");
 
 		driver.findElement(By.id("showGroupsListBtn")).click();
@@ -138,10 +138,10 @@ public class UserTest {
 		}
 
 		UserUtils.submitUserForm(driver);
-		assertEquals(UITest.USERS_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.USERS_URL, driver.getCurrentUrl());
 		UserUtils.searchUser(driver, uname);
 		isSuccessMessageDisplayed();
-		UITest.logout();
+		UiTestUtilities.logout();
 		UserUtils.removeUser(uname, driver);
 	}
 
@@ -153,7 +153,7 @@ public class UserTest {
 	public void testAddUserWithEmptyUsername() {
 		logger.info("Testing add a user with an empty username");
 
-		driver.get(UITest.ADD_USERS_URL);
+		driver.get(UiTestUtilities.ADD_USERS_URL);
 
 		// Creating user for testing
 		new WebDriverWait(driver, 15).until(ExpectedConditions.elementToBeClickable(UserUtils.ZONE_FOLDER));

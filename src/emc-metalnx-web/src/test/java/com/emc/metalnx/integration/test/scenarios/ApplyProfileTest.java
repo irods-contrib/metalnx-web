@@ -37,7 +37,7 @@ import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
 import com.emc.metalnx.integration.test.utils.ProfileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 /**
@@ -65,7 +65,7 @@ public class ApplyProfileTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 10);
 	}
 
@@ -78,7 +78,7 @@ public class ApplyProfileTest {
 		profileName = "profiletestscenario" + currTime;
 		groupName = "grouptestscenario" + currTime;
 		collName = "testscenariocoll" + currTime;
-		collPath = String.format("/%s/%s", UITest.IRODS_ZONE, collName);
+		collPath = String.format("/%s/%s", UiTestUtilities.IRODS_ZONE, collName);
 	}
 
 	@After
@@ -91,7 +91,7 @@ public class ApplyProfileTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -119,29 +119,29 @@ public class ApplyProfileTest {
 	@Test
 	public void testApplyProfileWhenAddingAUser()
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		UITest.login();
-		CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
-		GroupUtils.createGroupWithPermissions(driver, groupName, UITest.OWN_PERMISSION, collName);
-		UITest.logout();
+		UiTestUtilities.login();
+		CollectionUtils.createCollectionUnderZone(driver, collName, UiTestUtilities.IRODS_ZONE);
+		GroupUtils.createGroupWithPermissions(driver, groupName, UiTestUtilities.OWN_PERMISSION, collName);
+		UiTestUtilities.logout();
 
-		UserUtils.createUser(adminUName, pwd, UITest.RODS_ADMIN_TYPE, driver);
+		UserUtils.createUser(adminUName, pwd, UiTestUtilities.RODS_ADMIN_TYPE, driver);
 
 		UserUtils.createProfileAndIncludeGroupToThisProfileAsAdmin(driver, adminUName, pwd, profileName, groupName);
 
-		UserUtils.createUserAsAdminAndApplyProfile(driver, adminUName, pwd, uname, pwd, UITest.RODS_USER_TYPE,
+		UserUtils.createUserAsAdminAndApplyProfile(driver, adminUName, pwd, uname, pwd, UiTestUtilities.RODS_USER_TYPE,
 				profileName);
 
 		UserUtils.checkIfUserIsInGroup(driver, uname, groupName);
 
-		UITest.login(uname, pwd);
+		UiTestUtilities.login(uname, pwd);
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, collPath);
 		FileUtils.uploadFileThroughUI(driver, MetadataUtils.METADATA_SEARCH_FILES);
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		CollectionUtils.removeItems(driver, MetadataUtils.METADATA_SEARCH_FILES);
 
 		cleanUpTrash();
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -160,38 +160,38 @@ public class ApplyProfileTest {
 	@Test
 	public void testApplyProfileWhenModifyingAUser()
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		UITest.login();
-		CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
-		GroupUtils.createGroupWithPermissions(driver, groupName, UITest.OWN_PERMISSION, collName);
-		UITest.logout();
+		UiTestUtilities.login();
+		CollectionUtils.createCollectionUnderZone(driver, collName, UiTestUtilities.IRODS_ZONE);
+		GroupUtils.createGroupWithPermissions(driver, groupName, UiTestUtilities.OWN_PERMISSION, collName);
+		UiTestUtilities.logout();
 
-		UserUtils.createUser(adminUName, pwd, UITest.RODS_ADMIN_TYPE, driver);
+		UserUtils.createUser(adminUName, pwd, UiTestUtilities.RODS_ADMIN_TYPE, driver);
 
 		UserUtils.createProfileAndIncludeGroupToThisProfileAsAdmin(driver, adminUName, pwd, profileName, groupName);
 
-		UserUtils.createUser(uname, pwd, UITest.RODS_USER_TYPE, driver);
+		UserUtils.createUser(uname, pwd, UiTestUtilities.RODS_USER_TYPE, driver);
 
-		UserUtils.modifyUserAsAdminAndApplyProfile(driver, adminUName, pwd, uname, UITest.IRODS_ZONE,
-				UITest.RODS_USER_TYPE, profileName);
+		UserUtils.modifyUserAsAdminAndApplyProfile(driver, adminUName, pwd, uname, UiTestUtilities.IRODS_ZONE,
+				UiTestUtilities.RODS_USER_TYPE, profileName);
 
 		UserUtils.checkIfUserIsInGroup(driver, uname, groupName);
 
-		UITest.login(uname, pwd);
+		UiTestUtilities.login(uname, pwd);
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, collPath);
 		FileUtils.uploadFileThroughUI(driver, MetadataUtils.METADATA_SEARCH_FILES);
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		CollectionUtils.removeItems(driver, MetadataUtils.METADATA_SEARCH_FILES);
 
 		cleanUpTrash();
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
 	 * Removes all items from the user's trash can.
 	 */
 	private void cleanUpTrash() {
-		driver.get(UITest.TRASH_URL);
+		driver.get(UiTestUtilities.TRASH_URL);
 		CollectionUtils.clickOnEmptyTrash(driver);
 		CollectionUtils.confirmEmptyTrash(driver);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(CollectionUtils.COLLS_TABLE));
@@ -207,13 +207,13 @@ public class ApplyProfileTest {
 		try {
 			UserUtils.removeUser(adminUName, driver);
 			UserUtils.removeUser(uname, driver);
-			UITest.login();
+			UiTestUtilities.login();
 			GroupUtils.removeGroup(groupName, driver);
 			ProfileUtils.removeProfile(profileName, driver);
 			CollectionUtils.cleanUpCollectionsUnderZone(driver, collName);
 		} catch (Exception e) {
 		} finally {
-			UITest.logout();
+			UiTestUtilities.logout();
 		}
 	}
 }

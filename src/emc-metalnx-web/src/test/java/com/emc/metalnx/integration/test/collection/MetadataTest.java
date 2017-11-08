@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -52,7 +52,7 @@ public class MetadataTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 10);
 	}
 
@@ -61,7 +61,7 @@ public class MetadataTest {
 	 */
 	@Before
 	public void setUp() {
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class MetadataTest {
 	 */
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class MetadataTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class MetadataTest {
 		String unit = "ms";
 
 		boolean foundRow = false;
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.addMetadata(driver, attribute, value, unit);
 
 		// checks if a success message is displayed
@@ -144,7 +144,7 @@ public class MetadataTest {
 		String attributeTS = "timestamp";
 		String valueTS = String.valueOf(System.currentTimeMillis());
 		String unitTS = "ms";
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.addMetadata(driver, attributeTS, valueTS, unitTS);
 
 		// MetadataUtils.openMetadataTab(driver);
@@ -186,7 +186,7 @@ public class MetadataTest {
 		String valueTS = String.valueOf(System.currentTimeMillis());
 		String unitTS = "ms";
 		boolean foundRow = false;
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.addMetadata(driver, attributeTS, valueTS, unitTS);
 
 		MetadataUtils.openMetadataTab(driver);
@@ -234,7 +234,7 @@ public class MetadataTest {
 		String valueTS = String.valueOf(System.currentTimeMillis());
 		String unitTS = "ms";
 		int foundRow = 0;
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.addMetadata(driver, attributeTS, valueTS, unitTS);
 
 		// MetadataUtils.openMetadataTab(driver);
@@ -282,7 +282,7 @@ public class MetadataTest {
 
 		boolean foundRow = false;
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.openMetadataTab(driver);
 
 		String attr = "";
@@ -323,7 +323,7 @@ public class MetadataTest {
 
 		boolean foundRow = false;
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.openMetadataTab(driver);
 
 		// generating a big string
@@ -372,7 +372,7 @@ public class MetadataTest {
 		String attributeTS = "timestamp";
 		String valueTS = String.valueOf(System.currentTimeMillis());
 		String unitTS = "ms";
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		MetadataUtils.addMetadata(driver, attributeTS, valueTS, unitTS);
 
 		// opens metadata tab

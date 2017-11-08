@@ -28,7 +28,7 @@ import org.openqa.selenium.WebDriver;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -49,27 +49,27 @@ public class LongTemplateAVUFieldsTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 		try {
-			UITest.login();
-			driver.get(UITest.TEMPLATES_URL);
+			UiTestUtilities.login();
+			driver.get(UiTestUtilities.TEMPLATES_URL);
 			TemplateUtils.removeAllTemplates(driver);
 		} catch (Exception e) {
 		} finally {
-			UITest.logout();
+			UiTestUtilities.logout();
 		}
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		templateName = RandomStringUtils.randomAlphanumeric(60) + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -79,15 +79,15 @@ public class LongTemplateAVUFieldsTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() {
-		UITest.login();
-		driver.get(UITest.TEMPLATES_URL);
+		UiTestUtilities.login();
+		driver.get(UiTestUtilities.TEMPLATES_URL);
 		TemplateUtils.removeAllTemplates(driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 

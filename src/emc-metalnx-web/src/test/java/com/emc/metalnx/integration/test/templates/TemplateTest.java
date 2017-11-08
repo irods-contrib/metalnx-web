@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -45,19 +45,19 @@ public class TemplateTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		TemplateUtils.removeTemplate(templateName, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class TemplateTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 

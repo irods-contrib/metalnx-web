@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 /**
  * Class that tests the application of a template with metadata fields on files.
@@ -44,17 +44,17 @@ public class PageSizeSelectorTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class PageSizeSelectorTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class PageSizeSelectorTest {
 	@Test
 	public void testPageSizeSelectorOnCollsPage() {
 		for (String ps : PageSizeSelectorUtils.PAGE_SIZES) {
-			PageSizeSelectorUtils.assertPageSize(driver, UITest.COLLECTIONS_URL, ps);
+			PageSizeSelectorUtils.assertPageSize(driver, UiTestUtilities.COLLECTIONS_URL, ps);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class PageSizeSelectorTest {
 	@Test
 	public void testPageSizeSelectorOnUsersPage() {
 		for (String ps : PageSizeSelectorUtils.PAGE_SIZES) {
-			PageSizeSelectorUtils.assertPageSize(driver, UITest.USERS_URL, ps);
+			PageSizeSelectorUtils.assertPageSize(driver, UiTestUtilities.USERS_URL, ps);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class PageSizeSelectorTest {
 	@Test
 	public void testPageSizeSelectorOnGroupsPage() {
 		for (String ps : PageSizeSelectorUtils.PAGE_SIZES) {
-			PageSizeSelectorUtils.assertPageSize(driver, UITest.GROUPS_URL, ps);
+			PageSizeSelectorUtils.assertPageSize(driver, UiTestUtilities.GROUPS_URL, ps);
 		}
 	}
 
@@ -111,7 +111,7 @@ public class PageSizeSelectorTest {
 	@Test
 	public void testPageSizeSelectorOnResourcesPage() {
 		for (String ps : PageSizeSelectorUtils.PAGE_SIZES) {
-			PageSizeSelectorUtils.assertPageSize(driver, UITest.RESOURCES_URL, ps);
+			PageSizeSelectorUtils.assertPageSize(driver, UiTestUtilities.RESOURCES_URL, ps);
 		}
 	}
 }

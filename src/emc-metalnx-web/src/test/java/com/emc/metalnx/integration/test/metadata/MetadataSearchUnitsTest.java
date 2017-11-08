@@ -19,7 +19,7 @@ package com.emc.metalnx.integration.test.metadata;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -41,12 +41,12 @@ public class MetadataSearchUnitsTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
+        UiTestUtilities.init();
+        driver = UiTestUtilities.getDriver();
         FileUtils.forceRemoveFilesFromHomeAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
         FileUtils.uploadToHomeDirAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
 
-        UITest.login();
+        UiTestUtilities.login();
         for (String file : MetadataUtils.METADATA_SEARCH_FILES) {
             MetadataUtils.addMetadata(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE, MetadataUtils.SELENIUM_UNIT, file);
             try {
@@ -56,17 +56,17 @@ public class MetadataSearchUnitsTest {
 
             }
         }
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @Before
     public void setUp() {
-        UITest.login();
+        UiTestUtilities.login();
     }
 
     @After
     public void tearDown() {
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @AfterClass
@@ -76,7 +76,7 @@ public class MetadataSearchUnitsTest {
         if (driver != null) {
             driver.quit();
             driver = null;
-            UITest.setDriver(null);
+            UiTestUtilities.setDriver(null);
         }
     }
 
@@ -89,7 +89,7 @@ public class MetadataSearchUnitsTest {
     public void testSeleniumAsAttrTestAsValueAndMlxAsUnit() {
         logger.info("Testing Metadata search");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrValAndUnit(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE,
                 MetadataUtils.SELENIUM_UNIT);
         MetadataUtils.submitMetadataSearch(driver);
@@ -105,7 +105,7 @@ public class MetadataSearchUnitsTest {
     public void testMetadataSearchAttrAndUnit() {
         logger.info("Testing Metadata search");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrUnit(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_UNIT);
         MetadataUtils.submitMetadataSearch(driver);
         assertMetadataSearchResults();
@@ -120,7 +120,7 @@ public class MetadataSearchUnitsTest {
     public void testMetadataSearchUnit() {
         logger.info("Testing Metadata search");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchUnit(driver, MetadataUtils.SELENIUM_UNIT);
         MetadataUtils.submitMetadataSearch(driver);
         assertMetadataSearchResults();
@@ -142,7 +142,7 @@ public class MetadataSearchUnitsTest {
     public void testNumberOfMatchesDisplayedForEachFileAfterSearching() {
         logger.info("Testing the number of matches displayed for each file after doing a search.");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         logger.info("Entering search criteria.");
 
@@ -181,14 +181,14 @@ public class MetadataSearchUnitsTest {
     public void testClickingOnSearchResultAndComingBackToMetadataSearch() {
         logger.info("Test for clicking on a search result item and come back to the previous search results.");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
 
         MetadataUtils.fillInMetadataSearchAttrUnit(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_UNIT);
         MetadataUtils.submitMetadataSearch(driver);
 
         MetadataUtils.waitForSearchResults(driver);
 
-        String itemNameSelector = String.format("/%s/home/%s/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME, MetadataUtils.METADATA_SEARCH_FILES[0]);
+        String itemNameSelector = String.format("/%s/home/%s/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME, MetadataUtils.METADATA_SEARCH_FILES[0]);
         driver.findElement(By.name(itemNameSelector)).click();
 
         new WebDriverWait(driver, 10).until(

@@ -17,7 +17,7 @@
 package com.emc.metalnx.integration.test.utils;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
@@ -135,11 +135,11 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToHomeDirAsAdmin(String... files) throws DataGridException {
-        String user = UITest.RODS_USERNAME;
-        String password = UITest.RODS_PASSWORD;
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
+        String user = UiTestUtilities.RODS_USERNAME;
+        String password = UiTestUtilities.RODS_PASSWORD;
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
 
-        return uploadWithUserToResc(user, password, path, UITest.DEFAULT_RESC, files);
+        return uploadWithUserToResc(user, password, path, UiTestUtilities.DEFAULT_RESC, files);
     }
 
     /**
@@ -155,8 +155,8 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToHomeDirAsUser(String user, String password, String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
-        return uploadWithUserToResc(user, password, path, UITest.DEFAULT_RESC, files);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
+        return uploadWithUserToResc(user, password, path, UiTestUtilities.DEFAULT_RESC, files);
     }
 
     /**
@@ -170,9 +170,9 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToDirAsAdmin(String path, String... files) throws DataGridException {
-        String user = UITest.RODS_USERNAME;
-        String password = UITest.RODS_PASSWORD;
-        return uploadWithUserToResc(user, password, path, UITest.DEFAULT_RESC, files);
+        String user = UiTestUtilities.RODS_USERNAME;
+        String password = UiTestUtilities.RODS_PASSWORD;
+        return uploadWithUserToResc(user, password, path, UiTestUtilities.DEFAULT_RESC, files);
     }
 
     /**
@@ -190,7 +190,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToDirAsUser(String user, String password, String path, String... files) throws DataGridException {
-        return uploadWithUserToResc(user, password, path, UITest.DEFAULT_RESC, files);
+        return uploadWithUserToResc(user, password, path, UiTestUtilities.DEFAULT_RESC, files);
     }
 
     /**
@@ -204,9 +204,9 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToHomeDirAsAdminOnResc(String rescName, String... files) throws DataGridException {
-        String user = UITest.RODS_USERNAME;
-        String password = UITest.RODS_PASSWORD;
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
+        String user = UiTestUtilities.RODS_USERNAME;
+        String password = UiTestUtilities.RODS_PASSWORD;
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
         return uploadWithUserToResc(user, password, path, rescName, files);
     }
 
@@ -225,7 +225,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToHomeDirAsUserOnResc(String user, String password, String rescName, String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
         return uploadWithUserToResc(user, password, path, rescName, files);
     }
 
@@ -242,8 +242,8 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static boolean uploadToDirAsAdminOnResc(String path, String rescName, String... files) throws DataGridException {
-        String user = UITest.RODS_USERNAME;
-        String password = UITest.RODS_PASSWORD;
+        String user = UiTestUtilities.RODS_USERNAME;
+        String password = UiTestUtilities.RODS_PASSWORD;
         return uploadWithUserToResc(user, password, path, rescName, files);
     }
 
@@ -281,8 +281,8 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void removeFilesFromHomeAsAdmin(String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
-        remove(UITest.RODS_USERNAME, UITest.RODS_PASSWORD, path, false, files);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME);
+        remove(UiTestUtilities.RODS_USERNAME, UiTestUtilities.RODS_PASSWORD, path, false, files);
     }
 
     /**
@@ -297,7 +297,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void removeFilesFromHomeAsUser(String user, String pwd, String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
         remove(user, pwd, path, false, files);
     }
 
@@ -311,7 +311,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void removeFilesFromDirAsAdmin(String path, String... files) throws DataGridException {
-        remove(UITest.RODS_USERNAME, UITest.RODS_PASSWORD, path, false, files);
+        remove(UiTestUtilities.RODS_USERNAME, UiTestUtilities.RODS_PASSWORD, path, false, files);
     }
 
     /**
@@ -339,8 +339,8 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void forceRemoveFilesFromHomeAsAdmin(String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
-        remove(UITest.RODS_USERNAME, UITest.RODS_PASSWORD, path, true, files);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, UiTestUtilities.RODS_USERNAME);
+        remove(UiTestUtilities.RODS_USERNAME, UiTestUtilities.RODS_PASSWORD, path, true, files);
     }
 
     /**
@@ -355,7 +355,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void forceRemoveFilesFromHomeAsUser(String user, String pwd, String... files) throws DataGridException {
-        String path = String.format("/%s/home/%s", UITest.IRODS_ZONE, user);
+        String path = String.format("/%s/home/%s", UiTestUtilities.IRODS_ZONE, user);
         remove(user, pwd, path, true, files);
     }
 
@@ -369,7 +369,7 @@ public class FileUtils {
      * @throws DataGridException
      */
     public static void forceRemoveFilesFromDirAsAdmin(String path, String... files) throws DataGridException {
-        remove(UITest.RODS_USERNAME, UITest.RODS_PASSWORD, path, true, files);
+        remove(UiTestUtilities.RODS_USERNAME, UiTestUtilities.RODS_PASSWORD, path, true, files);
     }
 
     /**
@@ -431,9 +431,9 @@ public class FileUtils {
      */
     private static IRODSAccount authenticateUser(String user, String password) throws DataGridException {
         // Connection information
-        String host = UITest.IRODS_HOST;
-        int port = UITest.IRODS_PORT;
-        String zone = UITest.IRODS_ZONE;
+        String host = UiTestUtilities.IRODS_HOST;
+        int port = UiTestUtilities.IRODS_PORT;
+        String zone = UiTestUtilities.IRODS_ZONE;
         String homeDir = String.format("/%s/home/%s", zone, user);
         String defStorage = "demoResc";
 

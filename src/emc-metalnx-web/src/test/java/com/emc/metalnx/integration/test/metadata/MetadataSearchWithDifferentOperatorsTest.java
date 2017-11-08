@@ -19,7 +19,7 @@ package com.emc.metalnx.integration.test.metadata;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -42,13 +42,13 @@ public class MetadataSearchWithDifferentOperatorsTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
+        UiTestUtilities.init();
+        driver = UiTestUtilities.getDriver();
         FileUtils.forceRemoveFilesFromHomeAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
         FileUtils.uploadToHomeDirAsAdmin(MetadataUtils.METADATA_SEARCH_FILES);
-        UITest.login();
+        UiTestUtilities.login();
 
-        driver.get(UITest.COLLECTIONS_URL);
+        driver.get(UiTestUtilities.COLLECTIONS_URL);
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("breadcrumbOptionsMenu")));
         for (String file : MetadataUtils.METADATA_SEARCH_FILES) {
@@ -61,17 +61,17 @@ public class MetadataSearchWithDifferentOperatorsTest {
             MetadataUtils.addMetadata(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE, "", file);
         }
 
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @Before
     public void setUp() throws Exception {
-        UITest.login();
+        UiTestUtilities.login();
     }
 
     @After
     public void tearDown() throws Exception {
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @AfterClass
@@ -81,7 +81,7 @@ public class MetadataSearchWithDifferentOperatorsTest {
         if (driver != null) {
             driver.quit();
             driver = null;
-            UITest.setDriver(null);
+            UiTestUtilities.setDriver(null);
         }
     }
 
@@ -96,7 +96,7 @@ public class MetadataSearchWithDifferentOperatorsTest {
     public void testSeleniumAttributeNotEqualsTestValue() {
         logger.info("Testing 'selenium' attribute not equals to 'test' value");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE);
         MetadataUtils.fillInMetadataSearchOperator(driver, MetadataUtils.NOT_EQUAL);
         MetadataUtils.submitMetadataSearch(driver);
@@ -118,7 +118,7 @@ public class MetadataSearchWithDifferentOperatorsTest {
     public void testSeleniumAttributeContainsTeValue() {
         logger.info("Testing 'selenium' attribute contains 'Tes' value");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE.subSequence(0, 2).toString());
         MetadataUtils.fillInMetadataSearchOperator(driver, MetadataUtils.LIKE);
         MetadataUtils.submitMetadataSearch(driver);
@@ -153,7 +153,7 @@ public class MetadataSearchWithDifferentOperatorsTest {
     public void testSeleniumAttributeNotContainsTeValue() {
         logger.info("Testing 'Selenium' attribute NOT contains 'Tes' value");
 
-        driver.get(UITest.METADATA_SEARCH_URL);
+        driver.get(UiTestUtilities.METADATA_SEARCH_URL);
         MetadataUtils.fillInMetadataSearchAttrVal(driver, MetadataUtils.SELENIUM_ATTR, MetadataUtils.SELENIUM_VALUE.subSequence(0, 2).toString());
         MetadataUtils.fillInMetadataSearchOperator(driver, MetadataUtils.NOT_LIKE);
         MetadataUtils.submitMetadataSearch(driver);

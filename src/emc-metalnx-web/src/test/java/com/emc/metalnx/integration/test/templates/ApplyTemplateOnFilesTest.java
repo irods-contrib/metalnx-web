@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -60,7 +60,7 @@ public class ApplyTemplateOnFilesTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 		attributes = new ArrayList<String>();
 		values = new ArrayList<String>();
@@ -78,7 +78,7 @@ public class ApplyTemplateOnFilesTest {
 	@Before
 	public void setUp() throws Exception {
 		templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 
 		// Upload test files
 		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES);
@@ -92,7 +92,7 @@ public class ApplyTemplateOnFilesTest {
 		// Remove test files
 		FileUtils.forceRemoveFilesFromHomeAsAdmin(TemplateUtils.TEST_FILES);
 
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ApplyTemplateOnFilesTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -121,9 +121,9 @@ public class ApplyTemplateOnFilesTest {
 	public void testApplyTemplate() {
 		logger.info("Apply template with metadata fields");
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		TemplateUtils.findTemplateToApply(driver, templateName, TemplateUtils.TEST_FILES);
 		TemplateUtils.submitApplyTemplateForm(driver);
@@ -139,8 +139,8 @@ public class ApplyTemplateOnFilesTest {
 	public void testApplyTemplateChangingValues() {
 		logger.info("Apply template with metadata fields changing metadata values");
 
-		driver.get(UITest.COLLECTIONS_URL);
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		TemplateUtils.findTemplateToApply(driver, templateName, TemplateUtils.TEST_FILES);
 		List<String> changedValues = changeValuesOfTemplateBeforeApplying();

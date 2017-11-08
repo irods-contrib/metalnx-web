@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.group;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -53,8 +53,8 @@ public class GroupUtils {
             String pwd, String... testItems) {
         GroupUtils.modifyGroupWithPermission(gname, testItems, permType, driver);
 
-        UITest.logout();
-        UITest.login(userName, pwd);
+        UiTestUtilities.logout();
+        UiTestUtilities.login(userName, pwd);
 
         GroupUtils.checkPermissionBookmarks(gname, testItems, driver);
 
@@ -69,7 +69,7 @@ public class GroupUtils {
      *            {@link WebDriver} the Web Driver instance
      */
     public static void createGroup(String groupName, WebDriver driver) {
-        driver.get(UITest.ADD_GROUPS_URL);
+        driver.get(UiTestUtilities.ADD_GROUPS_URL);
         fillGroupGeneralInformation(groupName, driver);
         submitGroupForm(driver);
     }
@@ -85,7 +85,7 @@ public class GroupUtils {
      *            {@link WebDriver} the Web Driver instance
      */
     public static void createGroupWithUsers(String groupName, String[] users, WebDriver driver) {
-        driver.get(UITest.ADD_GROUPS_URL);
+        driver.get(UiTestUtilities.ADD_GROUPS_URL);
         fillGroupGeneralInformation(groupName, driver);
         assignUsersToGroup(users, driver);
         submitGroupForm(driver);
@@ -105,7 +105,7 @@ public class GroupUtils {
      *            {@link WebDriver} the Web Driver instance
      */
     public static void createGroupWithRecursivePermission(WebDriver driver, String groupName, String permission, String... collsOrDataObjects) {
-        driver.get(UITest.ADD_GROUPS_URL);
+        driver.get(UiTestUtilities.ADD_GROUPS_URL);
         fillGroupGeneralInformation(groupName, driver);
         assignPermissionsOnCollectionsOrDataObjects(collsOrDataObjects, permission, driver, true);
         submitGroupForm(driver);
@@ -125,7 +125,7 @@ public class GroupUtils {
      *            {@link WebDriver} the Web Driver instance
      */
     public static void createGroupWithPermissions(WebDriver driver, String groupName, String permission, String... collsOrDataObjects) {
-        driver.get(UITest.ADD_GROUPS_URL);
+        driver.get(UiTestUtilities.ADD_GROUPS_URL);
         fillGroupGeneralInformation(groupName, driver);
         assignPermissionsOnCollectionsOrDataObjects(collsOrDataObjects, permission, driver, false);
         submitGroupForm(driver);
@@ -149,7 +149,7 @@ public class GroupUtils {
      */
     public static void createGroupWithUsersAndPermissions(String groupName, String[] users, String[] collsOrDataObjects, String permission,
             WebDriver driver) {
-        driver.get(UITest.ADD_GROUPS_URL);
+        driver.get(UiTestUtilities.ADD_GROUPS_URL);
         fillGroupGeneralInformation(groupName, driver);
         assignUsersToGroup(users, driver);
         assignPermissionsOnCollectionsOrDataObjects(collsOrDataObjects, permission, driver, false);
@@ -170,7 +170,7 @@ public class GroupUtils {
      *            {@link WebDriver} the Web Driver instance
      */
     public static void modifyGroupWithPermission(String groupName, String[] collsOrDataObjects, String permission, WebDriver driver) {
-        driver.get(UITest.getModifyGroupsPage(groupName));
+        driver.get(UiTestUtilities.getModifyGroupsPage(groupName));
         assignPermissionsOnCollectionsOrDataObjects(collsOrDataObjects, permission, driver, false);
         driver.findElement(By.id("submitGroupFormBtn")).click();
     }
@@ -190,8 +190,8 @@ public class GroupUtils {
         By buttonToRemoveGroup = By.id("deleteBtn_" + groupName);
         By removalConfirmation = By.id("deleteGroupConfBtn");
 
-        driver.get(UITest.GROUPS_URL);
-        Assert.assertEquals(driver.getCurrentUrl(), UITest.GROUPS_URL);
+        driver.get(UiTestUtilities.GROUPS_URL);
+        Assert.assertEquals(driver.getCurrentUrl(), UiTestUtilities.GROUPS_URL);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(groupsTable));
         wait.until(ExpectedConditions.visibilityOfElementLocated(GROUP_FILTER_INPUT)).sendKeys(groupName);
@@ -218,8 +218,8 @@ public class GroupUtils {
     public static void checkPermissionBookmarks(String groupName, String[] testItems, WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, 15);
 
-        driver.get(UITest.GROUP_BOOKMARKS_URL);
-        Assert.assertEquals(UITest.GROUP_BOOKMARKS_URL, driver.getCurrentUrl());
+        driver.get(UiTestUtilities.GROUP_BOOKMARKS_URL);
+        Assert.assertEquals(UiTestUtilities.GROUP_BOOKMARKS_URL, driver.getCurrentUrl());
 
         driver.findElement(By.cssSelector("#groupBookmarksTable_filter input")).sendKeys(groupName);
         try {
@@ -246,7 +246,7 @@ public class GroupUtils {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#directoryPath .breadcrumb")));
 
-        Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+        Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
     }
 
     /* **************************************************************************************** */
@@ -300,16 +300,16 @@ public class GroupUtils {
     private static void assignPermissionsOnCollectionsOrDataObjects(String[] collsOrDataObjects, String permission, WebDriver driver,
             boolean applyPermRecursively) {
         WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.elementToBeClickable(By.name(UITest.IRODS_ZONE)));
+        wait.until(ExpectedConditions.elementToBeClickable(By.name(UiTestUtilities.IRODS_ZONE)));
 
-        driver.findElement(By.name(UITest.IRODS_ZONE)).click();
+        driver.findElement(By.name(UiTestUtilities.IRODS_ZONE)).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(By.id("permission_" + collsOrDataObjects[0])));
 
         for (String item : collsOrDataObjects) {
             new Select(driver.findElement(By.id("permission_" + item))).selectByValue(permission);
             answerRecursiveQuestionGroupForm(driver, item, applyPermRecursively);
-            By permissionSelector = By.cssSelector(String.format("input[name='/%s/%s']", UITest.IRODS_ZONE, item));
+            By permissionSelector = By.cssSelector(String.format("input[name='/%s/%s']", UiTestUtilities.IRODS_ZONE, item));
             wait.until(ExpectedConditions.elementSelectionStateToBe(permissionSelector, true));
         }
     }
@@ -342,7 +342,7 @@ public class GroupUtils {
      */
     private static void submitGroupForm(WebDriver driver) {
         driver.findElement(By.id("submitGroupFormBtn")).click();
-        Assert.assertEquals(UITest.GROUPS_URL, driver.getCurrentUrl());
+        Assert.assertEquals(UiTestUtilities.GROUPS_URL, driver.getCurrentUrl());
     }
 
 }

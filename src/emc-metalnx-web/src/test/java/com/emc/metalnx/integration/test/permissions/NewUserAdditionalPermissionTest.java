@@ -28,7 +28,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 /**
  * Selenium tests on the additional permission functionality when adding a new
@@ -54,23 +54,23 @@ public class NewUserAdditionalPermissionTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-		CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+		CollectionUtils.cleanUpCollectionsUnderZone(driver, UiTestUtilities.TEST_COLLECTION_NAMES);
 
-		UITest.login();
-		for (String collName : UITest.TEST_COLLECTION_NAMES) {
-			CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
+		UiTestUtilities.login();
+		for (String collName : UiTestUtilities.TEST_COLLECTION_NAMES) {
+			CollectionUtils.createCollectionUnderZone(driver, collName, UiTestUtilities.IRODS_ZONE);
 		}
 
-		FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-		UITest.logout();
+		FileUtils.uploadToDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+		UiTestUtilities.logout();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 
 	}
 
@@ -80,7 +80,7 @@ public class NewUserAdditionalPermissionTest {
 	@After
 	public void tearDown() throws Exception {
 
-		UITest.logout();
+		UiTestUtilities.logout();
 
 		UserUtils.removeUser(uname, driver);
 	}
@@ -95,15 +95,15 @@ public class NewUserAdditionalPermissionTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws DataGridException {
 
-		UITest.login();
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-		CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
-		UITest.logout();
+		UiTestUtilities.login();
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+		CollectionUtils.cleanUpCollectionsUnderZone(driver, UiTestUtilities.TEST_COLLECTION_NAMES);
+		UiTestUtilities.logout();
 
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -118,8 +118,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.READ_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -128,8 +128,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.READ_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 
 	/**
@@ -139,8 +139,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.WRITE_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -149,8 +149,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.WRITE_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 
 	/**
@@ -160,8 +160,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.OWN_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -171,8 +171,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.OWN_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_ADMIN_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 
 	/*************************************
@@ -185,8 +185,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.READ_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -195,8 +195,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.READ_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 
 	/**
@@ -205,8 +205,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.WRITE_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -215,8 +215,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.WRITE_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 
 	/**
@@ -225,8 +225,8 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.OWN_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_FILE_NAMES, driver);
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class NewUserAdditionalPermissionTest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
-				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UiTestUtilities.OWN_PERMISSION, uname, UiTestUtilities.IRODS_ZONE, pwd,
+				UiTestUtilities.RODS_USER_TYPE, UiTestUtilities.TEST_COLLECTION_NAMES, driver);
 	}
 }

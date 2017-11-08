@@ -36,7 +36,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -62,7 +62,7 @@ public class CancelApplyTemplateOnFilesTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 		attributes = new ArrayList<String>();
 		values = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class CancelApplyTemplateOnFilesTest {
 	@Before
 	public void setUp() throws Exception {
 		templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 
 		// Upload test files
 		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES);
@@ -94,7 +94,7 @@ public class CancelApplyTemplateOnFilesTest {
 		// Remove test files
 		FileUtils.removeFilesFromHomeAsAdmin(TemplateUtils.TEST_FILES);
 
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class CancelApplyTemplateOnFilesTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -125,8 +125,8 @@ public class CancelApplyTemplateOnFilesTest {
 
 		logger.info("Cancel apply template selection");
 
-		driver.get(UITest.COLLECTIONS_URL);
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		CollectionUtils.waitForItemToLoad(driver, TemplateUtils.TEST_FILES[TemplateUtils.TEST_FILES.length - 1]);
 		driver.findElement(By.id(TemplateUtils.TEST_FILES[0])).click();
@@ -156,8 +156,8 @@ public class CancelApplyTemplateOnFilesTest {
 
 		logger.info("Cancel apply template selection");
 
-		driver.get(UITest.COLLECTIONS_URL);
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		TemplateUtils.findTemplateToApply(driver, templateName, TemplateUtils.TEST_FILES);
 

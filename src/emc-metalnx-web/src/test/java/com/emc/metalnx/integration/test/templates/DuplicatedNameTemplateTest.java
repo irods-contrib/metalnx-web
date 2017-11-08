@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 /**
  * Class created in order to create a template with a name that is already in
@@ -54,20 +54,20 @@ public class DuplicatedNameTemplateTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 		TemplateUtils.createTemplateWithNoFields(driver, templateName, TemplateUtils.PRIVATE_TEMPLATE_TYPE);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		TemplateUtils.removeTemplate(templateName, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class DuplicatedNameTemplateTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class DuplicatedNameTemplateTest {
 	 * @param type
 	 */
 	private void addTemplateWithDuplicatedNameAndCheckErrorMsg(String template, String type) {
-		driver.get(UITest.ADD_TEMPLATES_URL);
+		driver.get(UiTestUtilities.ADD_TEMPLATES_URL);
 		TemplateUtils.fillInTemplateInformation(template, TemplateUtils.TEMPLATE_TEST_DESC,
 				TemplateUtils.TEMPLATE_USE_INFO, type, driver);
 

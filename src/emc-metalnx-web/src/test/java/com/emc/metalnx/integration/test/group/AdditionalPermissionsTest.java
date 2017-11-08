@@ -30,11 +30,11 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
-public class AdditionalPermissionsTest extends UITest {
+public class AdditionalPermissionsTest extends UiTestUtilities {
 	private static final Logger logger = LoggerFactory.getLogger(AdditionalPermissionsTest.class);
 
 	public static String uname = "useradditionalpermissionforgroup" + System.currentTimeMillis();
@@ -55,15 +55,15 @@ public class AdditionalPermissionsTest extends UITest {
 		driver = getDriver();
 
 		try {
-			FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-			CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
+			FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+			CollectionUtils.cleanUpCollectionsUnderZone(driver, UiTestUtilities.TEST_COLLECTION_NAMES);
 
-			UITest.login();
-			for (String collName : UITest.TEST_COLLECTION_NAMES) {
-				CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
+			UiTestUtilities.login();
+			for (String collName : UiTestUtilities.TEST_COLLECTION_NAMES) {
+				CollectionUtils.createCollectionUnderZone(driver, collName, UiTestUtilities.IRODS_ZONE);
 			}
-			FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-			UITest.logout();
+			FileUtils.uploadToDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+			UiTestUtilities.logout();
 		} catch (DataGridException e) {
 			logger.error("Could not setup test.");
 		}
@@ -100,15 +100,15 @@ public class AdditionalPermissionsTest extends UITest {
 	@AfterClass
 	public static void tearDownAfterClass() throws DataGridException {
 
-		UITest.login();
-		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-		CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
-		UITest.logout();
+		UiTestUtilities.login();
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UiTestUtilities.IRODS_ZONE, UiTestUtilities.TEST_FILE_NAMES);
+		CollectionUtils.cleanUpCollectionsUnderZone(driver, UiTestUtilities.TEST_COLLECTION_NAMES);
+		UiTestUtilities.logout();
 
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -123,8 +123,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.READ_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.READ_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -133,8 +133,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.READ_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.READ_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.WRITE_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.WRITE_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -154,8 +154,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.WRITE_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.WRITE_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/**
@@ -165,8 +165,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.OWN_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.OWN_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -176,8 +176,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.OWN_PERMISSION, UITest.RODS_ADMIN_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.OWN_PERMISSION, UiTestUtilities.RODS_ADMIN_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/*************************************
@@ -190,8 +190,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.READ_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.READ_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -200,8 +200,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantReadPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.READ_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.READ_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/**
@@ -210,8 +210,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.WRITE_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.WRITE_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -220,8 +220,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantWritePermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.WRITE_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.WRITE_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.OWN_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_FILE_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.OWN_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_FILE_NAMES);
 	}
 
 	/**
@@ -240,8 +240,8 @@ public class AdditionalPermissionsTest extends UITest {
 	 */
 	@Test
 	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() throws Exception {
-		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UITest.OWN_PERMISSION, UITest.RODS_USER_TYPE,
-				UITest.TEST_COLLECTION_NAMES);
+		grantPermissionAndBookmarkToGroupAndCheckIfBookmarkShowUp(UiTestUtilities.OWN_PERMISSION, UiTestUtilities.RODS_USER_TYPE,
+				UiTestUtilities.TEST_COLLECTION_NAMES);
 	}
 
 	/**

@@ -16,7 +16,7 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -69,7 +69,7 @@ public class ResourceUtils {
         driver.get(url);
         WebDriverWait wait = new WebDriverWait(driver, 15);
 
-        if (url.equals(UITest.RESOURCES_MAP_URL)) {
+        if (url.equals(UiTestUtilities.RESOURCES_MAP_URL)) {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("resourceMapPanel")));
 
             rightClickOnNodeInMap(parent, driver);
@@ -107,10 +107,10 @@ public class ResourceUtils {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitResourceFormBtn")));
 
         if (parent != null) {
-            Assert.assertEquals(UITest.ADD_RESOURCES_URL + parent + "/", driver.getCurrentUrl());
+            Assert.assertEquals(UiTestUtilities.ADD_RESOURCES_URL + parent + "/", driver.getCurrentUrl());
         }
         else {
-            Assert.assertEquals(UITest.ADD_RESOURCES_URL, driver.getCurrentUrl());
+            Assert.assertEquals(UiTestUtilities.ADD_RESOURCES_URL, driver.getCurrentUrl());
         }
 
         driver.findElement(By.id("inputResourceName")).sendKeys(resourceName);
@@ -193,7 +193,7 @@ public class ResourceUtils {
 
         fillAndSubmitResourceForm(resourceName, resourceType, parent, zone, host, path, driver);
 
-        if (!from.equals(UITest.RESOURCES_MAP_URL)) {
+        if (!from.equals(UiTestUtilities.RESOURCES_MAP_URL)) {
             // checks if a success message is displayed and if the resource was successfully added
             WebElement divAlertSucess = driver.findElement(By.className("alert-success"));
             assertTrue(divAlertSucess.isDisplayed());
@@ -207,7 +207,7 @@ public class ResourceUtils {
         // By submitFormBtn = By.id("submitResourceFormBtn");
         // WebDriverWait wait = new WebDriverWait(driver, 8);
 
-        accessAddResourceFormFrom(UITest.RESOURCES_URL, parent, driver);
+        accessAddResourceFormFrom(UiTestUtilities.RESOURCES_URL, parent, driver);
         fillAndSubmitIsilonResourceForm(resourceName, parent, zone, path, isiHost, isiPort, isiUser, driver);
 
         // wait.until(ExpectedConditions.elementToBeClickable(submitFormBtn));
@@ -216,7 +216,7 @@ public class ResourceUtils {
     }
 
     public static void removeResource(String resourceName, WebDriver driver) throws Exception {
-        if (ResourceUtils.isInResourcesList(UITest.RESOURCES_URL, resourceName, null, driver)) {
+        if (ResourceUtils.isInResourcesList(UiTestUtilities.RESOURCES_URL, resourceName, null, driver)) {
             clickOnResouceRemoveIcon(resourceName, driver);
             driver.findElement(By.id("btnConfRescRemoval_Yes")).click();
         }
@@ -224,7 +224,7 @@ public class ResourceUtils {
 
     public static void clickOnResouceRemoveIcon(String resourceName, WebDriver driver) {
 
-        driver.get(UITest.RESOURCES_URL);
+        driver.get(UiTestUtilities.RESOURCES_URL);
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn_removal_" + resourceName)));
         driver.findElement(By.id("btn_removal_" + resourceName)).click();
@@ -239,9 +239,9 @@ public class ResourceUtils {
         By resourcesFilter = By.cssSelector("#resourcesListTable_filter input");
         By resourcesTable = By.cssSelector("#resourcesListTable tbody tr td");
 
-        driver.get(UITest.RESOURCES_URL);
+        driver.get(UiTestUtilities.RESOURCES_URL);
         wait.until(ExpectedConditions.visibilityOfElementLocated(resourcesTable));
-        Assert.assertEquals(UITest.RESOURCES_URL, driver.getCurrentUrl());
+        Assert.assertEquals(UiTestUtilities.RESOURCES_URL, driver.getCurrentUrl());
 
         for (char c : searchBy.toCharArray()) {
             char letters[] = { c };
@@ -270,7 +270,7 @@ public class ResourceUtils {
         }
 
         WebDriverWait wait = new WebDriverWait(driver, 8);
-        if (url.equals(UITest.RESOURCES_URL)) {
+        if (url.equals(UiTestUtilities.RESOURCES_URL)) {
             wait.until(ExpectedConditions.visibilityOfElementLocated(resourceTable));
 
             WebElement resourcesListTable = driver.findElement(resourceTable);
@@ -281,7 +281,7 @@ public class ResourceUtils {
                 }
             }
         }
-        else if (url.equals(UITest.RESOURCES_MAP_URL)) {
+        else if (url.equals(UiTestUtilities.RESOURCES_MAP_URL)) {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resourceMapPanel")));
 
             List<WebElement> nodes = driver.findElements(By.className("node"));
@@ -291,7 +291,7 @@ public class ResourceUtils {
                 }
             }
         }
-        else if (url.equals(UITest.RESOURCES_SERVERS_URL)) {
+        else if (url.equals(UiTestUtilities.RESOURCES_SERVERS_URL)) {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resourcesByServerList")));
 
             List<WebElement> elements = driver.findElements(By.id("hostname"));

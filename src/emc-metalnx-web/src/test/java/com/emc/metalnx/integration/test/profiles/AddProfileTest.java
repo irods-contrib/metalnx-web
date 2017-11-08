@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.ProfileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -63,12 +63,12 @@ public class AddProfileTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("page-wrapper")));
 	}
@@ -79,7 +79,7 @@ public class AddProfileTest {
 	@After
 	public void tearDown() throws Exception {
 		ProfileUtils.removeProfile(PROFILE_NAME, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class AddProfileTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class AddProfileTest {
 
 		ProfileUtils.accessAddNewProfileForm(driver);
 
-		assertEquals(driver.getCurrentUrl(), UITest.ADD_PROFILES_URL);
+		assertEquals(driver.getCurrentUrl(), UiTestUtilities.ADD_PROFILES_URL);
 
 		List<String> groupsNames = new ArrayList<String>();
 		groupsNames.add(PUBLIC_GROUP_NAME);
@@ -145,7 +145,7 @@ public class AddProfileTest {
 
 		ProfileUtils.addUserProfile("", "", null, driver);
 
-		assertEquals(UITest.ADD_PROFILES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_PROFILES_URL, driver.getCurrentUrl());
 
 		assertTrue(ProfileUtils.errorMessageIsDisplayed("emptyProfileNameMsg", driver));
 	}
@@ -164,7 +164,7 @@ public class AddProfileTest {
 
 		ProfileUtils.addUserProfile(PROFILE_NAME, PROFILE_DESCRIPTION, null, driver);
 
-		assertEquals(UITest.ADD_PROFILES_URL, driver.getCurrentUrl());
+		assertEquals(UiTestUtilities.ADD_PROFILES_URL, driver.getCurrentUrl());
 
 		assertTrue(ProfileUtils.errorMessageIsDisplayed("invalidProfileNameMsg", driver));
 	}

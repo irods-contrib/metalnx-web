@@ -40,7 +40,7 @@ import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.MetadataUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 @Deprecated
 @Ignore
@@ -48,7 +48,7 @@ public class FilePermissionTest {
 
 	private static String uname = "collectionPermission" + System.currentTimeMillis();
 	private static String pwd = "webdriver";
-	private static String publicColl = String.format("/%s/home/public", UITest.IRODS_ZONE);
+	private static String publicColl = String.format("/%s/home/public", UiTestUtilities.IRODS_ZONE);
 
 	private static final By COLLECTION_TABLE_ELEMENT = By.cssSelector("#treeViewTable tbody a:nth-child(1)");
 	private static WebDriverWait wait = null;
@@ -59,12 +59,12 @@ public class FilePermissionTest {
 	public static void setUpBeforeClass() throws DataGridException {
 
 		FileUtils.uploadToDirAsAdmin(publicColl, MetadataUtils.METADATA_SEARCH_FILES);
-		UserUtils.createUser(uname, pwd, UITest.RODS_USER_TYPE, driver);
+		UserUtils.createUser(uname, pwd, UiTestUtilities.RODS_USER_TYPE, driver);
 	}
 
 	@After
 	public void tearDown() {
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	@AfterClass
@@ -75,7 +75,7 @@ public class FilePermissionTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class FilePermissionTest {
 
 		// Code below logs in as rodsuser to try and access a file that does not belong
 		// to him
-		CollectionUtils.goToPublicCollection(driver, UITest.RODS_USER_TYPE, uname, pwd);
+		CollectionUtils.goToPublicCollection(driver, UiTestUtilities.RODS_USER_TYPE, uname, pwd);
 
 		wait.until(ExpectedConditions.visibilityOfElementLocated(COLLECTION_TABLE_ELEMENT));
 		driver.findElement(COLLECTION_TABLE_ELEMENT).click();
@@ -110,7 +110,7 @@ public class FilePermissionTest {
 	@Test
 	public void testGiveReadPermissions() {
 		logger.info("Testing permission on collections");
-		CollectionUtils.goToPublicCollection(driver, UITest.RODS_ADMIN_TYPE, null, null);
+		CollectionUtils.goToPublicCollection(driver, UiTestUtilities.RODS_ADMIN_TYPE, null, null);
 
 		// giving permissions
 		wait.until(ExpectedConditions.presenceOfElementLocated(COLLECTION_TABLE_ELEMENT));
@@ -138,7 +138,7 @@ public class FilePermissionTest {
 	@Test
 	public void testGiveWritePermissions() {
 		logger.info("Testing permission on collections");
-		CollectionUtils.goToPublicCollection(driver, UITest.RODS_ADMIN_TYPE, null, null);
+		CollectionUtils.goToPublicCollection(driver, UiTestUtilities.RODS_ADMIN_TYPE, null, null);
 
 		// giving permissions
 		wait.until(ExpectedConditions.visibilityOfElementLocated(COLLECTION_TABLE_ELEMENT));
@@ -168,7 +168,7 @@ public class FilePermissionTest {
 		logger.info("Testing permission on collections");
 
 		WebDriverWait wait = new WebDriverWait(driver, 5);
-		CollectionUtils.goToPublicCollection(driver, UITest.RODS_ADMIN_TYPE, null, null);
+		CollectionUtils.goToPublicCollection(driver, UiTestUtilities.RODS_ADMIN_TYPE, null, null);
 
 		// giving permissions
 		wait.until(ExpectedConditions.presenceOfElementLocated(COLLECTION_TABLE_ELEMENT));

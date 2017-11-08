@@ -18,7 +18,7 @@ package com.emc.metalnx.integration.test.dashboard;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.ResourceUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -40,31 +40,31 @@ public class DashboardIsilonTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
+        UiTestUtilities.init();
+        driver = UiTestUtilities.getDriver();
     }
 
     @Before
     public void setUp() throws Exception {
         wait = new WebDriverWait(driver, 8);
-        UITest.login();
-        ResourceUtils.addIsilonResource(RESOURCE_NAME, null, UITest.IRODS_ZONE, RESOURCE_PATH, ISILON_HOST, ISILON_PORT, ISILON_USER, driver);
-        UITest.logout();
+        UiTestUtilities.login();
+        ResourceUtils.addIsilonResource(RESOURCE_NAME, null, UiTestUtilities.IRODS_ZONE, RESOURCE_PATH, ISILON_HOST, ISILON_PORT, ISILON_USER, driver);
+        UiTestUtilities.logout();
     }
 
     @Test
     public void testIsilonRescOnDashboard() {
-        UITest.login();
+        UiTestUtilities.login();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("dashboardServersList")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("localhost")));
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @After
     public void tearDown() throws Exception {
-        UITest.login();
+        UiTestUtilities.login();
         ResourceUtils.removeResource(RESOURCE_NAME, driver);
-        UITest.logout();
+        UiTestUtilities.logout();
     }
 
     @AfterClass
@@ -72,7 +72,7 @@ public class DashboardIsilonTest {
         if (driver != null) {
             driver.quit();
             driver = null;
-            UITest.setDriver(null);
+            UiTestUtilities.setDriver(null);
         }
     }
 

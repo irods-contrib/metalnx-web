@@ -32,7 +32,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -55,7 +55,7 @@ public class ApplyEmptyTemplateTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws DataGridException {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 		// Environment clean up
 		FileUtils.removeFilesFromHomeAsAdmin(TemplateUtils.TEST_FILES);
@@ -64,14 +64,14 @@ public class ApplyEmptyTemplateTest {
 	@Before
 	public void setUp() throws Exception {
 		templateName = TemplateUtils.TEMPLATE_TEST_NAME + System.currentTimeMillis();
-		UITest.login();
+		UiTestUtilities.login();
 		TemplateUtils.createTemplateWithNoFields(driver, templateName, TemplateUtils.SYSTEM_TEMPLATE_TYPE);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		TemplateUtils.removeTemplate(templateName, driver);
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class ApplyEmptyTemplateTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
@@ -105,8 +105,8 @@ public class ApplyEmptyTemplateTest {
 		// Upload test files
 		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES);
 
-		driver.get(UITest.COLLECTIONS_URL);
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		TemplateUtils.findTemplateToApply(driver, templateName, TemplateUtils.TEST_FILES);
 
@@ -128,9 +128,9 @@ public class ApplyEmptyTemplateTest {
 
 		CollectionUtils.createCollection(driver, TemplateUtils.TEST_COLLS[0]);
 
-		driver.get(UITest.COLLECTIONS_URL);
+		driver.get(UiTestUtilities.COLLECTIONS_URL);
 
-		Assert.assertEquals(UITest.COLLECTIONS_URL, driver.getCurrentUrl());
+		Assert.assertEquals(UiTestUtilities.COLLECTIONS_URL, driver.getCurrentUrl());
 
 		TemplateUtils.findTemplateToApply(driver, templateName, TemplateUtils.TEST_COLLS);
 

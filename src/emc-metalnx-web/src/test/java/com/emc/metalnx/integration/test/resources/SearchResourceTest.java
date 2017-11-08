@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.integration.test.utils.ResourceUtils;
-import com.emc.metalnx.test.generic.UITest;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
@@ -61,24 +61,24 @@ public class SearchResourceTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// UITest.setUpBeforeClass();
-		driver = UITest.getDriver();
+		driver = UiTestUtilities.getDriver();
 
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		UITest.login();
+		UiTestUtilities.login();
 		WebDriverWait wait = new WebDriverWait(driver, 8);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("page-wrapper")));
 
 		// Adding resources to test search
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESC_NAME_1, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESC_NAME_1, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESC_NAME_2, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESC_NAME_2, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESC_NAME_3, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESC_NAME_3, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
-		ResourceUtils.addResource(UITest.RESOURCES_URL, RESC_NAME_4, ResourceUtils.RESC_COMPOUND, null, null, null,
+		ResourceUtils.addResource(UiTestUtilities.RESOURCES_URL, RESC_NAME_4, ResourceUtils.RESC_COMPOUND, null, null, null,
 				null, driver);
 	}
 
@@ -87,7 +87,7 @@ public class SearchResourceTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		driver.get(UITest.RESOURCES_URL);
+		driver.get(UiTestUtilities.RESOURCES_URL);
 		WebDriverWait wait = new WebDriverWait(driver, 15);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("resourcesListTable")));
 
@@ -96,7 +96,7 @@ public class SearchResourceTest {
 		ResourceUtils.removeResource(RESC_NAME_3, driver);
 		ResourceUtils.removeResource(RESC_NAME_4, driver);
 
-		UITest.logout();
+		UiTestUtilities.logout();
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class SearchResourceTest {
 		if (driver != null) {
 			driver.quit();
 			driver = null;
-			UITest.setDriver(null);
+			UiTestUtilities.setDriver(null);
 		}
 	}
 
