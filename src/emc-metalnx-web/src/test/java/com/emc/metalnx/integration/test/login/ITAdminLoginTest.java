@@ -16,7 +16,12 @@
 
 package com.emc.metalnx.integration.test.login;
 
+import java.util.Properties;
+
+import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.irods.jargon.testutils.IRODSTestSetupUtilities;
 import org.irods.jargon.testutils.TestingPropertiesHelper;
+import org.irods.jargon.testutils.filemanip.ScratchFileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,21 +33,31 @@ import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
-public class SeleniumAdminLoginTest {
+public class ITAdminLoginTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(SeleniumAdminLoginTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(ITAdminLoginTest.class);
 
 	private static WebDriver driver = null;
 
-	/*************************************
-	 * TEST SET UP
-	 * 
-	 * @throws Exception
-	 *************************************/
+	private static Properties testingProperties = new Properties();
+	private static ScratchFileUtils scratchFileUtils = null;
+	public static final String IRODS_TEST_SUBDIR_PATH = "ITAdminLoginTest";
+	private static IRODSTestSetupUtilities irodsTestSetupUtilities = null;
+	private static IRODSFileSystem irodsFileSystem;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		org.irods.jargon.testutils.TestingPropertiesHelper testingPropertiesLoader = new TestingPropertiesHelper();
+		testingProperties = testingPropertiesLoader.getTestProperties();
+		scratchFileUtils = new ScratchFileUtils(testingProperties);
+		scratchFileUtils.clearAndReinitializeScratchDirectory(IRODS_TEST_SUBDIR_PATH);
+		irodsTestSetupUtilities = new IRODSTestSetupUtilities();
+		irodsTestSetupUtilities.initializeIrodsScratchDirectory();
+		irodsTestSetupUtilities.initializeDirectoryForTest(IRODS_TEST_SUBDIR_PATH);
+		irodsFileSystem = IRODSFileSystem.instance();
+		UiTestUtilities.init();
 		driver = UiTestUtilities.getDriver();
+
 	}
 
 	/**
@@ -56,6 +71,7 @@ public class SeleniumAdminLoginTest {
 			driver.quit();
 			driver = null;
 			UiTestUtilities.setDriver(null);
+			irodsFileSystem.closeAndEatExceptions();
 		}
 	}
 
@@ -67,7 +83,8 @@ public class SeleniumAdminLoginTest {
 	@Test
 	public void testLoginAsAdmin() throws Exception {
 		logger.info("Test logging in as a admin user");
-		UiTestUtilities.login(UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
+		UiTestUtilities.login(
+				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
 				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
 		Assert.assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
 	}

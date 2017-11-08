@@ -34,13 +34,13 @@ import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.test.generic.UiTestUtilities;
 
-public class SeleniumLoginTest {
+public class ITLoginTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(SeleniumLoginTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(ITLoginTest.class);
 
 	private static Properties testingProperties = new Properties();
 	private static ScratchFileUtils scratchFileUtils = null;
-	public static final String IRODS_TEST_SUBDIR_PATH = "SeleniumLoginTest";
+	public static final String IRODS_TEST_SUBDIR_PATH = "ITLoginTest";
 	private static IRODSTestSetupUtilities irodsTestSetupUtilities = null;
 	private static IRODSFileSystem irodsFileSystem;
 
@@ -85,7 +85,8 @@ public class SeleniumLoginTest {
 	@Test
 	public void testValidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing valid username and password for login");
-		//UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY), UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
+		// UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
+		// UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
 		UiTestUtilities.login("test1", "test");
 		// check if after login, the user is redirected to the dashboard page
 		assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
