@@ -16,233 +16,241 @@
 
 package com.emc.metalnx.integration.test.collection;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.integration.test.utils.CollectionUtils;
-import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.integration.test.utils.TemplateUtils;
-import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
-import junit.framework.Assert;
+import java.util.Random;
+
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Random;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.integration.test.utils.CollectionUtils;
+import com.emc.metalnx.integration.test.utils.FileUtils;
+import com.emc.metalnx.integration.test.utils.TemplateUtils;
+import com.emc.metalnx.integration.test.utils.UserUtils;
+import com.emc.metalnx.test.generic.UITest;
+
+import junit.framework.Assert;
 
 @Deprecated
 @Ignore
 public class BreadcrumbTest {
 
-    private static WebDriver driver = null;
-    private static WebDriverWait wait = null;
+	private static WebDriver driver = null;
+	private static WebDriverWait wait = null;
 
-    private static By breadcrumbLocator = By.className("breadcrumb");
-    private static By navigationInputLocator = By.id("navigationInput");
-    private static String zoneAndHomePath = "/" + UITest.IRODS_ZONE + "/home";
+	private static By breadcrumbLocator = By.className("breadcrumb");
+	private static By navigationInputLocator = By.id("navigationInput");
+	private static String zoneAndHomePath = "/" + UITest.IRODS_ZONE + "/home";
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-        wait = new WebDriverWait(driver, 5);
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() {
 
-    @Before
-    public void setUp() {
-        UITest.login();
+	}
 
-    }
+	@Before
+	public void setUp() {
+		UITest.login();
 
-    /**
-     * After each test the user created for the test should be removed.
-     */
-    @After
-    public void tearDown() {
-        UITest.logout();
-    }
+	}
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	/**
+	 * After each test the user created for the test should be removed.
+	 */
+	@After
+	public void tearDown() {
+		UITest.logout();
+	}
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
-    /**
-     * Check if rodsadmin can go to /zone/home
-     */
-    @Test
-    public void testGoToHomeCollection() {
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath);
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+	/**
+	 * Check if rodsadmin can go to /zone/home
+	 */
+	@Test
+	public void testGoToHomeCollection() {
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath);
 
-        String path = driver.findElement(navigationInputLocator).getAttribute("value");
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-        Assert.assertEquals(zoneAndHomePath, path);
-    }
+		String path = driver.findElement(navigationInputLocator).getAttribute("value");
 
-    /**
-     * Check if user gets a message warning the user that the path entered doesn't exist
-     */
-    @Test
-    public void testNonExistentCollection() {
-        String randomString = RandomStringUtils.randomAlphanumeric(20);
+		Assert.assertEquals(zoneAndHomePath, path);
+	}
 
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, randomString);
+	/**
+	 * Check if user gets a message warning the user that the path entered doesn't
+	 * exist
+	 */
+	@Test
+	public void testNonExistentCollection() {
+		String randomString = RandomStringUtils.randomAlphanumeric(20);
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, randomString);
 
-        Assert.assertEquals("The provided path \"" + randomString + "\" is not a valid one.",
-                driver.findElement(By.id("invalidPathErrorMsg")).getText());
-    }
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-    /**
-     * when user tries to send an empty path input
-     */
-    @Test
-    public void testBlankPath() {
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, Keys.BACK_SPACE.toString());
+		Assert.assertEquals("The provided path \"" + randomString + "\" is not a valid one.",
+				driver.findElement(By.id("invalidPathErrorMsg")).getText());
+	}
 
-        Assert.assertTrue(driver.findElement(navigationInputLocator).isDisplayed());
-    }
+	/**
+	 * when user tries to send an empty path input
+	 */
+	@Test
+	public void testBlankPath() {
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, Keys.BACK_SPACE.toString());
 
-    /**
-     * Try to access a path that the current user doesn't have access to
-     */
-    @Test
-    public void testPathWithoutPermission() {
-        String uname = "breadcrumbPermission" + System.currentTimeMillis();
-        String pwd = "webdriver";
+		Assert.assertTrue(driver.findElement(navigationInputLocator).isDisplayed());
+	}
 
-        // creating a new user
-        driver.get(UITest.ADD_USERS_URL);
-        UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_USER_TYPE, driver);
-        UserUtils.submitUserForm(driver);
+	/**
+	 * Try to access a path that the current user doesn't have access to
+	 */
+	@Test
+	public void testPathWithoutPermission() {
+		String uname = "breadcrumbPermission" + System.currentTimeMillis();
+		String pwd = "webdriver";
 
-        String newUserCollection = zoneAndHomePath + "/" + uname;
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, newUserCollection);
+		// creating a new user
+		driver.get(UITest.ADD_USERS_URL);
+		UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_USER_TYPE, driver);
+		UserUtils.submitUserForm(driver);
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		String newUserCollection = zoneAndHomePath + "/" + uname;
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, newUserCollection);
 
-        Assert.assertEquals("You do not have permissions to access information in the target collection or for the selected object.",
-                driver.findElement(By.cssSelector("#tree-view-panel-body > .col-xs-12 > .text-center > span")).getText());
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-        // removing user
-        driver.get(UITest.USERS_URL);
+		Assert.assertEquals(
+				"You do not have permissions to access information in the target collection or for the selected object.",
+				driver.findElement(By.cssSelector("#tree-view-panel-body > .col-xs-12 > .text-center > span"))
+						.getText());
 
-        By removeButton = By.id("btn_remove_" + uname);
-        By removeConfirmationButton = By.id("btnConfUserRemoval_Yes");
+		// removing user
+		driver.get(UITest.USERS_URL);
 
-        UserUtils.searchUser(driver, uname);
+		By removeButton = By.id("btn_remove_" + uname);
+		By removeConfirmationButton = By.id("btnConfUserRemoval_Yes");
 
-        wait.until(ExpectedConditions.elementToBeClickable(removeButton));
+		UserUtils.searchUser(driver, uname);
 
-        driver.findElement(removeButton).click();
-        wait.until(ExpectedConditions.elementToBeClickable(removeConfirmationButton));
-        driver.findElement(removeConfirmationButton).click();
-    }
+		wait.until(ExpectedConditions.elementToBeClickable(removeButton));
 
-    /**
-     * Uploads a file to the rods user and tries to access the file via breadcrumb
-     *
-     * @throws DataGridException
-     *
-     */
-    @Test
-    public void testFilePath() throws DataGridException {
-        // Upload test files
-        FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES[0]);
+		driver.findElement(removeButton).click();
+		wait.until(ExpectedConditions.elementToBeClickable(removeConfirmationButton));
+		driver.findElement(removeConfirmationButton).click();
+	}
 
-        String filePath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + TemplateUtils.TEST_FILES[0];
+	/**
+	 * Uploads a file to the rods user and tries to access the file via breadcrumb
+	 *
+	 * @throws DataGridException
+	 *
+	 */
+	@Test
+	public void testFilePath() throws DataGridException {
+		// Upload test files
+		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES[0]);
 
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, filePath);
+		String filePath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + TemplateUtils.TEST_FILES[0];
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
-        String path = driver.findElement(navigationInputLocator).getAttribute("value");
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, filePath);
 
-        Assert.assertEquals(filePath, path);
-    }
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		String path = driver.findElement(navigationInputLocator).getAttribute("value");
 
-    /**
-     * Creates a collection and tries to access it via breadcrumb
-     */
-    @Test
-    public void testCollectionPath() {
-        String collectionName = "breadcrumbCollectionTest" + System.currentTimeMillis();
-        CollectionUtils.createCollection(driver, collectionName);
+		Assert.assertEquals(filePath, path);
+	}
 
-        String collectionPath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + collectionName;
+	/**
+	 * Creates a collection and tries to access it via breadcrumb
+	 */
+	@Test
+	public void testCollectionPath() {
+		String collectionName = "breadcrumbCollectionTest" + System.currentTimeMillis();
+		CollectionUtils.createCollection(driver, collectionName);
 
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, collectionPath);
+		String collectionPath = zoneAndHomePath + "/" + UITest.RODS_USERNAME + "/" + collectionName;
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, collectionPath);
 
-        String path = driver.findElement(navigationInputLocator).getAttribute("value");
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-        Assert.assertEquals(collectionPath, path);
+		String path = driver.findElement(navigationInputLocator).getAttribute("value");
 
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/" + UITest.RODS_USERNAME);
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
-        CollectionUtils.removeColl(driver, collectionName);
-    }
+		Assert.assertEquals(collectionPath, path);
 
-    /**
-     * Adds "/" at the end of an existent path
-     */
-    @Test
-    public void testSlashAtTheEndOfPath() {
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/");
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/" + UITest.RODS_USERNAME);
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		CollectionUtils.removeColl(driver, collectionName);
+	}
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+	/**
+	 * Adds "/" at the end of an existent path
+	 */
+	@Test
+	public void testSlashAtTheEndOfPath() {
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/");
 
-        String path = driver.findElement(navigationInputLocator).getAttribute("value");
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-        Assert.assertEquals(zoneAndHomePath, path);
-    }
+		String path = driver.findElement(navigationInputLocator).getAttribute("value");
 
-    /**
-     * Adds multiples "/" at the end of an existent path
-     */
-    @Test
-    public void testMultipleSlashesPath() {
-        Random random = new Random();
-        String zoneAndHomePathPlusSlashes = zoneAndHomePath;
-        for (int i = 0; i < random.nextInt(20); i++) {
-            zoneAndHomePathPlusSlashes += "/";
-        }
+		Assert.assertEquals(zoneAndHomePath, path);
+	}
 
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePathPlusSlashes);
+	/**
+	 * Adds multiples "/" at the end of an existent path
+	 */
+	@Test
+	public void testMultipleSlashesPath() {
+		Random random = new Random();
+		String zoneAndHomePathPlusSlashes = zoneAndHomePath;
+		for (int i = 0; i < random.nextInt(20); i++) {
+			zoneAndHomePathPlusSlashes += "/";
+		}
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePathPlusSlashes);
 
-        String path = driver.findElement(navigationInputLocator).getAttribute("value");
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-        Assert.assertEquals(zoneAndHomePath, path);
-    }
+		String path = driver.findElement(navigationInputLocator).getAttribute("value");
 
-    /**
-     * Adds "\" at the end of an existent path
-     */
-    @Test
-    public void testInvertedSlash() {
-        CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "\\");
+		Assert.assertEquals(zoneAndHomePath, path);
+	}
 
-        wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+	/**
+	 * Adds "\" at the end of an existent path
+	 */
+	@Test
+	public void testInvertedSlash() {
+		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "\\");
 
-        Assert.assertEquals("The provided path \"" + zoneAndHomePath + "\\\" is not a valid one.",
-                driver.findElement(By.id("invalidPathErrorMsg")).getText());
-    }
+		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
+
+		Assert.assertEquals("The provided path \"" + zoneAndHomePath + "\\\" is not a valid one.",
+				driver.findElement(By.id("invalidPathErrorMsg")).getText());
+	}
 
 }

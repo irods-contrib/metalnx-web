@@ -55,7 +55,7 @@ public class AddResourceTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		UITest.setUpBeforeClass();
+		// UITest.setUpBeforeClass();
 		driver = UITest.getDriver();
 	}
 

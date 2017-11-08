@@ -16,11 +16,13 @@
 
 package com.emc.metalnx.integration.test.collection;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.integration.test.utils.CollectionUtils;
-import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.test.generic.UITest;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -30,143 +32,149 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.integration.test.utils.CollectionUtils;
+import com.emc.metalnx.integration.test.utils.FileUtils;
+import com.emc.metalnx.test.generic.UITest;
+
 @Deprecated
 @Ignore
 public class EmptyTrashTest {
-    private static final Logger logger = LoggerFactory.getLogger(EmptyTrashTest.class);
-    private static WebDriver driver = null;
-    private static WebDriverWait wait = null;
-    private static final String[] TEST_FILES = { "emptyTrashTest.png" };
+	private static final Logger logger = LoggerFactory.getLogger(EmptyTrashTest.class);
+	private static WebDriver driver = null;
+	private static WebDriverWait wait = null;
+	private static final String[] TEST_FILES = { "emptyTrashTest.png" };
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-        wait = new WebDriverWait(driver, 15);
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() {
 
-    @Before
-    public void setUp() throws Exception {
-        UITest.login();
-    }
+	}
 
-    /**
-     * After each test the user created for the test should be removed.
-     */
-    @After
-    public void tearDown() throws Exception {
-        UITest.logout();
-    }
+	@Before
+	public void setUp() throws Exception {
+		UITest.login();
+	}
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	/**
+	 * After each test the user created for the test should be removed.
+	 */
+	@After
+	public void tearDown() throws Exception {
+		UITest.logout();
+	}
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
-    /**
-     * Method used for testing if all items are removed from the trash folder once the user clicks
-     * on the empty trash button. No results should be shown.
-     *
-     * TimeoutException is expected since no items should be shown.
-     *
-     * @throws DataGridException
-     */
-    @Test
-    public void testEmptyTrash() throws DataGridException {
-        logger.info("Testing if empty trash button works");
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-        FileUtils.uploadToHomeDirAsAdmin(TEST_FILES);
-        FileUtils.removeFilesFromHomeAsAdmin(TEST_FILES);
+	/**
+	 * Method used for testing if all items are removed from the trash folder once
+	 * the user clicks on the empty trash button. No results should be shown.
+	 *
+	 * TimeoutException is expected since no items should be shown.
+	 *
+	 * @throws DataGridException
+	 */
+	@Test
+	public void testEmptyTrash() throws DataGridException {
+		logger.info("Testing if empty trash button works");
 
-        driver.get(UITest.TRASH_URL);
+		FileUtils.uploadToHomeDirAsAdmin(TEST_FILES);
+		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILES);
 
-        CollectionUtils.clickOnEmptyTrash(driver);
-        CollectionUtils.confirmEmptyTrash(driver);
+		driver.get(UITest.TRASH_URL);
 
-        Assert.assertEquals(UITest.TRASH_URL, driver.getCurrentUrl());
+		CollectionUtils.clickOnEmptyTrash(driver);
+		CollectionUtils.confirmEmptyTrash(driver);
 
-        // check if a feedback message of success is displayed
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("alert-success")));
-        WebElement successMsg = driver.findElement(By.className("alert-success"));
-        Assert.assertTrue(successMsg.isDisplayed());
+		Assert.assertEquals(UITest.TRASH_URL, driver.getCurrentUrl());
 
-        // wait for items to be deleted and checking if no results were found
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table tbody tr td[class='dataTables_empty']")));
-    }
+		// check if a feedback message of success is displayed
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("alert-success")));
+		WebElement successMsg = driver.findElement(By.className("alert-success"));
+		Assert.assertTrue(successMsg.isDisplayed());
 
-    /**
-     * Method used for testing if the empty trash button shows up when the user is in the trash
-     * folder.
-     *
-     * NoSuchElementException is expected if no results are shown, then the empty trash won't show
-     * up.
-     */
-    @Test(expected = NoSuchElementException.class)
-    public void testIfEmptyTrashButtonIsShown() {
-        logger.info("Testing if empty trash button shows up");
+		// wait for items to be deleted and checking if no results were found
+		wait.until(ExpectedConditions
+				.visibilityOfElementLocated(By.cssSelector("table tbody tr td[class='dataTables_empty']")));
+	}
 
-        driver.get(UITest.TRASH_URL);
+	/**
+	 * Method used for testing if the empty trash button shows up when the user is
+	 * in the trash folder.
+	 *
+	 * NoSuchElementException is expected if no results are shown, then the empty
+	 * trash won't show up.
+	 */
+	@Test(expected = NoSuchElementException.class)
+	public void testIfEmptyTrashButtonIsShown() {
+		logger.info("Testing if empty trash button shows up");
 
-        // check if there is any item in the trash
-        driver.findElement(CollectionUtils.COLLS_TABLE);
+		driver.get(UITest.TRASH_URL);
 
-        // if there is at least one item in the trash, the empty trash button must be shown
-        Assert.assertNotNull(driver.findElement(CollectionUtils.EMPTY_TRASH_BTN));
-    }
+		// check if there is any item in the trash
+		driver.findElement(CollectionUtils.COLLS_TABLE);
 
-    /**
-     * Method used for testing if a confirmation modal is displayed after the user clicks on the
-     * empty trash button.
-     *
-     * @throws DataGridException
-     */
-    @Test
-    public void testIfAfterClikingOnEmptyTrashButtonAConfirmationShowsUp() throws DataGridException {
-        logger.info("Testing if empty trash button shows up");
+		// if there is at least one item in the trash, the empty trash button must be
+		// shown
+		Assert.assertNotNull(driver.findElement(CollectionUtils.EMPTY_TRASH_BTN));
+	}
 
-        String trashTestFile = "emptyTrashTest.png";
+	/**
+	 * Method used for testing if a confirmation modal is displayed after the user
+	 * clicks on the empty trash button.
+	 *
+	 * @throws DataGridException
+	 */
+	@Test
+	public void testIfAfterClikingOnEmptyTrashButtonAConfirmationShowsUp() throws DataGridException {
+		logger.info("Testing if empty trash button shows up");
 
-        FileUtils.uploadToHomeDirAsAdmin(trashTestFile);
-        FileUtils.removeFilesFromHomeAsAdmin(trashTestFile);
+		String trashTestFile = "emptyTrashTest.png";
 
-        driver.get(UITest.TRASH_URL);
+		FileUtils.uploadToHomeDirAsAdmin(trashTestFile);
+		FileUtils.removeFilesFromHomeAsAdmin(trashTestFile);
 
-        wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.EMPTY_TRASH_BTN));
-        driver.findElement(CollectionUtils.EMPTY_TRASH_BTN).click();
+		driver.get(UITest.TRASH_URL);
 
-        // a confirmation modal should be shown after clicking on the empty trash button
-        Assert.assertNotNull(driver.findElement(CollectionUtils.EMPTY_TRASH_MODAL));
+		wait.until(ExpectedConditions.elementToBeClickable(CollectionUtils.EMPTY_TRASH_BTN));
+		driver.findElement(CollectionUtils.EMPTY_TRASH_BTN).click();
 
-        String trashPath = String.format("/%s/trash/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
-        FileUtils.forceRemoveFilesFromDirAsAdmin(trashPath, trashTestFile);
-    }
+		// a confirmation modal should be shown after clicking on the empty trash button
+		Assert.assertNotNull(driver.findElement(CollectionUtils.EMPTY_TRASH_MODAL));
 
-    /**
-     * Method used for testing if the empty trash button is NOT shown in the collection management
-     * page.
-     *
-     * NoSuchElementException is expected since the empty trash button is not supposed to be
-     * displayed in the collections mgmt. page
-     */
-    @Test(expected = NoSuchElementException.class)
-    public void testIfEmptyTrashButtonIsNotShownInTheCollPage() {
-        logger.info("Testing if empty trash button is not shown in the collections mgmt. page");
+		String trashPath = String.format("/%s/trash/home/%s", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
+		FileUtils.forceRemoveFilesFromDirAsAdmin(trashPath, trashTestFile);
+	}
 
-        driver.get(UITest.COLLECTIONS_URL);
+	/**
+	 * Method used for testing if the empty trash button is NOT shown in the
+	 * collection management page.
+	 *
+	 * NoSuchElementException is expected since the empty trash button is not
+	 * supposed to be displayed in the collections mgmt. page
+	 */
+	@Test(expected = NoSuchElementException.class)
+	public void testIfEmptyTrashButtonIsNotShownInTheCollPage() {
+		logger.info("Testing if empty trash button is not shown in the collections mgmt. page");
 
-        // if the user is in the collections mgmt. page, the empty trash button must NOT be shown
-        driver.findElement(CollectionUtils.EMPTY_TRASH_BTN);
+		driver.get(UITest.COLLECTIONS_URL);
 
-        // if the test gets to this point, it means the empty trash button is available
-        Assert.fail();
-    }
+		// if the user is in the collections mgmt. page, the empty trash button must NOT
+		// be shown
+		driver.findElement(CollectionUtils.EMPTY_TRASH_BTN);
+
+		// if the test gets to this point, it means the empty trash button is available
+		Assert.fail();
+	}
 }

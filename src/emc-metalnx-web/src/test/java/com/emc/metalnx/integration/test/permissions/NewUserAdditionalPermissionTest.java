@@ -16,212 +16,226 @@
 
 package com.emc.metalnx.integration.test.permissions;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.integration.test.utils.CollectionUtils;
 import com.emc.metalnx.integration.test.utils.FileUtils;
 import com.emc.metalnx.integration.test.utils.UserUtils;
 import com.emc.metalnx.test.generic.UITest;
-import org.junit.*;
-import org.openqa.selenium.WebDriver;
 
 /**
- * Selenium tests on the additional permission functionality when adding a new user into Metalnx.
- * This class tests adding read, write and ownership permissions to files and collections for a
- * brand new user.
+ * Selenium tests on the additional permission functionality when adding a new
+ * user into Metalnx. This class tests adding read, write and ownership
+ * permissions to files and collections for a brand new user.
  *
  */
 @Deprecated
 @Ignore
 public class NewUserAdditionalPermissionTest {
 
-    private String uname = "userAdditionalPermission" + System.currentTimeMillis();
-    private String pwd = "webdriver";
+	private String uname = "userAdditionalPermission" + System.currentTimeMillis();
+	private String pwd = "webdriver";
 
-    private static WebDriver driver = null;
+	private static WebDriver driver = null;
 
-    /*************************************
-     * TEST SET UP
-     *
-     * @throws DataGridException
-     *************************************/
+	/*************************************
+	 * TEST SET UP
+	 *
+	 * @throws DataGridException
+	 *************************************/
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws DataGridException {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
+	@BeforeClass
+	public static void setUpBeforeClass() throws DataGridException {
+		// UITest.setUpBeforeClass();
+		driver = UITest.getDriver();
 
-        FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-        CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
 
-        UITest.login();
-        for (String collName : UITest.TEST_COLLECTION_NAMES) {
-            CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
-        }
+		UITest.login();
+		for (String collName : UITest.TEST_COLLECTION_NAMES) {
+			CollectionUtils.createCollectionUnderZone(driver, collName, UITest.IRODS_ZONE);
+		}
 
-        FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-        UITest.logout();
-    }
+		FileUtils.uploadToDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		UITest.logout();
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        UITest.login();
+	@Before
+	public void setUp() throws Exception {
+		UITest.login();
 
-    }
+	}
 
-    /**
-     * After each test the user created for the test should be removed.
-     */
-    @After
-    public void tearDown() throws Exception {
+	/**
+	 * After each test the user created for the test should be removed.
+	 */
+	@After
+	public void tearDown() throws Exception {
 
-        UITest.logout();
+		UITest.logout();
 
-        UserUtils.removeUser(uname, driver);
-    }
+		UserUtils.removeUser(uname, driver);
+	}
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     *
-     * @throws DataGridException
-     */
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 *
+	 * @throws DataGridException
+	 */
 
-    @AfterClass
-    public static void tearDownAfterClass() throws DataGridException {
+	@AfterClass
+	public static void tearDownAfterClass() throws DataGridException {
 
-        UITest.login();
-        FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
-        CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
-        UITest.logout();
+		UITest.login();
+		FileUtils.forceRemoveFilesFromDirAsAdmin("/" + UITest.IRODS_ZONE, UITest.TEST_FILE_NAMES);
+		CollectionUtils.cleanUpCollectionsUnderZone(driver, UITest.TEST_COLLECTION_NAMES);
+		UITest.logout();
 
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-    /************************************* RODS ADMIN TESTS *************************************/
+	/*************************************
+	 * RODS ADMIN TESTS
+	 *************************************/
 
-    /**
-     * Grant READ permission and a bookmark to a rods admin user on data objects, log in as such
-     * user and check if these data object show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantReadPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods admin user on data objects,
+	 * log in as such user and check if these data object show up in the bookmarks
+	 * page.
+	 */
+	@Test
+	public void testGrantReadPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant READ permission and a bookmark to a rods admin user on collections, log in as such
-     * user and check if these collections show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantReadPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods admin user on collections, log
+	 * in as such user and check if these collections show up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantReadPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 
-    /**
-     * Grant READ permission and a bookmark to a rods admin user on data objects, log in as such
-     * user and check if the data object show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantWritePermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods admin user on data objects,
+	 * log in as such user and check if the data object show up in the bookmarks
+	 * page.
+	 */
+	@Test
+	public void testGrantWritePermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant READ permission and a bookmark to a rods admin user on collections, log in as such
-     * user and check if these collections show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantWritePermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods admin user on collections, log
+	 * in as such user and check if these collections show up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantWritePermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 
-    /**
-     * Grant READ permission and a bookmark to a rods admin user on data objects, log in as such
-     * user and check if these data objects show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantOwnPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods admin user on data objects,
+	 * log in as such user and check if these data objects show up in the bookmarks
+	 * page.
+	 */
+	@Test
+	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant WRITE permission and a bookmark to a rods admin user on collections, log in as such
-     * user and check if these collections show up in the bookmarks page.
-     */
-    @Test
-    public void testGrantOwnPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_ADMIN_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant WRITE permission and a bookmark to a rods admin user on collections,
+	 * log in as such user and check if these collections show up in the bookmarks
+	 * page.
+	 */
+	@Test
+	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsAdminAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_ADMIN_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 
-    /************************************* RODS USER TESTS *************************************/
+	/*************************************
+	 * RODS USER TESTS
+	 *************************************/
 
-    /**
-     * Grant READ permission and a bookmark to a rods user data objects, log in as such user
-     * and check if these data object shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantReadPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods user data objects, log in as
+	 * such user and check if these data object shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantReadPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant READ permission and a bookmark to a rods user data objects, log in as such user
-     * and check if these data object shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantReadPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant READ permission and a bookmark to a rods user data objects, log in as
+	 * such user and check if these data object shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantReadPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.READ_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 
-    /**
-     * Grant WRITE permission and a bookmark to a rods user on collections, log in as such
-     * user and check if these collections shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantWritePermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant WRITE permission and a bookmark to a rods user on collections, log in
+	 * as such user and check if these collections shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantWritePermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant WRITE permission and a bookmark to a rods user on collections, log in as such
-     * user and check if these collections shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantWritePermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant WRITE permission and a bookmark to a rods user on collections, log in
+	 * as such user and check if these collections shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantWritePermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.WRITE_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 
-    /**
-     * Grant OWN permission and a bookmark to a rods user data objects, log in as such user
-     * and check if the data object shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantOwnPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_FILE_NAMES, driver);
-    }
+	/**
+	 * Grant OWN permission and a bookmark to a rods user data objects, log in as
+	 * such user and check if the data object shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantOwnPermissionAndBookmarkOnFilesToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_FILE_NAMES, driver);
+	}
 
-    /**
-     * Grant OWN permission and a bookmark to a rods user collections, log in as such user
-     * and check if these collections shows up in the bookmarks page.
-     */
-    @Test
-    public void testGrantOwnPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
-        UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd, UITest.RODS_USER_TYPE,
-                UITest.TEST_COLLECTION_NAMES, driver);
-    }
+	/**
+	 * Grant OWN permission and a bookmark to a rods user collections, log in as
+	 * such user and check if these collections shows up in the bookmarks page.
+	 */
+	@Test
+	public void testGrantOwnPermissionAndBookmarkOnCollsToRodsUserAndCheckIfBookmarksShowUp() {
+		UserUtils.createUserGrantPermissionAndCheckBookmarks(UITest.OWN_PERMISSION, uname, UITest.IRODS_ZONE, pwd,
+				UITest.RODS_USER_TYPE, UITest.TEST_COLLECTION_NAMES, driver);
+	}
 }

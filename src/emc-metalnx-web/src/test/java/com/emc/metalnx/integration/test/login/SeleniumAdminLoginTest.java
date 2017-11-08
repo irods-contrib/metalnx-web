@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.integration.test.login;
 
+import org.irods.jargon.testutils.TestingPropertiesHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,51 +25,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.metalnx.test.generic.UITest;
-import com.emc.metalnx.testutils.TestingPropertiesHelper;
 
 import junit.framework.Assert;
 
+public class SeleniumAdminLoginTest {
 
-public class AdminLoginTest {
+	private static final Logger logger = LoggerFactory.getLogger(SeleniumAdminLoginTest.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminLoginTest.class);
+	private static WebDriver driver = null;
 
-    private static WebDriver driver = null;
+	/*************************************
+	 * TEST SET UP
+	 * 
+	 * @throws Exception
+	 *************************************/
 
-    /************************************* TEST SET UP 
-     * @throws Exception *************************************/
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		driver = UITest.getDriver();
+	}
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-    }
-
-    /**
+	/**
 	 * After all tests are done, the test must quit the driver. This will close
 	 * every window associated with the current driver instance.
 	 */
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-    /**
-     * Test for admin log in.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLoginAsAdmin() throws Exception {
-        logger.info("Test logging in as a admin user");
-        UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
+	/**
+	 * Test for admin log in.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testLoginAsAdmin() throws Exception {
+		logger.info("Test logging in as a admin user");
+		UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
 				UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
-        Assert.assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
-    }
+		Assert.assertEquals(UITest.DASHBOARD_URL, driver.getCurrentUrl());
+	}
 
 }

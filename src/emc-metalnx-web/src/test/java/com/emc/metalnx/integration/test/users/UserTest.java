@@ -16,9 +16,17 @@
 
 package com.emc.metalnx.integration.test.users;
 
-import com.emc.metalnx.integration.test.utils.UserUtils;
-import com.emc.metalnx.test.generic.UITest;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,136 +35,143 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import com.emc.metalnx.integration.test.utils.UserUtils;
+import com.emc.metalnx.test.generic.UITest;
 
 @Deprecated
 @Ignore
 public class UserTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserTest.class);
 
-    private String uname = "webdriver" + System.currentTimeMillis();
-    private String pwd = "webdriver";
-    private static WebDriver driver = null;
+	private String uname = "webdriver" + System.currentTimeMillis();
+	private String pwd = "webdriver";
+	private static WebDriver driver = null;
 
-    /************************************* TEST SET UP *************************************/
+	/*************************************
+	 * TEST SET UP
+	 *************************************/
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		// UITest.setUpBeforeClass();
+		driver = UITest.getDriver();
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        UITest.login();
-    }
+	@Before
+	public void setUp() throws Exception {
+		UITest.login();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        UITest.logout();
-    }
+	@After
+	public void tearDown() throws Exception {
+		UITest.logout();
+	}
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-    /*
-     * ********************************************************************************************
-     * ******************************** USER MANAGEMENT *******************************************
-     * ********************************************************************************************
-     */
+	/*
+	 * *****************************************************************************
+	 * *************** ******************************** USER MANAGEMENT
+	 * *******************************************
+	 * *****************************************************************************
+	 * ***************
+	 */
 
-    /**
-     * Test method that checks if the add user button in the user management page always brings the
-     * user to the add user page.
-     */
-    @Test
-    public void testCheckIfAddButtonWorks() {
-        logger.info("Testing if add button works");
-        driver.get(UITest.USERS_URL);
+	/**
+	 * Test method that checks if the add user button in the user management page
+	 * always brings the user to the add user page.
+	 */
+	@Test
+	public void testCheckIfAddButtonWorks() {
+		logger.info("Testing if add button works");
+		driver.get(UITest.USERS_URL);
 
-        driver.findElement(By.cssSelector("a[href='add/']")).click();
+		driver.findElement(By.cssSelector("a[href='add/']")).click();
 
-        // checks if add user button brings the user to the add user page
-        Assert.assertEquals(UITest.ADD_USERS_URL, driver.getCurrentUrl());
-        UITest.logout();
-    }
+		// checks if add user button brings the user to the add user page
+		Assert.assertEquals(UITest.ADD_USERS_URL, driver.getCurrentUrl());
+		UITest.logout();
+	}
 
-    /*
-     * ********************************************************************************************
-     * ***************************************** ADD USER *****************************************
-     * ********************************************************************************************
-     */
+	/*
+	 * *****************************************************************************
+	 * *************** ***************************************** ADD USER
+	 * *****************************************
+	 * *****************************************************************************
+	 * ***************
+	 */
 
-    /**
-     * Test method for adding a brand new user to the system. It verifies if after adding user, the
-     * user is redirected to the user management page; if this user now exists in the users list;
-     * and if the number of users existing was incremented by one.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testAddUser() throws Exception {
-        logger.info("Testing add a brand new user");
+	/**
+	 * Test method for adding a brand new user to the system. It verifies if after
+	 * adding user, the user is redirected to the user management page; if this user
+	 * now exists in the users list; and if the number of users existing was
+	 * incremented by one.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testAddUser() throws Exception {
+		logger.info("Testing add a brand new user");
 
-        driver.get(UITest.ADD_USERS_URL);
-        UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_ADMIN_TYPE, driver);
-        UserUtils.fillInPersonalInfo(driver, "web", "driver", "webdriver@testing.com");
+		driver.get(UITest.ADD_USERS_URL);
+		UserUtils.fillInUserGeneralInformation(uname, pwd, UITest.RODS_ADMIN_TYPE, driver);
+		UserUtils.fillInPersonalInfo(driver, "web", "driver", "webdriver@testing.com");
 
-        driver.findElement(By.id("showGroupsListBtn")).click();
+		driver.findElement(By.id("showGroupsListBtn")).click();
 
-        List<WebElement> cbGroupIdsList = driver.findElements(By.name("groupIdsList"));
-        for (WebElement checkbox : cbGroupIdsList) {
-            checkbox.click();
-        }
+		List<WebElement> cbGroupIdsList = driver.findElements(By.name("groupIdsList"));
+		for (WebElement checkbox : cbGroupIdsList) {
+			checkbox.click();
+		}
 
-        UserUtils.submitUserForm(driver);
-        assertEquals(UITest.USERS_URL, driver.getCurrentUrl());
-        UserUtils.searchUser(driver, uname);
-        isSuccessMessageDisplayed();
-        UITest.logout();
-        UserUtils.removeUser(uname, driver);
-    }
+		UserUtils.submitUserForm(driver);
+		assertEquals(UITest.USERS_URL, driver.getCurrentUrl());
+		UserUtils.searchUser(driver, uname);
+		isSuccessMessageDisplayed();
+		UITest.logout();
+		UserUtils.removeUser(uname, driver);
+	}
 
-    /**
-     * Test method that checks when adding a user with an empty username if the UI gets this
-     * exception and shows an error message.
-     */
-    @Test
-    public void testAddUserWithEmptyUsername() {
-        logger.info("Testing add a user with an empty username");
+	/**
+	 * Test method that checks when adding a user with an empty username if the UI
+	 * gets this exception and shows an error message.
+	 */
+	@Test
+	public void testAddUserWithEmptyUsername() {
+		logger.info("Testing add a user with an empty username");
 
-        driver.get(UITest.ADD_USERS_URL);
+		driver.get(UITest.ADD_USERS_URL);
 
-        // Creating user for testing
-        new WebDriverWait(driver, 15).until(ExpectedConditions.elementToBeClickable(UserUtils.ZONE_FOLDER));
+		// Creating user for testing
+		new WebDriverWait(driver, 15).until(ExpectedConditions.elementToBeClickable(UserUtils.ZONE_FOLDER));
 
-        driver.findElement(UserUtils.USERNAME_INPUT).sendKeys("");
-        driver.findElement(UserUtils.PWD_INPUT).sendKeys(pwd);
-        driver.findElement(UserUtils.PWD_CONF_INPUT).sendKeys(pwd);
+		driver.findElement(UserUtils.USERNAME_INPUT).sendKeys("");
+		driver.findElement(UserUtils.PWD_INPUT).sendKeys(pwd);
+		driver.findElement(UserUtils.PWD_CONF_INPUT).sendKeys(pwd);
 
-        Assert.assertTrue(driver.findElement(By.id("emptyUsernameMsg")).isDisplayed());
-    }
+		Assert.assertTrue(driver.findElement(By.id("emptyUsernameMsg")).isDisplayed());
+	}
 
-    /**
-     * Method that checks if a success message is displayed and if the user was successfully added
-     */
-    private void isSuccessMessageDisplayed() {
-        WebElement divAlertSucess = driver.findElement(By.className("alert-success"));
-        Assert.assertTrue(divAlertSucess.isDisplayed());
-        Assert.assertTrue(divAlertSucess.getText().contains(uname));
-    }
+	/**
+	 * Method that checks if a success message is displayed and if the user was
+	 * successfully added
+	 */
+	private void isSuccessMessageDisplayed() {
+		WebElement divAlertSucess = driver.findElement(By.className("alert-success"));
+		Assert.assertTrue(divAlertSucess.isDisplayed());
+		Assert.assertTrue(divAlertSucess.getText().contains(uname));
+	}
 }

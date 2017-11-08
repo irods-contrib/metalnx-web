@@ -76,4 +76,8 @@ Integrated changes from issue 15 in consortium codebase, mapping to issue #43 in
 
 #### Clean out non-internationalized items in views #19
 
-Remove remaining hard coded text in templates and convert to resource bundle refs mapped to niehs issue #46 
+Remove remaining hard coded text in templates and convert to resource bundle refs mapped to niehs issue #44
+
+#### Update selenium test unify testing framework #45
+
+Incrementally going through the Selenium tests to unify with the Jargon testing framework and to reactivate ignored selenium tests.  See the CONFIGURATION.md file for information on Selenium test setup, which is run from the src/emc-metalnx-web directory. That directoy also includes a test-scripts folder with the required maven settings.xml updates.

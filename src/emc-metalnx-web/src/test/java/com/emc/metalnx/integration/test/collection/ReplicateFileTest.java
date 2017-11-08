@@ -16,126 +16,134 @@
 
 package com.emc.metalnx.integration.test.collection;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.integration.test.utils.CollectionUtils;
-import com.emc.metalnx.integration.test.utils.FileUtils;
-import com.emc.metalnx.test.generic.UITest;
+import java.util.List;
+
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.DataObjectAO;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.integration.test.utils.CollectionUtils;
+import com.emc.metalnx.integration.test.utils.FileUtils;
+import com.emc.metalnx.test.generic.UITest;
 
 @Deprecated
 @Ignore
 public class ReplicateFileTest {
 	private static int NUMBER_OF_ITERATIONS = 100;
-    private static WebDriver driver = null;
-    private static final String TEST_FILE = "1SeleniumTestMetadataSearch.png" ;
-    private static String irodsCollectionAbsolutePath = String.format("/%s/home/%s/", UITest.IRODS_ZONE, UITest.RODS_USERNAME);
-    private static String irodsFileAbsolutePath = String.format("%s%s", irodsCollectionAbsolutePath, TEST_FILE);
-    private static String targetResource = "targetResource";
-    private static WebDriverWait wait;
+	private static WebDriver driver = null;
+	private static final String TEST_FILE = "1SeleniumTestMetadataSearch.png";
+	private static String irodsCollectionAbsolutePath = String.format("/%s/home/%s/", UITest.IRODS_ZONE,
+			UITest.RODS_USERNAME);
+	private static String irodsFileAbsolutePath = String.format("%s%s", irodsCollectionAbsolutePath, TEST_FILE);
+	private static String targetResource = "targetResource";
+	private static WebDriverWait wait;
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        UITest.setUpBeforeClass();
-        driver = UITest.getDriver();
-        wait = new WebDriverWait(driver, 10);
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		// UITest.setUpBeforeClass();
+		driver = UITest.getDriver();
+		wait = new WebDriverWait(driver, 10);
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-        UITest.login();
-    }
+	@Before
+	public void setUp() throws Exception {
+		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
+		UITest.login();
+	}
 
-    /**
-     * After each test the user created for the test should be removed.
-     */
-    @After
-    public void tearDown() throws Exception {
-    	FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-        UITest.logout();
-    }
+	/**
+	 * After each test the user created for the test should be removed.
+	 */
+	@After
+	public void tearDown() throws Exception {
+		FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
+		UITest.logout();
+	}
 
-    /**
-     * After all tests are done, the test must quit the driver. This will close every window
-     * associated with the current driver instance.
-     */
+	/**
+	 * After all tests are done, the test must quit the driver. This will close
+	 * every window associated with the current driver instance.
+	 */
 
-    @AfterClass
-    public static void tearDownAfterClass() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-            UITest.setDriver(null);
-        }
-    }
+	@AfterClass
+	public static void tearDownAfterClass() {
+		if (driver != null) {
+			driver.quit();
+			driver = null;
+			UITest.setDriver(null);
+		}
+	}
 
-    @Test
-    public void testUploadAFileAndReplicateIt() throws DataGridException {
-        driver.get(UITest.COLLECTIONS_URL);
+	@Test
+	public void testUploadAFileAndReplicateIt() throws DataGridException {
+		driver.get(UITest.COLLECTIONS_URL);
 
-        int i;
-		for(i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+		int i;
+		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {
 			FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
 			CollectionUtils.replicateFile(driver, targetResource, TEST_FILE);
-	        Assert.assertTrue(isDataObjectReplicated(targetResource, TEST_FILE));
-	        FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-        }
-        
-        Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
-    }
+			Assert.assertTrue(isDataObjectReplicated(targetResource, TEST_FILE));
+			FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
+		}
 
-    @Test
-    public void testReplicateFile() throws DataGridException {
-        FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
-        
-        driver.get(UITest.COLLECTIONS_URL);
+		Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
+	}
 
-        int i;
-		for(i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+	@Test
+	public void testReplicateFile() throws DataGridException {
+		FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
+
+		driver.get(UITest.COLLECTIONS_URL);
+
+		int i;
+		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {
 			CollectionUtils.goToHomeCollection(driver);
 			CollectionUtils.replicateFile(driver, targetResource, TEST_FILE);
 			CollectionUtils.waitForSuccessMessage(driver);
 			CollectionUtils.deleteFileReplicas(driver, irodsFileAbsolutePath);
-        }
-        
-        Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
-    }
-    
-    @Test
-    public void testReplicateFileAfterUploadUsingJargonAPIDirectly() throws DataGridException, JargonException {
-        DataObjectAO dataObectAO = FileUtils.getDataObjectAO(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
-        driver.get(UITest.COLLECTIONS_URL);
-        
-        int i;
-        for(i = 0; i < NUMBER_OF_ITERATIONS; i++) {
-	        FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
-	        dataObectAO.replicateIrodsDataObject(irodsFileAbsolutePath, targetResource);
-	        FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
-        }
-        
-        Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
-    }
-    
+		}
+
+		Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
+	}
+
+	@Test
+	public void testReplicateFileAfterUploadUsingJargonAPIDirectly() throws DataGridException, JargonException {
+		DataObjectAO dataObectAO = FileUtils.getDataObjectAO(UITest.RODS_USERNAME, UITest.RODS_PASSWORD);
+		driver.get(UITest.COLLECTIONS_URL);
+
+		int i;
+		for (i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+			FileUtils.uploadToHomeDirAsAdmin(TEST_FILE);
+			dataObectAO.replicateIrodsDataObject(irodsFileAbsolutePath, targetResource);
+			FileUtils.removeFilesFromHomeAsAdmin(TEST_FILE);
+		}
+
+		Assert.assertTrue(NUMBER_OF_ITERATIONS - i == 0);
+	}
+
 	private boolean isDataObjectReplicated(String resource, String filename) {
 		CollectionUtils.goToHomeCollection(driver);
-		
-		By file = By.cssSelector("a[name=\"" + irodsFileAbsolutePath +"\"]");
-        CollectionUtils.goToHomeCollection(driver);
-        
+
+		By file = By.cssSelector("a[name=\"" + irodsFileAbsolutePath + "\"]");
+		CollectionUtils.goToHomeCollection(driver);
+
 		wait.until(ExpectedConditions.elementToBeClickable(file));
 		driver.findElement(file).click();
-		
+
 		CollectionUtils.waitForReplicasTable(driver);
-		
+
 		boolean isReplicated = false;
 		List<WebElement> replicas = driver.findElements(By.cssSelector("#replicaAndChecksumInfo table tbody tr td"));
 		for (WebElement r : replicas) {
@@ -144,9 +152,9 @@ public class ReplicateFileTest {
 				break;
 			}
 		}
-		
+
 		CollectionUtils.goToHomeCollection(driver);
-		
+
 		return isReplicated;
 	}
 }
