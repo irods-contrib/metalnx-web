@@ -96,15 +96,22 @@
 				<metalnx.jdbc.user>metalnx</metalnx.jdbc.user>
 				<metalnx.jdbc.password>metalnx</metalnx.jdbc.password>
 				<metalnx.jdbc.dialect>org.hibernate.dialect.PostgreSQLDialect</metalnx.jdbc.dialect>
+				<selenium.test.hostname>localhost</selenium.test.hostname>
+				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
+				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
 			</properties>
 
 		</profile>
+
+
+
 	</profiles>
 
 
 	<activeProfiles>
 		<activeProfile>jargonTest</activeProfile>
 		<activeProfile>metalnx-local</activeProfile>
+
 	</activeProfiles>
 
 </settings>
