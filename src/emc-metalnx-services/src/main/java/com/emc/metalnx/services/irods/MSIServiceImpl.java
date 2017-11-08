@@ -16,13 +16,9 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,111 +28,124 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridServer;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
+import com.emc.metalnx.services.interfaces.ConfigService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.MSIService;
+import com.emc.metalnx.services.interfaces.ResourceService;
+import com.emc.metalnx.services.interfaces.RuleService;
 
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class MSIServiceImpl implements MSIService {
-    private static final Logger logger = LoggerFactory.getLogger(MSIServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MSIServiceImpl.class);
 
-    @Autowired
-    private RuleService ruleService;
+	@Autowired
+	private RuleService ruleService;
 
-    @Autowired
-    private ServerService serverService;
+	@Autowired
+	private ResourceService resourceService;
 
-    @Autowired
-    private ResourceService resourceService;
+	@Autowired
+	private IRODSServices irodsServices;
 
-    @Autowired
-    private IRODSServices irodsServices;
+	@Autowired
+	private ConfigService configService;
 
-    @Autowired
-    private ConfigService configService;
+	private List<DataGridServer> servers = new ArrayList<>();
 
-    private List<DataGridServer> servers = new ArrayList<>();
+	@Override
+	public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
+		return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), configService.getMsiAPIVersionSupported());
+	}
 
-    @Override
-    public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
-        return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), configService.getMsiAPIVersionSupported());
-    }
+	@Override
+	public DataGridServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+		if (host == null || host.isEmpty())
+			return null;
+		return findServerByHostname(host);
+	}
 
-    @Override
-    public DataGridServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
-        if(host == null || host.isEmpty()) return null;
-        return findServerByHostname(host);
-    }
+	@Override
+	public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
+		servers = resourceService.getAllResourceServers(resourceService.findAll());
+		for (DataGridServer server : servers)
+			setMSIInfoForServer(server);
+		return servers;
+	}
 
-    @Override
-    public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
-        servers = resourceService.getAllResourceServers(resourceService.findAll());
-        for (DataGridServer server: servers) setMSIInfoForServer(server);
-        return servers;
-    }
+	@Override
+	public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
+		List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? configService.getIrods42MSIsExpected()
+				: configService.getIrods41MSIsExpected();
 
-    @Override
-    public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
-        List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? configService.getIrods42MSIsExpected() : configService.getIrods41MSIsExpected();
+		server.setMetalnxExpectedMSIs(configService.getMlxMSIsExpected());
+		server.setIRodsExpectedMSIs(irodsMSIs);
+		server.setOtherExpectedMSIs(configService.getOtherMSIsExpected());
 
-        server.setMetalnxExpectedMSIs(configService.getMlxMSIsExpected());
-        server.setIRodsExpectedMSIs(irodsMSIs);
-        server.setOtherExpectedMSIs(configService.getOtherMSIsExpected());
+		try {
+			server.setMSIVersion(ruleService.execGetVersionRule(server.getHostname()));
+		} catch (DataGridRuleException e) {
+			logger.error("Failed to get MSI version for server: ", server.getHostname());
+		}
 
-        try {
-            server.setMSIVersion(ruleService.execGetVersionRule(server.getHostname()));
-        } catch (DataGridRuleException e) {
-            logger.error("Failed to get MSI version for server: ", server.getHostname());
-        }
+		try {
+			server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
+		} catch (DataGridRuleException e) {
+			logger.error("Failed to get MSIs installed for server: ", server.getHostname());
+		}
 
-        try {
-            server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
-        } catch (DataGridRuleException e) {
-            logger.error("Failed to get MSIs installed for server: ", server.getHostname());
-        }
+	}
 
-    }
+	@Override
+	public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
+		if (servers == null || servers.isEmpty())
+			getMSIInfoForAllServers();
 
-    @Override
-    public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
-        if(servers == null || servers.isEmpty()) getMSIInfoForAllServers();
+		DataGridServer server = null;
 
-        DataGridServer server = null;
+		for (DataGridServer s : servers) {
+			for (DataGridResource dgResc : s.getResources()) {
+				if (resource.equals(dgResc.getName())) {
+					server = s;
+					break;
+				}
+			}
 
-        for(DataGridServer s: servers) {
-            for(DataGridResource dgResc: s.getResources()) {
-                if(resource.equals(dgResc.getName())) {
-                    server = s;
-                    break;
-                }
-            }
+			if (server != null)
+				break;
+		}
 
-            if(server != null) break;
-        }
+		String apiVersionSupported = DataGridCoreUtils.getAPIVersion(configService.getMsiAPIVersionSupported());
+		String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
+		return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
+	}
 
-        String apiVersionSupported = DataGridCoreUtils.getAPIVersion(configService.getMsiAPIVersionSupported());
-        String apiVersionInstalled = server != null ? DataGridCoreUtils.getAPIVersion(server.getMSIVersion()) : "";
-        return apiVersionSupported.equalsIgnoreCase(apiVersionInstalled);
-    }
+	/**
+	 * Looks for a server instance based on its hostname
+	 * 
+	 * @param host
+	 *            server's hostname
+	 * @return server instance
+	 */
+	private DataGridServer findServerByHostname(String host) throws DataGridConnectionRefusedException {
+		getMSIInfoForAllServers(); // update list of servers
 
-    /**
-     * Looks for a server instance based on its hostname
-     * @param host server's hostname
-     * @return server instance
-     */
-    private DataGridServer findServerByHostname(String host) throws DataGridConnectionRefusedException {
-        getMSIInfoForAllServers(); // update list of servers
+		DataGridServer server = null;
 
-        DataGridServer server = null;
+		for (DataGridServer s : servers) {
+			if (host.equals(s.getHostname())) {
+				server = s;
+				break;
+			}
+		}
 
-        for (DataGridServer s : servers) {
-            if (host.equals(s.getHostname())) {
-                server = s;
-                break;
-            }
-        }
-
-        return server;
-    }
+		return server;
+	}
 }

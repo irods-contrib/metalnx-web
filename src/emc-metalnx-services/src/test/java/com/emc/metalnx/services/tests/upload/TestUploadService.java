@@ -86,7 +86,7 @@ public class TestUploadService {
         us.upload(file, targetPath, false, false,
                 "", RESOURCE, false);
 
-        List<DataGridCollectionAndDataObject> items = cs.getSubCollectionsAndDataObjetsUnderPath(targetPath);
+        List<DataGridCollectionAndDataObject> items = cs.getSubCollectionsAndDataObjectsUnderPath(targetPath);
 
         for(DataGridCollectionAndDataObject item: items) {
             if(TEST_FILE_NAME.equals(item.getName())) {

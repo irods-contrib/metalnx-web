@@ -1,6 +1,6 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: branch for issue13 (resource pipeline)
+## Version: 4.2.1.0-SNAPSHOT
 ## Git Tag:
 ## Date: Oct 27, 2017
 
@@ -66,4 +66,14 @@ See the DEVELOPER-README.md doc for details on how to set up and run tests.
 
 #### Add configurable based resource pipeline #13
 
-Add facilities to allow site-specific customization of the browser (css,logo, resource bundles, etc).
+Add facilities to allow site-specific customization of the browser (css,logo, resource bundles, etc). See CONFIGURATION.md for instructions. This change does require /etc/irods-ext files to be put into place for the resource locations. This may be refactored at a later time, but provides a first clean separation between customizations based on css, messages, images, etc. Some clean up needs to be done to fully internationalize text, etc. This is being addressed in other issues.
+
+#### metalnx specific queries only operate vs. postgres #15
+
+Isolated specific queries and reference client hints to determine iRODS catalog type, this uses a factory arrangement to obtain a source for SQL queries. This is now scaffolded with unit tests of existing specific queries. MySql semantics are being added...work in progress
+
+Integrated changes from issue 15 in consortium codebase, mapping to issue #43 in NIEHS.
+
+#### Clean out non-internationalized items in views #19
+
+Remove remaining hard coded text in templates and convert to resource bundle refs mapped to niehs issue #46 

@@ -111,6 +111,22 @@ In addition, an additional profile for Metalnx is required, like this...
 Here it's pointing to a Postgres database, pretty soon we'll show an example with a local
 database like Derby, that's probably a better plan.
 
+
+In addition, an additional profile for Metalnx-Selenium(to be appended as per needed) is required, like this...
+
+
+```xml
+<profile>
+    <id>metalnx-selenium</id>
+    <properties>
+      <selenium.test.hostname>localhost</selenium.test.hostname>
+      <selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
+      <selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
+    </properties>
+  </profile>
+```
+Here it's pointing to browser driver to be used for selenium testing, right now Google Chrome is used we'll add IE and FireFox in near future.
+
 ### Generating test properties and running tests
 
 A mvn install will cause these properties files to be generated. Once the irods server
@@ -118,3 +134,11 @@ and database are initially installed and configured, and the properties are all 
 correctly in settings.xml (be sure to activate the appropriate profiles in maven!) You should
 get a clean build running the tests, and once maven has run to get the properties, running
 unit tests in eclipse, etc should also work fine.
+
+### Database Setup
+
+Note that Metalnx needs its own database, and it needs to be initialized. The settings for this initialized
+metalnx database are then reflected in the above metalnx profile.
+
+This involves some plsql to create the database, and the running a tool to initialize or migrate the database.
+This is covered in the README.md in the src/metalnx-tools subproject.
