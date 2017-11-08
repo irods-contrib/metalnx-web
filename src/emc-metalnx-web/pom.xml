@@ -194,8 +194,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.18.1</version>
 				<configuration>
-					<!-- Skip normal tests, we'll run them in the integration-test -->
-					<skip>true</skip>
+					<includes>
+						<include>**/AllTests.java</include>
+					</includes>
 				</configuration>
 				<executions>
 					<execution>
@@ -204,8 +205,10 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
-						</configuration>
+					<includes>
+						<include>**/SeleniumTests.java</include>
+					</includes>
+				</configuration>
 					</execution>
 				</executions>
 			</plugin>
