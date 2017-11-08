@@ -118,6 +118,8 @@ Note that these config files are in the src/emc-metalnx-web/test-scripts/sample-
 Here it's pointing to a Postgres database, pretty soon we'll show an example with a local
 database like Derby, that's probably a better plan.
 
+For selenium automation testing we need to download browser specific drivers refer to http://www.seleniumhq.org/download/
+
 
 ### Generating test properties and running tests
 
