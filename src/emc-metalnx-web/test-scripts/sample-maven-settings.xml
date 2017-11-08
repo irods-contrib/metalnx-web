@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	you under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+
+<!-- | This is the configuration file for Maven. It can be specified at two 
+	levels: | | 1. User Level. This settings.xml file provides configuration 
+	for a single user, | and is normally provided in ${user.home}/.m2/settings.xml. 
+	| | NOTE: This location can be overridden with the CLI option: | | -s /path/to/user/settings.xml 
+	| | 2. Global Level. This settings.xml file provides configuration for all 
+	Maven | users on a machine (assuming they're all using the same Maven | installation). 
+	It's normally provided in | ${maven.home}/conf/settings.xml. | | NOTE: This 
+	location can be overridden with the CLI option: | | -gs /path/to/global/settings.xml 
+	| | The sections in this sample file are intended to give you a running start 
+	at | getting the most out of your Maven installation. Where appropriate, 
+	the default | values (values used when the setting is not specified) are 
+	provided. | | -->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+
+	<!-- what follows is an example maven settings.xml profile for jargon testing. 
+		This is picked up by the jargon pom file and used to generate a testing.properties 
+		file in the java test resources directory -->
+
+	<profiles>
+
+		<profile>
+			<id>jargonTest</id>
+			<properties>
+				<jargon.test.data.directory>/Users/mikeconway/temp/irodsscratch/</jargon.test.data.directory>
+				<jargon.test.irods.admin>rods</jargon.test.irods.admin>
+				<jargon.test.irods.admin.password>test</jargon.test.irods.admin.password>
+				<jargon.test.irods.user>test1</jargon.test.irods.user>
+				<jargon.test.irods.password>test</jargon.test.irods.password>
+				<jargon.test.irods.resource>test1-resc</jargon.test.irods.resource>
+				<jargon.test.irods.user2>test2</jargon.test.irods.user2>
+				<jargon.test.irods.password2>test</jargon.test.irods.password2>
+				<jargon.test.irods.resource2>test1-resc2</jargon.test.irods.resource2>
+				<jargon.test.irods.resource3>test1-resc3</jargon.test.irods.resource3>
+				<jargon.test.irods.user3>test3</jargon.test.irods.user3>
+				<jargon.test.irods.password3>test</jargon.test.irods.password3>
+				<jargon.test.kerberos.user />
+				<jargon.test.irods.host>localhost</jargon.test.irods.host>
+				<jargon.test.irods.port>1247</jargon.test.irods.port>
+				<jargon.test.irods.zone>test1</jargon.test.irods.zone>
+				<jargon.test.resource.group>testResourceGroup</jargon.test.resource.group>
+				<jargon.test.user.group>jargonTestUg</jargon.test.user.group>
+				<jargon.test.irods.userDN>test1DN</jargon.test.irods.userDN>
+				<jargon.test.irods.scratch.subdir>jargon-scratch</jargon.test.irods.scratch.subdir>
+				<jargon.test.option.exercise.remoteexecstream>true</jargon.test.option.exercise.remoteexecstream>
+				<jargon.test.option.exercise.ticket>true</jargon.test.option.exercise.ticket>
+				<jargon.test.option.exercise.audit>false</jargon.test.option.exercise.audit>
+				<jargon.test.option.exercise.workflow>true</jargon.test.option.exercise.workflow>
+				<jargon.test.option.exercise.filesystem.mount>true</jargon.test.option.exercise.filesystem.mount>
+				<test.option.mount.basedir>/Users/mikeconway/temp/basedir</test.option.mount.basedir>
+				<jargon.test.pam.user>pam</jargon.test.pam.user>
+				<jargon.test.pam.password>pam</jargon.test.pam.password>
+				<test.option.pam>false</test.option.pam>
+				<test.option.ssl.configured>false</test.option.ssl.configured>
+				<test.option.distributed.resources>false</test.option.distributed.resources>
+				<test.option.registration>true</test.option.registration>
+				<test.option.federated.zone>false</test.option.federated.zone>
+				<test.option.kerberos>false</test.option.kerberos>
+				<test.option.strictACL>false</test.option.strictACL>
+				<test.rest.port>8888</test.rest.port>
+				<jargon.test.federated.irods.admin>rods</jargon.test.federated.irods.admin>
+				<jargon.test.federated.irods.admin.password>test</jargon.test.federated.irods.admin.password>
+				<jargon.test.federated.irods.user>test1</jargon.test.federated.irods.user>
+				<jargon.test.federated.irods.password>test</jargon.test.federated.irods.password>
+				<jargon.test.federated.irods.resource>test1-resc</jargon.test.federated.irods.resource>
+				<jargon.test.federated.irods.host>fedzone2</jargon.test.federated.irods.host>
+				<jargon.test.federated.irods.port>1247</jargon.test.federated.irods.port>
+				<jargon.test.federated.irods.zone>fedzone2</jargon.test.federated.irods.zone>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>metalnx-local</id>
+			<properties>
+				<metalnx.auth.scheme>STANDARD</metalnx.auth.scheme>
+				<metalnx.ssl.policy>CS_NEG_REFUSE</metalnx.ssl.policy>
+				<metalnx.packing.streams>true</metalnx.packing.streams>
+				<metalnx.compute.checksum>true</metalnx.compute.checksum>
+				<metalnx.jdbc.driver>org.postgresql.Driver</metalnx.jdbc.driver>
+				<metalnx.jdbc.url>jdbc:postgresql://localhost:5432/metalnx</metalnx.jdbc.url>
+				<metalnx.jdbc.user>metalnx</metalnx.jdbc.user>
+				<metalnx.jdbc.password>metalnx</metalnx.jdbc.password>
+				<metalnx.jdbc.dialect>org.hibernate.dialect.PostgreSQLDialect</metalnx.jdbc.dialect>
+			</properties>
+
+		</profile>
+	</profiles>
+
+
+	<activeProfiles>
+		<activeProfile>jargonTest</activeProfile>
+		<activeProfile>metalnx-local</activeProfile>
+	</activeProfiles>
+
+</settings>

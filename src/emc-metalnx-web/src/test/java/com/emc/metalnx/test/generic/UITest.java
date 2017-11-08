@@ -18,6 +18,7 @@ package com.emc.metalnx.test.generic;
 
 import java.util.Properties;
 
+import org.irods.jargon.testutils.TestingPropertiesHelper;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.openqa.selenium.By;
@@ -31,26 +32,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.css.sac.CSSParseException;
 
-import com.emc.metalnx.testutils.TestingPropertiesHelper;
 import com.emc.metalnx.utils.EmcMetalnxVersion;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-
-
 
 public class UITest {
 
 	private static final Logger logger = LoggerFactory.getLogger(UITest.class);
 	private static boolean isDevEnv = EmcMetalnxVersion.BUILD_NUMBER.equals("DEV");
-	
+
 	// to read properties from testing.properties file
-		public static Properties testingProperties = new Properties();
-	
-	
-	
+	public static Properties testingProperties = new Properties();
+
 	// Metalnx URL Connection parts
 	public static final String http = "http://";
-	//public static final String HOST = isDevEnv ? "localhost" : "metalnx.localdomain";
+	// public static final String HOST = isDevEnv ? "localhost" :
+	// "metalnx.localdomain";
 	public static final String HOST = "localhost";
 	public static final String PORT = "8080";
 	public static final String URL_PREFIX = http + HOST + ":" + PORT;
@@ -90,7 +87,6 @@ public class UITest {
 	public static String RESOURCES_SERVERS_URL = URL_PREFIX + "/emc-metalnx-web/resources/servers/";
 	public static String HTTP_ERROR_500_URL = URL_PREFIX + "/emc-metalnx-web/httpError/500/";
 	public static String MY_GROUPS_PAGE = URL_PREFIX + "/emc-metalnx-web/groupBookmarks/groups/";
-	
 
 	// permission types used in the tests
 	public static final String READ_PERMISSION = "read";
@@ -112,14 +108,16 @@ public class UITest {
 
 	public static String[] TEST_COLLECTION_NAMES = { "SeleniumTestAdditionalPermCol" };
 
+	public static final String CHROME_DRIVER = "selenium.test.chrome.driver";
+	public static final String CHROME_DRIVER_LOCATION = "selenium.test.chrome.driver.loaction";
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		TestingPropertiesHelper testingPropertiesLoader = new TestingPropertiesHelper();
 		testingProperties = testingPropertiesLoader.getTestProperties();
-		
+
 		// driver used for testing
-		System.setProperty(testingProperties.getProperty(TestingPropertiesHelper.CHROME_DRIVER),
-				testingProperties.getProperty(TestingPropertiesHelper.CHROME_DRIVER_LOCATION));
+
 		driver = getDriver();
 	}
 
@@ -144,11 +142,12 @@ public class UITest {
 		}
 
 		driver.get(LOGIN_URL);
-		
-		//new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+
+		// new WebDriverWait(driver,
+		// 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
 		FluentWait wait = new FluentWait(driver);
 		wait.ignoring(NoSuchElementException.class);
-		
+
 		Assert.assertEquals(LOGIN_URL, driver.getCurrentUrl());
 
 		WebElement inputUsername = driver.findElement(By.id("inputUsernameLogin"));
@@ -169,13 +168,16 @@ public class UITest {
 
 		getDriver().get(LOGOUT_URL);
 		getDriver().get(LOGIN_URL);
-		//new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		// new WebDriverWait(driver,
+		// 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
 		FluentWait wait = new FluentWait(driver);
 		wait.ignoring(NoSuchElementException.class);
 	}
 
 	public static WebDriver getDriver() {
-		//return driver == null ? new FirefoxDriver() : driver;
+		System.setProperty(testingProperties.getProperty(CHROME_DRIVER),
+				testingProperties.getProperty(CHROME_DRIVER_LOCATION));
+		// return driver == null ? new FirefoxDriver() : driver;
 		return driver == null ? new ChromeDriver() : driver;
 	}
 

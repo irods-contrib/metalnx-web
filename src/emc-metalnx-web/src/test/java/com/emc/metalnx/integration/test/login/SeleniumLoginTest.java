@@ -17,7 +17,13 @@
 package com.emc.metalnx.integration.test.login;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Properties;
+
+import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.irods.jargon.testutils.IRODSTestSetupUtilities;
+import org.irods.jargon.testutils.TestingPropertiesHelper;
+import org.irods.jargon.testutils.filemanip.ScratchFileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,28 +31,34 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.emc.metalnx.test.generic.UITest;
-import com.emc.metalnx.testutils.TestingPropertiesHelper;
 
-public class LoginTest {
+public class SeleniumLoginTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(SeleniumLoginTest.class);
 
-	// to read properties from testing.properties file
-	public static Properties testingProperties = new Properties();
+	private static Properties testingProperties = new Properties();
+	private static TestingPropertiesHelper testingPropertiesHelper = new TestingPropertiesHelper();
+	private static ScratchFileUtils scratchFileUtils = null;
+	public static final String IRODS_TEST_SUBDIR_PATH = "SeleniumLoginTest";
+	private static IRODSTestSetupUtilities irodsTestSetupUtilities = null;
+	private static IRODSFileSystem irodsFileSystem;
 
 	private static WebDriver driver = null;
 
-	/*************************************
-	 * TEST SET UP
-	 * 
-	 * @throws Exception
-	 *************************************/
-
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		UITest.setUpBeforeClass();
+		org.irods.jargon.testutils.TestingPropertiesHelper testingPropertiesLoader = new TestingPropertiesHelper();
+		testingProperties = testingPropertiesLoader.getTestProperties();
+		scratchFileUtils = new ScratchFileUtils(testingProperties);
+		scratchFileUtils.clearAndReinitializeScratchDirectory(IRODS_TEST_SUBDIR_PATH);
+		irodsTestSetupUtilities = new IRODSTestSetupUtilities();
+		irodsTestSetupUtilities.initializeIrodsScratchDirectory();
+		irodsTestSetupUtilities.initializeDirectoryForTest(IRODS_TEST_SUBDIR_PATH);
+		irodsFileSystem = IRODSFileSystem.instance();
 		driver = UITest.getDriver();
+
 	}
 
 	/**
@@ -60,6 +72,7 @@ public class LoginTest {
 			driver.quit();
 			driver = null;
 			UITest.setDriver(null);
+			irodsFileSystem.closeAndEatExceptions();
 		}
 	}
 
