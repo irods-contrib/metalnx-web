@@ -16,7 +16,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.emc.metalnx.integration.test.login.ITAdminLoginTest;
 import com.emc.metalnx.integration.test.utils.HealthCheckUtils;
 import com.emc.metalnx.test.generic.UiTestUtilities;
 

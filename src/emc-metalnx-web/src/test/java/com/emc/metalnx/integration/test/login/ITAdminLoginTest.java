@@ -84,8 +84,8 @@ public class ITAdminLoginTest {
 	public void testLoginAsAdmin() throws Exception {
 		logger.info("Test logging in as a admin user");
 		UiTestUtilities.login(
-				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_USER_KEY),
-				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_ADMIN_PASSWORD_KEY));
+				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
+				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
 		Assert.assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
 	}
 
