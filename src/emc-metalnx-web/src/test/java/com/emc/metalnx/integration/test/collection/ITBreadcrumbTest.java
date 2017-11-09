@@ -16,9 +16,14 @@
 
 package com.emc.metalnx.integration.test.collection;
 
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.irods.jargon.testutils.IRODSTestSetupUtilities;
+import org.irods.jargon.testutils.TestingPropertiesHelper;
+import org.irods.jargon.testutils.filemanip.ScratchFileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,20 +45,36 @@ import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
-@Deprecated
-@Ignore
-public class BreadcrumbTest {
+
+public class ITBreadcrumbTest {
 
 	private static WebDriver driver = null;
 	private static WebDriverWait wait = null;
+	
+	private static Properties testingProperties = new Properties();
+	private static ScratchFileUtils scratchFileUtils = null;
+	public static final String IRODS_TEST_SUBDIR_PATH = "ITBreadcrumbTest";
+	private static IRODSTestSetupUtilities irodsTestSetupUtilities = null;
+	private static IRODSFileSystem irodsFileSystem;
+
 
 	private static By breadcrumbLocator = By.className("breadcrumb");
 	private static By navigationInputLocator = By.id("navigationInput");
 	private static String zoneAndHomePath = "/" + UiTestUtilities.IRODS_ZONE + "/home";
 
 	@BeforeClass
-	public static void setUpBeforeClass() {
-
+	public static void setUpBeforeClass() throws Exception {
+		org.irods.jargon.testutils.TestingPropertiesHelper testingPropertiesLoader = new TestingPropertiesHelper();
+		testingProperties = testingPropertiesLoader.getTestProperties();
+		scratchFileUtils = new ScratchFileUtils(testingProperties);
+		scratchFileUtils.clearAndReinitializeScratchDirectory(IRODS_TEST_SUBDIR_PATH);
+		irodsTestSetupUtilities = new IRODSTestSetupUtilities();
+		irodsTestSetupUtilities.initializeIrodsScratchDirectory();
+		irodsTestSetupUtilities.initializeDirectoryForTest(IRODS_TEST_SUBDIR_PATH);
+		irodsFileSystem = IRODSFileSystem.instance();
+		UiTestUtilities.init();
+		driver = UiTestUtilities.getDriver();
+		 wait = new WebDriverWait(driver, 5);
 	}
 
 	@Before
@@ -68,6 +89,7 @@ public class BreadcrumbTest {
 	@After
 	public void tearDown() {
 		UiTestUtilities.logout();
+		
 	}
 
 	/**
@@ -81,6 +103,7 @@ public class BreadcrumbTest {
 			driver.quit();
 			driver = null;
 			UiTestUtilities.setDriver(null);
+			irodsFileSystem.closeAndEatExceptions();
 		}
 	}
 
@@ -88,6 +111,7 @@ public class BreadcrumbTest {
 	 * Check if rodsadmin can go to /zone/home
 	 */
 	@Test
+	
 	public void testGoToHomeCollection() {
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath);
 
@@ -103,6 +127,7 @@ public class BreadcrumbTest {
 	 * exist
 	 */
 	@Test
+	
 	public void testNonExistentCollection() {
 		String randomString = RandomStringUtils.randomAlphanumeric(20);
 
@@ -110,7 +135,7 @@ public class BreadcrumbTest {
 
 		wait.until(ExpectedConditions.elementToBeClickable(breadcrumbLocator));
 
-		Assert.assertEquals("The provided path \"" + randomString + "\" is not a valid one.",
+		Assert.assertEquals(randomString + " does not exist or user lacks access permission.",
 				driver.findElement(By.id("invalidPathErrorMsg")).getText());
 	}
 
@@ -128,6 +153,7 @@ public class BreadcrumbTest {
 	 * Try to access a path that the current user doesn't have access to
 	 */
 	@Test
+	@Ignore
 	public void testPathWithoutPermission() {
 		String uname = "breadcrumbPermission" + System.currentTimeMillis();
 		String pwd = "webdriver";
@@ -169,6 +195,7 @@ public class BreadcrumbTest {
 	 *
 	 */
 	@Test
+	@Ignore
 	public void testFilePath() throws DataGridException {
 		// Upload test files
 		FileUtils.uploadToHomeDirAsAdmin(TemplateUtils.TEST_FILES[0]);
@@ -187,6 +214,7 @@ public class BreadcrumbTest {
 	 * Creates a collection and tries to access it via breadcrumb
 	 */
 	@Test
+	@Ignore
 	public void testCollectionPath() {
 		String collectionName = "breadcrumbCollectionTest" + System.currentTimeMillis();
 		CollectionUtils.createCollection(driver, collectionName);
@@ -210,6 +238,7 @@ public class BreadcrumbTest {
 	 * Adds "/" at the end of an existent path
 	 */
 	@Test
+	@Ignore
 	public void testSlashAtTheEndOfPath() {
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "/");
 
@@ -224,6 +253,7 @@ public class BreadcrumbTest {
 	 * Adds multiples "/" at the end of an existent path
 	 */
 	@Test
+	@Ignore
 	public void testMultipleSlashesPath() {
 		Random random = new Random();
 		String zoneAndHomePathPlusSlashes = zoneAndHomePath;
@@ -244,6 +274,7 @@ public class BreadcrumbTest {
 	 * Adds "\" at the end of an existent path
 	 */
 	@Test
+	@Ignore
 	public void testInvertedSlash() {
 		CollectionUtils.writeOnEditableBreadCrumb(driver, wait, zoneAndHomePath + "\\");
 

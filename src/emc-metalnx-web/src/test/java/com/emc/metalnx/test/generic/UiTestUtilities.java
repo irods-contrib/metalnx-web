@@ -16,7 +16,6 @@
 
 package com.emc.metalnx.test.generic;
 
-import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import org.irods.jargon.testutils.TestingPropertiesHelper;
@@ -27,7 +26,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +122,7 @@ public class UiTestUtilities {
 	 * Logs the rods user into the UI.
 	 */
 	public static void login() {
-		login(RODS_USERNAME, RODS_PASSWORD);
+		login(UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY), UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
 	}
 
 	/**
@@ -143,9 +141,7 @@ public class UiTestUtilities {
 		driver.get(LOGIN_URL);
 
 		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
-		//FluentWait wait = new FluentWait(driver);
-		//wait.ignoring(NoSuchElementException.class);
-
+		
 		Assert.assertEquals(LOGIN_URL, driver.getCurrentUrl());
 
 		WebElement inputUsername = driver.findElement(By.id("inputUsernameLogin"));
@@ -167,8 +163,7 @@ public class UiTestUtilities {
 		getDriver().get(LOGOUT_URL);
 		getDriver().get(LOGIN_URL);
 		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
-		//FluentWait wait = new FluentWait(driver);
-		//wait.ignoring(NoSuchElementException.class);
+		
 	}
 
 	public static WebDriver getDriver() {
