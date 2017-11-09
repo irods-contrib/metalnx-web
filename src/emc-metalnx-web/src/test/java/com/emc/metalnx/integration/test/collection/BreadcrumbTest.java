@@ -45,8 +45,9 @@ import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
-
-public class ITBreadcrumbTest {
+@Deprecated
+@Ignore
+public class BreadcrumbTest {
 
 	private static WebDriver driver = null;
 	private static WebDriverWait wait = null;

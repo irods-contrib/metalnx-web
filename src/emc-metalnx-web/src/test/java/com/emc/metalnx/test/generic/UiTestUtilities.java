@@ -63,6 +63,7 @@ public class UiTestUtilities {
 	public static String LOGIN_URL = URL_PREFIX + "/emc-metalnx-web/login/";
 	public static String LOGINERROR_URL = URL_PREFIX + "/emc-metalnx-web/login/exception/";
 	public static String DASHBOARD_URL = URL_PREFIX + "/emc-metalnx-web/dashboard/";
+	public static String RULES_URL = URL_PREFIX + "/emc-metalnx-web/rules/";
 	public static String PREFERENCES_URL = URL_PREFIX + "/emc-metalnx-web/preferences/";
 	public static String USERS_URL = URL_PREFIX + "/emc-metalnx-web/users/";
 	public static String ADD_USERS_URL = URL_PREFIX + "/emc-metalnx-web/users/add/";
@@ -81,12 +82,35 @@ public class UiTestUtilities {
 	public static String PUBLIC_URL = URL_PREFIX + "/emc-metalnx-web/collections/public/";
 	public static String USER_BOOKMARKS_URL = URL_PREFIX + "/emc-metalnx-web/userBookmarks/";
 	public static String GROUP_BOOKMARKS_URL = URL_PREFIX + "/emc-metalnx-web/groupBookmarks/groups/";
+	public static String FAVORITES_URL = URL_PREFIX + "/emc-metalnx-web/favorites/";
+	public static String TICKETS_URL = URL_PREFIX + "/emc-metalnx-web/tickets/";
+	
 	public static String LOGOUT_URL = URL_PREFIX + "/emc-metalnx-web/logout/";
 	public static String RESOURCES_MAP_URL = URL_PREFIX + "/emc-metalnx-web/resources/map/";
 	public static String RESOURCES_SERVERS_URL = URL_PREFIX + "/emc-metalnx-web/resources/servers/";
 	public static String HTTP_ERROR_500_URL = URL_PREFIX + "/emc-metalnx-web/httpError/500/";
 	public static String MY_GROUPS_PAGE = URL_PREFIX + "/emc-metalnx-web/groupBookmarks/groups/";
-
+	
+	
+	// metalnx page header locator
+	public static By dashboardHdrLocator = By.cssSelector(".page-header.pull-left");
+	
+	// metalnx page header text
+	public static String DASHBOARD_HDR = "Dashboard";
+	public static String RESOURCES_HDR = "Resources";
+	public static String RULES_HDR = "Rules";
+	public static String USERS_HDR = "Users";
+	public static String GROUPS_HDR = "Groups";
+	public static String PROFILES_HDR = "Profiles";
+	public static String COLLECTIONS_HDR = "Collections";
+	public static String SEARCH_HDR = "Search";
+	public static String TEMPLATES_HDR = "Templates";
+	public static String SHARED_LINKS_HDR = "Shared";
+	public static String FAVORITES_HDR = "Favorites";
+	public static String TICKETS_HDR = "Tickets";
+	public static String PUBLIC_HDR = "Collections";
+	public static String TRASH_HDR = "Collections";
+	
 	// permission types used in the tests
 	public static final String READ_PERMISSION = "read";
 	public static final String WRITE_PERMISSION = "write";
