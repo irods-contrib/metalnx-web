@@ -16,8 +16,10 @@
 
 package com.emc.metalnx.integration.test.utils;
 
-import com.emc.metalnx.test.generic.UiTestUtilities;
-import org.junit.Ignore;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -28,12 +30,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import com.emc.metalnx.test.generic.UiTestUtilities;
 
-import static org.junit.Assert.assertTrue;
 
-@Deprecated
-@Ignore
 public class CollectionUtils {
     private static final Logger logger = LoggerFactory.getLogger(CollectionUtils.class);
     private static By publicSidebarBtnCssSelectorAdmin = By.cssSelector("#side-menu li a[href='/emc-metalnx-web/collections/public/']");

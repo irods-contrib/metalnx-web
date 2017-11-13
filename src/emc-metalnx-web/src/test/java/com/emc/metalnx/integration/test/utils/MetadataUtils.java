@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
  * Contains all common operations and attributes for metadata search testing.
  *
  */
-@Deprecated
+
 public class MetadataUtils {
     public static final String SELENIUM_ATTR = "Selenium";
     public static final String SELENIUM_VALUE = "Test";

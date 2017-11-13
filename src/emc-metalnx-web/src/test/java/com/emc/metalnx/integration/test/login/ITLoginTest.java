@@ -85,9 +85,10 @@ public class ITLoginTest {
 	@Test
 	public void testValidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing valid username and password for login");
-		// UITest.login(UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
-		// UITest.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
-		UiTestUtilities.login("test1", "test");
+
+		UiTestUtilities.login(UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
+				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
+
 		// check if after login, the user is redirected to the dashboard page
 		assertEquals(UiTestUtilities.DASHBOARD_URL, driver.getCurrentUrl());
 		UiTestUtilities.logout();
