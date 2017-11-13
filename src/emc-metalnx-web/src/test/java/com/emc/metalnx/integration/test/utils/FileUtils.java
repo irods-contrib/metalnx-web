@@ -43,7 +43,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Set;
 
-@Deprecated
+
 public class FileUtils {
 
     private static IRODSSimpleProtocolManager irodsSimpleProtocolManager;
