@@ -23,6 +23,7 @@ public class UserPreferences {
 
 	/**
 	 * Returns whether forceFileOverwriting is set or not
+	 * 
 	 * @return
 	 */
 	public boolean isForceFileOverwriting() {
@@ -31,9 +32,10 @@ public class UserPreferences {
 
 	/**
 	 * Sets forceFileOverwriting
+	 * 
 	 * @param forceFileOverwriting
 	 */
-	public void setForceFileOverwriting(boolean forceFileOverwriting) {
+	public void setForceFileOverwriting(final boolean forceFileOverwriting) {
 		this.forceFileOverwriting = forceFileOverwriting;
 	}
 
@@ -45,9 +47,10 @@ public class UserPreferences {
 	}
 
 	/**
-	 * @param localeLanguage the localeLanguage to set
+	 * @param localeLanguage
+	 *            the localeLanguage to set
 	 */
-	public void setLocaleLanguage(String localeLanguage) {
+	public void setLocaleLanguage(final String localeLanguage) {
 		this.localeLanguage = localeLanguage;
 	}
 
