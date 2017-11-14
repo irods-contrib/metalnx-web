@@ -105,7 +105,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 		logger.info("isFileInCollection()");
 		if (filename == null || collectionPath == null)
 			return false;
@@ -347,7 +347,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPath(String parent)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 
 		logger.info("getSubCollectionsAndDataObjectsUnderPath()");
 
@@ -365,11 +365,12 @@ public class CollectionServiceImpl implements CollectionService {
 
 		} catch (FileNotFoundException e) {
 			logger.error("Could not locate file: ", e);
+			throw e;
 		} catch (JargonException e) {
 			logger.error("Error: ", e);
+			throw e;
 		}
 
-		return dataGridCollectionAndDataObjects;
 	}
 
 	@Override
@@ -652,7 +653,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public Set<String> listWritePermissionsForPathAndGroupRecursive(String path, String groupName)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 
 		logger.info("listWritePermissionsForPathAndGroupRecursive()");
 

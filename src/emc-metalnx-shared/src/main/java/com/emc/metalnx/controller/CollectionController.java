@@ -29,6 +29,7 @@ import java.util.Stack;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -492,12 +493,14 @@ public class CollectionController {
 	 *            group that all collections and files permissions will be listed
 	 * @return
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
+	 * @throws FileNotFoundException
 	 */
 	@RequestMapping(value = "/getDirectoriesAndFilesForGroupForm")
 	public String getDirectoriesAndFilesForGroupForm(final Model model, @RequestParam("path") String path,
 			@RequestParam("groupName") final String groupName,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
 			path = "/";
 		}
@@ -551,12 +554,14 @@ public class CollectionController {
 	 *            user who all collections and files permissions will be listed
 	 * @return the template that will render the tree
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
+	 * @throws FileNotFoundException
 	 */
 	@RequestMapping(value = "/getDirectoriesAndFilesForUser")
 	public String getDirectoriesAndFilesForUser(final Model model, @RequestParam("path") final String path,
 			@RequestParam("username") final String username,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		List<DataGridCollectionAndDataObject> list = new ArrayList<DataGridCollectionAndDataObject>();
 		Set<String> readPermissions = new HashSet<String>();
 		Set<String> writePermissions = new HashSet<String>();
