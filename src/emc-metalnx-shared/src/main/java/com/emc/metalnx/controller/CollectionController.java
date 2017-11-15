@@ -1041,6 +1041,7 @@ public class CollectionController {
 	 *             if Metalnx cannot connect to the grid.
 	 */
 	private String getCollBrowserView(final Model model, String path) throws DataGridException {
+		logger.info("getCollBrowserView()");
 		if (cs.isPathValid(path)) {
 			if (path.endsWith("/") && path.compareTo("/") != 0) {
 				path = path.substring(0, path.length() - 1);
@@ -1052,6 +1053,7 @@ public class CollectionController {
 		}
 
 		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+		logger.info("find collection by name:{}", path);
 		DataGridCollectionAndDataObject dataGridObj = cs.findByName(path);
 
 		if (dataGridObj.isDataObject()) {
