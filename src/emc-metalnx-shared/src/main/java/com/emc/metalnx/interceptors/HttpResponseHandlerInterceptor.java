@@ -16,9 +16,9 @@
 
 package com.emc.metalnx.interceptors;
 
-import com.emc.metalnx.modelattribute.enums.URLMap;
-import com.emc.metalnx.services.auth.UserTokenDetails;
-import com.emc.metalnx.utils.EmcMetalnxVersion;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,42 +27,47 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.emc.metalnx.modelattribute.enums.URLMap;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.utils.EmcMetalnxVersion;
 
 /**
- * Class that will intercept HTTP responses to clients. Metalnx will use it to close sessions in the grid and add
- * objects pertinent to every response.
+ * Class that will intercept HTTP responses to clients. Metalnx will use it to
+ * close sessions in the grid and add objects pertinent to every response.
  */
 public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
-    @Autowired
-    private IRODSAccessObjectFactory irodsAccessObjectFactory;
+	@Autowired
+	private IRODSAccessObjectFactory irodsAccessObjectFactory;
 
-    private UserTokenDetails userTokenDetails;
-    private URLMap urlMap;
-    private EmcMetalnxVersion emcmetalnxVersion;
+	private UserTokenDetails userTokenDetails;
+	private URLMap urlMap;
+	private EmcMetalnxVersion emcmetalnxVersion;
 
-    @Override
-    public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
-                           final ModelAndView modelAndView) throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	@Override
+	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
+			final ModelAndView modelAndView) throws Exception {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (modelAndView != null && auth != null) {
-            if(urlMap == null) urlMap = new URLMap();
-            if(emcmetalnxVersion == null) emcmetalnxVersion = new EmcMetalnxVersion();
+		if (modelAndView != null && auth != null) {
+			if (urlMap == null) {
+				urlMap = new URLMap();
+			}
+			if (emcmetalnxVersion == null) {
+				emcmetalnxVersion = new EmcMetalnxVersion();
+			}
 
-            modelAndView.getModelMap().addAttribute("urlMap", urlMap);
-            modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
+			modelAndView.getModelMap().addAttribute("urlMap", urlMap);
+			modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
 
-            if (auth instanceof UsernamePasswordAuthenticationToken) {
-                userTokenDetails = (UserTokenDetails) auth.getDetails();
-                modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
-            }
-        }
+			if (auth instanceof UsernamePasswordAuthenticationToken) {
+				userTokenDetails = (UserTokenDetails) auth.getDetails();
+				modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
+			}
+		}
 
-        // closing sessions to avoid idle agents
-        irodsAccessObjectFactory.closeSessionAndEatExceptions();
-    }
+		// closing sessions to avoid idle agents
+		irodsAccessObjectFactory.closeSessionAndEatExceptions();
+	}
 
 }

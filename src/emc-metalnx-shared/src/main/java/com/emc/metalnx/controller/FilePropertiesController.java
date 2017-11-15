@@ -92,8 +92,8 @@ public class FilePropertiesController {
 	private static final Logger logger = LoggerFactory.getLogger(FilePropertiesController.class);
 
 	@RequestMapping(value = "/")
-	public String index(Model model, HttpServletRequest request,
-			@RequestParam(value = "backFromCollections", required = false) boolean backFromCollections) {
+	public String index(final Model model, final HttpServletRequest request,
+			@RequestParam(value = "backFromCollections", required = false) final boolean backFromCollections) {
 
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 		String uiMode = (String) request.getSession().getAttribute("uiMode");
@@ -115,9 +115,9 @@ public class FilePropertiesController {
 	@RequestMapping(value = "/search")
 	@ResponseBody
 	public String search(
-			@RequestParam(value = "jsonFilePropertySearch", required = false) String jsonFilePropertySearch,
-			@RequestParam("draw") int draw, @RequestParam("start") int start, @RequestParam("length") int length)
-			throws DataGridConnectionRefusedException, JargonException {
+			@RequestParam(value = "jsonFilePropertySearch", required = false) final String jsonFilePropertySearch,
+			@RequestParam("draw") final int draw, @RequestParam("start") final int start,
+			@RequestParam("length") final int length) throws DataGridConnectionRefusedException, JargonException {
 
 		if (jsonFilePropertySearch != null) {
 			currentPage = (int) (Math.floor(start / length) + 1);
@@ -185,7 +185,7 @@ public class FilePropertiesController {
 	}
 
 	@RequestMapping(value = "/downloadCSVResults/")
-	public void searchToCSVFile(HttpServletResponse response)
+	public void searchToCSVFile(final HttpServletResponse response)
 			throws DataGridConnectionRefusedException, IOException, JargonException {
 
 		ServletOutputStream outputStream = response.getOutputStream();

@@ -21,14 +21,14 @@ import java.util.List;
 
 /**
  * Maps all exceptions to an ID
+ * 
  * @author guerra
  *
  */
 
 public enum ExceptionEnum {
-	
-	JARGON_EXCEPTION(1), 
-	USERS_DATA_DUPLICATE_EXCEPTION(2);
+
+	JARGON_EXCEPTION(1), USERS_DATA_DUPLICATE_EXCEPTION(2);
 
 	private int code;
 

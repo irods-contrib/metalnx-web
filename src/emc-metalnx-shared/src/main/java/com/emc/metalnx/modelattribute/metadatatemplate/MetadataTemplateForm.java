@@ -43,85 +43,87 @@ public class MetadataTemplateForm {
 		return id;
 	}
 
-	public void setPaths(List<String> paths) {
+	public void setPaths(final List<String> paths) {
 		this.paths = paths;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
 	public String getTemplateName() {
 		return templateName;
 	}
-	
-	public void setTemplateName(String templateName) {
+
+	public void setTemplateName(final String templateName) {
 		this.templateName = templateName;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
-	public void setDescription(String description) {
+
+	public void setDescription(final String description) {
 		this.description = description;
 	}
-	
+
 	public String getUsageInformation() {
 		return usageInformation;
 	}
-	
-	public void setUsageInformation(String usageInformation) {
+
+	public void setUsageInformation(final String usageInformation) {
 		this.usageInformation = usageInformation;
 	}
-	
+
 	public List<String> getAvuPositions() {
 		return avuPositions;
 	}
-	
-	public void setAvuPositions(List<String> avuPositions) {
+
+	public void setAvuPositions(final List<String> avuPositions) {
 		this.avuPositions = avuPositions;
 	}
-	
+
 	public List<String> getAvuValues() {
 		return avuValues;
 	}
-	
-	public void setAvuValues(List<String> avuValues) {
+
+	public void setAvuValues(final List<String> avuValues) {
 		this.avuValues = avuValues;
 	}
-	
+
 	public List<String> getAvuAttributes() {
 		return avuAttributes;
 	}
-	
-	public void setAvuAttributes(List<String> avuAttributes) {
+
+	public void setAvuAttributes(final List<String> avuAttributes) {
 		this.avuAttributes = avuAttributes;
 	}
-	
+
 	public List<String> getAvuUnits() {
 		return avuUnits;
 	}
-	
-	public void setAvuUnits(List<String> avuUnits) {
+
+	public void setAvuUnits(final List<String> avuUnits) {
 		this.avuUnits = avuUnits;
-	}	
-	public String getAccessType() {
-		return this.accessType;
 	}
-	
-	public void setAccessType(String accessType) {
+
+	public String getAccessType() {
+		return accessType;
+	}
+
+	public void setAccessType(final String accessType) {
 		this.accessType = accessType;
 	}
-	
+
 	public String getOwner() {
-		return this.owner;
+		return owner;
 	}
-	
-	public void setOwner(String owner) {
+
+	public void setOwner(final String owner) {
 		this.owner = owner;
 	}
 
@@ -133,9 +135,10 @@ public class MetadataTemplateForm {
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
-	public void setVersion(Integer version) {
+	public void setVersion(final Integer version) {
 		this.version = version;
 	}
 }

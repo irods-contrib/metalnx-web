@@ -23,84 +23,84 @@ package com.emc.metalnx.modelattribute.collection;
  */
 public class CollectionOrDataObjectForm {
 
-    private String collectionName;
-    private String path;
-    private String parentPath;
-    private boolean inheritOption;
-    private boolean isCollection;
+	private String collectionName;
+	private String path;
+	private String parentPath;
+	private boolean inheritOption;
+	private boolean isCollection;
 
-    /**
-     * @return the collectionName
-     */
-    public String getCollectionName() {
-        return collectionName;
-    }
+	/**
+	 * @return the collectionName
+	 */
+	public String getCollectionName() {
+		return collectionName;
+	}
 
-    /**
-     * @param collectionName
-     *            the collectionName to set
-     */
-    public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName.trim();
-    }
+	/**
+	 * @param collectionName
+	 *            the collectionName to set
+	 */
+	public void setCollectionName(final String collectionName) {
+		this.collectionName = collectionName.trim();
+	}
 
-    /**
-     * @return the inheritOption
-     */
-    public boolean getInheritOption() {
-        return inheritOption;
-    }
+	/**
+	 * @return the inheritOption
+	 */
+	public boolean getInheritOption() {
+		return inheritOption;
+	}
 
-    /**
-     * @param inheritOption
-     *            the inheritOption to set
-     */
-    public void setInheritOption(boolean inheritOption) {
-        this.inheritOption = inheritOption;
-    }
+	/**
+	 * @param inheritOption
+	 *            the inheritOption to set
+	 */
+	public void setInheritOption(final boolean inheritOption) {
+		this.inheritOption = inheritOption;
+	}
 
-    /**
-     * @return the path
-     */
-    public String getPath() {
-        return path;
-    }
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
 
-    /**
-     * @param path
-     *            the path to set
-     */
-    public void setPath(String path) {
-        this.path = path;
-    }
+	/**
+	 * @param path
+	 *            the path to set
+	 */
+	public void setPath(final String path) {
+		this.path = path;
+	}
 
-    /**
-     * @return the parentPath
-     */
-    public String getParentPath() {
-        return parentPath;
-    }
+	/**
+	 * @return the parentPath
+	 */
+	public String getParentPath() {
+		return parentPath;
+	}
 
-    /**
-     * @param parentPath
-     *            the parentPath to set
-     */
-    public void setParentPath(String parentPath) {
-        this.parentPath = parentPath;
-    }
+	/**
+	 * @param parentPath
+	 *            the parentPath to set
+	 */
+	public void setParentPath(final String parentPath) {
+		this.parentPath = parentPath;
+	}
 
-    /**
-     * @return the isCollection
-     */
-    public boolean isCollection() {
-        return isCollection;
-    }
+	/**
+	 * @return the isCollection
+	 */
+	public boolean isCollection() {
+		return isCollection;
+	}
 
-    /**
-     * @param isCollection
-     *            the isCollection to set
-     */
-    public void setCollection(boolean isCollection) {
-        this.isCollection = isCollection;
-    }
+	/**
+	 * @param isCollection
+	 *            the isCollection to set
+	 */
+	public void setCollection(final boolean isCollection) {
+		this.isCollection = isCollection;
+	}
 }

@@ -16,10 +16,8 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,14 +29,11 @@ import org.springframework.web.context.WebApplicationContext;
 @RequestMapping(value = "/rules")
 public class RuleDeploymentController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentController.class);
+	private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentController.class);
 
-    @Autowired
-    private RuleDeploymentService ruleDeploymentService;
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index() {
-        logger.info("Rules page");
-        return "rules/rulesManagement";
-    }
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String index() {
+		logger.info("Rules page");
+		return "rules/rulesManagement";
+	}
 }
