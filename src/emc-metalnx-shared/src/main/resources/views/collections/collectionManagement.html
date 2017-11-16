@@ -39,7 +39,7 @@
 					id="backToMetadataSearch">
 		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true">Search Results</a></li>
 		  <li class="active">Collections</li>
-		</ol> 
+		</ol>
 		<ol class="breadcrumb mlx"  th:if="${cameFromFilePropertiesSearch} == true"
 					id="backToFilePropertiesSearch">
 		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true">Search Results</a></li>
@@ -53,7 +53,7 @@
                 <span th:text="${'An unexpected error has happened. Please, contact your system administrator.'}"></span>
             </div>
         </div>
-        
+
 		<div class="row" th:unless="${unexpectedError}">
 			<!-- Ticket creation success message -->
 			<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
@@ -80,20 +80,20 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
-                    <span> Your upload may be still running in the previous tab and not all files will be available until the upload is complete. </span>
+                    <span th:text="#{collection.management.upload.status}"></span>
                 </div>
             </div>
-            
+
             <!-- Empty trash succeed -->
             <div class="col-sm-12 hideElement" id="trashEmptiedSuccessfully">
                 <div class="alert alert-success alert-dismissible text-center" role="alert">
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
-                    <span> All trash items were removed successfully. </span>
+                    <span th:text="#{empty.trash.success}"></span>
                 </div>
             </div>
-            
+
             <!-- Empty trash fail -->
             <div class="col-sm-12 hideElement" id="trashNotEmptiedSuccessfully">
                 <div class="alert alert-danger alert-dismissible text-center"
@@ -101,7 +101,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
-                    <span> Trash items could not be deleted. </span>
+                    <span th:text="#{empty.trash.failure}"></span>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<span> Templates were successfully applied. </span>
+					<span th:text="#{empty.tamplate.success} "></span>
 				</div>
 			</div>
 
@@ -121,8 +121,7 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<span> Templates could not be applied. Please, check if
-						there is any duplicated metadata. </span>
+					<span th:text="#{empty.tamplate.failure}"> </span>
 				</div>
 			</div>
 
@@ -132,8 +131,7 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<span> Add collection failed. Please, check if you have
-						permissions to perform such operation. </span>
+					<span th:text="#{collection.creation.fail}"></span>
 				</div>
 			</div>
 
@@ -143,8 +141,8 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<b>	<span th:if="${ collectionAddedSuccessfully }" th:text="${ collectionAddedSuccessfully }"></span></b> 
-					<b>	<span th:if="${ collectionModifiedSuccessfully }" th:text="${ collectionModifiedSuccessfully }"></span></b> 
+					<b>	<span th:if="${ collectionAddedSuccessfully }" th:text="${ collectionAddedSuccessfully }"></span></b>
+					<b>	<span th:if="${ collectionModifiedSuccessfully }" th:text="${ collectionModifiedSuccessfully }"></span></b>
 						<span th:if="${ collectionAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
 						<span th:if="${ collectionModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
 				</div>
@@ -156,7 +154,7 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<span>All items replicated successfully.</span>
+					<span th:text="#{items.all.replicated.success}"></span>
 				</div>
 			</div>
 
@@ -166,9 +164,9 @@
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<span>The following items failed to be replicated: </span> <span
+					<span th:text="#{items.some.replicated.failure}"> </span> <span
 						th:text="${#strings.toString(failedReplicas)}"></span>
-					<span>. Please, check if you have permissions to perform such operation.</span>
+					<span th:text="#{items.some.replicated.failure.permission}"></span>
 				</div>
 			</div>
 
@@ -180,7 +178,7 @@
 				<div id="templatesListPanelBody" class="row"></div>
 			</div>
 		</div>
-		
+
 		<!-- template modal -->
 		<div class="modal fade" id="applyTemplateModal" tabindex="-1"
 			role="dialog" aria-labelledby="applyTemplateModalLabel"
@@ -228,7 +226,7 @@
 										<a href="#" th:name="${homePath}"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
-			
+
 											<img alt="" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
@@ -338,7 +336,7 @@
 										<a href="#" th:name="${homePath}"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
-			
+
 											<img alt="" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
@@ -490,7 +488,7 @@
                         <form action="/emc-metalnx-web/upload/" method="POST"
                               role="form" enctype="multipart/form-data" id="uploadForm">
 
-							
+
 							<p class="text-right">
 								<span id="numberFilesUpload">No</span><span>&nbsp;file(s)
 									selected</span>
@@ -566,8 +564,8 @@
 			var operationInProgress = false;
 			var oldBreadCrumbContent;
 			var unexpectedError = [[${unexpectedError}]] != null;
-		
-			$(document).ready(function(){	
+
+			$(document).ready(function(){
 
 				// Add popover on page title
 		        $('#collections-page-title').popover({
@@ -576,9 +574,9 @@
 		   			trigger: 'hover click',
 		       		placement: 'left',
 		   		});
-				
+
 				$('#uploadControlOptions').hide();
-				
+
 				$('#uploadModal').on('show.bs.modal', function(){
 					$('#uploadForm').each(function(){
 						this.reset();
@@ -587,11 +585,11 @@
 					$('#numberFilesUpload').html('No');
 					$('#uploadControlOptions').hide();
 					$('#browseButton').show();
-					
+
 					// Hiding the resource selection box on the upload modal
 					$("#selectResource").prop("disabled", true);
 				});
-				
+
 				window.addEventListener("beforeunload", function (e) {
 					if (operationInProgress) {
 						var confirmationMessage = "An operation is in progress. If you leave this window now the consequences are unpredictable.";
@@ -599,24 +597,24 @@
 						return confirmationMessage;
 					}
 				});
-				
+
 				if (!unexpectedError) {
 				    getSubDirectories([[${ currentPath }]]);
 				}
-				
+
 				if (![[${templatesAppliedSuccessfully}]]) {
 					$("#applyTemplateSuccess").show();
 					totalCheckboxesChecked = 0;$("#selectResource option").first().addClass("hideElement");
-				}	
+				}
 				else {
-					$("#applyTemplateFailure").show();					
+					$("#applyTemplateFailure").show();
 				}
 			});
 
-			function getSubDirectories(path) {	
+			function getSubDirectories(path) {
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
-				
+
 				setTimeout(function () {
 					ajaxEncapsulation("/emc-metalnx-web/collections/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
 					currentPath = path;
@@ -627,35 +625,35 @@
 			    resetDataTablesStart();
 				$("#table-loader").hide();
 				$("#tree-view-panel-body").show();
-				$("#tree-view-panel-body").html(data);	
+				$("#tree-view-panel-body").html(data);
 			}
-			
+
 	        function getSubDirectoriesOldTree(directoryName, directoryPath){
 	        	$("#moveModal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/spinner-16.gif");
 				var groupName = $("#collectionInfoGroupName").text();
-				
+
 				ajaxEncapsulation(
-					"/emc-metalnx-web/collections/getSubDirectoriesOldTree/", 
-					"POST", 
-					{path : directoryPath, groupName : groupName}, 
+					"/emc-metalnx-web/collections/getSubDirectoriesOldTree/",
+					"POST",
+					{path : directoryPath, groupName : groupName},
 					function (data){
 						$(".modal a[name='" + directoryPath + "']").attr("onclick", "retractElement('" + directoryName + "', '" + directoryPath + "');");
 						$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 						$(".modal a[name='" + directoryPath + "']").parent().after(data);
 						$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-open-16.png");
-						
-						targetPath = directoryPath;	
+
+						targetPath = directoryPath;
 						$('.targetPathInfoSpan').html(targetPath);
 					}, null, null, null
 				);
 	        }
-	        
+
 	        function retractElement(directoryName, directoryPath) {
 	        	$(".modal a[name='" + directoryPath + "']").attr("onclick", "getSubDirectoriesOldTree('" + directoryName + "', '" + directoryPath + "');");
 				$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 				$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-16.png");
-				
-				targetPath = directoryPath;	
+
+				targetPath = directoryPath;
 				$('.targetPathInfoSpan').html(targetPath);
 	        }
 
@@ -664,12 +662,12 @@
 	        		e.preventDefault();
 	        	}
 	        });
-	        
+
 	        function displayModifyForm(data){
 	        	$("#addAndModifyModal .modal-form-content").html(data);
 				$("#addAndModifyModal").modal("show");
 	        }
-	        
+
 	        function showModifyForm() {
 	        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
 
@@ -678,38 +676,38 @@
                 var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
                 var path = $('input[name="collectionPathCheckboxes"]:checked').val();
                 ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
-			} 
-	        
+			}
+
 	        function submitForm() {
         		if(!$("#invalidCollectionNameIcon").is(":visible")){
-					$(".registerForm").submit();								
-				}	       	        	
+					$(".registerForm").submit();
+				}
 	        }
-	        
+
 	        function callbackMoveAndCopy(data){
 				$("#moveModal").modal("hide");
-				
+
 				//reset the modal
         		cleanModals();
-				
+
 				//updating the list of files and collections
-				currentPath = targetPath;					
+				currentPath = targetPath;
 				totalCheckboxesChecked = 0;
-				
-	       		resetDataTablesStart();	
-	       		
+
+	       		resetDataTablesStart();
+
 				$("#tree-view-panel-body").html(data);
 	        }
-	        
+
 	        function updateResourceForReplicationOptions() {
 	        	$("#selectResource > option").remove();
     			$("#selectResourceToUpload > option").each(function() {
     				if(!$(this).is(":selected")) {
     					$("#selectResource").append($(this).clone());
-    				}	    				
+    				}
     			});
 	        }
-	        
+
 	        $("#moveBtn").click(function() {
 	            var paths = [];
                 $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
@@ -717,7 +715,7 @@
                 });
 		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath, paths: paths}, callbackMoveAndCopy);
 	        });
-	        
+
 	        $("#copyBtn").click(function() {
 	            var copyWithMetadata = $("#inputCopyWithMetadata").is(":checked");
 	            var paths = [];
@@ -728,33 +726,33 @@
 	            var url = "/emc-metalnx-web/fileOperation/copy/";
 	        	ajaxEncapsulation(url, "POST", params, callbackMoveAndCopy, null, null, null);
 	        });
-	        
+
 	        $("#cancelMoveBtn").click(function() {
-	        	cleanModals();	        	
+	        	cleanModals();
 	        });
-	        
+
 	        $("#cancelCopyBtn").click(function() {
 	        	cleanModals();
 	        });
-	        
+
 	        $("#selectResourceToUpload").change(function() {
 	        	updateResourceForReplicationOptions();
 	        });
-	        
+
 	        $("#inputReplica").change(function () {
-	        	if($(this).is(":checked")) {	   
-	        		updateResourceForReplicationOptions();	    			
+	        	if($(this).is(":checked")) {
+	        		updateResourceForReplicationOptions();
 	                $("#selectResource").prop("disabled", false);
 	            }
 	        	else {
-	                $("#selectResource").prop("disabled", true);        		
+	                $("#selectResource").prop("disabled", true);
 	        	}
 			});
-	        
+
 	        $("#browseButton").click(function(){
 				$("input[name='files']").click();
 			});
-	        
+
 	        $("#replicateButton").click(function(){
 	        	$("#replicateForm").submit();
 			});
@@ -787,7 +785,7 @@
 
 				return paths;
 			}
-	        
+
 	        function deleteAction(){
 	        	setOperationInProgress();
 	        	$("#actions button").prop("disabled", true);
@@ -803,11 +801,11 @@
 
 	        	ajaxEncapsulation(
 	        		url,
-	        		"POST", 
+	        		"POST",
 	        		{paths: paths},
 	        		function (data) {
 		        		unsetOperationInProgress();
-		        		resetDataTablesStart();	
+		        		resetDataTablesStart();
 	        			$("#tree-view-panel-body").html(data);
 
 					}
@@ -816,7 +814,7 @@
 				$("#deleteModal").modal("hide");
 				cleanModals();
 	        }
-	        
+
 	        $('.modal').on('hidden.bs.modal', function(e){
 	        	$(".modal a").each(function(){
 					if($(this).attr('onclick') !== undefined){
@@ -826,10 +824,10 @@
 					}
 				});
 	        });
-	        
+
 	        function cleanModals() {
 				$(".modal").modal("hide");
-				
+
 				//reset the modal
 				$(".modal a").each(function(){
 					if($(this).attr('onclick') !== undefined){
@@ -839,7 +837,7 @@
 					}
 				});
 	        }
-	        
+
 	        function setOperationInProgress() {
 	        	oldBreadCrumbContent = $(".breadcrumb").html();
 	        	$(".breadcrumb a").attr('onclick', '');
@@ -848,12 +846,12 @@
 	        	$(".breadcrumb a").css('cursor', 'default');
 	        	operationInProgress = true;
 	        }
-	        
+
 	        function unsetOperationInProgress() {
 	        	$(".breadcrumb").html(oldBreadCrumbContent);
 	        	operationInProgress = false;
 	        }
-	        
+
 	        function getTemplatesToBeApplied() {
 	        	var templateIDsList = $("#templatesListTable input[name='templateCheckboxes']:checked").map(function() {
 	        		return $(this).val();
@@ -862,69 +860,69 @@
 	        	return templateIDsList;
 	        }
 	        function goBackToTemplatesList() {
-	        	$(".template-fields-content").hide();	  
+	        	$(".template-fields-content").hide();
 	        	$(".templates-content").show();
 	        }
-	        
+
 	        function displayTemplates(response) {
 	        	$(".templates-content").remove();
 	        	$("#applyTemplateModal").html(response);
 	        	$('#applyTemplateModal').modal('show');
 			}
-	        
+
 	        function displayTemplateFields(response) {
 	        	$(".template-fields-content").remove();
 	        	$(".templates-content").hide();
 	        	$(".templates-content").after(response);
-	        	$(".template-fields-content input[name='applyToCurrentPath']").val(applyToCurrentPath);	     
+	        	$(".template-fields-content input[name='applyToCurrentPath']").val(applyToCurrentPath);
 	        	applyToCurrentPath = false;
 			}
-	        
-	        function listAllTemplates() {	  
+
+	        function listAllTemplates() {
 	        	var url = "/emc-metalnx-web/templates/listTemplatesForCollections/";
-				ajaxEncapsulation(url, "POST", null, displayTemplates, null, null);	
+				ajaxEncapsulation(url, "POST", null, displayTemplates, null, null);
 	        }
-	        
+
 	        function listTemplateFields() {
 	        	var templateIDsList = getTemplatesToBeApplied();
 				var url = "/emc-metalnx-web/templates/listTemplateFieldsForCollections/";
 				ajaxEncapsulation(url, "POST", {templateIDsList : templateIDsList}, displayTemplateFields, null, null);
 	        }
-	        
+
 	        function goToDataObjDetails(path){
 				$("#table-loader").show();
 				$("#table-loader").nextAll().remove();
-	        	
+
 				url = "/emc-metalnx-web/collections/info/";
 				ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/getBreadCrumbForObject/', 
-					"POST", 
-					{path: path}, 
+					'/emc-metalnx-web/collections/getBreadCrumbForObject/',
+					"POST",
+					{path: path},
 					function(data){
 						$("#directoryPath").html(data);
 					}, null, null, null);
-	        } 
-	        
+	        }
+
 			function displayInfoDetails(data){
 				$("#table-loader").hide();
 				$("#table-loader").after(data);
-	        }    
+	        }
 			function goBackHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goBackHistory/', 
-					"POST", 
-					{steps: steps}, 
-					displaySubDirectories, 
+					'/emc-metalnx-web/collections/goBackHistory/',
+					"POST",
+					{steps: steps},
+					displaySubDirectories,
 					null, null, null
 				);
 			}
 			function goForwardHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goForwardHistory/', 
-					"POST", 
-					{steps: steps}, 
-					displaySubDirectories, 
+					'/emc-metalnx-web/collections/goForwardHistory/',
+					"POST",
+					{steps: steps},
+					displaySubDirectories,
 					null, null, null
 				);
 			}
@@ -933,7 +931,7 @@
 			    targetPath = path;
 			    $('.targetPathInfoSpan').html(targetPath);
 			}
-			
+
 			//this function below only wqorks with favorites and user bookmarks table because they have the same number of columns
 			function modalMoveCopyFavAndUserbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {
@@ -974,26 +972,26 @@
 							"targets": 0
 		                },
 		                {
-		                	"data": "path", 
-		                	"width": "50%", 
+		                	"data": "path",
+		                	"width": "50%",
 		                	"targets": 1
 		               	}
 		            ]
 				});
 			}
-			
+
 			//tables for the move modal
 			var moveFavoritesTable;
 			var moveUserBookmarksTable;
 			modalMoveCopyFavAndUserbookmarkDatatable('moveFavoritesTable', moveFavoritesTable, '/emc-metalnx-web/favorites/favoritesPaginated/');
 			modalMoveCopyFavAndUserbookmarkDatatable('moveUserBookmarksTable', moveUserBookmarksTable, '/emc-metalnx-web/userBookmarks/bookmarksPaginated/');
-			
+
 			//tables for the copy modal
 			var copyFavoritesTable;
 			var copyUserBookmarksTable;
 			modalMoveCopyFavAndUserbookmarkDatatable('copyFavoritesTable', copyFavoritesTable, '/emc-metalnx-web/favorites/favoritesPaginated/');
 			modalMoveCopyFavAndUserbookmarkDatatable('copyUserBookmarksTable', copyUserBookmarksTable, '/emc-metalnx-web/userBookmarks/bookmarksPaginated/');
-			
+
 			function modalMoveCopyGroupbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {
 				    "serverSide": true,
@@ -1034,19 +1032,19 @@
 							"targets": 0
 		                },
 		                {
-		                	"data": "path", 
-		                	"width": "34%", 
+		                	"data": "path",
+		                	"width": "34%",
 		                	"targets": 1
 		               	},
 		               	{
-		                	"data": "group.groupname", 
-		                	"width": "33%", 
+		                	"data": "group.groupname",
+		                	"width": "33%",
 		                	"targets": 2
 		               	}
 		            ]
 				});
 			}
-			
+
 			var moveGroupBookmarksTable;
 			var copyGroupBookmarksTable;
 			modalMoveCopyGroupbookmarkDatatable('moveGroupBookmarksTable', moveGroupBookmarksTable, '/emc-metalnx-web/groupBookmarks/groupsBookmarksPaginated/');
@@ -1059,4 +1057,3 @@
 </body>
 
 </html>
-

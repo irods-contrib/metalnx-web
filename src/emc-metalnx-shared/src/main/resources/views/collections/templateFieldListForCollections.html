@@ -24,7 +24,7 @@
 				</button>
 				<h4 class="modal-title" id="myCopyModalLabel">Step 2 - Fill-in the values</h4>
 			</div>
-			
+
 			<div class="modal-body">
 				<div th:if="${foundTemplateFields}" >
 					<table class="table" id="templateFieldsListTable">
@@ -39,7 +39,7 @@
 								<th th:text="#{templates.fields.management.table.template.label}"></th>
 							</tr>
 						</thead>
-						
+
 						<tbody id="">
 							<tr th:each="templateField : ${templateFields}" th:id="${templateField.id} ? ${templateField.id} : ${'pos_' + templateField.formListPosition}" th:class="${templateField.id == null} ? 'info'">
 								<td class="text-center" th:unless="${templateField.id != null}">
@@ -63,10 +63,10 @@
 					</table>
 				</div>
                    <p class="text-center" th:if="${not foundTemplateFields}">
-                       <span>No attributes found.</span>
+                       <span th:text="#{template.field.list.not.found}"></span>
                    </p>
 			</div>
-			
+
 			<div class="modal-footer">
 				<div class="row">
 					<div class="col-xs-6">
@@ -79,7 +79,7 @@
 						<div class="pull-right">
 							<button type="submit" id="submitTemplateBtn" class="btn btn-primary">
 								Apply Template
-							</button>		
+							</button>
 						</div>
 					</div>
 				</div>

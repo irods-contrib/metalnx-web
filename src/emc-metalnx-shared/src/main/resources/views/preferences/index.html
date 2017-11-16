@@ -51,20 +51,20 @@
 								<label for="forceFileOverwriting">File Upload</label>
 								<p>
 									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" />
-									<span >  Overwrite duplicate files by default</span> 
+									<span th:text="#{refrences.index.overwrite.duplicates}"></span> 
 								</p>
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="btn-group pull-right">
 						<button type="submit" class="btn btn-primary" th:text="#{preferences.save.button.label}"></button>
 					</div>
-					
+
 				</form>
 			</div>
 		</div>
-	</div> 
+	</div>
 
 </body>
 

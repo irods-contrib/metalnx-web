@@ -16,7 +16,7 @@
 
 <!-- Current Collections Table -->
 <div th:fragment="treeView" class="table-responsive">
-	
+
 	<div class="col-sm-12">
 		<div class="alert alert-danger" role="alert" id="alertNoResultsForCollections">
 			<p class="text-center">
@@ -24,37 +24,37 @@
 			</p>
 		</div>
 	</div>
-	
+
 	<div class="col-sm-12">
 		<div class="alert" role="alert" id="countDisplayForCollections">
 			<p class="text-center">
-				<b><span id="resultCountForCollections"></span></b> 
+				<b><span id="resultCountForCollections"></span></b>
 				<span th:text="#{collections.management.result.number.found}"></span>
 			</p>
 		</div>
 	</div>
-	
+
 	<!-- Show current path -->
 	<div class="col-sm-12">
-		<div id="directoryPath">		
+		<div id="directoryPath">
 			<ol class="breadcrumb" style="color: #2C95DD;">
 				<!-- root item -->
 				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForUser('/');">iRods</a></li>
-				
+
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
 					<li>
-						<a href="#collectionsViewForUser" 
+						<a href="#collectionsViewForUser"
 							th:if="${ iterationStatus.last == false }"
-							th:text="${ pathItem }" 
+							th:text="${ pathItem }"
 							th:with="pathUntilCurrentItem = ${ #strings.substringBefore(currentPath, pathItem) + pathItem }"
 							th:title="${ pathUntilCurrentItem }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${ pathUntilCurrentItem } + '\');'">
 						</a>
-						
-						
+
+
 						<span th:if="${ iterationStatus.last }"
-							th:text="${ pathItem }" 
+							th:text="${ pathItem }"
 							th:title="${ #strings.substringBefore(currentPath, pathItem) + pathItem }">
 						</span>
 					</li>
@@ -62,7 +62,7 @@
 			</ol>
 		</div>
 	</div>
-	
+
 	<div class="col-sm-12 scrollable-table">
 		<table class="table table-hover" id="treeViewTable">
 			<thead>
@@ -72,57 +72,57 @@
 					<th th:text="#{collections.management.table.kind.label}" class="hidden-xs hidden-sm"></th>
 					<th th:text="#{collections.management.table.modified.label}" class="hidden-xs hidden-sm"></th>
 					<th>
-						<span th:text="#{collections.management.table.permissions.label}"></span> 
+						<span th:text="#{collections.management.table.permissions.label}"></span>
 						[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.permission.tooltip}">?</a>]
 					</th>
                     <th th:text="#{collections.management.table.bookmark.label}"></th>
 				</tr>
 			</thead>
-		
+
 			<tbody id="treeViewTableBody">
 				<tr th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
 					<!-- Collection name -->
 					<td>
-						<a href="#collectionsViewForUser" 
-							th:if="${ collectionAndDataObject.isCollection() }" 
-							th:name="${ collectionAndDataObject.getPath() }" 
+						<a href="#collectionsViewForUser"
+							th:if="${ collectionAndDataObject.isCollection() }"
+							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${collectionAndDataObject.getPath()} + '\');'">
-		
+
 			               	<i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-							&nbsp;  
-			         
+							&nbsp;
+
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
 						</a>
-						
-						<span th:unless="${ collectionAndDataObject.isCollection() }" 
-							th:name="${ collectionAndDataObject.getPath() }" 
+
+						<span th:unless="${ collectionAndDataObject.isCollection() }"
+							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }">
-		
-					        <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i> 
-							&nbsp; 
-			         
+
+					        <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+							&nbsp;
+
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
 						</span>
-						
+
 					</td>
-					
+
 					<!-- owner -->
 					<td th:text="${ collectionAndDataObject.getOwner() }" class="hidden-xs hidden-sm" ></td>
-					
+
 					<!-- kind (collection or data object) -->
 					<td th:if="${ collectionAndDataObject.isCollection() }" th:text="#{collections.management.table.kind.collection}" class="hidden-xs hidden-sm" ></td>
 					<td th:unless="${ collectionAndDataObject.isCollection() }" th:text="#{collections.management.table.kind.dataobject}" class="hidden-xs hidden-sm" ></td>
-					
+
 					<!-- date modified -->
 					<td th:text="${ collectionAndDataObject.getModifiedAtFormatted() }" class="hidden-xs hidden-sm" ></td>
-					
+
 					<!-- Permissions -->
 					<td th:with="collPath = ${collectionAndDataObject.getPath()}">
 						<div class="recursiveQuestion hideElement" th:id="${'recursiveQuestion_' + collectionAndDataObject.getName() }">
 							<div>
 								<div class="">
-									<span>Do you want to apply this change to subcolletions and files in </span><b th:text="${collectionAndDataObject.getName()}"></b><span>?</span>
+									<span th:text="#{collections.user.form.permissions}"></span><b th:text="${collectionAndDataObject.getName()}"></b><span>?</span>
 								</div>
 								<div class="recursiveQuestionButtonsWrapper">
 									<button type="button" class="btn-xs btn btn-link btn-recursive-cancel" th:text="#{confirmation.message.cancel}" th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${currentPath} + '\');'"></button>
@@ -132,7 +132,7 @@
 							</div>
 						</div>
 						<!-- <input type="hidden" th:id="${'recursive_' + collectionAndDataObject.getName() }" value="false"/> -->
-						<select th:id="${'permission_' + collectionAndDataObject.getName() }" 
+						<select th:id="${'permission_' + collectionAndDataObject.getName() }"
 						th:title="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
 						th:onchange="${collectionAndDataObject.isCollection()} ? 'javascript:showRecursiveQuestion(\'' + ${collectionAndDataObject.getName()} + '\')' : 'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'">
 							<option value="none">None</option>
@@ -143,12 +143,12 @@
 						<!-- indicates if inheritance option is enabled for this collection -->
 						<span class="resulting-permission" th:if="${#sets.contains(inheritPermissions, collPath)}" th:text="#{collections.management.table.inherited.label}"></span>
 					</td>
-                    
+
                     <!-- Bookmarks  -->
                     <td th:with="collPath = ${collectionAndDataObject.getPath()}">
-                        <input 
-                            th:name='${collPath}' 
-                            type="checkbox" 
+                        <input
+                            th:name='${collPath}'
+                            type="checkbox"
                             class="userBookmarkCheckbox"
                             th:checked="${ (#lists.contains(userBookmarks, collPath) or #sets.contains(addBookmark, collPath)) and !#sets.contains(removeBookmark, collPath) ? 'checked' : 'false' }"
                         />
@@ -157,28 +157,28 @@
 			</tbody>
 		</table>
 	</div>
-	
+
 	<script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
-		
+
 	<script th:inline="javascript">
-		filterTable("searchTextForCollections", "treeViewTableBody", "resultCountForCollections", "alertNoResultsForCollections", 
+		filterTable("searchTextForCollections", "treeViewTableBody", "resultCountForCollections", "alertNoResultsForCollections",
 				"treeViewTable", "countDisplayForCollections", "queryStringForCollections");
-		
-		$(document).ready(function(){		
+
+		$(document).ready(function(){
 			$("select option:selected").each(function() {
-				if ( $(this).val() == "none" ) {					
+				if ( $(this).val() == "none" ) {
 					$(this).parents("tr").find("input[type='checkbox'].userBookmarkCheckbox").prop('checked', false);
 					$(this).parents("tr").find("input[type='checkbox'].userBookmarkCheckbox").prop("disabled", true);
 				}
 			});
 			$('[data-toggle="tooltip"]').tooltip();
 		});
-		
+
 		// Updating the list of bookmarks to add or remove
 		$(".userBookmarkCheckbox").change(function () {
 			var path = $(this).attr('name');
 			if( $(this).is(":checked") ) {
-				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/addBookmark/', "POST", {path:path}, null, null, null);	
+				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 			}
 			else {
 				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);

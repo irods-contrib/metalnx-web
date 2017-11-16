@@ -59,12 +59,12 @@
 
 <!-- Ajax Encapsulation -->
 <script src="../static/js/ajax.js" th:src="@{/js/ajax.js}"></script>
-	
+
 <!-- Nano scroll -->
 <script src="../static/js/jquery.nanoscroller.min.js" th:src="@{/js/jquery.nanoscroller.min.js}"></script>
 <link href="../static/css/nanoscroller.css" rel="stylesheet"
 	th:href="@{/css/nanoscroller.css}" />
-	
+
 <!-- Datatables component -->
 <link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" th:href="@{/css/dataTables.bootstrap.min.css}" />
 <script  src="../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
@@ -72,7 +72,7 @@
 
 <!-- Our customization on datatables jquery plugin -->
 <script src="../static/js/dataTable.customize.js" th:src="@{/js/dataTable.customize.js}"></script>
-	
+
 </head>
 
 <body>
@@ -92,7 +92,7 @@
 
 				<!-- EMC metalnx logo -->
 				<a class="navbar-brand" th:href="@{ ${urlMap.URL_COLLECTIONS_MANAGEMENT} }">
-					<img  alt="EMC logo" src="../static/images/logo.svg" 
+					<img  alt="EMC logo" src="../static/images/logo.svg"
                 		th:src="@{/images/logo.svg}" />
 					<img class="hidden" alt="EMC logo" src="../static/images/logo.svg"
 						  th:src="@{/images/logo.svg}" />
@@ -103,9 +103,9 @@
 				<ul class="nav navbar-top-links navbar-right pull-right">
 
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
-							<i class="fa fa-user"></i> 
-							<span class="navbar-top-links-text" th:text="${userDetails.getUsername()}"></span> &nbsp; 
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-user"></i>
+							<span class="navbar-top-links-text" th:text="${userDetails.getUsername()}"></span> &nbsp;
 							<i class="fa fa-caret-down white-icon"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-user">
@@ -137,7 +137,7 @@
 
 			</div>
 
-			
+
 			<!-- /.navbar-static-side -->
 		</nav>
 		<!-- /.navbar-header -->
@@ -156,7 +156,7 @@
 							</li>
 							<!-- Resource sidebar item -->
 							<li>
-								<a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i class="fa fa-database"></i> &nbsp; 
+								<a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i class="fa fa-database"></i> &nbsp;
 									<span th:text="#{resources.menu.title}"></span><!--  <span class="fa arrow"></span> -->
 								</a>
 							</li>
@@ -186,9 +186,9 @@
 								<span th:text="#{users.profile.management.menu.title}"></span>
 							</a>
 							</li>
-	
+
 						</th:block>
-						<!-- Collection sidebar item --> 
+						<!-- Collection sidebar item -->
 						<li><a th:href="@{ ${urlMap.URL_HOME_COLLECTION_USER} }"> <i
 								class="fa fa-folder"></i>&nbsp;<span
 								th:text="#{collections.menu.title}"></span></a>
@@ -204,14 +204,14 @@
 							 <span th:text="#{metadata.template.management.menu.title}"></span></a>
 						</li>
                         <!-- Bookmarks sidebar item -->
-                        <li> 
+                        <li>
                             <a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }">
 								<i class="fa fa-share-alt"></i>
                             	&nbsp; <span th:text="#{sidebar.user.bookmarks}"></span>
                             </a>
                         </li>
                         <!-- Favorites -->
-                        <li> 
+                        <li>
                             <a th:href="@{ ${urlMap.URL_STARRED_ITEMS} }">
 								<i class="fa fa-star"></i>
                             	&nbsp; <span th:text="#{sidebar.user.favorites}"></span>
@@ -225,14 +225,14 @@
 							</a>
 						</li>
                         <!-- Public sidebar item -->
-                        <li> 
+                        <li>
                             <a th:href="@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }">
 								<i class="fa fa-globe"></i>
                             	&nbsp; <span th:text="#{sidebar.user.public}"></span>
                             </a>
                         </li>
                         <!-- Trash sidebar item -->
-                        <li> 
+                        <li>
                             <a th:href="@{ ${urlMap.URL_TRASH_COLLECTION_USER} }">
 								<i class="fa fa-trash"></i>
                             	&nbsp; <span th:text="#{sidebar.user.trash}"></span>
@@ -275,13 +275,8 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<p>
-						<i> This software contains the intellectual property of EMC
-							Corporation or is licensed to DELL EMC Corporation from third parties.
-							Use of this software and the intellectual property contained
-							therein is expressly limited to the terms and conditions of the
-							License Agreement under which it is provided by or on behalf of
-							EMC. </i>
+					<p th:text="#{about.modal}">
+
 					</p>
 				</div>
 				<div class="modal-footer">
@@ -313,12 +308,12 @@
 			$("#aboutModal").modal("show");
 		}
 		//$(".sidebar").nanoScroller();
-		
+
 		var current_url = window.location.href;
 		$("#side-menu li a").each(function(){
 		    var set_active_class = false;
 
-	        //making only trash side-menu link active and not collections 
+	        //making only trash side-menu link active and not collections
 		    if(current_url.indexOf([[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]) >= 0){
 		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
 		        set_active_class = true;
@@ -337,7 +332,7 @@
 	        //every other link
 		    }else if((current_url.indexOf($(this).attr('href')) >= 0)){
 				$(this).addClass("active");
-			} 
+			}
 		});
 	/*]]>*/
 	</script>
@@ -345,4 +340,3 @@
 </body>
 
 </html>
-
