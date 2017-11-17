@@ -1,7 +1,7 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
 ## Version: 4.2.1.0-SNAPSHOT
-## Git Tag:
+## Git Tag: niehs/issue2
 ## Date: Oct 27, 2017
 
 
@@ -82,3 +82,7 @@ Remove remaining hard coded text in templates and convert to resource bundle ref
 
 Incrementally going through the Selenium tests to unify with the Jargon testing framework and to reactivate ignored selenium tests.  See the CONFIGURATION.md file for information on Selenium test setup, which is run from the src/emc-metalnx-web directory. That directoy also includes a test-scripts folder with the required maven settings.xml updates.
 The current Selenium tests have been refactored to start with basic health checks while the page functions stabilize.
+
+#### Fix 500 errors clicking on zone or home when no permissions
+
+issue2 branch WIP

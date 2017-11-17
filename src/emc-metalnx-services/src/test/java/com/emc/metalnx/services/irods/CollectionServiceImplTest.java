@@ -87,6 +87,34 @@ public class CollectionServiceImplTest {
 	}
 
 	@Test
+	/**
+	 * Tests NIEHS bug 500 errors browsing to home or zone #2
+	 * 
+	 * @throws Exception
+	 */
+	public void testFindByNameForZoneHome() throws Exception {
+
+		IRODSAccount irodsAccount = testingPropertiesHelper.buildIRODSAccountFromTestProperties(testingProperties);
+
+		IRODSServicesImpl irodsServices = new IRODSServicesImpl();
+		irodsServices.setIrodsAccount(irodsAccount);
+		irodsServices.irodsAccessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+
+		CollectionServiceImpl collectionService = new CollectionServiceImpl();
+		collectionService.irodsServices = irodsServices;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append('/');
+		sb.append(irodsAccount.getZone());
+		sb.append("/home");
+
+		DataGridCollectionAndDataObject actual = collectionService.findByName(sb.toString());
+
+		Assert.assertNotNull("no recs returned", actual);
+
+	}
+
+	@Test
 	public void testGetSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated() throws Exception {
 
 		CollectionServiceImpl collectionService = new CollectionServiceImpl();

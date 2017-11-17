@@ -21,22 +21,22 @@ package com.emc.metalnx.modelattribute.breadcrumb;
  */
 public class DataGridBreadcrumbItem {
 
-    private String name;
-    private String path;
+	private String name;
+	private String path;
 
-    public DataGridBreadcrumbItem(String path) {
-        this.path = path;
+	public DataGridBreadcrumbItem(final String path) {
+		this.path = path;
 
-        // Getting last item of the path based on the last occurent of PATH_SEPARATOR
-        this.name = path.substring(path.lastIndexOf(DataGridBreadcrumb.PATH_SEPARATOR) + 1, path.length());
-    }
+		// Getting last item of the path based on the last occurent of PATH_SEPARATOR
+		name = path.substring(path.lastIndexOf(DataGridBreadcrumb.PATH_SEPARATOR) + 1, path.length());
+	}
 
-    public String getPath() {
-        return path;
-    }
+	public String getPath() {
+		return path;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
 }
