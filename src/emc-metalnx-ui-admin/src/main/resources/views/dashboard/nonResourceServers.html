@@ -27,7 +27,7 @@
 				</tr>
 			</table>
 			<div th:unless="${nonResourceServers}">
-				<p>There are no other devices to be displayed.</p>
+				<p th:text="#{dashboard.nonresourceserver.other.devices}"></p>
 			</div>
 		</div>
 	</div>

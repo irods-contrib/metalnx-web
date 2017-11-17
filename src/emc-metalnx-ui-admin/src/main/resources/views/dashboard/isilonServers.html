@@ -15,7 +15,7 @@
   -->
 
 <th:block th:fragment="isilonServersList">
-	
+
 	<div th:if="${isilonServers}" class="panel panel-default">
 		<div class="panel-body">
 			<h4 class="">Isilon Devices</h4>
@@ -30,17 +30,17 @@
 		</div>
 		<div th:if="${isAnyIsilonWithNotWellFormedContextString}" class="panel-footer">
 			<div class="serverIcon">
-				<i class="fa fa-exclamation-triangle"></i>	
+				<i class="fa fa-exclamation-triangle"></i>
 			</div>
 			<p>
-				<span title="Please, verify the context string.">Unreachable Isilon Server(s).</span>
+				<span title="Please, verify the context string." th:text="#{dashboard.isilon.unreachable.server}"></span>
 			</p>
 		</div>
 	</div>
 	<div th:unless="${isilonServers}" class="panel panel-default">
 		<div class="panel-body">
 			<h4 class="">Isilon Devices</h4>
-			<div><p>There are no Isilon devices to be displayed.</p></div>
+			<div><p th:text="#{dashboard.isilon.no.isilon.device}"/></p></div>
 		</div>
 	</div>
 </th:block>

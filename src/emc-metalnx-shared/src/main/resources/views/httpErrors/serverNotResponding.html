@@ -19,7 +19,7 @@
         xmlns:th="http://www.thymeleaf.org"
 >
 	<head>
-	
+
     <!-- Bootstrap Core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet"
     	th:href="@{/css/bootstrap.min.css}"/>
@@ -27,37 +27,37 @@
     <!-- Custom Fonts -->
     <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css"
     	th:href="@{/css/font-awesome.min.css}"/>
-    
+
     <link href="../static/css/styles.css" rel="stylesheet"
     	th:href="@{/css/styles.css}"/>
-    
+
 	</head>
-	
+
 	<body>
 		<!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" 
+        <nav class="navbar navbar-default navbar-static-top" role="navigation"
         	style="margin-bottom: 0;">
-            <div class="navbar-header col-sm-12" style="margin-bottom: 0;">                     
+            <div class="navbar-header col-sm-12" style="margin-bottom: 0;">
                 <a class="navbar-brand" href="#">
-                	<img  alt="EMC logo" src="../static/images/EMCLogo-header.png" 
-                		th:src="@{/images/EMCLogo-header.png}" class="img-responsive" />  
-				</a>  
-			</div>                       
+                	<img  alt="EMC logo" src="../static/images/EMCLogo-header.png"
+                		th:src="@{/images/EMCLogo-header.png}" class="img-responsive" />
+				</a>
+			</div>
         </nav>
-        
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-xs-3 col-xs-offset-4" style="margin-top: 5%;">
 					<h1 th:text="#{server.down.page.title}"></h1>
-					
+
 					<p>
-						iCAT is not reachable. Please, try 
-						<a href="/emc-metalnx-web/logout/">logging back in</a> again or contact your 
+						iCAT is not reachable. Please, try
+						<a href="/emc-metalnx-web/logout/">logging back in</a> again or contact your
 						system administrator.
-					</p>			
+					</p>
 				</div> <!-- End row  -->
 			</div> <!-- End row  -->
 		</div> <!-- End container-fluid  -->
 	</body>
-	
+
 </html>

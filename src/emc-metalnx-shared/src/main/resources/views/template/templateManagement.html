@@ -37,22 +37,22 @@
 				  	<b><span th:if="${ templateAddedSuccessfully }" th:text="${ templateAddedSuccessfully }" class="text-center clear"></span></b>
 				  	<b><span th:if="${ templateModifiedSuccessfully }" th:text="${ templateModifiedSuccessfully }" class="text-center clear"></span></b>
 				  	<b><span th:if="${ templateRemovedSuccessfully }" class="text-center clear">Template(s)</span></b>
-				  	
+
 					<span th:if="${ templateAddedSuccessfully }" th:text="#{ confirmation.add.successfully }" class="text-center clear"></span>
 					<span th:if="${ templateModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }" class="text-center clear"></span>
 					<span th:if="${ templateRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }" class="text-center clear"></span>
 				</div>
-				
+
 				<div th:if="${templateNotModifiedSuccessfully}">
 					<div class="alert alert-danger alert-dismissible text-center" role="alert" >
 						<button type="button" class="close" data-dismiss="alert">
 					  		<span aria-hidden="true">&times;</span>
 					  		<span class="sr-only">Close</span>
 					  	</button>
-						<span>Sorry. The template could not be modified.</span>
+						<span th:text="#{template.management.not.modified}"></span>
 					</div>
 				</div>
-				
+
 				<div class="alert alert-success alert-dismissible text-center hideElement" role="alert" id="importSuccessful">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -61,7 +61,7 @@
 				  	<b><span th:text="#{ templates.metadata.success.import.label }" class="text-center"></span></b>
 					<span th:text="#{ templates.metadata.success.import.message }"></span>
 				</div>
-				
+
 				<div class="alert alert-warning alert-dismissible text-center hideElement" role="alert" id="partialImportWarning">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -70,7 +70,7 @@
 				  	<b><span th:text="#{ templates.metadata.partial.import.label }" class="text-center"></span></b>
 					<span th:text="#{ templates.metadata.partial.import.message }"></span>
 				</div>
-				
+
 				<div class="alert alert-danger alert-dismissible text-center hideElement" role="alert" id="importError">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
@@ -79,7 +79,7 @@
 				  	<b><span th:text="#{ templates.metadata.error.import.label }" class="text-center"></span></b>
 					<span th:text="#{ templates.metadata.error.import.message }"></span>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="btn-group pull-right btn-templates">
@@ -103,7 +103,7 @@
 
 				<!-- Current Templates Table -->
 				<div id="templateListAsync"></div>
-				
+
 				<!-- Upload Modal -->
 				<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -114,8 +114,8 @@
 								</button>
 								<h4 class="modal-title" th:text="#{upload.label}"></h4>
 							</div>
-							<div class="modal-body">	
-							
+							<div class="modal-body">
+
 								<div class="hideElement" id="uploadMinMessage">
 									<div class="alert alert-warning alert-dismissible text-center" role="alert">
 									  	<button type="button" class="close" data-dismiss="alert">
@@ -125,11 +125,11 @@
 									  	<span>Select at least one file</span>
 									</div>
 								</div>
-							
-								<!-- Form submitted as soon as the user selects all files to be uploaded -->			
-								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >	
+
+								<!-- Form submitted as soon as the user selects all files to be uploaded -->
+								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
 									<div class="form-group">
-										<span>Select files for upload &nbsp;</span>	
+										<span>Select files for upload &nbsp;</span>
 										<button type="button" class="btn btn-primary" id="templateBrowseButton">
 											<span th:text="#{browse.label}"></span>
 										</button>
@@ -139,7 +139,7 @@
 									<div class="well hideElement" id="fileListDiv">
 										<div id="filesList"></div>
 									</div>
-									
+
 									<div id="uploadControlOptions" class="hideElement">
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
@@ -151,7 +151,7 @@
 												<input type="text" class="form-control hideElement " name="prefix" id="prefixInput" />
 											</div>
 										</div>
-	
+
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
 												<label>
@@ -163,10 +163,10 @@
 											</div>
 										</div>
 									</div>
-									
+
 								</form>
-								
-								
+
+
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}">
@@ -191,7 +191,7 @@
 				   		});
 				    });
 					var files;
-				
+
 					$(function() {
 						function populateTemplateTableDiv(data) {
 							$("#templateListAsync").html(data);
@@ -207,15 +207,15 @@
 
 						// When the user arrives to this page
 						loadTemplateResults();
-						
+
 						$("#templateBrowseButton").click(function(){
 							$("input[name='file']").click();
 						});
-						
+
 						$("input[name='file']").change(function () {
 				        	files = $("input[name='file']").prop("files");
 							$('#fileListDiv').show();
-				        	
+
 				        	$.each(files, function(index, file){
 				        		$("#filesList").append(
 				        			'<p>' +
@@ -223,23 +223,23 @@
 				        			'</p>'
 				        		);
 				        	});
-				        	
+
 				        	$('#uploadControlOptions').show();
 						});
-						
+
 						$("#templateUploadButton").click(function(){
 				        	if($("input[name='file']").prop("files").length == 0 ){
 				        		$('#uploadMinMessage').show();
 				        		return;
 				        	}
-				        	
+
 				        	var formData = new FormData();
 				        	$.each(files, function(index, file){
 				        		formData.append('file', file);
 				        	});
 				        	formData.append('prefix', $("#prefixInput").val());
 				        	formData.append('suffix', $("#suffixInput").val());
-				        	
+
 				        	$.ajax({
 				        		url:'/emc-metalnx-web/templates/import/',
 				        		type:'POST',
@@ -277,7 +277,7 @@
 								}
 				        	});
 						});
-						
+
 						$('#uploadModal').on('hidden.bs.modal', function(){
 							$('#uploadForm').each(function(){
 								this.reset();
@@ -288,27 +288,27 @@
 							$("#suffixInput").hide();
 							$("#prefixInput").hide();
 						});
-						
+
 						$("#addPrefixCheckbox").change(function () {
 				        	if($(this).is(":checked")) {
 				                $("#prefixInput").show();
 				            }
 				        	else {
-				                $("#prefixInput").hide();	        		
+				                $("#prefixInput").hide();
 				        	}
 						});
-						
+
 						$("#addSuffixCheckbox").change(function () {
 				        	if($(this).is(":checked")) {
 				                $("#suffixInput").show();
 				            }
 				        	else {
-				                $("#suffixInput").hide();	        		
+				                $("#suffixInput").hide();
 				        	}
 						});
-					
+
 					});
-					
+
 				</script>
 
 			</div>
@@ -320,4 +320,3 @@
 </body>
 
 </html>
-

@@ -60,9 +60,7 @@
 	  		<span aria-hidden="true">&times;</span>
 	  		<span class="sr-only">Close</span>
 	  	</button>
-	  	<span>
-			Download failed. Please, check if you have permissions to perform such operation.
-	  	</span>
+	  	<span th:text="#{collection.browser.download.fail}"></span>
 	</div>
 </div>
 
@@ -73,8 +71,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span> Upload failed. Please, check if you have permissions to
-			perform such operation. </span>
+		<span th:text="#{collection.browser.upload.fail}"></span>
 	</div>
 </div>
 
@@ -87,8 +84,7 @@
 		</button>
 		<span th:if="${fileUploaded != null}"
 			th:text="|The file ${fileUploaded} was successfully uploaded.|"></span>
-		<span th:unless="${fileUploaded != null}">The selected files
-			were successfully uploaded.</span>
+		<span th:unless="${fileUploaded != null}" th:text="#{collection.browser.upload.success}"></span>
 	</div>
 </div>
 
@@ -114,7 +110,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be moved: </span> <b
+		<span th:text="#{collection.browser.item.not.moved}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedMoves), '[', ''), ']', '')}"></b>
 	</div>
 </div>
@@ -140,7 +136,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be copied: </span> <b
+		<span th:text="#{collection.browser.item.not.copied}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedCopies), '[', ''), ']', '')}"></b>
 	</div>
 </div>
@@ -155,8 +151,7 @@
 		</button>
 		<span th:if="${fileDeleted != null}"
 			th:text="|The file ${fileDeleted} was successfully deleted.|"></span>
-		<span th:unless="${fileDeleted != null}">The selected files
-			were successfully deleted.</span>
+		<span th:unless="${fileDeleted != null}" th:text="#{collection.browser.files.deleted.success}"></span>
 	</div>
 </div>
 
@@ -167,7 +162,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be deleted: </span> <b
+		<span th:text="#{collection.browser.files.deleted.fail}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedDeletions), '[', ''), ']', '')}"></b>
 	</div>
 </div>
