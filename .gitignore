@@ -14,3 +14,4 @@ target/
 .dbeaver*
 test*.properties
 Scripts/
+/.metadata/

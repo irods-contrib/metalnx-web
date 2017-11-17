@@ -22,8 +22,7 @@ import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
-@Deprecated
-@Ignore
+
 public class ITHealthCheckTest {
 	private static final Logger logger = LoggerFactory.getLogger(ITHealthCheckTest.class);
 	private static WebDriver driver = null;
