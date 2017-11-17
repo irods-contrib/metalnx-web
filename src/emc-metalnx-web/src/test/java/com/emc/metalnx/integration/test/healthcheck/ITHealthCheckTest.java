@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,6 +22,8 @@ import com.emc.metalnx.test.generic.UiTestUtilities;
 
 import junit.framework.Assert;
 
+@Deprecated
+@Ignore
 public class ITHealthCheckTest {
 	private static final Logger logger = LoggerFactory.getLogger(ITHealthCheckTest.class);
 	private static WebDriver driver = null;
@@ -156,6 +159,7 @@ public class ITHealthCheckTest {
 		Assert.assertEquals(UiTestUtilities.PUBLIC_HDR, pageHeader);
 	}
 	
+	@Ignore
 	@Test
 	public void testGotoTrash() {
 		String pageHeader = HealthCheckUtils.getPageHeader(driver, wait, UiTestUtilities.TRASH_URL);

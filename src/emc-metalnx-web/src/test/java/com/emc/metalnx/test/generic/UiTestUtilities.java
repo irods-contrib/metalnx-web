@@ -185,8 +185,8 @@ public class UiTestUtilities {
 		}
 
 		getDriver().get(LOGOUT_URL);
-		getDriver().get(LOGIN_URL);
-		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
+		//getDriver().get(LOGIN_URL);
+		//new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsernameLogin")));
 		
 	}
 

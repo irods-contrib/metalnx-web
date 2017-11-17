@@ -85,7 +85,6 @@ public class ITLoginTest {
 	@Test
 	public void testValidUsernameAndPasswordForLogin() throws Exception {
 		logger.info("Testing valid username and password for login");
-
 		UiTestUtilities.login(UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_USER_KEY),
 				UiTestUtilities.testingProperties.getProperty(TestingPropertiesHelper.IRODS_PASSWORD_KEY));
 
