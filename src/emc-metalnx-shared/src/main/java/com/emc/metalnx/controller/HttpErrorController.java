@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -27,9 +29,9 @@ import org.springframework.web.context.WebApplicationContext;
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/httpError")
-public class HttpErrorControler {
+public class HttpErrorController {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpErrorControler.class);
+	private static final Logger logger = LoggerFactory.getLogger(HttpErrorController.class);
 
 	/**
 	 * Responds the error 404
@@ -64,8 +66,9 @@ public class HttpErrorControler {
 	 * @return the error 500 custom page
 	 */
 	@RequestMapping(value = "/500")
-	public String show500CustomizedPage(final Model model) {
+	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
 		logger.error("500 - Internal Server Error");
+		logger.info("httpRequest:{}", httpRequest);
 
 		return "httpErrors/500";
 	}
