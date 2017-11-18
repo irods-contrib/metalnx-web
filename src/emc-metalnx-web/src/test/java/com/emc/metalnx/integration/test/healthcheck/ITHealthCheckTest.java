@@ -47,17 +47,18 @@ public class ITHealthCheckTest {
 		UiTestUtilities.init();
 		driver = UiTestUtilities.getDriver();
 		wait = new WebDriverWait(driver, 5);
+		UiTestUtilities.login();
 	}
 
 	@Before
 	public void setUp() {
-		UiTestUtilities.login();
+		//UiTestUtilities.login();
 
 	}
 
 	@After
 	public void tearDown() {
-		UiTestUtilities.logout();
+		//UiTestUtilities.logout();
 
 	}
 
@@ -68,6 +69,7 @@ public class ITHealthCheckTest {
 			driver = null;
 			UiTestUtilities.setDriver(null);
 			irodsFileSystem.closeAndEatExceptions();
+			UiTestUtilities.logout();
 		}
 	}
 	
