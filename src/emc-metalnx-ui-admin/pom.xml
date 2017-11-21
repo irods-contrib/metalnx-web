@@ -64,8 +64,6 @@
 							</execution>
 						</executions>
 					</plugin>
-
-					
 				</plugins>
 			</build>
 		</profile>
@@ -81,7 +79,23 @@
 			<build>
 				<plugins>
 
-					<!-- define your plugins here -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<configuration>
+									<tasks>
+										<copy file="${metalnx.custom.template}"
+											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 
 				</plugins>
 			</build>
