@@ -85,4 +85,4 @@ The current Selenium tests have been refactored to start with basic health check
 
 #### Fix 500 errors clicking on zone or home when no permissions
 
-issue2 branch WIP
+Updated Jargon and controller code to gracefully handle no permission errors with a helpful message and a return to the previous directory view
