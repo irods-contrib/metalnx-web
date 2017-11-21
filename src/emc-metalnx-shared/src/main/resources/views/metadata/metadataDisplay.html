@@ -79,22 +79,21 @@
 									<form class="propertiesSearchForm col-xs-12">
 										<div class="propertiesSearchRow ">
 											<select class="propertiesAttr form-control propertiesSearchField" name="attribute" placeholder="Attribute">
-												<option value="FILE_NAME">Name</option>
-								                <option value="FILE_PATH">Path</option>
-								                <option value="RESC_NAME">Resource Name</option>
-								                <option value="OWNER_NAME">Owner</option>
-								                <option value="CREATION_DATE">Creation Date</option>
-								                <option value="MODIFICATION_DATE">Modification Date</option>
-								                <option value="SIZE">Size In Bytes</option>
-								                <option value="REPLICA_NUMBER">Replica Number</option>
-								                <option value="CHECKSUM">Checksum</option>
-								                <option value="COMMENT">Comment</option>
+												<option value="FILE_NAME" th:text="#{text.file.name}">File Name</option>
+								                <option value="FILE_PATH" th:text="#{text.path}">Path</option>
+								                <option value="RESC_NAME" th:text="#{text.resource.name}">Resource Name</option>
+								                <option value="OWNER_NAME" th:text="#{text.owner.name}">Owner</option>
+								                <option value="CREATION_DATE" th:text="#{text.creation.date}">Creation Date</option>
+								                <option value="MODIFICATION_DATE" th:text="#{text.modification.date}">Modification Date</option>
+								                <option value="SIZE" th:text="#{text.size}">Size In Bytes</option>
+								                <option value="REPLICA_NUMBER" th:text="#{text.replica.number}">Replica Number</option>
+								                <option value="CHECKSUM" th:text="#{collections.management.checksum.label}">Checksum</option>
 											</select>
 											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator">
-												<option selected="" value="EQUAL">Is (Equals)</option>
-												<option value="NOT_EQUAL">Is Not (Not Equals)</option>
-												<option value="LIKE">Contains</option>
-												<option value="NOT_LIKE">Does Not Contain</option>
+												<option selected="" value="EQUAL" th:text="#{text.is.equals}">Is (Equals)</option>
+												<option value="NOT_EQUAL" th:text="#{text.is.not.equals}">Is Not (Not Equals)</option>
+												<option value="LIKE" th:text="#{text.contains}">Contains</option>
+												<option value="NOT_LIKE" th:text="#{text.not.contains}">Does Not Contain</option>
 											</select>
 											<input type="text" class="propertiesVal form-control propertiesSearchField" name="value" placeholder="Value" />
 											<a role="button" class="btn btn-link btn-xs rmPropertiesSearchRow" ><i class="fa fa-minus-circle"></i></a>
