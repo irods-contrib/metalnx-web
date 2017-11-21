@@ -1,0 +1,14 @@
+.navbar {
+  background:#363633;
+  height:106px;
+  max-height:106px;
+}
+
+#topnav {
+background-color:#5B5C57;
+border-top:6px solid #333333;
+font-family:"Open Sans", sans-serif;
+font-weight:400;
+position:relative;
+z-index:3;
+}

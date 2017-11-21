@@ -118,6 +118,23 @@ database like Derby, that's probably a better plan.
 For selenium automation testing we need to download browser specific drivers refer to http://www.seleniumhq.org/download/
 
 
+### custom metalnx template for master page
+
+Using Thymeleaf templating the various views are fragments that are encapsulated in a template.html file. This is generated on build in the emc-metalnx-ui-admin subproject
+in the pom.xml. By default, if the property 'metalnx.custom.template' is undefined in settings.xml or elsewhere, maven will simply copy the defaultTemplate.html to the template.html
+during the build. If this property is defined, the maven install will copy from the provided source location to the template.html file. This allows site-specific customization
+of the overall template in the case where simple css or image changes are insufficient to achieve a theme.
+
+By default this can be ignored during the build process.
+
+If this behavior is wanted, then the following should be added to settings.xml, probably in the above metalnx.properties
+
+```xml
+<metalnx.custom.template>/Users/conwaymc/Documents/workspace-niehs-dev/metalnx-niehs-plugins/web-assets/opt/irods-ext/metalnx/template.html</metalnx.custom.template>
+
+```
+
+
 ### Generating test properties and running tests
 
 A mvn install will cause these properties files to be generated. Once the irods server

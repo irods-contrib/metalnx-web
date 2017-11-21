@@ -1,18 +1,12 @@
-<!--
-  ~ Copyright (c) 2015-2017, Dell EMC
-  ~
-  ~  Licensed under the Apache License, Version 2.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
-  ~
-  ~  http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
-  -->
+<?xml version="1.0" encoding="UTF-8"?><!-- ~ Copyright (c) 2015-2017, Dell 
+	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ 
+	you may not use this file except in compliance with the License. ~ You may 
+	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
+	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
+	License for the specific language governing permissions and ~ limitations 
+	under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -36,58 +30,93 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
-		
+
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>default-metalnx-template</id>
+
+			<activation>
+				<property>
+					<name>!metalnx.custom.template</name>
+				</property>
+
+			</activation>
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<configuration>
+									<tasks>
+										<copy
+											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
+											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>custom-metalnx-template</id>
+
+			<activation>
+				<property>
+					<name>metalnx.custom.template</name>
+				</property>
+
+			</activation>
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<configuration>
+									<tasks>
+										<copy file="${metalnx.custom.template}"
+											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<finalName>emc-metalnx-ui-admin</finalName>
 
 		<resources>
-	        <resource>
-	            <directory>src/main/resources</directory>
-	            <includes>
-	            	<include>static/**</include>
-	            	<include>**/*.html</include>
-	                <include>**/*.xml</include>
-	                <include>**/*.properties</include>
-	            </includes>
-	        </resource>
-	    </resources>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-antrun-plugin
-										</artifactId>
-										<versionRange>
-											[1.3,)
-										</versionRange>
-										<goals>
-											<goal>run</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>static/**</include>
+					<include>**/*.html</include>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
 	</build>
 
 </project>
