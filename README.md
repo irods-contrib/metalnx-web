@@ -1,7 +1,7 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
 ## Version: 4.2.1.0-SNAPSHOT
-## Git Tag: niehs/issue52
+## Git Tag: niehs/development
 ## Date: Oct 27, 2017
 
 
