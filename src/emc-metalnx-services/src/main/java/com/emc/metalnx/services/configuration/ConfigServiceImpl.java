@@ -16,7 +16,10 @@
 
 package com.emc.metalnx.services.configuration;
 
-import com.emc.metalnx.services.interfaces.ConfigService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -24,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
  * Class that will load all all configurable parameters from *.properties files.
@@ -36,90 +37,120 @@ import java.util.List;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class ConfigServiceImpl implements ConfigService {
 
-    @Value("${msi.api.version}")
-    private String msiAPIVersionSupported;
+	@Value("${msi.api.version}")
+	private String msiAPIVersionSupported;
 
-    @Value("${msi.metalnx.list}")
-    private String mlxMSIsExpected;
+	@Value("${msi.metalnx.list}")
+	private String mlxMSIsExpected;
 
-    @Value("${msi.irods.list}")
-    private String irods41MSIsExpected;
+	@Value("${msi.irods.list}")
+	private String irods41MSIsExpected;
 
-    @Value("${msi.irods.42.list}")
-    private String irods42MSIsExpected;
+	@Value("${msi.irods.42.list}")
+	private String irods42MSIsExpected;
 
-    @Value("${msi.other.list}")
-    private String otherMSIsExpected;
+	@Value("${msi.other.list}")
+	private String otherMSIsExpected;
 
-    @Value("${irods.host}")
-    private String irodsHost;
+	@Value("${irods.host}")
+	private String irodsHost;
 
-    @Value("${irods.port}")
-    private String irodsPort;
+	@Value("${irods.port}")
+	private String irodsPort;
 
-    @Value("${irods.zoneName}")
-    private String irodsZone;
+	@Value("${irods.zoneName}")
+	private String irodsZone;
 
-    @Value("${jobs.irods.username}")
-    private String irodsJobUser;
+	@Value("${jobs.irods.username}")
+	private String irodsJobUser;
 
-    @Value("${jobs.irods.password}")
-    private String irodsJobPassword;
+	@Value("${jobs.irods.password}")
+	private String irodsJobPassword;
 
-    @Value("${jobs.irods.auth.scheme}")
-    private String irodsAuthScheme;
+	@Value("${jobs.irods.auth.scheme}")
+	private String irodsAuthScheme;
 
-    @Value("${populate.msi.enabled}")
-    private boolean populateMsiEnabled;
+	@Value("${populate.msi.enabled}")
+	private boolean populateMsiEnabled;
 
-    public String getMsiAPIVersionSupported() {
-        if (msiAPIVersionSupported == null) return "";
-        return msiAPIVersionSupported;
-    }
+	@Value("${metalnx.enable.tickets}")
+	private boolean ticketsEnabled;
 
-    public List<String> getMlxMSIsExpected() {
-        if (mlxMSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(mlxMSIsExpected.split(","));
-    }
+	@Override
+	public String getMsiAPIVersionSupported() {
+		if (msiAPIVersionSupported == null)
+			return "";
+		return msiAPIVersionSupported;
+	}
 
-    public List<String> getIrods41MSIsExpected() {
-        if (irods41MSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(irods41MSIsExpected.split(","));
-    }
+	@Override
+	public List<String> getMlxMSIsExpected() {
+		if (mlxMSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(mlxMSIsExpected.split(","));
+	}
 
-    public List<String> getIrods42MSIsExpected() {
-        if (irods42MSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(irods42MSIsExpected.split(","));
-    }
+	@Override
+	public List<String> getIrods41MSIsExpected() {
+		if (irods41MSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(irods41MSIsExpected.split(","));
+	}
 
-    public List<String> getOtherMSIsExpected() {
-        if (otherMSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(otherMSIsExpected.split(","));
-    }
+	@Override
+	public List<String> getIrods42MSIsExpected() {
+		if (irods42MSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(irods42MSIsExpected.split(","));
+	}
 
-    public String getIrodsHost() {
-        return irodsHost;
-    }
+	@Override
+	public List<String> getOtherMSIsExpected() {
+		if (otherMSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(otherMSIsExpected.split(","));
+	}
 
-    public String getIrodsPort() {
-        return irodsPort;
-    }
+	@Override
+	public String getIrodsHost() {
+		return irodsHost;
+	}
 
-    public String getIrodsZone() {
-        return irodsZone;
-    }
+	@Override
+	public String getIrodsPort() {
+		return irodsPort;
+	}
 
-    public String getIrodsJobUser() {
-        return irodsJobUser;
-    }
+	@Override
+	public String getIrodsZone() {
+		return irodsZone;
+	}
 
-    public String getIrodsJobPassword() {
-        return irodsJobPassword;
-    }
+	@Override
+	public String getIrodsJobUser() {
+		return irodsJobUser;
+	}
 
-    public String getIrodsAuthScheme() {
-        return irodsAuthScheme;
-    }
+	@Override
+	public String getIrodsJobPassword() {
+		return irodsJobPassword;
+	}
 
-    public boolean isPopulateMsiEnabled() { return populateMsiEnabled; }
+	@Override
+	public String getIrodsAuthScheme() {
+		return irodsAuthScheme;
+	}
+
+	@Override
+	public boolean isPopulateMsiEnabled() {
+		return populateMsiEnabled;
+	}
+
+	public boolean isTicketsEnabled() {
+		return ticketsEnabled;
+	}
+
+	public void setTicketsEnabled(boolean ticketsEnabled) {
+		this.ticketsEnabled = ticketsEnabled;
+	}
 }
