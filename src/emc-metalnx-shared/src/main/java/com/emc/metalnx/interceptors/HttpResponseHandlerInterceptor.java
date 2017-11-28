@@ -29,6 +29,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.emc.metalnx.modelattribute.enums.URLMap;
 import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.utils.EmcMetalnxVersion;
 
 /**
@@ -39,6 +40,8 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
 	private IRODSAccessObjectFactory irodsAccessObjectFactory;
+	@Autowired
+	private ConfigService configService;
 
 	private UserTokenDetails userTokenDetails;
 	private URLMap urlMap;
@@ -59,6 +62,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
 			modelAndView.getModelMap().addAttribute("urlMap", urlMap);
 			modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
+			modelAndView.getModelMap().addAttribute("globalConfig", configService.getGlobalConfig());
 
 			if (auth instanceof UsernamePasswordAuthenticationToken) {
 				userTokenDetails = (UserTokenDetails) auth.getDetails();
@@ -68,6 +72,22 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
 		// closing sessions to avoid idle agents
 		irodsAccessObjectFactory.closeSessionAndEatExceptions();
+	}
+
+	public IRODSAccessObjectFactory getIrodsAccessObjectFactory() {
+		return irodsAccessObjectFactory;
+	}
+
+	public void setIrodsAccessObjectFactory(IRODSAccessObjectFactory irodsAccessObjectFactory) {
+		this.irodsAccessObjectFactory = irodsAccessObjectFactory;
+	}
+
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 }

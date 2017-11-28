@@ -18,6 +18,8 @@ package com.emc.metalnx.services.interfaces;
 
 import java.util.List;
 
+import com.emc.metalnx.services.configuration.GlobalConfig;
+
 /**
  * Service used to retrieve all configurable parameters from *.properties files.
  */
@@ -93,4 +95,6 @@ public interface ConfigService {
      * @return True, if populate is enabled. False, otherwise.
      */
     boolean isPopulateMsiEnabled();
+
+	GlobalConfig getGlobalConfig();
 }

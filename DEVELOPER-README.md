@@ -105,6 +105,7 @@ In addition, an additional profile for Metalnx is required, like this...
 				<selenium.test.hostname>localhost</selenium.test.hostname>
 				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
 				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
+        <metalnx.enable.tickets>true</metalnx.enable.tickets>
 			</properties>
 		</profile>
 
