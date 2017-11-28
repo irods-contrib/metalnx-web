@@ -31,8 +31,7 @@
 				<property name="basenames">
 					<list>
 				    	<value>file:/opt/irods-ext/metalnx/i18n/messages</value>
-				    	<value>file:/opt/irods-ext/metalnx/i18n-users/messages</value>
-				    </list>
+				  </list>
 				</property>
 			</bean>
 

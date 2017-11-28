@@ -46,6 +46,7 @@ import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
+import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry.ObjectType;
 import org.irods.jargon.core.query.JargonQueryException;
 import org.irods.jargon.core.query.SpecificQuery;
 import org.irods.jargon.core.query.SpecificQueryResultSet;
@@ -105,7 +106,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 		logger.info("isFileInCollection()");
 		if (filename == null || collectionPath == null)
 			return false;
@@ -347,7 +348,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public List<DataGridCollectionAndDataObject> getSubCollectionsAndDataObjectsUnderPath(String parent)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 
 		logger.info("getSubCollectionsAndDataObjectsUnderPath()");
 
@@ -365,11 +366,12 @@ public class CollectionServiceImpl implements CollectionService {
 
 		} catch (FileNotFoundException e) {
 			logger.error("Could not locate file: ", e);
+			throw e;
 		} catch (JargonException e) {
 			logger.error("Error: ", e);
+			throw e;
 		}
 
-		return dataGridCollectionAndDataObjects;
 	}
 
 	@Override
@@ -474,7 +476,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 		try {
 			CollectionAndDataObjectListingEntry entry = objectsAO
-					.getCollectionAndDataObjectListingEntryAtGivenAbsolutePath(path);
+					.getCollectionAndDataObjectListingEntryAtGivenAbsolutePathWithHeuristicPathGuessing(path);
 			dataGridCollectionAndDataObject = this.mapListingEntryToDataGridCollectionAndDataObject(entry);
 			if (entry.isDataObject()) {
 				DataObject dobj = dataObjectAO.findByAbsolutePath(path);
@@ -652,7 +654,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public Set<String> listWritePermissionsForPathAndGroupRecursive(String path, String groupName)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, JargonException {
 
 		logger.info("listWritePermissionsForPathAndGroupRecursive()");
 
@@ -846,7 +848,7 @@ public class CollectionServiceImpl implements CollectionService {
 		dgObj.setCreatedAt(entry.getCreatedAt());
 		dgObj.setModifiedAt(entry.getModifiedAt());
 		dgObj.setOwner(entry.getOwnerName());
-
+		dgObj.setProxy(entry.getObjectType() == ObjectType.COLLECTION_HEURISTIC_STANDIN);
 		return dgObj;
 	}
 

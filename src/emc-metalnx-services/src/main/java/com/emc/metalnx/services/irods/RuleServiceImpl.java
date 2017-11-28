@@ -16,13 +16,10 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-import com.emc.metalnx.core.domain.entity.DataGridRule;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
-import com.emc.metalnx.services.interfaces.*;
+import java.util.List;
+import java.util.Map;
+
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.rule.IRODSRuleExecResult;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
@@ -35,185 +32,219 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
-import java.util.Map;
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.DataGridRule;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
+import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.ResourceService;
+import com.emc.metalnx.services.interfaces.RuleService;
 
 @Service("ruleService")
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class RuleServiceImpl implements RuleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RuleServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(RuleServiceImpl.class);
 
-    @Autowired
-    CollectionService cs;
+	@Autowired
+	CollectionService cs;
 
-    @Autowired
-    private IRODSServices is;
+	@Autowired
+	private IRODSServices is;
 
-    @Autowired
-    private ResourceService rs;
+	@Autowired
+	private ResourceService rs;
 
-    @Autowired
-    private ConfigService configService;
+	@Autowired
+	private ConfigService configService;
 
-    public void execReplDataObjRule(String destResc, String path, boolean inAdminMode) throws DataGridRuleException, DataGridConnectionRefusedException {
-        logger.info("Get Replication Rule called");
+	@Override
+	public void execReplDataObjRule(String destResc, String path, boolean inAdminMode)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		logger.info("Get Replication Rule called");
 
-        String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
+		String flags = String.format("destRescName=%s%s", destResc, inAdminMode ? "++++irodsAdmin=" : "");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.REPL_DATA_OBJ_RULE, dgResc.getHost());
-        rule.setInputRuleParams(path, flags, "null");
+		DataGridResource dgResc = rs.find(destResc);
+		DataGridRule rule = new DataGridRule(DataGridRule.REPL_DATA_OBJ_RULE, dgResc.getHost());
+		rule.setInputRuleParams(path, flags, "null");
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    public void execPopulateMetadataRule(String host, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!configService.isPopulateMsiEnabled()) return;
+	@Override
+	public void execPopulateMetadataRule(String host, String objPath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (!configService.isPopulateMsiEnabled())
+			return;
 
-        logger.info("Get Populate Rule called");
+		logger.info("Get Populate Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, host);
-        rule.setInputRuleParams(objPath);
+		DataGridRule rule = new DataGridRule(DataGridRule.POPULATE_RULE, host);
+		rule.setInputRuleParams(objPath);
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    public void execImageRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!DataGridCoreUtils.isImageFile(objPath)) return;
+	@Override
+	public void execImageRule(String host, String objPath, String filePath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (!DataGridCoreUtils.isImageFile(objPath))
+			return;
 
-        logger.info("Get Image Rule called");
+		logger.info("Get Image Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, host);
-        rule.setInputRuleParams(objPath, filePath);
+		DataGridRule rule = new DataGridRule(DataGridRule.JPG_RULE, host);
+		rule.setInputRuleParams(objPath, filePath);
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    public void execVCFMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!DataGridCoreUtils.isVCFFile(objPath)) return;
+	@Override
+	public void execVCFMetadataRule(String host, String objPath, String filePath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (!DataGridCoreUtils.isVCFFile(objPath))
+			return;
 
-        DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, host);
-        rule.setInputRuleParams(objPath, filePath);
+		DataGridRule rule = new DataGridRule(DataGridRule.VCF_RULE, host);
+		rule.setInputRuleParams(objPath, filePath);
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    public void execBamCramMetadataRule(String host, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!DataGridCoreUtils.isBamOrCram(objPath)) return;
+	@Override
+	public void execBamCramMetadataRule(String host, String objPath, String filePath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (!DataGridCoreUtils.isBamOrCram(objPath))
+			return;
 
-        logger.info("Get BAM/CRAM Rule called");
+		logger.info("Get BAM/CRAM Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, host);
-        rule.setInputRuleParams(objPath, filePath);
+		DataGridRule rule = new DataGridRule(DataGridRule.BAM_CRAM_RULE, host);
+		rule.setInputRuleParams(objPath, filePath);
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    public void execManifestFileRule(String host, String targetPath, String objPath, String filePath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath)) return;
+	@Override
+	public void execManifestFileRule(String host, String targetPath, String objPath, String filePath)
+			throws DataGridRuleException, DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+		if (!DataGridCoreUtils.isPrideXMLManifestFile(objPath))
+			return;
 
-        logger.info("Get Manifest Rule called");
+		logger.info("Get Manifest Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, host);
+		DataGridRule rule = new DataGridRule(DataGridRule.XML_MANIFEST_RULE, host);
 
-        List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjectsUnderPath(targetPath);
+		List<DataGridCollectionAndDataObject> objs = cs.getSubCollectionsAndDataObjectsUnderPath(targetPath);
 
-        for (DataGridCollectionAndDataObject obj : objs) {
-            logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, obj.getPath());
-            rule.setInputRuleParams(obj.getPath(), filePath, filePath);
-            executeRule(rule.toString());
-        }
-    }
+		for (DataGridCollectionAndDataObject obj : objs) {
+			logger.info("Extracting metadata from [{}] and applying on [{}]", filePath, obj.getPath());
+			rule.setInputRuleParams(obj.getPath(), filePath, filePath);
+			executeRule(rule.toString());
+		}
+	}
 
-    @Override
-    public List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException {
-        logger.info("Get Microservices Rule called");
+	@Override
+	public List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException {
+		logger.info("Get Microservices Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.GET_MSIS_RULE, host);
-        rule.setOutputRuleParams("msis");
+		DataGridRule rule = new DataGridRule(DataGridRule.GET_MSIS_RULE, host);
+		rule.setOutputRuleParams("msis");
 
-        logger.debug(rule.toString());
+		logger.debug(rule.toString());
 
-        return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
-    }
+		return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
+	}
 
-    public String execGetVersionRule(String host) throws DataGridRuleException, DataGridConnectionRefusedException {
-        logger.info("Get Version Rule called");
+	@Override
+	public String execGetVersionRule(String host) throws DataGridRuleException, DataGridConnectionRefusedException {
+		logger.info("Get Version Rule called");
 
-        DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, host);
-        rule.setOutputRuleParams("version");
+		DataGridRule rule = new DataGridRule(DataGridRule.GET_VERSION_RULE, host);
+		rule.setOutputRuleParams("version");
 
-        logger.debug(rule.toString());
+		logger.debug(rule.toString());
 
-        return (String) executeRule(rule.toString()).get("*version").getResultObject();
-    }
+		return (String) executeRule(rule.toString()).get("*version").getResultObject();
+	}
 
-    public void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (!DataGridCoreUtils.isIllumina(objPath)) return;
+	@Override
+	public void execIlluminaMetadataRule(DataGridResource dgResc, String targetPath, String objPath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (!DataGridCoreUtils.isIllumina(objPath))
+			return;
 
-        logger.info("Illumina Rule called");
+		logger.info("Illumina Rule called");
 
-        String destResc = dgResc.getName();
-        String host = dgResc.getHost();
-        boolean declareOutputParams = false;
+		String destResc = dgResc.getName();
+		String host = dgResc.getHost();
+		boolean declareOutputParams = false;
 
-        DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, host, declareOutputParams);
-        tarRule.setInputRuleParams(objPath, targetPath, destResc);
-        tarRule.setOutputRuleParams("Status");
+		DataGridRule tarRule = new DataGridRule(DataGridRule.TAR_RULE, host, declareOutputParams);
+		tarRule.setInputRuleParams(objPath, targetPath, destResc);
+		tarRule.setOutputRuleParams("Status");
 
-        DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, host, declareOutputParams);
-        illuminaRule.setInputRuleParams(objPath, destResc);
+		DataGridRule illuminaRule = new DataGridRule(DataGridRule.ILLUMINA_RULE, host, declareOutputParams);
+		illuminaRule.setInputRuleParams(objPath, destResc);
 
-        executeRule(tarRule.toString());
-        executeRule(illuminaRule.toString());
-    }
+		executeRule(tarRule.toString());
+		executeRule(illuminaRule.toString());
+	}
 
-    @Override
-    public void execEmptyTrashRule(String destResc, String objPath, boolean inAdminMode) throws DataGridConnectionRefusedException, DataGridRuleException {
-        logger.info("Empty Trash Rule called");
+	@Override
+	public void execEmptyTrashRule(String destResc, String objPath, boolean inAdminMode)
+			throws DataGridConnectionRefusedException, DataGridRuleException {
+		logger.info("Empty Trash Rule called");
 
-        DataGridResource dgResc = rs.find(destResc);
-        DataGridRule rule = new DataGridRule(DataGridRule.EMPTY_TRASH_RULE, dgResc.getHost(), false);
+		DataGridResource dgResc = rs.find(destResc);
+		DataGridRule rule = new DataGridRule(DataGridRule.EMPTY_TRASH_RULE, dgResc.getHost(), false);
 
-        String flag = inAdminMode ? "irodsAdminRmTrash=" : "irodsRmTrash=";
+		String flag = inAdminMode ? "irodsAdminRmTrash=" : "irodsRmTrash=";
 
-        rule.setInputRuleParams(objPath, flag);
-        rule.setOutputRuleParams("out");
+		rule.setInputRuleParams(objPath, flag);
+		rule.setOutputRuleParams("out");
 
-        executeRule(rule.toString());
-    }
+		executeRule(rule.toString());
+	}
 
-    @Override
-    public void execDeploymentRule(String host, String ruleName, String ruleVaultPath)
-            throws DataGridRuleException, DataGridConnectionRefusedException {
-        logger.info("Deploy Rule called");
+	@Override
+	public void execDeploymentRule(String host, String ruleName, String ruleVaultPath)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		logger.info("Deploy Rule called");
 
-        if (ruleName == null || ruleName.isEmpty() || ruleVaultPath == null || ruleVaultPath.isEmpty() ||
-                !is.isAtLeastIrods420()) return;
+		if (ruleName == null || ruleName.isEmpty() || ruleVaultPath == null || ruleVaultPath.isEmpty()
+				|| !is.isAtLeastIrods420())
+			return;
 
-        DataGridRule rule = new DataGridRule(DataGridRule.DEPLOYMENT_RULE, host, false);
+		DataGridRule rule = new DataGridRule(DataGridRule.DEPLOYMENT_RULE, host, false);
 
-        rule.setInputRuleParams(ruleName, ruleVaultPath);
-        executeRule(rule.toString());
-    }
+		rule.setInputRuleParams(ruleName, ruleVaultPath);
+		executeRule(rule.toString());
+	}
 
-    @Override
-    public Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule) throws DataGridRuleException, DataGridConnectionRefusedException {
-        if (rule == null || rule.isEmpty()) return null;
+	@Override
+	public Map<String, IRODSRuleExecResultOutputParameter> executeRule(String rule)
+			throws DataGridRuleException, DataGridConnectionRefusedException {
+		if (rule == null || rule.isEmpty())
+			return null;
 
-        Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap;
+		Map<String, IRODSRuleExecResultOutputParameter> ruleResultMap;
 
-        try {
-            IRODSRuleExecResult result = is.getRuleProcessingAO().executeRule(rule);
-            ruleResultMap = result.getOutputParameterResults();
-        } catch (JargonException e) {
-            String error = String.format("Could not execute rule %s: %s", rule, e.getMessage());
-            logger.error(error);
-            throw new DataGridRuleException(error);
-        }
+		try {
+			IRODSRuleExecResult result = is.getRuleProcessingAO().executeRule(rule);
+			ruleResultMap = result.getOutputParameterResults();
+		} catch (JargonException e) {
+			String error = String.format("Could not execute rule %s: %s", rule, e.getMessage());
+			logger.error(error);
+			throw new DataGridRuleException(error);
+		}
 
-        return ruleResultMap;
-    }
+		return ruleResultMap;
+	}
 }

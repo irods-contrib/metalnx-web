@@ -24,15 +24,15 @@
 		<!-- JQuery UI Timepicker CSS -->
 	    <link href="../static/css/jquery-ui-timepicker-addon.css" rel="stylesheet"
 	    	th:href="@{/css/jquery-ui-timepicker-addon.css}"/>
-	
+
 		<!-- jQuery UI Version 1.11.4 -->
     	<script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
 		<!-- jQuery UI Timepicker -->
     	<script src="../static/js/jquery-ui-timepicker-addon.js" th:src="@{/js/jquery-ui-timepicker-addon.js}"></script>
-    	
-    	<title th:text="#{tab.title.search}">EMC Metalnx - Search</title>
+
+    	<title th:text="#{tab.title.search}">Metalnx - Search</title>
 	</head>
-	
+
 	<body>
 		<div layout:fragment="content">
 			<h1 class="page-header pull-left" th:text="#{metadata.search.page.title}"></h1>
@@ -47,18 +47,18 @@
 						<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
 							<div role="tabpanel" class="tab-pane active" id="metadata-search">
 								<div class="">
-									<div class="col-xs-12"><p>Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
+									<div class="col-xs-12" ><p th:text="#{metadata.search.prompt}">Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
 									<form class="metadataSearchForm col-xs-12">
 										<div class="metadataSearchRow ">
 											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0"/>
-											
+
 												<select id="" class="metadataOper metadataSearchField form-control" name="operator">
 													<option selected="" value="EQUAL">Is (Equals)</option>
 													<option value="NOT_EQUAL">Is Not (Not Equals)</option>
 													<option value="LIKE">Contains</option>
 													<option value="NOT_LIKE">Does Not Contain</option>
 												</select>
-											
+
 											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0"/>
                                             <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0"/>
 											<a role="button" class="btn btn-link btn-xs rmMetadataSearchRow" ><i class="fa fa-minus-circle"></i></a>
@@ -75,26 +75,25 @@
 							</div>
 							<div role="tabpanel" class="tab-pane" id="properties-search">
 								<div class="">
-									<div class="col-xs-12"><p>Search for files and collections that <b>match all of the conditions</b> below:</p></div>
+									<div class="col-xs-12"><p th:text="#{metadata.search.prompt}">Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
 									<form class="propertiesSearchForm col-xs-12">
 										<div class="propertiesSearchRow ">
 											<select class="propertiesAttr form-control propertiesSearchField" name="attribute" placeholder="Attribute">
-												<option value="FILE_NAME">Name</option>
-								                <option value="FILE_PATH">Path</option>
-								                <option value="RESC_NAME">Resource Name</option>
-								                <option value="OWNER_NAME">Owner</option>
-								                <option value="CREATION_DATE">Creation Date</option>
-								                <option value="MODIFICATION_DATE">Modification Date</option>
-								                <option value="SIZE">Size In Bytes</option>
-								                <option value="REPLICA_NUMBER">Replica Number</option>
-								                <option value="CHECKSUM">Checksum</option>
-								                <option value="COMMENT">Comment</option>
+												<option value="FILE_NAME" th:text="#{text.file.name}">File Name</option>
+								                <option value="FILE_PATH" th:text="#{text.path}">Path</option>
+								                <option value="RESC_NAME" th:text="#{text.resource.name}">Resource Name</option>
+								                <option value="OWNER_NAME" th:text="#{text.owner.name}">Owner</option>
+								                <option value="CREATION_DATE" th:text="#{text.creation.date}">Creation Date</option>
+								                <option value="MODIFICATION_DATE" th:text="#{text.modification.date}">Modification Date</option>
+								                <option value="SIZE" th:text="#{text.size}">Size In Bytes</option>
+								                <option value="REPLICA_NUMBER" th:text="#{text.replica.number}">Replica Number</option>
+								                <option value="CHECKSUM" th:text="#{collections.management.checksum.label}">Checksum</option>
 											</select>
 											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator">
-												<option selected="" value="EQUAL">Is (Equals)</option>
-												<option value="NOT_EQUAL">Is Not (Not Equals)</option>
-												<option value="LIKE">Contains</option>
-												<option value="NOT_LIKE">Does Not Contain</option>
+												<option selected="" value="EQUAL" th:text="#{text.is.equals}">Is (Equals)</option>
+												<option value="NOT_EQUAL" th:text="#{text.is.not.equals}">Is Not (Not Equals)</option>
+												<option value="LIKE" th:text="#{text.contains}">Contains</option>
+												<option value="NOT_LIKE" th:text="#{text.not.contains}">Does Not Contain</option>
 											</select>
 											<input type="text" class="propertiesVal form-control propertiesSearchField" name="value" placeholder="Value" />
 											<a role="button" class="btn btn-link btn-xs rmPropertiesSearchRow" ><i class="fa fa-minus-circle"></i></a>
@@ -173,14 +172,14 @@
 						$('.metadataSearchRow').last().after(metadataSearchRow);
 						$('.rmMetadataSearchRow').show();
 					});
-					
+
 					//this code adds a new line for for the search criteria in file properties
 					$('body').on('click', '#addPropertiesSearchRow', function(){
 						var propertiesSearchRow = propertiesForm.find('.propertiesSearchRow').clone();
 						$('.propertiesSearchRow').last().after(propertiesSearchRow);
 						$('.rmPropertiesSearchRow').show();
 					});
-					
+
 					//change operator according to attributes values
 					$('body').on('change', '.propertiesAttr', function(){
 						var attr = $(this).val();
@@ -217,7 +216,7 @@
 							);
 						}
 					});
-					
+
 					//after submiting search, the table containing the results is created with datatables
 					$('#submitMetadataSearch').click(function(){
 						var totalSearchCriteriaRows = $(".metadataSearchRow").length;
@@ -236,7 +235,7 @@
 								totalSearchCriteriaRows--;
 							}
 						});
-						
+
 						datatable = $('#treeViewTable').DataTable( {
 			    		    "serverSide": true,
 			    		    "dom": dtPatternForMetadata,
@@ -350,7 +349,7 @@
 				    		'</a>'
 					    );
 					});
-					
+
 					$('#submitPropertiesSearch').click(function(){
 					    if($('#metadataSearchTableResults #treeViewTable').html() != ""){
 							datatable.destroy();
@@ -449,7 +448,7 @@
 			    		} );
 
 					});
-					
+
 					// if jsonMetadataSearch/jsonFilePropertySearch obj is not null, it means that the request came from collections page
 					// and it also means that the user is coming back to the previous search
 					if(jsonMetadataSearchString != null){
@@ -500,7 +499,7 @@
 						}
 						$('#submitPropertiesSearch').click();
 					}
-					
+
 					$('.nav-tabs a').click(function (e) {
 						e.preventDefault();
 						$(this).tab('show');
@@ -513,7 +512,7 @@
 							$('#metadataSearchTableResults #treeViewTable').empty();
 						}
 					});
-					
+
 					$('body').on('click', '.rmMetadataSearchRow', function(){
 						$(this).parents('.metadataSearchRow').remove();
 						if($('.rmMetadataSearchRow').size()==1){
@@ -523,14 +522,14 @@
 							$('#addMetadataSearchRow').show();
 						}
 					});
-					
+
 					$('body').on('click', '.rmPropertiesSearchRow', function(){
 						$(this).parents('.propertiesSearchRow').remove();
 						if($('.rmPropertiesSearchRow').size()==1){
 							$('.rmPropertiesSearchRow').hide();
 						}
 					});
-					
+
 					$('#resetPropertiesSearch').click(function(){
 						$('.propertiesSearchForm').html(propertiesForm.html());
 						$('.rmPropertiesSearchRow').hide();
@@ -539,40 +538,40 @@
 							$('#metadataSearchTableResults #treeViewTable').empty();
 						}
 					});
-					
+
 					$('body').on('keypress', '.metadataSearchForm input[type="text"]', function(e){
 						if (e.which == 13) {
 							e.preventDefault();
 							$('#submitMetadataSearch').click();
 						}
 					});
-					
+
 					$('body').on('keypress', '.propertiesSearchForm input[type="text"]', function(e){
 						if (e.which == 13) {
 							e.preventDefault();
 							$('#submitPropertiesSearch').click();
 						}
 					});
-					
+
 					$('body').on('submit', '.metadataSearchForm', function(e){
 						e.preventDefault();
 						$('#submitMetadataSearch').click();
 					});
-					
+
 					$('body').on('submit', '.propertiesSearchForm', function(e){
 						e.preventDefault();
 						$('#submitPropertiesSearch').click();
 					});
 				});
 				function redirectMetadataToCollections(path){
-					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromMetadataToCollections/", "POST", {path: path}, 
+					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromMetadataToCollections/", "POST", {path: path},
 						function(){
 							window.location = "/emc-metalnx-web/collections/";
 					}, null, null, null);
 				}
-				
+
 				function redirectFilePropertiesToCollections(path){
-					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFilePropertiesToCollections/", "POST", {path: path}, 
+					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFilePropertiesToCollections/", "POST", {path: path},
 						function(){
 							window.location = "/emc-metalnx-web/collections/";
 					}, null, null, null);

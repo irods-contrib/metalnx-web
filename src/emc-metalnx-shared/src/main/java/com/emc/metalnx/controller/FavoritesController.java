@@ -16,12 +16,14 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
-import com.emc.metalnx.services.interfaces.FavoritesService;
-import com.emc.metalnx.services.interfaces.IRODSServices;
-import com.emc.metalnx.services.interfaces.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,137 +35,139 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
+import com.emc.metalnx.services.interfaces.FavoritesService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/favorites")
 public class FavoritesController {
-    @Autowired
-    FavoritesService favoritesService;
+	@Autowired
+	FavoritesService favoritesService;
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	UserService userService;
 
-    @Autowired
-    IRODSServices irodsServices;
+	@Autowired
+	IRODSServices irodsServices;
 
-    private static final String REQUEST_OK = "OK";
-    private static final String REQUEST_ERROR = "ERROR";
+	private static final String REQUEST_OK = "OK";
+	private static final String REQUEST_ERROR = "ERROR";
 
-    private int totalFavorites;
-    private int totalFavoritesFiltered;
+	private int totalFavorites;
+	private int totalFavoritesFiltered;
 
-    private static final Logger logger = LoggerFactory.getLogger(FavoritesController.class);
+	private static final Logger logger = LoggerFactory.getLogger(FavoritesController.class);
 
-    /**
-     * Responds to the list favorites request
-     *
-     * @param model
-     * @return the template with a list of favorite items
-     */
-    @RequestMapping(value = "/")
-    public String listfavorites(Model model) {
-        String loggedUsername = irodsServices.getCurrentUser();
-        String loggedUserZoneName = irodsServices.getCurrentUserZone();
-        DataGridUser user = userService.findByUsernameAndAdditionalInfo(loggedUsername, loggedUserZoneName);
+	/**
+	 * Responds to the list favorites request
+	 *
+	 * @param model
+	 * @return the template with a list of favorite items
+	 */
+	@RequestMapping(value = "/")
+	public String listfavorites(final Model model) {
+		String loggedUsername = irodsServices.getCurrentUser();
+		String loggedUserZoneName = irodsServices.getCurrentUserZone();
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(loggedUsername, loggedUserZoneName);
 
-        List<DataGridUserFavorite> userFavorites = user.getFavoritesSorted();
+		List<DataGridUserFavorite> userFavorites = user.getFavoritesSorted();
 
-        model.addAttribute("userFavorites", userFavorites);
+		model.addAttribute("userFavorites", userFavorites);
 
-        return "favorites/favorites";
-    }
+		return "favorites/favorites";
+	}
 
-    /**
-     * Add a path to the favorites list
-     *
-     * @param path
-     *            path to be added to the favorites
-     */
-    @RequestMapping(value = "/addFavoriteToUser/")
-    @ResponseBody
-    public String addFavoriteToUser(@RequestParam("path") String path) {
-        String zoneName = irodsServices.getCurrentUserZone();
-        String username = irodsServices.getCurrentUser();
+	/**
+	 * Add a path to the favorites list
+	 *
+	 * @param path
+	 *            path to be added to the favorites
+	 */
+	@RequestMapping(value = "/addFavoriteToUser/")
+	@ResponseBody
+	public String addFavoriteToUser(@RequestParam("path") final String path) {
+		String zoneName = irodsServices.getCurrentUserZone();
+		String username = irodsServices.getCurrentUser();
 
-        logger.info("Request for adding a {} favorite from {}", path, username);
-        DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
+		logger.info("Request for adding a {} favorite from {}", path, username);
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
 
-        Set<String> toAdd = new HashSet<String>();
-        toAdd.add(path);
+		Set<String> toAdd = new HashSet<String>();
+		toAdd.add(path);
 
-        boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+		boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
 
-        return operationResult ? REQUEST_OK : REQUEST_ERROR;
-    }
+		return operationResult ? REQUEST_OK : REQUEST_ERROR;
+	}
 
-    /**
-     * Remove a path to the favorites list
-     *
-     * @param model
-     * @param path
-     *            path to be removed from the favorites
-     */
-    @RequestMapping(value = "/removeFavoriteFromUser/")
-    @ResponseBody
-    public String removeFavoriteFromUser(@RequestParam("path") String path) {
-        String username = irodsServices.getCurrentUser();
-        logger.info("Request for removing a {} favorite from {}", path, username);
+	/**
+	 * Remove a path to the favorites list
+	 *
+	 * @param model
+	 * @param path
+	 *            path to be removed from the favorites
+	 */
+	@RequestMapping(value = "/removeFavoriteFromUser/")
+	@ResponseBody
+	public String removeFavoriteFromUser(@RequestParam("path") final String path) {
+		String username = irodsServices.getCurrentUser();
+		logger.info("Request for removing a {} favorite from {}", path, username);
 
-        String zoneName = irodsServices.getCurrentUserZone();
-        DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
+		String zoneName = irodsServices.getCurrentUserZone();
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
 
-        Set<String> toRemove = new HashSet<String>();
-        toRemove.add(path);
+		Set<String> toRemove = new HashSet<String>();
+		toRemove.add(path);
 
-        boolean operationResult = favoritesService.updateFavorites(user, null, toRemove);
+		boolean operationResult = favoritesService.updateFavorites(user, null, toRemove);
 
-        return operationResult ? REQUEST_OK : REQUEST_ERROR;
-    }
+		return operationResult ? REQUEST_OK : REQUEST_ERROR;
+	}
 
-    @RequestMapping(value = "/favoritesPaginated")
-    @ResponseBody
-    public String favoritesPaginated(HttpServletRequest request) {
+	@RequestMapping(value = "/favoritesPaginated")
+	@ResponseBody
+	public String favoritesPaginated(final HttpServletRequest request) {
 
-        int draw = Integer.parseInt(request.getParameter("draw"));
-        int start = Integer.parseInt(request.getParameter("start"));
-        int length = Integer.parseInt(request.getParameter("length"));
-        String searchString = request.getParameter("search[value]");
-        int orderColumn = Integer.parseInt(request.getParameter("order[0][column]"));
-        String orderDir = request.getParameter("order[0][dir]");
-        boolean onlyCollections = Boolean.parseBoolean(request.getParameter("onlyCollections"));
-        String loggedUsername = irodsServices.getCurrentUser();
-        String loggedUserZoneName = irodsServices.getCurrentUserZone();
-        DataGridUser user = userService.findByUsernameAndAdditionalInfo(loggedUsername, loggedUserZoneName);
-        String[] orderBy = { "name", "path", "created_at", "is_collection" };
+		int draw = Integer.parseInt(request.getParameter("draw"));
+		int start = Integer.parseInt(request.getParameter("start"));
+		int length = Integer.parseInt(request.getParameter("length"));
+		String searchString = request.getParameter("search[value]");
+		int orderColumn = Integer.parseInt(request.getParameter("order[0][column]"));
+		String orderDir = request.getParameter("order[0][dir]");
+		boolean onlyCollections = Boolean.parseBoolean(request.getParameter("onlyCollections"));
+		String loggedUsername = irodsServices.getCurrentUser();
+		String loggedUserZoneName = irodsServices.getCurrentUserZone();
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(loggedUsername, loggedUserZoneName);
+		String[] orderBy = { "name", "path", "created_at", "is_collection" };
 
-        List<DataGridUserFavorite> userFavorites = favoritesService.findFavoritesPaginated(user, start, length, searchString, orderBy[orderColumn],
-                orderDir, onlyCollections);
+		List<DataGridUserFavorite> userFavorites = favoritesService.findFavoritesPaginated(user, start, length,
+				searchString, orderBy[orderColumn], orderDir, onlyCollections);
 
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> jsonResponse = new HashMap<String, Object>();
-        String jsonString = "";
-        if ("".equals(searchString)) {
-            totalFavorites = user.getFavorites().size();
-            totalFavoritesFiltered = user.getFavorites().size();
-        }
-        else {
-            totalFavoritesFiltered = userFavorites.size();
-        }
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> jsonResponse = new HashMap<String, Object>();
+		String jsonString = "";
+		if ("".equals(searchString)) {
+			totalFavorites = user.getFavorites().size();
+			totalFavoritesFiltered = user.getFavorites().size();
+		} else {
+			totalFavoritesFiltered = userFavorites.size();
+		}
 
-        jsonResponse.put("draw", String.valueOf(draw));
-        jsonResponse.put("recordsTotal", String.valueOf(totalFavorites));
-        jsonResponse.put("recordsFiltered", String.valueOf(totalFavoritesFiltered));
-        jsonResponse.put("data", userFavorites);
+		jsonResponse.put("draw", String.valueOf(draw));
+		jsonResponse.put("recordsTotal", String.valueOf(totalFavorites));
+		jsonResponse.put("recordsFiltered", String.valueOf(totalFavoritesFiltered));
+		jsonResponse.put("data", userFavorites);
 
-        try {
-            jsonString = mapper.writeValueAsString(jsonResponse);
-        }
-        catch (Exception e) {
-            logger.error("Could not parse hashmap in favorites to json", e.getMessage());
-        }
-        return jsonString;
-    }
+		try {
+			jsonString = mapper.writeValueAsString(jsonResponse);
+		} catch (Exception e) {
+			logger.error("Could not parse hashmap in favorites to json", e.getMessage());
+		}
+		return jsonString;
+	}
 }
