@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+    lang="en"
+    layout:decorator="template">
+
+<head>
+<title th:text="#{tab.title.users}">EMC Metalnx - Users</title>
+</head>
+
+<body>
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
+				<a id="users-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+				<div th:if="${ userAddedSuccessfully != null or userModifiedSuccessfully != null or userRemovedSuccessfully != null}"
+					class="alert alert-success alert-dismissible text-center clear" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:if="${ userAddedSuccessfully }" th:text="${ userAddedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ userModifiedSuccessfully }" th:text="${ userModifiedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ userRemovedSuccessfully }" th:text="${ userRemovedSuccessfully }" class="text-center"></span></b>
+				  	
+					<span th:if="${ userAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
+					<span th:if="${ userModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
+					<span th:if="${ userRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
+				</div>	
+				
+				<div th:if="${ userNotRemovedSuccessfully != null}" 
+					class="alert alert-danger alert-dismissible text-center clear" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:if="${ userNotRemovedSuccessfully }" th:text="${ userNotRemovedSuccessfully }" class="text-center"></span></b>
+				  	
+					<span th:text="#{ users.not.removed.successfully }"></span>
+				</div>	
+            </div>
+        </div>
+        <!-- Download CSV and Add User -->
+        <div class="row">
+            <div class="col-12-md">
+                <a th:href="@{ ${urlMap.URL_ADD_USER} }"
+                    class="btn btn-primary btn-sm btn-add-user" th:text="#{users.management.add.button}"></a>
+                <a th:href="@{ ${urlMap.URL_USERS_CSV_REPORT} }"
+                    class="btn btn-default btn-sm btn-users" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
+            </div>
+        </div>
+        <!-- Table loader Ajax Gif -->
+        <div id="table-loader" class="table-loader">
+            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+            <p class="text-center" th:text="#{loading.table.label}"></p>
+        </div>
+
+        <!-- Current Users Table -->
+        <div id="userListAsync"></div>
+
+        <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+            $(document).ready(function(){
+                // Add popover on page title
+                $('#users-page-title').popover({
+                    title:[[#{users.management.page.title}]],
+                    content:[[#{users.management.page.title.popover}]],
+                    trigger: 'hover click',
+                    placement: 'left',
+                });
+                // Add popover on page title
+                $('#usersMgtBtn').tooltip({
+                    trigger: 'hover click',
+                    placement: 'top',
+                });
+                // Add popover on page title
+                $('#profilesMgtBtn').tooltip({
+                    trigger: 'hover click',
+                    placement: 'top',
+                });
+            });
+            $(function() {
+                function populateUserTableDiv(data) {
+                    $("#userListAsync").html(data);
+                    $("#table-loader").hide();
+                    $("#userListAsync").show();
+                }
+
+                // Loads results in user management page
+                function loadUserResults() {
+                    var url = "/emc-metalnx-web/users/findAll/";
+                    ajaxEncapsulation(url, "GET", "", populateUserTableDiv, null, null);
+                }
+
+                // When the user arrives to this page
+                loadUserResults();
+            });
+        /*]]>*/
+        </script>
+	</div>
+	<!-- /.layout:content -->
+
+</body>
+
+</html>
+

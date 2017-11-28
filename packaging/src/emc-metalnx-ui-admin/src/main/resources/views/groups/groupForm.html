@@ -1,0 +1,475 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org" lang="en"
+	layout:decorator="template">
+<head>
+<title th:text="#{tab.title.groups}">EMC Metalnx - Groups</title>
+<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+
+		function hideRecursiveQuestion(collectionName){
+		    $("[id='recursiveQuestion_" + collectionName + "']").addClass('hideElement');
+		}
+		function showRecursiveQuestion(collectionName){
+		    $("[id='recursiveQuestion_" + collectionName + "']").removeClass('hideElement');
+		}
+	
+		//change permissions for the group
+		function changePermission(path, collectionName, recursive){
+		    hideRecursiveQuestion(collectionName);
+		    var permission = $("[id='permission_" + collectionName + "']").val();
+			var url;
+			
+			var bookmarkCheckbox = $("input[name='" + path + "']");
+			
+			//identify permission and add it to user
+			if(permission == 'read'){
+				
+				url = "/emc-metalnx-web/groups/addReadPermission/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
+				    checkGroupBookmark(bookmarkCheckbox);
+				}, null, null);
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);   
+				
+			} else if(permission == 'write'){
+				
+				url = "/emc-metalnx-web/groups/addWritePermission/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
+                    checkGroupBookmark(bookmarkCheckbox);
+                }, null, null);
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);   
+				
+			} else if(permission == 'own'){
+				
+				url = "/emc-metalnx-web/groups/addOwner/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
+                    checkGroupBookmark(bookmarkCheckbox);
+                }, null, null);
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);   
+				
+			} else { 
+				//this case is for when user chooses to give none of the permissions above
+				url = "/emc-metalnx-web/groups/removeReadPermission/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
+				
+				url = "/emc-metalnx-web/groups/removeWritePermission/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
+				
+				url = "/emc-metalnx-web/groups/removeOwner/";
+				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
+				
+				bookmarkCheckbox.prop('checked', false);
+				bookmarkCheckbox.attr("disabled", true);
+
+				// Removing bookmarks for the modified item
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
+			}
+		}
+		
+		function checkGroupBookmark(bookmarkCheckbox) {
+		    bookmarkCheckbox.prop("disabled", false);
+		    bookmarkCheckbox.prop('checked', true);
+		}
+		
+		// Toggles the inheritance of a given directory
+		function toggleInheritance(collectionName, recursive) {
+			var collectionNameParts = collectionName.split("/");
+			var collectionShortName = collectionNameParts[collectionNameParts.length - 1];
+			
+			var url = "";
+			var checkbox = $("#inheritance_" + collectionShortName);
+			if (checkbox.is(":checked")) {
+				url = "/emc-metalnx-web/groups/addInheritance/"
+			}
+			else {
+				url = "/emc-metalnx-web/groups/removeInheritance/"
+			}
+			ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
+		}
+	</script>
+<title th:text="#{groups.add.from.title}"></title>
+</head>
+<body>
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<!-- Display page title as Add Group -->
+				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}"
+					class="page-header pull-left" th:text="#{groups.add.form.title}"></h1>
+				<!-- Display page title as Modify Group -->
+				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
+					class="page-header pull-left" th:text="#{groups.modify.form.title}"></h1>
+				<ol class="breadcrumb mlx pull-right ">
+                	<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }" th:text="#{groups.management.page.title}"></a></li>
+                	<li th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" th:text="#{groups.add.form.title}" class="active"></li>
+                	<li th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}" th:text="#{groups.modify.form.title}" class="active"></li>
+                </ol>
+			</div>
+			<!-- /.col-sm-12 -->
+			<form role="form" class="container-fluid registerForm" method="POST"
+				th:object="${groupForm}" th:action="@{${requestMapping}}">
+				<input
+					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
+					type="hidden" th:field="*{groupname}" /> <input
+					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
+					type="hidden" th:field="${groupForm.additionalInfo}" />
+				<div class="col-sm-6">
+					<div class="row">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 th:text="#{groups.add.form.settings.label}"
+									class="panel-title"></h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="inputGroupname"
+										th:text="#{gruops.add.form.group.name}"></label>
+									<input type="text" class="form-control" id="inputGroupname"
+										th:field="*{groupname}"
+										th:placeholder="#{groups.add.form.placeholder.group.name}"
+										th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}" />
+									<i
+										class="form-control-feedback glyphicon glyphicon-remove hideElement"
+										id="invalidGroupnameIcon"></i>
+									<small class="help-block hideElement" id="invalidGroupnameMsg"
+										th:text="#{groups.validation.name.duplicated}"></small>
+									<small class="help-block hideElement" id="emptyGroupnameMsg"
+										th:text="#{groups.validation.name.blank}"></small>
+								</div>
+								<div class="form-group">
+									<label for="selectZone" th:text="#{groups.add.form.zone}"></label>
+									<select class="form-control" name="zones" id="selectZone"
+										th:field="${groupForm.additionalInfo}"
+										th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}">
+										<th:block th:each="zone : ${zones}">
+											<option th:value="${zone.getName()}"
+												th:selected="${groupZone != null and groupZone == zone.getName() ? 'selected' : 'false'}">
+												<span th:text="${zone.getName()}"></span>
+											</option>
+										</th:block>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Available Users -->
+				<div class="col-sm-12" id="usersList">
+					<div class="row">
+						<div class="panel panel-default">
+							<!-- Header -->
+							<div class="panel-heading">
+								<h3 th:text="#{groups.add.form.attach.to.group.label}"
+									class="panel-title pull-left"></h3>
+								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideUsersListBtn">
+									<i class="fa fa-check"></i>  
+									<span th:text="#{done.button.label}" ></span>
+								</button>
+							</div>
+							<!-- /.Header -->
+							<div class="panel-body">
+								<!-- Users List -->
+								<div class="">
+									<div class="">
+										<table class="table table-hover" id="usersListTable">
+											<thead>
+												<tr>
+													<th th:text="#{groups.add.form.table.select.label}"></th>
+													<th th:text="#{users.management.table.first.name.label}"></th>
+													<th th:text="#{users.management.table.last.name.label}"></th>
+													<th th:text="#{users.management.table.username.label}"></th>
+													<th th:text="#{users.management.table.zone.label}"></th>
+												</tr>
+											</thead>
+											<tbody id="fBody">
+												<tr th:each="user : ${users}" th:id="${user.username}">
+													<td><input type="checkbox" name="idsList"
+														th:value="${user.dataGridId}"
+														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
+													</td>
+													<td th:text="${user.firstName}"></td>
+													<td th:text="${user.lastName}"></td>
+													<td th:text="${user.username}"></td>
+													<td th:text="${user.additionalInfo}"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- /.Users List -->
+							</div>
+						</div>
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.Available users -->
+				<!-- Attached users -->
+				<div class="row" id="attachedUsersList">
+					<div class="col-sm-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 th:text="#{groups.add.attached.users.label}"
+									class="panel-title pull-left"></h3>
+								<button type="button" class="btn btn-default btn-xs pull-right" id="showUsersListBtn" th:disabled="${ groupForm.getGroupname() == 'public' }">
+									<i class="fa fa-pencil"></i>  
+									<span th:text="#{groups.add.show.users.label}"></span>
+								</button>
+							</div>
+							<div class="panel-body">
+								<div class="">
+									<!-- Attached Groups Table -->
+									<div class="">
+										<table class="table table-hover" id="attachedUsersTable">
+											<thead>
+												<tr>
+													<th th:text="#{users.management.table.first.name.label}"></th>
+													<th th:text="#{users.management.table.last.name.label}"></th>
+													<th th:text="#{users.management.table.username.label}"></th>
+													<th th:text="#{users.management.table.zone.label}"></th>
+												</tr>
+											</thead>
+											<tbody id="attachedUsersFBody">
+												<tr th:each="user : ${users}"
+													th:if="${#arrays.contains(membersList, '' + user.dataGridId)}"
+													th:id="${user.username + '_attached'}">
+													<td th:text="${user.firstName}"></td>
+													<td th:text="${user.lastName}"></td>
+													<td th:text="${user.username}"></td>
+													<td th:text="${user.additionalInfo}"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- /. Attached users Table -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /. Attached users -->
+				<!-- Collections management section -->
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 th:text="#{permissions.label}" class="panel-title"></h3>
+							</div>
+							<div class="panel-body">
+								<!-- Search box -->
+								<div class="col-sm-6">
+									<div class="form-group input-group">
+										<input id="searchTextForCollections" type="search"
+											class="form-control" th:placeholder="#{search.placeholder}" />
+										<span class="input-group-addon"> <i
+											class="glyphicon glyphicon-search"></i>
+										</span>
+									</div>
+								</div>
+								<!-- /.Search box -->
+								<!-- Collection tree view -->
+								<div class="row" name="collectionsViewForGroup"
+									id="collectionsViewForGroup"></div>
+								<!-- Table loader Ajax Gif -->
+								<div id="table-loader" class="table-loader col-sm-12">
+									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+									<p class="text-center" th:text="#{loading.table.label}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="pull-right">
+					<button type="button" class="btn btn-default btn-md"
+						th:text="#{forms.cancel.action.button}" data-toggle="modal"
+						data-target="#cancelModal"></button>
+					<button type="button" class="btn btn-primary"
+						th:text="#{forms.save.action.button}" id="submitGroupFormBtn"></button>
+				</div>
+				<!-- /.btn-group -->
+				<!-- Modal -->
+				<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
+					aria-labelledby="myCancelModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+								</button>
+								<h4 class="modal-title" id="myCancelModalLabel"
+									th:text="#{confirmation.cancel.title}"></h4>
+							</div>
+							<div class="modal-body">
+								<span th:text="#{confirmation.cancel.label}"></span>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal" th:text="#{confirmation.message.cancel}"></button>
+								<a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"
+									class="btn btn-primary" th:text="#{confirmation.message.yes}">
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- /.row -->
+		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
+		<script type="text/javascript" th:inline="javascript">	
+		/*<![CDATA[*/
+			var groupName = [[${groupForm.groupname}]];
+			
+			var isAddAction = 
+				[[${ requestMapping }]] == "/groups/add/action/" ? true : false;
+		
+			$(function(){
+				if(isAddAction) {
+					groupFormValidator([[${ urlMap.URL_GROUP_VALIDATE_GROUPNAME }]]);						
+				}
+				
+				var datatableUsers = $("#usersListTable").DataTable({
+					"dom": dtPatternUserMgmt,
+	    		    "language": i18n,
+					"stateSave": true,
+					"autoWidth": false,
+	    		    "stateSaveParams": function (settings, data) {
+	    		    	data.search.search = "";
+	    		    },	    	        
+	    		    "initComplete": function(settings){
+	    	            $('#usersListTable tbody td').each(function () {
+	    	            	$(this).attr('title', $(this).text().trim());
+	    	            });
+	    	        },
+	    	        "drawCallback": function(){
+	    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+	    	            $('.dataTables_paginate.paging_simple_numbers')
+	    	            .css( 'display', this.api().data().length <= 0 ?
+	    	                 'none' :
+	    	                 'block'
+	    	            )
+	    	        },
+	    	        "columnDefs": [{
+	    	            "width": "20%",
+	    	            "targets": "_all",
+	    	        }]
+				});
+				
+				getSubDirectoriesForGroupForm([[${ currentPath }]]);
+				
+				$("#usersList").hide();
+				
+				var datatableAttachedUsers = $("#attachedUsersTable").DataTable({
+					"dom": dtPatternUserMgmt,
+	    		    "language": i18n,
+					"stateSave": true,
+					"autoWidth": false,
+	    		    "stateSaveParams": function (settings, data) {
+	    		    	data.search.search = "";
+	    		    },
+	    		    "initComplete": function(settings){
+	    	            $('#attachedUsersTable tbody td').each(function () {
+	    	            	$(this).attr('title', $(this).text().trim());
+	    	            });
+	    	        },
+	    	        "drawCallback": function(){
+	    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+	    	            $('.dataTables_paginate.paging_simple_numbers')
+	    	            .css( 'display', this.api().data().length <= 0 ?
+	    	                 'none' :
+	    	                 'block'
+	    	            )
+	    	        },
+	    	        "columnDefs": [{
+	    	            "width": "25%",
+	    	            "targets": "_all",
+	    	        }]
+				});
+				
+				$("#submitGroupFormBtn").click(function(){
+					
+					if(groupFormCanBeSubmitted([[${urlMap.URL_GROUP_VALIDATE_GROUPNAME}]], isAddAction)){
+						$(".registerForm").submit();								
+					}
+					else {
+						$("html, body").animate({ scrollTop: 0 }, "slow");
+					}
+				});
+				
+				$("#showUsersListBtn").click(function(){
+					$("#attachedUsersList").hide();
+					$("#usersList").show();
+				}); 
+				
+				$("#hideUsersListBtn").click(function(){								
+					$("#attachedUsersList").show();
+					$("#usersList").hide();
+					
+				}); 
+				
+				$('body').on('change', '#usersList input[type=checkbox]', function(){
+				//$("#usersList input[type=checkbox]").change(function(){
+					if($(this).is(":checked")){
+					    ajaxEncapsulation('/emc-metalnx-web/groups/addUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
+					    var newRow = $(this).closest("tr").clone();
+						newRow.find("td:first").remove();
+						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
+						
+						datatableAttachedUsers.row.add(newRow).draw();
+					}
+					else {
+					    ajaxEncapsulation('/emc-metalnx-web/groups/removeUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
+					    var elementID = $(this).parent().parent().attr("id") + "_attached";
+						var trElement = $("tr[id='" + elementID + "']");
+						datatableAttachedUsers.row(trElement).remove().draw();
+					}
+					
+				});
+				
+			});
+			function getSubDirectoriesForGroupForm(directoryName) {			
+				$("#table-loader").show();
+				$("#collectionsViewForGroup").hide();
+				
+				var url = "/emc-metalnx-web/collections/getDirectoriesAndFilesForGroupForm/";
+				var retrievePermissions = !isAddAction;
+				setTimeout(function () {
+					ajaxEncapsulation(
+							url, 
+							"POST", 
+							{path:directoryName, groupName: groupName, retrievePermissions : retrievePermissions}, 
+							displaySubDirectoriesForGroupForm,
+							null, 
+							null
+					);					
+				}, 400);
+			}
+			
+			function displaySubDirectoriesForGroupForm(data){
+				$("#table-loader").hide();
+				$("#collectionsViewForGroup").show();
+				$("#collectionsViewForGroup").html(data);
+			}
+		/*]]>*/
+		</script>
+	</div>
+	<!-- /. Page Content -->
+</body>
+</html>

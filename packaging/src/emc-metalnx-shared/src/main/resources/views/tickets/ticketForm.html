@@ -1,0 +1,404 @@
+<!-- Create Ticket Form -->
+<form role="form" class="container-fluid registerForm" method="POST" th:object="${ticket}" th:action="@{${requestMapping}}">
+    <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
+    <input type="hidden" class="form-control" id="usersList"/>
+    <div class="form-group">
+        <label class="control-label" th:text="#{ticket.form.path.label}"></label>
+        <span id="selectedPath"></span>
+    </div>
+    <div class="form-group">
+        <label for="input-permission" class="control-label" th:text="#{ticket.form.permission.label}"></label>
+        <div class="">
+            <select id="input-permission" class="form-control" th:field="*{type}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}">
+                <option value="READ" th:text="#{ticket.form.permission.option.read.label}"></option>
+                <option value="WRITE" th:text="#{ticket.form.permission.option.write.label}"></option>
+            </select>
+        </div>
+    </div>
+    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{ticket.form.show.advanced.settings.button}"></button>
+    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{ticket.form.hide.advanced.settings.button}"></button>
+    <div class="advanced-settings hidden">
+        <div class="form-group optional">
+            <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
+            <input type="text" class="form-control" id="inputTicketString" maxlength="15" th:placeholder="#{ticket.form.ticket.string.placeholder}" th:field="*{ticketString}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidTicketStringIcon"></i>
+            <small class="help-block hideElement" id="ticketStringInvalidMsg" th:text="#{ticket.form.validation.input.ticket.string.not.valid}"></small>
+        </div>
+        <div class="form-group optional">
+            <label for="inputUsesLimit" class="control-label" th:text="#{ticket.form.uses.limit.label}"></label>
+            <a id="usesLimitHint" href="#">[?]</a>
+            <input type="text" class="form-control" id="inputUsesLimit" th:placeholder="#{ticket.form.uses.limit.placeholder}" th:field="*{usesLimit}" th:value="*{usesLimit}==0?'':*{usesLimit}"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputUsesLimitIcon"></i>
+            <small class="help-block hideElement" id="usesLimitNotNumberMsg" th:text="#{ticket.form.validation.input.uses.limit.not.number}"></small>
+        </div>
+        <div id="writeByteLimit" class="form-group optional">
+            <label for="inputWriteByteLimit" class="control-label" th:text="#{ticket.form.write.byte.limit.label}"></label>
+            <input type="text" class="form-control" id="inputWriteByteLimit" th:placeholder="#{ticket.form.write.byte.limit.placeholder}" th:field="*{writeByteLimit}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteByteLimitIcon"></i>
+            <small class="help-block hideElement" id="writeByteNotNumberMsg" th:text="#{ticket.form.validation.input.write.byte.limit.not.number}"></small>
+        </div>
+        <div id="writeFileLimit" class="form-group optional">
+            <label for="inputWriteFileLimit" class="control-label" th:text="#{ticket.form.write.file.limit.label}"></label>
+            <input type="text" class="form-control" id="inputWriteFileLimit" th:placeholder="#{ticket.form.write.file.limit.placeholder}" th:field="*{writeFileLimit}" value=""/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidInputWriteFiletIcon"></i>
+            <small class="help-block hideElement" id="writeFileNotNumberMsg" th:text="#{ticket.form.validation.input.write.file.limit.not.number}"></small>
+        </div>
+        <div class="form-group optional">
+            <label for="inputExpirationDate" class="control-label" th:text="#{ticket.form.expiration.date.label}"></label>
+            <input type="text" class="form-control" id="inputExpirationDate" th:placeholder="#{ticket.form.expiration.date.placeholder}" th:field="*{expirationDateStr}" th:value="*{expirationDateStr}"/>
+        </div>
+        <div class="form-group optional">
+            <label for="usersToBeAdded" th:text="#{ticket.form.users.label}"></label>
+            <br />
+            <input type="search" class="form-control col-md-12" id="usersToBeAdded" th:field="*{users}" autocomplete="off" data-provide="typeahead"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentUsernameError" id="nonexistentUsernameIcon"></i>
+            <small class="help-block hideElement nonexistentUsernameError" id="nonexistentUsernameMsg"
+                   th:text="#{permission.validation.username.nonexistent}"></small>
+        </div>
+        <div class="form-group optional">
+            <label for="groupsToBeAdded" th:text="#{ticket.form.groups.label}"></label>
+            <br />
+            <input type="search" class="form-control col-md-12" id="groupsToBeAdded" th:field="*{groups}" autocomplete="off" data-provide="typeahead"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement nonexistentGroupError" id="nonexistentGroupIcon"></i>
+            <small class="help-block hideElement nonexistentGroupError" id="nonexistentGroupMsg"
+                   th:text="#{permission.validation.group.nonexistent}"></small>
+        </div>
+        <div class="form-group optional">
+            <label id="hostnamesLabel" for="inputNewHostname" class="control-label" th:text="#{ticket.form.hostnames.label}"></label>
+            <input type="text" class="form-control pull-left" id="inputNewHostname" th:placeholder="#{ticket.form.hostnames.placeholder}"/>
+            <i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="existingIpIcon"></i>
+            <a id="addHostname" class="btn btn-default pull-right disabled" disabled="true"><i class="fa fa-plus" aria-hidden="true"></i><span th:text="#{ticket.form.hostnames.add.btn}"></span></a>
+            <small class="help-block hideElement nonexistentGroupError" id="existingIPMsg"
+                   th:text="#{ticket.form.host.already.exists}"></small>
+            <div id="panelHostnames">
+                <ul id="listHostnames">
+                    <th:block th:each="host: ${ticket.hosts}">
+                        <li th:id="li_+${host}"><span th:text="${host}"></span><a class='btn btn-link pull-right btn-remove' th:onclick="'javascript:removeHost(\'' + ${host} + '\');'"><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a></li>
+                        <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts'/>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" th:src="@{/js/ticketForm.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    // Check if all fiels are valid
+    function allFieldsValidated(){
+        var validated = !$('.form-group').hasClass("has-feedback has-error");
+        return validated;
+    }
+    $(document).ready(function(e){
+
+        $('#usesLimitHint').popover({
+            content:[[#{ticket.form.uses.limit.hint}]],
+            trigger: 'hover click',
+            placement: 'right',
+        });
+
+        var inputPathVal = $("#inputPath").val();
+
+        if (inputPathVal != '') {
+            $("#selectedPath").text(inputPathVal);
+        }
+
+        // Users restriction settings
+        // Creates bloodhound instance for querying requests
+        function createBloodhoundInstance(url, filterFunction) {
+            return new Bloodhound({
+
+                datumTokenizer : function(datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.value);
+                },
+
+                queryTokenizer : Bloodhound.tokenizers.whitespace,
+                remote : {
+                    url : url,
+                    wildcard : '%QUERY',
+                    filter : filterFunction
+                }
+            });
+        }
+
+        // Configures the data source for the tag input on the users modal
+        function filterUsers(users) {
+            return $.map(users.results, function(user) {
+                return {
+                    name: user.first_name + " " + user.last_name,
+                    username: user.username
+                };
+            });
+        }
+
+        var usersSource = createBloodhoundInstance('/emc-metalnx-web/users/query/%QUERY/', filterUsers);
+
+        if(!$("#usersToBeAdded").val()){
+            $("#usersToBeAdded").attr("placeholder", [[#{ticket.form.users.placeholder}]]);
+        }
+
+        // Sets the text input on the group modal to be a tag input
+        $('#usersToBeAdded').tagsinput({
+            tagClass : 'label label-primary',
+            freeInput: false,
+            typeaheadjs : {
+                displayKey: 'username',
+                valueKey: 'username',
+                source : usersSource,
+                options: {
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                templates: {
+                    empty: [
+                      '<div class="empty-message">',
+                        'Unable to find any user that match the current query',
+                      '</div>'
+                    ].join('\n')
+                }
+            }
+        });
+
+        $("#usersToBeAdded").on('itemAdded', function(event) {
+            $('.tt-input').attr('placeholder','');
+        });
+
+
+        // Configures the data source for the tag input on the group modal
+        function filterGroups(groups) {
+            return $.map(groups, function(group) {
+                return {
+                    value: group
+                };
+            });
+        }
+
+        var groupsSource = createBloodhoundInstance('/emc-metalnx-web/groups/query/%QUERY/', filterGroups);
+        if(!$("#groupsToBeAdded").val()){
+            $("#groupsToBeAdded").attr("placeholder", [[#{ticket.form.groups.placeholder}]]);
+        }
+
+        // Sets the text input on the group modal to be a tag input
+        $('#groupsToBeAdded').tagsinput({
+            tagClass : 'label label-primary',
+            freeInput: false,
+            typeaheadjs : {
+                displayKey: 'value',
+                valueKey: 'value',
+                source : groupsSource,
+                options: {
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                templates: {
+                    empty: [
+                      '<div class="empty-message">',
+                        'Unable to find any group that match the current query',
+                      '</div>'
+                    ].join('\n')
+                }
+            }
+        });
+
+        $("#groupsToBeAdded").on('itemAdded', function(event) {
+            $('.tt-input').attr('placeholder','');
+        });
+
+
+        // Replace value '0' for a placeholder on fields: Uses Limit, Write Byte and Write File Limit
+        if ($("#inputUsesLimit").val()==0){
+            $("#inputUsesLimit").val('');
+        }
+        if ($("#inputWriteByteLimit").val()==0){
+            $("#inputWriteByteLimit").val('');
+        }
+        if ($("#inputWriteFileLimit").val()==0){
+            $("#inputWriteFileLimit").val('');
+        }
+
+
+        $("#input-permission").ready(function() {
+            if ($("#input-permission").val()=='READ'){
+                $("#inputWriteByteLimit").attr("disabled", true);
+                $("#inputWriteFileLimit").attr("disabled", true);
+            }
+            else if($("#input-permission").val()=='WRITE'){
+                $("#inputWriteByteLimit").attr("disabled", false);
+                $("#inputWriteFileLimit").attr("disabled", false);
+            }
+        });
+
+        $("#input-permission").change(function(){
+            if ($("#input-permission").val()=='READ'){
+                $("#inputWriteByteLimit").attr("disabled", true);
+                $("#inputWriteFileLimit").attr("disabled", true);
+                $("#inputWriteByteLimit").val('');
+                $("#inputWriteFileLimit").val('');
+            }
+            else if($("#input-permission").val()=='WRITE'){
+                $("#inputWriteByteLimit").attr("disabled", false);
+                $("#inputWriteFileLimit").attr("disabled", false);
+            }
+        });
+
+        // Toggle advanced settings buttons visibility
+        $("#btnShowAdvancedSettings").click(function(){
+            $(".advanced-settings").removeClass("hidden");
+            $(this).addClass("hidden");
+            $("#btnHideAdvancedSettings").removeClass("hidden");
+        });
+        $("#btnHideAdvancedSettings").click(function(){
+            $(".advanced-settings").addClass("hidden");
+            $(this).addClass("hidden");
+            $("#btnShowAdvancedSettings").removeClass("hidden");
+        });
+
+        // Set date format for Expiration Date field
+        $("#inputExpirationDate").datepicker({
+            dateFormat: "yy-mm-dd",
+            minDate: 1
+        });
+
+        //Checks if input is a valid Ticket String
+        function isValidTicketString(ticketString) {
+            var isValidTicketString;
+            var ticketRE = /^[0-9a-zA-Z]+$/;
+            isValidTicketString = (isNaN(ticketString)) &&(ticketString.match(ticketRE));
+            return isValidTicketString;
+        }
+
+        //Check if input is an Integer
+        function isInteger(limit){
+            var isInt = !isNaN(limit) && (parseInt(Number(limit)))==limit && !isNaN(parseInt(limit,10));
+            return isInt;
+        }
+
+        // Ticket String field validation
+        $("#inputTicketString").on('input propertychange',function(){
+            if(!isValidTicketString($(this).val()) && !($(this).val()=='')){
+                $("#inputTicketString").parent().addClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").show();
+                $("#ticketStringInvalidMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputTicketString").parent().removeClass("has-feedback has-error");
+                $("#invalidTicketStringIcon").hide();
+                $("#ticketStringInvalidMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
+
+        // Uses Limit field validation
+        $("#inputUsesLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputUsesLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").show();
+                $("#usesLimitNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputUsesLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputUsesLimitIcon").hide();
+                $("#usesLimitNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
+
+        // Write Byte field validation
+        $("#inputWriteByteLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputWriteByteLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").show();
+                $("#writeByteNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputWriteByteLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteByteLimitIcon").hide();
+                $("#writeByteNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
+
+        // Write File field validation
+        $("#inputWriteFileLimit").on('input propertychange',function(){
+            if(!isInteger($(this).val()) && !($(this).val()=='')){
+                $("#inputWriteFileLimit").parent().addClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").show();
+                $("#writeFileNotNumberMsg").show();
+                $("#createTicketFormBtn").addClass("disabled");
+                $("#createTicketFormBtn").prop("disabled", true);
+            }
+            else {
+                $("#inputWriteFileLimit").parent().removeClass("has-feedback has-error");
+                $("#invalidInputWriteFiletIcon").hide();
+                $("#writeFileNotNumberMsg").hide();
+                $("#createTicketFormBtn").prop("disabled", false);
+                $("#createTicketFormBtn").removeClass("disabled");
+            }
+        });
+
+        $("#inputNewHostname").on('input propertychange', function(){
+             if ($("#inputNewHostname").val() != '') {
+                 $("#addHostname").attr("disabled", false);
+                 $("#addHostname").removeClass("disabled");
+             }
+             else {
+                 $("#addHostname").attr("disabled", true);
+                 $("#addHostname").addClass("disabled");
+                 $("#inputNewHostname").parent().removeClass("has-feedback has-error");
+                 $("#existingIPMsg").hide();
+                 $("#existingIpIcon").hide();
+             }
+        });
+
+        $("#addHostname").on('click', function () {
+         var inputValue = $.trim($("#inputNewHostname").val());
+         var repeated = false;
+         $.each($("input[name=hosts]"), function(){
+            if($(this).val() == inputValue){
+                repeated = true;
+                return false;
+            }
+         });
+         if(!repeated){
+            addHost(inputValue);
+         }
+         else{
+            $("#inputNewHostname").parent().addClass("has-feedback has-error");
+            $("#existingIPMsg").show();
+            $("#existingIpIcon").show();
+            $("#existingIpIcon").on('click', function(){
+                $("#inputNewHostname").val('');
+                $("#inputNewHostname").parent().removeClass("has-feedback has-error");
+                $("#existingIPMsg").hide();
+                $("#existingIpIcon").hide();
+            });
+         }
+        });
+    });
+
+    function addHost(inputValue){
+        var removeBtn = "<a class='btn btn-link pull-right btn-remove' onclick='removeHost(\"" + inputValue + "\")'><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a>";
+        var newElement = "<li id=li_" + inputValue+ ">"+"<span>" + inputValue + "</span>"+ removeBtn+ "</li>";
+        var inputHost = "<input id=input_" + inputValue + " type='hidden' class='form-control' value='" + inputValue +"' name='hosts'/>";
+        $("ul#listHostnames").append(newElement);
+        $("#hostnames").append(inputValue+",");
+        $("#hostnames").val($("#hostnames").text());
+        $("ul#listHostnames").append(inputHost);
+        $("#inputNewHostname").val('');
+        $("#addHostname").prop("disabled", true);
+        $("#addHostname").addClass("disabled");
+    }
+/*]]>*/
+</script>

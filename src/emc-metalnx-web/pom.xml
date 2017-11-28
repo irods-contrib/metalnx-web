@@ -354,6 +354,8 @@
 									resource.location.js=/js/,classpath:static/js/
 									resource.location.i18=classpath:i18n/messages
 									resource.location.i18-users=classpath:i18n-users/messages
+									
+									metalnx.enable.tickets=${metalnx.enable.tickets}
 
 
 								</echo>

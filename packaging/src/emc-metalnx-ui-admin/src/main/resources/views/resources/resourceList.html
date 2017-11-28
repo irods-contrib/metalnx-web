@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+</head>
+<body>
+	<!-- Current Resources Table -->
+	<div th:fragment="resourceList" class="row">
+	
+		<div class="col-sm-12" >
+	
+			<table class="table table-hover" id="resourcesListTable">
+				<thead>
+					<tr>
+						<!-- <th th:text="#{resources.table.status.label}"></th> -->
+						<th th:text="#{resources.table.name.label}"></th>
+						<th th:text="#{resources.table.zone.label}"></th>
+						<th th:text="#{resources.table.host.label}"></th>
+						<th th:text="#{resources.table.action.label}"></th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr th:each="resource : ${resources}">
+						<!-- <td th:text="*{resource.status}"></td> -->
+						<td th:text="*{resource.name}" class="col-resource-name"></td>
+						<td th:text="*{resource.zone}"></td>
+						<td th:if="*{ !#strings.isEmpty(resource.isiHost) }" th:text="*{resource.isiHost}"></td>
+						<td th:unless="*{ !#strings.isEmpty(resource.isiHost) }" th:text="*{resource.host}"></td>
+						<td>
+							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_info_' + resource.name}"
+								th:onclick="'javascript:viewInfo(\'' + *{resource.name} + '\');'">
+								<i class="fa fa-info-circle"></i><span  th:text="#{resources.management.list.item.info}"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + resource.name}"
+								th:onclick="'javascript:confirmResourceDeletion(\'' + *{resource.name} + '\');'">
+								<i class="fa fa-trash-o"></i><span  th:text="#{resources.management.list.item.delete}"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- /. col-sm-12 -->
+		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="deletionModal" tabindex="-1" role="dialog" aria-labelledby="myDeletionModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="myDeletionModalLabel" th:text="#{resources.confirmation.deletion.title}"></h4>
+					</div>
+					<div class="modal-body">
+						<span th:text="#{resources.confirmation.deletion.label}"></span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfRescRemoval_No"
+					  		th:text="#{confirmation.message.cancel}">
+					  	</button>
+					  	<button type="button" class="btn btn-primary" onclick="removeElement();" id="btnConfRescRemoval_Yes"
+					  		th:text="#{confirmation.message.yes}">
+					  	</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Resource Info Modal -->
+		<div class="modal fade" id="rescInfoModal" tabindex="-1" role="dialog" aria-labelledby="rescInfoModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="" >Resource Information</h4>
+					</div>
+					<div class="modal-body row">
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Name: </b></div>
+							<div class="col-xs-8"><span id="name"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Type: </b></div>
+							<div class="col-xs-8"><span id="type"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Zone: </b></div>
+							<div class="col-xs-8"><span id="zone"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Host: </b></div>
+							<div class="col-xs-8"><span id="host"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">IP: </b></div>
+							<div class="col-xs-8"><span id="ip"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Path: </b></div>
+							<div class="col-xs-8"><span id="path"></span></div>
+						</div>
+						<div class="col-xs-12">
+							<div class="col-xs-4"><b class="pull-right">Parent: </b></div>
+							<div class="col-xs-8"><span id="parent"></span></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" >
+							Close
+					  	</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- <script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script> -->
+			
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+			var resourceToBeDeleted;
+			
+			/* $(function(){
+				$("#resourcesListTable").tablesorter(); 
+			}); */
+			$(document).ready(function(){
+				var datatable = $("#resourcesListTable").DataTable({
+					"dom": dtPatternMlxStandard,
+	    		    "language": i18n,
+					"stateSave": true,
+					"autoWidth": false,
+	    		    "stateSaveParams": function (settings, data) {
+	    		    	data.search.search = "";
+	    		    },	    	        
+	    		    "initComplete": function(settings){
+	    	            $('#resourcesListTable tbody td').each(function () {
+	    	            	$(this).attr('title', $(this).text().trim());
+	    	            });
+	    	        },
+	    	        "drawCallback": function(){
+	    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+	    	            $('.dataTables_paginate.paging_simple_numbers')
+	    	            .css( 'display', this.api().data().length <= 0 ?
+	    	                 'none' :
+	    	                 'block'
+	    	            )
+	    	        },
+				});
+			});
+			function removeElement() {
+				window.location = [[${urlMap.URL_DELETE_RESOURCE}]] + resourceToBeDeleted + "/";
+			} 
+			
+	        function confirmResourceDeletion(resourceName) {
+	        	resourceToBeDeleted = resourceName;
+				$("#deletionModal").modal("show");
+			}
+	        
+	        
+	        function viewInfo(resourceName){
+				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
+				ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
+			}
+			
+			function displayResourceInfo(data){
+				var json = $.parseJSON(data);
+				
+				$("#rescInfoModal #name").html(json["name"]);
+				$("#rescInfoModal #type").html(json["type"]);
+				$("#rescInfoModal #zone").html(json["zone"]);
+				$("#rescInfoModal #host").html(json["host"]);
+				$("#rescInfoModal #ip").html(json["ip"]);
+				$("#rescInfoModal #path").html(json["path"]);
+				$("#rescInfoModal #parent").html(json["parent"]);
+				//$("#rescInfoModal #info").html(json["info"]);
+				//$("#rescInfoModal #status").html(json["status"]);
+				
+				$('#rescInfoModal').modal('show');
+			}
+		/*]]>*/
+		</script>	
+		
+	</div>
+	<!-- /. row Current resouces Table -->
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org" 
+    lang="en"
+    layout:decorator="template">
+
+<head>
+	
+	<!-- D3 Library -->
+    <script th:src="@{/js/d3.min.js}"></script>
+    
+    <!-- Radial Progress Library -->
+    <script th:src="@{/js/radialProgress.js}"></script>
+	
+	<!-- Dashboard Style (charts) -->
+	<link rel="stylesheet" th:href="@{/css/dashboardStyle.css}"/>
+	
+	<title th:text="#{tab.title.dashboard}">EMC Metalnx - Dashboard</title>
+
+</head>
+
+<body>
+		
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<h1 class="page-header pull-left" th:text="#{dashboard.page.title}"></h1>
+				<a id="dashboard-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+			</div>
+        </div>
+        <div class="row">
+			<!-- System Health -->
+			<div class="col-xs-12 col-md-9 col-lg-9 dashboardWidget" id="systemHealth">
+				<div class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.system.health.status}"></p>
+				</div>
+			</div>
+			<!-- iRODS Version -->
+			<div class="col-xs-12 col-md-3 col-lg-3 dashboardWidget" id="irodsVersion">
+				<div class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.irods.version}"></p>
+				</div>
+			</div>
+        </div>
+        <div class="row">
+			<div class="col-xs-12 col-md-9 col-lg-9 resourceMapDashboardWrapper">
+				<div class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.system.resource.map}"></p>
+				</div>
+				<div class="panel panel-default hideElement">
+					<div class="panel-body">
+						<h4 class="">Resources Map</h4>
+						<div id="resourceMapDashboard"></div>
+						<a th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" class="pull-right">Resources Map Page </a>
+					</div>
+				</div>
+			</div>
+					
+			<div class="col-xs-12 col-md-3 col-lg-3">				
+				<!-- Server list -->
+				<div class="dashboardWidget" id="serverListPanel">				
+					<div class="table-loader">
+						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+						<p class="text-center" th:text="#{loading.system.irods.servers}"></p>
+					</div>
+				</div>
+				
+				<!-- Total Storage -->
+				<div class="dashboardWidget" id="totalStorageDiv">
+					<div id="table-loader-storage" class="table-loader">
+						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+						<p class="text-center" th:text="#{loading.total.storage}"></p>
+					</div>
+					
+					<div class="panel panel-default hideElement totalStorage">
+						<div class="panel-body" id="totalStorageSum">
+							<h4 class="">Storage Usage</h4>
+							<div id="storageChart" style="text-align: center; margin-top:10px;"></div>
+							<table>
+								<tbody>
+									<tr><td title="Used storage:">Used: </td><td>  <span id="totalStorageUsed"></span></td></tr>
+									<tr><td title="Free storage">Free: </td><td>  <span id="totalStorageAvailable"></span></td></tr>
+									<tr><td title="Total capacity">Total Capacity: </td><td>  <span id="totalStorage"></span></td></tr>
+								</tbody>
+							</table>
+						</div>
+                        <div class="rmd-status-msg hideElement">
+                            <div class="serverIcon">
+                                <i class="fa fa-exclamation-triangle"></i>
+                            </div>
+                            <p>
+                                <small th:text="#{dashboard.card.rmd.no.communication}"></small>
+                            </p>
+                        </div>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-12 col-xs-12 col-lg-3">
+				<div class="row">
+					<!-- Users -->
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+						<div class="panel panel-default">
+							<div class="panel-body" id="">
+								<div class="cardIconWrapper col-xs-3">
+								</div>
+								<i class="fa fa-user col-xs-3 cardIcon"></i>
+								<div class="col-xs-7 col-md-6">
+									<a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }">
+										<h5><span th:text="#{ card.users.title }"></span> (<span th:text="${ totalNumberOfUsers }"></span>)</h5>
+									</a>
+								</div>  
+								<a type="button" class="col-xs-1 btn btn-link pull-right" 
+								th:href="@{ ${urlMap.URL_USERS_MANAGEMENT+urlMap.URL_ADD_USER} }">
+									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.user}"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- Groups -->
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="cardIconWrapper col-xs-3">
+								</div>
+								<i class="fa fa-group col-xs-3 cardIcon"></i>
+								<div class="col-xs-7 col-md-6">
+									<a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }">
+                                        <h5><span th:text="#{ card.groups.title }"></span> (<span th:text="${ totalNumberOfGroups }"></span>)</h5>
+
+									</a>
+								</div>  
+								<a type="button" class="col-xs-1 btn btn-link pull-right" 
+								th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT+urlMap.URL_ADD_GROUP} }">
+									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.group}"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- profiles -->
+					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
+						<div class="panel panel-default">
+							<div class="panel-body" >
+								<div class="cardIconWrapper col-xs-3">
+								</div>
+								<span class="fa-stack fa-lg col-xs-3 cardIcon">
+		                               <i class="fa fa-square-o fa-stack-2x"></i>
+		                               <i class="fa fa-user fa-stack-1x"></i> 
+		                           </span>
+								<div class="col-xs-7 col-md-6">
+									<a th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }">
+                                        <h5><span th:text="#{ card.profiles.title }"></span> (<span th:text="${ totalNumberOfProfiles }"></span>)</h5>
+
+									</a>
+								</div>  
+								<a type="button" class="col-xs-1 btn btn-link pull-right" 
+								th:href="@{ ${urlMap.URL_ADD_USER_PROFILE} }">
+									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.profile}"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-md-6 ">
+				<div class="dashboardWidget" id="msiAPIVersionPanel">
+					<div class="table-loader">
+						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+						<p class="text-center" th:text="#{loading.msi.package.version}"></p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-md-3 ">
+				<div class="dashboardWidget" id="isilonServerListPanel">
+					<div class="table-loader">
+						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+						<p class="text-center" th:text="#{loading.system.isilon.servers}"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+							
+	    <script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
+	    <script type="text/javascript" th:src="@{/js/rmd.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+			
+			$(document).ready(function(){
+				// Add popover on page title
+		        $('#dashboard-page-title').popover({
+		    		title:[[#{dashboard.page.title}]],
+		    		content:[[#{dashboard.popover}]],
+		   			trigger: 'hover click',
+		       		placement: 'left',
+		   		});
+		        $('[data-toggle="tooltip"]').tooltip();
+			});
+			var servers;
+			var url;
+			
+			$(function(){
+				$("#summaryTable").tablesorter(); 
+				url = "/emc-metalnx-web/dashboard/servers/";
+				
+				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null, null, null,
+						[ajaxCallForStorageGrid, ajaxCallForSystemHealth, ajaxCallForResourceMap,
+						ajaxCallForIsilonServer, ajaxCallForMSIAPIVersion, ajaxCallForIRodsVersion]);
+			});
+
+			function ajaxCallForIRodsVersion() {
+				url = "/emc-metalnx-web/dashboard/irodsversion/";
+				ajaxEncapsulation(url, "GET", "", displayIRodsVersionPanel, null, null);
+			}
+
+			function ajaxCallForMSIAPIVersion() {
+				url = "/emc-metalnx-web/dashboard/msiPackageVersion/";
+				ajaxEncapsulation(url, "GET", "", displayMSIVersionPanel, null, null);
+			}
+
+			function ajaxCallForNonResourceServer(){						
+				url = "/emc-metalnx-web/dashboard/nonResourceServers/";				
+				ajaxEncapsulation(url, "GET", "", displayNonResourceServersPanel, null, null);				
+			}
+
+			function ajaxCallForIsilonServer(){
+				url = "/emc-metalnx-web/dashboard/isilonServers/";				
+				ajaxEncapsulation(url, "GET", "", displayIsilonServersPanel, null, null);				
+			}
+
+			function ajaxCallForStorageGrid(){
+				//we need to have all servers in order to get the total grid storage						
+				url = "/emc-metalnx-web/dashboard/storageGrid/";				
+				ajaxEncapsulation(url, "GET", "", updateStorageInfo, null, null);				
+			}
+			
+			function ajaxCallForSystemHealth(){					
+				//we need to have all servers in order to get the total grid storage						
+				url = "/emc-metalnx-web/dashboard/systemHealth/";				
+				ajaxEncapsulation(url, "GET", "", displaySystemHealthData, null, null);				
+			}
+			
+			function ajaxCallForResourceMap(){
+			    url = "/emc-metalnx-web/resources/mapForDashboard/";
+				ajaxEncapsulation(url, "GET", "", displayResourceMap, null, null);
+			}
+
+			function displayIRodsVersionPanel(data) {
+				$("#irodsVersion").html(data);
+			}
+			
+			function displayResourceMap(data){
+			    $('.resourceMapDashboardWrapper .table-loader').hide();
+			    $('#resourceMapDashboard').html(data);
+			    $('.resourceMapDashboardWrapper .panel').removeClass('hideElement');
+			}
+
+			function displayMSIVersionPanel(data) {
+				$("#msiAPIVersionPanel").html(data);
+			}
+
+			function displayNonResourceServersPanel(data){
+				$("#nonResourceServerListPanel").html(data);
+			}
+			function displayIsilonServersPanel(data){
+				$("#isilonServerListPanel").html(data);
+			}
+			function displayServerListPanel(data){
+				$("#serverListPanel").html(data);
+			}
+			
+			function displaySystemHealthData(data){
+				$("#systemHealth").html(data);
+			}
+			
+			function updateStorageInfo(storageInfo) {
+				$("#table-loader-storage").hide();
+				$("#totalStorageSum").parent().show();
+				
+				var storage = storageInfo.split("/");
+				var totalStorageUsed = storage[0];
+				var totalStorageAvailable = storage[1];
+				var totalStorage = storage[2];
+				var usagePercentage = storage[3];					
+				var isRMDRunningOnAllServers = storage[4] != "false";
+				var barType = "success";	
+								
+				if(usagePercentage >= 95 ){
+					barType = "danger";
+				}
+				else if (usagePercentage >= 90) {
+					barType = "warning";
+				}
+				
+				$("#totalStorageUsed").html(totalStorageUsed);
+				$("#totalStorageAvailable").html(totalStorageAvailable);
+				$("#totalStorage").html(totalStorage);
+				
+				radialProgress(document.getElementById("storageChart"), 120, 130)
+		    	.diameter(150)
+		    	.value(usagePercentage)
+		        	.render();
+				
+				if (!isRMDRunningOnAllServers){
+					$("#totalStorageDiv .rmd-status-msg").removeClass("hideElement");
+				}
+			}
+		</script>
+	</div> 
+
+</body>
+
+</html>
+
