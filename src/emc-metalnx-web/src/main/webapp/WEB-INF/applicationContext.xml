@@ -30,7 +30,7 @@
      <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>file:///etc/irods-ext/metalnx.properties</value>
+                <value>file:///E:/Hetal/opt/etc/irods-ext/metalnx.properties</value>
             </list>
         </property>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -38,7 +38,7 @@
 
  <!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md doc at the top of the repo,
 It allows theming and custom messages -->
-	<import resource="file:///etc/irods-ext/metalnxConfig.xml" />
+	<import resource="file:///E:/Hetal/opt/etc/irods-ext/metalnxConfig.xml" />
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
