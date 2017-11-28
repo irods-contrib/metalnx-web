@@ -73,7 +73,7 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${populate.msi.enabled}")
 	private boolean populateMsiEnabled;
 
-	@Value("${metalnx.enable.tickets}")
+	// @Value("${metalnx.enable.tickets}")
 	private boolean ticketsEnabled;
 
 	@Override
