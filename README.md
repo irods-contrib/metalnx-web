@@ -94,3 +94,5 @@ Add a global config to turn on/off certain features via metalnx.properties. This
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
+
+* #25 search - default to 'contains'
