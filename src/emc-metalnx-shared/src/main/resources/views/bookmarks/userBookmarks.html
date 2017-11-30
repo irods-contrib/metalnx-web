@@ -36,7 +36,7 @@
 					<span th:text="#{bookmarks.page.title}"></span>
 				</h1>
 				<span th:text="#{bookmarks.page.subtitle}" class="subtitle"></span>
-				<a id="bookmarks-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+				<a id="bookmarks-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 			</div>
 			<div class="col-sm-12 btn-shared">
 				<a th:href="@{ ${urlMap.URL_GROUPS_BOOKMARKS} }" class="btn btn-default btn-sm" style="margin-right: 5px;">
@@ -48,8 +48,8 @@
                    	&nbsp; <span th:text="#{collections.management.shared.links.list.by.user}"></span>
                  </a>
 			</div>
-              
-            <div class="col-sm-12 table-responsive"> 
+
+            <div class="col-sm-12 table-responsive">
 				<table class="table table-hover" id="userBookmarksTable">
 					<thead>
 						<tr>
@@ -61,14 +61,14 @@
 					</thead>
 				</table>
              </div>
-             
+
              <!-- <div class="col-sm-12 table-responsive" th:unless="${foundUserBookmarks}">
              	<div class="text-center" role="alert">
 			        <span th:text="#{shareditems.empty.table}"></span>
-			    </div> 
+			    </div>
              </div> -->
         </div>
-			
+
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 		    $(document).ready(function(){
@@ -79,7 +79,7 @@
 			 		trigger: 'hover click',
 		       		placement: 'left',
 		       	});
-		    });       
+		    });
 		    var datatable;
 			datatable = $('#userBookmarksTable').DataTable( {
 			    "serverSide": true,
@@ -113,20 +113,20 @@
 						"targets": 0
 	                },
 	                {
-	                	"data": "path", 
-	                	"width": "40%", 
+	                	"data": "path",
+	                	"width": "40%",
 	                	"targets": 1
 	               	},
 	                {
-	               		"data": "createTsFormatted", 
-	               		"width": "15%", 
+	               		"data": "createTsFormatted",
+	               		"width": "15%",
 	               		"targets": 2
 	               	},
 	                {
 	               		"render": function (data, type, full, meta){
 	                		return full.isCollection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
 	                	},
-	               		"width": "15%", 
+	               		"width": "15%",
 	               		"targets": 3
 	               	},
 	            ]
@@ -136,14 +136,14 @@
 				var url = "/emc-metalnx-web/collections/redirectFromUserBookmarksToCollections/";
 				ajaxEncapsulation(url, "POST", {path: path}, showCollections, null, null, null);
 			}
-			
+
 			function showCollections() {
 				window.location = "/emc-metalnx-web/collections/";
-				
+
 			}
 		/*]]>*/
 		</script>
-	
+
 	</div> <!-- /. Page Content -->
 
 </body>

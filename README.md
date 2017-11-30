@@ -94,3 +94,7 @@ Add a global config to turn on/off certain features via metalnx.properties. This
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
+
+* #25 search - default to 'contains'
+
+* #11 Consider removing Jquery data table search filter as confusing next to the planned global search 

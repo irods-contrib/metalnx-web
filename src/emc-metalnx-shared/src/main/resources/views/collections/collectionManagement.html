@@ -34,7 +34,7 @@
 <body>
 	<div layout:fragment="content">
 		<h1 class="page-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h1>
-		<a id="collections-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+		<a id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
 		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true">Search Results</a></li>
