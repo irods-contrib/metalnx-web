@@ -206,9 +206,6 @@ public class DataGridUserFavorite implements Serializable, Comparable<DataGridUs
 		if (id != null) {
 			builder.append("id=").append(id).append(", ");
 		}
-		if (user != null) {
-			builder.append("user=").append(user).append(", ");
-		}
 		if (path != null) {
 			builder.append("path=").append(path).append(", ");
 		}

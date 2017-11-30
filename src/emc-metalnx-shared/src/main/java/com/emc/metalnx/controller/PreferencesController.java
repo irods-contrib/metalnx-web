@@ -61,6 +61,7 @@ public class PreferencesController {
 
 	@RequestMapping(value = "/")
 	public String index(final Model model, final HttpServletRequest request) {
+		logger.info("index()");
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 		String locale = loggedUser.getLocale();
 
@@ -77,6 +78,7 @@ public class PreferencesController {
 		UserPreferences userPreferences = new UserPreferences();
 		userPreferences.setLocaleLanguage(locale);
 		userPreferences.setForceFileOverwriting(loggedUser.isForceFileOverwriting());
+		userPreferences.setAdvancedView(loggedUser.isAdvancedView());
 
 		model.addAttribute("preferences", userPreferences);
 		model.addAttribute("uiMode", uiMode);

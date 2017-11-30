@@ -449,7 +449,6 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 
 	@Override
 	public String toString() {
-		final int maxLen = 10;
 		StringBuilder builder = new StringBuilder();
 		builder.append("DataGridUser [");
 		if (id != null) {
@@ -499,10 +498,10 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 		}
 		builder.append("advancedView=").append(advancedView).append(", ");
 		if (bookmarks != null) {
-			builder.append("bookmarks=").append(bookmarks.toString()).append(", ");
+			builder.append("bookmarks=").append(bookmarks).append(", ");
 		}
 		if (favorites != null) {
-			builder.append("favorites=").append(favorites.toString());
+			builder.append("favorites=").append(favorites);
 		}
 		builder.append("]");
 		return builder.toString();
