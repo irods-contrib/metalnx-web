@@ -20,6 +20,7 @@ public class UserPreferences {
 
 	private String localeLanguage;
 	private boolean forceFileOverwriting;
+	private boolean advancedView;
 
 	/**
 	 * Returns whether forceFileOverwriting is set or not
@@ -54,4 +55,27 @@ public class UserPreferences {
 		this.localeLanguage = localeLanguage;
 	}
 
+	/**
+	 * @return the <code>boolean</code> that is true for advanced view, otherwise is
+	 *         normal view
+	 */
+	public boolean isAdvancedView() {
+		return advancedView;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserPreferences [");
+		if (localeLanguage != null) {
+			builder.append("localeLanguage=").append(localeLanguage).append(", ");
+		}
+		builder.append("forceFileOverwriting=").append(forceFileOverwriting).append(", advancedView=")
+				.append(advancedView).append("]");
+		return builder.toString();
+	}
+
+	public void setAdvancedView(boolean advancedView) {
+		this.advancedView = advancedView;
+	}
 }

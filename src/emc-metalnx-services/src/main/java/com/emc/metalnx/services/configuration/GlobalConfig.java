@@ -27,4 +27,11 @@ public class GlobalConfig {
 		this.ticketsEnabled = ticketsEnabled;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("GlobalConfig [ticketsEnabled=").append(ticketsEnabled).append("]");
+		return builder.toString();
+	}
+
 }

@@ -73,4 +73,13 @@ public interface UserDao extends GenericDao<DataGridUser, Long> {
 	 * @return list of users
 	 */
 	public List<DataGridUser> findByQueryString(String query);
+	
+	/**
+	 * Update advancedView by username
+	 * @param username
+	 * @param zone
+	 * @return <code>boolean</code> that is true for advanced view, otherwise is normal view
+	 */
+	//boolean updateAdvancedView(DataGridUser user);
+	
 }
