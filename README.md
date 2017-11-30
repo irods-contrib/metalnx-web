@@ -91,6 +91,11 @@ Updated Jargon and controller code to gracefully handle no permission errors wit
 
 Add a global config to turn on/off certain features via metalnx.properties. This allows sites to globally turn off features such as tickets.
 
+#### Add normal/advanced view niehs #17
+
+Add preferences to toggle between normal/advanced view and made dataGridUser.advancedView a model attribute always available in thymeleaf pages so
+that the interface can show or hide features based on normal or power users
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
