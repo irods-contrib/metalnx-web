@@ -17,9 +17,7 @@ package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -501,24 +499,10 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 		}
 		builder.append("advancedView=").append(advancedView).append(", ");
 		if (bookmarks != null) {
-			builder.append("bookmarks=").append(toString(bookmarks, maxLen)).append(", ");
+			builder.append("bookmarks=").append(bookmarks.toString()).append(", ");
 		}
 		if (favorites != null) {
-			builder.append("favorites=").append(toString(favorites, maxLen));
-		}
-		builder.append("]");
-		return builder.toString();
-	}
-
-	private String toString(Collection<?> collection, int maxLen) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("[");
-		int i = 0;
-		for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
-			if (i > 0) {
-				builder.append(", ");
-			}
-			builder.append(iterator.next());
+			builder.append("favorites=").append(favorites.toString());
 		}
 		builder.append("]");
 		return builder.toString();
