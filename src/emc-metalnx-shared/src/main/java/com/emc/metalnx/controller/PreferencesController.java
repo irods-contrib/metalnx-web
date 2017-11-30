@@ -19,6 +19,8 @@ package com.emc.metalnx.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,8 @@ public class PreferencesController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
+
+	public final static Logger logger = LoggerFactory.getLogger(PreferencesController.class);
 
 	// ui mode that will be shown when the rods user switches mode from admin to
 	// user and vice-versa
@@ -85,14 +89,21 @@ public class PreferencesController {
 			final HttpServletRequest request, final HttpServletResponse response)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("action()");
+		logger.info("preferences:{}", preferences);
+
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+		logger.debug("current logged in user:{}", loggedUser);
 		loggedUser.setLocale(preferences.getLocaleLanguage());
 		loggedUser.setForceFileOverwriting(preferences.isForceFileOverwriting());
 		loggedUser.setAdvanceView(preferences.isAdvancedView());
+		logger.debug("modified logged in user:{}", loggedUser);
+
 		userService.modifyUser(loggedUser);
+		logger.info("preferences were saved");
 
 		localeResolver.setLocale(request, response, StringUtils.parseLocaleString(preferences.getLocaleLanguage()));
-		return "redirect:/dashboard/";
+		return "redirect:/preferences/";
 	}
 
 	@RequestMapping(value = "/chat/")
