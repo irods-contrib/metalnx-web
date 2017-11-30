@@ -51,9 +51,14 @@
 								<label for="forceFileOverwriting">File Upload</label>
 								<p>
 									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" />
+									<span th:text="#{refrences.index.advanced.view}"></span> 
+								</p>
+								<p>
+									<input type="checkbox" id="advancedView" th:field="*{advancedView}" />
 									<span th:text="#{refrences.index.overwrite.duplicates}"></span> 
 								</p>
 							</div>
+							</div>							
 						</div>
 					</div>
 

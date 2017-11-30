@@ -88,6 +88,7 @@ public class PreferencesController {
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 		loggedUser.setLocale(preferences.getLocaleLanguage());
 		loggedUser.setForceFileOverwriting(preferences.isForceFileOverwriting());
+		loggedUser.setAdvanceView(preferences.isAdvancedView());
 		userService.modifyUser(loggedUser);
 
 		localeResolver.setLocale(request, response, StringUtils.parseLocaleString(preferences.getLocaleLanguage()));

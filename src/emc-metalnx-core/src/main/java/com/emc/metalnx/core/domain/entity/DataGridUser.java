@@ -82,6 +82,9 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 
     @Column(name = "user_title", nullable = true, length = 60)
     private String title;
+    
+    @Column(name = "advanced_view", nullable =false)
+    private boolean advancedView;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.DETACH, orphanRemoval = true)
     private Set<DataGridUserBookmark> bookmarks;
@@ -194,6 +197,13 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
     public boolean isEnabled() {
         return enabled;
     }
+    
+    /**
+     * @return the advanced_view
+     */
+    public boolean isAdvancedView() {
+        return advancedView;
+    }
 
     /**
      * @param id
@@ -234,7 +244,15 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
+    
+    /**
+     * @param advancedView
+     * 			to set
+     */
+    public void setAdvanceView(boolean advancedView) {
+    	this.advancedView = advancedView;
+    }
+    
     /**
      * @return the firstName
      */
