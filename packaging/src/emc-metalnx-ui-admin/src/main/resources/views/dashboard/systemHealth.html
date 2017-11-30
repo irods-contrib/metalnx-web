@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<th:block th:fragment="systemHealth">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h4>System Health: 
+				<b th:class="'grid-status-title '+${systemStatus}">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-circle fa-stack-2x"></i>
+						<i class="fa fa-sitemap fa-stack-1x fa-inverse" style="color: #fff;"></i>
+					</span>
+					<span th:text="${systemStatus}" style="text-transform: capitalize;"></span>
+				</b>
+			</h4>
+		</div>
+	</div>
+</th:block>

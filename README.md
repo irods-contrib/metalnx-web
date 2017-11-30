@@ -1,7 +1,7 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
 ## Version: 4.2.1.0-SNAPSHOT
-## Git Tag: niehs/issue2
+## Git Tag: niehs/development
 ## Date: Oct 27, 2017
 
 
@@ -87,6 +87,14 @@ The current Selenium tests have been refactored to start with basic health check
 
 Updated Jargon and controller code to gracefully handle no permission errors with a helpful message and a return to the previous directory view
 
-#### NIEHS identified misc theming issues 
+#### Add properties based global control of features targeted at first towards removing tickets niehs #52
+
+Add a global config to turn on/off certain features via metalnx.properties. This allows sites to globally turn off features such as tickets.
+
+#### NIEHS identified misc theming issues
 
 * #22 fix search text
+
+* #25 search - default to 'contains'
+
+* #11 Consider removing Jquery data table search filter as confusing next to the planned global search 

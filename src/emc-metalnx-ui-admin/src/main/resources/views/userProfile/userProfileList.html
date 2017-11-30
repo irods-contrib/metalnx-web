@@ -24,9 +24,9 @@
 <body>
 	<!-- Current User Profile Table -->
 	<div th:fragment="userProfileList" class="row">
-	
+
 		<div class="" th:if="${foundUserProfiles}">
-		
+
 			<div class="col-sm-12">
 				<table class="table table-hover" id="userProfilesListTable">
 					<thead>
@@ -36,7 +36,7 @@
 							<th th:text="#{users.profile.table.header.action}"></th>
 						</tr>
 					</thead>
-	
+
 					<tbody>
 						<tr th:each="userProfile : ${userProfiles}">
 							<td th:text="${userProfile.getProfileName()}" class="col-profile-name"></td>
@@ -57,7 +57,7 @@
 				</table>
 			</div>
 		</div>
-		
+
 		<div class="col-sm-12" th:unless="${foundUserProfiles}">
 			<div class="alert alert-danger" role="alert">
 				<p class="text-center">
@@ -65,7 +65,7 @@
 				</p>
 			</div>
 		</div>
-		
+
 		<!-- Modal -->
 		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -80,38 +80,39 @@
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.profile.removal.label}"></span>
-						<b><span id="elementToBeRemoved"></span></b> 
+						<b><span id="elementToBeRemoved"></span></b>
 						?
 					</div>
 					<div class="modal-footer">
-					  <button type="button" class="btn btn-default" data-dismiss="modal" 
+					  <button type="button" class="btn btn-default" data-dismiss="modal"
 					  	id="btnConfProfileRemoval_No" th:text="#{confirmation.message.cancel}">
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();" 
+					  <button type="button" class="btn btn-primary" onclick="removeElement();"
 					  	id="btnConfProfileRemoval_Yes" th:text="#{confirmation.message.yes}">
 					  </button>
 					</div>
 				</div>
 			</div>
-		</div>	
-		
+		</div>
+
 		<script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
-		
+
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var profileName;
 			var profileId;
-		
+
 			$(document).ready(function(){
-				//$("#userProfilesListTable").tablesorter(); 
+				//$("#userProfilesListTable").tablesorter();
 				var userProfileTable = $("#userProfilesListTable").DataTable({
 					"dom": dtPatternMlxStandard,
 				    "language": i18n,
 					"stateSave": true,
+        	"searching": false,
 					"autoWidth": false,
 				    "stateSaveParams": function (settings, data) {
 				    	data.search.search = "";
-				    },	    	        
+				    },
 				    "initComplete": function(settings){
 			            $('#userProfilesListTable tbody td').each(function () {
 			            	$(this).attr('title', $(this).text().trim());
@@ -127,11 +128,11 @@
 			        }
 				});
 			});
-			
+
 			function removeElement() {
 				window.location = [[${urlMap.URL_REMOVE_USER_PROFILE}]] + profileId + "/";
-			} 
-		
+			}
+
 			/* Show dialog to confirm user removal */
 	        function confirmUserProfileRemoval(userProfileName, userProfileId) {
 				profileName = userProfileName;
@@ -141,7 +142,7 @@
 			}
         /*]]>*/
 		</script>
-		
+
 	</div>
 	<!-- /. row Current User Profile Table -->
 </body>

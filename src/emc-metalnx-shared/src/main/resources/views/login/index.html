@@ -63,7 +63,11 @@
                     </div>
                     <div class="login_fields_submit">
                         <input type="submit" value="Login" id="loginBtn"/>
-                        <a id="haveTicketBtn" href="#" onclick="showAnonymousLogin();" th:text="#{ticket.login.access}"></a>
+
+				            <th:block th:if="${globalConfig.isTicketsEnabled()}">
+											<a id="haveTicketBtn" href="#" onclick="showAnonymousLogin();" th:text="#{ticket.login.access}"></a>
+				            </th:block>
+
                     </div>
                 </form>
 

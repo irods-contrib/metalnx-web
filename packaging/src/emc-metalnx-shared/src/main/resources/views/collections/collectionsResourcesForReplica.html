@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<th:block th:fragment="collectionsResourcesForReplica">
+
+	<select class="form-control" name="resourcesForReplication" id="" th:if="${ not #lists.isEmpty(resources) }" style="width:66%">
+		<th:block th:each="resource : ${resources}">
+			<option th:value="${resource.name}"> 
+				<span th:text="${resource.name}"></span> 
+			</option>
+		</th:block>	
+	</select>
+	
+	<!-- Disabling form submission if there is no resource available for replication -->
+	<th:block th:if="${ #lists.isEmpty(resources) }">
+		<p th:text="#{collections.warning.noresources}"></p>
+		<script>
+			$("#replicateButton").prop('disabled', true);
+		</script>
+	</th:block>
+	
+</th:block>

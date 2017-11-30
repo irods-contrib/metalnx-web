@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+    lang="en"
+    layout:decorator="template">
+
+<head>
+	<title th:text="#{tab.title.profile}">EMC Metalnx - Profile</title>
+</head>
+
+<body>
+
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left" th:text="#{users.profile.management.page.title}"></h1>
+				<a id="profiles-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+				<div th:if="${ userProfileAddedSuccessfully != null or userProfileModifiedSuccessfully != null or profileRemovedSuccessfully != null }"
+					class="alert alert-success alert-dismissible text-center clear" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:if="${ userProfileAddedSuccessfully }" th:text="${ userProfileAddedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ userProfileModifiedSuccessfully }" th:text="${ userProfileModifiedSuccessfully }" class="text-center"></span></b>
+				  	<b><span th:if="${ profileRemovedSuccessfully }" th:text="${ profileRemovedSuccessfully }" class="text-center"></span></b>
+				  	
+					<span th:if="${ userProfileAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
+					<span th:if="${ userProfileModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
+					<span th:if="${ profileRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
+				</div>
+			</div>
+		</div>
+		<!-- User menu Box -->
+		<div class="row">
+			<div class="col-sm-12">
+				<a id="addProfileButton" th:href="@{ ${urlMap.URL_ADD_USER_PROFILE} }" class="btn btn-primary btn-sm btn-users" th:text="#{users.profile.management.add.button}" style="margin-right: 5px;"></a>
+				<a th:href="@{ ${urlMap.URL_USER_PROFILES_CSV_REPORT} }"
+				   class="btn btn-default btn-sm btn-users" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
+			</div>
+		</div> <!-- /. row User menu Box -->
+				
+
+		<!-- Table loader Ajax Gif -->
+		<div id="table-loader" class="table-loader">
+			<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+			<p class="text-center" th:text="#{loading.table.label}"></p>
+		</div>
+
+		<!-- Current Groups Table -->
+		<div id="userProfilesListAsync"></div>
+
+		<script type="text/javascript" th:inline="javascript">
+		$(document).ready(function(){
+			// Add popover on page title
+			$('#profiles-page-title').popover({
+				title:[[#{users.profile.management.page.title}]],
+				content:[[#{users.profile.management.page.title.popover}]],
+				trigger: 'hover click',
+				placement: 'left',
+			});
+			// Add tooltip on Users button
+			$('#usersMgtBtn').tooltip({
+				trigger: 'hover click',
+				placement: 'top',
+			});
+			// Add tooltip on Profiles button
+			$('#profilesMgtBtn').tooltip({
+				trigger: 'hover click',
+				placement: 'top',
+			});
+		});
+			$(function() {
+				function populateUserProfileTableDiv(data) {
+					$("#userProfilesListAsync").html(data);
+					$("#table-loader").hide();
+					$("#userProfilesListAsync").show();
+				}
+				ajaxEncapsulation("/emc-metalnx-web/users/profile/findAll/", "GET", "", populateUserProfileTableDiv, null, null);
+			});
+		</script>
+				
+	</div> <!-- /. Page Content -->
+
+</body>
+
+</html>
