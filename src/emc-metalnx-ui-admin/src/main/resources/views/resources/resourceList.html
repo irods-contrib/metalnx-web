@@ -26,9 +26,9 @@
 <body>
 	<!-- Current Resources Table -->
 	<div th:fragment="resourceList" class="row">
-	
+
 		<div class="col-sm-12" >
-	
+
 			<table class="table table-hover" id="resourcesListTable">
 				<thead>
 					<tr>
@@ -62,7 +62,7 @@
 			</table>
 			<!-- /. col-sm-12 -->
 		</div>
-		
+
 		<!-- Modal -->
 		<div class="modal fade" id="deletionModal" tabindex="-1" role="dialog" aria-labelledby="myDeletionModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -85,7 +85,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Resource Info Modal -->
 		<div class="modal fade" id="rescInfoModal" tabindex="-1" role="dialog" aria-labelledby="rescInfoModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -132,25 +132,26 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- <script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script> -->
-			
+
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var resourceToBeDeleted;
-			
+
 			/* $(function(){
-				$("#resourcesListTable").tablesorter(); 
+				$("#resourcesListTable").tablesorter();
 			}); */
 			$(document).ready(function(){
 				var datatable = $("#resourcesListTable").DataTable({
 					"dom": dtPatternMlxStandard,
 	    		    "language": i18n,
 					"stateSave": true,
+					"searching": false,
 					"autoWidth": false,
 	    		    "stateSaveParams": function (settings, data) {
 	    		    	data.search.search = "";
-	    		    },	    	        
+	    		    },
 	    		    "initComplete": function(settings){
 	    	            $('#resourcesListTable tbody td').each(function () {
 	    	            	$(this).attr('title', $(this).text().trim());
@@ -168,22 +169,22 @@
 			});
 			function removeElement() {
 				window.location = [[${urlMap.URL_DELETE_RESOURCE}]] + resourceToBeDeleted + "/";
-			} 
-			
+			}
+
 	        function confirmResourceDeletion(resourceName) {
 	        	resourceToBeDeleted = resourceName;
 				$("#deletionModal").modal("show");
 			}
-	        
-	        
+
+
 	        function viewInfo(resourceName){
 				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
 				ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 			}
-			
+
 			function displayResourceInfo(data){
 				var json = $.parseJSON(data);
-				
+
 				$("#rescInfoModal #name").html(json["name"]);
 				$("#rescInfoModal #type").html(json["type"]);
 				$("#rescInfoModal #zone").html(json["zone"]);
@@ -193,12 +194,12 @@
 				$("#rescInfoModal #parent").html(json["parent"]);
 				//$("#rescInfoModal #info").html(json["info"]);
 				//$("#rescInfoModal #status").html(json["status"]);
-				
+
 				$('#rescInfoModal').modal('show');
 			}
 		/*]]>*/
-		</script>	
-		
+		</script>
+
 	</div>
 	<!-- /. row Current resouces Table -->
 </body>
