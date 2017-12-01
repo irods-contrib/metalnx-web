@@ -1,12 +1,11 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
 ## Version: 4.2.1.0-SNAPSHOT
-## Git Tag: niehs/issue2
+## Git Tag: 
 ## Date: Oct 27, 2017
 
 
 #### This is a fork of the open source Metalnx browser as a candidate basis for Cloud Browser II. This is meant to develop as a generalized tool with hooks, plugins, and theming to allow use in a broader community. Please join the project if interested!
-
 
 Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration,
 collection management, and metadata management tasks removing the need to memorize the long list of icommands.
@@ -87,6 +86,19 @@ The current Selenium tests have been refactored to start with basic health check
 
 Updated Jargon and controller code to gracefully handle no permission errors with a helpful message and a return to the previous directory view
 
-#### NIEHS identified misc theming issues 
+#### Add properties based global control of features targeted at first towards removing tickets niehs #52
+
+Add a global config to turn on/off certain features via metalnx.properties. This allows sites to globally turn off features such as tickets.
+
+#### Add normal/advanced view niehs #17
+
+Add preferences to toggle between normal/advanced view and made dataGridUser.advancedView a model attribute always available in thymeleaf pages so
+that the interface can show or hide features based on normal or power users
+
+#### NIEHS identified misc theming issues
 
 * #22 fix search text
+
+* #25 search - default to 'contains'
+
+* #11 Consider removing Jquery data table search filter as confusing next to the planned global search 

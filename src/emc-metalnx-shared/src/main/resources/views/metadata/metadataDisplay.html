@@ -36,12 +36,12 @@
 	<body>
 		<div layout:fragment="content">
 			<h1 class="page-header pull-left" th:text="#{metadata.search.page.title}"></h1>
-			<a id="search-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+			<a id="search-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 			<div class="row metadata">
 				<div class="col-xs-12 tree-view-panel">
 					<div class="tabpanel">
 						<ul class="nav nav-tabs" role="tablist">
-							<li class="active" ><a href="#metadata-search" aria-controls="profile" role="tab" data-toggle="tab" >Metadata (AVU)</a></li>
+							<li class="active" ><a href="#metadata-search" aria-controls="profile" role="tab" data-toggle="tab" th:text="#{metadata.search.title}">Metadata Search</a></li>
 							<li ><a href="#properties-search" aria-controls="profile" role="tab" data-toggle="tab" >Properties</a></li>
 						</ul>
 						<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
@@ -53,9 +53,9 @@
 											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0"/>
 
 												<select id="" class="metadataOper metadataSearchField form-control" name="operator">
-													<option selected="" value="EQUAL">Is (Equals)</option>
+													<option value="EQUAL">Is (Equals)</option>
 													<option value="NOT_EQUAL">Is Not (Not Equals)</option>
-													<option value="LIKE">Contains</option>
+													<option selected="" value="LIKE">Contains</option>
 													<option value="NOT_LIKE">Does Not Contain</option>
 												</select>
 
@@ -90,9 +90,9 @@
 								                <option value="CHECKSUM" th:text="#{collections.management.checksum.label}">Checksum</option>
 											</select>
 											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator">
-												<option selected="" value="EQUAL" th:text="#{text.is.equals}">Is (Equals)</option>
+												<option  value="EQUAL" th:text="#{text.is.equals}">Is (Equals)</option>
 												<option value="NOT_EQUAL" th:text="#{text.is.not.equals}">Is Not (Not Equals)</option>
-												<option value="LIKE" th:text="#{text.contains}">Contains</option>
+												<option selected="" value="LIKE" th:text="#{text.contains}">Contains</option>
 												<option value="NOT_LIKE" th:text="#{text.not.contains}">Does Not Contain</option>
 											</select>
 											<input type="text" class="propertiesVal form-control propertiesSearchField" name="value" placeholder="Value" />
@@ -209,9 +209,9 @@
 							});
 						}else{
 							$(this).parents('.propertiesSearchRow').find('.propertiesOper').html(
-								'<option selected="" value="EQUAL">Is (Equals)</option>'+
+								'<option  value="EQUAL">Is (Equals)</option>'+
 								'<option value="NOT_EQUAL">Is Not (Not Equals)</option>'+
-								'<option value="LIKE">Contains</option>'+
+								'<option selected="" value="LIKE">Contains</option>'+
 								'<option value="NOT_LIKE">Does Not Contain</option>'
 							);
 						}

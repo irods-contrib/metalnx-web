@@ -25,7 +25,7 @@
 </head>
 <body>
 	<div th:fragment="templateList" class="row">
-	
+
 		<div class="col-sm-12">
 			<div class="">
 				<table class="table table-hover" id="templatesListTable">
@@ -42,21 +42,21 @@
 							<th th:text="#{templates.management.table.action.label}"></th>
 						</tr>
 					</thead>
-	
+
 					<tbody id="fBody">
 						<tr th:each="template : ${templates}">
 							<td class="tableCheckBoxCol" th:id="${template.templateName}">
-								<input 
-									type="checkbox" 
-									name="selectedTemplates" 
-									th:id="${'template_' + template.id }" 
+								<input
+									type="checkbox"
+									name="selectedTemplates"
+									th:id="${'template_' + template.id }"
 									th:value="${ template.id }" />
 							</td>
 							<td>
 								<span th:if="${template.accessType == 'private'}" class="fa fa-lock"></span>
 								<span th:if="${template.accessType == 'system'}" class="fa fa-globe"></span>
 							</td>
-							<td th:title="${template.templateName}"> 
+							<td th:title="${template.templateName}">
 								<span th:text="${template.templateName}"></span>
 							</td>
 							<td th:text="${template.version}" th:title="${template.version}"></td>
@@ -65,8 +65,8 @@
 							<td class="hidden-xs hidden-sm" th:text="${template.createTs}" th:title="${template.createTs}"></td>
 							<td th:text="${template.modifyTs}" th:title="${template.modifyTs}"></td>
 							<td >
-								<a type="button" class="btn btn-default btn-xs" title="Edit" 
-								th:id="${'btn_modify_' + template.templateName}" 
+								<a type="button" class="btn btn-default btn-xs" title="Edit"
+								th:id="${'btn_modify_' + template.templateName}"
 								th:href="'/emc-metalnx-web/templates/modify/?templateId='+${template.id}">
 									<i class="fa fa-pencil"></i><span th:text="#{templates.edit.button}"></span>
 								</a>
@@ -76,7 +76,7 @@
 				</table>
 			</div>
 		</div>
-			
+
 		<!-- Modal -->
 		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -91,18 +91,18 @@
                         <div class="alert alert-info" role="alert" id="templatesToBeRemoved"></div>
 					</div>
 					<div class="modal-footer">
-					  <button type="button" class="btn btn-default" data-dismiss="modal" 
+					  <button type="button" class="btn btn-default" data-dismiss="modal"
 					  	th:text="#{confirmation.message.cancel}">
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();" 
+					  <button type="button" class="btn btn-primary" onclick="removeElement();"
 					  	th:text="#{confirmation.message.yes}" id="removeTemplatesConfBtn">
 					  </button>
 					</div>
 				</div>
 			</div>
 		</div>
-	
-		
+
+
 	    <script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
 		<!-- User removal confirmation -->
 		<script th:inline="javascript">
@@ -110,7 +110,7 @@
 			$(function(){
 				// Handle select all checkboxes
 				$("input[name=selectAllCheckboxes]").change(function(){
-					
+
 					//select all collections
 					if($(this).is(":checked")){
 						url = "/emc-metalnx-web/templates/selectTemplate/";
@@ -119,7 +119,7 @@
 							$(this).prop("checked", true);
 							ajaxEncapsulation(url, "POST", {id: id}, null, null, null);
 						});
-						
+
 						//hiding the rename button
 						var totalCheckboxesChecked = $("#fBody input[type=checkbox]:checked").length;
 						if(totalCheckboxesChecked >= 1) {
@@ -129,7 +129,7 @@
 							$("#actions button").prop("disabled", true);
 						}
 					}
-					
+
 					//unselect all collections
 					else {
 						$("#actions button").prop("disabled", true);
@@ -138,20 +138,20 @@
 							var id = $(this).attr("value");
 							$(this).prop("checked", false);
 							ajaxEncapsulation(url, "POST", {id: id}, handleRemoveTemplatePermission, null, null);
-						});	
+						});
 					}
 				});
-				
+
 				$("#fBody input[type=checkbox]").change(function(){
-					
+
 					id = $(this).attr("value");
-					
+
 					if($(this).is(":checked")){
 						$("#actions button").prop("disabled", false);
 						url = "/emc-metalnx-web/templates/selectTemplate/";
 						var totalCheckboxesChecked = $("#fBody input[type=checkbox]:checked").length;
 					}
-					else {	
+					else {
 						url = "/emc-metalnx-web/templates/unselectTemplate/";
 						var totalCheckboxesChecked = $("#fBody input[type=checkbox]:checked").length;
 						if(totalCheckboxesChecked >= 1) {
@@ -169,15 +169,16 @@
 					}
 					ajaxEncapsulation(url, "POST", {id: id}, handleRemoveTemplatePermission, null, null);
 				});
-				
+
 				var datatable = $("#templatesListTable").DataTable({
 					"dom": dtPatternMlxTemplatesList,
 	    		    "language": i18n,
 					"stateSave": true,
+					"searching": false,
 					"autoWidth": false,
 	    		    "stateSaveParams": function (settings, data) {
 	    		    	data.search.search = "";
-	    		    },	    		    
+	    		    },
 	    		    "initComplete": function(settings){
 	    	            $('#templatesListTable tbody td').each(function () {
 	    	            	$(this).attr('title', $(this).text().trim());
@@ -198,7 +199,7 @@
 				});
 				addTemplateActionBtn('templatesListTable',datatable);
 			});
-		
+
 			function handleRemoveTemplatePermission(canRemove){
 			    if(canRemove){
 			        $('#removeTemplatesBtn').parent().removeClass('hideElement');
@@ -206,34 +207,34 @@
 			        $('#removeTemplatesBtn').parent().addClass('hideElement');
 			    }
 			}
-		
+
 			function removeElement() {
 				window.location = [[${urlMap.URL_DELETE_TEMPLATE}]];
-			} 
-		
+			}
+
 	        function confirmTemplateRemoval() {
-	        	var itemsToBeRemoved = "";	
+	        	var itemsToBeRemoved = "";
 	        	var checkboxesSelected = $("#templatesListTable #fBody input[name=selectedTemplates]:checked");
-	        	
+
 	        	checkboxesSelected.each(function(){
 	        		console.log($(this));
 	        		itemsToBeRemoved += "<span>" + getSelectedTemplate($(this)) + "</span><br />";
-				});	
-	        	
+				});
+
 				$("#removalModal #templatesToBeRemoved").html(itemsToBeRemoved);
 				$("#removalModal").modal("show");
 			}
-			
+
 			function exportFilesToXML() {
 				$("input[type=checkbox]").prop("checked", false);
-				$("#actions a").hide();	
+				$("#actions a").hide();
 				window.location = "/emc-metalnx-web/templates/exportTemplatesToXMLFile/";
 			}
-			
+
 			function getSelectedTemplate(checkbox) {
 				return checkbox.parent().siblings().eq(1).text().trim();
 			}
-			
+
 		/*]]>*/
 		</script>
 	</div>

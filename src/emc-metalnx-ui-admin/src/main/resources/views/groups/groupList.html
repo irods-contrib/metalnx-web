@@ -23,9 +23,9 @@
 <body>
 	<!-- Current Groups Table -->
 	<div th:fragment="groupList" class="row">
-	
+
 		<div class="col-sm-12" >
-	
+
 			<table class="table table-hover" id="groupsListTable">
 				<thead>
 					<tr>
@@ -56,7 +56,7 @@
 			</table>
 			<!-- /. col-sm-12 -->
 		</div>
-		
+
 		<!-- Modal -->
 		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -67,11 +67,11 @@
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.removal.label}"></span>
-						<span id="elementToBeRemoved" style="font-weight: bold;"></span> 
+						<span id="elementToBeRemoved" style="font-weight: bold;"></span>
 						?
 					</div>
 					<div class="modal-footer confirmation">
-					  <button type="button" class="btn btn-default" data-dismiss="modal" 
+					  <button type="button" class="btn btn-default" data-dismiss="modal"
 					  	th:text="#{confirmation.message.cancel}">
 					  </button>
 					  <button type="button" class="btn btn-primary" onclick="removeElement();" id="deleteGroupConfBtn"
@@ -81,9 +81,9 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- <script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script> -->
-			
+
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			$(document).ready(function(){
@@ -91,10 +91,11 @@
 					"dom": dtPatternMlxStandard,
 	    		    "language": i18n,
 					"stateSave": true,
+					"searching": false,
 					"autoWidth": false,
 	    		    "stateSaveParams": function (settings, data) {
 	    		    	data.search.search = "";
-	    		    },	    	        
+	    		    },
 	    		    "initComplete": function(settings){
 	    	            $('#groupsListTable tbody td').each(function () {
 	    	            	$(this).attr('title', $(this).text().trim());
@@ -115,15 +116,15 @@
 			function removeElement() {
 				var groupname = $("#elementToBeRemoved").html();
 				window.location = [[${urlMap.URL_DELETE_GROUP}]] + groupname + "/";
-			} 
-			
+			}
+
 	        function confirmGroupRemoval(groupname) {
 				$("#elementToBeRemoved").html(groupname);
 				$("#removalModal").modal("show");
 			}
         /*]]>*/
-		</script>	
-		
+		</script>
+
 	</div>
 	<!-- /. row Current Groups Table -->
 </body>

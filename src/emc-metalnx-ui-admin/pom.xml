@@ -53,7 +53,8 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-										<copy
+									<echo message="copy template from local default" /> 
+										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
 									</tasks>
@@ -86,7 +87,9 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-										<copy file="${metalnx.custom.template}"
+									  <echo message="copy template from ${metalnx.custom.template}" /> 
+									
+										<copy  overwrite="true" file="${metalnx.custom.template}"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
 									</tasks>
 								</configuration>

@@ -34,7 +34,7 @@
 <body>
 	<div layout:fragment="content">
 		<h1 class="page-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h1>
-		<a id="collections-page-title" href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+		<a id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
 		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true">Search Results</a></li>
@@ -504,27 +504,32 @@
 								<div id="filesList">
 								</div>
 							</div>
-
+							
 							<div id="uploadControlOptions">
 								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
-								<div class="row form-group">
-									<div class="col-md-6">Resource</div>
-									<div class="col-md-6">
-											<input type="checkbox" id="inputReplica" name="replica"
-												value="1" /> &nbsp;&nbsp;<span>Replica</span>
-									</div>
-									<div class="col-md-6">
-										<select class="form-control" name="resourceToUpload"
-											id="selectResourceToUpload">
-										</select>
-									</div>
-									<div class="col-md-6">
-										<select class="form-control" name="resources" disabled="disabled"
-											id="selectResource">
-										</select>
-									</div>
-								</div>
+								
+									<div class="row form-group">
+										<th:block th:if="${dataGridUser.isAdvancedView()}">
+										<div class="col-md-6">Resource</div>
+										<div class="col-md-6">
+												<input type="checkbox" id="inputReplica" name="replica"
+													value="1" /> &nbsp;&nbsp;<span>Replica</span>
+										</div>
+										
+										<div class="col-md-6">
+											<select class="form-control" name="resourceToUpload"
+												id="selectResourceToUpload">
+											</select>
+										</div>
 
+										<div class="col-md-6">
+											<select class="form-control" name="resources" disabled="disabled"
+												id="selectResource">
+											</select>
+										</div>
+									</th:block>
+									</div>
+								
  								<div class="row form-group">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputOverwriteDuplicateFiles"
@@ -532,13 +537,16 @@
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
+									<th:block th:if="${dataGridUser.isAdvancedView()}">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputChecksum" name="checksum"
 										value="1" /> &nbsp;&nbsp;<span>Checksum</span>
 									</div>
+									</th:block>
  								</div>
-
+									
 							</div>
+						
 						</form>
 
 					</div>
@@ -999,6 +1007,7 @@
 				    "language": i18n,
 				    "destroy": true,
 				    "autoWidth": false,
+						"searching": false,
 				    "ajax": {
 				        url: urlService,
 				        "data": function ( d ) {

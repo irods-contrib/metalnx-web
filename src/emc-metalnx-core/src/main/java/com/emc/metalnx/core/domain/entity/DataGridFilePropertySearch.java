@@ -42,7 +42,19 @@ public class DataGridFilePropertySearch {
 
 	@Override
 	public String toString() {
-		return String.format("%s %s %s", attribute.getFieldName(), operator.toString(), value);
+		StringBuilder builder = new StringBuilder();
+		builder.append("DataGridFilePropertySearch [");
+		if (attribute != null) {
+			builder.append("attribute=").append(attribute).append(", ");
+		}
+		if (operator != null) {
+			builder.append("operator=").append(operator).append(", ");
+		}
+		if (value != null) {
+			builder.append("value=").append(value);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 
 	/**
