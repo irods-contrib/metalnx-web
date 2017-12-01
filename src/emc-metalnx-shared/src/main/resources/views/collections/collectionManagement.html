@@ -504,27 +504,32 @@
 								<div id="filesList">
 								</div>
 							</div>
-
+							
 							<div id="uploadControlOptions">
 								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
-								<div class="row form-group">
-									<div class="col-md-6">Resource</div>
-									<div class="col-md-6">
-											<input type="checkbox" id="inputReplica" name="replica"
-												value="1" /> &nbsp;&nbsp;<span>Replica</span>
-									</div>
-									<div class="col-md-6">
-										<select class="form-control" name="resourceToUpload"
-											id="selectResourceToUpload">
-										</select>
-									</div>
-									<div class="col-md-6">
-										<select class="form-control" name="resources" disabled="disabled"
-											id="selectResource">
-										</select>
-									</div>
-								</div>
+								
+									<div class="row form-group">
+										<th:block th:if="${dataGridUser.isAdvancedView()}">
+										<div class="col-md-6">Resource</div>
+										<div class="col-md-6">
+												<input type="checkbox" id="inputReplica" name="replica"
+													value="1" /> &nbsp;&nbsp;<span>Replica</span>
+										</div>
+										
+										<div class="col-md-6">
+											<select class="form-control" name="resourceToUpload"
+												id="selectResourceToUpload">
+											</select>
+										</div>
 
+										<div class="col-md-6">
+											<select class="form-control" name="resources" disabled="disabled"
+												id="selectResource">
+											</select>
+										</div>
+									</th:block>
+									</div>
+								
  								<div class="row form-group">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputOverwriteDuplicateFiles"
@@ -532,13 +537,16 @@
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
+									<th:block th:if="${dataGridUser.isAdvancedView()}">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputChecksum" name="checksum"
 										value="1" /> &nbsp;&nbsp;<span>Checksum</span>
 									</div>
+									</th:block>
  								</div>
-
+									
 							</div>
+						
 						</form>
 
 					</div>
