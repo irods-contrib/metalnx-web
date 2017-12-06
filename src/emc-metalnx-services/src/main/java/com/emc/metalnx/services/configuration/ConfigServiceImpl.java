@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -36,6 +38,8 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class ConfigServiceImpl implements ConfigService {
+
+	public final static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
 	@Value("${msi.api.version}")
 	private String msiAPIVersionSupported;
@@ -73,8 +77,16 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${populate.msi.enabled}")
 	private boolean populateMsiEnabled;
 
-	// @Value("${metalnx.enable.tickets}")
+	@Value("${metalnx.enable.tickets}")
 	private boolean ticketsEnabled;
+
+	public GlobalConfig getGlobalConfig() {
+		logger.info("getGlobalConfig()");
+		GlobalConfig globalConfig = new GlobalConfig();
+		globalConfig.setTicketsEnabled(this.isTicketsEnabled());
+		logger.debug("globalConfig:{}", globalConfig);
+		return globalConfig;
+	}
 
 	@Override
 	public String getMsiAPIVersionSupported() {
@@ -152,5 +164,47 @@ public class ConfigServiceImpl implements ConfigService {
 
 	public void setTicketsEnabled(boolean ticketsEnabled) {
 		this.ticketsEnabled = ticketsEnabled;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ConfigServiceImpl [");
+		if (msiAPIVersionSupported != null) {
+			builder.append("msiAPIVersionSupported=").append(msiAPIVersionSupported).append(", ");
+		}
+		if (mlxMSIsExpected != null) {
+			builder.append("mlxMSIsExpected=").append(mlxMSIsExpected).append(", ");
+		}
+		if (irods41MSIsExpected != null) {
+			builder.append("irods41MSIsExpected=").append(irods41MSIsExpected).append(", ");
+		}
+		if (irods42MSIsExpected != null) {
+			builder.append("irods42MSIsExpected=").append(irods42MSIsExpected).append(", ");
+		}
+		if (otherMSIsExpected != null) {
+			builder.append("otherMSIsExpected=").append(otherMSIsExpected).append(", ");
+		}
+		if (irodsHost != null) {
+			builder.append("irodsHost=").append(irodsHost).append(", ");
+		}
+		if (irodsPort != null) {
+			builder.append("irodsPort=").append(irodsPort).append(", ");
+		}
+		if (irodsZone != null) {
+			builder.append("irodsZone=").append(irodsZone).append(", ");
+		}
+		if (irodsJobUser != null) {
+			builder.append("irodsJobUser=").append(irodsJobUser).append(", ");
+		}
+		if (irodsJobPassword != null) {
+			builder.append("irodsJobPassword=").append(irodsJobPassword).append(", ");
+		}
+		if (irodsAuthScheme != null) {
+			builder.append("irodsAuthScheme=").append(irodsAuthScheme).append(", ");
+		}
+		builder.append("populateMsiEnabled=").append(populateMsiEnabled).append(", ticketsEnabled=")
+				.append(ticketsEnabled).append("]");
+		return builder.toString();
 	}
 }
