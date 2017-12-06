@@ -175,30 +175,22 @@ public class DataGridRule {
 
 	@Override
 	public String toString() {
-		final int maxLen = 10;
-		StringBuilder builder = new StringBuilder();
-		builder.append("DataGridRule [");
-		if (iCATHost != null) {
-			builder.append("iCATHost=").append(iCATHost).append(", ");
-		}
-		if (inputRuleParams != null) {
-			builder.append("inputRuleParams=")
-					.append(Arrays.asList(inputRuleParams).subList(0, Math.min(inputRuleParams.length, maxLen)))
-					.append(", ");
-		}
-		if (outputRuleParams != null) {
-			builder.append("outputRuleParams=")
-					.append(Arrays.asList(outputRuleParams).subList(0, Math.min(outputRuleParams.length, maxLen)))
-					.append(", ");
-		}
-		if (host != null) {
-			builder.append("host=").append(host).append(", ");
-		}
-		if (rule != null) {
-			builder.append("rule=").append(rule).append(", ");
-		}
-		builder.append("declareRuleOutputParams=").append(declareRuleOutputParams).append("]");
-		return builder.toString();
+		 RemoteRuleHeader header = new RemoteRuleHeader(host);
+	        StringBuilder ruleString = new StringBuilder();
+	        ruleString.append("\n");
+	        ruleString.append(rule);
+	        ruleString.append("{");
+	        ruleString.append("\n");
+	        if(declareRuleOutputParams) ruleString.append(initializeOutputParams() + "\n");
+	        ruleString.append(header.getRemoteRuleHeader());
+	        ruleString.append(getMSIParamsAsString());
+	        ruleString.append(header.getRemoteRuleFooter());
+	        ruleString.append("}");
+	        ruleString.append("\n");
+	        ruleString.append(getInputParamsAsString());
+	        ruleString.append(getOutputParamsAsString());
+
+	        return ruleString.toString();
 	}
 
 	private class RemoteRuleHeader {
