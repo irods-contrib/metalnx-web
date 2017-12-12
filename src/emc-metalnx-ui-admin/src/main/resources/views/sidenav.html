@@ -33,11 +33,8 @@
 					th:text="#{groups.management.menu.title}"></span></a></li>
 			<!-- Profile sidebar item -->
 			<li class="profile"><a
-				th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }"> <span
-					class="fa-stack fa-lg"> <i
-						class="fa fa-square-o fa-stack-2x menu-icon"></i> <i
-						class="fa fa-user fa-stack-1x menu-icon"></i>
-				</span> <span th:text="#{users.profile.management.menu.title}"></span>
+				th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }"> 
+						<i class="fa fa-user"></i> &nbsp;<span th:text="#{users.profile.management.menu.title}"></span>
 			</a></li>
 
 		</th:block>

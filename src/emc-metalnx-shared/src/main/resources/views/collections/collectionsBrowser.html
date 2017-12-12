@@ -19,7 +19,8 @@
 	<div class="alert alert-danger" role="alert"
 		th:if="${invalidPath != null}">
 		<p class="text-center">
-			<b th:text="${invalidPath}"></b> does not exist or user lacks access permission.
+			<b th:text="${invalidPath}"></b> does not exist or user lacks access
+			permission.
 		</p>
 	</div>
 </div>
@@ -29,7 +30,8 @@
 	<div class="alert alert-danger" role="alert"
 		th:if="${invalidStepsBackwards != null}">
 		<p class="text-center">
-			It is not possible to go "<b th:text="${invalidStepsBackwards}"></b>" steps backwards in history stack.
+			It is not possible to go "<b th:text="${invalidStepsBackwards}"></b>"
+			steps backwards in history stack.
 		</p>
 	</div>
 </div>
@@ -37,7 +39,8 @@
 	<div class="alert alert-danger" role="alert"
 		th:if="${invalidStepsForward != null}">
 		<p class="text-center">
-			It is not possible to go "<b th:text="${invalidStepsForward}"></b>" steps forward in history stack.
+			It is not possible to go "<b th:text="${invalidStepsForward}"></b>"
+			steps forward in history stack.
 		</p>
 	</div>
 </div>
@@ -55,12 +58,12 @@
 
 <!-- Download fail -->
 <div class="col-sm-12 hideElement" id="downloadFailureMessage">
-	<div class="alert alert-danger alert-dismissible text-center" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert">
-	  		<span aria-hidden="true">&times;</span>
-	  		<span class="sr-only">Close</span>
-	  	</button>
-	  	<span th:text="#{collection.browser.download.fail}"></span>
+	<div class="alert alert-danger alert-dismissible text-center"
+		role="alert">
+		<button type="button" class="close" data-dismiss="alert">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.download.fail}"></span>
 	</div>
 </div>
 
@@ -84,7 +87,8 @@
 		</button>
 		<span th:if="${fileUploaded != null}"
 			th:text="|The file ${fileUploaded} was successfully uploaded.|"></span>
-		<span th:unless="${fileUploaded != null}" th:text="#{collection.browser.upload.success}"></span>
+		<span th:unless="${fileUploaded != null}"
+			th:text="#{collection.browser.upload.success}"></span>
 	</div>
 </div>
 
@@ -151,7 +155,8 @@
 		</button>
 		<span th:if="${fileDeleted != null}"
 			th:text="|The file ${fileDeleted} was successfully deleted.|"></span>
-		<span th:unless="${fileDeleted != null}" th:text="#{collection.browser.files.deleted.success}"></span>
+		<span th:unless="${fileDeleted != null}"
+			th:text="#{collection.browser.files.deleted.success}"></span>
 	</div>
 </div>
 
@@ -169,8 +174,8 @@
 
 <!-- Add Modal -->
 <div class="modal fade" id="addAndModifyModal" tabindex="-1"
-	 role="dialog" aria-labelledby="myAddAndModifyModalLabel"
-	 aria-hidden="true">
+	role="dialog" aria-labelledby="myAddAndModifyModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-form-content">
@@ -185,47 +190,58 @@
 
 					<div class="row">
 						<form role="form" class="container-fluid registerForm"
-							  method="POST" th:object="${collection}"
-							  th:action="@{${requestMapping}}">
+							method="POST" th:object="${collection}"
+							th:action="@{${requestMapping}}" action="">
 
 							<input type="hidden" id="inputCollectionPath" th:field="*{path}" />
-							<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" />
+							<input type="hidden" id="inputCollectionParentPath"
+								th:field="*{parentPath}" />
 
 							<div class="form-group">
-								<b><span th:text="#{collections.add.form.current.path.alternate}"></span></b><br/>
+								<b><span
+									th:text="#{collections.add.form.current.path.alternate}"></span></b><br />
 								<span th:text="${currentPath}"></span>
 							</div>
 
 							<div class="form-group">
-								<label for="inputCollectionName" th:text="#{collections.add.form.collectionname.label}"></label>
-								<input type="text" class="form-control" id="inputCollectionName" th:placeholder="#{collections.add.form.collectionname.placeholder}" th:field="*{collectionName}" style="width:66%"/>
-								<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidCollectionNameIcon" style="right:33%"></i>
-								<small class="help-block hideElement" id="invalidCollectionNameMsg" th:text="#{collections.validation.name.duplicated}"></small>
-								<small class="help-block hideElement" id="emptyCollectionNameMsg" th:text="#{collections.validation.name.blank}"></small>
+								<label for="inputCollectionName"
+									th:text="#{collections.add.form.collectionname.label}"></label>
+								<input type="text" class="form-control" id="inputCollectionName"
+									th:placeholder="#{collections.add.form.collectionname.placeholder}"
+									th:field="*{collectionName}" style="width: 66%" /> <i
+									class="form-control-feedback glyphicon glyphicon-remove hideElement"
+									id="invalidCollectionNameIcon" style="right: 33%"></i> <small
+									class="help-block hideElement" id="invalidCollectionNameMsg"
+									th:text="#{collections.validation.name.duplicated}"></small> <small
+									class="help-block hideElement" id="emptyCollectionNameMsg"
+									th:text="#{collections.validation.name.blank}"></small>
 							</div>
 
-							<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
-							<span th:unless="${inheritanceDisabled}">
-								<span th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
-								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
-							</span>
-							<span th:if="${inheritanceDisabled}">
-								<span>iRods Inheritance</span>
-								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							<input type="checkbox" id="inputInheritanceOption"
+								th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" />
+							&nbsp;&nbsp; <span th:unless="${inheritanceDisabled}"> <span
+								th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
+								[<a href="#" data-toggle="tooltip"
+								th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							</span> <span th:if="${inheritanceDisabled}"> <span>iRods
+									Inheritance</span> [<a href="#" data-toggle="tooltip"
+								th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
 							</span>
 						</form>
 
 					</div>
-					<script>
-						$(function(){
+					<script type="text/javascript">
+						$(function() {
 							$('[data-toggle="tooltip"]').tooltip();
 						});
 					</script>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default cancelBtn" data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
-				<button type="button" class="btn btn-primary" id="submitCollectionFormBtn" th:text="#{forms.save.action.button}"></button>
+				<button type="button" class="btn btn-default cancelBtn"
+					data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
+				<button type="button" class="btn btn-primary"
+					id="submitCollectionFormBtn" th:text="#{forms.save.action.button}"></button>
 			</div>
 		</div>
 	</div>
@@ -233,23 +249,25 @@
 <!-- /Add Modal -->
 
 <!-- Bread Crumb -->
-<div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
-</div>
+<div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12"
+	th:include="${'collections/collectionsBreadCrumb'}"></div>
 <div class="col-md-2 col-sm-3 col-xs-12">
-	<a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
-		<span class="glyphicon glyphicon-trash"></span>
-		<span th:text="#{empty.trash.label}"></span>
+	<a href="#" th:if="${isTrash}" id="emptyTrashBtn"
+		th:title="#{collections.empty.trash.button.tooltip}"
+		class="pull-right btn btn-default" data-toggle="modal"
+		data-target="#emptyTrashModal"> <span
+		class="glyphicon glyphicon-trash"></span> <span
+		th:text="#{empty.trash.label}"></span>
 	</a>
 
 	<div id="actionUpload">
-        <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
+		 <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn"
                th:title="#{collections.management.add.button}">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-folder fa-stack-2x"></i>
-                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-                </span>
+               
+                  <i class="fa fa-folder"></i>
+                
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
             <a role="button" href="#" class="btn btn-default" data-toggle="modal"
@@ -261,10 +279,9 @@
             <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn"
                th:title="#{collections.management.add.button}">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-folder fa-stack-2x"></i>
-                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-                </span>
+               
+                  <i class="fa fa-folder" ></i>
+                 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
             <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
@@ -273,46 +290,83 @@
             </a>
         </th:block>
 	</div>
+	<a></a> <a role="button" href="#" class="btn btn-default"
+		data-toggle="modal" data-target="#uploadModal" id="uploadIcon"
+		title="Upload file(s) to iRods"> <i
+		class="fa fa-cloud-upload pull-left"></i>
+	<div class="btnLabel">
+			<span th:text="#{collections.upload.button.label}"></span>
+		</div>
+	</a>
+	<th:block></th:block>
+	<th:block
+		th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
+		<a disabled="true" role="button" href="#"
+			class="btn btn-default pull-right" data-toggle="modal"
+			data-target="#addAndModifyModal" id="showCollectionFormBtn"
+			th:title="#{collections.management.add.button}"> <span
+			class="fa-stack fa-lg"> <i class="fa fa-folder fa-stack-2x"></i>
+				<i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+		</span>
+			<div class="btnLabel">
+				<span th:text="#{collections.add.button.label}"></span>
+			</div>
+		</a>
+		<a disabled="true" role="button" href="#" class="btn btn-default"
+			data-toggle="modal" data-target="#uploadModal" id="uploadIcon"
+			title="Upload file(s) to iRods"> <i
+			class="fa fa-cloud-upload pull-left"></i>
+		<div class="btnLabel">
+				<span th:text="#{collections.upload.button.label}"></span>
+			</div>
+		</a>
+	</th:block>
 </div>
+<div></div>
 
-<div class="col-xs-12" th:if="${permissionType != 'none' or user.isAdmin()}">
-    <div class="row browse-collection-files-content">
-        <div id="table-loader" class="table-loader col-sm-12 hideElement">
-            <div class="panel loading">
-                <img class="center-block" th:src="@{/images/table_loading.svg}" />
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <table class="table table-hover" id="treeViewTable">
-                <thead>
-                    <tr>
-                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
-                        <th th:text="#{collections.management.table.collection.name.label}"></th>
-                        <th th:text="#{collections.management.table.owner.label}"></th>
-                        <th th:text="#{collections.management.table.kind.label}"></th>
-                        <th th:text="#{collections.management.table.modified.label}"></th>
-                        <th th:text="#{collections.management.table.size.label}"></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
+<div class="col-xs-12"
+	th:if="${permissionType != 'none' or user.isAdmin()}">
+	<div class="row browse-collection-files-content">
+		<div id="table-loader" class="table-loader col-sm-12 hideElement">
+			<div class="panel loading">
+				<img class="center-block" th:src="@{/images/table_loading.svg}"
+					src="" alt="" />
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<table class="table table-hover" id="treeViewTable">
+				<thead>
+					<tr>
+						<th class="tableCheckBoxCol"><input type="checkbox"
+							name="selectAllCheckboxes" value="1"
+							th:disabled="${currentPath == '/'}" /></th>
+						<th
+							th:text="#{collections.management.table.collection.name.label}"></th>
+						<th th:text="#{collections.management.table.owner.label}"></th>
+						<th th:text="#{collections.management.table.kind.label}"></th>
+						<th th:text="#{collections.management.table.modified.label}"></th>
+						<th th:text="#{collections.management.table.size.label}"></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 </div>
 
 <!-- Some items were not deleted -->
-<div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
-    <div class="text-center" role="alert">
-        <span th:text="#{collections.management.msg.access.denied}"></span>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#" onclick="javascript:goBackHistory('1');">
-            <span>Back</span>
-        </a>
-    </div>
+<div class="col-xs-12"
+	th:unless="${permissionType != 'none' or user.isAdmin()}">
+	<div class="text-center" role="alert">
+		<span th:text="#{collections.management.msg.access.denied}"></span>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#"
+			onclick="javascript:goBackHistory('1');"> <span>Back</span>
+		</a>
+	</div>
 </div>
 
 <!-- Empty Trash Modal -->
 <div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
-	 aria-labelledby="myModalLabel" aria-hidden="true">
+	aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -326,9 +380,10 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"
-						th:text="#{confirmation.message.cancel}"></button>
-				<button id= "emptyTrashConfBtn" onclick="emptyTrash();" type="button" class="btn btn-primary"
-						data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
+					th:text="#{confirmation.message.cancel}"></button>
+				<button id="emptyTrashConfBtn" onclick="emptyTrash();" type="button"
+					class="btn btn-primary" data-dismiss="modal"
+					th:text="#{confirmation.message.yes}"></button>
 			</div>
 		</div>
 	</div>
@@ -336,31 +391,32 @@
 
 <!-- Ticket Form -->
 <div class="col-md-10 col-sm-9 col-xs-12">
-    <div class="modal fade" id="ticketCreationForm" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
-                </div>
-                <div class="modal-body">
-                   <div id="ticketFormPanel"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                            th:text="#{ticket.form.button.cancel}"></button>
-                    <button id="createTicketFormBtn" onclick="createTicket();" type="button" class="btn btn-primary"
-                            data-dismiss="modal" th:text="#{ticket.form.button.create}"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="ticketCreationForm" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
+				</div>
+				<div class="modal-body">
+					<div id="ticketFormPanel"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						th:text="#{ticket.form.button.cancel}"></button>
+					<button id="createTicketFormBtn" onclick="createTicket();"
+						type="button" class="btn btn-primary" data-dismiss="modal"
+						th:text="#{ticket.form.button.create}"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
 		var path;
 		var url;
