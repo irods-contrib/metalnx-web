@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<div class="sidebar-nav navbar-collapse nano-content" th:fragment="sidenav">
+	<ul class="nav" id="side-menu">
+		<!-- If user typer currently logged in is an admin, the items below are available otherwise the user cannot use them -->
+		<th:block th:if="${userDetails.isAdmin()}">
+			<li>
+				<!-- Dashboard sidebar item--> <a
+				th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
+					<i class="fa fa-tachometer"></i> &nbsp; <span
+					th:text="#{dashboard.menu.title}"></span>
+			</a>
+			</li>
+			<!-- Resource sidebar item -->
+			<li><a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i
+					class="fa fa-database"></i> &nbsp; <span
+					th:text="#{resources.menu.title}"></span>
+				<!--  <span class="fa arrow"></span> -->
+			</a></li>
+			<!-- Rules -->
+			<li><a th:href="@{ ${urlMap.URL_RULES} }"> <i
+					class="fa fa-file-text"></i> <span th:text="#{rules.menu.title}"></span>
+			</a></li>
+			<!-- Users sidebar item -->
+			<li><a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }"> <i
+					class="fa fa-user"></i> &nbsp; <span th:text="#{users.menu.title}"></span>
+			</a></li>
+			<!-- Group sidebar item -->
+			<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"> <i
+					class="fa fa-group"></i> &nbsp; <span
+					th:text="#{groups.management.menu.title}"></span></a></li>
+			<!-- Profile sidebar item -->
+			<li class="profile"><a
+				th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }"> <span
+					class="fa-stack fa-lg"> <i
+						class="fa fa-square-o fa-stack-2x menu-icon"></i> <i
+						class="fa fa-user fa-stack-1x menu-icon"></i>
+				</span> <span th:text="#{users.profile.management.menu.title}"></span>
+			</a></li>
+
+		</th:block>
+		<!-- Collection sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_HOME_COLLECTION_USER} }"> <i
+				class="fa fa-folder"></i>&nbsp;<span
+				th:text="#{collections.menu.title}"></span></a></li>
+		<!-- Metadata search sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_METADATA_SEARCH} }"> <i
+				class="fa fa-search"></i> &nbsp; <span
+				th:text="#{metadata.search.menu.title}"></span></a></li>
+		<!-- Metadata template sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_TEMPLATE_MANAGEMENT} }"> <i
+				class="fa fa-cubes"></i> &nbsp; <span
+				th:text="#{metadata.template.management.menu.title}"></span></a></li>
+		<!-- Bookmarks sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }"> <i
+				class="fa fa-share-alt"></i> &nbsp; <span
+				th:text="#{sidebar.user.bookmarks}"></span>
+		</a></li>
+		<!-- Favorites -->
+		<li><a th:href="@{ ${urlMap.URL_STARRED_ITEMS} }"> <i
+				class="fa fa-star"></i> &nbsp; <span
+				th:text="#{sidebar.user.favorites}"></span>
+		</a></li>
+		<!-- Tickets -->
+		<th:block th:if="${globalConfig.isTicketsEnabled()}">
+			<li><a th:href="@{ ${urlMap.URL_TICKETS} }"> <i
+					class="fa fa-list-alt"></i> &nbsp; <span
+					th:text="#{sidebar.tickets}"></span>
+			</a></li>
+		</th:block>
+		<!-- Public sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }"> <i
+				class="fa fa-globe"></i> &nbsp; <span
+				th:text="#{sidebar.user.public}"></span>
+		</a></li>
+		<!-- Trash sidebar item -->
+		<li><a th:href="@{ ${urlMap.URL_TRASH_COLLECTION_USER} }"> <i
+				class="fa fa-trash"></i> &nbsp; <span
+				th:text="#{sidebar.user.trash}"></span>
+		</a></li>
+
+	</ul>
+</div>
+<!-- /.sidebar-collapse -->
+
+
+</html>
