@@ -504,10 +504,10 @@
 								<div id="filesList">
 								</div>
 							</div>
-							
+
 							<div id="uploadControlOptions">
 								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
-								
+
 									<div class="row form-group">
 										<th:block th:if="${dataGridUser.isAdvancedView()}">
 										<div class="col-md-6">Resource</div>
@@ -515,7 +515,7 @@
 												<input type="checkbox" id="inputReplica" name="replica"
 													value="1" /> &nbsp;&nbsp;<span>Replica</span>
 										</div>
-										
+
 										<div class="col-md-6">
 											<select class="form-control" name="resourceToUpload"
 												id="selectResourceToUpload">
@@ -529,7 +529,7 @@
 										</div>
 									</th:block>
 									</div>
-								
+
  								<div class="row form-group">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputOverwriteDuplicateFiles"
@@ -544,16 +544,16 @@
 									</div>
 									</th:block>
  								</div>
-									
+
 							</div>
-						
+
 						</form>
 
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal"
 							th:text="#{forms.cancel.action.button}"></button>
-						<a type="button" class="btn btn-primary" id="uploadButton" target="_blank" href="?uploadNewTab=true">
+						<a type="button" class="btn btn-primary" id="uploadButton">
 							<i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
 						</a>
 					</div>
