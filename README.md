@@ -95,6 +95,10 @@ Add a global config to turn on/off certain features via metalnx.properties. This
 Add preferences to toggle between normal/advanced view and made dataGridUser.advancedView a model attribute always available in thymeleaf pages so
 that the interface can show or hide features based on normal or power users
 
+#### Make sidebar a fragment niehs #56
+
+Sidebar nav a thymeleaf fragment to reduce redundancy in custom templates
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
