@@ -1,7 +1,7 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
 ## Version: 4.2.1.0-SNAPSHOT
-## Git Tag: 
+## Git Tag:
 ## Date: Oct 27, 2017
 
 
@@ -95,9 +95,26 @@ Add a global config to turn on/off certain features via metalnx.properties. This
 Add preferences to toggle between normal/advanced view and made dataGridUser.advancedView a model attribute always available in thymeleaf pages so
 that the interface can show or hide features based on normal or power users
 
-#### Make sidebar a fragment niehs #56
+#### Make sidebar a fragment #28
 
 Sidebar nav a thymeleaf fragment to reduce redundancy in custom templates
+
+#### File upload when no resource defined can result in NPE #29
+
+While it needs more investigation, the upload processing that does resource searching and building
+of metadata to run file-dependent rules on uploads was getting NPE when a resource was not specified
+during upload. This now will turn off automatic processing in this case, pending further hardening and clarification
+of that functionality. In addition, a new metalinx.properties value that can turn off
+this global rules application on upload.
+
+```
+metalnx.enable.upload.rules=false
+
+```
+
+This change requires the addition of this property to metalnx.properties,and for unit testing and building
+this property should be in settings.xml. See the CONFIGURATION.md and DEVELOPER-README.md for details. The sample
+metalnx.properties in /etc/irods-ext in this repo shows a sample configuration.
 
 #### NIEHS identified misc theming issues
 
@@ -105,4 +122,4 @@ Sidebar nav a thymeleaf fragment to reduce redundancy in custom templates
 
 * #25 search - default to 'contains'
 
-* #11 Consider removing Jquery data table search filter as confusing next to the planned global search 
+* #11 Consider removing Jquery data table search filter as confusing next to the planned global search

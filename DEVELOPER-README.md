@@ -106,6 +106,7 @@ In addition, an additional profile for Metalnx is required, like this...
 				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
 				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
         <metalnx.enable.tickets>true</metalnx.enable.tickets>
+        <metalnx.enable.upload.rules>false</metalnx.enable.upload.rules>
 			</properties>
 		</profile>
 

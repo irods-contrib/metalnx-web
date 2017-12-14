@@ -80,10 +80,15 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${metalnx.enable.tickets}")
 	private boolean ticketsEnabled;
 
+	@Value("${metalnx.enable.upload.rules}")
+	private boolean uploadRulesEnabled;
+
+	@Override
 	public GlobalConfig getGlobalConfig() {
 		logger.info("getGlobalConfig()");
 		GlobalConfig globalConfig = new GlobalConfig();
 		globalConfig.setTicketsEnabled(this.isTicketsEnabled());
+		globalConfig.setUploadRulesEnabled(isUploadRulesEnabled());
 		logger.debug("globalConfig:{}", globalConfig);
 		return globalConfig;
 	}
@@ -204,7 +209,16 @@ public class ConfigServiceImpl implements ConfigService {
 			builder.append("irodsAuthScheme=").append(irodsAuthScheme).append(", ");
 		}
 		builder.append("populateMsiEnabled=").append(populateMsiEnabled).append(", ticketsEnabled=")
-				.append(ticketsEnabled).append("]");
+				.append(ticketsEnabled).append(", uploadRulesEnabled=").append(uploadRulesEnabled).append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public boolean isUploadRulesEnabled() {
+		return uploadRulesEnabled;
+	}
+
+	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
+		this.uploadRulesEnabled = uploadRulesEnabled;
 	}
 }

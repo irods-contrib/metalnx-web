@@ -34,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
@@ -71,6 +70,10 @@ public class UploadController {
 	 *         with the corresponding uploadMessage.
 	 */
 	private ResponseEntity<?> getUploadResponse(final String uploadMessage, final String errorType) {
+		logger.info("getUploadResponse()");
+		logger.info("uploadMessage:{}", uploadMessage);
+		logger.info("errorType:{}", errorType);
+
 		HttpStatus status = HttpStatus.OK;
 		String path = cc.getCurrentPath();
 
@@ -83,6 +86,7 @@ public class UploadController {
 			if (!errorType.isEmpty()) {
 				jsonUploadMsg.put("errorType", errorType);
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				logger.warn("passing along internal server error:{}", errorType);
 			}
 		} catch (JSONException e) {
 			logger.error("Could not create JSON object for upload response: {]", e.getMessage());
@@ -93,14 +97,14 @@ public class UploadController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = { "text/plain" })
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<?> upload(final HttpServletRequest request) throws DataGridConnectionRefusedException {
+	public ResponseEntity<?> upload(final HttpServletRequest request) throws DataGridException {
 
-		logger.info("Uploading files ...");
+		logger.info("upload()");
 		String uploadMessage = "File Uploaded. ";
 		String errorType = "";
 
 		if (!(request instanceof MultipartHttpServletRequest)) {
-			logger.debug("Request is not a multipart request.");
+			logger.warn("Request is not a multipart request.");
 			uploadMessage = "Request is not a multipart request.";
 			errorType = FATAL;
 			return getUploadResponse(uploadMessage, errorType);
@@ -108,7 +112,7 @@ public class UploadController {
 
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		MultipartFile multipartFile = multipartRequest.getFile("file");
-
+		logger.info("multipartFile:{}", multipartFile);
 		boolean isRuleDeployment = Boolean.parseBoolean(multipartRequest.getParameter("ruleDeployment"));
 		boolean checksum = Boolean.parseBoolean(multipartRequest.getParameter("checksum"));
 		boolean replica = Boolean.parseBoolean(multipartRequest.getParameter("replica"));
@@ -116,6 +120,8 @@ public class UploadController {
 		String resources = multipartRequest.getParameter("resources");
 		String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
 		String destPath = multipartRequest.getParameter("uploadDestinationPath");
+
+		logger.info("parsed parameters...");
 
 		try {
 			if (isRuleDeployment) {
@@ -126,12 +132,20 @@ public class UploadController {
 		} catch (DataGridReplicateException e) {
 			uploadMessage += e.getMessage();
 			errorType = WARNING;
+			logger.warn("DataGridReplicateException during upload, will pass back as a warning", e);
 		} catch (DataGridRuleException e) {
 			uploadMessage += METADATA_EXTRACTION_FAILED_MSG;
 			errorType = WARNING;
+			logger.warn("DataGridRule exception extracting metadata, will pass back as warning", e);
 		} catch (DataGridException e) {
 			uploadMessage = e.getMessage();
 			errorType = FATAL;
+			logger.error("DataGridException uploading file", e);
+			throw e;
+		} catch (Throwable t) {
+			logger.error("unexpected exception in upload", t);
+			errorType = FATAL;
+			throw t;
 		}
 
 		return getUploadResponse(uploadMessage, errorType);

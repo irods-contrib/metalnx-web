@@ -19,6 +19,11 @@ public class GlobalConfig {
 	 */
 	private boolean ticketsEnabled = false;
 
+	/**
+	 * Turn on or off the automatic application of rules during upload
+	 */
+	private boolean uploadRulesEnabled = false;
+
 	public boolean isTicketsEnabled() {
 		return ticketsEnabled;
 	}
@@ -30,8 +35,17 @@ public class GlobalConfig {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("GlobalConfig [ticketsEnabled=").append(ticketsEnabled).append("]");
+		builder.append("GlobalConfig [ticketsEnabled=").append(ticketsEnabled).append(", uploadRulesEnabled=")
+				.append(uploadRulesEnabled).append("]");
 		return builder.toString();
+	}
+
+	public boolean isUploadRulesEnabled() {
+		return uploadRulesEnabled;
+	}
+
+	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
+		this.uploadRulesEnabled = uploadRulesEnabled;
 	}
 
 }
