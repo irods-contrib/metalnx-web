@@ -484,6 +484,8 @@
 								<span>Select at least one file</span>
 							</div>
 						</div>
+
+
 						<!-- Form submitted as soon as the user selects all files to be uploaded -->
                         <form action="/emc-metalnx-web/upload/" method="POST"
                               role="form" enctype="multipart/form-data" id="uploadForm">
@@ -549,13 +551,32 @@
 
 						</form>
 
+
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal"
-							th:text="#{forms.cancel.action.button}"></button>
-						<a type="button" class="btn btn-primary" id="uploadButton">
-							<i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
-						</a>
+						<div class="beforeUpload" id="beforeUpload">
+							<button type="button" class="btn btn-default" data-dismiss="modal"
+								th:text="#{forms.cancel.action.button}"></button>
+								<a type="button" class="btn btn-primary" id="uploadButton">
+									<i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+								</a>
+						</div>
+
+						<div class="hideElement" id="afterUpload">
+							<!-- Upload notifications panel -->
+							<ul class="nav navbar-top-links navbar-right pull-left"
+															id="uploadStatusIcon">
+								<li class="dropdown">
+									<a class="dropdown-toggle" href="#">
+										<i class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
+									</a>
+									<ul class="dropdown-menu upload-window" style="width: 50vw; max-height: 80vh; overflow: auto">
+									</ul>
+								</li>
+							</ul>
+							<button type="button" class="btn btn-default" data-dismiss="modal"
+								th:text="#{forms.cancel.action.button}"></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -592,8 +613,10 @@
 					$('#filesList').html('');
 					$('#numberFilesUpload').html('No');
 					$('#uploadControlOptions').hide();
+					$('#uploadForm').show();
 					$('#browseButton').show();
-
+					$('#beforeUpload').show();
+					$('#afterUpload').hide();
 					// Hiding the resource selection box on the upload modal
 					$("#selectResource").prop("disabled", true);
 				});

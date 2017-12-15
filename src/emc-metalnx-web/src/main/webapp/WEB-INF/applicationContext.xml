@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- ~ Copyright (c) 2015-2017, Dell EMC ~ ~ Licensed under the Apache License, 
-	Version 2.0 (the "License"); ~ you may not use this file except in compliance 
-	with the License. ~ You may obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
-	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
-	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
-	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
-	License for the specific language governing permissions and ~ limitations 
+<!-- ~ Copyright (c) 2015-2017, Dell EMC ~ ~ Licensed under the Apache License,
+	Version 2.0 (the "License"); ~ you may not use this file except in compliance
+	with the License. ~ You may obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0
+	~ ~ Unless required by applicable law or agreed to in writing, software ~
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the
+	License for the specific language governing permissions and ~ limitations
 	under the License. -->
 
 <beans xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -24,19 +24,19 @@
 		<property name="locations">
 			<list>
 
-				<value>file:/etc/irods-ext/metalnx.properties</value>
-				<!--<value>file:///C/etc/irods-ext/metalnx.properties</value> -->
+				<!--<value>file:/etc/irods-ext/metalnx.properties</value> -->
+				<value>file:///C:/opt/etc/irods-ext/metalnx.properties</value>
 
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md 
+	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md
 		doc at the top of the repo, It allows theming and custom messages -->
 
+	<import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" />
 	<!-- <import resource="file:/etc/irods-ext/metalnxConfig.xml" /> -->
-	<import resource="file:/etc/irods-ext/metalnxConfig.xml" />
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
 	<!-- AuthenticationProvider -->
@@ -55,8 +55,8 @@
 		class="com.emc.metalnx.handler.DataGridAuthenticationFailureHandler" />
 	<bean id="logoutHandler" class="com.emc.metalnx.services.auth.IRODSLogoutSuccessHandler" />
 
-	<!-- Instead of redirecting the user to the login page when he tries to 
-		access a page with an expired session id, we return an error (403). By doing 
+	<!-- Instead of redirecting the user to the login page when he tries to
+		access a page with an expired session id, we return an error (403). By doing
 		that, all ajax calls will be able to handle forbidden access to any page. -->
 	<bean id="ep403"
 		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />

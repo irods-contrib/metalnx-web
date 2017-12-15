@@ -58,8 +58,10 @@ $("#uploadButton").click(function(){
 	$('.progress-bar.progress-bar-striped.active').css('width', '0%');
 	$('.progress-bar.progress-bar-striped.active').attr('aria-valuenow', 0);
 	$('.progress-bar.progress-bar-striped.active').html('0%');
-	$('#uploadModal').modal('hide');
-	$('#uploadIcon').hide();
+	//$('#uploadModal').modal('hide');
+	$('#beforeUpload').hide();
+	$('#uploadForm').hide();
+	$('#afterUpload').show()
 	$('#showCollectionFormBtn').hide();
 	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);
@@ -288,11 +290,11 @@ $(document).ready(function(){
 		$(this).parent().find('li').removeClass('open');
 	});
 	$('body').on('click', function (e) {
-		if (!$('#uploadStatusIcon li.dropdown').is(e.target) 
-				&& $('#uploadStatusIcon li.dropdown').has(e.target).length === 0 
+		if (!$('#uploadStatusIcon li.dropdown').is(e.target)
+				&& $('#uploadStatusIcon li.dropdown').has(e.target).length === 0
 				&& $('.open').has(e.target).length === 0
-				&& !$('.progressAction button.btn.btn-default.btn-xs').is(e.target) 
-				&& $('.progressAction button.btn.btn-default.btn-xs').has(e.target) 
+				&& !$('.progressAction button.btn.btn-default.btn-xs').is(e.target)
+				&& $('.progressAction button.btn.btn-default.btn-xs').has(e.target)
 		) {
 			$('#uploadStatusIcon li.dropdown').removeClass('open');
 		}
