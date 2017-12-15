@@ -71,7 +71,7 @@ $("#uploadButton").click(function(){
     var uploadItems = "";
 
     $.each(files, function(index, file){
-        uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
+        uploadItems += '<li id="'+index+'" style="float: left"><a class="col-sm-12">'+
         '<input type="hidden" class="paused" value="false" />'+
         '<div class="col-sm-8" style="float:left; padding-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
             '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
@@ -84,7 +84,7 @@ $("#uploadButton").click(function(){
         '</a></li>';
 
     });
-    $('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
+    $('#uploadStatusIcon ul.upload-window').html(uploadItems);
 
 	uploadAndUpdateStatus(files[0], 0, files.length)
 
