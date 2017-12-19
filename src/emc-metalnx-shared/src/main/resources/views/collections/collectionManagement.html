@@ -564,27 +564,26 @@
 
 						<div class="hideElement" id="afterUpload">
 							<!-- Upload notifications panel -->
-							<div class="nav navbar-top-links navbar-right pull-left"
+							<ul class="nav navbar-top-links navbar-right pull-left"
 															id="uploadStatusIcon">
-
+								<li class="dropdown">
 									<a class="dropdown-toggle" href="#">
 										<i class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
 									</a>
-									<div style="width: 35vw; max-height: 60vh; overflow: auto">
-										<table class="table">
-											<thead>
-												<tr>
-													<th>File Name</th>
-													<th>Upload Status</th>
-												</tr>
-											</thead>
-											<tbody class="upload-window">
-												<!-- html taags to be added here from upload js at runtime -->
-											</tbody>
-										</table>
-								</div>
+									<table class="table">
+										<thead>
+											<tr>
+												<th>File Name</th>
+												<th>Upload Status</th>
+											</tr>
+										</thead>
+										<tbody class="upload-window" style="width: 35vw; max-height: 60vh; overflow: auto">
+											<!-- html taags to be added here from upload js at runtime -->
+										</tbody>
+									</table>
 
-							</div>
+								</li>
+							</ul>
 							<button type="button" class="btn btn-default" data-dismiss="modal"
 								th:text="#{forms.cancel.action.button}"></button>
 						</div>

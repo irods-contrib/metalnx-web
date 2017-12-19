@@ -72,7 +72,7 @@ $("#uploadButton").click(function(){
 
     $.each(files, function(index, file){
         uploadItems += '<tr id="'+index+'">'+
-													'<td align="left">'+
+													'<td>'+
 														 file.name +
 													'</td>'+
 													'<td>'+
