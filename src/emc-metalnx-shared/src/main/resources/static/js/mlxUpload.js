@@ -62,6 +62,7 @@ $("#uploadButton").click(function(){
 	$('#beforeUpload').hide();
 	$('#uploadForm').hide();
 	$('#afterUpload').show()
+	$('#afterUploadCancel').show()
 	$('#showCollectionFormBtn').hide();
 	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);

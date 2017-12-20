@@ -550,6 +550,31 @@
 							</div>
 
 						</form>
+						<div class="hideElement" id="afterUpload">
+							<!-- Upload notifications panel -->
+							<ul class="nav navbar-top-links navbar-right pull-left"
+															id="uploadStatusIcon">
+
+									<a class="dropdown-toggle" href="#">
+										<i class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
+									</a>
+									<div style="width: 35vw; max-height: 60vh; overflow: auto">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>File Name</th>
+												<th>Upload Status</th>
+											</tr>
+										</thead>
+										<tbody class="upload-window">
+											<!-- html taags to be added here from upload js at runtime -->
+										</tbody>
+									</table>
+								</div>
+
+							</ul>
+
+						</div>
 
 
 					</div>
@@ -561,31 +586,9 @@
 									<i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
 								</a>
 						</div>
-
-						<div class="hideElement" id="afterUpload">
-							<!-- Upload notifications panel -->
-							<ul class="nav navbar-top-links navbar-right pull-left"
-															id="uploadStatusIcon">
-								<li class="dropdown">
-									<a class="dropdown-toggle" href="#">
-										<i class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
-									</a>
-									<table class="table">
-										<thead>
-											<tr>
-												<th>File Name</th>
-												<th>Upload Status</th>
-											</tr>
-										</thead>
-										<tbody class="upload-window" style="width: 35vw; max-height: 60vh; overflow: auto">
-											<!-- html taags to be added here from upload js at runtime -->
-										</tbody>
-									</table>
-
-								</li>
-							</ul>
-							<button type="button" class="btn btn-default" data-dismiss="modal"
-								th:text="#{forms.cancel.action.button}"></button>
+						<div class="hideElement" id="afterUploadCancel">
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							th:text="#{forms.cancel.action.button}"></button>
 						</div>
 					</div>
 				</div>
@@ -627,6 +630,7 @@
 					$('#browseButton').show();
 					$('#beforeUpload').show();
 					$('#afterUpload').hide();
+					$('#afterUploadCancel').hide();
 					// Hiding the resource selection box on the upload modal
 					$("#selectResource").prop("disabled", true);
 				});
