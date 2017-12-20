@@ -246,9 +246,9 @@
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn"
                th:title="#{collections.management.add.button}">
-              
+
                   <i class="fa fa-folder"></i>
-                  
+
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
             <a role="button" href="#" class="btn btn-default" data-toggle="modal"
@@ -260,9 +260,9 @@
             <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn"
                th:title="#{collections.management.add.button}">
-               
+
                   <i class="fa fa-folder"></i>
-                 
+
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
             <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
@@ -370,7 +370,8 @@
         var currentPermissionTab = "groups";
         var datatable;
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
-
+				var advancedView = [[${dataGridUser.isAdvancedView()}]];
+				console.log("collectionBrowser.html advancedView: " + advancedView);
         $(document).ready(function(e){
 
         	if(![[${isCurrentPathCollection}]]){
@@ -481,7 +482,7 @@
                    	}
                 ]
     		} );
-        	addCollectionActions('treeViewTable', datatable);
+        	addCollectionActions('treeViewTable', datatable, advancedView);
             $("input[type=checkbox]").prop("disabled", false);
         });
 
