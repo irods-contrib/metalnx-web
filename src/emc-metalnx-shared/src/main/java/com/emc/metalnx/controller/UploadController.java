@@ -141,7 +141,8 @@ public class UploadController {
 			uploadMessage = e.getMessage();
 			errorType = FATAL;
 			logger.error("DataGridException uploading file", e);
-			throw e;
+			logger.warn("DataGridException uplaoding file, will pass back as warning", e);
+			//throw e;
 		} catch (Throwable t) {
 			logger.error("unexpected exception in upload", t);
 			errorType = FATAL;
