@@ -125,6 +125,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                     }
                 }
             }, false);
+						console.log(xhr);
             return xhr;
         },
         success: function (res) {
