@@ -202,6 +202,7 @@ function showTransferFileIRODSMsg(fileId) {
 }
 
 function showTransferCompletedMsg(fileId, msg) {
+	 $("#afterUploadCancel").html('Done');
    showTransferMsg(fileId, icon = 'glyphicon-ok', msg);
 }
 
