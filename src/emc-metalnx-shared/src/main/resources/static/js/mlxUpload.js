@@ -89,6 +89,7 @@ $("#uploadButton").click(function(){
     $('#uploadStatusIcon tbody.upload-window').html(uploadItems);
 
 	uploadAndUpdateStatus(files[0], 0, files.length)
+	//
 
 });
 
@@ -141,6 +142,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                 unsetOperationInProgress();
                 $('title').html(originalPagetitle);
             }
+						$("#afterUploadButton").html('Done');
         },
         error: function(xhr, status, error){
             var error_response = $.parseJSON(xhr.responseText);
@@ -202,7 +204,6 @@ function showTransferFileIRODSMsg(fileId) {
 }
 
 function showTransferCompletedMsg(fileId, msg) {
-	 $("#afterUploadCancel").html('Done');
    showTransferMsg(fileId, icon = 'glyphicon-ok', msg);
 }
 
