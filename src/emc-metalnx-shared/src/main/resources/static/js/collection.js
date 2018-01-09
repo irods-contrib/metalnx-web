@@ -1,6 +1,5 @@
 function getTestInfo(path){
 	console.log(" In getTestInfo() " +path);
-
 	var url = "/emc-metalnx-web/collectionInfo"+path;
 	getBreadcrumb(path);
 	console.log("URL :: " +url);
@@ -12,31 +11,63 @@ function displayTestDetails(data){
 	$('#table-loader').hide();
 	$('#table-loader').after(data);
 }
-function getPermDetails(path){
-	console.log("Collection getPermDetails() :: " +path);
-	var url = "/emc-metalnx-web/collectionInfo"+path;
-	console.log("URL :: " +url);
-	ajaxEncapsulation(url, "GET", {path: path}, displayPermDetails, null, null);
-}
 
-function getInfoDetails(path){
-	console.log("Collection getInfoDetails() :: " +path);
-
-	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo"+path;
-	console.log("URL :: " +url);
-	getBreadcrumb(path);
-	ajaxEncapsulation(url, "GET", {path: path}, displayInfoDetails, null, null, null);
-}
-
-function getMetadata(path){
+function getMetadata(){
 	console.log("Collection getMetadata() :: " +path);
+	var path ="/zone1/home/test1/CollectionServiceImplTestTestRoot";
 	window.location.hash = "metadata";
 	console.log("window.location.hash :: " +window.location.hash);
 	var url = "/emc-metalnx-web/collectionInfo/collectionMetadata"+path;
 	console.log(1);	
-	getBreadcrumb(path);	
-	ajaxEncapsulation(url, "GET", {path: path}, displayTestDetails, null, null);
+	//getBreadcrumb(path);	
+	ajaxEncapsulation(url, "GET", {path: path}, displayMetadata, null, null);
 }
+
+function getInfoDetails(){
+	console.log("Collection getInfoDetails() starts !!");
+	var path ="/zone1/home/test1/CollectionServiceImplTestTestRoot";
+	console.log("Path :: " +path);
+	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo"+path;
+	//console.log("URL :: " +url);
+
+	//getBreadcrumb(path);
+	ajaxEncapsulation(url, "GET", {path: path}, displayInfoDetails, null, null, null);
+	console.log("Collection getInfoDetails() ends !!");
+}
+
+function getPermDetails(){
+	console.log("Collection getPermDetails() :: " +path);
+	var path ="/zone1/home/test1/CollectionServiceImplTestTestRoot";
+	var url = "/emc-metalnx-web/collectionInfo/collectionPermisssionDetails"+path;
+	console.log("URL :: " +url);
+	ajaxEncapsulation(url, "GET", {path: path}, displayPermDetails, null, null);
+}
+
+function displayMetadata(data){
+	$('#table-loader').hide();
+	$('#table-loader').after(data);
+	$("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");
+}
+
+function displayInfoDetails(data){
+	//alert("displayInfoDetails");
+	$("#table-loader").hide();
+	$("#table-loader").after(data);
+}
+
+function displayPermDetails(data){
+    $('#table-loader').hide();
+    $("#table-loader").after(data);
+    $("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");
+}
+
+
 
 /*function getInfoDetails(path){
 	console.log("Collection getInfoDetails() :: " +path);
@@ -74,3 +105,4 @@ function ChangeUrl(title, urlVal) {
         alert("Browser does not support HTML5.");
     }
 }*/
+

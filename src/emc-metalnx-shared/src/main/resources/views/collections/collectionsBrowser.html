@@ -486,7 +486,7 @@
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick= getTestInfo("'+full.path+'") ><i class="'+full.iconToDisplay+'"></i> <span>info</span></a>';
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick=getTestInfo("'+full.path+'") ><i class="'+full.iconToDisplay+'"></i> <span>info</span></a>';
     					},
     					"width": "13%",
     					"targets": 6
@@ -756,7 +756,7 @@
         	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}*/
  
-        function displayMetadata(data){
+       /*  function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
 			$("#uploadIcon").prop("disabled", true);
@@ -772,7 +772,7 @@
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        }
+        } */
 
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);

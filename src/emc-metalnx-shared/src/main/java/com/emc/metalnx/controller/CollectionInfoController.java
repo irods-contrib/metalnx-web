@@ -44,9 +44,9 @@ public class CollectionInfoController {
 		final String path = "/"+extractFilePath(request);
 		
 		logger.info("path ::" + path) ;
-		model.addAttribute("name", "This is comming from the CollectionInfoController() - Test the main controller");
+		model.addAttribute("Summary", "This is comming from the CollectionInfoController() - Test the main controller");
 		logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
-		return metadataController.getMetadata(model, path);
+		return "collections/info"; //metadataController.getMetadata(model, path);
 		
 	}
 	
@@ -57,6 +57,7 @@ public class CollectionInfoController {
 		
 		model.addAttribute("name", "Info");
 		return "collections/info";
+		//return collectionController.getFileInfo(model, path);//"collections/info";
 	}
 	
 	@RequestMapping(value = "/collectionMetadata/**", method = RequestMethod.GET)
@@ -67,17 +68,18 @@ public class CollectionInfoController {
 		
 		model.addAttribute("name", "Metadata");
 		return "collections/info";
+		//return metadataController.getMetadata(model, path);//"collections/info";
 	}
 	
-	@RequestMapping(value = "/collectionPermisssionDetails/", method = RequestMethod.GET)
+	@RequestMapping(value = "/collectionPermisssionDetails/**", method = RequestMethod.GET)
 	public String getCollectionPermissionDetails(final Model model, @RequestParam("path") final String path) 
 			throws DataGridConnectionRefusedException {
 		
 		System.out.println("------CollectionInfoController collectionPermisssionDetails() starts :: " +path);
 		
 		model.addAttribute("name", "Permission");
-		
 		return "collections/info";
+		//return permissionsController.getPermissionDetails(model, path);//"collections/info";
 	}
 	
 	private static String extractFilePath(HttpServletRequest request) {
