@@ -290,6 +290,7 @@
                         <th th:text="#{collections.management.table.kind.label}"></th>
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
+                        <th th:text="info"></th>
                     </tr>
                 </thead>
             </table>
@@ -358,6 +359,7 @@
     </div>
 </div>
 
+<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
@@ -375,6 +377,8 @@
         $(document).ready(function(e){
 
         	if(![[${isCurrentPathCollection}]]){
+        		console.log([[${isCurrentPathCollection}]]);
+        		console.log("collectionBrowser - document.getready() ");
         		getInfoDetails([[${currentPath}]]);
         		return;
         	}
@@ -450,6 +454,7 @@
                     	"render": function ( data, type, full, meta ) {
     						return '<a href="#" name="' + full.path +
 								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
+						//		'" onclick="'+(full.collection?'getSubDirectories(\'':'getInfoTest(\'')+full.path+'\')" title="' + full.path +
 								'"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
     					},
     					"width": "50%",
@@ -479,7 +484,15 @@
                     	},
                     	"width": "13%",
                     	"targets": 5
-                   	}
+                   	},
+                   	{
+                    	"render": function ( data, type, full, meta ) {
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick= getTestInfo("'+full.path+'") ><i class="'+full.iconToDisplay+'"></i> <span>info</span></a>';
+    					},
+    					"width": "13%",
+    					"targets": 6
+                    }
+                   	
                 ]
     		} );
         	addCollectionActions('treeViewTable', datatable, advancedView);
@@ -496,6 +509,7 @@
             $("#actionsWait").hide();
         });
 
+		
         function selectAllCheckboxes() {
             $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
                 $(this).prop("checked", true);
@@ -528,7 +542,7 @@
 			}
 		});
 
-		function treeViewTableItemOnClick() {
+		function treeViewTableItemOnClick() {			
             var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
             var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
 
@@ -690,17 +704,6 @@
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }
 
-        function getPermDetails(path){
-            $('#table-loader').nextAll().remove();
-        	$('#table-loader').show();
-        	$("#uploadIcon").prop("disabled", true);
-            $("#uploadIcon").addClass("disabled");
-            $("#showCollectionFormBtn").prop("disabled", true);
-            $("#showCollectionFormBtn").addClass("disabled");
-        	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
-
-        	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
-		}
 
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
@@ -713,19 +716,36 @@
    			);
         }
 
+/*         function getPermDetails(path){
+            $('#table-loader').nextAll().remove();
+        	$('#table-loader').show();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	//var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
+        	var url = "/emc-metalnx-web/collectionInfo/collectionPermisssionDetails/";
+
+        	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
+		}
+
         function getInfoDetails(path){
+        	console.log("Collection Browser - getInfoDetails()");
         	$("#table-loader").show();
         	$("#table-loader").nextAll().remove();
             $("#uploadIcon").prop("disabled", true);
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        	var url = "/emc-metalnx-web/collections/info/";
+        	//var url = "/emc-metalnx-web/collections/info/";
+        	
+        	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
         }
 
         function getMetadata(path){
+        	console.log("Getting metadata");
         	$('#table-loader').show();
         	$('#table-loader').nextAll().remove();
         	$("#uploadIcon").prop("disabled", true);
@@ -733,9 +753,10 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	getBreadcrumb(path);
-        	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
-		}
-
+        	//ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+        	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+		}*/
+ 
         function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);

@@ -595,10 +595,11 @@
 			</div>
 		</div>
 
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
         <script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 		<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
-		<script type="text/javascript" th:inline="javascript">
+		<script type="text/javascript" th:inline="javascript">	
 		/*<![CDATA[*/
 			var targetPath = "/";
 			var currentPath = [[${ currentPath }]];
@@ -656,14 +657,21 @@
 				}
 			});
 
-			function getSubDirectories(path) {
+			
+			
+			function getSubDirectories(path) {		
+				//alert("getSubDirectories")
+				console.log("Collection managemnet - getSubDirectories()");
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
-
-				setTimeout(function () {
+																
+				setTimeout(function () {				
 					ajaxEncapsulation("/emc-metalnx-web/collections/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
-					currentPath = path;
+					currentPath = path;								
+					console.log("currentpath " +currentPath);
+					console.log("path " +path)					
 				}, 400);
+				
 			}
 
 			function displaySubDirectories(data) {
@@ -950,6 +958,7 @@
 	        }
 
 			function displayInfoDetails(data){
+				//alert("displayInfoDetails");
 				$("#table-loader").hide();
 				$("#table-loader").after(data);
 	        }

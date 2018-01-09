@@ -128,7 +128,8 @@ public class PermissionsController {
 	 * @throws FileNotFoundException
 	 */
 	@RequestMapping(value = "/getPermissionDetails/")
-	public String getPermissionDetails(final Model model, @RequestParam("path") final String path) {
+	public String getPermissionDetails(final Model model, @RequestParam("path") final String path) throws DataGridConnectionRefusedException {
+		
 		logger.debug("Getting permission info for {}", path);
 
 		DataGridCollectionAndDataObject obj = null;
@@ -183,8 +184,14 @@ public class PermissionsController {
 		model.addAttribute("permissionsWithoutNone", PERMISSIONS_WITHOUT_NONE);
 		model.addAttribute("collectionAndDataObject", obj);
 		model.addAttribute("isCollection", isCollection);
-
-		return "permissions/permissionDetails :: permissionDetails";
+		model.addAttribute("permissionOnCurrentPath", cs.getPermissionsForPath(path));
+		model.addAttribute("permissionFlag", true);
+		
+		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
+		System.out.println("------Permission Conroller - /getPermissionDetail/ ends------");
+		//return "permissions/permissionDetails :: permissionDetails";
+		//return "permissions/permissionDetails";
+		return "collections/info";
 	}
 
 	@RequestMapping(value = "/changePermissionForGroup/")
