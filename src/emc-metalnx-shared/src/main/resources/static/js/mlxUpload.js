@@ -58,8 +58,11 @@ $("#uploadButton").click(function(){
 	$('.progress-bar.progress-bar-striped.active').css('width', '0%');
 	$('.progress-bar.progress-bar-striped.active').attr('aria-valuenow', 0);
 	$('.progress-bar.progress-bar-striped.active').html('0%');
-	$('#uploadModal').modal('hide');
-	$('#uploadIcon').hide();
+	//$('#uploadModal').modal('hide');
+	$('#beforeUpload').hide();
+	$('#uploadForm').hide();
+	$('#afterUpload').show()
+	$('#afterUploadCancel').show()
 	$('#showCollectionFormBtn').hide();
 	$('#panelUpload').show();
 	$('#uploadStatusIcon .badge').html(files.length);
@@ -69,22 +72,24 @@ $("#uploadButton").click(function(){
     var uploadItems = "";
 
     $.each(files, function(index, file){
-        uploadItems += '<li id="'+index+'"><a class="col-sm-12">'+
-        '<input type="hidden" class="paused" value="false" />'+
-        '<div class="col-sm-8" style="float:left; padding-right:10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+
-            '<span style="text-align:right" title="' + file.name + '">' + file.name + ' </span>'+
-        '</div>'+
-        '<div class="col-sm-4 progressWrapper">'+
-            '<div class="progress" style="">'+
-                '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>'+
-            '</div>'+
-        '</div>'+
-        '</a></li>';
-
+        uploadItems += '<tr id="'+index+'">'+
+													'<td>'+
+														 file.name +
+													'</td>'+
+													'<td>'+
+													'<input type="hidden" class="paused" value="false" />'+
+        										'<div class="col-sm-4 progressWrapper">'+
+            									'<div class="progress" style="">'+
+                								'<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>'+
+            									'</div>'+
+        										'</div>'+
+													'</td>'+
+												'</tr>';
     });
-    $('#uploadStatusIcon ul.dropdown-menu').html(uploadItems);
+    $('#uploadStatusIcon tbody.upload-window').html(uploadItems);
 
 	uploadAndUpdateStatus(files[0], 0, files.length)
+	//
 
 });
 
@@ -121,6 +126,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                     }
                 }
             }, false);
+						console.log(xhr);
             return xhr;
         },
         success: function (res) {
@@ -136,6 +142,7 @@ function uploadAndUpdateStatus(file, index, totalFiles){
                 unsetOperationInProgress();
                 $('title').html(originalPagetitle);
             }
+						$("#afterUploadButton").html('Done');
         },
         error: function(xhr, status, error){
             var error_response = $.parseJSON(xhr.responseText);
@@ -288,11 +295,11 @@ $(document).ready(function(){
 		$(this).parent().find('li').removeClass('open');
 	});
 	$('body').on('click', function (e) {
-		if (!$('#uploadStatusIcon li.dropdown').is(e.target) 
-				&& $('#uploadStatusIcon li.dropdown').has(e.target).length === 0 
+		if (!$('#uploadStatusIcon li.dropdown').is(e.target)
+				&& $('#uploadStatusIcon li.dropdown').has(e.target).length === 0
 				&& $('.open').has(e.target).length === 0
-				&& !$('.progressAction button.btn.btn-default.btn-xs').is(e.target) 
-				&& $('.progressAction button.btn.btn-default.btn-xs').has(e.target) 
+				&& !$('.progressAction button.btn.btn-default.btn-xs').is(e.target)
+				&& $('.progressAction button.btn.btn-default.btn-xs').has(e.target)
 		) {
 			$('#uploadStatusIcon li.dropdown').removeClass('open');
 		}
