@@ -181,6 +181,7 @@ public class CollectionController {
 	public String index(final Model model, final HttpServletRequest request,
 			@RequestParam(value = "uploadNewTab", required = false) final boolean uploadNewTab)
 			throws DataGridConnectionRefusedException {
+		logger.info("index()");
 		try {
 			sourcePaths.clear();
 
@@ -223,7 +224,7 @@ public class CollectionController {
 			logger.error("Could not respond to request for collections: {}", e);
 			model.addAttribute("unexpectedError", true);
 		}
-
+		logger.info("returning to collections/collectionManagement");
 		return "collections/collectionManagement";
 	}
 
@@ -331,14 +332,18 @@ public class CollectionController {
 		while (path.endsWith("/") && !"/".equals(path)) {
 			path = path.substring(0, path.lastIndexOf("/"));
 		}
-
+	
 		logger.info("Get subdirectories of {}", path);
-
+		
+		System.out.println("In GetSubdirectories!!");
+		System.out.println("path :: " +path);
+		
 		// put old path in collection history stack
 		addPathToHistory(path);
 
 		return getCollBrowserView(model, path);
 	}
+	
 
 	/**
 	 * Goes back in collection historic stack
@@ -457,6 +462,8 @@ public class CollectionController {
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
 		try {
+			System.out.println("Path = " +path);
+			
 			dataGridObj = cs.findByName(path);
 
 			if (dataGridObj != null && !dataGridObj.isCollection()) {
@@ -465,7 +472,8 @@ public class CollectionController {
 				dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
 				dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
 				permissionsService.resolveMostPermissiveAccessForUser(dataGridObj,
-						loggedUserUtils.getLoggedDataGridUser());
+						loggedUserUtils.getLoggedDataGridUser());				
+				
 			}
 
 		} catch (DataGridConnectionRefusedException e) {
@@ -477,9 +485,15 @@ public class CollectionController {
 
 		model.addAttribute("collectionAndDataObject", dataGridObj);
 		model.addAttribute("currentCollection", dataGridObj);
-		model.addAttribute("replicasMap", replicasMap);
-
-		return "collections/collectionInfo";
+		model.addAttribute("replicasMap", replicasMap);		
+		model.addAttribute("infoFlag", true);
+	
+		
+		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
+		System.out.println("currentCollection.getName() == "+ dataGridObj.getName());
+		
+		//return "collections/collectionInfo";
+		return "collections/info";
 	}
 
 	/**
@@ -562,6 +576,7 @@ public class CollectionController {
 			@RequestParam("username") final String username,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
 			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+		
 		List<DataGridCollectionAndDataObject> list = new ArrayList<DataGridCollectionAndDataObject>();
 		Set<String> readPermissions = new HashSet<String>();
 		Set<String> writePermissions = new HashSet<String>();
@@ -745,6 +760,7 @@ public class CollectionController {
 	@RequestMapping(value = "/home/")
 	public String homeCollection(final Model model) throws DataGridException {
 		// cleaning session variables
+		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
@@ -1087,10 +1103,9 @@ public class CollectionController {
 		model.addAttribute("inheritanceDisabled", inheritanceDisabled);
 		model.addAttribute("requestMapping", "/collections/add/action/");
 		model.addAttribute("parentPath", parentPath);
-
 		setBreadcrumbToModel(model, dataGridObj);
-
-		return "collections/collectionsBrowser";
+		return "collections/collectionsBrowser";	
+		//return "collections/info";
 	}
 
 	/**

@@ -49,6 +49,7 @@ public class URLMap {
 	public static final String URL_GROUPS_CSV_REPORT = "/groups/groupsToCSVFile/";
 	public static final String URL_GROUPS_BOOKMARKS = "/groupBookmarks/groups/";
 
+	public static final String URL_COLLECTIONS_INFO = "/info/";
 	public static final String URL_COLLECTIONS_MANAGEMENT = "/collections/";
 	public static final String URL_ADD_COLLECTION = "/emc-metalnx-web/collections/add/";
 	public static final String URL_MODIFY_COLLECTION = "/emc-metalnx-web/fileOperation/modify/";
