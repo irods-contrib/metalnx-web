@@ -14,7 +14,8 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="treeView">
+<th:block th:fragment="treeView"> 
+<!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
 
     <!-- Confirmation modal for the delete operation -->
     <div class="modal fade" id="deleteReplicaModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -68,7 +69,7 @@
     </div>
 
 
-    <div class="col-md-12" th:unless="${collectionAndDataObject == null}">
+    <div class="col-md-12" th:unless="${collectionAndDataObject == null}" th:fragment="collectionInfo">
         <div class="panel property">
             <div class="row">
                 <h4 class="property-title" th:text="#{text.info}"><i class="fa fa-info-circle"></i></h4>
@@ -135,6 +136,7 @@
             </div>
         </div>
     </div>
+   
     <script>
 		function displayDeleteReplicaModal(path, fileName, replicaNumber) {
 			$('#deleteReplicaPath').val(path);
@@ -155,8 +157,10 @@
 			ajaxEncapsulation("/emc-metalnx-web/fileOperation/deleteReplica/", "POST", {path: path, fileName: fileName, replicaNumber: replicaNumber}, displayInfoDetails, null, null, null);
 		}
 		$(document).ready(function(){
+			console.log("CollectionInfo");
             $("#collection-content").removeClass("collections-table");
             $("#collection-content").addClass("property");
         });
     </script>
 </th:block>
+<!-- </div> -->
