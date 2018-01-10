@@ -87,7 +87,6 @@
 
 	<build>
 		<plugins>
-			<!-- Plugin required to build java classes from XSD using XJC -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
@@ -100,9 +99,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- The name of your generated source package -->
-					<arguments>-extension -npa -b
-						"${project.basedir}/src/main/xsd/global.xjb"</arguments>
+					<arguments>-extension -npa -b "${project.basedir}/src/main/xsd/global.xjb"</arguments>
 				</configuration>
 			</plugin>
 			<plugin>

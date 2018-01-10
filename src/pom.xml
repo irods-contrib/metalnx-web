@@ -111,20 +111,7 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>ci.dev.repository</id>
-			<name>ci.dev.repository</name>
-			<url>http://ci-dev.renci.org/nexus/content/repositories/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+	</repositories> 
 
 	<dependencyManagement>
 		<dependencies>
