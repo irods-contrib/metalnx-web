@@ -101,8 +101,7 @@
 				</executions>
 				<configuration>
 					<!-- The name of your generated source package -->
-					<arguments>-extension -npa -b
-						"${project.basedir}/src/main/xsd/global.xjb"</arguments>
+					<arguments>-extension -npa -b "${project.basedir}/src/main/xsd/global.xjb"</arguments>
 				</configuration>
 			</plugin>
 			<plugin>
