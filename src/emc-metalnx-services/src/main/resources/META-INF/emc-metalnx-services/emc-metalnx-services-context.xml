@@ -52,7 +52,7 @@
 	<bean id="midTierConfiguration"
 		class="org.irods.jargon.midtier.utils.configuration.MidTierConfiguration">
 		<property name="utilizePackingStreams" value="${utilize.packing.streams}"/>
-		<property name="authType" value="${auth.type}" /> <!--  STANDARD,PAM -->
+		<property name="authType" value="${irods.auth.scheme}" /> <!--  STANDARD,PAM -->
 		<property name="defaultStorageResource" value="${default.storage.resource}" />
 		<property name="sslNegotiationPolicy" value="${ssl.negotiation.policy}" />
 		<property name="computeChecksum" value="${compute.checksum}" />
