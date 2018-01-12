@@ -21,6 +21,21 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-extensions-if</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-profiler</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-typer</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.emc.metalnx</groupId>
 			<artifactId>emc-metalnx-services</artifactId>
 			<version>${project.version}</version>
@@ -107,12 +122,12 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
-		
+
 		<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<scope>test</scope>
-			</dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
