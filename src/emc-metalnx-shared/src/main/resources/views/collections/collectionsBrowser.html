@@ -450,7 +450,7 @@
     					"targets": 0,
     					"orderable": false
                     },
-                    {
+                    /* {
                     	"render": function ( data, type, full, meta ) {
     						return '<a href="#" name="' + full.path +
 								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
@@ -459,7 +459,16 @@
     					},
     					"width": "50%",
     					"targets": 1
+                    }, */
+                    {
+                    	"render": function ( data, type, full, meta ) {
+    						return +full.collection?'<a href="#" name="' + full.path + '" onclick=getSubDirectories("'+full.path+'") title="' + full.path+
+    						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
+    					},
+    					"width": "50%",
+    					"targets": 1
                     },
+                    
                     {
                     	"data": "owner",
                     	"width": "10%",
@@ -487,7 +496,7 @@
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick= getTestInfo("'+full.path+'") ><i class="'+full.iconToDisplay+'"></i> <span>info</span></a>';
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick=getCollectionSummary("'+full.path+'") ><i class="fa fa-info-circle"></i></a>';
     					},
     					"width": "13%",
     					"targets": 6
@@ -757,7 +766,7 @@
         	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}*/
  
-        function displayMetadata(data){
+       /*  function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
 			$("#uploadIcon").prop("disabled", true);
@@ -773,7 +782,7 @@
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        }
+        } */
 
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);

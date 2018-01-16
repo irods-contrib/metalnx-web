@@ -127,7 +127,7 @@ public class PermissionsController {
 	 * @throws JargonException
 	 * @throws FileNotFoundException
 	 */
-	@RequestMapping(value = "/getPermissionDetails/")
+	@RequestMapping(value = "/getPermissionDetails/" , method = RequestMethod.POST)
 	public String getPermissionDetails(final Model model, @RequestParam("path") final String path) throws DataGridConnectionRefusedException {
 		
 		logger.debug("Getting permission info for {}", path);
@@ -189,9 +189,9 @@ public class PermissionsController {
 		
 		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
 		System.out.println("------Permission Conroller - /getPermissionDetail/ ends------");
-		//return "permissions/permissionDetails :: permissionDetails";
+		return "permissions/permissionDetails :: permissionDetails";
 		//return "permissions/permissionDetails";
-		return "collections/info";
+		
 	}
 
 	@RequestMapping(value = "/changePermissionForGroup/")
