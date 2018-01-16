@@ -111,7 +111,7 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</snapshots>
 		</repository>
-	</repositories> 
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>

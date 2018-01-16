@@ -38,8 +38,7 @@ public class CollectionInfoController {
 	@Autowired
 	PermissionsService permissionsService;
 		
-	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);	
 	
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
 	public String getTestCollectionInfo(final Model model,  HttpServletRequest request) 
@@ -58,7 +57,7 @@ public class CollectionInfoController {
 		} catch (DataGridException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path);
 		}
-		
+		model.addAttribute("currentPath", path);
 		model.addAttribute("collectionAndDataObject", dgColObj);
 		if(dgColObj != null) 
 			model.addAttribute("flag", true);

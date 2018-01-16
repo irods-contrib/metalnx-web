@@ -3,12 +3,14 @@ function getCollectionSummary(path){
 	var url = "/emc-metalnx-web/collectionInfo"+path;
 	getBreadcrumb(path);
 	console.log("URL :: " +url);
-	ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummar, null, null);
+	ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
 }
 
 function displayCollectionSummary(data){
-	console.log("displayTestDetails()");	
+	alert("displayTestDetails()");	
 	$("#summary").html(data);
+	//alert([[${ currentPath }]]);
+	getInfoDetails(path);
 }
 
 
