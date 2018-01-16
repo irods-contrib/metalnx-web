@@ -57,6 +57,43 @@
 		<property name="sslNegotiationPolicy" value="${ssl.negotiation.policy}" />
 		<property name="computeChecksum" value="${compute.checksum}" />
 	</bean>
+	
+	<!-- settings to influence the behavior of the 'home pages' for data objects 
+		and collections -->
+	<bean id="dataTyperSettings" class="org.irods.jargon.extensions.datatyper.DataTyperSettings">
+		<property name="persistDataTypes" value="${irodsext.datatyper.persist.data.types}" />
+		<property name="detailedDetermination" value="${irodsext.datatyper.detailed.determination}" />
+	</bean>
+
+	<bean id="dataProfilerSettings"
+		class="org.irods.jargon.extensions.dataprofiler.DataProfilerSettings">
+		<property name="retrieveReplicas" value="false" />
+		<property name="retrieveTickets" value="${irodsext.dataprofiler.retrieve.tickets}" />
+		<property name="retrieveStarred" value="${irodsext.dataprofiler.retrieve.starred}" />
+		<property name="retrieveShared" value="${irodsext.dataprofiler.retrieve.shared}" />
+		<property name="retrieveAcls" value="false" />
+		<property name="retrieveMetadata" value="false" />
+		<property name="detectMimeAndInfoType" value="true" />
+		<property name="resolveMetadataTemplates"
+			value="${irodsext.dataprofiler.retrieve.metadata.templates}" />
+		<property name="retrieveTagsAndComments"
+			value="${irodsext.dataprofiler.retrieve.tags.and.comments}" />
+	</bean>
+
+	<bean id="dataTypeResolutionServiceFactory"
+		class="org.irodsext.datatyper.IrodsextDataTypeResolutionServiceFactoryImpl">
+		<property name="irodsAccessObjectFactory" ref="irodsAccessObjectFactory" />
+		<property name="dataTyperSettings" ref="dataTyperSettings" />
+	</bean>
+
+	<bean id="dataProfilerFactory"
+		class="org.irodsext.dataprofiler.IrodsextDataProfilerFactoryImpl">
+		<property name="irodsAccessObjectFactory" ref="irodsAccessObjectFactory" />
+		<property name="dataProfilerSettings" ref="dataProfilerSettings" />
+		<property name="dataTypeResolutionServiceFactory" ref="dataTypeResolutionServiceFactory" />
+		<property name="favoritesService" ref="favoritesService" />
+		<property name="userService" ref="userService" />
+	</bean>
 
   
 </beans>

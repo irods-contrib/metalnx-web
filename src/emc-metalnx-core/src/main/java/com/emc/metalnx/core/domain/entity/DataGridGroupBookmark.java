@@ -201,9 +201,6 @@ public class DataGridGroupBookmark implements Serializable, Comparable<DataGridG
 		if (id != null) {
 			builder.append("id=").append(id).append(", ");
 		}
-		if (group != null) {
-			builder.append("group=").append(group).append(", ");
-		}
 		if (path != null) {
 			builder.append("path=").append(path).append(", ");
 		}
