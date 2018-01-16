@@ -23,7 +23,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
     if (contentType == null || typeof contentType === 'undefined') {
         contentType = "application/x-www-form-urlencoded; charset=UTF-8";
     }
-    console.log("calling ajaxEncapsulation - ajax.js");
+    
     $.ajax({
         url: url,
         type: method,

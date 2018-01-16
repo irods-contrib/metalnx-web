@@ -11,77 +11,109 @@ import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.PermissionsService;
 
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/collectionInfo")
 public class CollectionInfoController {
 	
 	@Autowired
-	private CollectionController collectionController;
+	private LoggedUserUtils loggedUserUtils;
 	
 	@Autowired
-	private MetadataController metadataController;
+	CollectionService collectionService;
 	
 	@Autowired
-	private PermissionsController permissionsController;
+	PermissionsService permissionsService;
 		
-	private static final Logger logger = LoggerFactory.getLogger(MetadataController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 	
 	
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
-	public String getTestCollectionInfo(final Model model, HttpServletRequest request) 
+	public String getTestCollectionInfo(final Model model,  HttpServletRequest request) 
 			throws DataGridConnectionRefusedException {
 		
-			
-		logger.info("------CollectionInfoController getTestCollectionInfo() starts !!");
-		final String path = "/"+extractFilePath(request);
+		logger.info("------CollectionInfoController getTestCollectionInfo() starts !!");				
+		final String path = "/"+extractFilePath(request);		
+		logger.info("path ::" + path) ;		
+		model.addAttribute("summary", "This is comming from the CollectionInfoController() - Test the main controller");
 		
-		logger.info("path ::" + path) ;
-		model.addAttribute("Summary", "This is comming from the CollectionInfoController() - Test the main controller");
+		DataGridCollectionAndDataObject dgColObj = null;
+
+		try {
+			dgColObj = collectionService.findByName(path);
+			permissionsService.resolveMostPermissiveAccessForUser(dgColObj, loggedUserUtils.getLoggedDataGridUser());
+		} catch (DataGridException e) {
+			logger.error("Could not retrieve collection/dataobject from path: {}", path);
+		}
+		
+		model.addAttribute("collectionAndDataObject", dgColObj);
+		if(dgColObj != null) 
+			model.addAttribute("flag", true);
+		else {
+			model.addAttribute("flag", false);		
+		}
+		
 		logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
-		return "collections/info"; //metadataController.getMetadata(model, path);
+		return "collections/info";		
 		
 	}
 	
-	@RequestMapping(value = "/collectionFileInfo/**", method = RequestMethod.GET)
+	/*
+	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridConnectionRefusedException {		
-		System.out.println("------CollectionInfoController getCollectionFileInfo() starts :: " +path);
 		
-		model.addAttribute("name", "Info");
+		logger.info("------CollectionInfoController getCollectionFileInfo() starts :: " +path);		
+		DataGridUser loggedUser = LoggedUserUtils.getLoggedDataGridUser();
+		
+		
+		logger.info("User First Name :: " +loggedUser.getUsername());
+		
+		model.addAttribute("infoName", "This is Info !!");
 		return "collections/info";
-		//return collectionController.getFileInfo(model, path);//"collections/info";
-	}
+		
+	}*/
 	
-	@RequestMapping(value = "/collectionMetadata/**", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/collectionMetadata/", method = RequestMethod.POST)
 	public String getCollectionMetadata(final Model model, @RequestParam("path") final String path)
 			throws DataGridConnectionRefusedException {
-
-		System.out.println("------CollectionInfoController collectionMetadata() starts :: " +path);
 		
-		model.addAttribute("name", "Metadata");
-		return "collections/info";
-		//return metadataController.getMetadata(model, path);//"collections/info";
+		logger.info("-----------------------------getCollectionMetadata()-------------------------------- !!");
+		logger.info("------CollectionInfoController collectionMetadata() starts :: " +path);
+		
+		model.addAttribute("metadataName", "This is Metadata !!");
+		
+		logger.info("MetadataName :: " +model.containsAttribute("MetadataName"));
+		//return "collections/info";
+		
+		return "metadata/test";
+		
 	}
-	
-	@RequestMapping(value = "/collectionPermisssionDetails/**", method = RequestMethod.GET)
+		
+	@RequestMapping(value = "/collectionPermisssionDetails/", method = RequestMethod.POST)
 	public String getCollectionPermissionDetails(final Model model, @RequestParam("path") final String path) 
 			throws DataGridConnectionRefusedException {
+		logger.info("-----------------------------getCollectionPermissionDetails()-------------------------------- !!");
+		logger.info("------CollectionInfoController collectionPermisssionDetails() starts :: " +path);
 		
-		System.out.println("------CollectionInfoController collectionPermisssionDetails() starts :: " +path);
-		
-		model.addAttribute("name", "Permission");
+		model.addAttribute("permissionName", "This is Permission !!");
 		return "collections/info";
-		//return permissionsController.getPermissionDetails(model, path);//"collections/info";
+		
 	}
-	
+*/
 	private static String extractFilePath(HttpServletRequest request) {
         String path = (String) request.getAttribute(
                 HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);

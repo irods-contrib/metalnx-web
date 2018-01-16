@@ -454,10 +454,11 @@ public class CollectionController {
 	 * @return the template that shows the data object information
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "/info/", method = RequestMethod.POST)
-	public String getFileInfo(final Model model, @RequestParam("path") final String path)
+	@RequestMapping(value = "/info/" , method = RequestMethod.POST)
+	public String getFileInfo(final Model model, final String path)
 			throws DataGridConnectionRefusedException {
 
+		System.out.println("CollectionController getInfoFile() starts !!");
 		DataGridCollectionAndDataObject dataGridObj = null;
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
@@ -492,8 +493,9 @@ public class CollectionController {
 		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
 		System.out.println("currentCollection.getName() == "+ dataGridObj.getName());
 		
-		//return "collections/collectionInfo";
-		return "collections/info";
+		System.out.println("CollectionController getInfoFile() ends !!");
+		return "collections/collectionInfo";
+		//return "collections/info";
 	}
 
 	/**

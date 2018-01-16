@@ -3,112 +3,53 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.thymeleaf.org" lang="en"
 	layout:decorator="template">
-	
+
 <body>
 	<div layout:fragment="content">
+
 		<div id="summary">
-			<p>This is the summary tab.</p>
-			<span th:text="${Summary}"></span>
+			Summary :: <span th:text="${summary}"></span>
 		</div>
 
-		<!-- 	<div id="tabs" th:unless="${collectionAndDataObject.isCollection()}">-->
-		<div id="tabs">
-		 	<ul>
-			<li><a href="#metadata" th:onclick="'javascript:getMetadata()'"> <span><i class="fa fa-tags"></i></span>
-					<span title="Metadata">Metadata</span>
-			</a></li>
+		<div id="tabs" th:if="${flag}">
+			<ul>
+				<li><a href="#info"
+					th:onclick="'javascript:getInfoDetails(\'' + ${collectionAndDataObject.path} + '\');'">
+						<span><i class="fa fa-info-circle"></i></span> <span
+						title="File information">Info</span>
+				</a></li>
 
-			<li><a href="#info" th:onclick="'javascript:getInfoDetails()'"> <span><i
-						class="fa fa-info-circle"></i></span> <span title="File information">Info</span>
-			</a></li>
+				<li><a href="#metadata"
+					th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
+						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
+				</a></li>
 
-			<li><a href="#permission" id="permissions" th:onclick="'javascript:getPermDetails()'"> <span><i
-						class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-			</a></li>
+				<li><a href="#permission" id="permissions"
+					th:onclick="'javascript:getPermissionDetails(\'' + ${collectionAndDataObject.path} + '\');'">
+						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
+				</a></li>
+			</ul>
 
-		</ul> 
+			<div class="content_menu">
+				<div id="info"></div>
 
-		<div class="content_menu">
-			<div id="metadata">
-				<span th:text="${name}"> This is metadata</span>
+				<div id="metadata"></div>
+
+				<div id="permission"></div>
 			</div>
-
-			<div id="info">
-				<span th:text="${name}">This is info</span>
-			</div>
-
-			<div id="permission">
-				<span th:text="${name}">This is permission</span>
-			</div>
-
 		</div>
 
+		<!-- JQuery UI CSS -->
+		<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
+			th:href="@{/css/jquery-ui.min.css}" />
+		<!-- jQuery UI Version 1.11.4 -->
+		<script src="../static/js/jquery-1.11.4.js"
+			th:src="@{/js/jquery-ui.min.js}"></script>
 
-
-		<!-- <ul>
-			<li><a href="#metadata"
-				th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
-					<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
-			</a></li>
-
-			<li><a href="#info"
-				th:onclick="'javascript:getInfoDetails(\'' + ${collectionAndDataObject.path} + '\');'">
-					<span><i class="fa fa-info-circle"></i></span> <span
-					title="File information">Info</span>
-			</a></li>
-
-			<li><a href="#permission" id="permissions"
-				th:onclick="'javascript:getPermDetails(\'' + ${collectionAndDataObject.path} + '\');'">
-					<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-			</a></li>
-
-
-		</ul>
-
-		<div class="content_menu">
-			<div id="metadata" th:if="${metadataFlag}">
-				<th:block th:include="metadata/metadataTable :: metadataTable"></th:block>
-			</div>
-
-			<div id="info" th:if="${infoFlag}">
-				<th:block th:include="collections/collectionInfo :: collectionInfo"></th:block>
-			</div>
-
-			<div id="permission" th:if="${permissionFlag}">
-				<th:block
-					th:include="permissions/permissionDetails :: permissionDetails"></th:block>
-			</div>
-
-
-		</div> -->
-	</div>
-
-
-	<!-- JQuery UI CSS -->
-	<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
-		th:href="@{/css/jquery-ui.min.css}" />
-	<!-- jQuery UI Version 1.11.4 -->
-	<script src="../static/js/jquery-1.11.4.js"
-		th:src="@{/js/jquery-ui.min.js}"></script>
-
-	<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-	<script>
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+		<script>
 			$(document).ready(function(e) {
-				$("#tabs").tabs();
-
-				/* vvar tab_a_selector = 'ul.ui-tabs-nav a';
-
-				 $(tab_a_selector).click(function() {
-					
-				    var href = this.href;
-				    alert("href subnews :: " +href);				    
-				     //$("#subnews").load(href);
-				    // window.location.hash = "subnav";
-				    var hash = this.hash.substr(1);
-				    
-				    getInfoDetails([[${collectionAndDataObject.path}]]);
-				    e.preventDefault(); 
-				});  */
+				$("#tabs").tabs();					
 			});
 		</script>
 	</div>
