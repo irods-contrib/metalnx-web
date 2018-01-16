@@ -2,6 +2,12 @@ package com.emc.metalnx.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +22,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 
 @Controller
@@ -37,35 +43,64 @@ public class CollectionInfoController {
 	@Autowired
 	PermissionsService permissionsService;
 
+	@Autowired
+	DataProfilerFactory dataProfilerFactory;
+
+	@Autowired
+	IRODSServices irodsServices;
+
+	@Autowired
+	DataProfilerSettings dataProfilerSettings;
+
 	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
 	public String getTestCollectionInfo(final Model model, HttpServletRequest request)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException, DataGridConnectionRefusedException {
 
 		logger.info("------CollectionInfoController getTestCollectionInfo() starts !!");
 		final String path = "/" + extractFilePath(request);
 		logger.info("path ::" + path);
 		model.addAttribute("summary", "This is comming from the CollectionInfoController() - Test the main controller");
 
-		DataGridCollectionAndDataObject dgColObj = null;
+		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
+		logger.debug("got irodsAccount:{}", irodsAccount);
 
+		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);
+
+		logger.debug("got the dataProfilerService");
+
+		// DataProfilerSettings dataProfilerSettings = new DataProfilerSettings(); //
+		// TODO: allow clone()
 		try {
-			dgColObj = collectionService.findByName(path);
-			permissionsService.resolveMostPermissiveAccessForUser(dgColObj, loggedUserUtils.getLoggedDataGridUser());
-		} catch (DataGridException e) {
-			logger.error("Could not retrieve collection/dataobject from path: {}", path);
-		}
-		model.addAttribute("currentPath", path);
-		model.addAttribute("collectionAndDataObject", dgColObj);
-		if (dgColObj != null)
-			model.addAttribute("flag", true);
-		else {
-			model.addAttribute("flag", false);
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
+			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
+			logger.info("data profile retrieved:{}", dataProfile);
+
+			/*
+			 * TODO: after this do an if test and send to right view with the DataProfile in
+			 * the model
+			 */
+
+			return "collections/info";
+		} catch (JargonException e) {
+			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
+			throw new DataGridException(e.getMessage());
 		}
 
-		logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
-		return "collections/info";
+		/*
+		 * DataGridCollectionAndDataObject dgColObj = null;
+		 * 
+		 * try { dgColObj = collectionService.findByName(path);
+		 * permissionsService.resolveMostPermissiveAccessForUser(dgColObj,
+		 * loggedUserUtils.getLoggedDataGridUser()); } catch (DataGridException e) {
+		 * logger.error("Could not retrieve collection/dataobject from path: {}", path);
+		 * } model.addAttribute("currentPath", path);
+		 * model.addAttribute("collectionAndDataObject", dgColObj); if (dgColObj !=
+		 * null) model.addAttribute("flag", true); else { model.addAttribute("flag",
+		 * false); }
+		 */
 
 	}
 
@@ -125,5 +160,29 @@ public class CollectionInfoController {
 		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 		AntPathMatcher apm = new AntPathMatcher();
 		return apm.extractPathWithinPattern(bestMatchPattern, path);
+	}
+
+	public DataProfilerFactory getDataProfilerFactory() {
+		return dataProfilerFactory;
+	}
+
+	public void setDataProfilerFactory(DataProfilerFactory dataProfilerFactory) {
+		this.dataProfilerFactory = dataProfilerFactory;
+	}
+
+	public IRODSServices getIrodsServices() {
+		return irodsServices;
+	}
+
+	public void setIrodsServices(IRODSServices irodsServices) {
+		this.irodsServices = irodsServices;
+	}
+
+	public DataProfilerSettings getDataProfilerSettings() {
+		return dataProfilerSettings;
+	}
+
+	public void setDataProfilerSettings(DataProfilerSettings dataProfilerSettings) {
+		this.dataProfilerSettings = dataProfilerSettings;
 	}
 }
