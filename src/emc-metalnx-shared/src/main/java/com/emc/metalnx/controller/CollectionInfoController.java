@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.domain.IRODSDomainObject;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
@@ -58,10 +60,39 @@ public class CollectionInfoController {
 	public String getTestCollectionInfo(final Model model, HttpServletRequest request)
 			throws DataGridException, DataGridConnectionRefusedException {
 
-		logger.info("------CollectionInfoController getTestCollectionInfo() starts !!");
+		logger.info("CollectionInfoController getTestCollectionInfo() starts !!");
 		final String path = "/" + extractFilePath(request);
 		logger.info("path ::" + path);
 		model.addAttribute("summary", "This is comming from the CollectionInfoController() - Test the main controller");
+
+		@SuppressWarnings("rawtypes")
+		DataProfile dataProfile = getCollectionDataProfile(path);
+				
+		model.addAttribute("dataProfile", dataProfile);
+		return "collections/info"; //:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";
+		
+		//"main :: mainPage(page='some-page', fragment='somePage')";
+		//return "collections/collectionInfo";
+		
+		
+		/*
+		 * DataGridCollectionAndDataObject dgColObj = null;
+		 * 
+		 * try { dgColObj = collectionService.findByName(path);
+		 * permissionsService.resolveMostPermissiveAccessForUser(dgColObj,
+		 * loggedUserUtils.getLoggedDataGridUser()); } catch (DataGridException e) {
+		 * logger.error("Could not retrieve collection/dataobject from path: {}", path);
+		 * } model.addAttribute("currentPath", path);
+		 * model.addAttribute("collectionAndDataObject", dgColObj); if (dgColObj !=
+		 * null) model.addAttribute("flag", true); else { model.addAttribute("flag",
+		 * false); }
+		 */
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
+	
 
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
 		logger.debug("got irodsAccount:{}", irodsAccount);
@@ -77,49 +108,39 @@ public class CollectionInfoController {
 			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
 			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
 			logger.info("data profile retrieved:{}", dataProfile);
+			
 
 			/*
 			 * TODO: after this do an if test and send to right view with the DataProfile in
 			 * the model
 			 */
-
-			return "collections/info";
+			return dataProfile;
+			
 		} catch (JargonException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
 			throw new DataGridException(e.getMessage());
 		}
 
-		/*
-		 * DataGridCollectionAndDataObject dgColObj = null;
-		 * 
-		 * try { dgColObj = collectionService.findByName(path);
-		 * permissionsService.resolveMostPermissiveAccessForUser(dgColObj,
-		 * loggedUserUtils.getLoggedDataGridUser()); } catch (DataGridException e) {
-		 * logger.error("Could not retrieve collection/dataobject from path: {}", path);
-		 * } model.addAttribute("currentPath", path);
-		 * model.addAttribute("collectionAndDataObject", dgColObj); if (dgColObj !=
-		 * null) model.addAttribute("flag", true); else { model.addAttribute("flag",
-		 * false); }
-		 */
-
 	}
+	
+	
+	
+	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
+	public String getCollectionFileInfo(final Model model, @RequestParam("path")
+	final String path) throws DataGridException {
 
-	/*
-	 * @RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
-	 * public String getCollectionFileInfo(final Model model, @RequestParam("path")
-	 * final String path) throws DataGridConnectionRefusedException {
-	 * 
-	 * logger.
-	 * info("------CollectionInfoController getCollectionFileInfo() starts :: "
-	 * +path); DataGridUser loggedUser = LoggedUserUtils.getLoggedDataGridUser();
-	 * 
-	 * 
-	 * logger.info("User First Name :: " +loggedUser.getUsername());
-	 * 
-	 * model.addAttribute("infoName", "This is Info !!"); return "collections/info";
-	 * 
-	 * }
-	 */
+		logger.
+		info("------CollectionInfoController getCollectionFileInfo() starts :: "
+				+path);
+		
+		@SuppressWarnings("rawtypes")
+		DataProfile dataProfile = getCollectionDataProfile(path);
+				
+		
+		model.addAttribute("dataProfile", dataProfile);
+		return "collections/collectionInfo";
+	}
+	 
 
 	/*
 	 * @RequestMapping(value = "/collectionMetadata/", method = RequestMethod.POST)

@@ -473,7 +473,8 @@ public class CollectionController {
 				dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
 				dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
 				permissionsService.resolveMostPermissiveAccessForUser(dataGridObj,
-						loggedUserUtils.getLoggedDataGridUser());				
+						loggedUserUtils.getLoggedDataGridUser());	
+			
 				
 			}
 

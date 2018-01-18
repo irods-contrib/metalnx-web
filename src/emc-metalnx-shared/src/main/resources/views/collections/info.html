@@ -7,31 +7,34 @@
 <body>
 	<div layout:fragment="content">
 
+	<div>
 		<div id="summary">
 			Summary :: <span th:text="${summary}"></span>
 		</div>
 
-		<div id="tabs" th:if="${flag}">
+		<div id="tabs">
 			<ul>
 				<li><a href="#info"
-					th:onclick="'javascript:getInfoDetails(\'' + ${collectionAndDataObject.path} + '\');'">
+					th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-info-circle"></i></span> <span
 						title="File information">Info</span>
 				</a></li>
 
 				<li><a href="#metadata"
-					th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
+					th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
 				</a></li>
 
 				<li><a href="#permission" id="permissions"
-					th:onclick="'javascript:getPermissionDetails(\'' + ${collectionAndDataObject.path} + '\');'">
+					th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
 				</a></li>
 			</ul>
 
 			<div class="content_menu">
-				<div id="info"></div>
+				<div id="info">
+					<th:block th:include="collections/collectionInfo :: collectionInfo"></th:block>
+				</div>
 
 				<div id="metadata"></div>
 
@@ -39,7 +42,9 @@
 			</div>
 		</div>
 
-		<!-- JQuery UI CSS -->
+		
+	</div>
+				<!-- JQuery UI CSS -->
 		<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
 			th:href="@{/css/jquery-ui.min.css}" />
 		<!-- jQuery UI Version 1.11.4 -->

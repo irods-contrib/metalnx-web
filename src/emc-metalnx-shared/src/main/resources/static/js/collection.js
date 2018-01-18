@@ -7,10 +7,12 @@ function getCollectionSummary(path){
 }
 
 function displayCollectionSummary(data){
-	alert("displayTestDetails()");	
+	console.log("displayTestDetails()");	
 	$("#summary").html(data);
 	//alert([[${ currentPath }]]);
-	getInfoDetails(path);
+	//getInfoDetails(path);
+	displayInfoDetails(data);
+	//$("#info").html(data);
 }
 
 
@@ -19,7 +21,8 @@ function getInfoDetails(path){
 	window.location.hash = "info";
 	console.log("Path :: " +path);
 	//var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
-	var url = "/emc-metalnx-web/collections/info/";		
+	//var url = "/emc-metalnx-web/collections/info/";
+	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
 	//getBreadcrumb(path);
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 	

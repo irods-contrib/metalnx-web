@@ -17,59 +17,12 @@
 <th:block th:fragment="treeView"> 
 <!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
 
-    <!-- Confirmation modal for the delete operation -->
-    <div class="modal fade" id="deleteReplicaModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" th:text="#{collections.replica.delete}"></h4>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="path" id="deleteReplicaPath"/>
-                    <input type="hidden" name="fileName" id="deleteReplicaFileName"/>
-                    <input type="hidden" name="replicaNumber" id="deleteReplicaNumber"/>
-                    <p th:text="#{collections.replica.delete.confirm}"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{text.close}"></button>
-                    <button type="button" class="btn btn-primary" onclick="deleteReplica();" th:text="#{text.delete}"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
-    <!-- Replica deletion success message -->
-    <div class="alert alert-success" role="alert" th:if="${delReplReturn} == 'success'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <p class="text-center" th:text="#{collections.replica.delete.success}"></p>
-    </div>
-    <!-- Replica deletion fail message -->
-    <div class="alert alert-danger" role="alert" th:if="${delReplReturn} == 'failure'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <p class="text-center" th:text="#{collections.replica.delete.failure}"></p>
-    </div>
-    <!-- Permission none -->
-    <div th:if="${collectionAndDataObject == null}">
-        <div class="panel property">
-            <div class="text-center" role="alert">
-                <span th:text="#{collections.error.no.permissions}"></span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="#" onclick="javascript:goBackHistory('1');">
-                    <span th:text="#{text.back}"></span>
-                </a>
-            </div>
-        </div>
-    </div>
+   
 
 
-    <div class="col-md-12" th:unless="${collectionAndDataObject == null}" th:fragment="collectionInfo">
+    <div class="col-md-12" th:unless="${dataProfile == null}" th:fragment="collectionInfo">
         <div class="panel property">
             <div class="row">
                 <h4 class="property-title" th:text="#{text.info}"><i class="fa fa-info-circle"></i></h4>
@@ -77,85 +30,40 @@
             </div>
             <div class="panel-info">
                 <div class="name">
-                    <i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
-                    <i th:unless="${collectionAndDataObject.isCollection()}"
-                       th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
-                    <span><b th:text="${ currentCollection.getName() }"></b></span>
-                    <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+                    <i th:unless="${dataProfile.file}" class="fa fa-folder folder-icon"></i>
+                     <i th:if="${dataProfile.file}"
+                       th:class="${ dataProfile.getIconToDisplay()}"></i> 
+                    <span><b th:text="${ dataProfile.getDomainObject().getCollectionName() }"></b></span>
+                   <!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->             	
+                	<a id="breadcrumbStar" class="btn-favorite" href="#"
+						data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
+						<i th:class="true? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
+					</a>
                 </div>
+                
+                 
                 <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.owner.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div>
+                 <!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
                 </div>
                 <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.created.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getCreatedAtFormatted() }"></span></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span></div>
                 </div>
-                <div class="row">
+                <!-- collection has different name, keep same name??  <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.modified.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getModifiedAtFormatted() }"></span></div>
-                </div>
-                <div class="row">
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span></div>
+                </div> -->
+                <!-- Will we have checksum on collection??? <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.checksum.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getChecksum() }"></span></div>
-                </div>
-            </div>
-
-            <div id="replicaAndChecksumInfo" th:if="${!currentCollection.isCollection()}">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th th:text="#{collections.management.table.replica.number.label}"></th>
-                        <th th:text="#{collections.management.table.created.label}"></th>
-                        <th th:text="#{collections.management.table.modified.label}"></th>
-                        <th th:text="#{collections.management.table.size.label}"></th>
-                        <th th:text="#{collections.management.table.resource.label}"></th>
-                        <th th:text="#{collections.management.table.path.label}"></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr th:each="replica : ${replicasMap}">
-                        <td><span th:text="${replica.key.replicaNumber}"></span></td>
-                        <td><span th:text="${replica.key.createdAtFormatted}"></span></td>
-                        <td><span th:text="${replica.key.modifiedAtFormatted}"></span></td>
-                        <td><span th:text="${replica.key.displaySize}"></span></td>
-                        <td><span th:text="${replica.value.name}"></span></td>
-                        <td><span th:text="${replica.value.path}"></span></td>
-                        <td th:if="${replicasMap.size() > 1}">
-                            <button class="btn btn-default btn-xs"
-                                    th:onclick="'javascript:displayDeleteReplicaModal(\'' + ${currentCollection.getPath()} + '\', \'' + ${currentCollection.getName()} + '\', \'' + ${replica.key.replicaNumber} + '\');'"
-                                    type="button">
-                                <span class="glyphicon glyphicon-trash"> </span>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getChecksum() }"></span></div>
+                </div> -->
             </div>
         </div>
     </div>
    
     <script>
-		function displayDeleteReplicaModal(path, fileName, replicaNumber) {
-			$('#deleteReplicaPath').val(path);
-			$('#deleteReplicaFileName').val(fileName);
-			$('#deleteReplicaNumber').val(replicaNumber);
-			$('#deleteReplicaModal').modal('show');
-		}
-
-		function deleteReplica(path, fileName, replicaNumber) {
-			var path = $('#deleteReplicaPath').val();
-			var fileName = $('#deleteReplicaFileName').val();
-			var replicaNumber = $('#deleteReplicaNumber').val();
-			$("#table-loader").show();
-			$("#table-loader").nextAll().remove();
-			$(".nav-tabs a[href='#info-collection']").tab("show");
-			$('#deleteReplicaModal').modal('hide');
-			$('.modal-backdrop.fade.in').remove();
-			ajaxEncapsulation("/emc-metalnx-web/fileOperation/deleteReplica/", "POST", {path: path, fileName: fileName, replicaNumber: replicaNumber}, displayInfoDetails, null, null, null);
-		}
+		
 		$(document).ready(function(){
 			console.log("CollectionInfo");
             $("#collection-content").removeClass("collections-table");
