@@ -73,8 +73,7 @@ public class CollectionInfoController {
 		DataProfile dataProfile = getCollectionDataProfile(path);
 		
 		String iconToDisplay = "";
-		
-		
+			
 		if(dataProfile!= null && dataProfile.isFile())
 			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
 		if(dataProfile!= null && !dataProfile.isFile())	
@@ -83,25 +82,10 @@ public class CollectionInfoController {
 		model.addAttribute("iconToDisplay", iconToDisplay);				
 		model.addAttribute("dataProfile", dataProfile);
 		
-		return "collections/info"; //:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";
+		return "collections/info"; 
 		
+		//:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";		
 		//"main :: mainPage(page='some-page', fragment='somePage')";
-		//return "collections/collectionInfo";
-		
-		
-		/*
-		 * DataGridCollectionAndDataObject dgColObj = null;
-		 * 
-		 * try { dgColObj = collectionService.findByName(path);
-		 * permissionsService.resolveMostPermissiveAccessForUser(dgColObj,
-		 * loggedUserUtils.getLoggedDataGridUser()); } catch (DataGridException e) {
-		 * logger.error("Could not retrieve collection/dataobject from path: {}", path);
-		 * } model.addAttribute("currentPath", path);
-		 * model.addAttribute("collectionAndDataObject", dgColObj); if (dgColObj !=
-		 * null) model.addAttribute("flag", true); else { model.addAttribute("flag",
-		 * false); }
-		 */
-
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -123,7 +107,6 @@ public class CollectionInfoController {
 			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
 			logger.info("data profile retrieved:{}", dataProfile);
 			
-
 			/*
 			 * TODO: after this do an if test and send to right view with the DataProfile in
 			 * the model
@@ -143,15 +126,23 @@ public class CollectionInfoController {
 	public String getCollectionFileInfo(final Model model, @RequestParam("path")
 	final String path) throws DataGridException {
 
-		logger.
-		info("------CollectionInfoController getCollectionFileInfo() starts :: "
-				+path);
+		logger.info("CollectionInfoController getCollectionFileInfo() starts :: " +path);
 		
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = getCollectionDataProfile(path);
-				
 		
+		String iconToDisplay = "";
+		
+		if(dataProfile!= null && dataProfile.isFile())
+			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
+		if(dataProfile!= null && !dataProfile.isFile())	
+			iconToDisplay = iconService.getIconToDisplayCollection();
+		
+		model.addAttribute("iconToDisplay", iconToDisplay);					
 		model.addAttribute("dataProfile", dataProfile);
+		
+		logger.info("CollectionInfoController getCollectionFileInfo() ends !!");
+		
 		return "collections/collectionInfo";
 	}
 	 
