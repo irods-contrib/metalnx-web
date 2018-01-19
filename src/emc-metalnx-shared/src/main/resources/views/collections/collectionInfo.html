@@ -14,61 +14,143 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="treeView"> 
-<!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
-
-   
-
-   
+<th:block th:fragment="treeView">
+	<!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
 
 
-    <div class="col-md-12" th:unless="${dataProfile == null}" th:fragment="collectionInfo">
-        <div class="panel property">
-            <div class="row">
-                <h4 class="property-title" th:text="#{text.info}"><i class="fa fa-info-circle"></i></h4>
-                <div class="col-md-12 col-sm-12"><div class="col-md-12 col-sm-12 collLesserInfo divider"></div></div>
-            </div>
-            <div class="panel-info">
-                <div class="name">
-                    <i th:unless="${dataProfile.file}" class="fa fa-folder folder-icon"></i>
-                     <i th:if="${dataProfile.file}"
-                       th:class="${ dataProfile.getIconToDisplay()}"></i> 
-                    <span><b th:text="${ dataProfile.getDomainObject().getCollectionName() }"></b></span>
-                   <!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->             	
-                	<a id="breadcrumbStar" class="btn-favorite" href="#"
-						data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
-						<i th:class="true? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
-					</a>
-                </div>
-                
-                 
-                <div class="row">
-                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.owner.label}"></label></div>
-                 <!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
-                </div>
-                <div class="row">
-                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.created.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span></div>
-                </div>
-                <!-- collection has different name, keep same name??  <div class="row">
-                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.table.modified.label}"></label></div>
-                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span></div>
-                </div> -->
-                <!-- Will we have checksum on collection??? <div class="row">
+	<div class="col-md-12" th:unless="${dataProfile == null}">
+	
+		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
+			<span>this is collection Info</span>
+			<div class="panel property">
+				<div class="row">
+					<h4 class="property-title" th:text="#{text.info}">
+						<i class="fa fa-info-circle"></i>
+					</h4>
+					<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12 collLesserInfo divider"></div>
+					</div>
+				</div>
+				<div class="panel-info">
+					<div class="name">
+						<i th:class="${ iconToDisplay }"></i> <span><b
+							th:text="${ dataProfile.getDomainObject().getCollectionName() }"></b></span>
+						<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
+						<a id="breadcrumbStar" class="btn-favorite" href="#"
+							data-toggle="popover" data-placement="left" data-trigger="manual"
+							data-content=""
+							th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+							<i
+							th:class="true? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+							aria-hidden="true"></i>
+						</a>
+					</div>
+
+
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.owner.label}"></label>
+						</div>
+						<!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.created.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.modified.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
+						</div>
+					</div>
+					<!-- Will we have checksum on collection??? <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.checksum.label}"></label></div>
                     <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getChecksum() }"></span></div>
                 </div> -->
-            </div>
-        </div>
-    </div>
-   
-    <script>
-		
-		$(document).ready(function(){
+				</div>
+			</div>
+		</div>
+
+
+		<div th:if="${dataProfile.file}" th:fragment="FileInfoView">
+			<span>this is File Info</span>
+			<div class="panel property">
+				<div class="row">
+					<h4 class="property-title" th:text="#{text.info}">
+						<i class="fa fa-info-circle"></i>
+					</h4>
+					<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12 collLesserInfo divider"></div>
+					</div>
+				</div>
+				<div class="panel-info">
+					<div class="name">
+						<i th:class="${ iconToDisplay }"></i> <span><b
+							th:text="${ dataProfile.getDomainObject().getCollectionName() }"></b></span>
+						<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
+						<a id="breadcrumbStar" class="btn-favorite" href="#"
+							data-toggle="popover" data-placement="left" data-trigger="manual"
+							data-content=""
+							th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+							<i
+							th:class="true? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+							aria-hidden="true"></i>
+						</a>
+					</div>
+
+
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.owner.label}"></label>
+						</div>
+						<!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.created.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.modified.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.checksum.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+	<script>
+		$(document).ready(function() {
 			console.log("CollectionInfo");
-            $("#collection-content").removeClass("collections-table");
-            $("#collection-content").addClass("property");
-        });
-    </script>
+			$("#collection-content").removeClass("collections-table");
+			$("#collection-content").addClass("property");
+		});
+	</script>
 </th:block>
 <!-- </div> -->

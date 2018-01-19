@@ -28,6 +28,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 
 @Controller
@@ -50,6 +51,9 @@ public class CollectionInfoController {
 
 	@Autowired
 	IRODSServices irodsServices;
+	
+	@Autowired
+	IconService iconService;
 
 	@Autowired
 	DataProfilerSettings dataProfilerSettings;
@@ -67,8 +71,18 @@ public class CollectionInfoController {
 
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = getCollectionDataProfile(path);
-				
+		
+		String iconToDisplay = "";
+		
+		
+		if(dataProfile!= null && dataProfile.isFile())
+			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
+		if(dataProfile!= null && !dataProfile.isFile())	
+			iconToDisplay = iconService.getIconToDisplayCollection();
+		
+		model.addAttribute("iconToDisplay", iconToDisplay);				
 		model.addAttribute("dataProfile", dataProfile);
+		
 		return "collections/info"; //:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";
 		
 		//"main :: mainPage(page='some-page', fragment='somePage')";
