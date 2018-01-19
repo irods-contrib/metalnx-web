@@ -34,6 +34,7 @@ import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.pub.SpecificQueryAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.TrashOperationsAO;
 import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
@@ -103,6 +104,11 @@ public class IRODSServicesImpl implements IRODSServices {
 		}
 
 		return tas;
+	}
+
+	@Override
+	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {
+		return irodsAccessObjectFactory.getTrashOperationsAO(irodsAccount);
 	}
 
 	@Override

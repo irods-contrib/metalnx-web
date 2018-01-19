@@ -277,7 +277,7 @@ public class FileOperationsController {
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
-	public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException {
+	public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException, JargonException {
 		String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 		if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {

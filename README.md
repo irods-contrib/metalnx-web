@@ -116,6 +116,13 @@ This change requires the addition of this property to metalnx.properties,and for
 this property should be in settings.xml. See the CONFIGURATION.md and DEVELOPER-README.md for details. The sample
 metalnx.properties in /etc/irods-ext in this repo shows a sample configuration.
 
+#### NIEHS 500 Error on empty trash
+
+Incorporated new TrashOperationsAO code from https://github.com/DICE-UNC/jargon/issues/280
+
+This replaces the rule call, and now functions normally for logged in users. There remains a few issues with empty trash as rodsadmin but
+that will be addressed at the Jargon or iRODS level.
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
