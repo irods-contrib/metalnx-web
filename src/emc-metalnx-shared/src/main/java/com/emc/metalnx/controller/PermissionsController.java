@@ -189,9 +189,7 @@ public class PermissionsController {
 		
 		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
 		System.out.println("------Permission Conroller - /getPermissionDetail/ ends------");
-		return "permissions/permissionDetails :: permissionDetails";
-		//return "permissions/permissionDetails";
-		
+		return "permissions/permissionDetails :: permissionDetails";		
 	}
 
 	@RequestMapping(value = "/changePermissionForGroup/")

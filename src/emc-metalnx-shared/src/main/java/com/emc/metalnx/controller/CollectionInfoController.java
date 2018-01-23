@@ -1,7 +1,11 @@
 package com.emc.metalnx.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.IRODSDomainObject;
@@ -13,12 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
@@ -36,9 +43,6 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 @SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/collectionInfo")
 public class CollectionInfoController {
-
-	@Autowired
-	private LoggedUserUtils loggedUserUtils;
 
 	@Autowired
 	CollectionService collectionService;
@@ -81,8 +85,14 @@ public class CollectionInfoController {
 		
 		model.addAttribute("iconToDisplay", iconToDisplay);				
 		model.addAttribute("dataProfile", dataProfile);
+		String template = "";
 		
-		return "collections/info"; 
+		if(!dataProfile.isFile()) 
+			template = "collections/collectionInfo";
+		if(dataProfile.isFile())
+			template = "collections/fileInfo";
+		
+		return template; 
 		
 		//:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";		
 		//"main :: mainPage(page='some-page', fragment='somePage')";
@@ -141,11 +151,19 @@ public class CollectionInfoController {
 		model.addAttribute("iconToDisplay", iconToDisplay);					
 		model.addAttribute("dataProfile", dataProfile);
 		
-		logger.info("CollectionInfoController getCollectionFileInfo() ends !!");
-		
-		return "collections/collectionInfo";
+		logger.info("getCollectionFileInfo() ends !!");
+		return "collections/info :: infoView";
+		//return "collections/info";
 	}
 	 
+	@RequestMapping(value = "/getFile/",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public @ResponseBody byte[] getFile() throws IOException {
+		logger.info("getFile() starts!!");
+		InputStream in = getClass()
+				.getResourceAsStream("C:/Users/hetalben/opt/etc/test-data/github-git-cheat-sheet.pdf");
+		logger.info("getFile() ends!!");
+		return IOUtils.toByteArray(in);
+	}
 
 	/*
 	 * @RequestMapping(value = "/collectionMetadata/", method = RequestMethod.POST)
