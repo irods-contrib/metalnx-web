@@ -59,7 +59,7 @@
                                 <td th:unless="${userCanModify}" th:text="${userPermission.getPermission()}"></td>
                                 <td th:if="${userCanModify}">
                                     <th:block th:if="${collectionAndDataObject.isCollection()}">
-                                        <select class="userOptionForPermission" th:title="#{permission.table.permission.column}">
+                                        <select class="userOptionForPermission" th:title="#{permission.table.permission.column}" aria-label="user permission option">
                                             <option th:each="permission : ${permissions}"
                                                     th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
                                                     th:text="${permission}" th:title="${permission}"
@@ -74,7 +74,8 @@
                                         </div>
                                     </th:block>
                                     <th:block th:unless="${collectionAndDataObject.isCollection()}">
-                                        <select class="userOptionForFilePermission" th:title="#{permission.table.permission.column}">
+                                        <select class="userOptionForFilePermission" th:title="#{permission.table.permission.column}" aria-label="user permission option">
+                                        
                                             <option th:each="permission : ${permissions}"
                                                     th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
                                                     th:text="${permission}" th:title="${permission}"
@@ -86,7 +87,7 @@
                                     <input
                                         type="checkbox"
                                         class="userBookmarkCheckbox"
-                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" />
+                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" aria-label="user bookmark"/>
                                 </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"
@@ -100,7 +101,7 @@
                                 <td th:unless="${userCanModify}" th:text="${groupPermission.getPermission()}"></td>
                                 <td th:if="${userCanModify}">
                                     <th:block th:if="${collectionAndDataObject.isCollection()}">
-                                        <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
+                                        <select class="groupOptionForPermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}" aria-label="group option for permission">
                                             <option th:each="permission : ${permissions}"
                                                 th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
                                                 th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
@@ -115,7 +116,7 @@
                                         </div>
                                     </th:block>
                                     <th:block th:unless="${collectionAndDataObject.isCollection()}">
-                                        <select class="groupOptionForFilePermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}">
+                                        <select class="groupOptionForFilePermission" th:title="#{permission.table.permission.column}" th:id="${'groupOptionForPermission_' + groupPermission.getGroupName()}" aria-label="group option for permission">
                                             <option th:each="permission : ${permissions}"
                                                     th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + groupPermission.getGroupName()}"
                                                     th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
@@ -127,7 +128,7 @@
                                     <input
                                         type="checkbox"
                                         class="groupBookmarkCheckbox"
-                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" />
+                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" aria-label="group bookmark checkbox"/>
                                 </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"
@@ -187,7 +188,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" id="isBookmarkToBeSet" />
-                                <span th:text="#{collections.management.table.bookmark.label}"></span>
+                                <label for="isBookmarkToBeSet" th:text="#{collections.management.table.bookmark.label}"></label>
                             </label>
                         </div>
                     </div>
@@ -201,14 +202,14 @@
         </div>
 
         <!-- 'Add user permission' modal -->
-        <div class="modal fade" id="newUserPermissionModal" tabindex="-1" role="dialog" aria-labelledby="newUserPermissionModalLabel">
+        <div class="modal fade" id="newUserPermissionModal" tabindex="-1" role="dialog" aria-labelledby="newUserPermissionModalTitle">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" th:text="#{permissions.modal.user.add.title}"></h4>
+                        <h4 id="newUserPermissionModalTitle" class="modal-title" th:text="#{permissions.modal.user.add.title}"></h4>
                     </div>
                     <div id="addUsersModalContent" class="modal-body">
 

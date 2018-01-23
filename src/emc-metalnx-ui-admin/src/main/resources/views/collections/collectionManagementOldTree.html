@@ -22,8 +22,8 @@
 
 <body>
 
-	<div layout:fragment="content">
-		<h1 class="page-header" th:text="#{collections.management.page.title}"></h1>
+	<div layout:fragment="content" aria-labelledby="collectionsManagementPageTitle">
+		<h1 id="collectionsManagementPageTitle" class="page-header" th:text="#{collections.management.page.title}"></h1>
 
 		<div class="row">
 			<div class="col-sm-12">
@@ -43,7 +43,7 @@
 			<!-- Search Box -->
 			<div class="col-sm-6">
 				<div class="form-group input-group">
-					<input id="searchText" type="search" class="form-control"
+					<input id="searchText" type="search" class="form-control" aria-label="search text"
 						th:placeholder="#{search.placeholder}" /> <span class="input-group-addon">
 						<i class="glyphicon glyphicon-search"></i>
 					</span>
@@ -51,7 +51,7 @@
 			</div>
 
 			<div class="col-sm-6">
-				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }"
+				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }" 
 					class="btn btn-primary btn-md pull-right"
 					th:text="#{collections.management.add.button}">
 				</a>

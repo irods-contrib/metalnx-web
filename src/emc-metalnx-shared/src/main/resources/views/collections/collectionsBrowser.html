@@ -204,7 +204,7 @@
 								<small class="help-block hideElement" id="emptyCollectionNameMsg" th:text="#{collections.validation.name.blank}"></small>
 							</div>
 
-							<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
+							<input aria-label="permission inheritance option" type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
 							<span th:unless="${inheritanceDisabled}">
 								<span th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
 								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
@@ -236,7 +236,7 @@
 <div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
 </div>
 <div class="col-md-2 col-sm-3 col-xs-12">
-	<a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
+	<a aria-label="empty trash" href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
 		<span class="glyphicon glyphicon-trash"></span>
 		<span th:text="#{empty.trash.label}"></span>
 	</a>
@@ -244,28 +244,28 @@
 	<div id="actionUpload">
         <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                th:title="#{collections.management.add.button}">
 
                   <i class="fa fa-folder"></i>
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+            <a role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="upload files"
                data-target="#uploadModal" data-backdrop="static" data-keyboard="false" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
         </th:block>
         <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
             <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                th:title="#{collections.management.add.button}">
 
                   <i class="fa fa-folder"></i>
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
-            </a>
-            <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
+            </a> 
+            <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="add collection"
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
@@ -284,7 +284,7 @@
             <table class="table table-hover" id="treeViewTable">
                 <thead>
                     <tr>
-                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
+                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items"/></th>
                         <th th:text="#{collections.management.table.collection.name.label}"></th>
                         <th th:text="#{collections.management.table.owner.label}"></th>
                         <th th:text="#{collections.management.table.kind.label}"></th>
@@ -303,7 +303,7 @@
     <div class="text-center" role="alert">
         <span th:text="#{collections.management.msg.access.denied}"></span>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#" onclick="javascript:goBackHistory('1');">
+        <a href="#" onclick="javascript:goBackHistory('1');" aria-label="back" th:text="#{text.back}">
             <span>Back</span>
         </a>
     </div>
@@ -311,17 +311,17 @@
 
 <!-- Empty Trash Modal -->
 <div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
-	 aria-labelledby="myModalLabel" aria-hidden="true">
+	 aria-labelledby="emptyTrashModalTitle" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					<span aria-hidden="true">&times;</span><span class="sr-only" th:text="#{text.close}">Close</span>
 				</button>
-				<h4 class="modal-title" th:text="${'Empty Trash'}"></h4>
+				<h4 id="emptyTrashModalTitle" class="modal-title" th:text="${'Empty Trash'}"></h4>
 			</div>
 			<div class="modal-body">
-				<span th:utext="#{trash.deletion.confirmation(${trashColl})}"></span>
+				<span th:text="#{trash.deletion.confirmation(${trashColl})}"></span>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"
@@ -336,14 +336,14 @@
 <!-- Ticket Form -->
 <div class="col-md-10 col-sm-9 col-xs-12">
     <div class="modal fade" id="ticketCreationForm" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true">
+         aria-labelledby="ticketCreateFormTitle" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                     </button>
-                    <h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
+                    <h4 id="ticketCreateFormTitle" class="modal-title" th:text="#{ticket.form.title.create}"></h4>
                 </div>
                 <div class="modal-body">
                    <div id="ticketFormPanel"></div>

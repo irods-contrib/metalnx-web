@@ -30,12 +30,12 @@
 
           <th:block th:each="historyElement,iterStat : ${collectionPastHistory}">
               <li th:if="${not #strings.isEmpty(historyElement)}" th:onLoad="'javascript:getSubDirectories(\'' + ${historyElement} + '\');'">
-                  <a  href="#" th:text="${historyElement}" th:onclick="'javascript:goBackHistory('+ ${iterStat.count} +');'">Collection</a>
+                  <a  href="#" th:text="${historyElement}" th:onclick="'javascript:goBackHistory('+ ${iterStat.count} +');'" aria-label="history element">Collection</a>
               </li>
           </th:block>
 
           <li role="separator" class="divider"></li>
-          <li><a class="home" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" th:text="'Home ('+${homeCollectionName}+')'"></a>
+          <li><a aria-label="user home directory" class="home" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" th:text="'Home ('+${homeCollectionName}+')'" aria-label="user home"></a>
           </li>
       </ul>
     </div>
@@ -47,7 +47,7 @@
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
                         <li class="hidden-xs hidden-sm">
-                            <a  href="#"
+                            <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
                                 th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
@@ -67,7 +67,7 @@
                 <th:block th:if="${breadcrumb.items.size()} gt 3">
                     <li>...</li>
                     <li class="hidden-sm hidden-xs hidden-md">
-                        <a  href="#"
+                        <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
                             th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'"
@@ -95,7 +95,7 @@
             <ol class="breadcrumb info">
                 <th:block th:if="${collectionAndDataObject.isCollection()}">
                     <li>
-                        <a class="collection" href="#">
+                        <a class="collection" href="#" aria-label="'info for:' + ${ collectionAndDataObject.name }">
                             <span th:if="${collectionAndDataObject.path != '/'}"
                                   th:text="${ collectionAndDataObject.name }"
                                   th:title="${ collectionAndDataObject.path }">
@@ -111,7 +111,7 @@
         <button href="#" class="pull-right btn btn-sm btn-default hidden" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
     </div>
         <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
-		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="breadcrumb options">
 			<i class="fa fa-bars"></i>
 		</a>   
 		<ul class="dropdown-menu">
@@ -128,13 +128,13 @@
                 </a>
             </li>
 		    <li>
-		        <a href="#" th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
+		        <a href="#" th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'" aria-label="get metadata">
 		            <span><i class="fa fa-tags"></i></span>
 		            <span title="Metadata">Metadata</span>
 		        </a>
 		    </li>
 		    <li>
-		        <a href="#" id="permissions" th:onclick="'javascript:getPermDetails(\'' + ${collectionAndDataObject.path} + '\');'">
+		        <a href="#" id="permissions" th:onclick="'javascript:getPermDetails(\'' + ${collectionAndDataObject.path} + '\');'" aria-label="get permissions">
 		            <span><i class="fa fa-lock"></i></span>
 		            <span title="Permissions">Permissions</span>
 		        </a>
@@ -143,7 +143,7 @@
     </div>
 
 	<a id="breadcrumbStar" class="btn-favorite" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
-		data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
+		aria-label="starred object" data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
 		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
 	</a>
 </div>

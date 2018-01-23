@@ -3,13 +3,13 @@
     <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
     <input type="hidden" class="form-control" id="usersList"/>
     <div class="form-group">
-        <label class="control-label" th:text="#{ticket.form.path.label}"></label>
+        <label for="selectedPath" class="control-label" th:text="#{ticket.form.path.label}"></label>
         <span id="selectedPath"></span>
     </div>
     <div class="form-group">
         <label for="input-permission" class="control-label" th:text="#{ticket.form.permission.label}"></label>
         <div class="">
-            <select id="input-permission" class="form-control" th:field="*{type}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}">
+            <select id="input-permission" class="form-control" th:field="*{type}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}" aria-label="permission">
                 <option value="READ" th:text="#{ticket.form.permission.option.read.label}"></option>
                 <option value="WRITE" th:text="#{ticket.form.permission.option.write.label}"></option>
             </select>

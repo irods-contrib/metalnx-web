@@ -32,10 +32,10 @@
 
 <body>
     <!-- Page Content -->
-    <div layout:fragment="content">
+    <div layout:fragment="content" aria-labelledby="ticketPageTitle">
         <div class="row">
             <div class="col-sm-12">
-                <h1 class="page-header pull-left">
+                <h1 id="ticketPageTitle" class="page-header pull-left">
                     <span th:text="#{ticket.page.title}"></span>
                 </h1>
                 <a id="tickets-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
@@ -141,14 +141,14 @@
             </div>
         </div>
 
-        <div class="modal fade" id="ticketModifyForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="ticketModifyForm" tabindex="-1" role="dialog" aria-labelledby="ticketModifyTitle" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         </button>
-                        <h4 class="modal-title" th:text="#{ticket.form.title.modify}"></h4>
+                        <h4 id="ticketModifyTitle" class="modal-title" th:text="#{ticket.form.title.modify}"></h4>
                     </div>
                     <div class="modal-body"><div id="ticketFormPanel"></div></div>
                     <div class="modal-footer">
@@ -162,14 +162,14 @@
             </div>
         </div>
 
-        <div class="modal fade" id="deleteTicketsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteTicketsModal" tabindex="-1" role="dialog" aria-labelledby="deleteTicketsModalTitle" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         </button>
-                        <h4 class="modal-title" th:text="#{tickets.delete.selected.label}"></h4>
+                        <h4 id="deleteTicketsModalTitle" class="modal-title" th:text="#{tickets.delete.selected.label}"></h4>
                     </div>
                     <div class="modal-body">
                         <span th:utext="#{tickets.deletion.confirmation}"></span>

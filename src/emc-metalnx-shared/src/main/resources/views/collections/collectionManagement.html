@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
   ~ Copyright (c) 2015-2017, Dell EMC
   ~
@@ -32,17 +31,17 @@
 </head>
 
 <body>
-	<div layout:fragment="content">
-		<h1 class="page-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h1>
-		<a id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+	<div aria-labelledby="collManagement" layout:fragment="content">
+		<h1 id="collManagement" class="page-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h1>
+		<a aria-label="page help" id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
-		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true">Search Results</a></li>
+		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
 		  <li class="active">Collections</li>
 		</ol>
 		<ol class="breadcrumb mlx"  th:if="${cameFromFilePropertiesSearch} == true"
 					id="backToFilePropertiesSearch">
-		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true">Search Results</a></li>
+		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
 		  <li class="active">Collections</li>
 		</ol>
         <div th:if="${unexpectedError}">
@@ -214,7 +213,7 @@
 							<div role="tabpanel" class="tab-pane active" id="copyCollections">
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" name="/" title="/"
+										<a aria-label="copy collection" href="#" name="/" title="/"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
 											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
@@ -223,7 +222,7 @@
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}"
+										<a href="#" th:name="${homePath}" area-label="user home directory"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
@@ -233,7 +232,7 @@
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public"
+										<a href="#" th:name="Public" th:title="Public" aria-label="public"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -274,7 +273,7 @@
 						</div>
                         <div class="col-xs-12">
                             <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked"/>
-                            <span th:text="#{copy.with.metadata.label}"></span>
+                            <label for="inputCopyWithMetadata" th:text="#{copy.with.metadata.label}">Copy with metadata</label>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -303,7 +302,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" id="myMoveModalLabel">Move item to</h4>
+						<h4  class="modal-title" id="myMoveModalLabel">Move item to</h4>
 					</div>
 					<div class="modal-body">
 						<ul class="nav nav-tabs" role="tablist">
@@ -324,7 +323,7 @@
 							<div role="tabpanel" class="tab-pane active" id="moveCollections">
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" name="/" title="/"
+										<a href="#" name="/" title="/" aria-label="Move collection"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
 											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
@@ -333,7 +332,7 @@
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}"
+										<a href="#" th:name="${homePath}" aria-label="User home dir"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
@@ -343,7 +342,7 @@
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public"
+										<a href="#" th:name="Public" th:title="Public" aria-label="Public dir"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -409,7 +408,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{replicate.modal.title}"></h4>
+						<h4 id="myReplicateModalLabel" class="modal-title" th:text="#{replicate.modal.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<form action="/emc-metalnx-web/fileOperation/replicate/"
@@ -439,14 +438,14 @@
 
 		<!-- Delete Modal -->
 		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel" aria-hidden="true">
+			aria-labelledby="deleteModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
+						<h4 id="deleteModalLabel" class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.deletion.label}"></span> <span
@@ -465,14 +464,14 @@
 
 		<!-- Upload Modal -->
 		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel" aria-hidden="true">
+			aria-labelledby="uploadModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{upload.label}"></h4>
+						<h4 id="uploadModalLabel" class="modal-title" th:text="#{upload.label}"></h4>
 					</div>
 					<div class="modal-body">
 						<div class="hideElement" id="uploadMinMessage">
@@ -492,8 +491,8 @@
 
 
 							<p class="text-right">
-								<span id="numberFilesUpload">No</span><span>&nbsp;file(s)
-									selected</span>
+								<label id="numberFilesUpload"># file(s)
+									selected</label>
 							</p>
 							<div class="well">
 								<!-- <div class="col-sm-4 col-sm-offset-4" style="align-items: center; display: flex; min-height: 100%;"> -->
@@ -512,14 +511,15 @@
 
 									<div class="row form-group">
 										<th:block th:if="${dataGridUser.isAdvancedView()}">
-										<div class="col-md-6">Resource</div>
+										<div class="col-md-6" th:text="#{text.resource.name}">Resource</div>
 										<div class="col-md-6">
 												<input type="checkbox" id="inputReplica" name="replica"
-													value="1" /> &nbsp;&nbsp;<span>Replica</span>
+													value="1" />
+													<label for="inputReplica" th:text="#{text.replica}">Replica</label>
 										</div>
 
 										<div class="col-md-6">
-											<select class="form-control" name="resourceToUpload"
+											<select class="form-control" name="resourceToUpload" aria-label="Resource to upload"
 												id="selectResourceToUpload">
 											</select>
 										</div>
@@ -534,14 +534,14 @@
 
  								<div class="row form-group">
 									<div class="col-md-6">
-										<input type="checkbox" id="inputOverwriteDuplicateFiles"
+										<input type="checkbox" id="inputOverwriteDuplicateFiles" aria-label="overwrite on upload"
 											name="inputOverwriteDuplicateFiles"
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
 									<th:block th:if="${dataGridUser.isAdvancedView()}">
 									<div class="col-md-6">
-										<input type="checkbox" id="inputChecksum" name="checksum"
+										<input type="checkbox" id="inputChecksum" name="checksum" aria-label="compute checksum"
 										value="1" /> &nbsp;&nbsp;<span>Checksum</span>
 									</div>
 									</th:block>
@@ -562,8 +562,8 @@
 									<table class="table">
 										<thead>
 											<tr>
-												<th>File Name</th>
-												<th>Upload Status</th>
+												<th th:text="#{text.file.name}">File Name</th>
+												<th th:text="#{collections.management.upload.upload.status}">Upload Status</th>
 											</tr>
 										</thead>
 										<tbody class="upload-window">
@@ -625,7 +625,7 @@
 						this.reset();
 					});
 					$('#filesList').html('');
-					$('#numberFilesUpload').html('No');
+					$('#numberFilesUpload').html('Number of files to upload');
 					$('#uploadControlOptions').hide();
 					$('#uploadForm').show();
 					$('#browseButton').show();

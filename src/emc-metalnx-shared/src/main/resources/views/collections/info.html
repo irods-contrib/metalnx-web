@@ -14,18 +14,18 @@
 
 		<div id="tabs">
 			<ul>
-				<li><a href="#info"
+				<li><a href="#info" aria-label="file information"
 					th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-info-circle"></i></span> <span
 						title="File information">Info</span>
 				</a></li>
 
-				<li><a href="#metadata"
+				<li><a href="#metadata" aria-label="file metadata"
 					th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
 				</a></li>
 
-				<li><a href="#permission" id="permissions"
+				<li><a href="#permission" id="permissions" aria-label="file permissions"
 					th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
 				</a></li>

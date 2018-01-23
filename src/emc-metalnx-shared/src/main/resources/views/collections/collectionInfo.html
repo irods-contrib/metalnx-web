@@ -55,18 +55,18 @@
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label th:text="#{collections.management.table.created.label}"></label>
+							<label for="createdAt" th:text="#{collections.management.table.created.label}"></label>
 						</div>
 						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+							<span id="createdAt" th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label th:text="#{collections.management.table.modified.label}"></label>
+							<label for="modifiedAt" th:text="#{collections.management.table.modified.label}"></label>
 						</div>
 						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span
+							<span id="modifiedAt"
 								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
 						</div>
 					</div>
@@ -101,7 +101,7 @@
 							th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
 							<i
 							th:class="true? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
-							aria-hidden="true"></i>
+							aria-label="access the info page for details"></i>
 						</a>
 					</div>
 
@@ -114,26 +114,26 @@
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label th:text="#{collections.management.table.created.label}"></label>
+							<label for="createdAt" th:text="#{collections.management.table.created.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div id="createdAt" class="col-md-9 col-sm-8 col-xs-8">
 							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label th:text="#{collections.management.table.modified.label}"></label>
+							<label for="updatedAt" th:text="#{collections.management.table.modified.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
+						<div class="col-md-9 col-sm-8 col-xs-8" >
+							<span id="updatedAt" th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label th:text="#{collections.management.checksum.label}"></label>
+							<label for="checksum" th:text="#{collections.management.checksum.label}"></label>
 						</div>
 						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
+							<span id="checksum" th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
 						</div>
 					</div>
 				</div>

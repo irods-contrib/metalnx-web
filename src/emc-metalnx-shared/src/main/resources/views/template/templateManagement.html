@@ -23,11 +23,11 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="templatePageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
-				<a id="templates-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<h1 id="templatePageTitle" class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
+				<a id="templates-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
@@ -105,14 +105,14 @@
 				<div id="templateListAsync"></div>
 
 				<!-- Upload Modal -->
-				<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalTitle" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">
 									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 								</button>
-								<h4 class="modal-title" th:text="#{upload.label}"></h4>
+								<h4 id="uploadModalTitle" class="modal-title" th:text="#{upload.label}"></h4>
 							</div>
 							<div class="modal-body">
 
@@ -143,8 +143,8 @@
 									<div id="uploadControlOptions" class="hideElement">
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
-												<label>
-													<input type="checkbox" id="addPrefixCheckbox" name="addPrefix" value="1" /> Add prefix to template
+												<label for="prefixInput">
+													<input type="checkbox" id="addPrefixCheckbox" name="addPrefix" value="1" aria-label="add prefix to template" /> Add prefix to template
 				       							</label>
 											</div>
 											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
@@ -154,8 +154,8 @@
 
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
-												<label>
-													<input type="checkbox" id="addSuffixCheckbox" name="addSuffix" value="1" /> Add suffix to template
+												<label for="suffixInput">
+													<input type="checkbox" id="addSuffixCheckbox" name="addSuffix" value="1" aria-label="add suffix to template" /> Add suffix to template
 				       							</label>
 											</div>
 											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
