@@ -107,7 +107,7 @@ public class IRODSServicesImpl implements IRODSServices {
 	}
 
 	@Override
-	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {
+	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {		
 		return irodsAccessObjectFactory.getTrashOperationsAO(irodsAccount);
 	}
 

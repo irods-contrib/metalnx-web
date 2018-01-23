@@ -495,7 +495,7 @@ public class CollectionController {
 		System.out.println("currentCollection.getName() == "+ dataGridObj.getName());
 		
 		System.out.println("CollectionController getInfoFile() ends !!");
-		return "collections/collectionInfo";
+		return "collections/info :: infoView";
 		//return "collections/info";
 	}
 
