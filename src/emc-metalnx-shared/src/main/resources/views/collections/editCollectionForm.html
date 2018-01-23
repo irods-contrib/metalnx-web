@@ -14,7 +14,7 @@
   ~  limitations under the License.
   -->
 
-<div class="modal-header">
+<div class="modal-header" aria-labelledby="myAddAndModifyModalLabel">
 	<button type="button" class="close" data-dismiss="modal">
 		<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 	</button>
@@ -45,7 +45,7 @@
 				<small class="help-block hideElement" id="emptyCollectionNameMsg" th:text="#{collections.validation.name.blank}"></small>
 			</div>
 
-			<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" /> &nbsp;&nbsp;
+			<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" aria-label="inheritance option" /> &nbsp;&nbsp;
 			<span for="inheritanceOption" >
 				<span th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
 				[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]

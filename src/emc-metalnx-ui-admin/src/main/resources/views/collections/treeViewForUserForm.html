@@ -39,7 +39,7 @@
 		<div id="directoryPath">
 			<ol class="breadcrumb" style="color: #2C95DD;">
 				<!-- root item -->
-				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForUser('/');">iRods</a></li>
+				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForUser('/');" th:text="#{text.root}" aria-label="breadcrumb for root">Root(/)</a></li>
 
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
@@ -47,6 +47,7 @@
 						<a href="#collectionsViewForUser"
 							th:if="${ iterationStatus.last == false }"
 							th:text="${ pathItem }"
+							aria-label="${ pathItem }"
 							th:with="pathUntilCurrentItem = ${ #strings.substringBefore(currentPath, pathItem) + pathItem }"
 							th:title="${ pathUntilCurrentItem }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${ pathUntilCurrentItem } + '\');'">
@@ -87,6 +88,7 @@
 							th:if="${ collectionAndDataObject.isCollection() }"
 							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }"
+							aria-label="${ collectionAndDataObject.getPath() }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${collectionAndDataObject.getPath()} + '\');'">
 
 			               	<i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
@@ -134,6 +136,7 @@
 						<!-- <input type="hidden" th:id="${'recursive_' + collectionAndDataObject.getName() }" value="false"/> -->
 						<select th:id="${'permission_' + collectionAndDataObject.getName() }"
 						th:title="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
+						aria-label="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
 						th:onchange="${collectionAndDataObject.isCollection()} ? 'javascript:showRecursiveQuestion(\'' + ${collectionAndDataObject.getName()} + '\')' : 'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'">
 							<option value="none">None</option>
 							<option value="read" th:selected="${#sets.contains(readPermissions, collPath) or #sets.contains(session.addReadPermissionsOnDirs, collPath) ? 'selected' : 'false'}">Read</option>

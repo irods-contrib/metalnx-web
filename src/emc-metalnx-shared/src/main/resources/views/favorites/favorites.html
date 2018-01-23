@@ -28,13 +28,13 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="favoritePageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left">
+				<h1 id="favoritesPageTitle" class="page-header pull-left">
 					<span th:text="#{favorites.page.title}"></span>
 				</h1>
-				<a id="favorite-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<a id="favoritePageTitle"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 			</div>
 
             <div class="col-sm-12 hideElement" id="unfavFailMsg">

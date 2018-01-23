@@ -29,21 +29,21 @@
 <body>
 
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="sharedLinksTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left">
+				<h1 id="sharedLinksTitle" class="page-header pull-left">
 					<span th:text="#{group.collections.view.page.title}"></span>
 				</h1>
 				<span class="subtitle" th:text="#{group.collections.view.page.subtitle}"></span>
-				<a id="mygroups-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<a id="mygroups-page-title"  href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
 			</div>
 			<div class="col-sm-12">
-				<a th:href="@{ ${urlMap.URL_GROUPS_BOOKMARKS} }" disabled="" class="btn btn-default btn-sm btn-shared" style="margin-right: 5px;">
+				<a th:href="@{ ${urlMap.URL_GROUPS_BOOKMARKS} }" disabled="" class="btn btn-default btn-sm btn-shared" style="margin-right: 5px;" aria-label="group shared bookmarks">
                    <i class="fa fa-users "></i>
                    	&nbsp; <span th:text="#{collections.management.shared.links.list.by.group}"></span>
                  </a>
-				<a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }" class="btn btn-default btn-sm btn-shared" style="margin-right: 5px;">
+				<a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }" class="btn btn-default btn-sm btn-shared" style="margin-right: 5px;" aria-label="user shared bookmarks">
                    <i class="fa fa-user"></i>
                    	&nbsp; <span th:text="#{collections.management.shared.links.list.by.user}"></span>
                  </a>

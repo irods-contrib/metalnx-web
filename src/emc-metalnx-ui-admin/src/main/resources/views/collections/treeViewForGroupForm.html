@@ -44,7 +44,7 @@
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
 					<li>
-						<a href="#collectionsViewForGroup"
+						<a href="#collectionsViewForGroup" aria-label="collections view for group"
 							th:if="${ iterationStatus.last == false }"
 							th:text="${ pathItem }"
 							th:with="pathUntilCurrentItem = ${ #strings.substringBefore(currentPath, pathItem) + pathItem }"
@@ -83,7 +83,7 @@
 				<tr th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
 					<!-- Collection name -->
 					<td>
-						<a href="#collectionsViewForGroup"
+						<a href="#collectionsViewForGroup"  aria-label="collections view for group"
 							th:if="${ collectionAndDataObject.isCollection() }"
 							th:name="${ collectionAndDataObject.getName() }"
 							th:title="${ collectionAndDataObject.getPath() }"
@@ -131,7 +131,7 @@
 								</div>
 							</div>
 						</div>
-						<select th:id="${'permission_' + collectionAndDataObject.getName() }"
+						<select th:id="${'permission_' + collectionAndDataObject.getName() }" aria-label="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
 						th:title="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
 						th:onchange="${collectionAndDataObject.isCollection()} ? 'javascript:showRecursiveQuestion(\'' + ${collectionAndDataObject.getName()} + '\')' : 'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'">
 							<option value="none">None</option>
@@ -148,6 +148,7 @@
 							th:name='${collPath}'
 							type="checkbox"
 							class="bookmarkCheckbox"
+							aria-label="bookmarkCheckbox"
 							th:checked="${ (#lists.contains(groupBookmarks, collPath) or #sets.contains(addBookmark, collPath)) and !#sets.contains(removeBookmark, collPath) ? 'checked' : 'false' }"
 						/>
 					</td>

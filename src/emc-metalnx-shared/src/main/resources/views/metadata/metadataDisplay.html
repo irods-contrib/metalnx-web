@@ -30,19 +30,19 @@
 		<!-- jQuery UI Timepicker -->
     	<script src="../static/js/jquery-ui-timepicker-addon.js" th:src="@{/js/jquery-ui-timepicker-addon.js}"></script>
 
-    	<title th:text="#{tab.title.search}">Metalnx - Search</title>
+    	<title id="searchTitle" th:text="#{tab.title.search}">Metalnx - Search</title>
 	</head>
 
 	<body>
-		<div layout:fragment="content">
+		<div layout:fragment="content" aria-labelledby="searchTitle">
 			<h1 class="page-header pull-left" th:text="#{metadata.search.page.title}"></h1>
-			<a id="search-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+			<a id="search-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle" aria-label="page help"></i></a>
 			<div class="row metadata">
 				<div class="col-xs-12 tree-view-panel">
 					<div class="tabpanel">
 						<ul class="nav nav-tabs" role="tablist">
-							<li class="active" ><a href="#metadata-search" aria-controls="profile" role="tab" data-toggle="tab" th:text="#{metadata.search.title}">Metadata Search</a></li>
-							<li ><a href="#properties-search" aria-controls="profile" role="tab" data-toggle="tab" >Properties</a></li>
+							<li class="active" ><a href="#metadata-search" aria-controls="profile" role="tab" data-toggle="tab" th:text="#{metadata.search.title}" aria-label="metadata search">Metadata Search</a></li>
+							<li ><a href="#properties-search" aria-controls="profile" role="tab" data-toggle="tab" aria-label="properties search" th:text="#{text.properties}">Properties</a></li>
 						</ul>
 						<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
 							<div role="tabpanel" class="tab-pane active" id="metadata-search">
@@ -50,17 +50,17 @@
 									<div class="col-xs-12" ><p th:text="#{metadata.search.prompt}">Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
 									<form class="metadataSearchForm col-xs-12">
 										<div class="metadataSearchRow ">
-											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0"/>
+											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0" aria-label="metadata attribute"/>
 
-												<select id="" class="metadataOper metadataSearchField form-control" name="operator">
+												<select id="" class="metadataOper metadataSearchField form-control" name="operator" aria-label="search operator">
 													<option value="EQUAL">Is (Equals)</option>
 													<option value="NOT_EQUAL">Is Not (Not Equals)</option>
 													<option selected="" value="LIKE">Contains</option>
 													<option value="NOT_LIKE">Does Not Contain</option>
 												</select>
 
-											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0"/>
-                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0"/>
+											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0" aria-label="search value"/>
+                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0" aria-label="search unit"/>
 											<a role="button" class="btn btn-link btn-xs rmMetadataSearchRow" ><i class="fa fa-minus-circle"></i></a>
 										</div>
 										<div class="">
@@ -68,8 +68,8 @@
 										</div>
 									</form>
 									<div id="metadataSearchActionButtons" class="col-sm-12">
-										<button class="btn btn-primary btn-sm pull-right" id="submitMetadataSearch" type="button">Search</button>
-										<button class="btn btn-default btn-sm pull-right" id="resetMetadataSearch" type="button">Reset Conditions</button>
+										<button class="btn btn-primary btn-sm pull-right" id="submitMetadataSearch" type="button" th:text="#{text.search}">Search</button>
+										<button class="btn btn-default btn-sm pull-right" id="resetMetadataSearch" type="button" th:text="#{text.reset}">Reset</button>
 									</div>
 								</div>
 							</div>
@@ -78,7 +78,7 @@
 									<div class="col-xs-12"><p th:text="#{metadata.search.prompt}">Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
 									<form class="propertiesSearchForm col-xs-12">
 										<div class="propertiesSearchRow ">
-											<select class="propertiesAttr form-control propertiesSearchField" name="attribute" placeholder="Attribute">
+											<select class="propertiesAttr form-control propertiesSearchField" name="attribute" placeholder="Attribute" aria-label="properties search field">
 												<option value="FILE_NAME" th:text="#{text.file.name}">File Name</option>
 								                <option value="FILE_PATH" th:text="#{text.path}">Path</option>
 								                <option value="RESC_NAME" th:text="#{text.resource.name}">Resource Name</option>
@@ -89,7 +89,7 @@
 								                <option value="REPLICA_NUMBER" th:text="#{text.replica.number}">Replica Number</option>
 								                <option value="CHECKSUM" th:text="#{collections.management.checksum.label}">Checksum</option>
 											</select>
-											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator">
+											<select id="" class="propertiesOper form-control propertiesSearchField" name="operator" aria-label="properties operator">
 												<option  value="EQUAL" th:text="#{text.is.equals}">Is (Equals)</option>
 												<option value="NOT_EQUAL" th:text="#{text.is.not.equals}">Is Not (Not Equals)</option>
 												<option selected="" value="LIKE" th:text="#{text.contains}">Contains</option>

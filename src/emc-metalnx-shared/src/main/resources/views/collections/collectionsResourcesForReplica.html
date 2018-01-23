@@ -16,9 +16,9 @@
 
 <th:block th:fragment="collectionsResourcesForReplica">
 
-	<select class="form-control" name="resourcesForReplication" id="" th:if="${ not #lists.isEmpty(resources) }" style="width:66%">
+	<select class="form-control" name="resourcesForReplication" id="" th:if="${ not #lists.isEmpty(resources) }" style="width:66%" aria-label="replica resources">
 		<th:block th:each="resource : ${resources}">
-			<option th:value="${resource.name}"> 
+			<option th:value="${resource.name}" aria-label="resource"> 
 				<span th:text="${resource.name}"></span> 
 			</option>
 		</th:block>	

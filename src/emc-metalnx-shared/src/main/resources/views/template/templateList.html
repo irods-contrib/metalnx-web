@@ -67,7 +67,7 @@
 							<td >
 								<a type="button" class="btn btn-default btn-xs" title="Edit"
 								th:id="${'btn_modify_' + template.templateName}"
-								th:href="'/emc-metalnx-web/templates/modify/?templateId='+${template.id}">
+								th:href="'/emc-metalnx-web/templates/modify/?templateId='+${template.id}" aria-label="edit template">
 									<i class="fa fa-pencil"></i><span th:text="#{templates.edit.button}"></span>
 								</a>
 							</td>
@@ -78,12 +78,12 @@
 		</div>
 
 		<!-- Modal -->
-		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="removalModalTitle" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}">
+					  <h4 class="modal-title" id="removalModalTitle" th:text="#{confirmation.removal.title}">
 					  </h4>
 					</div>
 					<div class="modal-body">

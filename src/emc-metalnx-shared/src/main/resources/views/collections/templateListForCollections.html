@@ -15,7 +15,7 @@
   -->
 
 <div th:fragment="templateList" class="row templates-content templates" id="templateList">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" aria-labelledby="myCopyModalLabel">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
@@ -39,7 +39,7 @@
 						<tbody id="">
 							<tr th:each="template : ${templates}">
 								<td class="">
-									<input type="checkbox" name="templateCheckboxes" th:value="${template.id}" th:id="${template.templateName}"/>
+									<input type="checkbox" name="templateCheckboxes" th:value="${template.id}" th:id="${template.templateName}" aria-label="template checkboxes"/>
 								</td>
 								<td><span th:text="${template.templateName}"></span></td>
 								<td><span th:text="${template.owner}"></span></td>

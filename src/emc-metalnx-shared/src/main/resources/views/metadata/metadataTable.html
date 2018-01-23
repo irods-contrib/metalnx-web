@@ -34,19 +34,19 @@
                                 <input type="hidden" name="oldValue" id="oldValModal" />
                                 <input type="hidden" name="oldUnit" id="oldUnitModal" />
                                 <div class="form-group ">
-                                    <label class="" th:text="#{metadata.modal.add.label.attribute}"></label>
+                                    <label for="newAttrModal" class="" th:text="#{metadata.modal.add.label.attribute}"></label>
                                     <input type="text" class="form-control" placeholder="New Attribute" id="newAttrModal" />
                                     <i class="emptyAttrMetadata form-control-feedback glyphicon glyphicon-remove hideElement" id=""></i>
                                     <small class="emptyAttrMetadata help-block hideElement" id="" th:text="#{collections.management.add.metadata.modal.empty.attribute}"></small>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="" th:text="#{metadata.modal.add.label.value}"></label>
+                                    <label for="newValModal" class="" th:text="#{metadata.modal.add.label.value}"></label>
                                     <input type="text" class="form-control" placeholder="New Value" id="newValModal" />
                                     <i class="emptyValMetadata form-control-feedback glyphicon glyphicon-remove hideElement" id=""></i>
                                     <small class="emptyValMetadata help-block hideElement" id="" th:text="#{collections.management.add.metadata.modal.empty.value}"></small>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="" th:text="#{metadata.modal.add.label.unit}"></label>
+                                    <label for="newUnitModal" class="" th:text="#{metadata.modal.add.label.unit}"></label>
                                     <input type="text" class="form-control" placeholder="New Unit" id="newUnitModal" />
                                 </div>
                             </form>
@@ -60,7 +60,7 @@
             </div>
 
             <!-- Confirmation modal for the delete operation -->
-            <div class="modal fade" id="deleteMetadataModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="deleteMetadataModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="deleteMetadataModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
