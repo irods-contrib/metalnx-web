@@ -39,11 +39,11 @@
 
 <body>
 		
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="dashboardPageTitle">
 		<div class="row">
 			<div class="col-xs-12">
-				<h1 class="page-header pull-left" th:text="#{dashboard.page.title}"></h1>
-				<a id="dashboard-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<h1 id="dashboardPageTitle" class="page-header pull-left" th:text="#{dashboard.page.title}"></h1>
+				<a id="dashboard-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
 			</div>
         </div>
         <div class="row">
@@ -128,12 +128,12 @@
 								</div>
 								<i class="fa fa-user col-xs-3 cardIcon"></i>
 								<div class="col-xs-7 col-md-6">
-									<a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }">
+									<a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" aria-label="user management">
 										<h5><span th:text="#{ card.users.title }"></span> (<span th:text="${ totalNumberOfUsers }"></span>)</h5>
 									</a>
 								</div>  
 								<a type="button" class="col-xs-1 btn btn-link pull-right" 
-								th:href="@{ ${urlMap.URL_USERS_MANAGEMENT+urlMap.URL_ADD_USER} }">
+								th:href="@{ ${urlMap.URL_USERS_MANAGEMENT+urlMap.URL_ADD_USER} }" aria-label="user management">
 									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.user}"></i>
 								</a>
 							</div>
@@ -147,13 +147,13 @@
 								</div>
 								<i class="fa fa-group col-xs-3 cardIcon"></i>
 								<div class="col-xs-7 col-md-6">
-									<a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }">
+									<a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }" aria-label="group management">
                                         <h5><span th:text="#{ card.groups.title }"></span> (<span th:text="${ totalNumberOfGroups }"></span>)</h5>
 
 									</a>
 								</div>  
 								<a type="button" class="col-xs-1 btn btn-link pull-right" 
-								th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT+urlMap.URL_ADD_GROUP} }">
+								th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT+urlMap.URL_ADD_GROUP} }" aria-label="add group">
 									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.group}"></i>
 								</a>
 							</div>
@@ -170,12 +170,12 @@
 		                               <i class="fa fa-user fa-stack-1x"></i> 
 		                           </span>
 								<div class="col-xs-7 col-md-6">
-									<a th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }">
+									<a th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }" aria-label="user profile management">
                                         <h5><span th:text="#{ card.profiles.title }"></span> (<span th:text="${ totalNumberOfProfiles }"></span>)</h5>
 
 									</a>
 								</div>  
-								<a type="button" class="col-xs-1 btn btn-link pull-right" 
+								<a type="button" class="col-xs-1 btn btn-link pull-right"  aria-label="add user profile"
 								th:href="@{ ${urlMap.URL_ADD_USER_PROFILE} }">
 									<i class="fa fa-plus" data-toggle="tooltip" data-placement="top" th:title="#{dashboard.card.add.profile}"></i>
 								</a>

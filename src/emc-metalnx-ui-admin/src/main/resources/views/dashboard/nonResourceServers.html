@@ -21,7 +21,7 @@
 			<table class="table" th:if="${nonResourceServers}">
 				<tr th:each="nonResourceServer : ${nonResourceServers}">
 					<td>
-						<a th:href="@{'/dashboard/detail/' + ${nonResourceServer.hostname} + '/' }" th:text="${nonResourceServer.hostname}"></a>
+						<a th:href="@{'/dashboard/detail/' + ${nonResourceServer.hostname} + '/' }" th:text="${nonResourceServer.hostname}" aria-label="${nonResourceServer.hostname}></a>
 						<small th:text="${nonResourceServer.ip}"></small>
 					</td>
 				</tr>
