@@ -108,15 +108,15 @@
 </head>
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="groupFormTitle">
 		<div class="row">
 			<div class="col-sm-12">
 				<!-- Display page title as Add Group -->
-				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}"
+				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" id="groupFormTitle"
 					class="page-header pull-left" th:text="#{groups.add.form.title}"></h1>
 				<!-- Display page title as Modify Group -->
 				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
-					class="page-header pull-left" th:text="#{groups.modify.form.title}"></h1>
+					class="page-header pull-left" th:text="#{groups.modify.form.title}" id="groupFormTitle"></h1>
 				<ol class="breadcrumb mlx pull-right ">
                 	<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }" th:text="#{groups.management.page.title}"></a></li>
                 	<li th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" th:text="#{groups.add.form.title}" class="active"></li>
@@ -172,12 +172,12 @@
 					</div>
 				</div>
 				<!-- Available Users -->
-				<div class="col-sm-12" id="usersList">
+				<div class="col-sm-12" id="usersList" aria-labelledby="availableUsersTitle">
 					<div class="row">
 						<div class="panel panel-default">
 							<!-- Header -->
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.form.attach.to.group.label}"
+								<h3 th:text="#{groups.add.form.attach.to.group.label}" id="availableUsersTitle"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideUsersListBtn">
 									<i class="fa fa-check"></i>
@@ -201,7 +201,7 @@
 											</thead>
 											<tbody id="fBody">
 												<tr th:each="user : ${users}" th:id="${user.username}">
-													<td><input type="checkbox" name="idsList"
+													<td><input type="checkbox" name="idsList" aria-label="select user ${user.username}"
 														th:value="${user.dataGridId}"
 														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
 													</td>
@@ -224,9 +224,9 @@
 				<!-- Attached users -->
 				<div class="row" id="attachedUsersList">
 					<div class="col-sm-12">
-						<div class="panel panel-default">
+						<div class="panel panel-default" aria-labelledby="attachedUsersListTitle">
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.attached.users.label}"
+								<h3 th:text="#{groups.add.attached.users.label}" id="attachedUsersListTitle"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-default btn-xs pull-right" id="showUsersListBtn" th:disabled="${ groupForm.getGroupname() == 'public' }">
 									<i class="fa fa-pencil"></i>
@@ -277,7 +277,7 @@
 								<div class="col-sm-6">
 									<div class="form-group input-group">
 										<input id="searchTextForCollections" type="search"
-											class="form-control" th:placeholder="#{search.placeholder}" />
+											class="form-control" th:placeholder="#{search.placeholder}" aria-label="search text"/>
 										<span class="input-group-addon"> <i
 											class="glyphicon glyphicon-search"></i>
 										</span>

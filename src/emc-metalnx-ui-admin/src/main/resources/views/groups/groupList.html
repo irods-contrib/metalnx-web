@@ -40,12 +40,12 @@
 						<td th:text="${group.getGroupname()}" class="col-groupname"></td>
 						<td th:text="${group.getAdditionalInfo()}"></td>
 						<td>
-							<a class="btn btn-default btn-xs"
+							<a class="btn btn-default btn-xs" aria-label="#{groups.list.item.edit}"
 								th:href="${urlMap.URL_MODIFY_GROUP} + ${group.groupname} + '/' + ${group.getAdditionalInfo() + '/'}">
 								<i class="fa fa-pencil"></i><span  th:text="#{groups.list.item.edit}"></span>
 							</a>
 							&nbsp; &nbsp;
-							<button type="button" class="btn btn-default btn-xs"
+							<button type="button" class="btn btn-default btn-xs" aria-label="#{groups.list.item.delete}"
 								th:id="${'deleteBtn_' + group.getGroupname()}" th:disabled="${group.getGroupname() == 'public'}"
 								th:onclick="'javascript:confirmGroupRemoval(\'' + ${group.getGroupname()} + '\');'">
 								<i class="fa fa-trash-o"></i><span  th:text="#{groups.list.item.delete}"></span>

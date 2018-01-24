@@ -29,10 +29,10 @@
 <body>
 
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="groupManagementPageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{groups.management.page.title}"></h1>
+				<h1 class="page-header pull-left" th:text="#{groups.management.page.title}" id="groupManagementPageTitle"></h1>
 				<a  id="groups-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ groupAddedSuccessfully != null or groupModifiedSuccessfully != null or groupRemovedSuccessfully != null}" class="alert alert-success alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
@@ -60,8 +60,8 @@
 				<!-- CSV -->
 				<div class="row">
 					<div class="col-sm-12">
-						<a th:href="@{ ${urlMap.URL_ADD_GROUP} }" class="btn btn-primary btn-sm btn-groups" th:text="#{groups.management.add.button}"></a>
-						<a th:href="@{ ${urlMap.URL_GROUPS_CSV_REPORT} }"
+						<a th:href="@{ ${urlMap.URL_ADD_GROUP} }" class="btn btn-primary btn-sm btn-groups" th:text="#{groups.management.add.button}" aria-label="group management add button"></a>
+						<a th:href="@{ ${urlMap.URL_GROUPS_CSV_REPORT} }" aria-label="group management csv report"
 							class="btn btn-default btn-sm btn-groups" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
 					</div>
 				</div> <!-- /. row Search Box -->

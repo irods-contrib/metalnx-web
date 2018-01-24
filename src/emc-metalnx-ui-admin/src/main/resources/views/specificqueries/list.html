@@ -45,7 +45,7 @@
 						<tr th:each="specificQuery : ${specificQueries}">
 							<td th:text="${specificQuery.getAlias()}"></td>
 							<td>
-								<a class="btn btn-default btn-xs"
+								<a aria-label="modify specific query" class="btn btn-default btn-xs"
 									th:href="${urlMap.URL_MODIFY_SPECIFIC_QUERY_PAGE} + ${specificQuery.getAlias() + '/'}">
 									<span class="glyphicon glyphicon-pencil"> </span>
 								</a>
@@ -71,12 +71,12 @@
 		</div>
 		
 		<!-- Modal -->
-		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="removeModalTitle" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}"></h4>
+					  <h4 class="modal-title" id="removeModalTitle" th:text="#{confirmation.removal.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.removal.label}"></span>
