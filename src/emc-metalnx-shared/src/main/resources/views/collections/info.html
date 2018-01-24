@@ -21,7 +21,6 @@
 	<div class="col-md-12" th:unless="${dataProfile == null}">
 	
 		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
-			<span>this is collection Info</span>
 			<div class="panel property">
 				<div class="row">
 					<h4 class="property-title" th:text="#{text.info}">
@@ -37,7 +36,13 @@
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
 							<label th:text="#{collections.management.table.owner.label}"></label>
 						</div>
-						<!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
+						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCollectionOwnerName() }"></span></div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Zone</label>
+						</div>
+						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCollectionOwnerZone() }"></span></div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
@@ -66,7 +71,6 @@
 
 
 		<div th:if="${dataProfile.file}" th:fragment="FileInfoView">
-			<span>this is File Info</span>
 			<div class="panel property">
 				<div class="row">
 					<h4 class="property-title" th:text="#{text.info}">
@@ -77,26 +81,33 @@
 					</div>
 				</div>
 				<div class="panel-info">
-					<!-- <div class="name">
-						<i th:class="${ iconToDisplay }"></i> <span><b
-							th:text="${ dataProfile.getDomainObject().getCollectionName() }"></b></span>
-						 <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
-						<a id="breadcrumbStar" class="btn-favorite" href="#"
-							data-toggle="popover" data-placement="left" data-trigger="manual"
-							data-content=""
-							th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
-							<i
-							th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
-							aria-hidden="true"></i>
-						</a>
+				<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.kind.dataobject}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getDataName() }"></span>
+						</div>
 					</div>
-
- -->
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.kind.collection}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getCollectionName() }"></span>
+						</div>
+					</div>					
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
 							<label th:text="#{collections.management.table.owner.label}"></label>
 						</div>
-						<!--    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ currentCollection.getOwner() }"></span></div> -->
+						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getDataOwnerName() }"></span></div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Zone</label>
+						</div>
+						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getDataOwnerZone() }"></span></div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
@@ -122,6 +133,14 @@
 							<span th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
 						</div>
 					</div>
+					<!-- <div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.replica.number.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getReplicationStatus() }"></span>
+						</div>
+					</div> -->
 				</div>
 			</div>
 

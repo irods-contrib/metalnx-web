@@ -1105,7 +1105,7 @@ public class CollectionController {
 		model.addAttribute("collection", collectionForm);
 		model.addAttribute("inheritanceDisabled", inheritanceDisabled);
 		model.addAttribute("requestMapping", "/collections/add/action/");
-		model.addAttribute("parentPath", parentPath);
+		model.addAttribute("parentPath", parentPath);		
 		setBreadcrumbToModel(model, dataGridObj);
 		return "collections/collectionsBrowser";	
 		//return "collections/info";

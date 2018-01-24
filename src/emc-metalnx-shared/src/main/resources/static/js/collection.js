@@ -13,8 +13,8 @@ function displayCollectionSummary(data){
 
 
 function getInfoDetails(path){
-	$("#info").hide();
-	$("#table-loader").show();	
+	//$("#info").hide();
+	//$("#table-loader").show();	
 	window.location.hash = "info";	
 	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
@@ -22,8 +22,8 @@ function getInfoDetails(path){
 }
 
 function getMetadata(path){
-	$("#metadata").hide();
-	$("#table-loader").show();		
+	//$("#metadata").hide();
+	//$("#table-loader").show();		
 	console.log("Collection getMetadata() :: " +path);
 	window.location.hash = "metadata";
 	var url = "/emc-metalnx-web/metadata/getMetadata/";	
@@ -31,8 +31,8 @@ function getMetadata(path){
 }
 
 function getPermissionDetails(path){
-	$("#permission").hide();
-	$("#table-loader").show();		
+	//$("#permission").hide();
+	//$("#table-loader").show();		
 	console.log("Collection getPermDetails() :: " +path);
 	window.location.hash = "permission";
 	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";	
@@ -41,22 +41,22 @@ function getPermissionDetails(path){
 
 
 function displayInfoDetails(data){
-	$("#table-loader").hide();
+	//$("#table-loader").hide();
 	$("#info").html(data);
-	$("#info").show();
+	//$("#info").show();
 }
 
 function displayMetadata(data){
-	$("#table-loader").hide();	
+	//$("#table-loader").hide();	
 	$("#metadata").html(data);	
-	$("#metadata").show();
+	//$("#metadata").show();
 }
 
 function displayPermissionDetails(data){
-	$("#table-loader").hide();
+	//$("#table-loader").hide();
 	$('#permission').html(data);
 	//alert('showing content menu');
-	$("#permission").show();    
+	//$("#permission").show();    
 }
 
 function showPreview(){

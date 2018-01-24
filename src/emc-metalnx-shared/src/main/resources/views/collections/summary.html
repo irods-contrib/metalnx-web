@@ -38,7 +38,22 @@
 						<span><b th:text="${ dataProfile.getParentPath() }"></b></span>
 						<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
 					</div>
-
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Shared</label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${dataProfile.shared}?'This is Shared':'This is not shared'"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Has Tickets</label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.hasTicket}?'This has Tickets':'This has no Tickets'"></span>
+						</div>
+					</div>
 
 				</div>
 			</div>
