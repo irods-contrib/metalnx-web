@@ -95,17 +95,17 @@
 </head>
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="userModifyTitle">
 		<div class="row">
 			<div class="col-sm-12">
 				<!-- Display page title as Modify user -->
 				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}"
 					class="page-header pull-left" th:text="#{users.add.form.title}"></h1>
 				<!-- Display page title as Add User -->
-				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
+				<h1 id="userModifyTitle" th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
 					class="page-header pull-left" th:text="#{users.modify.form.title}"></h1>
 				<ol class="breadcrumb mlx pull-right ">
-                	<li><a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" th:text="#{users.management.page.title}"></a></li>
+                	<li><a aria-label="user management page" th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }" th:text="#{users.management.page.title}"></a></li>
                 	<li th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" th:text="#{users.add.form.title}" class="active"></li>
                 	<li th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}" th:text="#{users.modify.form.title}" class="active"></li>
                 </ol>

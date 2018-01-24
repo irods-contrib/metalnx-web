@@ -28,31 +28,31 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" id="resourceServersTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{resources.view.servers.page.title}"></h1>
+				<h1 id="resourceServersTitle" class="page-header pull-left" th:text="#{resources.view.servers.page.title}"></h1>
 				<span class="subtitle" th:text="#{resources.management.page.subtitle.server}"></span>
 			</div>
         </div>
         <div class="row">
             <!-- Map view and list view for resources -->
             <div class="col-sm-6">
-                <a id="serverViewBtn" class="btn btn-default btn-sm btn-resources-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view}" style="margin-right: 5px;">
+                <a aria-label="server view" id="serverViewBtn" class="btn btn-default btn-sm btn-resources-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view}" style="margin-right: 5px;">
                     <span class="fa fa-server"> </span>
                     <span th:text="#{resources.management.server.view.label}"> </span>
                 </a>
-                <a id="mapViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view}" style="margin-right: 5px;">
+                <a aria-label="map view" id="mapViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view}" style="margin-right: 5px;">
                     <span class="fa fa-sitemap"> </span>
                     <span th:text="#{resources.management.map.view.label}"> </span>
                 </a>
-                <a id="listViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view}" style="margin-right: 5px;">
+                <a aria-label="list view" id="listViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view}" style="margin-right: 5px;">
                     <span class="fa fa-list"> </span>
                     <span th:text="#{resources.management.list.view.label}"> </span>
                 </a>
             </div>
             <div class="col-sm-6">
-                <a id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resources" th:text="#{resources.management.add.button}"></a>
+                <a aria-label="add resource" id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resources" th:text="#{resources.management.add.button}"></a>
             </div>
         </div>
         <div class="row">
@@ -112,7 +112,7 @@
                                         <div class="col-xs-6 col-sm-7">
                                             <p>
                                                 <b>Hostname</b> <br />
-                                                <a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
+                                                <a aria-label="server details" th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
                                             </p>
                                             <p>
                                                 <b>MetaLnx Remote Monitor </b> <br />
@@ -148,12 +148,12 @@
             </div>
         </div>
         <!-- Resource Info Modal -->
-        <div class="modal fade" id="rescInfoModal" tabindex="-1" role="dialog" aria-labelledby="rescInfoModalLabel" aria-hidden="true">
+        <div class="modal fade" id="rescInfoModal" tabindex="-1" role="dialog" aria-labelledby="resourceInfoTitle" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="" >Resource Information</h4>
+                        <h4 class="modal-title" id="resourceInfoTitle" >Resource Information</h4>
                     </div>
                     <div class="modal-body row">
                         <div class="col-xs-12">

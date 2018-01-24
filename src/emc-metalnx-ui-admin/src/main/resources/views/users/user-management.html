@@ -28,10 +28,10 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="usersTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
+				<h1  id="usersTitle" class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
 				<a id="users-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ userAddedSuccessfully != null or userModifiedSuccessfully != null or userRemovedSuccessfully != null}"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
