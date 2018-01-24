@@ -14,10 +14,11 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="serversList">
+<th:block th:fragment="serversList" aria-labelledby="irodsServersTitle">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h4 class="">iRODS Servers</h4>
+			<h4 id="irodsServersTitle" class="">iRODS Servers</h4>
+			
 			<table class="dashboardServersList" width="100%">
 				<tr th:each="server : ${servers}">
 					<td>
@@ -25,7 +26,7 @@
 									th:src="@{${ '/images/Server-' + server.machineStatus + '.png' }}" />
 					</td>
 					<td>
-						<a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
+						<a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}" aria-label="server details"></a>
 						<small th:text="${server.ip}"></small>
 					</td>
 				</tr>
