@@ -2,21 +2,15 @@ body{
     height: 100vh;
     margin:0;
     overflow: hidden;
-    background: #2c95dd ; /* Old browsers */
-    background: -moz-linear-gradient(-45deg,  #ffffff  0%, #2c95dd 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ffffff ), color-stop(100%,#2c95dd)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(-45deg,  #ffffff  0%,#2c95dd 100%); /* IE10+ */
-    background: linear-gradient(135deg,  #ffffff  0%,#2c95dd 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff ', endColorstr='#2c95dd',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background-color: #51514c;
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff ', endColorstr='#7f7f7f',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     ::-webkit-input-placeholder {
         color: #4E546D
     }
 }
 
 p{
-    color: #5B5E6F;
+    color: #333333;
     font-size:10px;
     text-align:left;
 }
@@ -32,7 +26,7 @@ p{
     transform:rotateX(0deg);
     position:relative;
     width:360px;
-    border-top: 2px solid #2c95dd;
+    border-top: 2px solid #6c6c63;
     height:450px;
     position:absolute;
     left:0;
@@ -41,18 +35,11 @@ p{
     top:0;
     bottom:0;
     padding:100px 40px 40px 40px;
-    background: #35394a; /* Old browsers */
-    background: -moz-linear-gradient(45deg,  #35394a 0%, #1f222e 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#35394a), color-stop(100%,#1f222e)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* IE10+ */
-    background: linear-gradient(45deg,  #35394a 0%,#1f222e 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background: #333333; /* Old browsers */
 }
 
 .login_title {
-    color:rgb(175, 177, 190);
+    color:#0b3e73;
     text-align:left;
     font-size:20px;
     padding-bottom: 40px;
@@ -66,16 +53,16 @@ p{
 }
 
 input[type='password'] {
-    color:#2c95dd !important;
 }
 
 input[type="submit"] {
     border-radius:50px;
+    background: #0b3e73;
 }
 
 input[type="submit"]:hover {
     color:white;
-    background:#2c95dd ;
+    background:#0b3e73 ;
     cursor:pointer;
     transition-property:background,color;
     transition-duration:.2s;
@@ -84,13 +71,13 @@ input[type="submit"]:hover {
 input[type="submit"]:focus{
     box-shadow:none;
     outline:none;
+    background-color: #0b3e73;
 }
 
 input[type='text'],input[type='password']{
-    color: #2c95dd;
     width: 100%;
+    color: #333333;
     margin-top:-2px;
-    background: rgb(50, 54, 74);
     left: 0;
     right: 0;
     padding: 10px 40px;
@@ -127,15 +114,16 @@ input{
     background:transparent;
     font-family: verdana, sans-serif;
     padding:10px 50px;
-    border:2px solid #2c95dd ;
+    border:2px solid #f7f5f7 ;
     color: #ffffff ;
+    background-color: f7f5f7;
     transition-property:background,color;
     transition-duration:.2s;
 }
 
 .login_msgs {
     bottom: 40px;
-    color: #c0605e;
+    color: #cde9ed;
 }
 
 .login_msgs, .login_copyright {
@@ -151,7 +139,7 @@ input{
 
 .login_copyright span {
     font-size: 10px;
-    color: #636b8b;
+    color: #6c6c63;
 }
 
 .icon{
@@ -160,7 +148,6 @@ input{
     left: 36px;
     top: 15px;
     opacity:1;
-    color: #a4a6b5;
     font-size: 16px;
 }
 
@@ -170,7 +157,7 @@ input{
     right: 15px;
     top: 15px;
     opacity:1;
-    color: #2c95dd;
+    color: #6c6c63;
     font-size: 16px;
  }
 
@@ -179,16 +166,16 @@ img {
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: #a4a6b5;
+  color: #6c6c63;
 }
 ::-moz-placeholder { /* Firefox 19+ */
-  color: #a4a6b5;
+  color: #6c6c63;
 }
 :-ms-input-placeholder { /* IE 10+ */
-  color: #a4a6b5;
+  color: #6c6c63;
 }
 :-moz-placeholder { /* Firefox 18- */
-  color: #a4a6b5;
+  color: #6c6c63;
 }
 
 #haveTicketBtn, #login-link {
