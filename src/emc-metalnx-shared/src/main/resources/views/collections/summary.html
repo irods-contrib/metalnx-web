@@ -1,0 +1,64 @@
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<th:block th:fragment="summaryView">
+
+	<div class="col-xs-12 col-md-12 col-lg-12" id="summary">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="panel-info">
+					<div class="row">
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<a href="#" onclick="showPreview();"><i th:class="${ iconToDisplay }"></i></a>
+							<span th:text="${ dataProfile.getChildName() }"></span> <a
+								id="breadcrumbStar" class="btn-favorite" href="#"
+								data-toggle="popover" data-placement="left"
+								data-trigger="manual" data-content=""
+								th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+								<i
+								th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+								aria-hidden="true"></i>
+							</a>
+						</div>
+					</div>
+					<div class="row">
+						<span><b th:text="${ dataProfile.getParentPath() }"></b></span>
+						<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Shared</label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${dataProfile.shared}?'This is Shared':'This is not shared'"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label>Has Tickets</label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.hasTicket}?'This has Tickets':'This has no Tickets'"></span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</th:block>
+

@@ -1,0 +1,127 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+	lang="en" 
+	layout:decorator="template">
+
+<head>
+	<title th:text="#{specific.queries.form.title}"></title>
+</head>
+
+<body>
+
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+
+			<div class="col-sm-12">
+				<h1 class="page-header" th:text="#{specific.queries.form.title}"></h1>
+			</div>
+			<!-- /.col-sm-12 --> 
+
+			<form role="form" class="container-fluid registerForm" method="POST" th:object="${specificQueryForm}" th:action="@{${requestMapping}}">
+					
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 th:text="#{specific.queries.form.info.title}" class="panel-title"></h3>
+							</div>
+						
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="inputAlias" th:text="#{specific.queries.form.alias.label}"></label> 
+									<input type="text" class="form-control" id="inputAlias" 
+										th:field="*{alias}" th:placeholder="#{specific.queries.form.alias.label}" />
+						
+								</div>
+				
+								<div class="form-group">
+									<label for="inputQuery" th:text="#{specific.queries.form.query.label}"></label> 
+									<textarea class="form-control code" id="inputQuery" rows="20"
+										th:field="*{query}" th:placeholder="#{specific.queries.form.query.label}" />
+								</div>
+								
+								<div class="btn-group pull-right">
+									<button type="button" class="btn btn-success" th:text="#{forms.execute.action.button}" 
+										id="executeSpecQueryFormBtn">
+									</button>
+								</div> <!-- /.btn-group -->
+								
+							</div>
+						</div>
+						
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-default btn-md " 
+								th:text="#{forms.cancel.action.button}"
+								data-toggle="modal" data-target="#cancelModal">
+							</button>
+							<button type="submit" class="btn btn-primary" th:text="#{forms.save.action.button}" 
+								id="submitGroupFormBtn">
+							</button>
+						</div> <!-- /.btn-group -->
+				
+					</div>
+				</div>
+				
+				<!-- Modal -->
+				<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myCancelModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							  <h4 class="modal-title" id="myCancelModalLabel" th:text="#{confirmation.cancel.title}">
+							  </h4>
+							</div>
+							<div class="modal-body">
+								<span th:text="#{confirmation.cancel.label}"></span>
+							</div>
+							<div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" 
+							  	th:text="#{confirmation.message.no}">
+							  </button>
+							  <a th:href="@{ ${urlMap.URL_SPECIFIC_QUERIES_MANAGEMENT} }" class="btn btn-primary" 
+							  	th:text="#{confirmation.message.yes}">
+							  </a>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</form>
+		</div> <!-- /.row -->
+		
+		<div id="queryResults" class="row"></div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			$("#executeSpecQueryFormBtn").click(function() {
+					var alias = $("#inputAlias").val();
+					$.get("/emc-metalnx-web/specificqueries/execute/" + alias + "/", function(data) {
+						$("#queryResults").html(data);
+					})
+			});
+		</script>
+		
+	</div> <!-- /. Page Content -->
+
+</body>
+
+</html>

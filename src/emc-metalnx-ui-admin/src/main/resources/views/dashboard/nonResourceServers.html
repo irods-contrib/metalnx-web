@@ -21,13 +21,13 @@
 			<table class="table" th:if="${nonResourceServers}">
 				<tr th:each="nonResourceServer : ${nonResourceServers}">
 					<td>
-						<a th:href="@{'/dashboard/detail/' + ${nonResourceServer.hostname} + '/' }" th:text="${nonResourceServer.hostname}"></a>
+						<a th:href="@{'/dashboard/detail/' + ${nonResourceServer.hostname} + '/' }" th:text="${nonResourceServer.hostname}" aria-label="${nonResourceServer.hostname}></a>
 						<small th:text="${nonResourceServer.ip}"></small>
 					</td>
 				</tr>
 			</table>
 			<div th:unless="${nonResourceServers}">
-				<p>There are no other devices to be displayed.</p>
+				<p th:text="#{dashboard.nonresourceserver.other.devices}"></p>
 			</div>
 		</div>
 	</div>

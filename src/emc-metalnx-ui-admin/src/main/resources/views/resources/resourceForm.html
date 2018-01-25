@@ -29,13 +29,13 @@
 <body>
 
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="resourceFormPageTitle">
 		<div class="row">
 
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{resources.add.form.title}"></h1>
+				<h1 class="page-header pull-left" th:text="#{resources.add.form.title}" id="resourceFormPageTitle"></h1>
 				<ol class="breadcrumb mlx pull-right ">
-                	<li><a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:text="#{resources.management.page.title}"></a></li>
+                	<li><a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:text="#{resources.management.page.title}" aria-label="resources management"></a></li>
                 	<li th:text="#{resources.add.form.title}" class="active"></li>
  				</ol>
 			</div>

@@ -1,3 +1,4 @@
+**/bin
 target/
 .settings/
 .project/
@@ -13,3 +14,6 @@ target/
 .DS_Store
 .dbeaver*
 test*.properties
+Scripts/
+/.metadata/
+packaging/src

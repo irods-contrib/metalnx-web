@@ -38,11 +38,11 @@
 <body>
 
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="userProfileFormTitle">
 		<div class="row">
 
 			<div class="col-sm-12">
-				<h1 class="page-header" th:text="#{users.profile.management.page.title}"></h1>
+				<h1 id="userProfileFormTitle" class="page-header" th:text="#{users.profile.management.page.title}"></h1>
 			</div>
 			<!-- /.col-sm-12 -->
 
@@ -76,12 +76,12 @@
 				</div>
 				
 				<!-- Available groups to this profile -->
-				<div class="row" id="groupsList">
+				<div class="row" id="groupsList" aria-labelledby="groupsListPanelTitle">
 					<div class="col-sm-12">
 						<div class="panel panel-default">
 							<!-- Header -->
 							<div class="panel-heading">
-								<h3 class="panel-title pull-left" th:text="#{users.profile.add.form.attach.to.group.label}"></h3>
+								<h3 id="groupsListPanelTitle" class="panel-title pull-left" th:text="#{users.profile.add.form.attach.to.group.label}"></h3>
 								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideGroupsListBtn">
 									<i class="fa fa-check"></i>  
 									<span th:text="#{done.button.label}"></span>
@@ -104,7 +104,7 @@
 						
 										<tbody id="fBody">
 											<tr th:each="group : ${groups}" th:id="${group.getGroupname()}">
-												<td><input type="checkbox" th:id="${'chk_' + group.groupname}" name="groupIdsList" th:value="${group.id}" th:checked="${#arrays.contains(groupsOnProfileList, '' + group.id)}"/></td>
+												<td><input type="checkbox" th:id="${'chk_' + group.groupname}" aria-label="${'chk_' + group.groupname}" name="groupIdsList" th:value="${group.id}" th:checked="${#arrays.contains(groupsOnProfileList, '' + group.id)}"/></td>
 												<td th:text="${group.groupname}"></td>
 												<td th:text="${group.getAdditionalInfo()}"></td>
 											</tr>
@@ -118,12 +118,12 @@
 				</div>
 						
 				<!-- Attach groups to this profile -->
-				<div class="row" id="attachedGroupsList">
+				<div class="row" id="attachedGroupsList" aria-labelledby="attachGroupsPanelTitle">
 					<div class="col-sm-12">
 						<div class="panel panel-default">
 							<!-- Header -->
 							<div class="panel-heading">
-								<h3 class="panel-title pull-left" th:text="#{users.profile.add.form.attach.to.group.label}"></h3>
+								<h3 id="attachGroupsPanelTitle" class="panel-title pull-left" th:text="#{users.profile.add.form.attach.to.group.label}"></h3>
 								<button type="button" class="btn btn-default btn-xs pull-right" id="showGroupsListBtn">
 									<i class="fa fa-pencil"></i>  
 									<span th:text="#{users.add.edit.groups.label}"></span>

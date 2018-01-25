@@ -34,6 +34,7 @@ import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.pub.SpecificQueryAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.TrashOperationsAO;
 import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
@@ -69,8 +70,18 @@ public class IRODSServicesImpl implements IRODSServices {
 	private static final Logger logger = LoggerFactory.getLogger(IRODSServicesImpl.class);
 
 	public IRODSServicesImpl() {
-		this.userTokenDetails = (UserTokenDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-		this.irodsAccount = this.userTokenDetails.getIrodsAccount();
+		/*
+		 * This is a shim to support testing, probably a dependency on seccontextholder
+		 * is unwarranted and should be factored out of this layer in the future - mcc
+		 */
+		try {
+			this.userTokenDetails = (UserTokenDetails) SecurityContextHolder.getContext().getAuthentication()
+					.getDetails();
+			this.irodsAccount = this.userTokenDetails.getIrodsAccount();
+
+		} catch (NullPointerException npe) {
+			logger.warn("null pointer getting security context, assume running outside of container", npe);
+		}
 	}
 
 	public IRODSServicesImpl(IRODSAccount acct) {
@@ -93,6 +104,12 @@ public class IRODSServicesImpl implements IRODSServices {
 		}
 
 		return tas;
+	}
+
+	@Override
+	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {		
+		return irodsAccessObjectFactory.getTrashOperationsAO(irodsAccount);		
+		//return (TrashOperationsAO) irodsAccessObjectFactory.getBulkFileOperationsAO(irodsAccount);
 	}
 
 	@Override
@@ -431,6 +448,22 @@ public class IRODSServicesImpl implements IRODSServices {
 	@Override
 	public IRODSAccessObjectFactory getIrodsAccessObjectFactory() {
 		return irodsAccessObjectFactory;
+	}
+
+	public UserTokenDetails getUserTokenDetails() {
+		return userTokenDetails;
+	}
+
+	public void setUserTokenDetails(UserTokenDetails userTokenDetails) {
+		this.userTokenDetails = userTokenDetails;
+	}
+
+	public IRODSAccount getIrodsAccount() {
+		return irodsAccount;
+	}
+
+	public void setIrodsAccount(IRODSAccount irodsAccount) {
+		this.irodsAccount = irodsAccount;
 	}
 
 }

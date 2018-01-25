@@ -21,29 +21,29 @@
 	<head>
 		<title th:text="#{login.page.title}"></title>
 		<link rel="shortcut icon" href="../static/images/favicon-16.png" th:href="@{/images/favicon-16.png}" type="image/png" />
-		
+
 	    <!-- Bootstrap Core CSS -->
 	    <link href="../static/css/bootstrap.min.css" rel="stylesheet"
 	    	th:href="@{/css/bootstrap.min.css}"/>
-	
+
 	    <!-- Custom Fonts -->
 	    <link href="../static/css/font-awesome.min.css" rel="stylesheet" type="text/css"
 	    	th:href="@{/css/font-awesome.min.css}"/>
-	    
+
 	    <!-- jQuery Version 1.11.0 -->
 	    <script src="../static/js/jquery-1.11.0.js" th:src="@{/js/jquery.min.js}"></script>
-	    
+
 	    <!-- Bootstrap Validator CSS -->
 	    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet"
 	    	th:href="@{/css/bootstrapValidator.min.css}"/>
-	    	
+
 	    <!-- Bootstrap Validator JS -->
-	    <script src="../static/js/bootstrapValidator.min.js" 
+	    <script src="../static/js/bootstrapValidator.min.js"
 	    	th:src="@{/js/bootstrapValidator.min.js}"></script>
 
         <link rel="stylesheet" th:href="@{/css/styles-login.css}"/>
 	</head>
-	
+
 	<body>
         <div class="login">
             <div class="login_title">
@@ -53,29 +53,33 @@
                 <form action="#" th:action="@{/login/authenticate/}" method="POST" id="authLogin">
                     <div class="login_fields_user">
                         <div class="icon"><i class="fa fa-user" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="username" name="username" id="inputUsernameLogin" />
+                        <input type="text" placeholder="username" name="username" id="inputUsernameLogin" aria-label="user name"/>
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_password">
                         <div class="icon"><i class="fa fa-lock" aria-hidden="true"></i></div>
-                        <input type="password" placeholder="password" name="password" id="inputPasswordLogin" />
+                        <input type="password" placeholder="password" name="password" id="inputPasswordLogin" aria-label="password"/>
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_submit">
                         <input type="submit" value="Login" id="loginBtn"/>
-                        <a id="haveTicketBtn" href="#" onclick="showAnonymousLogin();" th:text="#{ticket.login.access}"></a>
+
+				            <th:block th:if="${globalConfig.isTicketsEnabled()}">
+											<a id="haveTicketBtn" href="#" onclick="showAnonymousLogin();" th:text="#{ticket.login.access}" aria-label="i have a ticket"></a>
+				            </th:block>
+
                     </div>
                 </form>
 
                 <form action="#" th:action="@{/ticketclient/}" method="GET" id="anonymousLogin" class="hidden">
                     <div class="login_fields_user">
                         <div class="icon"><i class="fa fa-ticket" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="ticket string" name="ticketstring" id="inputTicketString" />
+                        <input type="text" placeholder="ticket string" name="ticketstring" id="inputTicketString" aria-label="ticket string"/>
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_password">
                         <div class="icon"><i class="fa fa-map-marker" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="path" name="ticketpath" id="inputTicketPath" />
+                        <input type="text" placeholder="path" name="ticketpath" id="inputTicketPath" aria-label="ticket path"/>
                         <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
                     </div>
                     <div class="login_fields_submit">
@@ -89,30 +93,30 @@
                 <i class="fa fa-exclamation-triangle"
                    th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? hidden"
                    aria-hidden="true"></i>
-                <span th:if="${usernameOrPasswordInvalid}" class="invalidLogin">Invalid username or password</span>
-                <span th:if="${serverNotResponding}" class="invalidLogin">iRODS not responding</span>
-                <span th:if="${databaseNotResponding}" class="invalidLogin">Database not responding</span>
-                <span class="hidden" id="invalidTicketMsg">Invalid ticket string or path</span>
+                <span th:if="${usernameOrPasswordInvalid}" class="invalidLogin" th:text="#{login.invalid.username.password}"></span>
+                <span th:if="${serverNotResponding}" class="invalidLogin" th:text="#{login.irods.no.response}"></span>
+                <span th:if="${databaseNotResponding}" class="invalidLogin" th:text="#{login.databse.no.response}"></span>
+                <span class="hidden" id="invalidTicketMsg" th:text="#{login.invalid.ticket}"></span>
             </div>
 
             <div class="login_copyright">
-                <span>&copy; 2015-2017 DELL EMC All rights reserved.</span>
+                <span th:text="#{login.copyright}"></span>
             </div>
         </div>
 	</body>
-    
+
     <script>
     /*<![CDATA[*/
     	$(document).ready(function(e){
     		var mlxKeys = [];
-    		
+
     		for(var i = 0; i < localStorage.length; i++) {
     			var key = localStorage.key(i);
     			if(key.indexOf('emc-metalnx-web') > -1) {
     				mlxKeys.push(key);
     			}
     		}
-    		
+
     		for(var i = 0; i < mlxKeys.length; i++) {
     			localStorage.removeItem(mlxKeys[i]);
     		}
@@ -191,5 +195,5 @@
     	}
     /*]]>*/
 	</script>
-	
+
 </html>

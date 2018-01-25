@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+    lang="en"
+    layout:decorator="template">
+
+<head>
+	<title th:text="#{specific.queries.page.title}"></title>
+</head>
+
+<body>
+
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header" th:text="#{specific.queries.page.title}"></h1>
+				
+				<div th:if="${ specificQueryAddedSuccessfully != null or specificQueryModifiedSuccessfully != null }" class="alert alert-success alert-dismissible text-center" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<span th:if="${ specificQueryAddedSuccessfully }" th:text="${ specificQueryAddedSuccessfully }" style="font-weight: bold;"></span>
+				  	<span th:if="${ specificQueryModifiedSuccessfully }" th:text="${ specificQueryModifiedSuccessfully }" style="font-weight: bold;"></span>
+					
+					<span th:if="${ specificQueryAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
+					<span th:if="${ specificQueryModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
+				</div>
+				
+				<!-- Search Box -->
+				<div class="row">
+					<div class="col-sm-6">
+						<form role="form">
+							<div class="form-group input-group">
+								<input id="searchText" type="search" class="form-control" th:placeholder="#{search.placeholder}" /> 
+								<span class="input-group-addon">
+									<i class="glyphicon glyphicon-search"></i>
+								</span>
+							</div>
+						</form>
+					</div>
+					<div class="col-sm-6">
+						<a th:href="@{ ${urlMap.URL_ADD_SPECIFIC_QUERY_PAGE} }" class="btn btn-primary btn-md pull-right" th:text="#{specific.queries.add.button}"></a>
+					</div>
+				</div> <!-- /. row Search Box -->
+				
+				
+				<!-- Table loader Ajax Gif -->
+				<div id="table-loader" class="table-loader">
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<p class="text-center" th:text="#{loading.table.label}"></p>
+				</div>
+
+				<!-- Current Specific Queries Table -->
+				<div id="speficicQueriesListAsync"></div>
+				
+				<script type="text/javascript" th:inline="javascript">
+					$(function() {
+						function populateSpecificQueriesTableDiv(data) {
+							$("#speficicQueriesListAsync").html(data);
+							$("#table-loader").hide();
+							$("#speficicQueriesListAsync").show();
+						}
+
+						// Loads results in user management page
+						function loadSpecificQueriesResults() {
+							var query = $("#searchText").val();
+
+							if (query == "") {
+								$.get("/emc-metalnx-web/specificqueries/findAll/", populateSpecificQueriesTableDiv);
+							}
+							else {
+								$.get("/emc-metalnx-web/specificqueries/find/" + query + "/", populateSpecificQueriesTableDiv);
+							}
+						}
+
+						$("#searchText").keyup(function() {
+							$("#speficicQueriesListAsync").hide();
+							$("#table-loader").show();
+							clearTimeout($.data(this, 'timer'));
+							var wait = setTimeout(loadSpecificQueriesResults, 400);
+							$(this).data('timer', wait);
+						});
+
+						// When the user arrives to this page
+						loadSpecificQueriesResults();
+					});
+				</script>
+				
+			</div> <!-- /. col-sm-12 -->	
+		</div> <!-- /. row -->	
+	
+	</div> <!-- /. Page Content -->
+
+</body>
+
+</html>

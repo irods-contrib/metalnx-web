@@ -28,27 +28,25 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="favoritePageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left">
+				<h1 id="favoritesPageTitle" class="page-header pull-left">
 					<span th:text="#{favorites.page.title}"></span>
 				</h1>
-				<a id="favorite-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+				<a id="favoritePageTitle"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 			</div>
-              
+
             <div class="col-sm-12 hideElement" id="unfavFailMsg">
 				<div class="alert alert-danger alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
-				  	<span>
-						Could not remove path from favorites.
-				  	</span>
+				  	<span th:text="#{favorite.page.content.path.not.remove}"></span>
 				</div>
 			</div>
-            <div class="col-sm-12 table-responsive" > 
+            <div class="col-sm-12 table-responsive" >
 				<table class="table table-hover" id="favoritesTable">
 					<thead>
 						<tr>
@@ -60,10 +58,10 @@
 					</thead>
 				</table>
              </div>
-             
+
         </div>
-			
-		<script th:inline="javascript">	
+
+		<script th:inline="javascript">
 		/*<![CDATA[*/
 		$(document).ready(function(){
 			// Add popover on page title
@@ -73,7 +71,7 @@
 		 		trigger: 'hover click',
 	       		placement: 'left',
 	       	});
-	    });           
+	    });
         var datatable;
 		datatable = $('#favoritesTable').DataTable( {
 		    "serverSide": true,
@@ -81,6 +79,7 @@
 		    "language": i18n,
 		    "destroy": true,
 		    "autoWidth": false,
+				"searching": false,
 		    "ajax": {
 		        url: '/emc-metalnx-web/favorites/favoritesPaginated/',
 		    },
@@ -107,7 +106,7 @@
 					"targets": 0
                 },
                 {
-                	"data": "path", 
+                	"data": "path",
                 	"width": "40%",
                 	"targets": 1
                	},
@@ -115,7 +114,7 @@
                		"render": function (data, type, full, meta){
                 		return full.isCollection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
                 	},
-               		"width": "15%", 
+               		"width": "15%",
                		"targets": 2
                	},
                 {
@@ -128,18 +127,18 @@
                 }
             ]
 		});
-		
+
 		function redirectToCollections(path){
-			ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFavoritesToCollections/", "POST", {path: path}, 
+			ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFavoritesToCollections/", "POST", {path: path},
 				function(){
 					window.location = "/emc-metalnx-web/collections/";
 			}, null, null, null);
 		}
 		function unstarItem(path, icon){
 			ajaxEncapsulation(
-				'/emc-metalnx-web/favorites/removeFavoriteFromUser/', 
-				"GET", 
-				{path: path}, 
+				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
+				"GET",
+				{path: path},
 				function(data){
 					if(data.indexOf("OK") >= 0){
 					    datatable.row($(this).parents('tr')).remove().draw();
@@ -151,7 +150,7 @@
 		}
 		/*]]>*/
 		</script>
-	
+
 	</div> <!-- /. Page Content -->
 
 </body>

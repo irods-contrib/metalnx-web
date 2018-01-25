@@ -91,25 +91,51 @@ In addition, an additional profile for Metalnx is required, like this...
 ```xml
 
 <profile>
-  <id>metalnx-local</id>
-  <properties>
-    <metalnx.auth.scheme>STANDARD</metalnx.auth.scheme>
-    <metalnx.ssl.policy>CS_NEG_REFUSE</metalnx.ssl.policy>
-    <metalnx.packing.streams>true</metalnx.packing.streams>
-    <metalnx.compute.checksum>true</metalnx.compute.checksum>
-    <metalnx.jdbc.driver>org.postgresql.Driver</metalnx.jdbc.driver>
-    <metalnx.jdbc.url>jdbc:postgresql://localhost:5432/metalnx</metalnx.jdbc.url>
-    <metalnx.jdbc.user>metalnx</metalnx.jdbc.user>
-    <metalnx.jdbc.password>metalnx</metalnx.jdbc.password>
-    <metalnx.jdbc.dialect>org.hibernate.dialect.PostgreSQLDialect</metalnx.jdbc.dialect>
-  </properties>
-</profile>
-
+			<id>metalnx-local</id>
+			<properties>
+				<metalnx.auth.scheme>STANDARD</metalnx.auth.scheme>
+				<metalnx.ssl.policy>CS_NEG_REFUSE</metalnx.ssl.policy>
+				<metalnx.packing.streams>true</metalnx.packing.streams>
+				<metalnx.compute.checksum>true</metalnx.compute.checksum>
+				<metalnx.jdbc.driver>org.postgresql.Driver</metalnx.jdbc.driver>
+				<metalnx.jdbc.url>jdbc:postgresql://localhost:5432/metalnx</metalnx.jdbc.url>
+				<metalnx.jdbc.user>metalnx</metalnx.jdbc.user>
+				<metalnx.jdbc.password>metalnx</metalnx.jdbc.password>
+				<metalnx.jdbc.dialect>org.hibernate.dialect.PostgreSQLDialect</metalnx.jdbc.dialect>
+				<selenium.test.hostname>localhost</selenium.test.hostname>
+				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
+				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
+        <metalnx.enable.tickets>true</metalnx.enable.tickets>
+        <metalnx.enable.upload.rules>false</metalnx.enable.upload.rules>
+			</properties>
+		</profile>
 
 ```
 
+Note that these config files are in the src/emc-metalnx-web/test-scripts/sample-maven-settings.xml
+
 Here it's pointing to a Postgres database, pretty soon we'll show an example with a local
 database like Derby, that's probably a better plan.
+
+For selenium automation testing we need to download browser specific drivers refer to http://www.seleniumhq.org/download/
+
+
+### custom metalnx template for master page
+
+Using Thymeleaf templating the various views are fragments that are encapsulated in a template.html file. This is generated on build in the emc-metalnx-ui-admin subproject
+in the pom.xml. By default, if the property 'metalnx.custom.template' is undefined in settings.xml or elsewhere, maven will simply copy the defaultTemplate.html to the template.html
+during the build. If this property is defined, the maven install will copy from the provided source location to the template.html file. This allows site-specific customization
+of the overall template in the case where simple css or image changes are insufficient to achieve a theme.
+
+By default this can be ignored during the build process.
+
+If this behavior is wanted, then the following should be added to settings.xml, probably in the above metalnx.properties
+
+```xml
+<metalnx.custom.template>/Users/conwaymc/Documents/workspace-niehs-dev/metalnx-niehs-plugins/web-assets/opt/irods-ext/metalnx/template.html</metalnx.custom.template>
+
+```
+
 
 ### Generating test properties and running tests
 
@@ -118,3 +144,11 @@ and database are initially installed and configured, and the properties are all 
 correctly in settings.xml (be sure to activate the appropriate profiles in maven!) You should
 get a clean build running the tests, and once maven has run to get the properties, running
 unit tests in eclipse, etc should also work fine.
+
+### Database Setup
+
+Note that Metalnx needs its own database, and it needs to be initialized. The settings for this initialized
+metalnx database are then reflected in the above metalnx profile.
+
+This involves some plsql to create the database, and the running a tool to initialize or migrate the database.
+This is covered in the README.md in the src/metalnx-tools subproject.

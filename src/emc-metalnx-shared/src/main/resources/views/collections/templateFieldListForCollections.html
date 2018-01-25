@@ -14,17 +14,17 @@
   ~  limitations under the License.
   -->
 
-<div class="row template-fields-content templates" id="templateFieldsList">
+<div class="row template-fields-content templates" id="templateFieldsList" aria-labelledby="myCopyModalLabel">
 	<div class="modal-dialog modal-lg">
 	<form th:action="@{${requestMapping}}" th:object="${templateForm}" method="POST" role="form" id="applyTemplateForm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					<span aria-hidden="true">&times;</span><span class="sr-only" th:text="${text.close}">Close</span>
 				</button>
 				<h4 class="modal-title" id="myCopyModalLabel">Step 2 - Fill-in the values</h4>
 			</div>
-			
+
 			<div class="modal-body">
 				<div th:if="${foundTemplateFields}" >
 					<table class="table" id="templateFieldsListTable">
@@ -39,21 +39,21 @@
 								<th th:text="#{templates.fields.management.table.template.label}"></th>
 							</tr>
 						</thead>
-						
+
 						<tbody id="">
 							<tr th:each="templateField : ${templateFields}" th:id="${templateField.id} ? ${templateField.id} : ${'pos_' + templateField.formListPosition}" th:class="${templateField.id == null} ? 'info'">
 								<td class="text-center" th:unless="${templateField.id != null}">
-									<input type="checkbox" name="templateFieldCheckboxes" th:value="${templateField.formListPosition}"/>
+									<input type="checkbox" name="templateFieldCheckboxes" th:value="${templateField.formListPosition}" aria-label="template field checkbox"/>
 								</td>
 								<td>
-									<span th:text="${templateField.attribute}"></span>
-									<input type="hidden" th:value="${templateField.attribute}" name="avuAttributes"/>
+									<label for="avuAttribute" th:text="${templateField.attribute}"></label>
+									<input id="avuAttribute" type="hidden" th:value="${templateField.attribute}" name="avuAttributes"/>
 								</td>
 								<td>
-									<input class="" type="text" th:value="${templateField.value}" name="avuValues"/>
+									<input class="" type="text" th:value="${templateField.value}" name="avuValues" aria-label="avu value"/>
 								</td>
 								<td>
-									<input class="" type="text" th:value="${templateField.unit}" name="avuUnits"/>
+									<input class="" type="text" th:value="${templateField.unit}" name="avuUnits" aria-label="avu unit"/>
 								</td>
 								<td>
 									<span class="editable" th:text="${templateField.templateName}"></span>
@@ -63,10 +63,10 @@
 					</table>
 				</div>
                    <p class="text-center" th:if="${not foundTemplateFields}">
-                       <span>No attributes found.</span>
+                       <span th:text="#{template.field.list.not.found}"></span>
                    </p>
 			</div>
-			
+
 			<div class="modal-footer">
 				<div class="row">
 					<div class="col-xs-6">
@@ -79,7 +79,7 @@
 						<div class="pull-right">
 							<button type="submit" id="submitTemplateBtn" class="btn btn-primary">
 								Apply Template
-							</button>		
+							</button>
 						</div>
 					</div>
 				</div>
@@ -118,6 +118,7 @@
 		    "language": i18n,
 			"stateSave": true,
 			"autoWidth": false,
+			"searching": false,
 		    "stateSaveParams": function (settings, data) {
 		    	data.search.search = "";
 		    },

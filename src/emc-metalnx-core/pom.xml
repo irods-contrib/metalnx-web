@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!-- ~ Copyright (c) 2015-2017, Dell 
-	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ 
-	you may not use this file except in compliance with the License. ~ You may 
-	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
-	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
-	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
-	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
-	License for the specific language governing permissions and ~ limitations 
+	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~
+	you may not use this file except in compliance with the License. ~ You may
+	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0
+	~ ~ Unless required by applicable law or agreed to in writing, software ~
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the
+	License for the specific language governing permissions and ~ limitations
 	under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,10 +14,14 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>1.4.0</version>
+		<version>2.0.0</version>
 	</parent>
 	<artifactId>emc-metalnx-core</artifactId>
 	<dependencies>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
@@ -83,23 +87,23 @@
 
 	<build>
 		<plugins>
-             <!-- Plugin required to build java classes from XSD using XJC -->
-             <plugin>
-                 <groupId>org.codehaus.mojo</groupId>
-                 <artifactId>jaxb2-maven-plugin</artifactId>
-                 <version>1.5</version>
-                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>xjc</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-                 <configuration>
-                    <!-- The name of your generated source package -->
-                     <arguments>-extension -npa -b "${project.basedir}/src/main/xsd/global.xjb"</arguments> 
-                 </configuration>
-             </plugin>
+			<!-- Plugin required to build java classes from XSD using XJC -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- The name of your generated source package -->
+					<arguments>-extension -npa -b "${project.basedir}/src/main/xsd/global.xjb"</arguments>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -191,51 +195,51 @@
 									irods.admin.user=${jargon.test.irods.admin}
 									irods.admin.password=${jargon.test.irods.admin.password}
 
-									
+
 									irods.auth.scheme=${metalnx.auth.scheme}
 									default.storage.resource=${jargon.test.irods.resource}
 									ssl.negotiation.policy=${metalnx.ssl.policy}
 
 									##########################################################
-								
+
 									utilize.packing.streams=${metalnx.packing.streams}
 
-								
+
 									compute.checksum=${metalnx.compute.checksum}
 
 									##########################################################
-									
+
 									db.driverClassName=${metalnx.jdbc.driver}
 									db.url=${metalnx.jdbc.url}
 									db.username=${metalnx.jdbc.user}
 									db.password=${metalnx.jdbc.password}
 									hibernate.dialect=${metalnx.jdbc.dialect}
 
-									
+
 									hibernate.show_sql=true
 									hibernate.format_sql=false
 
-									
+
 									hibernate.hbm2ddl.auto=update
 
-									
+
 									connection.pool_size=5
 
 									######################################
-									
+
 									jobs.irods.username=${jargon.test.irods.admin}
 									jobs.irods.password=${jargon.test.irods.admin.password}
 									jobs.irods.auth.scheme=${metalnx.auth.scheme}
 									runSyncJobs=true
 
-									
+
 									rmd.connection.timeout=500
 									rmd.connection.port=8000
 
 									reverse.dns.lookup=false
 
 									######################################
-									
+
 									populate.msi.enabled=false
 									illumina.msi.enabled=true
 
@@ -248,7 +252,7 @@
 									msi.irods.42.list=libmsisync_to_archive.so,libmsi_update_unixfilesystem_resource_free_space.so
 
 									msi.other.list=
-									
+
 									resource.location.images=/images/,classpath:static/images/
 									resource.location.fonts=/fonts/,classpath:static/fonts/
 									resource.location.css=/css/,classpath:static/css/
@@ -265,7 +269,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 
 		</plugins>
 	</build>

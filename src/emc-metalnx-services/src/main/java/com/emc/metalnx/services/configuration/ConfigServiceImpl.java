@@ -16,7 +16,12 @@
 
 package com.emc.metalnx.services.configuration;
 
-import com.emc.metalnx.services.interfaces.ConfigService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -24,9 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
  * Class that will load all all configurable parameters from *.properties files.
@@ -36,90 +39,186 @@ import java.util.List;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class ConfigServiceImpl implements ConfigService {
 
-    @Value("${msi.api.version}")
-    private String msiAPIVersionSupported;
+	public final static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
-    @Value("${msi.metalnx.list}")
-    private String mlxMSIsExpected;
+	@Value("${msi.api.version}")
+	private String msiAPIVersionSupported;
 
-    @Value("${msi.irods.list}")
-    private String irods41MSIsExpected;
+	@Value("${msi.metalnx.list}")
+	private String mlxMSIsExpected;
 
-    @Value("${msi.irods.42.list}")
-    private String irods42MSIsExpected;
+	@Value("${msi.irods.list}")
+	private String irods41MSIsExpected;
 
-    @Value("${msi.other.list}")
-    private String otherMSIsExpected;
+	@Value("${msi.irods.42.list}")
+	private String irods42MSIsExpected;
 
-    @Value("${irods.host}")
-    private String irodsHost;
+	@Value("${msi.other.list}")
+	private String otherMSIsExpected;
 
-    @Value("${irods.port}")
-    private String irodsPort;
+	@Value("${irods.host}")
+	private String irodsHost;
 
-    @Value("${irods.zoneName}")
-    private String irodsZone;
+	@Value("${irods.port}")
+	private String irodsPort;
 
-    @Value("${jobs.irods.username}")
-    private String irodsJobUser;
+	@Value("${irods.zoneName}")
+	private String irodsZone;
 
-    @Value("${jobs.irods.password}")
-    private String irodsJobPassword;
+	@Value("${jobs.irods.username}")
+	private String irodsJobUser;
 
-    @Value("${jobs.irods.auth.scheme}")
-    private String irodsAuthScheme;
+	@Value("${jobs.irods.password}")
+	private String irodsJobPassword;
 
-    @Value("${populate.msi.enabled}")
-    private boolean populateMsiEnabled;
+	@Value("${jobs.irods.auth.scheme}")
+	private String irodsAuthScheme;
 
-    public String getMsiAPIVersionSupported() {
-        if (msiAPIVersionSupported == null) return "";
-        return msiAPIVersionSupported;
-    }
+	@Value("${populate.msi.enabled}")
+	private boolean populateMsiEnabled;
 
-    public List<String> getMlxMSIsExpected() {
-        if (mlxMSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(mlxMSIsExpected.split(","));
-    }
+	@Value("${metalnx.enable.tickets}")
+	private boolean ticketsEnabled;
 
-    public List<String> getIrods41MSIsExpected() {
-        if (irods41MSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(irods41MSIsExpected.split(","));
-    }
+	@Value("${metalnx.enable.upload.rules}")
+	private boolean uploadRulesEnabled;
 
-    public List<String> getIrods42MSIsExpected() {
-        if (irods42MSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(irods42MSIsExpected.split(","));
-    }
+	@Override
+	public GlobalConfig getGlobalConfig() {
+		logger.info("getGlobalConfig()");
+		GlobalConfig globalConfig = new GlobalConfig();
+		globalConfig.setTicketsEnabled(this.isTicketsEnabled());
+		globalConfig.setUploadRulesEnabled(isUploadRulesEnabled());
+		logger.debug("globalConfig:{}", globalConfig);
+		return globalConfig;
+	}
 
-    public List<String> getOtherMSIsExpected() {
-        if (otherMSIsExpected == null) return Collections.emptyList();
-        return Arrays.asList(otherMSIsExpected.split(","));
-    }
+	@Override
+	public String getMsiAPIVersionSupported() {
+		if (msiAPIVersionSupported == null)
+			return "";
+		return msiAPIVersionSupported;
+	}
 
-    public String getIrodsHost() {
-        return irodsHost;
-    }
+	@Override
+	public List<String> getMlxMSIsExpected() {
+		if (mlxMSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(mlxMSIsExpected.split(","));
+	}
 
-    public String getIrodsPort() {
-        return irodsPort;
-    }
+	@Override
+	public List<String> getIrods41MSIsExpected() {
+		if (irods41MSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(irods41MSIsExpected.split(","));
+	}
 
-    public String getIrodsZone() {
-        return irodsZone;
-    }
+	@Override
+	public List<String> getIrods42MSIsExpected() {
+		if (irods42MSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(irods42MSIsExpected.split(","));
+	}
 
-    public String getIrodsJobUser() {
-        return irodsJobUser;
-    }
+	@Override
+	public List<String> getOtherMSIsExpected() {
+		if (otherMSIsExpected == null)
+			return Collections.emptyList();
+		return Arrays.asList(otherMSIsExpected.split(","));
+	}
 
-    public String getIrodsJobPassword() {
-        return irodsJobPassword;
-    }
+	@Override
+	public String getIrodsHost() {
+		return irodsHost;
+	}
 
-    public String getIrodsAuthScheme() {
-        return irodsAuthScheme;
-    }
+	@Override
+	public String getIrodsPort() {
+		return irodsPort;
+	}
 
-    public boolean isPopulateMsiEnabled() { return populateMsiEnabled; }
+	@Override
+	public String getIrodsZone() {
+		return irodsZone;
+	}
+
+	@Override
+	public String getIrodsJobUser() {
+		return irodsJobUser;
+	}
+
+	@Override
+	public String getIrodsJobPassword() {
+		return irodsJobPassword;
+	}
+
+	@Override
+	public String getIrodsAuthScheme() {
+		return irodsAuthScheme;
+	}
+
+	@Override
+	public boolean isPopulateMsiEnabled() {
+		return populateMsiEnabled;
+	}
+
+	public boolean isTicketsEnabled() {
+		return ticketsEnabled;
+	}
+
+	public void setTicketsEnabled(boolean ticketsEnabled) {
+		this.ticketsEnabled = ticketsEnabled;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ConfigServiceImpl [");
+		if (msiAPIVersionSupported != null) {
+			builder.append("msiAPIVersionSupported=").append(msiAPIVersionSupported).append(", ");
+		}
+		if (mlxMSIsExpected != null) {
+			builder.append("mlxMSIsExpected=").append(mlxMSIsExpected).append(", ");
+		}
+		if (irods41MSIsExpected != null) {
+			builder.append("irods41MSIsExpected=").append(irods41MSIsExpected).append(", ");
+		}
+		if (irods42MSIsExpected != null) {
+			builder.append("irods42MSIsExpected=").append(irods42MSIsExpected).append(", ");
+		}
+		if (otherMSIsExpected != null) {
+			builder.append("otherMSIsExpected=").append(otherMSIsExpected).append(", ");
+		}
+		if (irodsHost != null) {
+			builder.append("irodsHost=").append(irodsHost).append(", ");
+		}
+		if (irodsPort != null) {
+			builder.append("irodsPort=").append(irodsPort).append(", ");
+		}
+		if (irodsZone != null) {
+			builder.append("irodsZone=").append(irodsZone).append(", ");
+		}
+		if (irodsJobUser != null) {
+			builder.append("irodsJobUser=").append(irodsJobUser).append(", ");
+		}
+		if (irodsJobPassword != null) {
+			builder.append("irodsJobPassword=").append(irodsJobPassword).append(", ");
+		}
+		if (irodsAuthScheme != null) {
+			builder.append("irodsAuthScheme=").append(irodsAuthScheme).append(", ");
+		}
+		builder.append("populateMsiEnabled=").append(populateMsiEnabled).append(", ticketsEnabled=")
+				.append(ticketsEnabled).append(", uploadRulesEnabled=").append(uploadRulesEnabled).append("]");
+		return builder.toString();
+	}
+
+	@Override
+	public boolean isUploadRulesEnabled() {
+		return uploadRulesEnabled;
+	}
+
+	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
+		this.uploadRulesEnabled = uploadRulesEnabled;
+	}
 }

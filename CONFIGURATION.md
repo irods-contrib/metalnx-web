@@ -24,6 +24,8 @@ metalnx.properties is read from /etc/irods-ext/metalnx.properties during deploym
 image thus expects that file to be mounted as a volume.  See the metalnx.properties file in this
 repository for a template for the /etc/irods-ext/metalnx.properties file expected by the application.
 
+See the DEVELOPER-README.md and the README.md in the src/metalnx-tools for information on configuring the metalnx database.
+
 ## Web app theming and customization
 
 By default, MetaLnx uses the resource support of Spring MVC, e.g. https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-static-resources.
@@ -36,3 +38,21 @@ of the css, image, js, as well as the i18n message resource bundles.
 
 In order to customize the themes, it is up to the discretion of the deployer to provide a custom metalnxConfig.xml. The recommended practice is to point to a mounted /opt/irods-ext/metalnx mounted volume or host machine directory with the metalnxConfig based on
 /etc/irods-ext/customMetalnxConfig.xml (the file must be renamed to metalnxConfig.xml).  
+
+
+## Running Docker with these configs
+
+
+An example developer run of the docker image with these configs...
+
+
+```
+#!/bin/bash
+docker run -i -t \
+-p 8080:8080 \
+-v /Users/conwaymc/Documents/docker/ml_dfc/etc/irods-ext:/etc/irods-ext \
+-v /Users/conwaymc/Documents/docker/ml_dfc/opt/irods-ext:/opt/irods-ext \
+diceunc/metalnx:dev
+
+
+```

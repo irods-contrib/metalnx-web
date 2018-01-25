@@ -1,12 +1,11 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: branch for issue13 (resource pipeline)
+## Version: 2.0.0-SNAPSHOT
 ## Git Tag:
 ## Date: Oct 27, 2017
 
 
 #### This is a fork of the open source Metalnx browser as a candidate basis for Cloud Browser II. This is meant to develop as a generalized tool with hooks, plugins, and theming to allow use in a broader community. Please join the project if interested!
-
 
 Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration,
 collection management, and metadata management tasks removing the need to memorize the long list of icommands.
@@ -66,4 +65,68 @@ See the DEVELOPER-README.md doc for details on how to set up and run tests.
 
 #### Add configurable based resource pipeline #13
 
-Add facilities to allow site-specific customization of the browser (css,logo, resource bundles, etc).
+Add facilities to allow site-specific customization of the browser (css,logo, resource bundles, etc). See CONFIGURATION.md for instructions. This change does require /etc/irods-ext files to be put into place for the resource locations. This may be refactored at a later time, but provides a first clean separation between customizations based on css, messages, images, etc. Some clean up needs to be done to fully internationalize text, etc. This is being addressed in other issues.
+
+#### metalnx specific queries only operate vs. postgres #15
+
+Isolated specific queries and reference client hints to determine iRODS catalog type, this uses a factory arrangement to obtain a source for SQL queries. This is now scaffolded with unit tests of existing specific queries. MySql semantics are being added...work in progress
+
+Integrated changes from issue 15 in consortium codebase, mapping to issue #43 in NIEHS.
+
+#### Clean out non-internationalized items in views #19
+
+Remove remaining hard coded text in templates and convert to resource bundle refs mapped to niehs issue #44
+
+#### Update selenium test unify testing framework #45
+
+Incrementally going through the Selenium tests to unify with the Jargon testing framework and to reactivate ignored selenium tests.  See the CONFIGURATION.md file for information on Selenium test setup, which is run from the src/emc-metalnx-web directory. That directoy also includes a test-scripts folder with the required maven settings.xml updates.
+The current Selenium tests have been refactored to start with basic health checks while the page functions stabilize.
+
+#### Fix 500 errors clicking on zone or home when no permissions
+
+Updated Jargon and controller code to gracefully handle no permission errors with a helpful message and a return to the previous directory view
+
+#### Add properties based global control of features targeted at first towards removing tickets niehs #52
+
+Add a global config to turn on/off certain features via metalnx.properties. This allows sites to globally turn off features such as tickets.
+
+#### Add normal/advanced view niehs #17
+
+Add preferences to toggle between normal/advanced view and made dataGridUser.advancedView a model attribute always available in thymeleaf pages so
+that the interface can show or hide features based on normal or power users
+
+#### Make sidebar a fragment #28
+
+Sidebar nav a thymeleaf fragment to reduce redundancy in custom templates
+
+#### File upload when no resource defined can result in NPE #29
+
+While it needs more investigation, the upload processing that does resource searching and building
+of metadata to run file-dependent rules on uploads was getting NPE when a resource was not specified
+during upload. This now will turn off automatic processing in this case, pending further hardening and clarification
+of that functionality. In addition, a new metalinx.properties value that can turn off
+this global rules application on upload.
+
+```
+metalnx.enable.upload.rules=false
+
+```
+
+This change requires the addition of this property to metalnx.properties,and for unit testing and building
+this property should be in settings.xml. See the CONFIGURATION.md and DEVELOPER-README.md for details. The sample
+metalnx.properties in /etc/irods-ext in this repo shows a sample configuration.
+
+#### NIEHS 500 Error on empty trash
+
+Incorporated new TrashOperationsAO code from https://github.com/DICE-UNC/jargon/issues/280
+
+This replaces the rule call, and now functions normally for logged in users. There remains a few issues with empty trash as rodsadmin but
+that will be addressed at the Jargon or iRODS level.
+
+#### NIEHS identified misc theming issues
+
+* #22 fix search text
+
+* #25 search - default to 'contains'
+
+* #11 Consider removing Jquery data table search filter as confusing next to the planned global search

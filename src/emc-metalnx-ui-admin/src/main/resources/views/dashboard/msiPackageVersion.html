@@ -14,10 +14,10 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="msiPackageVersionFrag">
+<th:block th:fragment="msiPackageVersionFrag" aria-labelledby="msiPackageVersionTitle">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h4 class="" th:text="#{dashboard.panel.mlx.msi.title}"></h4>
+			<h4 id="msiPackageVersionTitle" class="" th:text="#{dashboard.panel.mlx.msi.title}"></h4>
 			<p><span>Supported version: </span><span th:text="${msiAPIVersionSupported}"></span></p>
 
 			<div class="col-xs-12 bg-warning" th:if="${msiGridInfo.isThereAnyPkgNotSupported() or msiGridInfo.isThereAnyPkgMissing()}" role="alert">
@@ -28,7 +28,7 @@
 				</p>
 
 				<p>
-					<a tabindex="0" role="button" class="pull-right btn btn-link" data-toggle="popover" id="mlxMsiCard" th:text="#{dashboard.card.msi.view.details}"></a>
+					<a tabindex="0" role="button" class="pull-right btn btn-link" data-toggle="popover" id="mlxMsiCard" th:text="#{dashboard.card.msi.view.details}" aria-label="view msi details"></a>
 				</p>
             </div>
 

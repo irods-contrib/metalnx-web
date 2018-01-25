@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- ~ Copyright (c) 2015-2017, Dell 
+	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ 
+	you may not use this file except in compliance with the License. ~ You may 
+	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
+	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
+	License for the specific language governing permissions and ~ limitations 
+	under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.emc.metalnx</groupId>
+	<artifactId>emc-metalnx</artifactId>
+	<version>1.4.0</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<project.version>1.4.0</project.version>
+
+		<!-- Jargon -->
+		<jargon.version>4.2.1.0-SNAPSHOT</jargon.version>
+
+		<!-- Spring -->
+		<spring.version>4.2.9.RELEASE</spring.version>
+		<spring.security.version>3.2.10.RELEASE</spring.security.version>
+		<spring.batch.version>3.0.8.RELEASE</spring.batch.version>
+
+		<!-- Hibernate -->
+		<hibernate.version>4.1.7.Final</hibernate.version>
+		<javassist.version>3.12.1.GA</javassist.version>
+		<hibernate.validator.version>5.1.2.Final</hibernate.validator.version>
+
+		<!-- Thymeleaf -->
+		<thymeleaf.version>2.1.5.RELEASE</thymeleaf.version>
+		<thymeleaf.layout.version>1.4.0</thymeleaf.layout.version>
+		<jstl.version>1.2</jstl.version>
+
+		<!-- Logging -->
+		<slf4j.version>1.7.7</slf4j.version>
+		<logback.version>1.1.2</logback.version>
+
+		<!-- Selenium -->
+		<selenium.version>2.45.0</selenium.version>
+
+		<!-- Misc -->
+		<mysql.connector.version>5.1.17</mysql.connector.version>
+		<postgresql.version>8.4-702.jdbc4</postgresql.version>
+		<servlet.api.version>3.0.1</servlet.api.version>
+		<jackson.version>2.6.3</jackson.version>
+
+		<!-- Default Source Encoding -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Files Upload -->
+		<commons-fileupload.version>1.2.1</commons-fileupload.version>
+		<commons-io.version>1.4</commons-io.version>
+
+		<!-- Cargo container -->
+		<cargo.version>1.4.11</cargo.version>
+
+		<!-- Javax el version -->
+		<el.version>2.2</el.version>
+
+		<!-- Mockito version -->
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- Junit version -->
+		<junit.version>4.10</junit.version>
+
+		<maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+
+		<build.number>DEV</build.number>
+
+	</properties>
+
+	<modules>
+		<module>emc-metalnx-core</module>
+		<module>emc-metalnx-services</module>
+		<module>emc-metalnx-shared</module>
+		<module>emc-metalnx-ui-admin</module>
+		<module>emc-metalnx-web</module>
+		<module>metalnx-tools</module>
+	</modules>
+
+	<repositories>
+		<repository>
+			<id>dice.repository snaps</id>
+			<name>dice.repository.snapshots</name>
+			<url>https://raw.github.com/DICE-UNC/DICE-Maven/master/snapshots</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>dice.repository</id>
+			<name>dice.repository</name>
+			<url>https://raw.github.com/DICE-UNC/DICE-Maven/master/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ci.dev.repository</id>
+			<name>ci.dev.repository</name>
+			<url>http://ci-dev.renci.org/nexus/content/repositories/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Jargon libraries -->
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-core</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-user-tagging</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-security</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-ruleservice</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-ticket</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+
+			<!-- Spring libraries -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<!-- Exclude Commons Logging in favor of SLF4j -->
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-oxm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.batch</groupId>
+				<artifactId>spring-batch-core</artifactId>
+				<version>${spring.batch.version}</version>
+			</dependency>
+
+			<!-- Hibernate dependencies -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate.validator.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-envers</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>${javassist.version}</version>
+			</dependency>
+
+			<!-- Logging libraries -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.16</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<!-- Thymeleaf dependencies -->
+			<dependency>
+				<groupId>org.thymeleaf</groupId>
+				<artifactId>thymeleaf</artifactId>
+				<version>${thymeleaf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.thymeleaf</groupId>
+				<artifactId>thymeleaf-spring4</artifactId>
+				<version>${thymeleaf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jslt</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>nz.net.ultraq.thymeleaf</groupId>
+				<artifactId>thymeleaf-layout-dialect</artifactId>
+				<version>${thymeleaf.layout.version}</version>
+			</dependency>
+
+			<!-- Selenium -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-java</artifactId>
+				<version>${selenium.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- Firefox driver for Selenium -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-firefox-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+
+			<!-- Selenium Support UI -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-support</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+
+			<!-- Selenium HTML Unit Driver -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-htmlunit-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+
+			<!-- Misc -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.connector.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${servlet.api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Files Upload -->
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+
+			<!-- Jackson JSON processor -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<!-- Service layer tests -->
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>el-api</artifactId>
+				<version>${el.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

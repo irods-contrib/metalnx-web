@@ -16,11 +16,11 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.modelattribute.preferences.UserPreferences;
-import com.emc.metalnx.services.interfaces.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -30,70 +30,86 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.LocaleResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.modelattribute.preferences.UserPreferences;
+import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @RequestMapping(value = "/preferences")
 public class PreferencesController {
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private LocaleResolver localeResolver;
+	@Autowired
+	private LocaleResolver localeResolver;
 
-    @Autowired
-    LoggedUserUtils loggedUserUtils;
+	@Autowired
+	LoggedUserUtils loggedUserUtils;
 
-    // ui mode that will be shown when the rods user switches mode from admin to user and vice-versa
-    public static final String UI_USER_MODE = "user";
-    public static final String UI_ADMIN_MODE = "admin";
+	public final static Logger logger = LoggerFactory.getLogger(PreferencesController.class);
 
-    @Value("${irods.zoneName}")
-    private String zoneName;
+	// ui mode that will be shown when the rods user switches mode from admin to
+	// user and vice-versa
+	public static final String UI_USER_MODE = "user";
+	public static final String UI_ADMIN_MODE = "admin";
 
-    @RequestMapping(value = "/")
-    public String index(Model model, HttpServletRequest request) {
-        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-        String locale = loggedUser.getLocale();
+	@Value("${irods.zoneName}")
+	private String zoneName;
 
-        String uiMode = (String) request.getSession().getAttribute("uiMode");
+	@RequestMapping(value = "/")
+	public String index(final Model model, final HttpServletRequest request) {
+		logger.info("index()");
+		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+		String locale = loggedUser.getLocale();
 
-        if (uiMode == null || uiMode.isEmpty()) {
-            if (loggedUser.isAdmin()) {
-                uiMode = UI_ADMIN_MODE;
-            }
-            else {
-                uiMode = UI_USER_MODE;
-            }
-        }
+		String uiMode = (String) request.getSession().getAttribute("uiMode");
 
-        UserPreferences userPreferences = new UserPreferences();
-        userPreferences.setLocaleLanguage(locale);
-        userPreferences.setForceFileOverwriting(loggedUser.isForceFileOverwriting());
+		if (uiMode == null || uiMode.isEmpty()) {
+			if (loggedUser.isAdmin()) {
+				uiMode = UI_ADMIN_MODE;
+			} else {
+				uiMode = UI_USER_MODE;
+			}
+		}
 
-        model.addAttribute("preferences", userPreferences);
-        model.addAttribute("uiMode", uiMode);
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setLocaleLanguage(locale);
+		userPreferences.setForceFileOverwriting(loggedUser.isForceFileOverwriting());
+		userPreferences.setAdvancedView(loggedUser.isAdvancedView());
 
-        return "preferences/index";
-    }
+		model.addAttribute("preferences", userPreferences);
+		model.addAttribute("uiMode", uiMode);
 
-    @RequestMapping(value = "/action/")
-    public String action(Model model, @ModelAttribute UserPreferences preferences, HttpServletRequest request, HttpServletResponse response)
-            throws DataGridConnectionRefusedException {
+		return "preferences/index";
+	}
 
-        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-        loggedUser.setLocale(preferences.getLocaleLanguage());
-        loggedUser.setForceFileOverwriting(preferences.isForceFileOverwriting());
-        userService.modifyUser(loggedUser);
+	@RequestMapping(value = "/action/")
+	public String action(final Model model, @ModelAttribute final UserPreferences preferences,
+			final HttpServletRequest request, final HttpServletResponse response)
+			throws DataGridConnectionRefusedException {
 
-        localeResolver.setLocale(request, response, StringUtils.parseLocaleString(preferences.getLocaleLanguage()));
-        return "redirect:/dashboard/";
-    }
+		logger.info("action()");
+		logger.info("preferences:{}", preferences);
 
-    @RequestMapping(value = "/chat/")
-    public String webSocketTest() {
-        return "preferences/chat";
-    }
+		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+		logger.debug("current logged in user:{}", loggedUser);
+		loggedUser.setLocale(preferences.getLocaleLanguage());
+		loggedUser.setForceFileOverwriting(preferences.isForceFileOverwriting());
+		loggedUser.setAdvanceView(preferences.isAdvancedView());
+		logger.debug("modified logged in user:{}", loggedUser);
+
+		userService.modifyUser(loggedUser);
+		logger.info("preferences were saved");
+
+		localeResolver.setLocale(request, response, StringUtils.parseLocaleString(preferences.getLocaleLanguage()));
+		return "redirect:/preferences/";
+	}
+
+	@RequestMapping(value = "/chat/")
+	public String webSocketTest() {
+		return "preferences/chat";
+	}
 }

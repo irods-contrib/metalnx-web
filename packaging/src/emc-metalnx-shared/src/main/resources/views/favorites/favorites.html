@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.thymeleaf.org"
+    lang="en"
+    layout:decorator="template">
+
+<head>
+	<title th:text="#{tab.title.favorites}">EMC Metalnx - Favorites</title>
+</head>
+
+<body>
+	<!-- Page Content -->
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="page-header pull-left">
+					<span th:text="#{favorites.page.title}"></span>
+				</h1>
+				<a id="favorite-page-title"  href="#" class="page-hint pull-right"><i class="fa fa-question-circle"></i></a>
+			</div>
+
+            <div class="col-sm-12 hideElement" id="unfavFailMsg">
+				<div class="alert alert-danger alert-dismissible text-center" role="alert">
+				  	<button type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<span th:text="#{favorite.page.content.path.not.remove}"></span>
+				</div>
+			</div>
+            <div class="col-sm-12 table-responsive" >
+				<table class="table table-hover" id="favoritesTable">
+					<thead>
+						<tr>
+							<th th:text="#{favorites.table.name.label}"></th>
+							<th th:text="#{favorites.table.path.label}"></th>
+							<th th:text="#{favorites.table.type.label}"></th>
+							<th ></th>
+						</tr>
+					</thead>
+				</table>
+             </div>
+
+        </div>
+
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+		$(document).ready(function(){
+			// Add popover on page title
+		 	$('#favorite-page-title').popover({
+		 		title:[[#{favorites.page.title}]],
+	    		content:[[#{favorites.page.title.popover}]],
+		 		trigger: 'hover click',
+	       		placement: 'left',
+	       	});
+	    });
+        var datatable;
+		datatable = $('#favoritesTable').DataTable( {
+		    "serverSide": true,
+		    "dom": dtPatternMlxStandard,
+		    "language": i18n,
+		    "destroy": true,
+		    "autoWidth": false,
+		    "ajax": {
+		        url: '/emc-metalnx-web/favorites/favoritesPaginated/',
+		    },
+		    "order": [[ 3, 'desc' ]],
+		    "initComplete": function(settings){
+	            $('#favoritesTable tbody td').each(function () {
+	            	$(this).attr('title', $(this).text().trim());
+	            });
+	        },
+	        "drawCallback": function(){
+	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+	            $('.dataTables_paginate.paging_simple_numbers')
+	            .css( 'display', this.api().data().length <= 0 ?
+	                 'none' :
+	                 'block'
+	            )
+	        },
+		    "columnDefs": [
+                {
+                	"render": function ( data, type, full, meta ) {
+						return '<a href="#" onclick="redirectToCollections(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
+					},
+					"width": "35%",
+					"targets": 0
+                },
+                {
+                	"data": "path",
+                	"width": "40%",
+                	"targets": 1
+               	},
+                {
+               		"render": function (data, type, full, meta){
+                		return full.isCollection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+                	},
+               		"width": "15%",
+               		"targets": 2
+               	},
+                {
+                	"render": function (data, type, full, meta){
+                		return '<a href="#" class="btn btn-default btn-xs" onclick="unstarItem(\''+full.path+'\')"><i class="fa fa-trash-o"></i>Delete</a>';
+                	},
+                	"width": "10%",
+                	"orderable": false,
+                	"targets": 3
+                }
+            ]
+		});
+
+		function redirectToCollections(path){
+			ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFavoritesToCollections/", "POST", {path: path},
+				function(){
+					window.location = "/emc-metalnx-web/collections/";
+			}, null, null, null);
+		}
+		function unstarItem(path, icon){
+			ajaxEncapsulation(
+				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
+				"GET",
+				{path: path},
+				function(data){
+					if(data.indexOf("OK") >= 0){
+					    datatable.row($(this).parents('tr')).remove().draw();
+					}else{
+						$('#unfavFailMsg').show();
+					}
+				}, null, null, null
+			);
+		}
+		/*]]>*/
+		</script>
+
+	</div> <!-- /. Page Content -->
+
+</body>
+
+</html>

@@ -44,7 +44,18 @@ var i18n = {
 
 
 //Adds Action button on Collection table
-function addCollectionActions(table_id, datatable){
+function addCollectionActions(table_id, datatable,advancedView){
+    console.log("## dataTable.customize.js advancedView:" + advancedView);
+    var replicate = '';
+    if(advancedView){
+      replicate = replicate +
+                    '<li>'+
+                      '<a href="#" id="replicateBtn" class="hideElement" data-toggle="modal" data-target="#replicateModal"><span><i class="fa fa-clone"></i></span> Replicate</a>'+
+                    '</li>';
+    }
+    else if(!advancedView){
+      repilcate = '';
+    }
     $("div.toolbar").html(
         '<div id="actions" class="btn-group pull-left">'+
         '   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" disabled="">'+
@@ -57,9 +68,7 @@ function addCollectionActions(table_id, datatable){
         '       <li>'+
         '           <a href="#" id="copyBtn" class="hideElement" data-toggle="modal" data-target="#copyModal"><span><i class="fa fa-files-o"></i></span> <span>Copy</span></a>'+
         '       </li>'+
-        '       <li>'+
-        '           <a href="#" id="replicateBtn" class="hideElement" data-toggle="modal" data-target="#replicateModal"><span><i class="fa fa-clone"></i></span> Replicate</a>'+
-        '       </li>'+
+                replicate +
         '       <li>'+
         '           <a href="#" id="modifyBtn" class="hideElement" onclick="showModifyForm();"><span><i class="fa fa-pencil-square-o"> </i></span> <span>Edit</span></a>'+
         '       </li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a>'+

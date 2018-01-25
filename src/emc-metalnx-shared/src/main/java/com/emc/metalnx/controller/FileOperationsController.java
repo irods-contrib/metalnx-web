@@ -16,15 +16,14 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
-import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
-import com.emc.metalnx.services.interfaces.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,275 +40,289 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
+import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
+import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.FileOperationService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/fileOperation")
 public class FileOperationsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
-    private static String TRASH_PATH;
+	private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
+	private static String TRASH_PATH;
 
-    @Autowired
-    private CollectionController collectionController;
+	@Autowired
+	private CollectionController collectionController;
 
-    @Autowired
-    private CollectionService collectionService;
+	@Autowired
+	private CollectionService collectionService;
 
-    @Autowired
-    private IRODSServices irodsServices;
+	@Autowired
+	private IRODSServices irodsServices;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private FileOperationService fileOperationService;
 
-    @Autowired
-    private FileOperationService fileOperationService;
+	@Autowired
+	private LoggedUserUtils loggedUserUtils;
 
-    @Autowired
-    private LoggedUserUtils loggedUserUtils;
+	// contains the path to the file that will be downloaded
+	private String filePathToDownload;
 
-    @Autowired
-    private UploadService us;
+	// checks if it's necessary to remove any temporary collections created for
+	// downloading
+	private boolean removeTempCollection;
 
-    // contains the path to the file that will be downloaded
-    private String filePathToDownload;
+	@PostConstruct
+	public void init() {
+		TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(),
+				irodsServices.getCurrentUser());
+	}
 
-    // checks if it's necessary to remove any temporary collections created for downloading
-    private boolean removeTempCollection;
+	@RequestMapping(value = "/move", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	public String move(final Model model, @RequestParam("targetPath") final String targetPath,
+			@RequestParam("paths[]") final String[] paths) throws DataGridException, JargonException {
 
-    @PostConstruct
-    public void init() {
-        TRASH_PATH = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
-    }
+		List<String> failedMoves = new ArrayList<>();
+		String fileMoved = "";
 
-    @RequestMapping(value = "/move", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
-    public String move(Model model, @RequestParam("targetPath") String targetPath,
-                       @RequestParam("paths[]") String[] paths)
-            throws DataGridException, JargonException {
+		try {
+			for (String p : paths) {
+				String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+				if (!fileOperationService.move(p, targetPath)) {
+					failedMoves.add(item);
+				} else if (paths.length == 1) {
+					fileMoved = item;
+				}
+			}
+		} catch (DataGridException e) {
+			logger.error("Could not move item to {}: {}", targetPath, e.getMessage());
+		}
 
-        List<String> failedMoves = new ArrayList<>();
-        String fileMoved = "";
+		if (!fileMoved.isEmpty()) {
+			model.addAttribute("fileMoved", fileMoved);
+		}
 
-        try {
-            for (String p : paths) {
-                String item = p.substring(p.lastIndexOf("/") + 1, p.length());
-                if (!fileOperationService.move(p, targetPath)) {
-                    failedMoves.add(item);
-                } else if (paths.length == 1) {
-                    fileMoved = item;
-                }
-            }
-        } catch (DataGridException e) {
-            logger.error("Could not move item to {}: {}", targetPath, e.getMessage());
-        }
+		model.addAttribute("failedMoves", failedMoves);
 
-        if (!fileMoved.isEmpty()) model.addAttribute("fileMoved", fileMoved);
+		return collectionController.getSubDirectories(model, targetPath);
+	}
 
-        model.addAttribute("failedMoves", failedMoves);
+	@RequestMapping(value = "/copy", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	public String copy(final Model model, @RequestParam("targetPath") final String targetPath,
+			@RequestParam("copyWithMetadata") final boolean copyWithMetadata,
+			@RequestParam("paths[]") final String[] paths) throws DataGridException, JargonException {
 
-        return collectionController.getSubDirectories(model, targetPath);
-    }
+		List<String> failedCopies = new ArrayList<>();
+		String fileCopied = "";
 
-    @RequestMapping(value = "/copy", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
-    public String copy(Model model, @RequestParam("targetPath") String targetPath,
-                       @RequestParam("copyWithMetadata") boolean copyWithMetadata,
-                       @RequestParam("paths[]") String[] paths)
-            throws DataGridException, JargonException {
+		for (String p : paths) {
+			String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+			if (!fileOperationService.copy(p, targetPath, copyWithMetadata)) {
+				failedCopies.add(item);
+			} else if (paths.length == 1) {
+				fileCopied = item;
+			}
+		}
 
-        List<String> failedCopies = new ArrayList<>();
-        String fileCopied = "";
+		if (!fileCopied.isEmpty()) {
+			model.addAttribute("fileCopied", fileCopied);
+		}
 
-        for (String p : paths) {
-            String item = p.substring(p.lastIndexOf("/") + 1, p.length());
-            if (!fileOperationService.copy(p, targetPath, copyWithMetadata)) {
-                failedCopies.add(item);
-            } else if (paths.length == 1) {
-                fileCopied = item;
-            }
-        }
+		model.addAttribute("failedCopies", failedCopies);
 
-        if (!fileCopied.isEmpty()) model.addAttribute("fileCopied", fileCopied);
+		return collectionController.getSubDirectories(model, targetPath);
+	}
 
-        model.addAttribute("failedCopies", failedCopies);
+	/**
+	 * Delete a replica of a data object
+	 *
+	 * @param model
+	 *            MVC model
+	 * @param path
+	 *            path to the parent of the data object to be deleted
+	 * @param fileName
+	 *            name of the data object to be deleted
+	 * @param replicaNumber
+	 *            number of the replica that is going to be deleted
+	 * @return the template that shows the data object information with the replica
+	 *         table refreshed
+	 * @throws DataGridConnectionRefusedException
+	 *             if Metalnx cannot connect to the data grid
+	 */
+	@RequestMapping(value = "deleteReplica", method = RequestMethod.POST)
+	public String deleteReplica(final Model model, @RequestParam("path") final String path,
+			@RequestParam("fileName") final String fileName, @RequestParam final String replicaNumber)
+			throws DataGridConnectionRefusedException {
 
-        return collectionController.getSubDirectories(model, targetPath);
-    }
+		boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
 
-    /**
-     * Delete a replica of a data object
-     *
-     * @param model MVC model
-     * @param path path to the parent of the data object to be deleted
-     * @param fileName name of the data object to be deleted
-     * @param replicaNumber number of the replica that is going to be deleted
-     * @return the template that shows the data object information with the replica table refreshed
-     * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the data grid
-     */
-    @RequestMapping(value = "deleteReplica", method = RequestMethod.POST)
-    public String deleteReplica(Model model, @RequestParam("path") String path, @RequestParam("fileName") String fileName,
-                                @RequestParam String replicaNumber) throws DataGridConnectionRefusedException {
+		if (fileOperationService.deleteReplica(path, fileName, Integer.parseInt(replicaNumber), inAdminMode)) {
+			model.addAttribute("delReplReturn", "success");
+		} else {
+			model.addAttribute("delReplReturn", "failure");
+		}
+		return collectionController.getFileInfo(model, path);
+	}
 
-        boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
+	@RequestMapping(value = "/replicate", method = RequestMethod.POST)
+	public String replicate(final Model model, final HttpServletRequest request)
+			throws DataGridConnectionRefusedException {
 
-        if (fileOperationService.deleteReplica(path, fileName, Integer.parseInt(replicaNumber), inAdminMode)) {
-            model.addAttribute("delReplReturn", "success");
-        } else {
-            model.addAttribute("delReplReturn", "failure");
-        }
-        return collectionController.getFileInfo(model, path);
-    }
+		List<String> sourcePaths = collectionController.getSourcePaths();
+		String[] resources = request.getParameterMap().get("resourcesForReplication");
+		List<String> failedReplicas = new ArrayList<>();
 
-    @RequestMapping(value = "/replicate", method = RequestMethod.POST)
-    public String replicate(Model model, HttpServletRequest request) throws DataGridConnectionRefusedException {
+		if (resources != null) {
+			String targetResource = resources[0];
+			boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
+			for (String sourcePathItem : sourcePaths) {
+				try {
+					fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode);
+				} catch (DataGridReplicateException e) {
+					String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1,
+							sourcePathItem.length());
+					failedReplicas.add(item);
+				}
+			}
+		}
 
-        List<String> sourcePaths = collectionController.getSourcePaths();
-        String[] resources = (String[]) request.getParameterMap().get("resourcesForReplication");
-        List<String> failedReplicas = new ArrayList<>();
+		if (!sourcePaths.isEmpty()) {
+			model.addAttribute("failedReplicas", failedReplicas);
+			sourcePaths.clear();
+		}
 
-        if (resources != null) {
-            String targetResource = resources[0];
-            boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
-            for (String sourcePathItem : sourcePaths) {
-                try {
-                    fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode);
-                } catch (DataGridReplicateException e) {
-                    String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1, sourcePathItem.length());
-                    failedReplicas.add(item);
-                }
-            }
-        }
+		return collectionController.index(model, request, false);
+	}
 
-        if (!sourcePaths.isEmpty()) {
-            model.addAttribute("failedReplicas", failedReplicas);
-            sourcePaths.clear();
-        }
+	@RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
+	public void prepareFilesForDownload(final HttpServletResponse response,
+			@RequestParam("paths[]") final String[] paths) throws DataGridConnectionRefusedException {
 
-        return collectionController.index(model, request, false);
-    }
+		try {
+			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
+				filePathToDownload = collectionService.prepareFilesForDownload(paths);
+				removeTempCollection = true;
+			} else {
+				// if a single file was selected, it will be transferred directly through the
+				// HTTP response
+				removeTempCollection = false;
+				filePathToDownload = paths[0];
+				String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
+				if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
+					throw new DataGridException("Lack of permission to download file " + filePathToDownload);
+				}
+			}
+		} catch (DataGridConnectionRefusedException e) {
+			throw e;
+		} catch (DataGridException | IOException e) {
+			logger.error("Could not download selected items: ", e.getMessage());
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		}
+	}
 
-    @RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
-    public void prepareFilesForDownload(HttpServletResponse response, @RequestParam("paths[]") String[] paths)
-            throws DataGridConnectionRefusedException {
+	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void download(final HttpServletResponse response) throws DataGridConnectionRefusedException {
 
-        try {
-            if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
-                filePathToDownload = collectionService.prepareFilesForDownload(paths);
-                removeTempCollection = true;
-            } else {
-                // if a single file was selected, it will be transferred directly through the HTTP response
-                removeTempCollection = false;
-                filePathToDownload = paths[0];
-                String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
-                if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
-                    throw new DataGridException("Lack of permission to download file " + filePathToDownload);
-                }
-            }
-        } catch (DataGridConnectionRefusedException e) {
-            throw e;
-        } catch (DataGridException | IOException e) {
-            logger.error("Could not download selected items: ", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
-    }
+		try {
+			fileOperationService.download(filePathToDownload, response, removeTempCollection);
+			filePathToDownload = "";
+			removeTempCollection = false;
+		} catch (DataGridException | IOException e) {
+			logger.error("Could not download selected items: ", e.getMessage());
+		}
+	}
 
-    @RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public void download(HttpServletResponse response) throws DataGridConnectionRefusedException {
+	@RequestMapping(value = "/delete/", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	public String deleteCollectionAndDataObject(final Model model, @RequestParam("paths[]") final String[] paths)
+			throws DataGridException, JargonException {
+		boolean forceRemove;
+		List<String> failedDeletions = new ArrayList<>();
+		String fileDeleted = null;
 
-        try {
-            fileOperationService.download(filePathToDownload, response, removeTempCollection);
-            filePathToDownload = "";
-            removeTempCollection = false;
-        } catch (DataGridException | IOException e) {
-            logger.error("Could not download selected items: ", e.getMessage());
-        }
-    }
+		for (String path : paths) {
+			forceRemove = path.startsWith(TRASH_PATH);
 
-    @RequestMapping(value = "/delete/", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.OK)
-    public String deleteCollectionAndDataObject(Model model, @RequestParam("paths[]") String[] paths)
-            throws DataGridException, JargonException {
-        boolean forceRemove;
-        List<String> failedDeletions = new ArrayList<>();
-        String fileDeleted = null;
+			if (!fileOperationService.deleteItem(path, forceRemove)) {
+				String item = path.substring(path.lastIndexOf("/") + 1, path.length());
+				failedDeletions.add(item);
+			} else if (paths.length == 1) {
+				fileDeleted = path.substring(path.lastIndexOf("/") + 1, path.length());
+			}
 
-        for (String path : paths) {
-            forceRemove = path.startsWith(TRASH_PATH);
-            
-            if (!fileOperationService.deleteItem(path, forceRemove)) {
-                String item = path.substring(path.lastIndexOf("/") + 1, path.length());
-                failedDeletions.add(item);
-            } 
-            else if (paths.length == 1) {
-                fileDeleted = path.substring(path.lastIndexOf("/") + 1, path.length());
-            }
-            
-            collectionController.removePathFromHistory(path);
-        }
+			collectionController.removePathFromHistory(path);
+		}
 
-        if (fileDeleted != null) {
-            model.addAttribute("fileDeleted", fileDeleted);
-        }
+		if (fileDeleted != null) {
+			model.addAttribute("fileDeleted", fileDeleted);
+		}
 
-        model.addAttribute("failedDeletions", failedDeletions);
-        model.addAttribute("currentPath", collectionController.getCurrentPath());
-        model.addAttribute("parentPath", collectionController.getParentPath());
-        
-        return collectionController.getSubDirectories(model, collectionController.getCurrentPath());
-    }
+		model.addAttribute("failedDeletions", failedDeletions);
+		model.addAttribute("currentPath", collectionController.getCurrentPath());
+		model.addAttribute("parentPath", collectionController.getParentPath());
 
-    @RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
-    public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException {
-        String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
-        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-        if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+		return collectionController.getSubDirectories(model, collectionController.getCurrentPath());
+	}
 
-        return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
-    }
+	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
+	public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException, JargonException {
+		String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
+		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+		if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
 
-    /**
-     * Displays the modify user form with all fields set to the selected collection
-     *
-     * @param model MVC model
-     * @return collectionForm with fields set
-     * @throws DataGridException if item cannot be modified
-     */
-    @RequestMapping(value = "modify/", method = RequestMethod.GET)
-    public String showModifyForm(Model model, @RequestParam("path") String path) throws DataGridException {
-        String currentPath = collectionController.getCurrentPath();
-        String parentPath = collectionController.getParentPath();
+		return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+	}
 
-        String formType = "editDataObjectForm";
-        CollectionOrDataObjectForm targetForm = new CollectionOrDataObjectForm();
-        DataGridCollectionAndDataObject dataGridCollectionAndDataObject = collectionService.findByName(path);
+	/**
+	 * Displays the modify user form with all fields set to the selected collection
+	 *
+	 * @param model
+	 *            MVC model
+	 * @return collectionForm with fields set
+	 * @throws DataGridException
+	 *             if item cannot be modified
+	 */
+	@RequestMapping(value = "modify/", method = RequestMethod.GET)
+	public String showModifyForm(final Model model, @RequestParam("path") final String path) throws DataGridException {
+		String currentPath = collectionController.getCurrentPath();
+		String parentPath = collectionController.getParentPath();
 
-        logger.info("Modify form for {}", path);
+		String formType = "editDataObjectForm";
+		CollectionOrDataObjectForm targetForm = new CollectionOrDataObjectForm();
+		DataGridCollectionAndDataObject dataGridCollectionAndDataObject = collectionService.findByName(path);
 
-        targetForm.setCollectionName(dataGridCollectionAndDataObject.getName());
-        targetForm.setPath(dataGridCollectionAndDataObject.getPath());
-        targetForm.setParentPath(currentPath);
+		logger.info("Modify form for {}", path);
 
-        if (dataGridCollectionAndDataObject.isCollection()) {
-            formType = "editCollectionForm";
-            targetForm.setCollection(true);
-            logger.info("Setting inheritance for {}", path);
-            targetForm.setInheritOption(collectionService.getInheritanceOptionForCollection(targetForm.getPath()));
-        }
+		targetForm.setCollectionName(dataGridCollectionAndDataObject.getName());
+		targetForm.setPath(dataGridCollectionAndDataObject.getPath());
+		targetForm.setParentPath(currentPath);
 
-        model.addAttribute("currentPath", currentPath);
-        model.addAttribute("parentPath", parentPath);
-        model.addAttribute("collection", targetForm);
-        model.addAttribute("requestMapping", "/collections/modify/action/");
+		if (dataGridCollectionAndDataObject.isCollection()) {
+			formType = "editCollectionForm";
+			targetForm.setCollection(true);
+			logger.info("Setting inheritance for {}", path);
+			targetForm.setInheritOption(collectionService.getInheritanceOptionForCollection(targetForm.getPath()));
+		}
 
-        return String.format("collections/%s", formType);
-    }
+		model.addAttribute("currentPath", currentPath);
+		model.addAttribute("parentPath", parentPath);
+		model.addAttribute("collection", targetForm);
+		model.addAttribute("requestMapping", "/collections/modify/action/");
+
+		return String.format("collections/%s", formType);
+	}
 }

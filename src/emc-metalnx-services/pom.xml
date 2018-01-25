@@ -20,10 +20,25 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>1.4.0</version>
+		<version>2.0.0</version>
 	</parent>
 	<artifactId>emc-metalnx-services</artifactId>
 	<dependencies>
+	<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-extensions-if</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-profiler</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-typer</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -235,6 +250,9 @@
 									resource.location.js=/js/,classpath:static/js/
 									resource.location.i18=classpath:i18n/messages
 									resource.location.i18-users=classpath:i18n-users/messages
+									
+									metalnx.enable.tickets=${metalnx.enable.tickets}
+									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									
 
 								</echo>

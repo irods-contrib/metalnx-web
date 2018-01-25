@@ -27,10 +27,10 @@
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="preferencesPageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{preferences.page.title}"></h1>
+				<h1 id="preferencesPageTitle" class="page-header pull-left" th:text="#{preferences.page.title}"></h1>
 			</div>
 			<div class="col-xs-12 col-md-6">
 				<form role="form" class="container-fluid registerForm row" method="POST" th:object="${preferences}" th:action="@{/preferences/action/}">
@@ -50,21 +50,25 @@
 							<div class="form-group">
 								<label for="forceFileOverwriting">File Upload</label>
 								<p>
-									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" />
-									<span >  Overwrite duplicate files by default</span> 
+									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" aria-label="overwrite duplicates"/>
+									<span th:text="#{preferences.index.overwrite.duplicates}"></span>
+								</p>
+								<p>
+									<input type="checkbox" id="advancedView" th:field="*{advancedView}" aria-label="advancedView"/>
+									<span th:text="#{preferences.index.advanced.view}"></span>
 								</p>
 							</div>
+							</div>
 						</div>
-					</div>
-					
+
 					<div class="btn-group pull-right">
 						<button type="submit" class="btn btn-primary" th:text="#{preferences.save.button.label}"></button>
 					</div>
-					
+
 				</form>
 			</div>
 		</div>
-	</div> 
+	</div>
 
 </body>
 

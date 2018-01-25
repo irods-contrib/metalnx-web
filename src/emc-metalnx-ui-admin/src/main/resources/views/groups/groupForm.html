@@ -30,51 +30,51 @@
 		function showRecursiveQuestion(collectionName){
 		    $("[id='recursiveQuestion_" + collectionName + "']").removeClass('hideElement');
 		}
-	
+
 		//change permissions for the group
 		function changePermission(path, collectionName, recursive){
 		    hideRecursiveQuestion(collectionName);
 		    var permission = $("[id='permission_" + collectionName + "']").val();
 			var url;
-			
+
 			var bookmarkCheckbox = $("input[name='" + path + "']");
-			
+
 			//identify permission and add it to user
 			if(permission == 'read'){
-				
+
 				url = "/emc-metalnx-web/groups/addReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
 				    checkGroupBookmark(bookmarkCheckbox);
 				}, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);   
-				
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);
+
 			} else if(permission == 'write'){
-				
+
 				url = "/emc-metalnx-web/groups/addWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
                     checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);   
-				
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
+
 			} else if(permission == 'own'){
-				
+
 				url = "/emc-metalnx-web/groups/addOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
                     checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);   
-				
-			} else { 
+				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
+
+			} else {
 				//this case is for when user chooses to give none of the permissions above
 				url = "/emc-metalnx-web/groups/removeReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
-				
+
 				url = "/emc-metalnx-web/groups/removeWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
-				
+
 				url = "/emc-metalnx-web/groups/removeOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
-				
+
 				bookmarkCheckbox.prop('checked', false);
 				bookmarkCheckbox.attr("disabled", true);
 
@@ -82,17 +82,17 @@
 				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
 			}
 		}
-		
+
 		function checkGroupBookmark(bookmarkCheckbox) {
 		    bookmarkCheckbox.prop("disabled", false);
 		    bookmarkCheckbox.prop('checked', true);
 		}
-		
+
 		// Toggles the inheritance of a given directory
 		function toggleInheritance(collectionName, recursive) {
 			var collectionNameParts = collectionName.split("/");
 			var collectionShortName = collectionNameParts[collectionNameParts.length - 1];
-			
+
 			var url = "";
 			var checkbox = $("#inheritance_" + collectionShortName);
 			if (checkbox.is(":checked")) {
@@ -108,15 +108,15 @@
 </head>
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="groupFormTitle">
 		<div class="row">
 			<div class="col-sm-12">
 				<!-- Display page title as Add Group -->
-				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}"
+				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" id="groupFormTitle"
 					class="page-header pull-left" th:text="#{groups.add.form.title}"></h1>
 				<!-- Display page title as Modify Group -->
 				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
-					class="page-header pull-left" th:text="#{groups.modify.form.title}"></h1>
+					class="page-header pull-left" th:text="#{groups.modify.form.title}" id="groupFormTitle"></h1>
 				<ol class="breadcrumb mlx pull-right ">
                 	<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }" th:text="#{groups.management.page.title}"></a></li>
                 	<li th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" th:text="#{groups.add.form.title}" class="active"></li>
@@ -172,15 +172,15 @@
 					</div>
 				</div>
 				<!-- Available Users -->
-				<div class="col-sm-12" id="usersList">
+				<div class="col-sm-12" id="usersList" aria-labelledby="availableUsersTitle">
 					<div class="row">
 						<div class="panel panel-default">
 							<!-- Header -->
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.form.attach.to.group.label}"
+								<h3 th:text="#{groups.add.form.attach.to.group.label}" id="availableUsersTitle"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideUsersListBtn">
-									<i class="fa fa-check"></i>  
+									<i class="fa fa-check"></i>
 									<span th:text="#{done.button.label}" ></span>
 								</button>
 							</div>
@@ -201,7 +201,7 @@
 											</thead>
 											<tbody id="fBody">
 												<tr th:each="user : ${users}" th:id="${user.username}">
-													<td><input type="checkbox" name="idsList"
+													<td><input type="checkbox" name="idsList" aria-label="select user ${user.username}"
 														th:value="${user.dataGridId}"
 														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
 													</td>
@@ -224,12 +224,12 @@
 				<!-- Attached users -->
 				<div class="row" id="attachedUsersList">
 					<div class="col-sm-12">
-						<div class="panel panel-default">
+						<div class="panel panel-default" aria-labelledby="attachedUsersListTitle">
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.attached.users.label}"
+								<h3 th:text="#{groups.add.attached.users.label}" id="attachedUsersListTitle"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-default btn-xs pull-right" id="showUsersListBtn" th:disabled="${ groupForm.getGroupname() == 'public' }">
-									<i class="fa fa-pencil"></i>  
+									<i class="fa fa-pencil"></i>
 									<span th:text="#{groups.add.show.users.label}"></span>
 								</button>
 							</div>
@@ -277,7 +277,7 @@
 								<div class="col-sm-6">
 									<div class="form-group input-group">
 										<input id="searchTextForCollections" type="search"
-											class="form-control" th:placeholder="#{search.placeholder}" />
+											class="form-control" th:placeholder="#{search.placeholder}" aria-label="search text"/>
 										<span class="input-group-addon"> <i
 											class="glyphicon glyphicon-search"></i>
 										</span>
@@ -333,26 +333,27 @@
 		</div>
 		<!-- /.row -->
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
-		<script type="text/javascript" th:inline="javascript">	
+		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 			var groupName = [[${groupForm.groupname}]];
-			
-			var isAddAction = 
+
+			var isAddAction =
 				[[${ requestMapping }]] == "/groups/add/action/" ? true : false;
-		
+
 			$(function(){
 				if(isAddAction) {
-					groupFormValidator([[${ urlMap.URL_GROUP_VALIDATE_GROUPNAME }]]);						
+					groupFormValidator([[${ urlMap.URL_GROUP_VALIDATE_GROUPNAME }]]);
 				}
-				
+
 				var datatableUsers = $("#usersListTable").DataTable({
 					"dom": dtPatternUserMgmt,
 	    		    "language": i18n,
 					"stateSave": true,
+					"searching": false,
 					"autoWidth": false,
 	    		    "stateSaveParams": function (settings, data) {
 	    		    	data.search.search = "";
-	    		    },	    	        
+	    		    },
 	    		    "initComplete": function(settings){
 	    	            $('#usersListTable tbody td').each(function () {
 	    	            	$(this).attr('title', $(this).text().trim());
@@ -371,11 +372,11 @@
 	    	            "targets": "_all",
 	    	        }]
 				});
-				
+
 				getSubDirectoriesForGroupForm([[${ currentPath }]]);
-				
+
 				$("#usersList").hide();
-				
+
 				var datatableAttachedUsers = $("#attachedUsersTable").DataTable({
 					"dom": dtPatternUserMgmt,
 	    		    "language": i18n,
@@ -402,28 +403,28 @@
 	    	            "targets": "_all",
 	    	        }]
 				});
-				
+
 				$("#submitGroupFormBtn").click(function(){
-					
+
 					if(groupFormCanBeSubmitted([[${urlMap.URL_GROUP_VALIDATE_GROUPNAME}]], isAddAction)){
-						$(".registerForm").submit();								
+						$(".registerForm").submit();
 					}
 					else {
 						$("html, body").animate({ scrollTop: 0 }, "slow");
 					}
 				});
-				
+
 				$("#showUsersListBtn").click(function(){
 					$("#attachedUsersList").hide();
 					$("#usersList").show();
-				}); 
-				
-				$("#hideUsersListBtn").click(function(){								
+				});
+
+				$("#hideUsersListBtn").click(function(){
 					$("#attachedUsersList").show();
 					$("#usersList").hide();
-					
-				}); 
-				
+
+				});
+
 				$('body').on('change', '#usersList input[type=checkbox]', function(){
 				//$("#usersList input[type=checkbox]").change(function(){
 					if($(this).is(":checked")){
@@ -431,7 +432,7 @@
 					    var newRow = $(this).closest("tr").clone();
 						newRow.find("td:first").remove();
 						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
-						
+
 						datatableAttachedUsers.row.add(newRow).draw();
 					}
 					else {
@@ -440,28 +441,28 @@
 						var trElement = $("tr[id='" + elementID + "']");
 						datatableAttachedUsers.row(trElement).remove().draw();
 					}
-					
+
 				});
-				
+
 			});
-			function getSubDirectoriesForGroupForm(directoryName) {			
+			function getSubDirectoriesForGroupForm(directoryName) {
 				$("#table-loader").show();
 				$("#collectionsViewForGroup").hide();
-				
+
 				var url = "/emc-metalnx-web/collections/getDirectoriesAndFilesForGroupForm/";
 				var retrievePermissions = !isAddAction;
 				setTimeout(function () {
 					ajaxEncapsulation(
-							url, 
-							"POST", 
-							{path:directoryName, groupName: groupName, retrievePermissions : retrievePermissions}, 
+							url,
+							"POST",
+							{path:directoryName, groupName: groupName, retrievePermissions : retrievePermissions},
 							displaySubDirectoriesForGroupForm,
-							null, 
+							null,
 							null
-					);					
+					);
 				}, 400);
 			}
-			
+
 			function displaySubDirectoriesForGroupForm(data){
 				$("#table-loader").hide();
 				$("#collectionsViewForGroup").show();

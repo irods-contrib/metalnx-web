@@ -60,9 +60,7 @@
 	  		<span aria-hidden="true">&times;</span>
 	  		<span class="sr-only">Close</span>
 	  	</button>
-	  	<span>
-			Download failed. Please, check if you have permissions to perform such operation.
-	  	</span>
+	  	<span th:text="#{collection.browser.download.fail}"></span>
 	</div>
 </div>
 
@@ -73,8 +71,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span> Upload failed. Please, check if you have permissions to
-			perform such operation. </span>
+		<span th:text="#{collection.browser.upload.fail}"></span>
 	</div>
 </div>
 
@@ -87,8 +84,7 @@
 		</button>
 		<span th:if="${fileUploaded != null}"
 			th:text="|The file ${fileUploaded} was successfully uploaded.|"></span>
-		<span th:unless="${fileUploaded != null}">The selected files
-			were successfully uploaded.</span>
+		<span th:unless="${fileUploaded != null}" th:text="#{collection.browser.upload.success}"></span>
 	</div>
 </div>
 
@@ -114,7 +110,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be moved: </span> <b
+		<span th:text="#{collection.browser.item.not.moved}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedMoves), '[', ''), ']', '')}"></b>
 	</div>
 </div>
@@ -140,7 +136,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be copied: </span> <b
+		<span th:text="#{collection.browser.item.not.copied}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedCopies), '[', ''), ']', '')}"></b>
 	</div>
 </div>
@@ -155,8 +151,7 @@
 		</button>
 		<span th:if="${fileDeleted != null}"
 			th:text="|The file ${fileDeleted} was successfully deleted.|"></span>
-		<span th:unless="${fileDeleted != null}">The selected files
-			were successfully deleted.</span>
+		<span th:unless="${fileDeleted != null}" th:text="#{collection.browser.files.deleted.success}"></span>
 	</div>
 </div>
 
@@ -167,7 +162,7 @@
 		<button type="button" class="close" data-dismiss="alert">
 			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 		</button>
-		<span>The following items failed to be deleted: </span> <b
+		<span th:text="#{collection.browser.files.deleted.fail}"></span> <b
 			th:text="${#strings.replace(#strings.replace(#strings.toString(failedDeletions), '[', ''), ']', '')}"></b>
 	</div>
 </div>
@@ -209,7 +204,7 @@
 								<small class="help-block hideElement" id="emptyCollectionNameMsg" th:text="#{collections.validation.name.blank}"></small>
 							</div>
 
-							<input type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
+							<input aria-label="permission inheritance option" type="checkbox" id="inputInheritanceOption" th:field="*{inheritOption}" th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp;
 							<span th:unless="${inheritanceDisabled}">
 								<span th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
 								[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
@@ -241,7 +236,7 @@
 <div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
 </div>
 <div class="col-md-2 col-sm-3 col-xs-12">
-	<a href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
+	<a aria-label="empty trash" href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
 		<span class="glyphicon glyphicon-trash"></span>
 		<span th:text="#{empty.trash.label}"></span>
 	</a>
@@ -249,30 +244,28 @@
 	<div id="actionUpload">
         <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                th:title="#{collections.management.add.button}">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-folder fa-stack-2x"></i>
-                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-                </span>
+
+                  <i class="fa fa-folder"></i>
+
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" href="#" class="btn btn-default" data-toggle="modal"
-               data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
+            <a role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="upload files"
+               data-target="#uploadModal" data-backdrop="static" data-keyboard="false" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
         </th:block>
         <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
             <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
-               data-target="#addAndModifyModal" id="showCollectionFormBtn"
+               data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                th:title="#{collections.management.add.button}">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-folder fa-stack-2x"></i>
-                  <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-                </span>
+
+                  <i class="fa fa-folder"></i>
+
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
-            </a>
-            <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal"
+            </a> 
+            <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="add collection"
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
@@ -291,12 +284,13 @@
             <table class="table table-hover" id="treeViewTable">
                 <thead>
                     <tr>
-                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}"/></th>
+                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items"/></th>
                         <th th:text="#{collections.management.table.collection.name.label}"></th>
                         <th th:text="#{collections.management.table.owner.label}"></th>
                         <th th:text="#{collections.management.table.kind.label}"></th>
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
+                        <th th:text="info"></th>
                     </tr>
                 </thead>
             </table>
@@ -309,7 +303,7 @@
     <div class="text-center" role="alert">
         <span th:text="#{collections.management.msg.access.denied}"></span>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#" onclick="javascript:goBackHistory('1');">
+        <a href="#" onclick="javascript:goBackHistory('1');" aria-label="back" th:text="#{text.back}">
             <span>Back</span>
         </a>
     </div>
@@ -317,17 +311,17 @@
 
 <!-- Empty Trash Modal -->
 <div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
-	 aria-labelledby="myModalLabel" aria-hidden="true">
+	 aria-labelledby="emptyTrashModalTitle" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					<span aria-hidden="true">&times;</span><span class="sr-only" th:text="#{text.close}">Close</span>
 				</button>
-				<h4 class="modal-title" th:text="${'Empty Trash'}"></h4>
+				<h4 id="emptyTrashModalTitle" class="modal-title" th:text="${'Empty Trash'}"></h4>
 			</div>
 			<div class="modal-body">
-				<span th:utext="#{trash.deletion.confirmation(${trashColl})}"></span>
+				<span th:text="#{trash.deletion.confirmation(${trashColl})}"></span>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"
@@ -342,14 +336,14 @@
 <!-- Ticket Form -->
 <div class="col-md-10 col-sm-9 col-xs-12">
     <div class="modal fade" id="ticketCreationForm" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true">
+         aria-labelledby="ticketCreateFormTitle" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                     </button>
-                    <h4 class="modal-title" th:text="#{ticket.form.title.create}"></h4>
+                    <h4 id="ticketCreateFormTitle" class="modal-title" th:text="#{ticket.form.title.create}"></h4>
                 </div>
                 <div class="modal-body">
                    <div id="ticketFormPanel"></div>
@@ -365,6 +359,7 @@
     </div>
 </div>
 
+<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
 		var path;
@@ -377,10 +372,13 @@
         var currentPermissionTab = "groups";
         var datatable;
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
-
+				var advancedView = [[${dataGridUser.isAdvancedView()}]];
+				console.log("collectionBrowser.html advancedView: " + advancedView);
         $(document).ready(function(e){
 
         	if(![[${isCurrentPathCollection}]]){
+        		console.log([[${isCurrentPathCollection}]]);
+        		console.log("collectionBrowser - document.getready() ");
         		getInfoDetails([[${currentPath}]]);
         		return;
         	}
@@ -392,6 +390,7 @@
     		    "stateSave": true,
     		    "autoWidth": false,
     		    "processing": true,
+						"searching": false,
     		    "stateSaveParams": function (settings, data) {
     		    	data.search.search = "";
     		    },
@@ -451,15 +450,25 @@
     					"targets": 0,
     					"orderable": false
                     },
-                    {
+                    /* {
                     	"render": function ( data, type, full, meta ) {
     						return '<a href="#" name="' + full.path +
 								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
+						//		'" onclick="'+(full.collection?'getSubDirectories(\'':'getInfoTest(\'')+full.path+'\')" title="' + full.path +
 								'"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
     					},
     					"width": "50%",
     					"targets": 1
+                    }, */
+                    {
+                    	"render": function ( data, type, full, meta ) {
+    						return +full.collection?'<a href="#" name="' + full.path + '" onclick=getSubDirectories("'+full.path+'") title="' + full.path+
+    						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
+    					},
+    					"width": "50%",
+    					"targets": 1
                     },
+                    
                     {
                     	"data": "owner",
                     	"width": "10%",
@@ -484,10 +493,18 @@
                     	},
                     	"width": "13%",
                     	"targets": 5
-                   	}
+                   	},
+                   	{
+                    	"render": function ( data, type, full, meta ) {
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick=getCollectionSummary("'+full.path+'") ><i class="fa fa-info-circle"></i></a>';
+    					},
+    					"width": "13%",
+    					"targets": 6
+                    }
+                   	
                 ]
     		} );
-        	addCollectionActions('treeViewTable', datatable);
+        	addCollectionActions('treeViewTable', datatable, advancedView);
             $("input[type=checkbox]").prop("disabled", false);
         });
 
@@ -501,6 +518,7 @@
             $("#actionsWait").hide();
         });
 
+		
         function selectAllCheckboxes() {
             $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
                 $(this).prop("checked", true);
@@ -533,7 +551,7 @@
 			}
 		});
 
-		function treeViewTableItemOnClick() {
+		function treeViewTableItemOnClick() {			
             var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
             var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
 
@@ -695,17 +713,6 @@
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }
 
-        function getPermDetails(path){
-            $('#table-loader').nextAll().remove();
-        	$('#table-loader').show();
-        	$("#uploadIcon").prop("disabled", true);
-            $("#uploadIcon").addClass("disabled");
-            $("#showCollectionFormBtn").prop("disabled", true);
-            $("#showCollectionFormBtn").addClass("disabled");
-        	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
-
-        	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
-		}
 
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
@@ -718,19 +725,36 @@
    			);
         }
 
+/*         function getPermDetails(path){
+            $('#table-loader').nextAll().remove();
+        	$('#table-loader').show();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	//var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
+        	var url = "/emc-metalnx-web/collectionInfo/collectionPermisssionDetails/";
+
+        	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
+		}
+
         function getInfoDetails(path){
+        	console.log("Collection Browser - getInfoDetails()");
         	$("#table-loader").show();
         	$("#table-loader").nextAll().remove();
             $("#uploadIcon").prop("disabled", true);
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        	var url = "/emc-metalnx-web/collections/info/";
+        	//var url = "/emc-metalnx-web/collections/info/";
+        	
+        	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
         }
 
         function getMetadata(path){
+        	console.log("Getting metadata");
         	$('#table-loader').show();
         	$('#table-loader').nextAll().remove();
         	$("#uploadIcon").prop("disabled", true);
@@ -738,10 +762,11 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	getBreadcrumb(path);
-        	ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
-		}
-
-        function displayMetadata(data){
+        	//ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+        	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+		}*/
+ 
+       /*  function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
 			$("#uploadIcon").prop("disabled", true);
@@ -757,7 +782,7 @@
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        }
+        } */
 
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);
