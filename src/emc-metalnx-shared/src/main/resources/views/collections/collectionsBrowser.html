@@ -723,7 +723,7 @@
 
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
-   				'/emc-metalnx-web/collections/getBreadCrumbForObject/',
+   				'/emc-metalnx-web/browse/getBreadCrumbForObject/',
    				"POST",
    				{path: path},
    				function(data){
@@ -793,7 +793,7 @@
 
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);
-        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
+        	ajaxEncapsulation("/emc-metalnx-web/browse/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
         });
         function displayUploadModal(data){
         	$('#selectResourceToUpload').html(data);

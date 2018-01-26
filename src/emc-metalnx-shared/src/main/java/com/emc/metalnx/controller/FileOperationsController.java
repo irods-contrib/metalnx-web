@@ -127,14 +127,26 @@ public class FileOperationsController {
 			@RequestParam("copyWithMetadata") final boolean copyWithMetadata,
 			@RequestParam("paths[]") final String[] paths) throws DataGridException, JargonException {
 
+		logger.info("copy()");
+		logger.info("model:{}", model);
+		logger.info("copyWithMetadata:{}", copyWithMetadata);
+		logger.info("targetPath:{}", targetPath);
+		for (String path : paths) {
+			logger.info("path:{}", path);
+		}
+
 		List<String> failedCopies = new ArrayList<>();
 		String fileCopied = "";
 
 		for (String p : paths) {
 			String item = p.substring(p.lastIndexOf("/") + 1, p.length());
+			logger.info("copying p:{}", p);
+			logger.info("to target path:{}", targetPath);
 			if (!fileOperationService.copy(p, targetPath, copyWithMetadata)) {
+				logger.warn("failed on copy of item:{}", item);
 				failedCopies.add(item);
 			} else if (paths.length == 1) {
+				logger.info("success on item:{}", item);
 				fileCopied = item;
 			}
 		}

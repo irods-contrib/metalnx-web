@@ -28,24 +28,24 @@
 		function showRecursiveQuestion(collectionName){
 		    $("[id='recursiveQuestion_" + collectionName + "']").removeClass('hideElement');
 		}
-	
+
 		function changePermission(collectionName, path, recursive){
 		    hideRecursiveQuestion(path);
 			var permission = $("[id='permission_" + path + "']").val();
 			var bookmarkCheckbox = $("input[name='" + collectionName + "']");
 			var url;
-			
+
 			bookmarkCheckbox.prop("disabled", false);
-			
+
 			//identify permission and add it to user
 			if(permission != 'none') {
 				if(!bookmarkCheckbox.is(':checked')) {
 					bookmarkCheckbox.prop('checked', true).change();
 				}
-				
+
     			if(permission == 'read'){
     				url = "/emc-metalnx-web/users/addReadPermission/";
-    				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);				
+    				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
     			}else if(permission == 'write'){
     				url = "/emc-metalnx-web/users/addWritePermission/";
     				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
@@ -53,32 +53,32 @@
     				url = "/emc-metalnx-web/users/addOwner/";
     				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
     			}
-			}else{ 
+			}else{
 				//this case is for when user chooses to give none of the permissions above
-				
-				url = "/emc-metalnx-web/users/removeReadPermission/";				
+
+				url = "/emc-metalnx-web/users/removeReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
-				
+
 				url = "/emc-metalnx-web/users/removeWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
-				
+
 				url = "/emc-metalnx-web/users/removeOwner/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
-				
+
 				bookmarkCheckbox.prop('checked', false);
 				bookmarkCheckbox.prop("disabled", true);
-				
+
 				// Removing bookmarks for the modified item
-				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/removeBookmark/', "POST", {path : collectionName}, 
+				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/removeBookmark/', "POST", {path : collectionName},
 						null, null, null);
 			}
 		}
-		
+
 		// Toggles the inheritance of a given directory
 		function toggleInheritance(collectionName) {
 			var collectionNameParts = collectionName.split("/");
 			var collectionShortName = collectionNameParts[collectionNameParts.length - 1];
-			
+
 			var url = "";
 			var checkbox = $("#inheritance_" + collectionShortName);
 			if (checkbox.is(":checked")) {
@@ -271,7 +271,7 @@
 							<div class="panel-heading">
 								<h3 th:text="#{users.add.available.groups.label}" class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideGroupsListBtn">
-									<i class="fa fa-check"></i>  
+									<i class="fa fa-check"></i>
 									<span th:text="#{done.button.label}"></span>
 								</button>
 							</div>
@@ -324,7 +324,7 @@
 								<h3 th:text="#{users.add.attached.groups.label}"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-default btn-xs pull-right" id="showGroupsListBtn">
-									<i class="fa fa-pencil"></i>  
+									<i class="fa fa-pencil"></i>
 									<span th:text="#{users.add.edit.groups.label}"></span>
 								</button>
 							</div>
@@ -489,26 +489,26 @@
 			</div>
 		</div>
 		<!-- /.Group Info Modal -->
-		
+
 		<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 		<script type="text/javascript"
 			th:src="@{/js/jquery.tablesorter.min.js}"></script>
 		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
-			var isAddAction = 
+			var isAddAction =
 				[[${ requestMapping }]] == "/users/add/action/" ? true : false;
-			
+
 			var username = [[${user.username}]];
-			
+
 			$(function(){
-				
+
 				if(isAddAction){
-					userFormValidator([[${urlMap.URL_USER_VALIDATE_USERNAME}]]);					
+					userFormValidator([[${urlMap.URL_USER_VALIDATE_USERNAME}]]);
 				}
-				
+
 				getSubDirectoriesForUser("/");
-				
+
 				var datatableGroups = $("#groupListTable").DataTable({
 					"dom": dtPatternUserMgmt,
 	    		    "language": i18n,
@@ -516,7 +516,7 @@
 					"autoWidth": false,
 	    		    "stateSaveParams": function (settings, data) {
 	    		    	data.search.search = "";
-	    		    },	    	        
+	    		    },
 	    		    "initComplete": function(settings){
 	    	            $('#groupListTable tbody td').each(function () {
 	    	            	$(this).attr('title', $(this).text().trim());
@@ -540,7 +540,7 @@
 				});
 
 				$("#groupsList").hide();
-				
+
 				var datatableAttachedGroups = $("#attachedGroupsTable").DataTable({
 					"dom": dtPatternUserMgmt,
 	    		    "language": i18n,
@@ -567,17 +567,17 @@
 	    	            "targets": "_all",
 	    	        }]
 				});
-				
+
 				//filter list of users existing in group
-				filterTable("searchText", "fBody", "resultCount", "alertNoResults", "usersListTable", 
-						"countDisplay", "queryString"); 
-				
+				filterTable("searchText", "fBody", "resultCount", "alertNoResults", "usersListTable",
+						"countDisplay", "queryString");
+
 				//filter collections
-				filterTable("collectionInfoSearchText", "collectionInfofBody", 
-						"collectionInfoResultCount", "collectionInfoAlertNoResults", 
-						"collectionInfoUsersListTable", "collectionInfoCountDisplay", 
-						"collectionInfoQueryString"); 
-				
+				filterTable("collectionInfoSearchText", "collectionInfofBody",
+						"collectionInfoResultCount", "collectionInfoAlertNoResults",
+						"collectionInfoUsersListTable", "collectionInfoCountDisplay",
+						"collectionInfoQueryString");
+
 				//hide searchbox if there are no groups to be shown
 				if($('#attachedGroupsResultCount').html()=='0'){
 					$('#attachedGroupsSearchText').parent().hide();
@@ -589,28 +589,28 @@
 						$('#attachedGroupsSearchText').parent().show();
 					}
 				});
-				
+
 				$("#submitUserFormBtn").click(function(){
-					
+
 					if(userFormCanBeSubmitted([[${urlMap.URL_USER_VALIDATE_USERNAME}]], isAddAction)){
-						$(".registerForm").submit();								
+						$(".registerForm").submit();
 					}
 					else {
 						$("html, body").animate({ scrollTop: 0 }, "slow");
 					}
 				});
-				
-				$("#showGroupsListBtn").click(function(){				
+
+				$("#showGroupsListBtn").click(function(){
 					$("#attachedGroupsList").hide();
 					$("#groupsList").show();
 				});
-				
+
 				$("#hideGroupsListBtn").click(function(){
 					$("#attachedGroupsList").show();
 					$("#groupsList").hide();
-					
+
 				});
-				
+
 				$('body').on('change', '#groupListTable input[type=checkbox]', function(){
 				//$("input[type=checkbox]").change(function(){
 					if($(this).is(":checked")){
@@ -618,9 +618,9 @@
 						var newRow = $(this).closest("tr").clone();
 						newRow.find("td:first").remove();
 						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
-						
+
 						datatableAttachedGroups.row.add(newRow).draw();
-						
+
 					}
 					else {
 					    ajaxEncapsulation('/emc-metalnx-web/users/removeGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
@@ -630,51 +630,51 @@
 					}
 				});
 			});
-			
-			function getSubDirectoriesForUser(path) {			
+
+			function getSubDirectoriesForUser(path) {
 				$("#tableLoaderForCollections").show();
 				$("#collectionsViewForUser").hide();
-				var url = "/emc-metalnx-web/collections/getDirectoriesAndFilesForUser/";
+				var url = "/emc-metalnx-web/browse/getDirectoriesAndFilesForUser/";
 				var retrievePermissions = !isAddAction;
-				setTimeout(function () {					
+				setTimeout(function () {
 					ajaxEncapsulation(
-							url, 
-							"POST", 
-							{path : path, username : username, retrievePermissions : retrievePermissions}, 
-							displayCollectionsViewForUser, 
-							null, 
+							url,
+							"POST",
+							{path : path, username : username, retrievePermissions : retrievePermissions},
+							displayCollectionsViewForUser,
+							null,
 							null
-					);					
+					);
 				}, 400);
 			}
-			
-			
-			
+
+
+
 			/* Show dialog Group Info Modal */
 	        function showGroupInfoModal(groupname, additionalInfo) {
-				var url = "/emc-metalnx-web/users/getUsersInAGroup/" + groupname + "/" 
+				var url = "/emc-metalnx-web/users/getUsersInAGroup/" + groupname + "/"
 					+ additionalInfo;
-					
+
 	        	$("#groupInfoModal").modal("show");
 	        	$("#groupInfoModalTitle").html([[#{users.add.group.info.modal.title}]]);
 	        	$("#groupInfoName").html(groupname);
-				
+
 				ajaxEncapsulation(url, "GET", "", displayGroupInfoModalData, null, null);
 			}
-	        
+
 	        function displayCollectionsViewForUser(data){
 	        	$("#tableLoaderForCollections").hide();
 				$("#collectionsViewForUser").show();
 				$("#collectionsViewForUser").html(data);
 				$("#countDisplayForCollections").hide();
 	        }
-	        
+
 	        function displayGroupInfoModalData(data){
 	        	$("#groupInfoModalUserListAsync").html(data);
 				$("#groupInfoModal-table-loader").hide();
 				$("#groupInfoModalUserListAsync").show();
 	        }
-	        
+
         /*]]>*/
 		</script>
 	</div>

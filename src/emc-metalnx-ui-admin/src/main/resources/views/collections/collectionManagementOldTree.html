@@ -51,7 +51,7 @@
 			</div>
 
 			<div class="col-sm-6">
-				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }" 
+				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }"
 					class="btn btn-primary btn-md pull-right"
 					th:text="#{collections.management.add.button}">
 				</a>
@@ -74,7 +74,7 @@
 			function getSubDirectoriesOldTree(directoryName) {
 				$("img[name='" + directoryName + "']").attr("src", "../images/spinner-16.gif");
 				setTimeout(function () {
-					$.post("/emc-metalnx-web/collections/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
+					$.post("/emc-metalnx-web/browse/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
 						$("a[name='" + directoryName + "']").after(data);
 						$("img[name='" + directoryName + "']").attr("src", "../images/folder-open-16.png");
 						$("a[name='" + directoryName + "']").attr("onclick", "retractItem();");

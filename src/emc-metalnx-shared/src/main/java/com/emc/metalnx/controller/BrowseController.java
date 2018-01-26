@@ -681,7 +681,7 @@ public class BrowseController {
 	 * @return the collection management template
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "/home/")
+	@RequestMapping(value = "/home")
 	public String homeCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
@@ -697,7 +697,7 @@ public class BrowseController {
 	 * @param model
 	 * @return the collection management template
 	 */
-	@RequestMapping(value = "/public/")
+	@RequestMapping(value = "/public")
 	public String publicCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
@@ -711,7 +711,7 @@ public class BrowseController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections" + currentPath;
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -721,7 +721,7 @@ public class BrowseController {
 	 * @return the collection management template
 	 * @throws DataGridException
 	 */
-	@RequestMapping(value = "/trash/")
+	@RequestMapping(value = "/trash")
 	public String trashCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
@@ -739,7 +739,7 @@ public class BrowseController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections" + currentPath;
+		return "redirect:/collections" + currentPath;
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
