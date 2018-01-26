@@ -61,6 +61,9 @@ public class FileOperationsController {
 	private static String TRASH_PATH;
 
 	@Autowired
+	private BrowseController browseController;
+
+	@Autowired
 	private CollectionController collectionController;
 
 	@Autowired
@@ -115,7 +118,7 @@ public class FileOperationsController {
 
 		model.addAttribute("failedMoves", failedMoves);
 
-		return collectionController.getSubDirectories(model, targetPath);
+		return browseController.getSubDirectories(model, targetPath);
 	}
 
 	@RequestMapping(value = "/copy", method = RequestMethod.POST)
@@ -142,7 +145,7 @@ public class FileOperationsController {
 
 		model.addAttribute("failedCopies", failedCopies);
 
-		return collectionController.getSubDirectories(model, targetPath);
+		return browseController.getSubDirectories(model, targetPath);
 	}
 
 	/**
@@ -173,14 +176,14 @@ public class FileOperationsController {
 		} else {
 			model.addAttribute("delReplReturn", "failure");
 		}
-		return collectionController.getFileInfo(model, path);
+		return browseController.getFileInfo(model, path);
 	}
 
 	@RequestMapping(value = "/replicate", method = RequestMethod.POST)
 	public String replicate(final Model model, final HttpServletRequest request)
 			throws DataGridConnectionRefusedException {
 
-		List<String> sourcePaths = collectionController.getSourcePaths();
+		List<String> sourcePaths = browseController.getSourcePaths();
 		String[] resources = request.getParameterMap().get("resourcesForReplication");
 		List<String> failedReplicas = new ArrayList<>();
 
@@ -203,7 +206,7 @@ public class FileOperationsController {
 			sourcePaths.clear();
 		}
 
-		return collectionController.index(model, request, false);
+		return collectionController.index(model, request);
 	}
 
 	@RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
@@ -262,7 +265,7 @@ public class FileOperationsController {
 				fileDeleted = path.substring(path.lastIndexOf("/") + 1, path.length());
 			}
 
-			collectionController.removePathFromHistory(path);
+			browseController.removePathFromHistory(path);
 		}
 
 		if (fileDeleted != null) {
@@ -270,15 +273,15 @@ public class FileOperationsController {
 		}
 
 		model.addAttribute("failedDeletions", failedDeletions);
-		model.addAttribute("currentPath", collectionController.getCurrentPath());
-		model.addAttribute("parentPath", collectionController.getParentPath());
+		model.addAttribute("currentPath", browseController.getCurrentPath());
+		model.addAttribute("parentPath", browseController.getParentPath());
 
-		return collectionController.getSubDirectories(model, collectionController.getCurrentPath());
+		return browseController.getSubDirectories(model, browseController.getCurrentPath());
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
 	public ResponseEntity<String> emptyTrash() throws DataGridConnectionRefusedException, JargonException {
-		String trashForCurrentPath = collectionService.getTrashForPath(collectionController.getCurrentPath());
+		String trashForCurrentPath = collectionService.getTrashForPath(browseController.getCurrentPath());
 		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 		if (fileOperationService.emptyTrash(loggedUser, trashForCurrentPath)) {
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -298,8 +301,8 @@ public class FileOperationsController {
 	 */
 	@RequestMapping(value = "modify/", method = RequestMethod.GET)
 	public String showModifyForm(final Model model, @RequestParam("path") final String path) throws DataGridException {
-		String currentPath = collectionController.getCurrentPath();
-		String parentPath = collectionController.getParentPath();
+		String currentPath = browseController.getCurrentPath();
+		String parentPath = browseController.getParentPath();
 
 		String formType = "editDataObjectForm";
 		CollectionOrDataObjectForm targetForm = new CollectionOrDataObjectForm();

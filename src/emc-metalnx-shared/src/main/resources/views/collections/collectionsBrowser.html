@@ -264,7 +264,7 @@
                   <i class="fa fa-folder"></i>
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
-            </a> 
+            </a>
             <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="add collection"
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
@@ -290,7 +290,7 @@
                         <th th:text="#{collections.management.table.kind.label}"></th>
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
-                        <th th:text="info"></th>
+                        <th ></th>
                     </tr>
                 </thead>
             </table>
@@ -395,7 +395,7 @@
     		    	data.search.search = "";
     		    },
     		    "ajax": {
-    		        url: '/emc-metalnx-web/collections/getPaginatedJSONObjs/',
+    		        url: '/emc-metalnx-web/browse/getPaginatedJSONObjs/',
     		    },
     	        "initComplete": function(settings){
     	            $('#treeViewTable tbody td').each(function () {
@@ -462,13 +462,13 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a href="#" name="' + full.path + '" onclick=getSubDirectories("'+full.path+'") title="' + full.path+
+    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
     					"targets": 1
                     },
-                    
+
                     {
                     	"data": "owner",
                     	"width": "10%",
@@ -501,7 +501,7 @@
     					"width": "13%",
     					"targets": 6
                     }
-                   	
+
                 ]
     		} );
         	addCollectionActions('treeViewTable', datatable, advancedView);
@@ -518,7 +518,7 @@
             $("#actionsWait").hide();
         });
 
-		
+
         function selectAllCheckboxes() {
             $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
                 $(this).prop("checked", true);
@@ -551,7 +551,14 @@
 			}
 		});
 
-		function treeViewTableItemOnClick() {			
+		/**
+		* position the collection browser to the new path
+		*/
+		function positionBrowserToPath(path) {
+			window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+		}
+
+		function treeViewTableItemOnClick() {
             var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
             var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
 
@@ -747,7 +754,7 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	//var url = "/emc-metalnx-web/collections/info/";
-        	
+
         	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
@@ -765,7 +772,7 @@
         	//ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
         	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}*/
- 
+
        /*  function displayMetadata(data){
 			$('#table-loader').hide();
 			$('#table-loader').after(data);
