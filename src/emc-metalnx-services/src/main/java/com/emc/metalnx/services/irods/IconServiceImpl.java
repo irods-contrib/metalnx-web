@@ -17,18 +17,18 @@ public class IconServiceImpl implements IconService {
 		switch (mimeType) {
 
 		case "application/pdf":
-			icon = "fa fa-file-pdf-o";
+			icon = "fa fa-file-pdf-o fa-4x";
 			break;
 
 		case "image/jpg":
 		case "image/jpeg":
 		case "image/png":
 		case "image/gif":
-			icon = "fa fa-file-image-o";
+			icon = "fa fa-file-image-o fa-4x";
 			break;
 
 		default:
-			icon = "fa fa-file";
+			icon = "fa fa-file fa-4x";
 			break;
 		}
 
@@ -39,7 +39,7 @@ public class IconServiceImpl implements IconService {
 	@Override
 	public String getIconToDisplayCollection() {
 		// TODO Auto-generated method stub
-		return "fa fa-folder";
+		return "fa fa-folder fa-4x";
 	}
 
 }
