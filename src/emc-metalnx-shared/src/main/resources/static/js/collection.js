@@ -22,8 +22,8 @@ function getInfoDetails(path){
 }
 
 function getMetadata(path){
-	//$("#metadata").hide();
-	//$("#table-loader").show();		
+	$("#metadata").hide();
+	$("#table-loader").show();		
 	console.log("Collection getMetadata() :: " +path);
 	window.location.hash = "metadata";
 	var url = "/emc-metalnx-web/metadata/getMetadata/";	
@@ -31,8 +31,8 @@ function getMetadata(path){
 }
 
 function getPermissionDetails(path){
-	//$("#permission").hide();
-	//$("#table-loader").show();		
+	$("#permission").hide();
+	$("#table-loader").show();		
 	console.log("Collection getPermDetails() :: " +path);
 	window.location.hash = "permission";
 	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";	
@@ -47,18 +47,32 @@ function displayInfoDetails(data){
 }
 
 function displayMetadata(data){
-	//$("#table-loader").hide();	
+	console.log("display Metadata");
+	$('#table-loader').hide();
+	$('#table-loader').after(data);
+	/*$("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");*/
 	$("#metadata").html(data);	
 	//$("#metadata").show();
 }
 
 function displayPermissionDetails(data){
+	console.log("display Permission");
 	//$("#table-loader").hide();
+	 $('#table-loader').hide();
+     $("#table-loader").after(data);
+     /*$("#uploadIcon").prop("disabled", true);
+     $("#uploadIcon").addClass("disabled");
+     $("#showCollectionFormBtn").prop("disabled", true);
+     $("#showCollectionFormBtn").addClass("disabled");*/
 	$('#permission').html(data);
-	//alert('showing content menu');
 	//$("#permission").show();    
 }
-
+function getTestSubDirectories(){
+	alert("get directories");
+}
 function showPreview(){
 	alert("Show Preview");
 	
