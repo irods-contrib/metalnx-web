@@ -162,7 +162,7 @@ public class BrowseController {
 	// saves the trash under the zone
 	private String zoneTrashPath = "";
 
-	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BrowseController.class);
 
 	@PostConstruct
 	public void init() throws DataGridException {
@@ -570,11 +570,18 @@ public class BrowseController {
 	 *         template, otherwise.
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "add/action/", method = RequestMethod.POST)
+	@RequestMapping(value = "add/action", method = RequestMethod.POST)
 	public String addCollection(final Model model, @ModelAttribute final CollectionOrDataObjectForm collection,
 			final RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+
+		logger.info("addCollection()");
+		logger.info("collection:{}", collection);
+		logger.info("redirectAttributes:{}", redirectAttributes);
+
 		DataGridCollectionAndDataObject newCollection = new DataGridCollectionAndDataObject(
 				currentPath + '/' + collection.getCollectionName(), collection.getCollectionName(), currentPath, true);
+
+		logger.info("newCollection:{}", newCollection);
 
 		newCollection.setParentPath(currentPath);
 		newCollection.setCreatedAt(new Date());
@@ -584,6 +591,7 @@ public class BrowseController {
 		boolean creationSucessful;
 		try {
 			creationSucessful = cs.createCollection(newCollection);
+			logger.info("creationSuccessful?:{}", creationSucessful);
 
 			if (creationSucessful) {
 				redirectAttributes.addFlashAttribute("collectionAddedSuccessfully", collection.getCollectionName());
@@ -595,7 +603,7 @@ public class BrowseController {
 			redirectAttributes.addFlashAttribute("missingPermissionError", true);
 		}
 
-		return "redirect:/collections/";
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -623,7 +631,7 @@ public class BrowseController {
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
 
-		return "redirect:/collections/";
+		return "redirect:/collections" + parentPath;
 	}
 
 	@RequestMapping(value = "applyTemplatesToCollections/", method = RequestMethod.POST)
@@ -680,7 +688,7 @@ public class BrowseController {
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		return "redirect:/collections/";
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -703,7 +711,7 @@ public class BrowseController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections/collectionManagement";
+		return "collections" + currentPath;
 	}
 
 	/**
@@ -731,7 +739,7 @@ public class BrowseController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections/collectionManagement";
+		return "collections" + currentPath;
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")

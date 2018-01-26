@@ -51,10 +51,10 @@ public class URLMap {
 
 	public static final String URL_COLLECTIONS_INFO = "/info/";
 	public static final String URL_COLLECTIONS_MANAGEMENT = "/collections/";
-	public static final String URL_ADD_COLLECTION = "/emc-metalnx-web/collections/add/";
+	public static final String URL_ADD_COLLECTION = "/emc-metalnx-web/browse/add/";
 	public static final String URL_MODIFY_COLLECTION = "/emc-metalnx-web/fileOperation/modify/";
 	public static final String URL_DELETE_COLLECTION = "/emc-metalnx-web/fileOperation/delete/";
-	public static final String URL_COLLECTION_VALIDATE_NAME = "/emc-metalnx-web/collections/isValidCollectionName/";
+	public static final String URL_COLLECTION_VALIDATE_NAME = "/emc-metalnx-web/browse/isValidCollectionName/";
 
 	public static final String URL_METADATA_SEARCH = "/metadata/";
 
@@ -85,13 +85,13 @@ public class URLMap {
 	public static final String URL_DELETE_SPECIFIC_QUERY = "/emc-metalnx-web/specificqueries/remove/";
 	public static final String URL_SPECIFIC_QUERY_VALIDATE = "/emc-metalnx-web/specificqueries/validate/";
 
-	public static final String URL_HOME_COLLECTION_USER = "/collections/home/";
-	public static final String URL_PUBLIC_COLLECTION_USER = "/collections/public/";
-	public static final String URL_TRASH_COLLECTION_USER = "/collections/trash/";
-	public static final String URL_ADD_COLLECTION_USER = "/emc-metalnx-web/collections/add/";
+	public static final String URL_HOME_COLLECTION_USER = "/browse/home";
+	public static final String URL_PUBLIC_COLLECTION_USER = "/browse/public/";
+	public static final String URL_TRASH_COLLECTION_USER = "/browse/trash/";
+	public static final String URL_ADD_COLLECTION_USER = "/emc-metalnx-web/browse/add/";
 	public static final String URL_MODIFY_COLLECTION_USER = "/emc-metalnx-web/fileOperation/modify/";
 	public static final String URL_DELETE_COLLECTION_USER = "/fileOperation/delete/";
-	public static final String URL_COLLECTION_VALIDATE_NAME_USER = "/emc-metalnx-web/collections/isValidCollectionName/";
+	public static final String URL_COLLECTION_VALIDATE_NAME_USER = "/emc-metalnx-web/browse/isValidCollectionName/";
 	public static final String URL_LOGOUT = "/logout/";
 
 	public static final String URL_TICKETS = "/tickets/";
