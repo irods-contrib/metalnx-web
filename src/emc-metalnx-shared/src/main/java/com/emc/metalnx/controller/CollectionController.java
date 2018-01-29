@@ -128,6 +128,9 @@ public class CollectionController {
 	private boolean cameFromFilePropertiesSearch;
 	private boolean cameFromBookmarks;
 
+	private Stack<String> collectionHistoryBack;
+	private Stack<String> collectionHistoryForward;
+
 	// variable to save trash path for the logged user
 	private String userTrashPath = "";
 	// saves the trash under the zone
@@ -412,8 +415,30 @@ public class CollectionController {
 		this.loggedUserUtils = loggedUserUtils;
 	}
 
-	public RuleDeploymentService getRuleDeploymentService() {
-		return ruleDeploymentService;
+	/**
+	 * Creates the breadcrumb based on a given path.
+	 *
+	 * @param model
+	 *            Model attribute to set variables to be used in the view
+	 * @param obj
+	 *            {@code DataGridCollectionAndDataObject} object
+	 */
+	private void setBreadcrumbToModel(final Model model, final DataGridCollectionAndDataObject obj) {
+		ArrayList<String> listHistoryBack = new ArrayList<String>(collectionHistoryBack);
+		Collections.reverse(listHistoryBack);
+
+		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+		boolean isPathFavorite = favoritesService.isPathFavoriteForUser(user, obj.getPath());
+
+		model.addAttribute("starredPath", isPathFavorite);
+		model.addAttribute("collectionPastHistory", listHistoryBack);
+		model.addAttribute("collectionPastHistoryEmpty", collectionHistoryBack.isEmpty());
+		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
+		model.addAttribute("collectionForwardHistoryEmpty", collectionHistoryForward.isEmpty());
+		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
+		model.addAttribute("collectionAndDataObject", obj);
+		model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
+		model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
 	}
 
 	public void setRuleDeploymentService(RuleDeploymentService ruleDeploymentService) {
