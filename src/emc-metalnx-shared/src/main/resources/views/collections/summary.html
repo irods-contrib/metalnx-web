@@ -122,17 +122,19 @@
 					</ul>
 				
 				<a id="breadcrumbStar" class="btn btn-default" href="#"
+						th:onclick="${dataProfile.starred}? 'javascript:unstarPath(\'' + ${dataProfile.getAbsolutePath()} + '\');' : 'javascript:starPath(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						data-toggle="popover" data-trigger="manual" data-content=""
 						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
-					<i
-						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+					<i th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
 						aria-hidden="true"></i>
-				</a> <a id="breadcrumbShared" role="button" class="btn btn-default"
+				</a>
+				<a id="breadcrumbShared" role="button" class="btn btn-default" 						
 						href="#" data-toggle="popover" data-trigger="manual"
 						data-content=""> <i
 						th:class="${dataProfile.shared}? 'fa fa-share-alt bm-checked' : 'fa fa-share-alt bm-unchecked'"
 						aria-hidden="true"></i>
 				</a>
+								
 			</div>
 		</div>
 

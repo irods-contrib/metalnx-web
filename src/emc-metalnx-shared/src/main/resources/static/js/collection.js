@@ -93,6 +93,46 @@ function showPreview(){
 		}
 	});
 }
+
+function starPath(path){
+	console.log("StarPath() starts");
+	//$('#breadcrumbStar').attr('onclick', '');
+	var url = "/emc-metalnx-web/favorites/addFavoriteToUser/";		
+	ajaxEncapsulation(url, "GET", {path: path}, 
+		function(data){
+			if(data.indexOf("OK") >= 0){
+				$('#breadcrumbStar i').removeClass('bm-unchecked').addClass('bm-checked');
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
+				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.unmark.button.tooltip}]]);
+			}else{
+				$('#breadcrumbStar').attr('data-content', 'Could not add path to favorites.')
+				$('#breadcrumbStar').popover("show");
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
+			}
+		
+	}, null, null, null);
+	console.log("StarPath() ends");
+}
+
+function unstarPath(path){
+	console.log("UnstarPath() starts !!");
+	//$('#breadcrumbStar').attr('onclick', '');
+	var url = "/emc-metalnx-web/favorites/removeFavoriteFromUser/";		
+	ajaxEncapsulation(url, "GET", {path: path},
+		function(data){
+			if(data.indexOf("OK") >= 0){
+				$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
+				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
+			}else{
+				$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
+				$('#breadcrumbStar').popover("show");
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
+			}
+		}, null, null, null);
+	console.log("UnstarPath() ends");
+}
+
 /*
 
 function ChangeUrl(title, urlVal) {

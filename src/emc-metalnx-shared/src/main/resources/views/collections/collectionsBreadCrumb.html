@@ -142,19 +142,19 @@
 		</ul>     
     </div>
 
-	<a id="breadcrumbStar" class="btn-favorite" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
+	<!-- <a id="breadcrumbStar" class="btn-favorite" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
 		aria-label="starred object" data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
 		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
-	</a>
+	</a> -->
 </div>
 <script th:inline="javascript">
 /*<![CDATA[*/
     $(document).ready(function(){
     	// Add tooltip on Favorite button
-        $('#breadcrumbStar').tooltip({
+       /*  $('#breadcrumbStar').tooltip({
    			trigger: 'hover',
        		placement:'top',
-   		});
+   		}); */
         $('#breadcrumbHome').tooltip();
      	// Add tooltip on Options menu
         $('#breadcrumbOptionsMenu').tooltip({
@@ -183,7 +183,7 @@
     
 	$(document).click(function(e){
 		if(!$(e.target).is('.breadcrumb i.fa.fa-star')){
-			$('#breadcrumbStar').popover("hide");
+			//$('#breadcrumbStar').popover("hide");
 		}else{
 			e.stopPropagation();
 			e.preventDefault();
@@ -192,7 +192,7 @@
 	$('.breadcrumb').click(function(e){
 		if(!$(e.target).is('ol.breadcrumb li a') && !$(e.target).is('i.fa.fa-star') && !$(e.target).is('i.fa.fa-home') && !$(e.target).parents('#breadcrumbOptions').length){
 			$('#current-path').addClass("hidden");
-			$('#breadcrumbStar').addClass("hidden");
+			//$('#breadcrumbStar').addClass("hidden");
 			$('#breadcrumbOptionsMenu').addClass("hidden");
 			$('#navigationBar').removeClass("hidden");
 			$('#navigationBarGo').removeClass("hidden");
@@ -211,7 +211,7 @@
 			$('#navigationBar').addClass("hidden");
 			$('#navigationBarCancel').addClass("hidden");
 			$('#navigationBarGo').addClass("hidden");
-			$('#breadcrumbStar').removeClass("hidden").addClass("visible");
+			//$('#breadcrumbStar').removeClass("hidden").addClass("visible");
 			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
 
 		}
@@ -232,7 +232,7 @@
 			$('#navigationBarGo').addClass("hidden");
 			$('#navigationBarCancel').addClass("hidden");
 			$(".current-path .breadcrumb").css("background-color", "#ffffff");
-			$('#breadcrumbStar').removeClass("hidden").addClass("visible");
+			//$('#breadcrumbStar').removeClass("hidden").addClass("visible");
 			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
 	});
 	$("#editable-path").mouseover(function(e) {
@@ -245,43 +245,6 @@
          $("#current-path .breadcrumb").css("background-color", "#ffffff");
       }
     });
-	function starPath(path){
-		$('#breadcrumbStar').attr('onclick', '');
-		ajaxEncapsulation(
-			'/emc-metalnx-web/favorites/addFavoriteToUser/', 
-			"GET", 
-			{path: path}, 
-			function(data){
-				if(data.indexOf("OK") >= 0){
-					$('#breadcrumbStar i').removeClass('bm-unchecked').addClass('bm-checked');
-					$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
-					$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.unmark.button.tooltip}]]);
-				}else{
-					$('#breadcrumbStar').attr('data-content', 'Could not add path to favorites.')
-					$('#breadcrumbStar').popover("show");
-					$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
-				}
-			}, null, null, null
-		);
-	}
-	function unstarPath(path){
-			$('#breadcrumbStar').attr('onclick', '');
-		ajaxEncapsulation(
-			'/emc-metalnx-web/favorites/removeFavoriteFromUser/', 
-			"GET", 
-			{path: path}, 
-			function(data){
-				if(data.indexOf("OK") >= 0){
-					$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
-					$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
-					$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
-				}else{
-					$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
-					$('#breadcrumbStar').popover("show");
-					$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
-				}
-			}, null, null, null
-		);
-	}
+	
 /*]]>*/
 </script>
