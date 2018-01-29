@@ -21,20 +21,8 @@
         <span class="sr-only">Toggle Dropdown</span>
       </button>
       <ul class="dropdown-menu">
-          <li class="header" th:text="#{collections.history.list.header}"></li>
-        <th:block th:each="historyElement,iterStat : ${collectionForwardHistory}">
-            <li th:if="${not #strings.isEmpty(historyElement)}"><a href="#" th:text="${historyElement}" th:onclick="'javascript:goForwardHistory('+ ${iterStat.size - iterStat.index} +');'"></a></li>
-        </th:block>
-
+         
         <li class="active"><a href="#" th:text="${collectionAndDataObject.path}"></a></li>
-
-          <th:block th:each="historyElement,iterStat : ${collectionPastHistory}">
-              <li th:if="${not #strings.isEmpty(historyElement)}" th:onLoad="'javascript:getSubDirectories(\'' + ${historyElement} + '\');'">
-                  <a  href="#" th:text="${historyElement}" th:onclick="'javascript:goBackHistory('+ ${iterStat.count} +');'" aria-label="history element">Collection</a>
-              </li>
-          </th:block>
-
-          <li role="separator" class="divider"></li>
           <li><a aria-label="user home directory" class="home" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" th:text="'Home ('+${homeCollectionName}+')'"></a>
           </li>
       </ul>
@@ -50,7 +38,7 @@
                             <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
-                                th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumbItem.path } + '\');'"
+                                th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumbItem.path } + '\');'"
                             >
                             </a>
                         </li>
@@ -70,7 +58,7 @@
                         <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'"
+                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'"
                         >
                         </a>
                     </li>
@@ -78,7 +66,7 @@
                         <a  href="#"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="'javascript:getSubDirectories(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'"
+                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'"
                         >
                         </a>
                     </li>
@@ -110,6 +98,7 @@
         <button href="#" class="pull-right btn btn-sm btn-primary hidden" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
         <button href="#" class="pull-right btn btn-sm btn-default hidden" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
     </div>
+
         <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
 		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="breadcrumb options">
 			<i class="fa fa-bars"></i>
@@ -146,6 +135,7 @@
 		aria-label="starred object" data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
 		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
 	</a> -->
+
 </div>
 <script th:inline="javascript">
 /*<![CDATA[*/

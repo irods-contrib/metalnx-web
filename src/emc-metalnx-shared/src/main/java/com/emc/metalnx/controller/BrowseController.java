@@ -75,11 +75,19 @@ import com.emc.metalnx.services.interfaces.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Transitional controller factors out all sub functions of the
+ * {@link CollectionController} so that this controller can respond to 'deep
+ * linkable' paths, including from breadcrumbs in the info pages
+ * 
+ * @author Mike Conway - NIEHS
+ *
+ */
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @SessionAttributes({ "sourcePaths" })
-@RequestMapping(value = "/collections")
-public class CollectionController {
+@RequestMapping(value = "/browse")
+public class BrowseController {
 
 	@Autowired
 	CollectionService cs;
@@ -154,7 +162,7 @@ public class CollectionController {
 	// saves the trash under the zone
 	private String zoneTrashPath = "";
 
-	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BrowseController.class);
 
 	@PostConstruct
 	public void init() throws DataGridException {
@@ -168,93 +176,6 @@ public class CollectionController {
 		sourcePaths = new ArrayList<>();
 		parentPath = "";
 		currentPath = "";
-	}
-
-	/**
-	 * Responds the collections/ request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 * @throws DataGridException
-	 */
-	@RequestMapping(value = "/")
-	public String index(final Model model, final HttpServletRequest request) throws DataGridConnectionRefusedException {
-		logger.info("index()");
-		try {
-			sourcePaths.clear();
-
-			if (!cs.isPathValid(currentPath)) {
-				currentPath = cs.getHomeDirectyForCurrentUser();
-				parentPath = currentPath;
-			} else if (cs.isDataObject(currentPath)) {
-				parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
-			}
-
-			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-			String uiMode = (String) request.getSession().getAttribute("uiMode");
-
-			if (uiMode == null || uiMode.isEmpty()) {
-				boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
-				uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
-			}
-
-			if (uiMode.equals(UI_USER_MODE)) {
-				model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-				model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-			}
-
-			model.addAttribute("cameFromFilePropertiesSearch", cameFromFilePropertiesSearch);
-			model.addAttribute("cameFromMetadataSearch", cameFromMetadataSearch);
-			model.addAttribute("cameFromBookmarks", cameFromBookmarks);
-			model.addAttribute("uiMode", uiMode);
-			model.addAttribute("currentPath", currentPath);
-			model.addAttribute("parentPath", parentPath);
-			model.addAttribute("resources", resourceService.findAll());
-			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-
-			cameFromMetadataSearch = false;
-			cameFromFilePropertiesSearch = false;
-			cameFromBookmarks = false;
-		} catch (DataGridException e) {
-			logger.error("Could not respond to request for collections: {}", e);
-			model.addAttribute("unexpectedError", true);
-		}
-		logger.info("returning to collections/collectionManagement");
-		return "collections/collectionManagement";
-	}
-
-	@RequestMapping(value = "redirectFromMetadataToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromMetadataToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromMetadataSearch = true;
-	}
-
-	@RequestMapping(value = "redirectFromFavoritesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFavoritesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromGroupsBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromGroupsBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromUserBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromUserBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromFilePropertiesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFilePropertiesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromFilePropertiesSearch = true;
 	}
 
 	/**
@@ -323,6 +244,10 @@ public class CollectionController {
 	@RequestMapping(value = "/getSubDirectories/", method = RequestMethod.POST)
 	public String getSubDirectories(final Model model, @RequestParam("path") String path) throws DataGridException {
 
+		logger.info("getSubDirectories()");
+		logger.info("model:{}", model);
+		logger.info("path:{}", path);
+
 		// removes all ocurrences of "/" at the end of the path string
 		while (path.endsWith("/") && !"/".equals(path)) {
 			path = path.substring(0, path.lastIndexOf("/"));
@@ -332,9 +257,6 @@ public class CollectionController {
 
 		System.out.println("In GetSubdirectories!!");
 		System.out.println("path :: " + path);
-
-		// put old path in collection history stack
-		addPathToHistory(path);
 
 		return getCollBrowserView(model, path);
 	}
@@ -449,9 +371,9 @@ public class CollectionController {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "/info/", method = RequestMethod.POST)
-	public String getFileInfo(final Model model, @RequestParam("path") final String path)
-			throws DataGridConnectionRefusedException {
+	public String getFileInfo(final Model model, final String path) throws DataGridConnectionRefusedException {
 
+		System.out.println("CollectionController getInfoFile() starts !!");
 		DataGridCollectionAndDataObject dataGridObj = null;
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
@@ -485,8 +407,9 @@ public class CollectionController {
 		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
 		System.out.println("currentCollection.getName() == " + dataGridObj.getName());
 
-		// return "collections/collectionInfo";
-		return "collections/info";
+		System.out.println("CollectionController getInfoFile() ends !!");
+		return "collections/info :: infoView";
+		// return "collections/info";
 	}
 
 	/**
@@ -647,11 +570,18 @@ public class CollectionController {
 	 *         template, otherwise.
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "add/action/", method = RequestMethod.POST)
+	@RequestMapping(value = "add/action", method = RequestMethod.POST)
 	public String addCollection(final Model model, @ModelAttribute final CollectionOrDataObjectForm collection,
 			final RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+
+		logger.info("addCollection()");
+		logger.info("collection:{}", collection);
+		logger.info("redirectAttributes:{}", redirectAttributes);
+
 		DataGridCollectionAndDataObject newCollection = new DataGridCollectionAndDataObject(
 				currentPath + '/' + collection.getCollectionName(), collection.getCollectionName(), currentPath, true);
+
+		logger.info("newCollection:{}", newCollection);
 
 		newCollection.setParentPath(currentPath);
 		newCollection.setCreatedAt(new Date());
@@ -661,6 +591,7 @@ public class CollectionController {
 		boolean creationSucessful;
 		try {
 			creationSucessful = cs.createCollection(newCollection);
+			logger.info("creationSuccessful?:{}", creationSucessful);
 
 			if (creationSucessful) {
 				redirectAttributes.addFlashAttribute("collectionAddedSuccessfully", collection.getCollectionName());
@@ -672,7 +603,7 @@ public class CollectionController {
 			redirectAttributes.addFlashAttribute("missingPermissionError", true);
 		}
 
-		return "redirect:/collections/";
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -700,7 +631,7 @@ public class CollectionController {
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
 
-		return "redirect:/collections/";
+		return "redirect:/collections" + parentPath;
 	}
 
 	@RequestMapping(value = "applyTemplatesToCollections/", method = RequestMethod.POST)
@@ -750,14 +681,14 @@ public class CollectionController {
 	 * @return the collection management template
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "/home/")
+	@RequestMapping(value = "/home")
 	public String homeCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		return "redirect:/collections/";
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -766,7 +697,7 @@ public class CollectionController {
 	 * @param model
 	 * @return the collection management template
 	 */
-	@RequestMapping(value = "/public/")
+	@RequestMapping(value = "/public")
 	public String publicCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
@@ -780,7 +711,7 @@ public class CollectionController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections/collectionManagement";
+		return "redirect:/collections" + currentPath;
 	}
 
 	/**
@@ -790,7 +721,7 @@ public class CollectionController {
 	 * @return the collection management template
 	 * @throws DataGridException
 	 */
-	@RequestMapping(value = "/trash/")
+	@RequestMapping(value = "/trash")
 	public String trashCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
@@ -808,7 +739,7 @@ public class CollectionController {
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
 
-		return "collections/collectionManagement";
+		return "redirect:/collections" + currentPath;
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
@@ -1035,8 +966,6 @@ public class CollectionController {
 		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
 		model.addAttribute("collectionAndDataObject", obj);
 		model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
-		
-		System.out.println("Path :: " +obj.getPath());
 		model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
 	}
 
@@ -1053,6 +982,9 @@ public class CollectionController {
 	 */
 	private String getCollBrowserView(final Model model, String path) throws DataGridException {
 		logger.info("getCollBrowserView()");
+
+		logger.info("model:{}", model);
+		logger.info("path:{}", path);
 		if (cs.isPathValid(path)) {
 			if (path.endsWith("/") && path.compareTo("/") != 0) {
 				path = path.substring(0, path.length() - 1);
