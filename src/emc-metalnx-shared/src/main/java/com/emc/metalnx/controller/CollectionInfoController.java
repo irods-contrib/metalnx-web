@@ -33,6 +33,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
@@ -85,6 +86,9 @@ public class CollectionInfoController {
 		
 		model.addAttribute("iconToDisplay", iconToDisplay);				
 		model.addAttribute("dataProfile", dataProfile);
+		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
+		
+		System.out.println("Absolute Path :: " +dataProfile.getAbsolutePath());
 		String template = "";
 		
 		if(!dataProfile.isFile()) 
