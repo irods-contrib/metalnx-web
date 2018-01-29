@@ -30,7 +30,7 @@
 				<div th:if="${ collectionAddedSuccessfully != null or collectionModifiedSuccessfully != null }" class="alert alert-success alert-dismissible text-center" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
-				  		<span class="sr-only">Close</span>
+				  		<span class="sr-only" th:text="#{text.close}">Close</span>
 				  	</button>
 				  	<span th:if="${ collectionAddedSuccessfully }" th:text="${ collectionAddedSuccessfully }" style="font-weight: bold;"></span>
 				  	<span th:if="${ collectionModifiedSuccessfully }" th:text="${ collectionModifiedSuccessfully }" style="font-weight: bold;"></span>
@@ -51,17 +51,17 @@
 			</div>
 
 			<div class="col-sm-6">
-				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }" 
+				<a th:href="@{ ${urlMap.URL_ADD_COLLECTION} }"
 					class="btn btn-primary btn-md pull-right"
 					th:text="#{collections.management.add.button}">
 				</a>
 			</div>
 
 			<div class="col-sm-12 tree-view-panel scrollable-table">
-				<a href="#" name="/" title="/"
+				<a name="/" title="/"
 					th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${ '/' } + '\');'">
 					<img alt="" class="folder-icon" th:src="@{ /images/folder-16.png }" />
-					<span>iRods</span>
+					<span>/</span>
 				</a>
 			</div>
 		</div>
@@ -74,7 +74,7 @@
 			function getSubDirectoriesOldTree(directoryName) {
 				$("img[name='" + directoryName + "']").attr("src", "../images/spinner-16.gif");
 				setTimeout(function () {
-					$.post("/emc-metalnx-web/collections/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
+					$.post("/emc-metalnx-web/browse/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
 						$("a[name='" + directoryName + "']").after(data);
 						$("img[name='" + directoryName + "']").attr("src", "../images/folder-open-16.png");
 						$("a[name='" + directoryName + "']").attr("onclick", "retractItem();");

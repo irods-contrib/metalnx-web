@@ -1,0 +1,26 @@
+#hdr-junctiontitle {
+  background:none;
+  bottom:9px;
+  font-family:"Open Sans", sans-serif;
+  font-size:35px;
+  font-weight:300;
+  left:14px;
+  margin:0;
+  padding:0;
+  position:absolute;
+  text-decoration:none;
+  width:100%;
+}
+
+#hdr-junctiontitle a {
+  color:white;
+  display:block;
+  margin:0;
+  padding:0;
+  text-decoration:none;
+  width:350px;
+}
+
+#page-wrapper {
+  font-size: 15px;
+}
