@@ -39,7 +39,7 @@
 		<div id="directoryPath">
 			<ol class="breadcrumb" style="color: #2C95DD;">
 				<!-- root item -->
-				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForUser('/');" th:text="#{text.root}" aria-label="breadcrumb for root">Root(/)</a></li>
+				<li><a title="/" onclick="javascript:getSubDirectoriesForUser('/');" th:text="#{text.root}" aria-label="breadcrumb for root">Root(/)</a></li>
 
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
@@ -74,7 +74,7 @@
 					<th th:text="#{collections.management.table.modified.label}" class="hidden-xs hidden-sm"></th>
 					<th>
 						<span th:text="#{collections.management.table.permissions.label}"></span>
-						[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.permission.tooltip}">?</a>]
+						[<a data-toggle="tooltip" th:title="#{collections.management.table.permission.tooltip}">?</a>]
 					</th>
                     <th th:text="#{collections.management.table.bookmark.label}"></th>
 				</tr>
@@ -84,7 +84,7 @@
 				<tr th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
 					<!-- Collection name -->
 					<td>
-						<a href="#collectionsViewForUser"
+						<a
 							th:if="${ collectionAndDataObject.isCollection() }"
 							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }"

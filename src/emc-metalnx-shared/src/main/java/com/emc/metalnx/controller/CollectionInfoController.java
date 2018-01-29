@@ -2,6 +2,8 @@ package com.emc.metalnx.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
@@ -55,7 +55,7 @@ public class CollectionInfoController {
 
 	@Autowired
 	IRODSServices irodsServices;
-	
+
 	@Autowired
 	IconService iconService;
 
@@ -66,7 +66,7 @@ public class CollectionInfoController {
 
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
 	public String getTestCollectionInfo(final Model model, HttpServletRequest request)
-			throws DataGridException, DataGridConnectionRefusedException {
+			throws DataGridException, DataGridConnectionRefusedException, JargonException {
 
 		logger.info("CollectionInfoController getTestCollectionInfo() starts !!");
 		final String path = "/" + extractFilePath(request);
@@ -75,32 +75,31 @@ public class CollectionInfoController {
 
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = getCollectionDataProfile(path);
-		
+
 		String iconToDisplay = "";
-			
-		if(dataProfile!= null && dataProfile.isFile())
+
+		if (dataProfile != null && dataProfile.isFile())
 			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
-		if(dataProfile!= null && !dataProfile.isFile())	
+		if (dataProfile != null && !dataProfile.isFile())
 			iconToDisplay = iconService.getIconToDisplayCollection();
-		
-		model.addAttribute("iconToDisplay", iconToDisplay);				
+
+		model.addAttribute("iconToDisplay", iconToDisplay);
 		model.addAttribute("dataProfile", dataProfile);
 		String template = "";
-		
-		if(!dataProfile.isFile()) 
+
+		if (!dataProfile.isFile())
 			template = "collections/collectionInfo";
-		if(dataProfile.isFile())
+		if (dataProfile.isFile())
 			template = "collections/fileInfo";
-		
-		return template; 
-		
-		//:: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";		
-		//"main :: mainPage(page='some-page', fragment='somePage')";
+
+		return template;
+
+		// :: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";
+		// "main :: mainPage(page='some-page', fragment='somePage')";
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
-	
 
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
 		logger.debug("got irodsAccount:{}", irodsAccount);
@@ -116,47 +115,45 @@ public class CollectionInfoController {
 			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
 			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
 			logger.info("data profile retrieved:{}", dataProfile);
-			
+
 			/*
 			 * TODO: after this do an if test and send to right view with the DataProfile in
 			 * the model
 			 */
 			return dataProfile;
-			
+
 		} catch (JargonException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
 			throw new DataGridException(e.getMessage());
 		}
 
 	}
-	
-	
-	
-	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
-	public String getCollectionFileInfo(final Model model, @RequestParam("path")
-	final String path) throws DataGridException {
 
-		logger.info("CollectionInfoController getCollectionFileInfo() starts :: " +path);
-		
+	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
+	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
+			throws DataGridException {
+
+		logger.info("CollectionInfoController getCollectionFileInfo() starts :: " + path);
+
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = getCollectionDataProfile(path);
-		
+
 		String iconToDisplay = "";
-		
-		if(dataProfile!= null && dataProfile.isFile())
+
+		if (dataProfile != null && dataProfile.isFile())
 			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
-		if(dataProfile!= null && !dataProfile.isFile())	
+		if (dataProfile != null && !dataProfile.isFile())
 			iconToDisplay = iconService.getIconToDisplayCollection();
-		
-		model.addAttribute("iconToDisplay", iconToDisplay);					
+
+		model.addAttribute("iconToDisplay", iconToDisplay);
 		model.addAttribute("dataProfile", dataProfile);
-		
+
 		logger.info("getCollectionFileInfo() ends !!");
 		return "collections/info :: infoView";
-		//return "collections/info";
+		// return "collections/info";
 	}
-	 
-	@RequestMapping(value = "/getFile/",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+
+	@RequestMapping(value = "/getFile/", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public @ResponseBody byte[] getFile() throws IOException {
 		logger.info("getFile() starts!!");
 		InputStream in = getClass()
@@ -199,8 +196,15 @@ public class CollectionInfoController {
 	 * 
 	 * }
 	 */
-	private static String extractFilePath(HttpServletRequest request) {
+	private String extractFilePath(HttpServletRequest request) throws JargonException {
 		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		try {
+			path = URLDecoder.decode(path,
+					this.getIrodsServices().getIrodsAccessObjectFactory().getJargonProperties().getEncoding());
+		} catch (UnsupportedEncodingException | JargonException e) {
+			logger.error("unable to decode path", e);
+			throw new JargonException(e);
+		}
 		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 		AntPathMatcher apm = new AntPathMatcher();
 		return apm.extractPathWithinPattern(bestMatchPattern, path);

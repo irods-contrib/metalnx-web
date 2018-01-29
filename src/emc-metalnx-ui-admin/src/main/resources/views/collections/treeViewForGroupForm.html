@@ -39,12 +39,12 @@
 		<div id="directoryPath">
 			<ol class="breadcrumb" style="color: #2C95DD;">
 				<!-- root item -->
-				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForGroupForm('/');">iRods</a></li>
+				<li><a title="/" onclick="javascript:getSubDirectoriesForGroupForm('/');">iRods</a></li>
 
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
 					<li>
-						<a href="#collectionsViewForGroup" aria-label="collections view for group"
+						<a aria-label="collections view for group"
 							th:if="${ iterationStatus.last == false }"
 							th:text="${ pathItem }"
 							th:with="pathUntilCurrentItem = ${ #strings.substringBefore(currentPath, pathItem) + pathItem }"
@@ -83,7 +83,7 @@
 				<tr th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
 					<!-- Collection name -->
 					<td>
-						<a href="#collectionsViewForGroup"  aria-label="collections view for group"
+						<a aria-label="collections view for group"
 							th:if="${ collectionAndDataObject.isCollection() }"
 							th:name="${ collectionAndDataObject.getName() }"
 							th:title="${ collectionAndDataObject.getPath() }"

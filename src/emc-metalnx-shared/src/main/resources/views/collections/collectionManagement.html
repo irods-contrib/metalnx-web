@@ -37,17 +37,18 @@
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
 		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
-		  <li class="active">Collections</li>
+		  <li class="active" th:text="#{text.collections}">Collections</li>
 		</ol>
 		<ol class="breadcrumb mlx"  th:if="${cameFromFilePropertiesSearch} == true"
 					id="backToFilePropertiesSearch">
 		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
-		  <li class="active">Collections</li>
+		  <li class="active" th:text="#{text.collections}">Collections</li>
+		  
 		</ol>
         <div th:if="${unexpectedError}">
             <div class="alert alert-danger alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    <span aria-hidden="true">&times;</span> <span class="sr-only" th:text="#{text.close}">Close</span>
                 </button>
                 <span th:text="${'An unexpected error has happened. Please, contact your system administrator.'}"></span>
             </div>
@@ -222,7 +223,7 @@
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}" area-label="user home directory"
+										<a th:name="${homePath}" area-label="user home directory"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
@@ -232,7 +233,7 @@
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public" aria-label="public"
+										<a th:name="Public" th:title="Public" aria-label="public"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -323,7 +324,7 @@
 							<div role="tabpanel" class="tab-pane active" id="moveCollections">
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" name="/" title="/" aria-label="Move collection"
+										<a name="/" title="/" aria-label="Move collection"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
 											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
@@ -332,7 +333,7 @@
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}" aria-label="User home dir"
+										<a th:name="${homePath}" aria-label="User home dir"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
@@ -342,7 +343,7 @@
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public" aria-label="Public dir"
+										<a th:name="Public" th:title="Public" aria-label="Public dir"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -661,12 +662,12 @@
 			
 			function getSubDirectories(path) {		
 				//alert("getSubDirectories")
-				console.log("Collection managemnet - getSubDirectories()");
+				console.log("Collection management - getSubDirectories()");
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
 																
 				setTimeout(function () {				
-					ajaxEncapsulation("/emc-metalnx-web/collections/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
+					ajaxEncapsulation("/emc-metalnx-web/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
 					currentPath = path;								
 					console.log("currentpath " +currentPath);
 					console.log("path " +path)					
@@ -686,7 +687,7 @@
 				var groupName = $("#collectionInfoGroupName").text();
 
 				ajaxEncapsulation(
-					"/emc-metalnx-web/collections/getSubDirectoriesOldTree/",
+					"/emc-metalnx-web/browse/getSubDirectoriesOldTree/",
 					"POST",
 					{path : directoryPath, groupName : groupName},
 					function (data){
@@ -722,13 +723,13 @@
 	        }
 
 	        function showModifyForm() {
-	        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
-
-	        	if (cbChecked > 1) return;
-
-                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
-                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
-                ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
+		        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
+	
+		        	if (cbChecked > 1) return;
+	
+	                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
+	                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
+	                ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
 			}
 
 	        function submitForm() {
@@ -736,29 +737,46 @@
 					$(".registerForm").submit();
 				}
 	        }
+	        
+	        function callbackMoveAndCopyError(path){
+				$("#moveModal").modal("hide");
+
+				//reset the modal
+        		    cleanModals();
+
+				//updating the list of files and collections
+				currentPath = path;
+				
+	       		positionBrowserToPath(path); 
+
+				//xs$("#tree-view-panel-body").html(data);
+	        }
+
 
 	        function callbackMoveAndCopy(data){
 				$("#moveModal").modal("hide");
 
 				//reset the modal
-        		cleanModals();
+        		    cleanModals();
 
 				//updating the list of files and collections
 				currentPath = targetPath;
 				totalCheckboxesChecked = 0;
 
-	       		resetDataTablesStart();
+	       		//resetDataTablesStart();
+	       		
+	       		positionBrowserToPath(targetPath); 
 
 				$("#tree-view-panel-body").html(data);
 	        }
 
 	        function updateResourceForReplicationOptions() {
-	        	$("#selectResource > option").remove();
-    			$("#selectResourceToUpload > option").each(function() {
-    				if(!$(this).is(":selected")) {
-    					$("#selectResource").append($(this).clone());
-    				}
-    			});
+		        	$("#selectResource > option").remove();
+	    			$("#selectResourceToUpload > option").each(function() {
+	    				if(!$(this).is(":selected")) {
+	    					$("#selectResource").append($(this).clone());
+	    				}
+	    			});
 	        }
 
 	        $("#moveBtn").click(function() {
@@ -838,34 +856,41 @@
 
 				return paths;
 			}
+			
+			/**
+			* position the collection browser to the new path
+			*/
+			function positionBrowserToPath(path) {
+				window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+			}
 
 	        function deleteAction(){
-	        	setOperationInProgress();
-	        	$("#actions button").prop("disabled", true);
-	        	$('#actionsWait').show();
-	        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
-	        	$("#uploadIcon").prop("disabled", true);
-            	$("#uploadIcon").addClass("disabled");
-            	$("#showCollectionFormBtn").prop("disabled", true);
-            	$("#showCollectionFormBtn").addClass("disabled");
-
-            	var paths = findPathsSelected();
-            	var url = "/emc-metalnx-web/fileOperation/delete/";
-
-	        	ajaxEncapsulation(
-	        		url,
-	        		"POST",
-	        		{paths: paths},
-	        		function (data) {
-		        		unsetOperationInProgress();
-		        		resetDataTablesStart();
-	        			$("#tree-view-panel-body").html(data);
-
-					}
-				);
-
-				$("#deleteModal").modal("hide");
-				cleanModals();
+		        	setOperationInProgress();
+		        	$("#actions button").prop("disabled", true);
+		        	$('#actionsWait').show();
+		        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
+		        	$("#uploadIcon").prop("disabled", true);
+	            	$("#uploadIcon").addClass("disabled");
+	            	$("#showCollectionFormBtn").prop("disabled", true);
+	            	$("#showCollectionFormBtn").addClass("disabled");
+	
+	            	var paths = findPathsSelected();
+	            	var url = "/emc-metalnx-web/fileOperation/delete/";
+	
+		        	ajaxEncapsulation(
+		        		url,
+		        		"POST",
+		        		{paths: paths},
+		        		function (data) {
+			        		unsetOperationInProgress();
+			        		resetDataTablesStart();
+		        			$("#tree-view-panel-body").html(data);
+	
+						}
+					);
+	
+					$("#deleteModal").modal("hide");
+					cleanModals();
 	        }
 
 	        $('.modal').on('hidden.bs.modal', function(e){
@@ -946,10 +971,10 @@
 				$("#table-loader").show();
 				$("#table-loader").nextAll().remove();
 
-				url = "/emc-metalnx-web/collections/info/";
+				url = "/emc-metalnx-web/browse/info/";
 				ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/getBreadCrumbForObject/',
+					'/emc-metalnx-web/browse/getBreadCrumbForObject/',
 					"POST",
 					{path: path},
 					function(data){
@@ -964,7 +989,7 @@
 	        } */
 			function goBackHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goBackHistory/',
+					'/emc-metalnx-web/browse/goBackHistory/',
 					"POST",
 					{steps: steps},
 					displaySubDirectories,
@@ -973,7 +998,7 @@
 			}
 			function goForwardHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goForwardHistory/',
+					'/emc-metalnx-web/browse/goForwardHistory/',
 					"POST",
 					{steps: steps},
 					displaySubDirectories,
@@ -986,7 +1011,7 @@
 			    $('.targetPathInfoSpan').html(targetPath);
 			}
 
-			//this function below only wqorks with favorites and user bookmarks table because they have the same number of columns
+			//this function below only works with favorites and user bookmarks table because they have the same number of columns
 			function modalMoveCopyFavAndUserbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {
 				    "serverSide": true,

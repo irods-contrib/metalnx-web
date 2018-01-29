@@ -193,6 +193,7 @@
             </th:block>
         </th:block>
 
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
         <script th:inline="javascript">
         /*<![CDATA[*/
             function deleteMetadataList(){
@@ -239,7 +240,7 @@
             }
 
             function addMetadataModal(path){
-            	alert("adding metadata model");
+            	console.log("adding metadata model");
                 $('#newAttrModal').parent().removeClass('has-feedback has-error');
                 $('#newValModal').parent().removeClass('has-feedback has-error');
                 $('.emptyAttrMetadata').addClass('hideElement');
@@ -256,6 +257,7 @@
             }
 
             function saveNewMetadata(){
+            	console.log("saving new metadata");
                 var path = $('#pathModal').val();
                 var attr = $('#newAttrModal').val();
                 var val = $('#newValModal').val();

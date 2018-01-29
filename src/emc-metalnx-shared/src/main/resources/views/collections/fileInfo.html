@@ -29,17 +29,17 @@
 							<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
 					</a></li>
 					
-					<li th:if="${dataProfile.file}"><a href="#file"> <span><i
-								class="fa fa-lock"></i></span> <span title="File">File</span>
+					<li><a href="#replica"> <span><i
+								class="fa fa-lock"></i></span> <span title="replica">Replica</span>
 					</a></li>
+					
+					<li><a href="#preview"> <span><i
+								class="fa fa-lock"></i></span> <span title="preview">Preview</span>
+					</a></li>
+					
 				</ul>
 				
 				<div class="content_menu">
-					
-					<div id="table-loader" class="table-loader hideElement">
-						<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-						<p class="text-center" th:text="#{loading.list.label}"></p>
-					</div>
 					
 					<div id="info">
 						<th:block th:include="collections/info :: infoView"></th:block>
@@ -50,10 +50,14 @@
 
 					<div id="permission"></div>
 				
-					<div id="file">
-						<span>This is File tab.</span>
+					<div id="replica">
+						<img class="center-block" th:src="@{/images/comingsoon.png}" />
+						<span><p>This feature is under construction. Please come back soon!</p></span>
 					</div>
-
+					<div id="preview">
+						<img class="center-block" th:src="@{/images/comingsoon.png}" />
+						<span><p>This feature is under construction. Please come back soon!</p></span>
+					</div>
 
 				</div>
 			</div>

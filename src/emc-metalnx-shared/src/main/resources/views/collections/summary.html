@@ -16,49 +16,136 @@
 
 <th:block th:fragment="summaryView">
 
-	<div class="col-xs-12 col-md-12 col-lg-12" id="summary">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<div class="panel-info">
-					<div class="row">
-						<div class="col-md-9 col-sm-8 col-xs-8">
-							<a href="#" onclick="showPreview();"><i th:class="${ iconToDisplay }"></i></a>
-							<span th:text="${ dataProfile.getChildName() }"></span> <a
-								id="breadcrumbStar" class="btn-favorite" href="#"
-								data-toggle="popover" data-placement="left"
-								data-trigger="manual" data-content=""
-								th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
-								<i
-								th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
-								aria-hidden="true"></i>
-							</a>
-						</div>
-					</div>
-					<div class="row">
-						<span><b th:text="${ dataProfile.getParentPath() }"></b></span>
-						<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
-					</div>
-					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label>Shared</label>
-						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${dataProfile.shared}?'This is Shared':'This is not shared'"></span>
-						</div>
-					</div>
-					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
-							<label>Has Tickets</label>
-						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${ dataProfile.hasTicket}?'This has Tickets':'This has no Tickets'"></span>
-						</div>
-					</div>
+	<div id="summary">
+		<div class="col-md-12 col-sm-6 col-xs-12 pull-left">
+			<h4 id="collManagement" class="collection-header pull-left"
+				th:data-content="#{collection.title.popover}">Collections</h4>
+			<a aria-label="page help" id="collections-page-title" href="#"
+				class="page-hint pull-left" data-original-title="" title=""> <i
+				class="fa fa-question-circle" />
+			</a>
+		</div>
 
-				</div>
+		<div class="col-md-12 col-sm-6 col-xs-12 pull-left">
+			<span><h1 th:text="${ dataProfile.getChildName() }" ></h1></span>
+		</div>
+
+		<div class="col-md-9 col-sm-9 col-xs-12 pull-left">
+			<a href="#"><i class="fa fa-home"></i></a>
+
+
+			<th:block th:each="pathItem, iterStat: ${dataProfile.pathComponents}">
+				<th:block
+					th:if="${iterStat.index lt (dataProfile.pathComponents.size()-1)}">
+					<a href="#" th:text="${ pathItem }" th:title="${ pathItem }"
+						th:onclick="'javascript:getSubDirectories(/zone1/home);'"><i
+						class="color-blue"></i> </a>
+					<span class="fa fa-angle-double-right "></span>
+				</th:block>
+
+				<th:block
+					th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+					<span th:text="${ pathItem }" th:title="${ pathItem }"> </span>
+
+				</th:block>
+
+			</th:block>
+
+		</div>
+
+
+		<div class="col-sm-12 collection-margin" />
+
+		<div class="col-xs-12 col-md-10 col-sm-9 ">
+			<div>
+				<span><b>Summary</b></span>
+			</div>
+			<div>
+				<span>The root interface in the collection hierarchy. A
+					collection represents a group of objects, known as its elements.
+					Some collections allow duplicate elements and others do not. Some
+					are ordered and others unordered. The JDK does not provide any
+					direct implementations of this interface:</span>
+			</div>
+			<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
+
+		</div>
+		<div class="col-xs-12 col-md-2 col-sm-3 pull-right">
+			<a href="#" class="pull-right"><i th:class="${ iconToDisplay }"></i></a>
+		</div>
+
+
+		<div class="col-sm-12 collection-margin" />
+
+		<div class="col-xs-12 col-md-3 col-sm-3">
+			<span><b>Collection Name</b></span> <br /> <span
+				th:text="${ dataProfile.getChildName() }"></span>
+		</div>
+		<div class="col-xs-12 col-md-3 col-sm-3">
+			<span><b>Root</b></span> <br /> <span
+				th:text="${ dataProfile.getParentPath() }"></span>
+			<!--  <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span> -->
+		</div>
+
+
+		<div class="col-sm-12 collection-margin" />
+
+		
+		
+		
+			<div class="col-sm-3 col-md-3 col-xs-12 pull-right">
+			<div id="actionmenu" class="pull-right">
+				
+				<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown" aria-expanded="false">			  
+					<span>Action</span>
+					<span class="caret" /> <span class="sr-only">Toggle Dropdown</span>
+					<span> | </span>
+				</button>	
+					<ul class="dropdown-menu">
+						<li><a href="#"> <span>add</span>
+						</a></li>
+						<li><a href="#"> <span>delete</span>
+						</a></li>
+					</ul>
+					
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown" aria-expanded="false">
+						<span class="fa fa-ticket" />
+						<span class="caret" /> <span class="sr-only">Toggle Dropdown</span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#"> <span>option1</span>
+						</a></li>
+						<li><a href="#"> <span>option2</span>
+						</a></li>
+					</ul>
+				
+				<a id="breadcrumbStar" class="btn btn-default" href="#"
+						data-toggle="popover" data-trigger="manual" data-content=""
+						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+					<i
+						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+						aria-hidden="true"></i>
+				</a> <a id="breadcrumbShared" role="button" class="btn btn-default"
+						href="#" data-toggle="popover" data-trigger="manual"
+						data-content=""> <i
+						th:class="${dataProfile.shared}? 'fa fa-share-alt bm-checked' : 'fa fa-share-alt bm-unchecked'"
+						aria-hidden="true"></i>
+				</a>
 			</div>
 		</div>
-	</div>
 
+
+
+
+		<div class="col-sm-12" />
+		<div class="col-sm-12" />
+		<div class="col-sm-12" />
+		<div class="col-sm-12" />
+		<div class="col-sm-12" />
+		<div class="col-sm-12" />
+
+	</div>
 </th:block>
 
