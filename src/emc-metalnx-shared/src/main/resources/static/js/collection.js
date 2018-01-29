@@ -22,8 +22,8 @@ function getInfoDetails(path){
 }
 
 function getMetadata(path){
-	//$("#metadata").hide();
-	//$("#table-loader").show();		
+	$("#metadata").hide();
+	$("#table-loader").show();		
 	console.log("Collection getMetadata() :: " +path);
 	window.location.hash = "metadata";
 	var url = "/emc-metalnx-web/metadata/getMetadata/";	
@@ -31,8 +31,8 @@ function getMetadata(path){
 }
 
 function getPermissionDetails(path){
-	//$("#permission").hide();
-	//$("#table-loader").show();		
+	$("#permission").hide();
+	$("#table-loader").show();		
 	console.log("Collection getPermDetails() :: " +path);
 	window.location.hash = "permission";
 	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";	
@@ -47,18 +47,32 @@ function displayInfoDetails(data){
 }
 
 function displayMetadata(data){
-	//$("#table-loader").hide();	
+	console.log("display Metadata");
+	$('#table-loader').hide();
+	$('#table-loader').after(data);
+	/*$("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");*/
 	$("#metadata").html(data);	
 	//$("#metadata").show();
 }
 
 function displayPermissionDetails(data){
+	console.log("display Permission");
 	//$("#table-loader").hide();
+	 $('#table-loader').hide();
+     $("#table-loader").after(data);
+     /*$("#uploadIcon").prop("disabled", true);
+     $("#uploadIcon").addClass("disabled");
+     $("#showCollectionFormBtn").prop("disabled", true);
+     $("#showCollectionFormBtn").addClass("disabled");*/
 	$('#permission').html(data);
-	//alert('showing content menu');
 	//$("#permission").show();    
 }
-
+function getTestSubDirectories(){
+	alert("get directories");
+}
 function showPreview(){
 	alert("Show Preview");
 	
@@ -79,6 +93,46 @@ function showPreview(){
 		}
 	});
 }
+
+function starPath(path){
+	console.log("StarPath() starts");
+	//$('#breadcrumbStar').attr('onclick', '');
+	var url = "/emc-metalnx-web/favorites/addFavoriteToUser/";		
+	ajaxEncapsulation(url, "GET", {path: path}, 
+		function(data){
+			if(data.indexOf("OK") >= 0){
+				$('#breadcrumbStar i').removeClass('bm-unchecked').addClass('bm-checked');
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
+				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.unmark.button.tooltip}]]);
+			}else{
+				$('#breadcrumbStar').attr('data-content', 'Could not add path to favorites.')
+				$('#breadcrumbStar').popover("show");
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
+			}
+		
+	}, null, null, null);
+	console.log("StarPath() ends");
+}
+
+function unstarPath(path){
+	console.log("UnstarPath() starts !!");
+	//$('#breadcrumbStar').attr('onclick', '');
+	var url = "/emc-metalnx-web/favorites/removeFavoriteFromUser/";		
+	ajaxEncapsulation(url, "GET", {path: path},
+		function(data){
+			if(data.indexOf("OK") >= 0){
+				$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
+				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
+			}else{
+				$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
+				$('#breadcrumbStar').popover("show");
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
+			}
+		}, null, null, null);
+	console.log("UnstarPath() ends");
+}
+
 /*
 
 function ChangeUrl(title, urlVal) {

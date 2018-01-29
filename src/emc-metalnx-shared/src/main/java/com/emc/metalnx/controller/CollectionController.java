@@ -1045,6 +1045,8 @@ public class CollectionController {
 		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
 		model.addAttribute("collectionAndDataObject", obj);
 		model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
+		
+		System.out.println("Path :: " +obj.getPath());
 		model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
 	}
 

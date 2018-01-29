@@ -6,7 +6,7 @@ var dtPatternForMetadata =  '<"row"<" pull-left col-sm-12 col-md-12">>'+
 var dtPatternMlxCollections =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-8 col-sm-8 col-xs-8"l<"toolbar">><"col-md-4 col-sm-4 col-xs-4"f>><"col-md-12 col-xs-12"<"msg">i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
-var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-3 col-xs-4"l<"toolbar">><"col-md-6 col-xs-4"><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
+var dtPatternMlxStandard =  '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-4 col-xs-4"l<"toolbar">><"col-md-5 col-xs-4"><"col-md-3 col-xs-4"f>><"col-md-12 col-xs-12"i>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"tr>>'+
                             '<"row"<"col-md-12 col-lg-12 col-xs-12"p>>';
 var dtPatternMlxTemplatesList = '<"row"<"col-md-12 col-lg-12 col-xs-12"<"col-md-6 col-xs-6"l<"toolbar">><"col-md-6 col-xs-6"f>><"col-md-12 col-xs-12"i>>'+

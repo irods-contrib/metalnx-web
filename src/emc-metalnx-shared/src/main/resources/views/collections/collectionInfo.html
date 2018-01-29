@@ -11,7 +11,8 @@
 			<th:block th:include="collections/summary :: summaryView"></th:block>
 		</div>
 
-		<div id="tabs">
+	<div class="row">
+				<div id="tabs">
 			<ul>
 				<li><a href="#info"
 					th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
@@ -29,21 +30,12 @@
 						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
 				</a></li>
 
-				<li th:unless="${dataProfile.file}"><a href="#collection">
-						<span><i class="fa fa-lock"></i></span> <span title="Collection">collection</span>
-				</a></li>
-
 			</ul>
 
 
 
 			<div class="content_menu">
-
-				<div id="table-loader" class="table-loader hideElement">
-					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-					<p class="text-center" th:text="#{loading.list.label}"></p>
-				</div>
-
+							
 				<div id="info">
 					<th:block th:include="collections/info :: infoView"></th:block>
 					<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
@@ -51,13 +43,11 @@
 				<div id="metadata"></div>
 
 				<div id="permission"></div>
-
-				<div id="collection">
-					<span>This is Collection tab.</span>
-				</div>
-
+			
 			</div>
 		</div>
+	</div>
+
 
 
 		<!-- JQuery UI CSS -->
