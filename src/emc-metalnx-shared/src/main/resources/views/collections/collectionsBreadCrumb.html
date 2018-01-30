@@ -14,34 +14,18 @@
   ~  limitations under the License.
   -->
 <div class="breadcrumb-wrapper">
-    <!-- History button -->
-    <div class="btn-group history" xmlns:th="http://www.w3.org/1999/xhtml">
-      <button id="historyBtn" type="button" class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-      </button>
-      <ul class="dropdown-menu">
-         
-        <li class="active"><a href="#" th:text="${collectionAndDataObject.path}"></a></li>
-          <li><a aria-label="user home directory" class="home" th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}" th:text="'Home ('+${homeCollectionName}+')'"></a>
-          </li>
-      </ul>
-    </div>
-
-    <div id="editable-path">
-    <!-- Current Collections Table -->
-        <div id="current-path">
-            <ol class="breadcrumb">
+    
+         <ol class="breadcrumb">
+         <a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i class="fa fa-home"></i></a>
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
                         <li class="hidden-xs hidden-sm">
                             <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
-                                th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumbItem.path } + '\');'"
-                            >
+                                th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumbItem.path } + '\');'">
                             </a>
-                        </li>
+                        </li>                     
                     </th:block>
                     <th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
                         <li class="collections-view">
@@ -58,18 +42,16 @@
                         <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'"
-                        >
+                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'">
                         </a>
-                    </li>
+                    </li>                  
                     <li class="hidden-xs hidden-sm">
                         <a  href="#"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'"
-                        >
+                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'">
                         </a>
-                    </li>
+                    </li>                   
                     <li class="collections-view">
                     <span th:if="${collectionAndDataObject.path != '/'}"
                           th:text="${ collectionAndDataObject.name }"
@@ -78,7 +60,7 @@
                     </li>
                 </th:block>
             </ol>
-        </div>
+       
         <div id="current-path-property" class="hidden">
             <ol class="breadcrumb info">
                 <th:block th:if="${collectionAndDataObject.isCollection()}">
@@ -93,49 +75,6 @@
                 </th:block>
             </ol>
         </div>
-        <div class="hidden" id="navigationBar"><input type="text" id="navigationInput" th:value="${collectionAndDataObject.path}" placeholder="Enter a non-empty valid path" />
-        </div>
-        <button href="#" class="pull-right btn btn-sm btn-primary hidden" id="navigationBarGo"><i class="fa fa-check" aria-hidden="true"></i></button>
-        <button href="#" class="pull-right btn btn-sm btn-default hidden" id="navigationBarCancel"><i class="fa fa-remove" aria-hidden="true"></i></button>
-    </div>
-
-        <div class="btn-group pull-right" role="group" data-placement="top" id="breadcrumbOptions">
-		<a id="breadcrumbOptionsMenu" href="#" class="btn btn-properties btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="breadcrumb options">
-			<i class="fa fa-bars"></i>
-		</a>   
-		<ul class="dropdown-menu">
-            <li>
-                <a href="#" th:onclick="'javascript:getSubDirectories(\'' + ${collectionAndDataObject.path} + '\');'">
-                    <th:block th:if="${collectionAndDataObject.isCollection()}">
-                        <span><i class="fa fa-folder"></i></span>
-                        <span title="Browse collection">Browse</span>
-                    </th:block>
-                    <th:block th:unless="${collectionAndDataObject.isCollection()}">
-                        <span><i class="fa fa-info-circle"></i></span>
-                        <span title="File information">Info</span>
-                    </th:block>
-                </a>
-            </li>
-		    <li>
-		        <a href="#" th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'" aria-label="get metadata">
-		            <span><i class="fa fa-tags"></i></span>
-		            <span title="Metadata">Metadata</span>
-		        </a>
-		    </li>
-		    <li>
-		        <a href="#" id="permissions" th:onclick="'javascript:getPermDetails(\'' + ${collectionAndDataObject.path} + '\');'" aria-label="get permissions">
-		            <span><i class="fa fa-lock"></i></span>
-		            <span title="Permissions">Permissions</span>
-		        </a>
-		    </li>
-		</ul>     
-    </div>
-
-	<!-- <a id="breadcrumbStar" class="btn-favorite" th:onclick="${starredPath}? 'javascript:unstarPath(\'' + ${collectionAndDataObject.path} + '\');' : 'javascript:starPath(\'' + ${collectionAndDataObject.path} + '\');'" href="#"
-		aria-label="starred object" data-toggle="popover" data-placement="left" data-trigger="manual" data-content="" th:title="${starredPath}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}" >
-		<i th:class="${starredPath}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'" aria-hidden="true"></i>
-	</a> -->
-
 </div>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -171,15 +110,15 @@
    		});
     });
     
-	$(document).click(function(e){
+	/* $(document).click(function(e){
 		if(!$(e.target).is('.breadcrumb i.fa.fa-star')){
 			//$('#breadcrumbStar').popover("hide");
 		}else{
 			e.stopPropagation();
 			e.preventDefault();
 		}
-	});
-	$('.breadcrumb').click(function(e){
+	}); */
+	/* $('.breadcrumb').click(function(e){
 		if(!$(e.target).is('ol.breadcrumb li a') && !$(e.target).is('i.fa.fa-star') && !$(e.target).is('i.fa.fa-home') && !$(e.target).parents('#breadcrumbOptions').length){
 			$('#current-path').addClass("hidden");
 			//$('#breadcrumbStar').addClass("hidden");
@@ -189,8 +128,8 @@
 			$('#navigationBarCancel').removeClass("hidden");
 			$('#navigationInput').focus().select();
 		}
-	});
-	$('#navigationInput').keyup(function(e){
+	}); */
+	/* $('#navigationInput').keyup(function(e){
 		if(e.keyCode == 13){
 			if($('#navigationInput').val().trim() == '') return;
 			getSubDirectories($('#navigationInput').val());
@@ -205,9 +144,9 @@
 			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
 
 		}
-	});
+	}); */
 
-	$('#navigationBarGo').click(function(e){
+	/* $('#navigationBarGo').click(function(e){
 		e.stopPropagation();
 		e.preventDefault();
 		if($('#navigationInput').val().trim() == '') return;
@@ -234,7 +173,7 @@
        if (!$(e.target).is('a')) {
          $("#current-path .breadcrumb").css("background-color", "#ffffff");
       }
-    });
+    }); */
 	
 /*]]>*/
 </script>

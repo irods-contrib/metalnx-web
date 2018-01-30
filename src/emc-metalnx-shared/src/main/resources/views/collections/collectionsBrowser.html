@@ -671,8 +671,9 @@
 			var paths = [];
         	$("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
 				paths.push($(this).val());
+				alert($(this).val())
 			});
-
+	
         	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
 			$("#actions button").prop("disabled", true);
         });
@@ -684,12 +685,14 @@
 
 			if (collPath != "") {
 				var oldCollName = collPath.substring(parentPath.length + 1, collPath.length);
+				
 			}
 
 			if(collPath == "" || oldCollName != newCollOrDataObjectName) {
 				validateCollectionNameAjax([[${urlMap.URL_COLLECTION_VALIDATE_NAME}]] + newCollOrDataObjectName, submitForm);
+				
 			}
-			else {
+			else {				
 				submitForm();
 			}
 		});

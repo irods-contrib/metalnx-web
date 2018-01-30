@@ -133,6 +133,53 @@ function unstarPath(path){
 	console.log("UnstarPath() ends");
 }
 
+function positionBrowserToPath(path) {
+	window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+}
+
+function fileDownload(path){
+	console.log("File Download");
+	
+	var prepareDownloadURL = "/emc-metalnx-web/fileOperation/prepareFilesForDownload/";
+	var paths = [];
+	paths.push(path);
+	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
+	//$("#actions button").prop("disabled", true);
+}
+
+function deleteInfoAction(path){
+	console.log("Ready for deletion");
+	$("#actionmenu button").prop("disabled", true);
+	$('#actionsWait').show();
+	
+	var paths = [];
+	paths.push(path);
+	var url = "/emc-metalnx-web/fileOperation/delete/";
+
+	ajaxEncapsulation(
+		url,
+		"POST",
+		{paths: paths},
+		function (data) {
+			$("#tree-view-panel-body").html(data);
+
+		}
+	);
+	window.location.href = "/emc-metalnx-web/browse/home";
+}
+
+function editInfo(path){
+
+}
+
+function handleDownload() {	
+	window.location.href = "/emc-metalnx-web/fileOperation/download/";
+}
+
+/*function handleDownloadFailure() {
+	console.log(handleDownloadFailure);
+}
+*/
 /*
 
 function ChangeUrl(title, urlVal) {
