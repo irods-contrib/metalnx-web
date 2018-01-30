@@ -21,7 +21,7 @@
 	<div class="col-md-12" th:unless="${dataProfile == null}">
 	
 		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
-			<div class="panel property">
+			<div class="panel property collection-tabs">
 				<div class="row">
 					<h4 class="property-title" th:text="#{text.info}">
 						<i class="fa fa-info-circle"></i>

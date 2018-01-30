@@ -47,7 +47,7 @@ function displayInfoDetails(data){
 }
 
 function displayMetadata(data){
-	console.log("display Metadata");
+	console.log("display Metadata :: " +data);
 	$('#table-loader').hide();
 	$('#table-loader').after(data);
 	/*$("#uploadIcon").prop("disabled", true);

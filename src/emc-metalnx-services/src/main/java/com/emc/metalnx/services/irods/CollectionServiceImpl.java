@@ -463,7 +463,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 		logger.info("findByName()");
 
-		if (path == null) {
+		if (path == null || path.isEmpty()) {
 			logger.info("Could not find collection or data object by name: path is null");
 			return null;
 		}

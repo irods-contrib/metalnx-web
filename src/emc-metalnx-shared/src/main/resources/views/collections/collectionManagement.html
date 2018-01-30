@@ -32,8 +32,8 @@
 
 <body>
 	<div aria-labelledby="collManagement" layout:fragment="content">
-		<h4 id="collManagement" class="collection-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h4>
-		<a aria-label="page help" id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+		<th:block th:include="collections/collectionHeader :: collectionHeaderView"></th:block>	
+					
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
 		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true" aria-hidden="true">Search Results</a></li>

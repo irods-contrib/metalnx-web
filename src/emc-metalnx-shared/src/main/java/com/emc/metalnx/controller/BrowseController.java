@@ -249,7 +249,7 @@ public class BrowseController {
 		logger.info("path:{}", path);
 
 		// removes all ocurrences of "/" at the end of the path string
-		while (path.endsWith("/") && !"/".equals(path)) {
+		while (path.endsWith("/") && !"/".equals(path)) { 
 			path = path.substring(0, path.lastIndexOf("/"));
 		}
 
