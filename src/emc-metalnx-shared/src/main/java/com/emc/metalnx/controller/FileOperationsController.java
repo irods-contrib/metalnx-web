@@ -336,7 +336,7 @@ public class FileOperationsController {
 		model.addAttribute("currentPath", currentPath);
 		model.addAttribute("parentPath", parentPath);
 		model.addAttribute("collection", targetForm);
-		model.addAttribute("requestMapping", "/collections/modify/action/");
+		model.addAttribute("requestMapping", "/browse/modify/action/");
 
 		return String.format("collections/%s", formType);
 	}

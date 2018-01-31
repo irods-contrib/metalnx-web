@@ -249,7 +249,7 @@ public class BrowseController {
 		logger.info("path:{}", path);
 
 		// removes all ocurrences of "/" at the end of the path string
-		while (path.endsWith("/") && !"/".equals(path)) { 
+		while (path.endsWith("/") && !"/".equals(path)) {
 			path = path.substring(0, path.lastIndexOf("/"));
 		}
 
@@ -1028,7 +1028,7 @@ public class BrowseController {
 		model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
 		model.addAttribute("collection", collectionForm);
 		model.addAttribute("inheritanceDisabled", inheritanceDisabled);
-		model.addAttribute("requestMapping", "/collections/add/action/");
+		model.addAttribute("requestMapping", "/browse/add/action/");
 		model.addAttribute("parentPath", parentPath);
 		setBreadcrumbToModel(model, dataGridObj);
 		return "collections/collectionsBrowser";
