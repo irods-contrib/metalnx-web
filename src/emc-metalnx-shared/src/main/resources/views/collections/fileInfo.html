@@ -33,8 +33,9 @@
 								class="fa fa-lock"></i></span> <span title="replica">Replica</span>
 					</a></li>
 					 -->
-					<li><a href="#preview"> <span><i
-								class="fa fa-eye"></i></span> <span title="preview">Preview</span>
+					<li><a href="#preview"
+					th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'"> 
+						<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
 					</a></li>
 					
 				</ul>
@@ -54,10 +55,7 @@
 						<img class="center-block" th:src="@{/images/comingsoon.png}" />
 						<span><p>This feature is under construction. Please come back soon!</p></span>
 					</div> -->
-					<div id="preview">
-						<img class="center-block" th:src="@{/images/comingsoon.png}" />
-						<span><p>This feature is under construction. Please come back soon!</p></span>
-					</div>
+					<div id="preview"></div>
 
 				</div>
 			</div>
