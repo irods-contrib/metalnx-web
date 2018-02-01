@@ -39,13 +39,13 @@ body {
 }
 
 #uploadStatusIcon .fa.fa-tasks.white-icon{
-	font-size:1.0em;
+	font-size:18px;
 }
 
 #uploadStatusIcon .badge{
 	left: -10px;
 	top: -8px;
-	font-size: 1.0em;
+	font-size: 10px;
 	padding: 3px 3px;
 	position: relative;
 }
@@ -91,12 +91,12 @@ body {
 }
 
 .panel-primary {
-	border-color: #046383;
+	border-color: #2c95dd;
 }
 
 .panel-primary .panel-heading {
-	border-color: #046383;
-	background-color: #046383;
+	border-color: #2c95dd;
+	background-color: #2c95dd;
 }
 
 .panel-success {
@@ -170,29 +170,6 @@ table td{
     opacity: 1;
 }
 
-/********************** Junction Header bootstrap overrides ***************************************/
-
-#searchform .btn {
-  padding: 0;
-  font-size:11px;
-  border-radius: 0;
-}
-#sitesearch {
-  font-size: 1.7em;
-  box-sizing: content-box;
-}
-#hdr-niehstitle{ box-sizing: content-box; }
-.modal-content{ font-size: 1.5rem; }
-.modal-content .modal-title {color: #fff;}
-.pagination>.active>a {
-  background-color: #046383;
-  border-color: #046383;
-}
-.dashboard-page-title{ color: #046383; }
-footer.row{
-  background-color: #363633;
-  margin: 0;
-}
 /**************************************** Tooltips ***********************************************/
 .tooltip.in {
   opacity: 1;
@@ -248,7 +225,7 @@ footer.row{
 
 /**************************************** Dashboard ***********************************************/
 .progress-bar-success {
-	background-color: #046383;
+	background-color: #2c95dd;
 	border: 1px solid #eeeeee;
 	border-radius: 4px;
 }
@@ -266,7 +243,7 @@ footer.row{
 }
 
 #storageChart .arc{
-	fill: #046383;
+	fill: #3580BD;
 }
 
 #numberOfFilesDiv {
@@ -319,7 +296,7 @@ h3.collection-details
 	float: left;
 	width: 58px;
 	line-height: 26px;
-	font-size: 1em;
+	font-size: 11px;
 	color: #ffffff;
 	text-align: center;
 	cursor: pointer;
@@ -424,7 +401,7 @@ h3.collection-details
 }
 
 .bookmarksList i {
-	color: #046383;
+	color: #428bca;
 }
 /************************************* Resources By Server ****************************************/
 
@@ -470,7 +447,7 @@ h3.collection-details
 /********************************** User form - Permissions ***************************************/
 
 .inheritance-checked {
-	color: #046383;
+	color: #2c95dd;
 }
 
 
@@ -612,7 +589,7 @@ div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.l
 }
 
 div.dataTables_wrapper .row .col-md-12:first-child > div{
-	background-color: #6c6c63;
+	background-color: #5faee5;
 	height: 50px;
 	padding-top: 10px;
 	color:white;
@@ -628,8 +605,8 @@ div.dataTables_wrapper .row:first-child .col-md-12:first-child > div:last-child 
 
 div.dataTables_wrapper div.col-md-12 > .dataTables_info {
 	text-align: right;
-	font-size: 1em;
-	background-color: #333333;
+	font-size: 12px;
+	background-color: #5faee5;
 	color: white;
 	padding-right: 15px;
 	padding-top: 0;
@@ -640,7 +617,7 @@ div.dataTables_wrapper div.col-md-12 > .dataTables_info {
 	margin-bottom: 0px !important;
 }
 table.dataTable {
-	border: 1px solid #333333;
+	border: 1px solid #c8dff7;
 }
 div.dataTables_wrapper .download_csv{
 	margin-bottom: 10px;
@@ -664,7 +641,7 @@ div.dataTables_wrapper .toolbar .input-group{
 }
 .table.dataTable thead tr > th {
     padding: 13px;
-    font-size: 1em;
+    font-size: 15px;
 }
 
 .table.dataTable thead tr > th.tableCheckBoxCol {
@@ -721,12 +698,12 @@ div.dataTables_wrapper .toolbar .input-group{
 
 #templateFieldsListTable_info {
 	text-align: left;
-	font-size: 1em;
+	font-size: 14px;
 	padding-top: 8px;
 }
 
 #templateFieldsList .requiredHeaderSpan{
-	font-size:1em;
+	font-size:10px;
 	font-weight: normal;
 	margin-left: 5px;
 }
@@ -823,12 +800,12 @@ th{
 
 .errorMsg {
 	color: #a94442;
-	font-size: 1.1em;
+	font-size: 11px;
 }
 
 .permission-enabled,
 .permission-icon:hover {
-	color: #046383;
+	color: #2c95dd;
 }
 
 .permission-disabled {
@@ -838,7 +815,7 @@ th{
 .permission-icon {
 	padding-right: 4%;
 	cursor: pointer;
-	font-size: 1.1em;
+	font-size: 12pt;
 }
 
 #collectionListAsync a{
@@ -849,7 +826,7 @@ th{
 	padding: 0;
 	margin-right: 1%;
 	cursor: default;
-	font-size: 1em;
+	font-size: 8pt;
 }
 
 #collectionListAsync .permission-icon:hover {
@@ -858,10 +835,11 @@ th{
 }
 
 #collectionListAsync .permission-enabled:hover {
-	color: #046383;
+	color: #2c95dd;
 }
 
 h1.page-header {
+	color: #428bca;
 	border-bottom:none;
 	padding-bottom: 0;
 	margin:30px 0 30px 0;
@@ -918,19 +896,19 @@ h1 + span.subtitle
 
 .tt-suggestion {
 	padding: 3px 20px;
-	font-size: 1em;
+	font-size: 12pt;
 	line-height: 24px;
 }
 
 .tt-suggestion:hover {
 	cursor: pointer;
 	color: #fff;
-	background-color: #046383;
+	background-color: #2c95dd;
 }
 
 .tt-suggestion.tt-cursor {
 	color: #fff;
-	background-color: #046383;
+	background-color: #2c95dd;
 }
 
 .tt-suggestion p {
@@ -1021,7 +999,7 @@ span .label {
 }
 
 .breadcrumb{
-	font-size: 1.1em;
+	font-size: 17px;
 	padding: 7px 15px 0 7px;;
 	background-color: #fff;
 	border-radius: 0;
@@ -1072,7 +1050,7 @@ span .label {
 	background-color: #f7fafe;
 	border-radius: 0;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	font-size: 1em;
+	font-size: 15px;
 	width: 100%;
 	height:38px;
 	padding-left: 5px;
@@ -1089,7 +1067,7 @@ span .label {
 }
 
 #breadcrumbStar i, #breadcrumbHome i{
-	font-size: 1.1em;
+	font-size: 20px;
 	padding-right: 5px;
 }
 
@@ -1146,19 +1124,19 @@ ul{
 
 .btn.btn-properties>i{
     margin-top:5px;
-    font-size:1em;
+    font-size:15px;
 }
 
 .dropdown-menu>li>a {
     padding: 3px 10px;
-    font-size: 1em;
+    font-size: 13px;
     color: #337ab7;
     vertical-align: middle;
 }
 
 /* breadcrumb - search results */
 .breadcrumb.mlx{
-	font-size:1em;
+	font-size:13px;
 	background-color:#f2f6f9;
 	float:right;
 	margin-bottom:0;
@@ -1192,7 +1170,7 @@ a.page-hint {
 }
 
 .property-title {
-    color: #046383;
+    color: #428bca;
     float:left;
     margin-left: 20px;
     margin-right: 5px;
@@ -1227,7 +1205,12 @@ a.page-hint {
      margin-top:5px;
      padding-top: 10px;
 }
-
+#actionUpload > a{
+    width:50px;
+    height:40px;
+    margin-top:5px;
+    display: flex;
+}
 
 #showCollectionFormBtn{
 	margin-left: 5px;
@@ -1240,10 +1223,13 @@ a.page-hint {
     float:left;
 }
 #showCollectionFormBtn > span i.icon-inside {
-    color: #046383;
+    color: #428bca;
     margin-top: 2px;
 }
-
+#showCollectionFormBtn span.fa-stack {
+	font-size: 21px;
+	margin-top:3px;
+}
 #uploadIcon  div.btnLabel,
 #showCollectionFormBtn  div.btnLabel {
     padding-top: 4px;
@@ -1265,6 +1251,18 @@ a.page-hint {
     justify-content:center;
 }
 
+#uploadIcon > i{
+	font-size: 21px;
+	margin-right:3px;
+	margin-top:3px;
+}
+
+#showCollectionFormBtn > i{
+	font-size: 21px;
+	margin-right:3px;
+	margin-top:3px;
+}
+
 .panel-info{
     padding: 15px;
     background-color: #f2f6f9;
@@ -1276,7 +1274,7 @@ a.page-hint {
 }
 
 .panel-info > .name {
-    font-size: 1em;
+    font-size: 15px;
     margin-bottom: 10px;
 }
 
@@ -1324,7 +1322,7 @@ div.dataTables_wrapper .dataTables_length{
 }
 div.dataTables_wrapper .dataTables_length select{
     width:65px !important;
-    font-size:1em;
+    font-size:12px;
     margin-right:10px;
     height:35px;
 }
@@ -1381,7 +1379,7 @@ alert-dialog {
     overflow: auto;
 }
 .modal .modal-header{
-    background-color: #046383;
+    background-color: #428bca;
     color: #fff;
     border-radius: 5px 5px 0 0;
 }
@@ -1414,15 +1412,9 @@ alert-dialog {
 	color: #777;
 }
 
-.btn-link { color: #046383;}
-.btn-link:hover, .btn-link:active, .btn-link:focus, .btn-link:visited { color: #0b3e73;}
-
 .btn-primary, .panel-primary > .panel-heading {
-	background: #046383;
-	border-color: #0b3e73;
-}
-.btn-primary:visited, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-	color:#fff;
+	background: #2c95dd;
+	border-color: #2c95dd;
 }
 
 .btn-primary:hover {
@@ -1430,11 +1422,11 @@ alert-dialog {
 }
 
 .navbar{
-	background: #7f7f7f;
+	background: #2c95dd;
 }
 
 .navbar-toggle{
-	background: #7f7f7f;
+	background: #2c95dd;
 	border: 0;
 }
 
@@ -1459,20 +1451,13 @@ alert-dialog {
 #page-wrapper:last-child, #page-wrapper-tickets:last-child{
 	margin-bottom: 10%;
 }
-.nav .open>a.dropdown-toggle{
-  background-color: #35394a;
-}
-.metalnx-topnav .dropdown-toggle{
-  text-decoration: none;
-}
 
-.dropdown-toggle .navbar-top-links-text, .dropdown-toggle .fa-user {
+.navbar-top-links-text {
 	color: #fff;
 }
 
 .navbar-top-links li {
     display: inline-block;
-
 }
 
 .navbar-top-links li:last-child {
@@ -1491,12 +1476,18 @@ alert-dialog {
 }
 
 i.fa-square-o.menu-icon{
-    font-size: 3em;
+    font-size: 42px;
 }
 i.fa-user.menu-icon{
-    font-size: 2em;
+    font-size: 25px;
 }
 
+#uploadStatusIcon{
+    padding-right: 0;
+    position: absolute;
+    top: 0;
+    right: 100px;
+}
 #uploadStatusIcon li a{
 	color: #656363;
 	padding-right: 0;
@@ -1506,7 +1497,7 @@ i.fa-user.menu-icon{
 ul.navbar-top-links > li.dropdown > .dropdown-toggle:hover,
 ul.navbar-top-links > li.dropdown > .dropdown-toggle:focus,
 ul.navbar-top-links > li.open > a.dropdown-toggle{
-	background-color: #046383;
+	background-color: #2c95dd;
 	box-shadow: inset 0 3px 10px rgba(0,0,0,.125);
     border-top: none;
     border-bottom: none;
@@ -1551,7 +1542,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .navbar-top-links .dropdown-user {
     right: 0;
     left: auto;
-    background-color: #046383;
+    background-color: #2c95dd;
     margin-top: 0;
 }
 .navbar-top-links .dropdown-user > li > a{
@@ -1603,7 +1594,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 
 .sidebar ul li a:hover, .sidebar ul li a:focus, .sidebar ul li a.active{
     background: #35394a;
-    border-right: 6px solid #046383;
+    border-right: 6px solid #2c95dd;
 }
 
 .sidebar .arrow {
@@ -1635,7 +1626,6 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 	text-align: right;
 	width:100%;
 	bottom: -6px;
-  font-size:1.5em;
 }
 
 .navbar-default .navbar-toggle:hover,
@@ -1685,7 +1675,7 @@ a.btn-primary > i  {
 }
 
 #uploadForm > .text-right{
-	font-size:1em;
+	font-size:11px;
 	margin-bottom:1px;
 }
 #uploadForm > .well{
@@ -1777,12 +1767,12 @@ a.btn-primary > i  {
 }
 
 #ui-datepicker-div{
-	font-size:1em;
+	font-size:14px;
 }
 
 footer {
 	text-align: center;
-	font-size:1em;
+	font-size:12px;
 	width: 100%;
 	color: #777;
 	margin-top: -20px;
@@ -1807,7 +1797,7 @@ footer {
 	margin-bottom: 0;
 }
 .grid-status-title.normal{
-	color: #3b834f;
+	color: #5CB85C;
 }
 .grid-status-title.error{
 	color:#d9534f;
@@ -1828,14 +1818,17 @@ footer {
 #totalStorageSum table > tbody > tr > td:nth-child(2) > span  {
 	margin-left: 3px;
 }
-.resourceMapDashboardWrapper{}
-
+.resourceMapDashboardWrapper{
+	height: 630px;
+}
 .resourceMapDashboardWrapper .panel{
 	border-radius: 5px;
 	margin-bottom: 10px;
 	border: 1px solid #CBDFF7;
 }
-.resourceMapDashboardWrapper .panel-body{}
+.resourceMapDashboardWrapper .panel-body{
+	height: 610px;
+}
 
 .resourceMapDashboardWrapper #resourceInfo{
 	z-index:1;
@@ -1869,33 +1862,29 @@ footer {
     border-top: 0px solid #DDD;
     border-bottom: 1px solid #DDD;
 }
-#isilonServerListPanel, #isilonServerListPanel .panel, #nonResourceServerListPanel, #nonResourceServerListPanel .panel{
-	height: auto;
+#isilonServerListPanel, #isilonServerListPanel .panel, #nonResourceServerListPanel, #nonResourceServerListPanel .panel, #msiAPIVersionPanel .panel{
+	height: 165px;
 }
 .dashboardCard {
-	color: #046383;
+	color: #3580bd;
 	border-radius: 0px;
 }
 .dashboardCard .panel-body{
 	text-align:center;
 	padding: 0px;
 }
-.dashboardCard .panel-body div:nth-child(3){
-  margin-top: 10px;
-  font-size: 1.2rem;
-}
 .dashboardCard .panel-body .cardIconWrapper{
-	background-color: #046383;
+	background-color: #3580bd;
 	position: absolute;
 	height: 65%;
 	top: 0px;
 	left: 16px;
 	width: 23%;
 	border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 .dashboardCard .panel-body .cardIcon{
-	font-size: 1em;
+	font-size: 18pt;
 	padding-top: 9px;
 	color: #fff;
 }
@@ -1906,13 +1895,12 @@ footer {
 .dashboardCard .panel-body .fa-stack{
 	width: 25%;
 	padding-top: 3px;
-	font-size: 1em;
+	font-size: 13pt;
 }
 .dashboardCard .btn-link{
 	margin-right: 14px;
 	margin-top: 1px;
-	font-size: 1em;
-  color: #046383;
+	font-size: 13pt;
 }
 #serverListPanel .dashboardServersList{
 	width: 100%;
@@ -2047,7 +2035,7 @@ form.registerForm .bootstrap-tagsinput {
 }
 
 .resulting-permission {
-    font-size: 1em;
+    font-size: 12px;
     color: gray;
     padding-left: 5px;
 }
@@ -2097,12 +2085,12 @@ form.registerForm .bootstrap-tagsinput {
 	}
 	.sidebar ul li.menu-group-title{
 	    padding: 1px 0;
-	    background: #046383;
-	    font-size: .9em;
+	    background: #3580bd;
+	    font-size: .7em;
 	    color: #f9f9f9;
 	    width: 100%;
 	    text-align: center;
-	    border: 1px solid #046383;
+	    border: 1px solid #3580bd;
 	    font-family: Verdana, Geneva, sans-serif;
 	}
 	.scrollable-table {
@@ -2171,12 +2159,12 @@ form.registerForm .bootstrap-tagsinput {
 	}
 	#side-menu li a span.fa-stack.fa-lg
 	{
-		font-size:1.1em;
+		font-size:20px;
 	}
 
 	#side-menu li a span.fa-stack.fa-lg > .fa-folder.fa-stack-2x
 	{
-		font-size:3em;
+		font-size:40px;
 	}
 
 	.sidebar ul li a {
@@ -2185,15 +2173,15 @@ form.registerForm .bootstrap-tagsinput {
 	}
 	.sidebar ul li a i{
 		display: block;
-		font-size: 2em;
+		font-size: 30px;
 	}
 	.sidebar ul li:last-child a {
 		border-bottom-style: none;
 	}
 	.sidebar ul li.menu-group-title{
 	    padding: 1px 0;
-	    background: #046383;
-	    font-size: .9em;
+	    background: #3580bd;
+	    font-size: .7em;
 	    color: #f9f9f9;
 	    width: 100%;
 	    text-align: center;
@@ -2250,6 +2238,7 @@ form.registerForm .bootstrap-tagsinput {
 /* Button btn-default*/
 
 .btn-default {
+    color: #2c95dd;
     background-color: #fff;
     border-color: #CBDFF7;
 }
@@ -2260,7 +2249,7 @@ form.registerForm .bootstrap-tagsinput {
 .btn-default.active,
 .open>.dropdown-toggle.btn-default
 {
-    color: #046383;
+    color: #2c95dd;
     background-color: #ffffff;
     border-color: #CBDFF7;
 }
@@ -2335,17 +2324,3 @@ form.registerForm .bootstrap-tagsinput {
 #existingIpIcon{
     left: 360px;
 }
-
-#metalnx-topnav {
-  font-size: 15px;
-  background-color: #35394a;
-}
-
-#metalnx-topnav>li>a:hover, #metalnx-topnav>li>a:focus {
-  background-color: #6c6c63;
-}
-
-.content_menu{
-			height:auto;
-			overflow:auto;
-		}

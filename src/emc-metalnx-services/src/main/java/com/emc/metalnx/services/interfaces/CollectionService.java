@@ -348,8 +348,10 @@ public interface CollectionService {
 	 * @param collPath
 	 * @return the boolean
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
 	 */
-	boolean getInheritanceOptionForCollection(String collPath) throws DataGridConnectionRefusedException;
+	boolean getInheritanceOptionForCollection(String collPath)
+			throws DataGridConnectionRefusedException, JargonException;
 
 	/**
 	 * Gets the replica number of a collection or data object in the grid.

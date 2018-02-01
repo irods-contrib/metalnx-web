@@ -29,8 +29,10 @@ import java.util.Stack;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.utils.MiscIRODSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,25 +242,24 @@ public class BrowseController {
 	 * @return treeView template that renders all nodes of certain path (parent)
 	 * @throws DataGridException
 	 *             if Metalnx cannot find collections and objects inside the path
+	 * @throws JargonException
 	 */
 	@RequestMapping(value = "/getSubDirectories/", method = RequestMethod.POST)
-	public String getSubDirectories(final Model model, @RequestParam("path") String path) throws DataGridException {
+	public String getSubDirectories(final Model model, @RequestParam("path") String path)
+			throws DataGridException, JargonException {
 
 		logger.info("getSubDirectories()");
 		logger.info("model:{}", model);
 		logger.info("path:{}", path);
 
-		// removes all ocurrences of "/" at the end of the path string
-		while (path.endsWith("/") && !"/".equals(path)) {
-			path = path.substring(0, path.lastIndexOf("/"));
-		}
-
 		logger.info("Get subdirectories of {}", path);
 
-		System.out.println("In GetSubdirectories!!");
-		System.out.println("path :: " + path);
-
-		return getCollBrowserView(model, path);
+		try {
+			return getCollBrowserView(model, path);
+		} catch (Exception e) {
+			logger.error("exception getting coll browser view", e);
+			throw e;
+		}
 	}
 
 	/**
@@ -980,20 +981,26 @@ public class BrowseController {
 	 * @throws DataGridConnectionRefusedException
 	 *             if Metalnx cannot connect to the grid.
 	 */
-	private String getCollBrowserView(final Model model, String path) throws DataGridException {
+	private String getCollBrowserView(final Model model, String path) throws JargonException, DataGridException {
 		logger.info("getCollBrowserView()");
 
 		logger.info("model:{}", model);
 		logger.info("path:{}", path);
+
 		if (cs.isPathValid(path)) {
 			if (path.endsWith("/") && path.compareTo("/") != 0) {
 				path = path.substring(0, path.length() - 1);
 			}
-			currentPath = path;
+
 		} else {
-			model.addAttribute("invalidPath", path);
-			path = currentPath;
+			// I don't have a path so use the user home
+			model.addAttribute("invalidPath", path); // TODO: refactor into something more elegant - mcc
+			IRODSAccount irodsAccount = irodsServices.getCollectionAO().getIRODSAccount();
+			path = MiscIRODSUtils.buildIRODSUserHomeForAccountUsingDefaultScheme(irodsAccount);
+
 		}
+
+		currentPath = path;
 
 		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
 		logger.info("find collection by name:{}", path);
