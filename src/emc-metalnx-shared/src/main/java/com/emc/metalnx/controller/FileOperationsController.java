@@ -310,9 +310,11 @@ public class FileOperationsController {
 	 * @return collectionForm with fields set
 	 * @throws DataGridException
 	 *             if item cannot be modified
+	 * @throws JargonException
 	 */
 	@RequestMapping(value = "modify/", method = RequestMethod.GET)
-	public String showModifyForm(final Model model, @RequestParam("path") final String path) throws DataGridException {
+	public String showModifyForm(final Model model, @RequestParam("path") final String path)
+			throws DataGridException, JargonException {
 		String currentPath = browseController.getCurrentPath();
 		String parentPath = browseController.getParentPath();
 

@@ -748,16 +748,24 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public boolean getInheritanceOptionForCollection(String collPath) throws DataGridConnectionRefusedException {
+	public boolean getInheritanceOptionForCollection(String collPath)
+			throws DataGridConnectionRefusedException, JargonException {
 		logger.info("getInheritanceOptionForCollection()");
+
+		if (collPath == null || collPath.isEmpty()) {
+			throw new IllegalArgumentException("null or empty collPath");
+		}
+
+		logger.info("collPath:{}", collPath);
 
 		CollectionAO collectionAO = irodsServices.getCollectionAO();
 		try {
 			return collectionAO.isCollectionSetForPermissionInheritance(collPath);
 		} catch (FileNotFoundException e) {
-			logger.error("Collection {} does not exist: {}", collPath, e.getMessage());
+			logger.warn("Collection {} does not exist: {}", collPath, e.getMessage());
 		} catch (JargonException e) {
 			logger.error("Could not retrieve inheritance option value for", collPath, e.getMessage());
+			throw e;
 		}
 		return false;
 	}
