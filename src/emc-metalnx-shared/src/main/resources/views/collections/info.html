@@ -67,6 +67,33 @@
 								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
 						</div>
 					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.collectionmapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
+						</div>
+					</div>
 					<!-- Will we have checksum on collection??? <div class="row">
                     <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.checksum.label}"></label></div>
                     <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getChecksum() }"></span></div>
@@ -149,16 +176,61 @@
 
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label th:text="#{collections.management.table.size.label}"></label>
+							<label th:text="#{collections.management.table.datapath.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span
-								th:text="${ dataProfile.getDomainObject().getDisplayDataSize() }"></span>
+								th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label text="Comments"></label>
+							<label th:text="#{collections.management.table.datatypename.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataTypeName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.expiry.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getExpiry() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datamapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.comments.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span th:text="${ dataProfile.getDomainObject().getComments() }"></span>

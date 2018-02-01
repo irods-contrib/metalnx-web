@@ -106,7 +106,7 @@
 		</div>
 
 		<div class="row nopadding">
-			<div class="col-sm-12 col-md-12 col-xs-12 text-left">
+			<div class="col-sm-9 col-md-9 col-xs-12 text-left">
 				<div class="breadcrumb-wrapper">
 					<ol class="breadcrumb">
 						<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
@@ -149,14 +149,15 @@
 
 				</div>
 			</div>
-		</div>
-
-
-		<div class="row nopadding">
-			<div class="col-md-4 col-sm-4 col-xs-12 pull-right">
+			
+			<div class="col-md-3 col-sm-3 col-xs-12 pull-right">
 				<a href="#" class="pull-right"><i th:class="${ iconToDisplay }"></i></a>
 			</div>
+		
 		</div>
+
+
+		
 
 
 		<!-- <div class="col-xs-12 col-md-10 col-sm-9 ">
@@ -174,7 +175,7 @@
 
 		</div> -->
 
-		<div class="row">
+		<div class="row nopadding">
 			<div class="col-xs-12 col-md-3 col-sm-3 text-left">
 				<span><b>Collection Name</b></span> <br /> <span
 					th:text="${ dataProfile.getChildName() }"></span>

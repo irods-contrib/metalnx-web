@@ -13,10 +13,10 @@
 
 		<div id="tabs">
 				<ul>
-					<li><a href="#info"
+					<li><a href="#details"
 						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 							<span><i class="fa fa-info-circle"></i></span> <span
-							title="File information">Info</span>
+							title="File information">Details</span>
 					</a></li>
 
 					<li><a href="#metadata"
@@ -41,7 +41,7 @@
 				
 				<div class="content_menu">
 					
-					<div id="info">
+					<div id="details">
 						<th:block th:include="collections/info :: infoView"></th:block>
 						<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
 					</div>
