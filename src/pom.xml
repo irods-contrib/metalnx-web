@@ -74,6 +74,19 @@
 		<build.number>DEV</build.number>
 
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>internal.repo</name>
+			<url>file://${git.repo.root}/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>internal.repo.snapshot</id>
+			<name>internal.repo.snapshot</name>
+			<url>file://${git.repo.root}/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<modules>
 		<module>emc-metalnx-core</module>
