@@ -42,7 +42,7 @@ function getPermissionDetails(path){
 function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
 	window.location.hash = "preview";
-	var url = "/emc-metalnx-web/preview" + path ;
+	var url = "/emc-metalnx-web/preview/preview";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);
 }
 
