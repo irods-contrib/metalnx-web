@@ -43,12 +43,11 @@ function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
 	window.location.hash = "preview";
 	var url = "/emc-metalnx-web/preview/preview";
-	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);
+	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
 }
 
-function displayPreviewImage(data){
-	console.log("Collection displayPreviewImage() :: " + data)
-	$("#preview").html(data);
+function displayPreviewImage(data, textStatus, xhr){
+	$("#previewFile").attr("src","data:image/png;base64," + data);	
 }
 
 function displayInfoDetails(data){

@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
 import org.irods.jargon.core.exception.JargonException;
@@ -22,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
@@ -58,10 +63,10 @@ import com.emc.metalnx.services.interfaces.UserService;
 @SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/preview")
 public class PreviewController {
-	
+
 	@Autowired
 	CollectionService cs;
-	
+
 	@Autowired
 	PermissionsService permissionsService;
 
@@ -76,16 +81,16 @@ public class PreviewController {
 
 	@Autowired
 	DataProfilerSettings dataProfilerSettings;
-	
+
 	@Autowired
 	ServletContext context;
-	
+
 	@Autowired
 	PreviewService previewService; 
 
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PreviewController.class);
-	
+
 	/**
 	 * Responds the preview/ request
 	 *
@@ -94,16 +99,30 @@ public class PreviewController {
 	 * @throws JargonException
 	 * @throws DataGridException
 	 */
-	
+
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/preview", method = RequestMethod.GET)
-	public void getPreview(final Model model, final HttpServletRequest request,
-			HttpServletResponse response , @RequestParam("path") final String path) throws JargonException {
+	public ResponseEntity<byte[]> getPreview(final Model model, 
+			final HttpServletRequest request,@RequestParam("path") final String path, 
+			HttpServletResponse response) throws JargonException {
 		
-		previewService.filePreview(path, response);
-		//return "preview/imagePreview :: imagePreview";
+		HttpHeaders responseHeaders = new HttpHeaders();
+		ResponseEntity responseEntity = null;
+		
+		if(!path.isEmpty()) {
+			byte[] media = previewService.filePreview(path, response);
+			byte[] encodeBase64 = Base64.encodeBase64(media);
+			responseEntity = new ResponseEntity<>(encodeBase64, responseHeaders, HttpStatus.OK);
+		}else {
+			responseEntity = new ResponseEntity("File not found", HttpStatus.OK);
+		}
+		
+        responseHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+		return responseEntity;
 	}
-	
-	
-	
-	
+
+
+
+
 }
