@@ -6,8 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 public interface PreviewService {
-	
-	public ResponseEntity<byte[]> filePreview(String path, HttpServletResponse response);
-	
-	public HttpHeaders getHeader();
+
+	public boolean filePreview(String path, HttpServletResponse response);
+
 }

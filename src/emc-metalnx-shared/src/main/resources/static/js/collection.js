@@ -42,12 +42,14 @@ function getPermissionDetails(path){
 function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
 	window.location.hash = "preview";
-	var url = "/emc-metalnx-web/preview/preview";
+	var url = "/emc-metalnx-web/preview/prepareForPreview/";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
 }
 
-function displayPreviewImage(data, textStatus, xhr){
-	$("#previewFile").attr("src","data:image/png;base64," + data);	
+function displayPreviewImage(data){
+	//$("#previewFile").attr("src","data:image/png;base64," + data);	
+	$("#preview").html(data);
+	
 }
 
 function displayInfoDetails(data){
