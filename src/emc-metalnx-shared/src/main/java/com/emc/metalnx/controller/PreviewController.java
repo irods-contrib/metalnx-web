@@ -106,19 +106,15 @@ public class PreviewController {
 	public ResponseEntity<byte[]> getPreview(final Model model, 
 			final HttpServletRequest request,@RequestParam("path") final String path, 
 			HttpServletResponse response) throws JargonException {
-		
-		HttpHeaders responseHeaders = new HttpHeaders();
-		ResponseEntity responseEntity = null;
+			
+		ResponseEntity responseEntity = null;		
 		
 		if(!path.isEmpty()) {
-			byte[] media = previewService.filePreview(path, response);
-			byte[] encodeBase64 = Base64.encodeBase64(media);
-			responseEntity = new ResponseEntity<>(encodeBase64, responseHeaders, HttpStatus.OK);
+			responseEntity = previewService.filePreview(path, response);			
 		}else {
-			responseEntity = new ResponseEntity("File not found", HttpStatus.OK);
+			responseEntity = new ResponseEntity("File path is not valid", HttpStatus.OK);
 		}
-		
-        responseHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+		     
 		return responseEntity;
 	}
 
