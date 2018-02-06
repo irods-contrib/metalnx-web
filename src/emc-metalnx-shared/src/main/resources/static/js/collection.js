@@ -39,6 +39,18 @@ function getPermissionDetails(path){
 	ajaxEncapsulation(url, "POST", {path: path}, displayPermissionDetails, null, null);
 }
 
+function getPerview(path){
+	console.log("Collection getPreview() :: " + path)
+	window.location.hash = "preview";
+	var url = "/emc-metalnx-web/preview/prepareForPreview/";
+	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
+}
+
+function displayPreviewImage(data){
+	//$("#previewFile").attr("src","data:image/png;base64," + data);	
+	$("#preview").html(data);
+	
+}
 
 function displayInfoDetails(data){
 	//$("#table-loader").hide();
