@@ -1,7 +1,7 @@
 <!-- Create Ticket Form -->
 <form role="form" class="container-fluid registerForm" method="POST" th:object="${ticket}" th:action="@{${requestMapping}}">
-    <input type="hidden" class="form-control" id="inputPath" th:field="*{path}"/>
-    <input type="hidden" class="form-control" id="usersList"/>
+    <input type="hidden" class="form-control" id="inputPath" th:field="*{path}" title="path"/>
+    <input type="hidden" class="form-control" id="usersList" title="User list"/>
     <div class="form-group">
         <label for="selectedPath" class="control-label" th:text="#{ticket.form.path.label}"></label>
         <span id="selectedPath"></span>
@@ -9,14 +9,14 @@
     <div class="form-group">
         <label for="input-permission" class="control-label" th:text="#{ticket.form.permission.label}"></label>
         <div class="">
-            <select id="input-permission" class="form-control" th:field="*{type}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}" aria-label="permission">
+            <select id="input-permission" class="form-control" th:field="*{type}" th:readonly="${!#strings.isEmpty(ticket.ticketString)}" aria-label="permission" title="permission">
                 <option value="READ" th:text="#{ticket.form.permission.option.read.label}"></option>
                 <option value="WRITE" th:text="#{ticket.form.permission.option.write.label}"></option>
             </select>
         </div>
     </div>
-    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{ticket.form.show.advanced.settings.button}"></button>
-    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{ticket.form.hide.advanced.settings.button}"></button>
+    <button id="btnShowAdvancedSettings" type="button" class="btn btn-link pull-right" th:text="#{ticket.form.show.advanced.settings.button}" title="Show"></button>
+    <button id="btnHideAdvancedSettings" type="button" class="btn btn-link pull-right hidden" th:text="#{ticket.form.hide.advanced.settings.button}" title="Hide"></button>
     <div class="advanced-settings hidden">
         <div class="form-group optional">
             <label for="inputTicketString" class="control-label" th:text="#{ticket.form.ticket.string.label}"></label>
@@ -74,7 +74,7 @@
                 <ul id="listHostnames">
                     <th:block th:each="host: ${ticket.hosts}">
                         <li th:id="li_+${host}"><span th:text="${host}"></span><a class='btn btn-link pull-right btn-remove' th:onclick="'javascript:removeHost(\'' + ${host} + '\');'"><i class='fa fa-minus-circle text-danger' aria-hidden='true'></i></a></li>
-                        <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts'/>
+                        <input th:id="input_+${host}" type='hidden' class='form-control' th:value="${host}" name='hosts' title="hosts"/>
                     </th:block>
                 </ul>
             </div>

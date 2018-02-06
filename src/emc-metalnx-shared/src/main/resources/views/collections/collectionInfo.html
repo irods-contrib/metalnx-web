@@ -5,48 +5,53 @@
 	layout:decorator="template">
 
 <body>
-	<div layout:fragment="content">
+	<div aria-labelledby="collManagement" layout:fragment="content">
+		<th:block
+			th:include="collections/collectionHeader :: collectionHeaderView"></th:block>
 
 		<div class="row">
+
 			<th:block th:include="collections/summary :: summaryView"></th:block>
 		</div>
 
-	<div class="row">
-				<div id="tabs">
-			<ul>
-				<li><a href="#details"
-					th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-info-circle"></i></span> <span
-						title="File information">Details</span>
-				</a></li>
+		<div class="row">
+			<div id="tabs">
+				<ul>
+					<li><a href="#details"
+						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-info-circle" alt="File Info"></i></span> <span
+							title="collection information">Details</span>
+					</a></li>
 
-				<li><a href="#metadata"
-					th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
-				</a></li>
+					<li><a href="#metadata"
+						th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-tags"></i></span> <span
+							title="Collection Metadata">Metadata</span>
+					</a></li>
 
-				<li><a href="#permission" id="permissions"
-					th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-				</a></li>
+					<li><a href="#permission" id="permissions"
+						th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-lock"></i></span> <span
+							title="Collection Permissions">Permissions</span>
+					</a></li>
 
-			</ul>
+				</ul>
 
 
 
-			<div class="content_menu">
-							
-				<div id="details">
-					<th:block th:include="collections/info :: infoView"></th:block>
-					<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
+				<div class="content_menu">
+
+					<div id="details">
+						<th:block th:include="collections/info :: infoView"></th:block>
+						<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
+					</div>
+					<div id="metadata"></div>
+
+					<div id="permission"></div>
+
 				</div>
-				<div id="metadata"></div>
-
-				<div id="permission"></div>
-			
 			</div>
 		</div>
-	</div>
 
 
 
@@ -61,9 +66,7 @@
 		<script>
 			$(document).ready(function(e) {
 				$("#tabs").tabs();
-			});			
-			
-			
+			});
 		</script>
 
 	</div>

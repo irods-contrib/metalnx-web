@@ -18,7 +18,7 @@
 	<div class="modal-dialog modal-lg" aria-labelledby="myCopyModalLabel">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
+				<button type="button" class="close" data-dismiss="modal" title="Close">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 				</button>
 				<h4 class="modal-title" id="myCopyModalLabel">Step 1 - Select Template(s)</h4>
@@ -26,10 +26,10 @@
 			
 			<div class="modal-body">
 				<div class="" th:if="${foundTemplates}">
-					<table class="table" id="templatesListTable" >
+					<table class="table" id="templatesListTable" summary="This Contains Templates.">
 						<thead>
 							<tr>
-								<th><input type="checkbox" name="selectAllCheckboxes" /></th>
+								<th><input type="checkbox" name="selectAllCheckboxes" title="select all"/></th>
 								<th th:text="#{templates.management.table.name.label}"></th>
 								<th th:text="#{templates.management.table.owner.label}"></th>
 								<th th:text="#{templates.management.table.description.label}"></th>
@@ -39,7 +39,8 @@
 						<tbody id="">
 							<tr th:each="template : ${templates}">
 								<td class="">
-									<input type="checkbox" name="templateCheckboxes" th:value="${template.id}" th:id="${template.templateName}" aria-label="template checkboxes"/>
+									<input type="checkbox" name="templateCheckboxes" th:value="${template.id}" th:id="${template.templateName}" aria-label="template checkboxes"
+									title="template checkboxes"/>
 								</td>
 								<td><span th:text="${template.templateName}"></span></td>
 								<td><span th:text="${template.owner}"></span></td>
@@ -53,11 +54,13 @@
 			<div class="modal-footer">	
 				<div class="row">
 					<div class="col-xs-6">
-						<button type="button" class="btn btn-default pull-left cancelBtn" th:text="#{forms.cancel.action.button}" data-dismiss="modal" ></button>
+						<button type="button" class="btn btn-default pull-left cancelBtn" th:text="#{forms.cancel.action.button}" data-dismiss="modal" 
+						title="Cancel"></button>
 					</div>
 					<div class="col-xs-6">
 						<div class="pull-right">
-							<button type="button" class="btn btn-primary" id="listTemplateFieldsBtn" onclick="listTemplateFields();" disabled="disabled">
+							<button type="button" class="btn btn-primary" id="listTemplateFieldsBtn" onclick="listTemplateFields();" disabled="disabled"
+							title="Next">
 								Next &nbsp; <i class="fa fa-chevron-right"></i> 
 							</button>		
 						</div>	

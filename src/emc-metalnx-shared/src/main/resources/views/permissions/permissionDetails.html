@@ -22,7 +22,7 @@
 
                 <h4 class="property-title pull-left"><i class="fa fa-lock"></i><span th:text="#{permissions.page.title}"></span></h4>
                 <div th:if="${userCanModify}" class="btn-group pull-right" id="addPermissionButtonDiv">
-                    <button class="btn btn-primary btn-property btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button title="Add" class="btn btn-primary btn-property btn-sm dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-plus"></i> <span th:text="#{permissions.page.add.button}"></span>  <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" th:if="${userCanModify}">
@@ -43,7 +43,8 @@
                 <div>
                     <p th:if="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" th:text="#{no.permission.available}" class="col-xs-12"></p>
 
-                    <table th:unless="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" id="permissionsTable" class="table table-hover" >
+                    <table th:unless="${#lists.isEmpty(groupPermissions) and #lists.isEmpty(userPermissions)}" id="permissionsTable" class="table table-hover" 
+                    summary="This contains the user permission information.">
                         <thead>
                             <tr>
                                 <th th:text="#{permissions.table.user.group.column}"></th>
@@ -87,7 +88,8 @@
                                     <input
                                         type="checkbox"
                                         class="userBookmarkCheckbox"
-                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" aria-label="user bookmark"/>
+                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" aria-label="user bookmark" title
+                                        ="user bookmark"/>
                                 </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"
@@ -128,7 +130,7 @@
                                     <input
                                         type="checkbox"
                                         class="groupBookmarkCheckbox"
-                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" aria-label="group bookmark checkbox"/>
+                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" aria-label="group bookmark checkbox" title="group bookmark checkbox"/>
                                 </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"

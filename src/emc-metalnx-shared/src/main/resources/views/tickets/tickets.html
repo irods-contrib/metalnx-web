@@ -64,7 +64,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <button type="button" id="ticketLoggedAccessBtn" class="btn btn-primary btn-sm pull-right"
-                        th:text="#{ticket.use.label}" style="margin-bottom: 10px;">
+                        th:text="#{ticket.use.label}" style="margin-bottom: 10px;" title="Use Ticket">
                 </button>
             </div>
         </div>
@@ -79,7 +79,7 @@
 
             <div class="col-sm-12 hideElement" id="ticketNotDeletedSuccessfully">
                 <div class="alert alert-danger alert-dismissible text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
+                    <button type="button" class="close" data-dismiss="alert" title="Close">
                         <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                     </button>
                     <i class="fa fa-check" aria-hidden="true"></i><span th:text="#{ticket.delete.feedback.error}"></span>
@@ -88,10 +88,10 @@
         </div>
         <div class="row">
             <div class="col-sm-12 table-responsive" >
-                <table class="table table-hover" id="ticketsTable">
+                <table class="table table-hover" id="ticketsTable" summary="This contains ticket(s) information.">
                     <thead>
                         <tr>
-                            <th class="tableCheckBoxCol"><input type="checkbox" id="selectAllTicketsCheckboxes" value="1" /></th>
+                            <th class="tableCheckBoxCol"><input type="checkbox" id="selectAllTicketsCheckboxes" value="1"  title="select all"/></th>
                             <th th:text="#{ticket.table.string.label}"></th>
                             <th th:text="#{ticket.table.permission.label}"></th>
                             <th th:text="#{ticket.table.owner.label}"></th>
@@ -107,7 +107,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="deleteTicketConfirmLabel" th:text="#{ticket.delete.confirm.modal.title}"></h4>
                     </div>
                     <div class="modal-body">
@@ -134,8 +134,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{ticket.delete.confirm.modal.button.cancel}"></button>
-                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{ticket.delete.confirm.modal.button.delete}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{ticket.delete.confirm.modal.button.cancel}"
+                        title="Cancel"></button>
+                        <button type="button" class="btn btn-primary" onclick="removeElement();" th:text="#{ticket.delete.confirm.modal.button.delete}"
+                        title="Delete"></button>
                     </div>
                 </div>
             </div>
@@ -145,7 +147,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
+                        <button type="button" class="close" data-dismiss="modal" title="Close">
                             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         </button>
                         <h4 id="ticketModifyTitle" class="modal-title" th:text="#{ticket.form.title.modify}"></h4>
@@ -153,9 +155,9 @@
                     <div class="modal-body"><div id="ticketFormPanel"></div></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
-                                th:text="#{ticket.form.button.cancel}"></button>
+                                th:text="#{ticket.form.button.cancel}" title="Cancel"></button>
                         <button id="modifyTicketFormBtn" type="submit" class="btn btn-primary"
-                                data-dismiss="modal" th:text="#{ticket.form.button.modify}">
+                                data-dismiss="modal" th:text="#{ticket.form.button.modify}" title="Modify">
                         </button>
                     </div>
                 </div>
@@ -166,7 +168,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
+                        <button type="button" class="close" data-dismiss="modal" title="Close">
                             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         </button>
                         <h4 id="deleteTicketsModalTitle" class="modal-title" th:text="#{tickets.delete.selected.label}"></h4>
@@ -176,9 +178,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
-                                th:text="#{confirmation.message.cancel}"></button>
+                                th:text="#{confirmation.message.cancel}" title="Cancel"></button>
                         <button onclick="deleteTickets();" type="button" class="btn btn-primary"
-                                data-dismiss="modal" th:text="#{confirmation.message.yes}"></button>
+                                data-dismiss="modal" th:text="#{confirmation.message.yes}" title="Confirm"></button>
                     </div>
                 </div>
             </div>

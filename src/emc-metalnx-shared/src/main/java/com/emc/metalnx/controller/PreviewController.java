@@ -38,6 +38,8 @@ public class PreviewController {
 	@Autowired
 	DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory;
 	
+	private String previewFilePath;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PreviewController.class);
 
 	/**
@@ -79,13 +81,12 @@ public class PreviewController {
 			template = "collections/imagePreview :: noPreview";
 		
 		return template;
-		//return "collections/imagePreview :: imagePreview";
 	}
 	
 	
-	/*
-	 *	@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
-	public void prepareForPreview(@RequestParam("path") final String path, RedirectAttributes redirectAttributes) throws DataGridException {
+	
+/*	@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
+	public void prepareForPreview(@RequestParam("path") final String path) throws DataGridException {
 		
 		String mimeType = null;
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
@@ -101,7 +102,7 @@ public class PreviewController {
 		
 		if(mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif") || 
 				mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
-			getPreview(path,redirectAttributes);
+			getPreview(path);
 		else
 			noPreview();
 		
@@ -114,10 +115,11 @@ public class PreviewController {
 	
 	
 	//@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
-	public String getPreview(String path,RedirectAttributes redirectAttributes) throws DataGridException{
+	public String getPreview(String path) throws DataGridException{
 		
+		previewFilePath = path;
 		logger.info("prepareForPreview for {} ::" +path);			
-		redirectAttributes.addAttribute("path", path);
+		
 				
 		return "redirect:/image/previewFilePath";
 		

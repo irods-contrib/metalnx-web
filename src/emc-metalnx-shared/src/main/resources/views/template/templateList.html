@@ -28,10 +28,10 @@
 
 		<div class="col-sm-12">
 			<div class="">
-				<table class="table table-hover" id="templatesListTable">
+				<table class="table table-hover" id="templatesListTable" summary="This contains the template(s) information.">
 					<thead>
 						<tr>
-							<th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" /></th>
+							<th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" title="select all"/></th>
 							<th class="tableCheckBoxCol"></th>
 							<th th:text="#{templates.management.table.name.label}"></th>
 							<th th:text="#{templates.management.table.version.label}"></th>
@@ -50,7 +50,8 @@
 									type="checkbox"
 									name="selectedTemplates"
 									th:id="${'template_' + template.id }"
-									th:value="${ template.id }" />
+									th:value="${ template.id }" 
+									title="Select Template"/>
 							</td>
 							<td>
 								<span th:if="${template.accessType == 'private'}" class="fa fa-lock"></span>
@@ -82,7 +83,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <button type="button" class="close" data-dismiss="modal" title="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					  <h4 class="modal-title" id="removalModalTitle" th:text="#{confirmation.removal.title}">
 					  </h4>
 					</div>
@@ -92,10 +93,10 @@
 					</div>
 					<div class="modal-footer">
 					  <button type="button" class="btn btn-default" data-dismiss="modal"
-					  	th:text="#{confirmation.message.cancel}">
+					  	th:text="#{confirmation.message.cancel}" title="Cancel">
 					  </button>
 					  <button type="button" class="btn btn-primary" onclick="removeElement();"
-					  	th:text="#{confirmation.message.yes}" id="removeTemplatesConfBtn">
+					  	th:text="#{confirmation.message.yes}" id="removeTemplatesConfBtn" title="Confirm">
 					  </button>
 					</div>
 				</div>
