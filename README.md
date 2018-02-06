@@ -123,6 +123,14 @@ Incorporated new TrashOperationsAO code from https://github.com/DICE-UNC/jargon/
 This replaces the rule call, and now functions normally for logged in users. There remains a few issues with empty trash as rodsadmin but
 that will be addressed at the Jargon or iRODS level.
 
+#### return from search to collections using deep links #34
+
+As a transitional measure, the current favorites, search, and bookmarks functions have a listing that is distinct from the
+main collections browser view. In order to support deep linking and a reasonably functioning back button, selecting an item
+from any of these search views opens the collections view using the deep link approach in a new tab. This gives a reasonable
+experience that can suffice until the collections browser can be refactored to unify all of these searches into the same view.
+Maps to NIEHS #70
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

@@ -278,7 +278,7 @@
 			                    {
 			                    	"render": function ( data, type, full, meta ) {
 			    						return full.visibleToCurrentUser ?
-			    							'<a href="#" onclick="redirectMetadataToCollections(\''+full.path+'\')" name="' + full.path + '"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
+			    							'<a onclick="openInCollView(\''+full.path+'\')" name="' + full.path + '"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
 			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
 			    					},
 			    					"title": [[#{collections.management.table.collection.name.label}]],
@@ -563,6 +563,19 @@
 						$('#submitPropertiesSearch').click();
 					});
 				});
+				
+				/*
+				* open the search result in a new tab
+				*/
+				function openInCollView(path) {
+					window.open(
+							  '/emc-metalnx-web/collections' + path,
+							  '_blank' // <- This is what makes it open in a new window.
+							);
+				}
+				
+				//TODO: remove old methods in search
+				
 				function redirectMetadataToCollections(path){
 					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromMetadataToCollections/", "POST", {path: path},
 						function(){
