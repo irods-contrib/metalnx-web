@@ -173,6 +173,19 @@ public class CollectionController {
 				uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
 			}
 
+			/*
+			 * See if it's a file or coll. A file redirects to the info page
+			 * 
+			 */
+
+			if (cs.isDataObject(path)) {
+				logger.info("redirect to info page");
+				StringBuilder sb = new StringBuilder();
+				sb.append("redirect:/collectionInfo");
+				sb.append(path);
+				return sb.toString();
+			}
+
 			if (uiMode.equals(UI_USER_MODE)) {
 				model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 				model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
