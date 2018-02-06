@@ -152,10 +152,6 @@ public class BrowseController {
 
 	public static final int MAX_HISTORY_SIZE = 10;
 
-	private boolean cameFromMetadataSearch;
-	private boolean cameFromFilePropertiesSearch;
-	private boolean cameFromBookmarks;
-
 	private Stack<String> collectionHistoryBack;
 	private Stack<String> collectionHistoryForward;
 
@@ -170,10 +166,6 @@ public class BrowseController {
 	public void init() throws DataGridException {
 		collectionHistoryBack = new Stack<String>();
 		collectionHistoryForward = new Stack<String>();
-
-		cameFromMetadataSearch = false;
-		cameFromFilePropertiesSearch = false;
-		cameFromBookmarks = false;
 
 		sourcePaths = new ArrayList<>();
 		parentPath = "";
@@ -906,21 +898,6 @@ public class BrowseController {
 	 */
 
 	/**
-	 * Sets the current path and parent path based on a given path.
-	 *
-	 * @param path
-	 *            new path to update current path and parent path
-	 */
-	private void assignNewValuesToCurrentAndParentPath(final String path) {
-		if (path == null || path.isEmpty()) {
-			return;
-		}
-
-		currentPath = path;
-		parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
-	}
-
-	/**
 	 * Creates the breadcrumb based on a given path.
 	 *
 	 * @param model
@@ -1040,27 +1017,5 @@ public class BrowseController {
 		setBreadcrumbToModel(model, dataGridObj);
 		return "collections/collectionsBrowser";
 		// return "collections/info";
-	}
-
-	/**
-	 * Adds a given path to the list of paths visited by the user
-	 * 
-	 * @param path
-	 *            path to a collection or data object to be added to history
-	 */
-	private void addPathToHistory(final String path) {
-		if (path.equals(currentPath)) {
-			return;
-		}
-
-		while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-			collectionHistoryBack.remove(0);
-		}
-
-		collectionHistoryBack.push(currentPath);
-
-		if (!collectionHistoryForward.isEmpty()) {
-			collectionHistoryForward.clear();
-		}
 	}
 }

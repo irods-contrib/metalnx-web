@@ -108,12 +108,6 @@ public class CollectionController {
 	// path to the current directory in the tree view
 	private String currentPath;
 
-	// number of pages for current path
-	private int totalObjsForCurrentPath;
-
-	// number of pages for current search
-	private int totalObjsForCurrentSearch;
-
 	// Auxiliary structure to manage download, upload, copy and move operations
 	private List<String> sourcePaths;
 
@@ -127,11 +121,6 @@ public class CollectionController {
 	private boolean cameFromMetadataSearch;
 	private boolean cameFromFilePropertiesSearch;
 	private boolean cameFromBookmarks;
-
-	// variable to save trash path for the logged user
-	private String userTrashPath = "";
-	// saves the trash under the zone
-	private String zoneTrashPath = "";
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
