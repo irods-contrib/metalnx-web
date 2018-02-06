@@ -140,7 +140,7 @@
                             th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}"
                             id="addMetadataBtn" class="btn btn-primary btn-sm btn-property pull-right"
                             th:onclick="'javascript:addMetadataModal(\'' + ${currentPath} +'\');'"
-                            href="#" style="">
+                            style="">
                         <i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
                     </button>
                     <button id="exportMetadataToCSV" class="btn btn-default btn-property btn-sm" href="#" style="">

@@ -19,7 +19,7 @@
 
 
 	<div class="col-md-12" th:unless="${dataProfile == null}">
-	
+
 		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
 			<div class="panel property collection-tabs">
 				<div class="row">
@@ -31,34 +31,67 @@
 					</div>
 				</div>
 				<div class="panel-info">
-	
+
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.owner.label}"></label>
 						</div>
-						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCollectionOwnerName() }"></span></div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionOwnerName() }"></span>
+						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label>Zone</label>
 						</div>
-						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getCollectionOwnerZone() }"></span></div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionOwnerZone() }"></span>
+						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.created.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-8">
 							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.modified.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-8">
 							<span
 								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.collectionmapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
 						</div>
 					</div>
 					<!-- Will we have checksum on collection??? <div class="row">
@@ -81,56 +114,126 @@
 					</div>
 				</div>
 				<div class="panel-info">
-				<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.kind.dataobject}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-8">
 							<span th:text="${ dataProfile.getDomainObject().getDataName() }"></span>
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.kind.collection}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
-							<span th:text="${ dataProfile.getDomainObject().getCollectionName() }"></span>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionName() }"></span>
 						</div>
-					</div>					
+					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.owner.label}"></label>
 						</div>
-						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getDataOwnerName() }"></span></div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataOwnerName() }"></span>
+						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label>Zone</label>
 						</div>
-						   <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getDomainObject().getDataOwnerZone() }"></span></div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataOwnerZone() }"></span>
+						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label th:text="#{collections.management.table.created.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-8">
 							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
 							<label th:text="#{collections.management.table.modified.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
 							<label th:text="#{collections.management.checksum.label}"></label>
 						</div>
-						<div class="col-md-9 col-sm-8 col-xs-8">
+						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datapath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datatypename.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataTypeName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.expiry.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getExpiry() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datamapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.comments.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span th:text="${ dataProfile.getDomainObject().getComments() }"></span>
 						</div>
 					</div>
 					<!-- <div class="row">

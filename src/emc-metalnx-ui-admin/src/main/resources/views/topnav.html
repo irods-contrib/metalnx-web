@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<div class="navbar-collapse" th:fragment="topnav">
+
+	<div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-1 col-md-1"></div>
+			<div class="col-xs-12 col-sm-7 col-md-7 topnavbreadcrum">
+				<a href="/divisions/index.htm">Divisions</a> &nbsp;»&nbsp; <a
+					th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
+					<span> Data Commons</span>
+				</a> &nbsp;»&nbsp;
+			</div>
+			<div class="col-xs-12 col-sm-3 col-md-3"></div>
+		</div>
+
+		<div class="row">
+
+			<!-- Icon to display -->
+			<div class="col-xs-12 col-sm-1 col-md-1">
+				<a href="#"><i th:class="${ topNavIcon }" aria-hidden="true"></i></a>
+			</div>
+
+			<!-- PAge Header -->
+			<div class="col-xs-12 col-sm-7 col-md-7 topnav topnavbreadcrum">
+				<h1 id="collManagement" class="page-header text-left"
+					th:text="${ topNavHeader }"
+					th:data-content="#{collection.title.popover}"></h1>
+				<a aria-label="page help" id="collections-page-title" href="#"
+					class="pull-left"><i class="fa fa-question-circle"></i></a>
+			</div>
+
+			<!-- use account -->
+			<div class="col-xs-12 col-sm-3 col-md-3">
+
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+					class="fa fa-user"></i> <span class="navbar-top-links-text"
+					th:text="${userDetails.getUsername()}"></span> &nbsp; <i
+					class="fa fa-caret-down white-icon"></i>
+				</a>
+				<ul id="metalnx-topnav" class="nav navbar-right pull-right">
+					<!--    <li id="uploadStatusIcon" class="dropdown hide"><a class="dropdown-toggle" href="#">
+		                <i class="fa fa-tasks white-icon"></i> <span class="badge"></span>
+		            </a>
+		                          <ul class="dropdown-menu upload-window" style="width: 50vw; max-height: 80vh; overflow: auto">
+		              </ul></li> -->
+					<li class="dropdown">
+						<ul class="dropdown-menu dropdown-user">
+							<li><a th:href="@{/preferences/}"><i
+									class="fa fa-gear fa-fw"></i> <span
+									th:text="#{user.preferences.label}"></span></a></li>
+							<li class="divider"></li>
+							<li><a href="#" data-toggle="modal"
+								data-target="#aboutModal"><i class="fa fa-info-circle"></i>
+									<span>About</span></a></li>
+							<li class="divider"></li>
+							<li><a th:href="@{/logout/}"><i class="fa fa-sign-out"></i>
+									<span th:text="#{user.logout.label}"></span></a></li>
+						</ul> <!-- /.dropdown-user -->
+					</li>
+					<!-- /.dropdown -->
+				</ul>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+</html>
