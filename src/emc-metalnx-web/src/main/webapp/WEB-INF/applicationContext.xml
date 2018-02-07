@@ -88,6 +88,8 @@
 		<sec:intercept-url pattern="/dashboard/**" access="ROLE_ADMIN" />
 		<sec:intercept-url pattern="/preview/**" access="ROLE_ADMIN, ROLE_USER" />
 		<sec:intercept-url pattern="/collections/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/collectionInfo/**" access="ROLE_ADMIN,ROLE_USER" />
+		
 		<sec:intercept-url pattern="/browse/**" access="ROLE_ADMIN,ROLE_USER" />
 
 		<sec:intercept-url pattern="/fileOperation/**"
