@@ -18,7 +18,7 @@
 
     <li role="tab" id="headingMlxMSI" data-toggle="collapse" href="#mlxMSI" aria-expanded="true" aria-controls="mlxMSI">
         <a role="button" class="btn-link" th:text="#{msi.package.mlx.accordion}"></a>
-        <i class="fa fa-angle-down"></i>
+        <i title="details" class="fa fa-angle-down"></i>
     </li>
     <div id="mlxMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingMlxMSI">
         <div class="">
@@ -33,7 +33,7 @@
     </div>
     <li role="tab" id="headingIrodsMSI" data-toggle="collapse" href="#irodsMSI" aria-expanded="true" aria-controls="irodsMSI">
         <a class="collapsed" role="button" th:text="#{msi.package.irods.accordion}"></a>
-        <i class="fa fa-angle-down"></i>
+        <i title="details" class="fa fa-angle-down"></i>
     </li>
     <div id="irodsMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingIrodsMSI">
         <div class="">
@@ -48,7 +48,7 @@
     </div>
     <li role="tab" id="headingOtherMSI" data-toggle="collapse" href="#otherMSI" aria-expanded="true" aria-controls="otherMSI">
         <a class="collapsed" role="button" th:text="#{msi.package.other.accordion}"></a>
-        <i class="fa fa-angle-down"></i>
+        <i title="details" class="fa fa-angle-down"></i>
     </li>
     <div id="otherMSI" class="panel-collapse collapse in row" role="tabpanel" aria-labelledby="headingOtherMSI">
         <div class="">
@@ -72,4 +72,3 @@
     </script>
 </ul>
 <p th:unless="${server.isThereAnyMSI()}" th:text="#{msi.package.not.found}"></p>
-

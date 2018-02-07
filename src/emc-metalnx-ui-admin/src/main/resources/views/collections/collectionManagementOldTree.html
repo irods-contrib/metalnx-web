@@ -28,7 +28,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div th:if="${ collectionAddedSuccessfully != null or collectionModifiedSuccessfully != null }" class="alert alert-success alert-dismissible text-center" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only" th:text="#{text.close}">Close</span>
 				  	</button>
@@ -43,9 +43,9 @@
 			<!-- Search Box -->
 			<div class="col-sm-6">
 				<div class="form-group input-group">
-					<input id="searchText" type="search" class="form-control" aria-label="search text"
+					<input title="search" id="searchText" type="search" class="form-control" aria-label="search text"
 						th:placeholder="#{search.placeholder}" /> <span class="input-group-addon">
-						<i class="glyphicon glyphicon-search"></i>
+						<i title="search" class="glyphicon glyphicon-search"></i>
 					</span>
 				</div>
 			</div>
@@ -60,7 +60,7 @@
 			<div class="col-sm-12 tree-view-panel scrollable-table">
 				<a name="/" title="/"
 					th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${ '/' } + '\');'">
-					<img alt="" class="folder-icon" th:src="@{ /images/folder-16.png }" />
+					<img alt="folder" class="folder-icon" th:src="@{ /images/folder-16.png }" />
 					<span>/</span>
 				</a>
 			</div>

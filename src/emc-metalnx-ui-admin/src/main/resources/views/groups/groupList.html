@@ -45,10 +45,10 @@
 								<i class="fa fa-pencil"></i><span  th:text="#{groups.list.item.edit}"></span>
 							</a>
 							&nbsp; &nbsp;
-							<button type="button" class="btn btn-default btn-xs" aria-label="#{groups.list.item.delete}"
+							<button title="delete" type="button" class="btn btn-default btn-xs" aria-label="#{groups.list.item.delete}"
 								th:id="${'deleteBtn_' + group.getGroupname()}" th:disabled="${group.getGroupname() == 'public'}"
 								th:onclick="'javascript:confirmGroupRemoval(\'' + ${group.getGroupname()} + '\');'">
-								<i class="fa fa-trash-o"></i><span  th:text="#{groups.list.item.delete}"></span>
+								<i title="trash" class="fa fa-trash-o"></i><span  th:text="#{groups.list.item.delete}"></span>
 							</button>
 						</td>
 					</tr>
@@ -62,7 +62,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}"></h4>
 					</div>
 					<div class="modal-body">
@@ -71,10 +71,10 @@
 						?
 					</div>
 					<div class="modal-footer confirmation">
-					  <button type="button" class="btn btn-default" data-dismiss="modal"
+					  <button title="cancel" type="button" class="btn btn-default" data-dismiss="modal"
 					  	th:text="#{confirmation.message.cancel}">
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();" id="deleteGroupConfBtn"
+					  <button title="confirmation" type="button" class="btn btn-primary" onclick="removeElement();" id="deleteGroupConfBtn"
 					  	th:text="#{confirmation.message.yes}">
 					  </button>
 					</div>

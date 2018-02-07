@@ -52,13 +52,13 @@
 						<td th:text="${user.email}" class="hidden-sm hidden-xs"></td>
 						<td>
 							<a class="btn btn-default btn-xs" th:href="@{ ${urlMap.URL_MODIFY_USER} } + ${user.username} + '/' + ${user.additionalInfo} + '/'"
-								th:id="${urlMap.URL_MODIFY_USER} + ${user.username} + '/' + ${user.additionalInfo} + '/'"  
+								th:id="${urlMap.URL_MODIFY_USER} + ${user.username} + '/' + ${user.additionalInfo} + '/'"
 								aria-label="${'modify user' + user.username}">
-								<i class="fa fa-pencil"></i><span  th:text="#{users.list.item.edit}"></span>
+								<i title="edit" class="fa fa-pencil"></i><span  th:text="#{users.list.item.edit}"></span>
 							</a>
 							&nbsp; &nbsp;
 							<button th:id="${'btn_remove_' + user.username}" th:class="${#strings.equalsIgnoreCase(user.username, usernameLogged) ? 'disabled btn btn-default btn-xs' : 'btn btn-default btn-xs'}" type="button" th:onclick="'javascript:confirmUserRemoval(\'' + ${user.username} + '\');'">
-								<i class="fa fa-trash-o"></i><span  th:text="#{users.list.item.delete}" 
+								<i title="remove" class="fa fa-trash-o"></i><span  th:text="#{users.list.item.delete}"
 								aria-label="${'remove user' + user.username}"></span>
 							</button>
 						</td>
@@ -72,7 +72,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					  <h4 class="modal-title" id="removalModalTitle" th:text="#{confirmation.user.removal.title}">
 					  </h4>
 					</div>
@@ -82,10 +82,10 @@
 						?
 					</div>
 					<div class="modal-footer confirmation">
-					  <button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfUserRemoval_No">
+					  <button title="confirmation" type="button" class="btn btn-default" data-dismiss="modal" id="btnConfUserRemoval_No">
 						  <span th:text="#{confirmation.message.cancel}"></span>
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();" id="btnConfUserRemoval_Yes">
+					  <button title="confirmation" type="button" class="btn btn-primary" onclick="removeElement();" id="btnConfUserRemoval_Yes">
 						  <span th:text="#{users.removal.confirmation.button.label}"></span>
 					  </button>
 					</div>

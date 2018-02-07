@@ -122,19 +122,19 @@
 									class="panel-title"></h3>
 							</div>
 							<div class="panel-body">
-								<input type="hidden" class="form-control" id="inputDataGridId"
+								<input title="inputDataGridId" type="hidden" class="form-control" id="inputDataGridId"
 									th:field="*{dataGridId}" /> <input
 									th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
 									type="hidden" th:field="*{username}" />
 								<div class="col-xs-7">
 									<div class="form-group">
-										<label class="required" for="inputUsername"
+										<label title="inputUsername" class="required" for="inputUsername"
 											th:text="#{users.add.form.username.label}"></label>
-										<input type="text" class="form-control" id="inputUsername"
+										<input title="inputUsername" type="text" class="form-control" id="inputUsername"
 											th:placeholder="#{users.add.form.username.placeholder}"
 											th:field="*{username}"
 											th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}" />
-										<i
+										<i title="invalidPasswordIcon"
 											class="form-control-feedback glyphicon glyphicon-remove hideElement"
 											id="invalidUsernameIcon"></i>
 										<small class="help-block hideElement" id="invalidUsernameMsg"
@@ -143,12 +143,12 @@
 											th:text="#{users.validation.name.blank}"></small>
 									</div>
 									<div class="form-group">
-										<label class="required" for="inputPassword"
+										<label title="inputPassword" class="required" for="inputPassword"
 											th:text="#{users.add.form.password.label}"></label>
-										<input type="password" class="form-control" id="inputPassword"
+										<input title="inputPassword" type="password" class="form-control" id="inputPassword"
 											th:placeholder="#{users.add.form.password.placeholder}"
 											th:field="*{password}" />
-										<i
+										<i title="invalidPasswordIcon"
 											class="form-control-feedback glyphicon glyphicon-remove hideElement"
 											id="invalidPasswordIcon"></i>
 										<small class="help-block hideElement" id="invalidPasswordMsg"
@@ -157,12 +157,12 @@
 											th:text="#{users.validation.password.blank}"></small>
 									</div>
 									<div class="form-group">
-										<label class="required" for="inputPasswordConfirmation"
+										<label title="inputPasswordConfirmation" class="required" for="inputPasswordConfirmation"
 											th:text="#{users.add.form.password.confirm.label}"></label>
-										<input type="password" class="form-control"
+										<input title="inputPasswordConfirmation" type="password" class="form-control"
 											name="confirmPassword" id="inputPasswordConfirmation"
 											th:placeholder="#{users.add.form.password.confirm.placeholder}" />
-										<i
+										<i title="invalidPasswordConfIcon"
 											class="form-control-feedback glyphicon glyphicon-remove hideElement"
 											id="invalidPasswordConfIcon"></i>
 										<small class="help-block hideElement" id="emptyPasswordConfMsg"
@@ -174,7 +174,7 @@
 								</div>
 								<div class="col-xs-5">
 									<div class="form-group">
-										<label class="required" for="selectZone"
+										<label title="selectZone" class="required" for="selectZone"
 											th:text="#{users.add.form.zone.label}"></label>
 										<select class="form-control" name="zones" id="selectZone"
 											th:field="${user.additionalInfo}">
@@ -187,7 +187,7 @@
 										</select>
 									</div>
 									<div class="form-group">
-										<label class="required" for="selectUserType"
+										<label title="selectUserType" class="required" for="selectUserType"
 											th:text="#{users.add.form.role.label}"></label>
 										<select class="form-control" id="selectUserType"
 											th:field="${user.userType}">
@@ -200,7 +200,7 @@
 										</select>
 									</div>
 									<div class="form-group">
-										<label for="selectProfile"
+										<label title="selectProfile" for="selectProfile"
 											th:text="#{users.add.form.profile.label}"></label>
 										<select class="form-control" id="selectProfile"
 											name="selectedProfile"
@@ -235,24 +235,24 @@
 							<div class="panel-body">
 								<div class="col-xs-8">
 									<div class="form-group">
-										<label for="inputFirstName"
+										<label title="inputFirstName" for="inputFirstName"
 											th:text="#{users.add.form.first.name.label}"></label>
-										<input type="text" class="form-control" id="inputFirstName"
+										<input title="inputFirstName" type="text" class="form-control" id="inputFirstName"
 											th:placeholder="#{users.add.form.first.name.placeholder}"
 											th:field="*{firstName}" />
 									</div>
 									<div class="form-group">
-										<label for="inputLastName"
+										<label title="inputLastName" for="inputLastName"
 											th:text="#{users.add.form.last.name.label}"></label>
-										<input type="text" class="form-control" id="inputLastName"
+										<input title="inputLastName" type="text" class="form-control" id="inputLastName"
 											th:placeholder="#{users.add.form.last.name.placeholder}"
 											th:field="*{lastName}" />
 									</div>
 									<div class="form-group">
-										<label for="inputEmail" th:text="#{users.add.form.email.label}"></label>
-										<input type="text" class="form-control" id="inputEmail"
+										<label title="inputEmail" for="inputEmail" th:text="#{users.add.form.email.label}"></label>
+										<input title="inputEmail" type="text" class="form-control" id="inputEmail"
 											th:placeholder="#{users.add.form.email.placeholder}"
-											th:field="*{email}" /> <i
+											th:field="*{email}" /> <i title="invalidEmailIcon"
 											class="form-control-feedback glyphicon glyphicon-remove hideElement"
 											id="invalidEmailIcon"></i>
 										<small class="help-block hideElement" id="invalidEmailMsg">The
@@ -270,8 +270,8 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h3 th:text="#{users.add.available.groups.label}" class="panel-title pull-left"></h3>
-								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideGroupsListBtn">
-									<i class="fa fa-check"></i>
+								<button title="hideGroupsListBtn" type="button" class="btn btn-primary btn-xs pull-right" id="hideGroupsListBtn">
+									<i title="check" class="fa fa-check"></i>
 									<span th:text="#{done.button.label}"></span>
 								</button>
 							</div>
@@ -299,9 +299,9 @@
 													<td th:text="${group.getGroupname()}"></td>
 													<td th:text="${group.getAdditionalInfo()}"></td>
 													<td>
-														<button type="button" class="btn btn-default btn-xs"
+														<button title="groupinfo" type="button" class="btn btn-default btn-xs"
 															th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getGroupname()} + '\', \'' + ${group.getAdditionalInfo()} + '\');'">
-															<i class="fa fa-list"> </i>
+															<i title="list" class="fa fa-list"> </i>
 															<span th:text="#{users.add.view.users.in.group.button}"></span>
 														</button>
 													</td>
@@ -323,8 +323,8 @@
 							<div class="panel-heading">
 								<h3 th:text="#{users.add.attached.groups.label}"
 									class="panel-title pull-left"></h3>
-								<button type="button" class="btn btn-default btn-xs pull-right" id="showGroupsListBtn">
-									<i class="fa fa-pencil"></i>
+								<button title="showGroupsListBtn" type="button" class="btn btn-default btn-xs pull-right" id="showGroupsListBtn">
+									<i title="edit" class="fa fa-pencil"></i>
 									<span th:text="#{users.add.edit.groups.label}"></span>
 								</button>
 							</div>
@@ -349,9 +349,9 @@
 															th:id="${group.getGroupname()}"></td>
 														<td th:text="${group.getAdditionalInfo()}"></td>
 														<td>
-															<button type="button" class="btn btn-default btn-xs"
+															<button title="groupInfo" type="button" class="btn btn-default btn-xs"
 																th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getGroupname()} + '\', \'' + ${group.getAdditionalInfo()} + '\');'">
-																<i class="fa fa-list"> </i>
+																<i title="list" class="fa fa-list"> </i>
 																<span th:text="#{users.add.view.users.in.group.button}"></span>
 															</button>
 														</td>
@@ -393,7 +393,7 @@
 								<!-- Table loader Ajax Gif -->
 								<div id="tableLoaderForCollections"
 									class="table-loader col-sm-12">
-									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+									<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
 									<p class="text-center" th:text="#{loading.table.label}"></p>
 								</div>
 							</div>
@@ -402,7 +402,7 @@
 				</div>
 				<!-- /.Collections management section -->
 				<div class=" pull-right">
-					<button type="button" class="btn btn-default btn-md"
+					<button title="cancel" type="button" class="btn btn-default btn-md"
 						th:text="#{forms.cancel.action.button}" data-toggle="modal"
 						data-target="#cancelModal"></button>
 					<button type="button" class="btn btn-primary"
@@ -418,7 +418,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">
+						<button title="close" type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 						</button>
 						<h4 class="modal-title" id="myCancelModalLabel"
@@ -428,7 +428,7 @@
 						<span th:text="#{confirmation.cancel.label}"></span>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal"
+						<button title="confirmation" type="button" class="btn btn-default" data-dismiss="modal"
 							th:text="#{confirmation.message.cancel}"></button>
 						<a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }"
 							class="btn btn-primary" th:text="#{confirmation.message.yes}">
@@ -445,7 +445,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">
+						<button title="close" type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 						</button>
 						<h4 class="modal-title" id="myGroupInfoModalLabel">
@@ -465,7 +465,7 @@
 						<!-- Table loader Ajax Gif -->
 						<div class="col-sm-12">
 							<div id="groupInfoModal-table-loader" class="table-loader">
-								<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+								<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
 								<p class="text-center" th:text="#{loading.table.label}"></p>
 							</div>
 						</div>
@@ -482,7 +482,7 @@
 						<div class="col-sm-12" id="groupInfoModalUserListAsync"></div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal"
+						<button title="confirmation" type="button" class="btn btn-primary" data-dismiss="modal"
 							th:text="#{confirmation.message.ok}"></button>
 					</div>
 				</div>

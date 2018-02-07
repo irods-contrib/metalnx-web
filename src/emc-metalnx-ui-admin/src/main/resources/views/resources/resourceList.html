@@ -48,13 +48,13 @@
 						<td th:if="*{ !#strings.isEmpty(resource.isiHost) }" th:text="*{resource.isiHost}"></td>
 						<td th:unless="*{ !#strings.isEmpty(resource.isiHost) }" th:text="*{resource.host}"></td>
 						<td>
-							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_info_' + resource.name}"
+							<button title="resourceNameInfo" type="button" class="btn btn-default btn-xs" th:id="${'btn_info_' + resource.name}"
 								th:onclick="'javascript:viewInfo(\'' + *{resource.name} + '\');'">
-								<i class="fa fa-info-circle"></i><span  th:text="#{resources.management.list.item.info}"></span>
+								<i title="info" class="fa fa-info-circle"></i><span  th:text="#{resources.management.list.item.info}"></span>
 							</button>
-							<button type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + resource.name}"
+							<button title="resourceNameRemove" type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + resource.name}"
 								th:onclick="'javascript:confirmResourceDeletion(\'' + *{resource.name} + '\');'">
-								<i class="fa fa-trash-o"></i><span  th:text="#{resources.management.list.item.delete}"></span>
+								<i title="remove" class="fa fa-trash-o"></i><span  th:text="#{resources.management.list.item.delete}"></span>
 							</button>
 						</td>
 					</tr>
@@ -68,17 +68,17 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h4 class="modal-title" id="myDeletionModalLabel" th:text="#{resources.confirmation.deletion.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{resources.confirmation.deletion.label}"></span>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfRescRemoval_No"
+						<button title="btnConfRescRemoval_No" type="button" class="btn btn-default" data-dismiss="modal" id="btnConfRescRemoval_No"
 					  		th:text="#{confirmation.message.cancel}">
 					  	</button>
-					  	<button type="button" class="btn btn-primary" onclick="removeElement();" id="btnConfRescRemoval_Yes"
+					  	<button title="confirmation" type="button" class="btn btn-primary" onclick="removeElement();" id="btnConfRescRemoval_Yes"
 					  		th:text="#{confirmation.message.yes}">
 					  	</button>
 					</div>
@@ -91,7 +91,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h4 class="modal-title" id="" >Resource Information</h4>
 					</div>
 					<div class="modal-body row">
@@ -125,7 +125,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" >
+						<button title="close" type="button" class="btn btn-default" data-dismiss="modal" >
 							Close
 					  	</button>
 					</div>
