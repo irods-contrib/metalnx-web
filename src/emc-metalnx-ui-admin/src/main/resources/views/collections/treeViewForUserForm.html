@@ -91,7 +91,7 @@
 							aria-label="${ collectionAndDataObject.getPath() }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${collectionAndDataObject.getPath()} + '\');'">
 
-			               	<i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+			               	<i title="collection" th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
 							&nbsp;
 
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
@@ -101,7 +101,7 @@
 							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }">
 
-					        <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+					        <i title="collection" th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
 							&nbsp;
 
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
@@ -127,9 +127,9 @@
 									<span th:text="#{collections.user.form.permissions}"></span><b th:text="${collectionAndDataObject.getName()}"></b><span>?</span>
 								</div>
 								<div class="recursiveQuestionButtonsWrapper">
-									<button type="button" class="btn-xs btn btn-link btn-recursive-cancel" th:text="#{confirmation.message.cancel}" th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${currentPath} + '\');'"></button>
-									<button type="button" class="btn-xs btn btn-default btn-recursive-no" th:text="#{confirmation.message.no}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'"></button>
-									<button type="button" class="btn-xs btn btn-default btn-recursive-yes" th:text="#{confirmation.message.yes}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', true)'"></button>
+									<button title="cancel" type="button" class="btn-xs btn btn-link btn-recursive-cancel" th:text="#{confirmation.message.cancel}" th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${currentPath} + '\');'"></button>
+									<button title="no" type="button" class="btn-xs btn btn-default btn-recursive-no" th:text="#{confirmation.message.no}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'"></button>
+									<button title="yes" type="button" class="btn-xs btn btn-default btn-recursive-yes" th:text="#{confirmation.message.yes}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', true)'"></button>
 								</div>
 							</div>
 						</div>
@@ -150,6 +150,7 @@
                     <!-- Bookmarks  -->
                     <td th:with="collPath = ${collectionAndDataObject.getPath()}">
                         <input
+														title="bookmark"
                             th:name='${collPath}'
                             type="checkbox"
                             class="userBookmarkCheckbox"

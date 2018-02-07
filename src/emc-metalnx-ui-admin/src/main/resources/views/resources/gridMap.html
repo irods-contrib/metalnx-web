@@ -24,10 +24,10 @@
 
 <head>
 	<title th:text="#{resources.view.servers.page.title}"></title>
-	
+
 	<!-- D3 Library -->
     <script th:src="@{/js/d3.min.js}"></script>
-    
+
 </head>
 
 <body>
@@ -37,47 +37,47 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<h1 class="page-header" th:text="#{resources.view.map.page.title}"></h1>
-				
-				<div id="resourceMapPanel">		
-				
+
+				<div id="resourceMapPanel">
+
 					<script th:inline="javascript">
-						
-						
+
+
 				    	// ******************** Data to be displayed on the tree ***************************
-				    	var root;							
-						var i = 0;	
-				        var duration = 750;		    
+				    	var root;
+						var i = 0;
+				        var duration = 750;
 				        var resourceName;
 				    	var treeData = $.parseJSON( [[ ${treeData} ]] );
-				    					    	
+
 					 	// ************** Generate the tree diagram	 *****************
 					   /*2306 (w) 1200 (h)*/
 						var margin = {top: 0, right: 10, bottom: 20, left: 100},
 							width = 1500 - margin.right - margin.left,
 							height = 500 - margin.top - margin.bottom;
-					 	
+
 						var tree = d3.layout.tree()
 							.size([height, width]);
-						
+
 						var diagonal = d3.svg.diagonal.radial()
-							.projection(function(d) { 
-								return [d.y, d.x / 180 * Math.PI]; 
+							.projection(function(d) {
+								return [d.y, d.x / 180 * Math.PI];
 						});
-						
+
 						var svg = d3.select("#resourceMapPanel").append("svg")
 							.attr("width", width + margin.right + margin.left)
 							.attr("height", height + margin.top + margin.bottom)
 					        .attr("class", "overlay")
 					        .append("svg:g")
-							.attr("transform", "translate(200,200)"); 
-						
+							.attr("transform", "translate(200,200)");
+
 						// Append a group which holds all nodes and which the zoom Listener can act upon.
 					    var svgGroup = svg.append("g");
-						
+
 						root = treeData[0];
-						  
+
 						update(root);
-					    
+
 					 	// Toggle children function
 					    function toggleChildren(d) {
 					        if (d.children) {
@@ -96,7 +96,7 @@
 					        d = toggleChildren(d);
 					        update(d);
 					    }
-						
+
 						function clickLink(d) {
 							d = d.target;
 							console.log(d);
@@ -104,43 +104,43 @@
 					        d = toggleChildren(d);
 					        update(d);
 					    }
-						
+
 						function update(source) {
 
 							// Compute the new tree layout.
 							var nodes = tree.nodes(root).reverse(),
 								links = tree.links(nodes);
-							
+
 							// Normalize for fixed-depth.
 							nodes.forEach(function(d) { d.y = d.depth * 200; });
 
 							// Declare the nodes…
 							var node = svgGroup.selectAll("g.node")
-								.data(nodes)															
+								.data(nodes)
 								.enter().append("svg:g")
 								.attr("transform", function(d) {return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; } );
 
 							// Enter the nodes.
 							var nodeEnter = node.enter().append("g")
 								.attr("class", "node")
-								.attr("transform", function(d) { 
+								.attr("transform", function(d) {
 									return "translate(" + d.y + "," + d.x + ")"; })
 						        .on('click', click);
-							
+
 							nodeEnter.append("circle")
 								.attr("r", 5)
-								.style("fill", "#fff"); 
-								
+								.style("fill", "#fff");
+
 							nodeEnter.append("text")
-								.attr("x", function(d) { 
+								.attr("x", function(d) {
 									return d.children || d._children ? -20 : 20; })
 								.attr("dy", ".35em")
-								.attr("text-anchor", function(d) { 
+								.attr("text-anchor", function(d) {
 									return d.children || d._children ? "end" : "start"; })
 								.attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
 								.text(function(d) { return d.name; })
 								.style("fill-opacity", 1);
-							
+
 							// Update the text to reflect whether node has children or not.
 					        node.select('text')
 					            .attr("x", function(d) {
@@ -155,18 +155,18 @@
 									}
 										return d.name;
 					            });
-							
+
 					     	// Transition nodes to their new position.
 					        var nodeUpdate = node.transition()
 					            .duration(duration)
 					            .attr("transform", function(d) {
 					                return "translate(" + d.y + "," + d.x + ")";
 					            });
-	
+
 					        // Fade the text in
 					        nodeUpdate.select("text")
 					        	.style("fill-opacity", 1);
-							
+
 					     	// Transition exiting nodes to the parent's new position.
 					        var nodeExit = node.exit().transition()
 					            .duration(duration)
@@ -180,10 +180,10 @@
 
 							// Declare the links…
 							var link = svgGroup.selectAll("path.link")
-								.data(links, function(d) { 
-									return d.target.id; 
+								.data(links, function(d) {
+									return d.target.id;
 								});
-							
+
 							// Enter the links.
 							link.enter().insert("path", "g")
 								.attr("class", "link")
@@ -198,12 +198,12 @@
 									});
 								})
 					            .on('click', clickLink);
-							
+
 							// Transition links to their new position.
 					        link.transition()
 					            .duration(duration)
 					            .attr("d", diagonal);
-					        
+
 					        // Transition exiting nodes to the parent's new position.
 					        link.exit().transition()
 					            .duration(duration)
@@ -225,30 +225,30 @@
 					            d.y0 = d.y;
 					        });
 						}
-						
+
 						function viewInfo(){
-							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";							
+							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
 							ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 						}
-						
+
 						function displayResourceInfo(data){
 
 							var offset = $("#contextMenu").offset();
 							var json = $.parseJSON(data);
-							
+
 							$("#contextMenu").hide();
 							$("#resourceInfo").hide();
 
 							if(json["zoneName"]){
-								
+
 								$("#zoneInfo #zoneName").html(json["zoneName"]);
-								
-								$("#zoneInfo").fadeIn();						
+
+								$("#zoneInfo").fadeIn();
 								$("#zoneInfo").offset({
-									"top": offset.top, 
+									"top": offset.top,
 									"left": offset.left
-								}); 
-								
+								});
+
 							}
 							else {
 								$("#resourceInfo #name").html(json["name"]);
@@ -260,41 +260,41 @@
 								$("#resourceInfo #parent").html(json["parent"]);
 								//$("#resourceInfo #info").html(json["info"]);
 								//$("#resourceInfo #status").html(json["status"]);
-								
-								$("#resourceInfo").fadeIn();						
+
+								$("#resourceInfo").fadeIn();
 								$("#resourceInfo").offset({
-									"top": offset.top, 
+									"top": offset.top,
 									"left": offset.left
-								}); 
+								});
 							}
 						}
-						
+
 						function addChild() {
 							window.location = "/emc-metalnx-web/resources/add/" + resourceName +"/";
 						}
-						
-						$("g .node").bind("contextmenu", function(event){							
+
+						$("g .node").bind("contextmenu", function(event){
 							event.preventDefault();
 							$("#resourceInfo").hide();
-							
+
 							resourceName =  $(this).find("text").text();
-							
+
 							$("#contextMenu").fadeIn();
 							$("#contextMenu").offset({
-								"top": event.pageY + 20, 
+								"top": event.pageY + 20,
 								"left": event.pageX
-							}); 
+							});
 						});
-						
-						$(document).on("mousedown", function(event){	
+
+						$(document).on("mousedown", function(event){
 							$("#contextMenu").fadeOut();
 							$("#resourceInfo").fadeOut();
-						}); 
+						});
 			    </script>
-					
+
 				</div> <!-- /. col-sm-12 -->
-			</div> <!-- /. col-sm-12 -->	
-			
+			</div> <!-- /. col-sm-12 -->
+
 			<!-- Context Menu -->
 			<div id="contextMenu" class="col-sm-2 hideElement">
 				<ul class="nav nav-stacked">
@@ -302,80 +302,80 @@
 					<li role="presentation"><a onclick="addChild();" href="#">Add Child</a></li>
 				</ul>
 			</div>
-			
+
 			<!-- Zone Info -->
 			<div id="zoneInfo" class="col-sm-3 alert alert-info alert-dismissible hideElement" role="alert">
-				<button type="button" class="close" data-dismiss="alert">
+				<button title="close" type="button" class="close" data-dismiss="alert">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 				</button>
-				<p>
+				<p title="zone">
 					<b>Zone: </b>
 					<span id="zoneName"></span>
 				</p>
 			</div>
-			
+
 			<!-- Resource Info -->
 			<div id="resourceInfo" class="col-sm-3 alert alert-info alert-dismissible hideElement" role="alert">
-				<button type="button" class="close" data-dismiss="alert">
+				<button title="close" type="button" class="close" data-dismiss="alert">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 				</button>
-				<p>
+				<p title="name">
 					<b>Name: </b>
 					<span id="name"></span>
 				</p>
-				<p>
+				<p title="type">
 					<b>Type: </b>
 					<span id="type"></span>
 				</p>
-				<p>
+				<p title="zone">
 					<b>Zone: </b>
 					<span id="zone"></span>
 				</p>
-				<p>
+				<p title="host">
 					<b>Host: </b>
 					<span id="host"></span>
 				</p>
-				<p>
+				<p title="ip">
 					<b>IP: </b>
 					<span id="ip"></span>
 				</p>
-				<p>
+				<p title="path">
 					<b>Path: </b>
 					<span id="path"></span>
 				</p>
-				<p>
+				<p title="parent">
 					<b>Parent: </b>
 					<span id="parent"></span>
 				</p>
-				<p>
+				<p title="info">
 					<b>Info: </b>
 					<span id="info"></span>
 				</p>
-				<p>
+				<p title="status">
 					<b>Status: </b>
 					<span id="status"></span>
 				</p>
-				<p>														
+				<p>
 					<div class="row">
 						<div class="col-sm-12" id="freeSpaceBar">
 							<img  alt="free space bar" th:src="@{/images/free-space-bar.png}" class="img-responsive" />
 						</div>
-						
+
 						<div class="col-sm-6 legend">
-							<img alt="legend" th:src="@{/images/square-red-16.png}" class="img-responsive" /> 
-							<span>Used Space (40 GB)</span> 
+							<img alt="legend" th:src="@{/images/square-red-16.png}" class="img-responsive" />
+							<span>Used Space (40 GB)</span>
 						</div>
-						
-						<div class="col-sm-6 legend">	
-							<img alt="legend" th:src="@{/images/square-green-16.png}" class="img-responsive" /> 
-							<span>Free Space (60 GB)</span> 
+
+						<div class="col-sm-6 legend">
+							<img alt="legend" th:src="@{/images/square-green-16.png}" class="img-responsive" />
+							<span>Free Space (60 GB)</span>
 						</div>
 					</div>
 				</p>
 			</div>
-			
-		</div> <!-- /. row -->	
-	
+
+		</div> <!-- /. row -->
+
 	</div> <!-- /. Page Content -->
 
 </body>

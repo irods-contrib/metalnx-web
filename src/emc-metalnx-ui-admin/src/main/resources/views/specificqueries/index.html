@@ -33,27 +33,27 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<h1 id="specificQueriesPageTitle" class="page-header" th:text="#{specific.queries.page.title}"></h1>
-				
+
 				<div th:if="${ specificQueryAddedSuccessfully != null or specificQueryModifiedSuccessfully != null }" class="alert alert-success alert-dismissible text-center" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
 				  	<span th:if="${ specificQueryAddedSuccessfully }" th:text="${ specificQueryAddedSuccessfully }" style="font-weight: bold;"></span>
 				  	<span th:if="${ specificQueryModifiedSuccessfully }" th:text="${ specificQueryModifiedSuccessfully }" style="font-weight: bold;"></span>
-					
+
 					<span th:if="${ specificQueryAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
 					<span th:if="${ specificQueryModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
 				</div>
-				
+
 				<!-- Search Box -->
 				<div class="row">
 					<div class="col-sm-6">
 						<form role="form">
 							<div class="form-group input-group">
-								<input aria-label="search text" id="searchText" type="search" class="form-control" th:placeholder="#{search.placeholder}" /> 
+								<input title="searchText" aria-label="search text" id="searchText" type="search" class="form-control" th:placeholder="#{search.placeholder}" />
 								<span class="input-group-addon">
-									<i class="glyphicon glyphicon-search"></i>
+									<i title="search" class="glyphicon glyphicon-search"></i>
 								</span>
 							</div>
 						</form>
@@ -62,17 +62,17 @@
 						<a th:href="@{ ${urlMap.URL_ADD_SPECIFIC_QUERY_PAGE} }" class="btn btn-primary btn-md pull-right" th:text="#{specific.queries.add.button}"></a>
 					</div>
 				</div> <!-- /. row Search Box -->
-				
-				
+
+
 				<!-- Table loader Ajax Gif -->
 				<div id="table-loader" class="table-loader">
-					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
 					<p class="text-center" th:text="#{loading.table.label}"></p>
 				</div>
 
 				<!-- Current Specific Queries Table -->
 				<div id="speficicQueriesListAsync"></div>
-				
+
 				<script type="text/javascript" th:inline="javascript">
 					$(function() {
 						function populateSpecificQueriesTableDiv(data) {
@@ -105,10 +105,10 @@
 						loadSpecificQueriesResults();
 					});
 				</script>
-				
-			</div> <!-- /. col-sm-12 -->	
-		</div> <!-- /. row -->	
-	
+
+			</div> <!-- /. col-sm-12 -->
+		</div> <!-- /. row -->
+
 	</div> <!-- /. Page Content -->
 
 </body>
