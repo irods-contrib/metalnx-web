@@ -1494,7 +1494,14 @@ alert-dialog {
 #side-menu li.profile: first-child span{
     bottom:0;
     margin-bottom: 5px;
+    
 }
+
+#side-menu {
+	font-size: 10px;
+	
+}
+
 
 i.fa-square-o.menu-icon{
     font-size: 3em;
