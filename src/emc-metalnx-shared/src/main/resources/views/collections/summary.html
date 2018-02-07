@@ -16,10 +16,16 @@
 
 <th:block th:fragment="summaryView">
 
-	<div id="summary" class="container-fluid"
-		aria-labelledby="collManagement">
+	<div id="summary" class="container-fluid">
+		<div class="row nopadding">
+			<div class="col-md-12 col-sm-6 col-xs-12 text-left">
+				<th:block
+					th:include="collections/collectionHeader :: collectionHeaderView"></th:block>
+			</div>
+		</div>
 
 		<div class="row nopadding">
+
 			<div class="col-md-8 col-sm-8 col-xs-12 text-left">
 				<span class="collectionFont"><h2
 						th:text="${ dataProfile.getChildName() }"></h2></span>
@@ -30,18 +36,18 @@
 				<div id="actionmenu" class="pull-right">
 					<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle"
-							data-toggle="dropdown" aria-expanded="false" title="Action">
+							data-toggle="dropdown" aria-expanded="false">
 							<span>Action</span> <span class="caret" /> <span class="sr-only">Toggle
 								Dropdown</span>
 						</button>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#" id="renameBtn" class="hideElement"
-								data-target="#renameModal" data-toggle="modal"> <span><i
-										class="fa fa-pencil-square-o" title="Rename"> </i></span> <span>Rename</span></a></li>
+							<li><a href="#" id="renameBtn" class="hideElement" data-target="#renameModal"
+								data-toggle="modal">										
+								<span><i class="fa fa-pencil-square-o"> </i></span> <span>Rename</span></a></li>
 							<li class="divider"></li>
 							<li><a href="#" id="deleteBtn" class="hideElement"
 								data-toggle="modal" data-target="#deleteModal"><span><i
-										class="fa fa-trash-o" title="Delete"></i> </span> <span>Delete</span></a></li>
+										class="fa fa-trash-o"></i> </span> <span>Delete</span></a></li>
 
 
 						</ul>
@@ -64,7 +70,7 @@
 						<i
 						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
 						aria-hidden="true"></i>
-					</a> <a id="breadcrumDownloadBtn" class="btn btn-default" href="#" title="Downlaod"
+					</a> <a id="breadcrumDownloadBtn" class="btn btn-default" href="#"
 						th:onclick="'javascript:fileDownload(\'' + ${dataProfile.getAbsolutePath()} + '\');'">
 						<i class="fa fa-download" aria-hidden="true"></i>
 					</a>
@@ -95,7 +101,7 @@
 
 		<div class="row nopadding">
 			<div class="col-md-12 col-sm-12 col-xs-12 text-left">
-				<span><h4>Information</h4></span>
+				<span><h3>Information</h3></span>
 			</div>
 		</div>
 
@@ -143,15 +149,15 @@
 
 				</div>
 			</div>
-
+			
 			<div class="col-md-3 col-sm-3 col-xs-12 pull-right">
-				<a href="#" class="pull-right" title="mimetype"><i th:class="${ iconToDisplay }"></i></a>
+				<a href="#" class="pull-right"><i th:class="${ iconToDisplay }"></i></a>
 			</div>
-
+		
 		</div>
 
 
-
+		
 
 
 		<!-- <div class="col-xs-12 col-md-10 col-sm-9 ">
@@ -186,7 +192,8 @@
 
 		<div class="col-sm-12" />
 		<div class="col-sm-12" />
-		<div class="col-sm-12" /></div>
+		
+		</div>
 
 		<!-- Delete Modal -->
 		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
@@ -217,8 +224,9 @@
 
 		<!-- Rename Modal -->
 
-		<div class="modal fade" id="renameModal" tabindex="-1" role="dialog"
-			aria-labelledby="myRenameModalLabel" aria-hidden="true">
+		<div class="modal fade" id="renameModal" tabindex="-1"
+			role="dialog" aria-labelledby="myRenameModalLabel"
+			aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-form-content">
@@ -233,32 +241,29 @@
 
 							<div class="row">
 								<form role="form" class="container-fluid registerForm"
-									method="POST" action="/emc-metalnx-web/browse/modify/action/">
+									method="POST" 
+									action="/emc-metalnx-web/browse/modify/action/">
 
-									<input type="hidden" id="inputCollectionPath" name="path"
-										th:value="${ dataProfile.getAbsolutePath() }"
-										title="collection path" /> <input type="hidden"
-										id="inputCollectionParentPath" name="parentPath"
-										th:value="${ dataProfile.getParentPath() }"
-										title="collection parent path" />
-
+									<input type="hidden" id="inputCollectionPath" name="path" th:value="${ dataProfile.getAbsolutePath() }" 
+									title="path"/>
+									<input type="hidden" id="inputCollectionParentPath" name="parentPath" th:value="${ dataProfile.getParentPath() }"
+									title="parentpath"/>
+									
 									<div class="form-group">
 										<label for="inputCollectionName"
 											th:text="#{collections.add.form.collectionname.label}"></label>
-										<input type="text" class="form-control" name="collectionName"
-											th:value="${dataProfile.getChildName()}"
+										<input type="text" class="form-control" name="collectionName" th:value="${dataProfile.getChildName()}"
 											id="inputCollectionName"
-											th:placeholder="#{collections.add.form.collectionname.placeholder}"
+											th:placeholder="#{collections.add.form.collectionname.placeholder}"											
 											style="width: 66%" /> <i
 											class="form-control-feedback glyphicon glyphicon-remove hideElement"
 											id="invalidCollectionNameIcon" style="right: 33%"></i> <small
 											class="help-block hideElement" id="invalidCollectionNameMsg"
-											th:text="#{collections.validation.name.duplicated}"
-											title="Collection Name"></small>
+											th:text="#{collections.validation.name.duplicated}"></small>
 										<small class="help-block hideElement"
 											id="emptyCollectionNameMsg"
 											th:text="#{collections.validation.name.blank}"></small>
-									</div>
+									</div>							
 								</form>
 
 							</div>
@@ -279,10 +284,9 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- /Add Modal -->
-
-	<script type="text/javascript">
+		<!-- /Add Modal -->
+		
+		<script type="text/javascript">
 			function submitForm(){
 				alert("displayRenameForm");
 				$(".registerForm").submit();				
