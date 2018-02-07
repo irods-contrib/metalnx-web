@@ -2324,3 +2324,7 @@ form.registerForm .bootstrap-tagsinput {
 #existingIpIcon{
     left: 360px;
 }
+
+td a {
+  cursor: pointer;
+}
