@@ -24,10 +24,10 @@
 
 <head>
 	<title th:text="#{tab.title.resources}">EMC Metalnx - Resources</title>
-	
+
 	<!-- D3 Library -->
     <script th:src="@{/js/d3.min.js}"></script>
-    
+
 </head>
 
 <body>
@@ -56,8 +56,8 @@
 					</div>
 				</div>
 				<div th:fragment="resourceMapPanel">
-				<div id="resourceMapPanel" >		
-				
+				<div id="resourceMapPanel" >
+
 					<script th:inline="javascript">
 					// <![CDATA[
 					    $(document).ready(function(){
@@ -70,12 +70,12 @@
 					        $('#mapViewBtn').tooltip({
 					   			trigger: 'hover',
 					       		placement: 'top',
-					   		}); 
+					   		});
 					     	// Add tooltip on List View button
 					        $('#listViewBtn').tooltip({
 					   			trigger: 'hover',
 					       		placement: 'top',
-					   		}); 
+					   		});
 				    	});
 						var totalHeight = 0;
 						function countTreeData(treeData, h){
@@ -90,45 +90,45 @@
 								}
 							}
 						}
-						
-						
+
+
 				    	// ******************** Data to be displayed on the tree ***************************
-				    	var root;							
-						var i = 0;	
-				        var duration = 750;		    
+				    	var root;
+						var i = 0;
+				        var duration = 750;
 				        var resourceName;
 				    	var treeData = $.parseJSON( [[ ${treeData} ]] );
 				    	totalHeight = 0;
 				    	countTreeData(treeData, 0);
-				    					    	
+
 					 	// ************** Generate the tree diagram	 *****************
 					   /*2306 (w) 1200 (h)*/
 						var margin = {top: 0, right: 10, bottom: 20, left: 120},
 							width = 1500 - margin.right - margin.left,
 							height = 500 - margin.top - margin.bottom;
-					 	
+
 						var tree = d3.layout.tree()
 							.size([height, width]);
-						
+
 						var diagonal = d3.svg.diagonal()
-							.projection(function(d) { 
-								return [d.y, d.x]; 
+							.projection(function(d) {
+								return [d.y, d.x];
 						});
-						
+
 						var svg = d3.select("#resourceMapPanel").append("svg")
 							.attr("width", (totalHeight*200) + margin.right + margin.left)
 							.attr("height", height + margin.top + margin.bottom)
 					        .attr("class", "overlay")
 					        .append("g")
-							.attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
-						
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 						// Append a group which holds all nodes and which the zoom Listener can act upon.
 					    var svgGroup = svg.append("g");
-						
+
 						root = treeData[0];
-						  
+
 						update(root);
-					    
+
 					 	// Toggle children function
 					    function toggleChildren(d) {
 					        if (d.children) {
@@ -144,10 +144,10 @@
 					    // Toggle children on click.
 					    function click(d) {
 					        if (d3.event.defaultPrevented) return; // click suppressed
-					        var obj = d; 
+					        var obj = d;
 					        d = toggleChildren(d);
 					        update(d);
-					        
+
 					        //code to change svg width
 					        var width = Number(d3.select("svg").attr("width"));
 				        	totalHeight = 0;
@@ -159,15 +159,15 @@
 								width = width+(totalHeight*200);
 							}
 					        d3.select("svg").attr("width", width);
-					        
+
 					    }
-						
+
 						function clickLink(d) {
 							d = d.target;
 					        //if (d3.event.defaultPrevented) return; // click suppressed
 					        d = toggleChildren(d);
 					        update(d);
-					        
+
 					      	//code to change svg width
 					        var width = Number(d3.select("svg").attr("width"));
 				        	totalHeight = 0;
@@ -186,7 +186,7 @@
 							// Compute the new tree layout.
 							var nodes = tree.nodes(root).reverse(),
 								links = tree.links(nodes);
-							
+
 							// Normalize for fixed-depth.
 							nodes.forEach(function(d) { d.y = d.depth * 200; });
 
@@ -197,26 +197,26 @@
 							// Enter the nodes.
 							var nodeEnter = node.enter().append("g")
 								.attr("class", "node")
-								.attr("transform", function(d) { 
+								.attr("transform", function(d) {
 									return "translate(" + d.y + "," + d.x + ")"; });
 						        //.on('contextmenu', click);
-								
+
 							nodeEnter.append("image")
 								.attr("xlink:href", function(d) { return d.icon; })
 								.attr("x", "-3%")
 								.attr("y", "-3%")
 								.attr("width", "6%")
 								.attr("height", "6%");
-								
+
 							nodeEnter.append("text")
-								.attr("x", function(d) { 
+								.attr("x", function(d) {
 									return d.children || d._children ? -20 : 20; })
 								.attr("dy", ".35em")
-								.attr("text-anchor", function(d) { 
+								.attr("text-anchor", function(d) {
 									return d.children || d._children ? "end" : "start"; })
 								.text(function(d) { return d.name; })
 								.style("fill-opacity", 1);
-							
+
 							// Update the text to reflect whether node has children or not.
 					        node.select('text')
 					            .attr("x", function(d) {
@@ -231,18 +231,18 @@
 									}
 										return d.name;
 					            });
-							
+
 					     	// Transition nodes to their new position.
 					        var nodeUpdate = node.transition()
 					            .duration(duration)
 					            .attr("transform", function(d) {
 					                return "translate(" + d.y + "," + d.x + ")";
 					            });
-	
+
 					        // Fade the text in
 					        nodeUpdate.select("text")
 					        	.style("fill-opacity", 1);
-							
+
 					     	// Transition exiting nodes to the parent's new position.
 					        var nodeExit = node.exit().transition()
 					            .duration(duration)
@@ -256,10 +256,10 @@
 
 							// Declare the links…
 							var link = svgGroup.selectAll("path.link")
-								.data(links, function(d) { 
-									return d.target.id; 
+								.data(links, function(d) {
+									return d.target.id;
 								});
-							
+
 							// Enter the links.
 							link.enter().insert("path", "g")
 								.attr("class", "link")
@@ -274,12 +274,12 @@
 									});
 								});
 					            //.on('click', clickLink);
-							
+
 							// Transition links to their new position.
 					        link.transition()
 					            .duration(duration)
 					            .attr("d", diagonal);
-					        
+
 					        // Transition exiting nodes to the parent's new position.
 					        link.exit().transition()
 					            .duration(duration)
@@ -306,24 +306,24 @@
 							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
 							ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 						}
-						
+
 						function displayResourceInfo(data){
 							var offset = $("#contextMenu").offset();
 							var json = $.parseJSON(data);
-							
+
 							$("#contextMenu").hide();
 							$("#resourceInfo").hide();
 
 							if(json["zoneName"]){
-								
+
 								$("#zoneInfo #zoneName").html(json["zoneName"]);
-								
-								$("#zoneInfo").fadeIn();						
+
+								$("#zoneInfo").fadeIn();
 								$("#zoneInfo").offset({
-									"top": offset.top, 
+									"top": offset.top,
 									"left": offset.left
-								}); 
-								
+								});
+
 							}
 							else {
 								$("#resourceInfo #name").html(json["name"]);
@@ -333,19 +333,19 @@
 								$("#resourceInfo #ip").html(json["ip"]);
 								$("#resourceInfo #path").html(json["path"]);
 								$("#resourceInfo #parent").html(json["parent"]);
-								
-								$("#resourceInfo").fadeIn();						
+
+								$("#resourceInfo").fadeIn();
 								$("#resourceInfo").offset({
-									"top": offset.top, 
+									"top": offset.top,
 									"left": offset.left
-								}); 
+								});
 							}
 						}
-						
+
 						function addChild() {
 							window.location = "/emc-metalnx-web/resources/add/" + resourceName +"/";
 						}
-						
+
 						$.fn.extend({
 						    disableSelection: function() {
 						        this.each(function() {
@@ -358,7 +358,7 @@
 						        });
 						    }
 						});
-						
+
 						window['resourceMapPanel'].oncontextmenu = function() {
 						    return false;
 						};
@@ -372,27 +372,27 @@
 							$('#resourceMapPanel').disableSelection();
 							$("#resourceMapPanel g .node").on("click", function(event){
 								$("#resourceInfo").hide();
-								
+
 								resourceName =  $(this).find("text").text().replace('*', '');
-								
+
 								$("#contextMenu").fadeIn();
 								$("#contextMenu").offset({
-									"top": event.pageY + 20, 
+									"top": event.pageY + 20,
 									"left": event.pageX
-								}); 
+								});
 							});
-						
-							$('#resourceMapPanel .overlay').on("mousedown", function(event){	
+
+							$('#resourceMapPanel .overlay').on("mousedown", function(event){
 							    if(!$(event.target.parentNode).is('g.node')){
 							        $("#contextMenu").fadeOut();
 									$("#resourceInfo").fadeOut();
 									$("#zoneInfo").fadeOut();
 							    }
-							}); 
+							});
 						});
 					// ]]>
 			    </script>
-					
+
 				</div> <!-- /. col-sm-12 -->
 				<!-- Context Menu -->
 				<div id="contextMenu" class="col-sm-2 hideElement">
@@ -401,57 +401,57 @@
 						<li role="presentation"><a id="addChildMenuItem" onclick="addChild();" href="#">Add Child</a></li>
 					</ul>
 				</div>
-				
+
 				<!-- Zone Info -->
 				<div id="zoneInfo" class="col-sm-3 alert alert-info alert-dismissible hideElement" role="alert">
-					<button type="button" class="close">
+					<button title="close" type="button" class="close">
 						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 					</button>
-					<p>
+					<p title="zone">
 						<b>Zone: </b>
 						<span id="zoneName"></span>
 					</p>
 				</div>
-				
+
 				<!-- Resource Info -->
 				<div id="resourceInfo" class="col-xs-6 col-xm-6 col-md-3 alert alert-info alert-dismissible hideElement" role="alert">
-					<button type="button" class="close">
+					<button title="close" type="button" class="close">
 						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 					</button>
-					<p>
+					<p title="name">
 						<b>Name: </b>
 						<span id="name"></span>
 					</p>
-					<p>
+					<p title="type">
 						<b>Type: </b>
 						<span id="type"></span>
 					</p>
-					<p>
+					<p title="zone">
 						<b>Zone: </b>
 						<span id="zone"></span>
 					</p>
-					<p>
+					<p title="host">
 						<b>Host: </b>
 						<span id="host"></span>
 					</p>
-					<p>
+					<p title="ip">
 						<b>IP: </b>
 						<span id="ip"></span>
 					</p>
-					<p>
+					<p title="path">
 						<b>Path: </b>
 						<span id="path"></span>
 					</p>
-					<p>
+					<p title="parent">
 						<b>Parent: </b>
 						<span id="parent"></span>
 					</p>
 				</div>
 			 </div>
-			</div> <!-- /. col-sm-12 -->	
-			
-		</div> <!-- /. row -->	
-	
+			</div> <!-- /. col-sm-12 -->
+
+		</div> <!-- /. row -->
+
 	</div> <!-- /. Page Content -->
 
 </body>

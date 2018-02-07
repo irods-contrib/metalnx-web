@@ -75,7 +75,7 @@
                                     th:src="@{${ '/images/Server-' + server.machineStatus + '.png' }}" />
                                 <p>
                                     <span id="hostname" th:text="${server.hostname}"></span>
-                                    <i class="fa fa-angle-left"></i>
+                                    <i title="details" class="fa fa-angle-left"></i>
                                 </p>
                             </li>
                             <div class="col-xs-12 hideElement">
@@ -98,8 +98,8 @@
                                                         <span th:text="${resource.path}"></span>
                                                     </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default btn-xs" th:onclick="'javascript:viewInfo(\'' + ${resource.name} + '\');'">
-                                                            <i class="fa fa-info-circle"></i> Info
+                                                        <button title="resourceName" type="button" class="btn btn-default btn-xs" th:onclick="'javascript:viewInfo(\'' + ${resource.name} + '\');'">
+                                                            <i title="info" class="fa fa-info-circle"></i> Info
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -110,7 +110,7 @@
                                 <div class="col-xs-6">
                                     <div class="resourcesTableWrapper col-xs-12">
                                         <div class="col-xs-6 col-sm-7">
-                                            <p>
+                                            <p title="hostname">
                                                 <b>Hostname</b> <br />
                                                 <a aria-label="server details" th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
                                             </p>
@@ -127,7 +127,7 @@
                                             <p>
                                                 <span th:text="${server.machineStatus}"></span>
                                             </p>
-                                            <p>
+                                            <p title="ip">
                                                 <b>IP: <span th:text="${server.ip}"></span></b>
                                             </p>
                                         </div>
@@ -152,7 +152,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                         <h4 class="modal-title" id="resourceInfoTitle" >Resource Information</h4>
                     </div>
                     <div class="modal-body row">
@@ -186,7 +186,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" >
+                        <button title="close" type="button" class="btn btn-default" data-dismiss="modal" >
                             Close
                         </button>
                     </div>

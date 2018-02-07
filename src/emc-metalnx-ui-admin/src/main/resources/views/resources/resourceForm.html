@@ -19,10 +19,10 @@
 	xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.thymeleaf.org"
-	lang="en" 
+	lang="en"
 	layout:decorator="template">
 
-<head>	
+<head>
 	<title th:text="#{tab.title.resources}">EMC Metalnx - Resources</title>
 </head>
 
@@ -48,148 +48,148 @@
 							<div class="panel-heading">
 								<h3 th:text="#{resources.add.form.settings.label}" class="panel-title"></h3>
 							</div>
-						
+
 							<div class="panel-body">
-								<input type="hidden" name="previousPage" th:value="${previousPage}" />
-								<input type="hidden" id="inputResourceID" th:field="*{id}" class="form-control" />
-								
+								<input title="previousPage" type="hidden" name="previousPage" th:value="${previousPage}" />
+								<input title="inputResourceID" type="hidden" id="inputResourceID" th:field="*{id}" class="form-control" />
+
 								<div class="form-group">
-									<label for="inputResourceName" th:text="#{resources.add.form.resource.name}"></label> 
-									<input type="text" class="form-control" id="inputResourceName" 
+									<label title="inputResourceName" for="inputResourceName" th:text="#{resources.add.form.resource.name}"></label>
+									<input title="inputResourceName" type="text" class="form-control" id="inputResourceName"
 										th:field="*{name}" th:placeholder="#{resources.add.form.placeholder.resource.name}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourceNameIcon"></i>
+									<i title="invalidResourceNameIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourceNameIcon"></i>
 									<small class="help-block hideElement" id="invalidResourceNameMsg" th:text="#{resources.validation.name.duplicated}"></small>
 									<small class="help-block hideElement" id="emptyResourceNameMsg" th:text="#{resources.validation.name.blank}"></small>
-								</div>								
-								
+								</div>
+
 								<div class="form-group">
-									<label for="selectResourceType" th:text="#{resources.add.form.resource.type}"></label> 
+									<label title="selectResourceType" for="selectResourceType" th:text="#{resources.add.form.resource.type}"></label>
 									<select class="form-control" name="resourceType" id="selectResourceType">
 	                                       <optgroup label="Coordinating Resources" id="optGroupCoordinatingResources">
 	   										<th:block th:each="coordinatingResource : ${coordinatingResources}">
-	   											<option th:value="${coordinatingResource.dataGridResourceTypeName}"> 
-	                                                   <span th:text="${coordinatingResource.dataGridResourceTypeNamePrettified}"></span> 
+	   											<option th:value="${coordinatingResource.dataGridResourceTypeName}">
+	                                                   <span th:text="${coordinatingResource.dataGridResourceTypeNamePrettified}"></span>
 	                                               </option>
-	   										</th:block>			
-	                                       </optgroup>		
+	   										</th:block>
+	                                       </optgroup>
 	                                       <optgroup label="Storage Resources" id="optGroupStorageResources">
 	                                           <th:block th:each="storageResource : ${storageResources}">
-	                                               <option th:value="${storageResource.dataGridResourceTypeName}"> 
+	                                               <option th:value="${storageResource.dataGridResourceTypeName}">
 	                                                   <span th:text="${storageResource.dataGridResourceTypeNamePrettified}"></span>
 	                                               </option>
-	                                           </th:block>         
-	                                       </optgroup>				
-									</select>								
-								</div>										
-								
+	                                           </th:block>
+	                                       </optgroup>
+									</select>
+								</div>
+
 								<div class="form-group">
-									<label for="selectResourceParent" th:text="#{resources.add.form.resource.parent}"></label> 
+									<label title="selectResourceParent" for="selectResourceParent" th:text="#{resources.add.form.resource.parent}"></label>
 									<select class="form-control" name="resourceParent" id="selectResourceParent">
 										<option selected="true" th:value="${parent}">
-											<span th:text="${parent}"> </span> 
+											<span th:text="${parent}"> </span>
 										</option>
 										<th:block th:each="resource : ${resources}">
-											<option th:if="${resource.name != parent}" th:value="${resource.name}" > 
-												<span th:text="${resource.name}"></span> 
+											<option th:if="${resource.name != parent}" th:value="${resource.name}" >
+												<span th:text="${resource.name}"></span>
 											</option>
-										</th:block>									
-									</select>								
-								</div>	
-								
+										</th:block>
+									</select>
+								</div>
+
 								<div class="form-group">
-									<label for="selectZone" th:text="#{resources.add.form.resource.zone}"></label> 
+									<label title="selectZone" for="selectZone" th:text="#{resources.add.form.resource.zone}"></label>
 									<select class="form-control" name="zones" id="selectZone" th:field="*{zone}">
 										<th:block th:each="currentZone : ${zones}">
-											<option th:value="${currentZone.getName()}"> 
-												<span th:text="${currentZone.getName()}"></span> 
+											<option th:value="${currentZone.getName()}">
+												<span th:text="${currentZone.getName()}"></span>
 											</option>
-										</th:block>									
-									</select>								
+										</th:block>
+									</select>
 								</div>
-								
+
 								<div class="form-group storageResourcesProperties">
-									<label for="inputResourceHost" th:text="#{resources.add.form.resource.host}"></label> 
-									<input type="text" class="form-control" id="inputResourceHost" 
+									<label title="inputResourceHost" for="inputResourceHost" th:text="#{resources.add.form.resource.host}"></label>
+									<input title="inputResourceHost" type="text" class="form-control" id="inputResourceHost"
 										th:field="*{host}" th:placeholder="#{resources.add.form.placeholder.resource.host.optional}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourceHostIcon"></i>
+									<i title="invalidResourceHostIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourceHostIcon"></i>
 									<small class="help-block hideElement" id="emptyResourceHostMsg" th:text="#{resources.validation.host.blank}"></small>
 								</div>
-								
+
 								<div class="form-group storageResourcesProperties">
-									<label for="inputResourcePath" th:text="#{resources.add.form.resource.path}"></label> 
-									<input type="text" class="form-control" id="inputResourcePath" 
+									<label title="inputResourcePath" for="inputResourcePath" th:text="#{resources.add.form.resource.path}"></label>
+									<input title="inputResourcePath" type="text" class="form-control" id="inputResourcePath"
 										th:field="*{path}" th:placeholder="#{resources.add.form.placeholder.resource.path.optional}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourcePathIcon"></i>
+									<i title="invalidResourcePathIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidResourcePathIcon"></i>
 									<small class="help-block hideElement" id="emptyResourcePathMsg" th:text="#{resources.validation.resource.path.blank}"></small>
 								</div>
-								
+
 								<!-- Isilon Host -->
 								<div class="form-group hideElement isilonProperty">
-									<label for="inputIsilonResourceHost" th:text="#{resources.add.form.isilon.resource.host}"></label> 
-									<input type="text" class="form-control" id="inputIsilonResourceHost" 
+									<label title="inputIsilonResourceHost" for="inputIsilonResourceHost" th:text="#{resources.add.form.isilon.resource.host}"></label>
+									<input title="inputIsilonResourceHost" type="text" class="form-control" id="inputIsilonResourceHost"
 										th:field="*{isiHost}" th:placeholder="#{resources.add.form.placeholder.isilon.resource.host}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourceHostIcon"></i>
+									<i title="invalidIsilonResourceHostIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourceHostIcon"></i>
 									<small class="help-block hideElement" id="emptyIsilonResourceHostMsg" th:text="#{resources.validation.isilon.host.blank}"></small>
-								</div>								
-								
+								</div>
+
 								<!-- Isilon Port -->
 								<div class="form-group hideElement isilonProperty">
-									<label for="inputIsilonResourcePort" th:text="#{resources.add.form.isilon.resource.port}"></label> 
-									<input type="text" class="form-control" id="inputIsilonResourcePort" 
+									<label title="inputIsilonResourcePort" for="inputIsilonResourcePort" th:text="#{resources.add.form.isilon.resource.port}"></label>
+									<input title="inputIsilonResourcePort" type="text" class="form-control" id="inputIsilonResourcePort"
 										th:field="*{isiPort}" th:placeholder="#{resources.add.form.placeholder.resource.port}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourcePortIcon"></i>
+									<i title="inputIsilonResourcePortIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourcePortIcon"></i>
 									<small class="help-block hideElement" id="emptyIsilonResourcePortMsg" th:text="#{resources.validation.isilon.port.blank}"></small>
-								</div>								
-								
+								</div>
+
 								<!-- Isilon User -->
 								<div class="form-group hideElement isilonProperty">
-									<label for="inputIsilonResourceUser" th:text="#{resources.add.form.isilon.resource.user}"></label> 
-									<input type="text" class="form-control" id="inputIsilonResourceUser" 
+									<label title="inputIsilonResourceUser" for="inputIsilonResourceUser" th:text="#{resources.add.form.isilon.resource.user}"></label>
+									<input title="inputIsilonResourceUser" type="text" class="form-control" id="inputIsilonResourceUser"
 										th:field="*{isiUser}" th:placeholder="#{resources.add.form.placeholder.resource.user}" />
-									<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourceUserIcon"></i>
+									<i title="inputIsilonResourceUserIcon" class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidIsilonResourceUserIcon"></i>
 									<small class="help-block hideElement" id="emptyIsilonResourceUserMsg" th:text="#{resources.validation.isilon.user.blank}"></small>
-								</div>							
-								
+								</div>
+
 								<div class="form-group hideElement">
-									<label for="inputResourceStatus" th:text="#{resources.add.form.resource.status}"></label> 
-									<input type="text" class="form-control" id="inputResourceStatus" 
+									<label title="inputResourceStatus" for="inputResourceStatus" th:text="#{resources.add.form.resource.status}"></label>
+									<input title="inputResourceStatus" type="text" class="form-control" id="inputResourceStatus"
 										th:field="*{status}" th:placeholder="#{resources.add.form.placeholder.resource.status}" />
-								</div>							
-								
+								</div>
+
 								<div class="form-group hideElement">
-									<label for="inputResourceInfo" th:text="#{resources.add.form.resource.info}"></label> 
-									<input type="text" class="form-control" id="inputResourceInfo" 
+									<label title="inputResourceInfo" for="inputResourceInfo" th:text="#{resources.add.form.resource.info}"></label>
+									<input title="inputResourceInfo" type="text" class="form-control" id="inputResourceInfo"
 										th:field="*{info}" th:placeholder="#{resources.add.form.placeholder.resource.info}" />
-								</div>								
-								
+								</div>
+
 								<div class="form-group hideElement">
-									<label for="inputResourceComment" th:text="#{resources.add.form.resource.comment}"></label> 
-									<input type="text" class="form-control" id="inputResourceComment" 
+									<label title="inputResourceComment" for="inputResourceComment" th:text="#{resources.add.form.resource.comment}"></label>
+									<input title="inputResourceComment" type="text" class="form-control" id="inputResourceComment"
 										th:field="*{info}" th:placeholder="#{resources.add.form.placeholder.resource.comment}" />
 								</div>
 							</div>
 						</div>
-	                       
+
 	                       <div class=" pull-right">
-	                       	<button type="button" class="btn btn-default btn-md " 
+	                       	<button title="cancel" type="button" class="btn btn-default btn-md "
 	                               th:text="#{forms.cancel.action.button}"
 	                               data-toggle="modal" data-target="#cancelModal"
 	                               id="cancelResourceFormBtn">
 	                           </button>
-	                           <button type="button" class="btn btn-primary" th:text="#{forms.save.action.button}" 
+	                           <button type="button" class="btn btn-primary" th:text="#{forms.save.action.button}"
 	                               id="submitResourceFormBtn">
 	                           </button>
 	                       </div> <!-- /.btn-group -->
 					</form>
-				</div>					
+				</div>
 			</div>
-				
+
 			<!-- Cancel Modal -->
 			<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myCancelModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-						  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						  <button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						  <h4 class="modal-title" id="myCancelModalLabel" th:text="#{confirmation.cancel.title}">
 						  </h4>
 						</div>
@@ -197,35 +197,35 @@
 							<span th:text="#{confirmation.cancel.label}"></span>
 						</div>
 						<div class="modal-footer">
-						  <button type="button" class="btn btn-default" data-dismiss="modal" 
+						  <button title="cancel" type="button" class="btn btn-default" data-dismiss="modal"
 						  	th:text="#{confirmation.message.cancel}">
 						  </button>
-						  
-						  <a th:href="@{ ${parent == null ? urlMap.URL_RESOURCES_MANAGEMENT : urlMap.URL_RESOURCES_MAP} }" class="btn btn-primary" 
+
+						  <a th:href="@{ ${parent == null ? urlMap.URL_RESOURCES_MANAGEMENT : urlMap.URL_RESOURCES_MAP} }" class="btn btn-primary"
 						  	th:text="#{confirmation.message.yes}">
 						  </a>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div> <!-- /.row -->				
-								
+		</div> <!-- /.row -->
+
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
-		<script type="text/javascript" th:inline="javascript">	
-		
+		<script type="text/javascript" th:inline="javascript">
+
 			$(function(){
-				resourceFormValidator([[${ urlMap.URL_RESOURCE_VALIDATE_NAME }]]);		 
+				resourceFormValidator([[${ urlMap.URL_RESOURCE_VALIDATE_NAME }]]);
 			});
-			
-			$("#submitResourceFormBtn").click(function(){				
+
+			$("#submitResourceFormBtn").click(function(){
 				if(resourceFormCanBeSubmitted([[${ urlMap.URL_RESOURCE_VALIDATE_NAME }]])){
 					$(".registerForm").submit();
 				}
 				else {
 					$("html, body").animate({ scrollTop: 0 }, "slow");
-				} 
-			}); 
-			
+				}
+			});
+
 			$("#selectResourceType").change(function() {
 				//show or hide Host and Path inputs depending on the resource type
 				var optionSelected = $(this).find(":selected");
@@ -243,7 +243,7 @@
 					//$(".storageResourcesProperties i").hide();
 					//$(".storageResourcesProperties").hide(600);
 				}
-				
+
 				//isilon resources required extra parameters to be created
 				if($(this).val() == "isilon"){
 					$(".storageResourcesProperties").removeClass("has-feedback has-error");
@@ -255,10 +255,10 @@
 					if($(".isilonProperty").is(':visible')){
 						$("#inputResourceHost").val("");
 						$(".isilonProperty input").parent().removeClass("has-feedback has-error");
-						$(".isilonProperty i").hide();			
-						$(".isilonProperty small").hide();		
-						$(".isilonProperty").hide(600);							
-					}				
+						$(".isilonProperty i").hide();
+						$(".isilonProperty small").hide();
+						$(".isilonProperty").hide(600);
+					}
 				}
 			});
 		</script>
