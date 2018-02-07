@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.IOUtils;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
@@ -32,7 +34,6 @@ import org.springframework.web.servlet.HandlerMapping;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
-import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumbItem;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
@@ -86,9 +87,7 @@ public class CollectionInfoController {
 		model.addAttribute("iconToDisplay", iconToDisplay);
 		model.addAttribute("dataProfile", dataProfile);
 		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-		DataGridBreadcrumb bc = new DataGridBreadcrumb(dataProfile.getAbsolutePath());
-		
-		System.out.println("Absolute Path :: " +dataProfile.getAbsolutePath());
+		System.out.println("Absolute Path :: " + dataProfile.getAbsolutePath());
 		String template = "";
 
 		if (!dataProfile.isFile())

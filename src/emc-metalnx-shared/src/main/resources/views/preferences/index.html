@@ -50,11 +50,11 @@
 							<div class="form-group">
 								<label for="forceFileOverwriting">File Upload</label>
 								<p>
-									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" aria-label="overwrite duplicates"/>
+									<input type="checkbox" id="forceFileOverwriting" th:field="*{forceFileOverwriting}" aria-label="overwrite duplicates" title="overwrite duplicates"/>
 									<span th:text="#{preferences.index.overwrite.duplicates}"></span>
 								</p>
 								<p>
-									<input type="checkbox" id="advancedView" th:field="*{advancedView}" aria-label="advancedView"/>
+									<input type="checkbox" id="advancedView" th:field="*{advancedView}" aria-label="advancedView" title="advancedView"/>
 									<span th:text="#{preferences.index.advanced.view}"></span>
 								</p>
 							</div>
@@ -62,7 +62,7 @@
 						</div>
 
 					<div class="btn-group pull-right">
-						<button type="submit" class="btn btn-primary" th:text="#{preferences.save.button.label}"></button>
+						<button type="submit" class="btn btn-primary" th:text="#{preferences.save.button.label}" title="Save"></button>
 					</div>
 
 				</form>

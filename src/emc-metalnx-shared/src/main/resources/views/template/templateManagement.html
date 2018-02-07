@@ -30,7 +30,7 @@
 				<a id="templates-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
@@ -45,7 +45,7 @@
 
 				<div th:if="${templateNotModifiedSuccessfully}">
 					<div class="alert alert-danger alert-dismissible text-center" role="alert" >
-						<button type="button" class="close" data-dismiss="alert">
+						<button type="button" class="close" data-dismiss="alert" title="Close">
 					  		<span aria-hidden="true">&times;</span>
 					  		<span class="sr-only">Close</span>
 					  	</button>
@@ -54,7 +54,7 @@
 				</div>
 
 				<div class="alert alert-success alert-dismissible text-center hideElement" role="alert" id="importSuccessful">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
@@ -63,7 +63,7 @@
 				</div>
 
 				<div class="alert alert-warning alert-dismissible text-center hideElement" role="alert" id="partialImportWarning">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
@@ -72,7 +72,7 @@
 				</div>
 
 				<div class="alert alert-danger alert-dismissible text-center hideElement" role="alert" id="importError">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
@@ -83,7 +83,7 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="btn-group pull-right btn-templates">
-						 	<a type="button" th:href="@{ ${urlMap.URL_ADD_TEMPLATE} }" class="btn btn-primary">Add Template</a>
+						 	<a type="button" th:href="@{ ${urlMap.URL_ADD_TEMPLATE} }" class="btn btn-primary" title="Add template">Add Template</a>
 						 	<a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 								<span class="caret"></span>
 						    	<span class="sr-only">Toggle Dropdown</span>
@@ -97,7 +97,7 @@
 
 				<!-- Table loader Ajax Gif -->
 				<div id="table-loader" class="table-loader">
-					<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+					<img class="center-block" th:src="@{/images/ajax_loader.gif}" alt="loader"/>
 					<p class="text-center" th:text="#{loading.table.label}"></p>
 				</div>
 
@@ -109,7 +109,7 @@
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">
+								<button type="button" class="close" data-dismiss="modal" title="Close">
 									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 								</button>
 								<h4 id="uploadModalTitle" class="modal-title" th:text="#{upload.label}"></h4>
@@ -118,7 +118,7 @@
 
 								<div class="hideElement" id="uploadMinMessage">
 									<div class="alert alert-warning alert-dismissible text-center" role="alert">
-									  	<button type="button" class="close" data-dismiss="alert">
+									  	<button type="button" class="close" data-dismiss="alert" title="Close">
 									  		<span aria-hidden="true">&times;</span>
 									  		<span class="sr-only">Close</span>
 									  	</button>
@@ -130,11 +130,11 @@
 								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
 									<div class="form-group">
 										<span>Select files for upload &nbsp;</span>
-										<button type="button" class="btn btn-primary" id="templateBrowseButton">
+										<button type="button" class="btn btn-primary" id="templateBrowseButton" title="Browse">
 											<span th:text="#{browse.label}"></span>
 										</button>
 										<input type="file" name="file" id="inputFiles"
-											class="form-control" />
+											class="form-control"  title="file"/>
 									</div>
 									<div class="well hideElement" id="fileListDiv">
 										<div id="filesList"></div>
@@ -144,22 +144,24 @@
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
 												<label for="prefixInput">
-													<input type="checkbox" id="addPrefixCheckbox" name="addPrefix" value="1" aria-label="add prefix to template" /> Add prefix to template
+													<input type="checkbox" id="addPrefixCheckbox" name="addPrefix" value="1" aria-label="add prefix to template" 
+													title="add prefix to template" /> Add prefix to template
 				       							</label>
 											</div>
 											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
-												<input type="text" class="form-control hideElement " name="prefix" id="prefixInput" />
+												<input type="text" class="form-control hideElement " name="prefix" id="prefixInput" title="prefix" />
 											</div>
 										</div>
 
 										<div class="row">
 											<div class="col-lg-5 col-sm-5 col-xs-6 checkbox">
 												<label for="suffixInput">
-													<input type="checkbox" id="addSuffixCheckbox" name="addSuffix" value="1" aria-label="add suffix to template" /> Add suffix to template
+													<input type="checkbox" id="addSuffixCheckbox" name="addSuffix" value="1" aria-label="add suffix to template" 
+													title="add suffix to template"/> Add suffix to template
 				       							</label>
 											</div>
 											<div class="col-lg-7 col-sm-7 col-xs-6 checkbox">
-												<input type="text" class="form-control hideElement " name="suffix" id="suffixInput" />
+												<input type="text" class="form-control hideElement " name="suffix" id="suffixInput" title="suffix"/>
 											</div>
 										</div>
 									</div>
@@ -169,9 +171,9 @@
 
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}">
+								<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}" title="Cancel">
 								</button>
-								<button type="button" class="btn btn-primary" id="templateUploadButton">
+								<button type="button" class="btn btn-primary" id="templateUploadButton" title="Upload">
 									<i class="fa fa-upload"></i>
 									<span th:text="#{upload.label}"></span>
 								</button>

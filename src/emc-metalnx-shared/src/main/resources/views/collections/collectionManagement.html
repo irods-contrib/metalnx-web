@@ -216,7 +216,7 @@
 									<p>
 										<a aria-label="copy collection" href="#" name="/" title="/"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
+											alt="copy collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
 										</a>
 									</p>
@@ -227,7 +227,7 @@
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
-											<img alt="" class="folder-icon"
+											<img alt="user home directory" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
 										</a>
@@ -273,7 +273,7 @@
 						    </div>
 						</div>
                         <div class="col-xs-12">
-                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked"/>
+                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked" title="Copy with Metadata"/>
                             <label for="inputCopyWithMetadata" th:text="#{copy.with.metadata.label}">Copy with metadata</label>
 						</div>
 					</div>
@@ -282,10 +282,10 @@
 							<div class="col-md-12 pull-right targetPathInfoDiv">Copy to: <i class="fa fa-folder-o"></i> <span class="targetPathInfoSpan">/</span></div>
 							<div class="col-md-12">
 								<button type="button" class="btn btn-default cancelBtn"
-									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}">
+									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}" title="Cancel">
 								</button>
 								<button type="button" class="btn btn-primary" id="copyBtn"
-									th:text="#{copy.label}"></button>
+									th:text="#{copy.label}" title="Copy"></button>
 							</div>
 						</div>
 					</div>
@@ -326,7 +326,7 @@
 									<p>
 										<a name="/" title="/" aria-label="Move collection"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
+											alt="Move collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
 										</a>
 									</p>
@@ -337,7 +337,7 @@
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
-											<img alt="" class="folder-icon"
+											<img alt="User home dir" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
 										</a>
@@ -420,7 +420,7 @@
 									th:text="#{resource.label}"> </label>
 								<div id="replicate-loader" class="table-loader hideElement">
 									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-									<p class="text-center" th:text="#{loading.list.label}"></p>
+									<p class="text-center" th:text="#{loading.list.label}" alt="table loader"></p>
 								</div>
 								<div id="selectResourceForReplication"></div>
 							</div>
@@ -497,25 +497,25 @@
 							</p>
 							<div class="well">
 								<!-- <div class="col-sm-4 col-sm-offset-4" style="align-items: center; display: flex; min-height: 100%;"> -->
-									<button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
 									</button>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
-									id="inputFiles" class="form-control" />
+									id="inputFiles" class="form-control" title="Input File"/>
 								<div id="filesList">
 								</div>
 							</div>
 
 							<div id="uploadControlOptions">
-								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
+								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" title="Hidden upload path"/>
 
 									<div class="row form-group">
 										<th:block th:if="${dataGridUser.isAdvancedView()}">
 										<div class="col-md-6" th:text="#{text.resource.name}">Resource</div>
 										<div class="col-md-6">
 												<input type="checkbox" id="inputReplica" name="replica"
-													value="1" />
+													value="1"  title="Replica" />
 													<label for="inputReplica" th:text="#{text.replica}">Replica</label>
 										</div>
 
@@ -536,14 +536,14 @@
  								<div class="row form-group">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputOverwriteDuplicateFiles" aria-label="overwrite on upload"
-											name="inputOverwriteDuplicateFiles"
+											name="inputOverwriteDuplicateFiles" title="overwrite on upload"
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
 									<th:block th:if="${dataGridUser.isAdvancedView()}">
 									<div class="col-md-6">
 										<input type="checkbox" id="inputChecksum" name="checksum" aria-label="compute checksum"
-										value="1" /> &nbsp;&nbsp;<span>Checksum</span>
+										title="compute checksum" value="1" /> &nbsp;&nbsp;<span>Checksum</span>
 									</div>
 									</th:block>
  								</div>
