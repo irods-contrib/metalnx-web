@@ -18,41 +18,41 @@
 <html
 	xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.thymeleaf.org"
     lang="en"
     layout:decorator="template">
 
 <head>
-	
+
 	<!-- D3 Library -->
     <script th:src="@{/js/d3.min.js}"></script>
-    
+
     <!-- Radial Progress Library -->
     <script th:src="@{/js/radialProgress.js}"></script>
-	
+
 	<!-- Dashboard Style (charts) -->
 	<link rel="stylesheet" th:href="@{/css/dashboardStyle.css}"/>
 
 </head>
 
-<body>	
+<body>
 	<div layout:fragment="content">
 		<div class="col-xs-12">
 			<h1 class="page-header">Server details</h1>
 		</div>
-		
+
 		<div th:if="${ server == null }" class="col-xs-12">
 			<div class="alert alert-danger alert-dismissible text-center" role="alert">
 			  	<span th:text="#{server.details.not.found}"></span>
 			</div>
 		</div>
-		
+
 		<!-- Resource Info Modal -->
 		<div class="modal fade" id="rescInfoModal" tabindex="-1" role="dialog" aria-labelledby="rescInfoModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h4 class="modal-title" id="" >Resource Information</h4>
 					</div>
 					<div class="modal-body row">
@@ -86,25 +86,25 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" >
+						<button title="close" type="button" class="btn btn-default" data-dismiss="modal" >
 							Close
 					  	</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="col-xs-12" th:if="${server}">
 			<div class="row">
 				<!-- Network -->
 				<div class="col-xs-12 col-md-6 dashboardWidget">
 					<div class="panel panel-default">
-						
+
 						<div class="panel-body networkWidgetPanel">
 							<h4 class="">Network</h4>
 							<div class="row">
-								<div class="col-xs-6 col-sm-7">						
-									
+								<div class="col-xs-6 col-sm-7">
+
 									<p>
 										<b>Hostname</b> <br />
 										<span th:text="${server.hostname}"></span>
@@ -112,42 +112,42 @@
 									<p>
 										<b>MetaLnx Remote Monitor </b> <br />
 										<span th:text="${server.rmdPackageVersion}"></span> -
-										<span th:text="${server.rmdPackageRelease}"></span> 
+										<span th:text="${server.rmdPackageRelease}"></span>
 									</p>
 								</div>
 								<div class="col-xs-6 col-sm-5">
-									<img alt="Server" class="dashboard-server-icon" 
-										th:src="@{${ '/images/Server-' + server.machineStatus + '.png'}}" 
+									<img alt="Server" class="dashboard-server-icon"
+										th:src="@{${ '/images/Server-' + server.machineStatus + '.png'}}"
 										th:id="${server.hostname}"/>
 									<p>
-										<span th:text="${server.machineStatus}"></span>	
-									</p>	
+										<span th:text="${server.machineStatus}"></span>
+									</p>
 									<p>
 										<b>IP: <span th:text="${server.ip}"></span></b>
-									</p>					
+									</p>
 								</div>
 							</div>
 						</div>
 						<div th:if="${isServerResponding == false}" class="panel-footer">
 							<div th:if="${isServerResponding == false}">
 								<div class="serverIcon">
-									<i class="fa fa-exclamation-triangle" id="servers-panel-footer-image"></i>	
+									<i title="status" class="fa fa-exclamation-triangle" id="servers-panel-footer-image"></i>
 								</div>
 								<p>
 									<small title="Please check network connectivity to the server. Manually verify that iRODS and the RMD package are running on the servers.">
-										Unable to communicate with the iCAT server. 							
+										Unable to communicate with the iCAT server.
 									</small>
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
-					
+
 				<!-- Total Storage -->
 				<div class="col-xs-12 col-md-6 dashboardWidget">
 					<div class="panel panel-default">
 						<div class="panel-body storageWidgetPanel" id="totalStorageSum">
-							<h4 class="">Total Storage</h4>	
+							<h4 class="">Total Storage</h4>
 							<div class="col-xs-6">
 								<table class="col-xs-10 col-md-10 pull-right">
 									<tbody>
@@ -156,22 +156,22 @@
 										<tr><td title="Total capacity">Total Capacity: </td><td>  <span id="totalStorage"></span></td></tr>
 									</tbody>
 								</table>
-							</div>				
+							</div>
 							<div id="storageChart" class="col-xs-6"></div>
-							
+
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		
+
+
 		<div class="col-xs-12 col-md-6" th:if="${server}">
 			<div class="row">
 				<!-- Hardware -->
 				<div class="col-xs-12 col-md-12 dashboardWidget">
 					<div class="panel panel-default">
-						
+
 						<div class="panel-body">
 							<h4 class="">Hardware</h4>
 							<div class="row">
@@ -184,7 +184,7 @@
 												<th>CPU</th>
 											</tr>
 										</thead>
-						
+
 										<tbody>
 											<tr>
 												<td th:text="#{server.details.user.mode.label}"></td>
@@ -205,7 +205,7 @@
 										</tbody>
 									</table>
 								</div>
-								
+
 								<div class="col-xs-6 col-md-6" id="hardware-memory-section">
 									<table class="table table-hover table-responsive hideElement">
 										<thead>
@@ -213,7 +213,7 @@
 												<th>Memory</th>
 											</tr>
 										</thead>
-						
+
 										<tbody>
 											<tr>
 												<td th:text="#{server.details.total.label}"></td>
@@ -238,22 +238,22 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- Resources -->
 				<div class="col-xs-12 col-md-12 dashboardWidget">
 					<div class="panel panel-default" id="resourcesPanel">
-						
+
 						<div class="panel-body ">
 							<h4 class="">Resources</h4>
 							<div class="">
-								<div class="col-xs-12" id="resourceListOfAServer">	
-									<table th:if="${server.getResources()}" width="100%">	
+								<div class="col-xs-12" id="resourceListOfAServer">
+									<table th:if="${server.getResources()}" width="100%">
 										<tbody>
 											<tr th:each="resource : ${server.getResources()}">
 												<td>
 													<span class="fa-stack fa-lg" style="font-size: 11pt; color:#5CB85C;">
-			                                          <i class="fa fa-circle fa-stack-2x"></i>
-			                                          <i class="fa fa-database fa-stack-1x fa-inverse" style="color:#fff;"></i>
+			                                          <i title="resource" class="fa fa-circle fa-stack-2x"></i>
+			                                          <i title="resource" class="fa fa-database fa-stack-1x fa-inverse" style="color:#fff;"></i>
 			                                        </span>
 			                                        <span th:text="${resource.name}"></span>
 												</td>
@@ -261,38 +261,38 @@
 													<span th:text="${resource.path}"></span>
 												</td>
 												<td>
-													<button type="button" class="btn btn-default btn-xs" th:onclick="'javascript:viewInfo(\'' + ${resource.name} + '\');'">
-														<i class="fa fa-info-circle"></i> Info
+													<button title="View Info" type="button" class="btn btn-default btn-xs" th:onclick="'javascript:viewInfo(\'' + ${resource.name} + '\');'">
+														<i title="info"class="fa fa-info-circle"></i> Info
 													</button>
 												</td>
 											</tr>
-										</tbody>				
-									</table>	
+										</tbody>
+									</table>
 									<div th:unless="${server.getResources()}">
 										<p>
 											<small>Resources not available.</small>
 											<small th:if="${isServerResponding == false}">
 												iCAT not reachable. Something may be blocking your access
-												to the iCAT server. Please, make sure the iCAT server 
-												is running, and check both firewall and network 
+												to the iCAT server. Please, make sure the iCAT server
+												is running, and check both firewall and network
 												connections.
 											</small>
 										</p>
 									</div>
 								</div>
 								<div class="col-xs-12 col-md-9" id="resourceOfAServerInfo">
-									
+
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
 		</div>
 		<!-- Disk -->
 		<div class="col-xs-12 col-md-6 dashboardWidget" id="diskPanel" th:if="${server}">
 			<div th:class="${server.diskStatus == 'normal'} ? 'panel panel-default' : 'panel panel-' + ${server.diskStatus}">
-				
+
 				<div class="panel-body scrollable-div" id="diskSection">
 					<h4 class="">Partition Information</h4>
 					<div class="row">
@@ -304,7 +304,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Metalnx microservices package -->
 		<div class="col-xs-12 col-md-6 dashboardWidget" th:if="${server}">
 			<div class="panel panel-default" id="mlxMsiPanel">
@@ -332,10 +332,10 @@
 			if([[${ server }]]) {
 				var serverHostname = [[${ server.hostname }]];
 				var url = "/emc-metalnx-web/dashboard/storageServer/";
-				
+
 				ajaxEncapsulation(url, "POST", {hostname : serverHostname}, displayTotalStorageInfo, null);
-				
-				
+
+
 				// Requesting machine's health information to MetaLnx
 				var rmdBaseScheme = "POST";
 				var rmdBaseUrl = "/emc-metalnx-web/monitor/";
@@ -347,7 +347,7 @@
 					{request: {host: serverHostname, infoType: "IRODS_LOGS"}, handler: displayIRODSLogs},
 					{request: {host: serverHostname, infoType: "IRODS_STATUS"}, handler: displayIRODSStatus}
 				];
-				
+
 				for (var i in requestsInfo) {
 					var requestData = requestsInfo[i].request;
 					var handler = requestsInfo[i].handler;
@@ -357,7 +357,7 @@
 				$("#resourceListOfAServer a").click(function(){
 					var resourceName = $(this).text();
 					$.get("/emc-metalnx-web/dashboard/resourceDetails/" + resourceName + "/", function(data) {
-						$("#resourceOfAServerInfo").html(data);		
+						$("#resourceOfAServerInfo").html(data);
 					});
 				});
 
@@ -367,15 +367,15 @@
 			function displayMSI(response){
 				$('#mlxMsiPkgList').html(response);
 			}
-			
+
 			function viewInfo(resourceName){
 				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
 				ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 			}
-			
+
 			function displayResourceInfo(data){
 				var json = $.parseJSON(data);
-				
+
 				$("#rescInfoModal #name").html(json["name"]);
 				$("#rescInfoModal #type").html(json["type"]);
 				$("#rescInfoModal #zone").html(json["zone"]);
@@ -383,13 +383,13 @@
 				$("#rescInfoModal #ip").html(json["ip"]);
 				$("#rescInfoModal #path").html(json["path"]);
 				$("#rescInfoModal #parent").html(json["parent"]);
-				
+
 				$('#rescInfoModal').modal('show');
 			}
 
 		</script>
 	</div>
-	
-	
+
+
 </body>
 </html>

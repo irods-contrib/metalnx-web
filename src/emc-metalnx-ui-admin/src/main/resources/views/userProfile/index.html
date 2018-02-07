@@ -36,14 +36,14 @@
 				<a id="profiles-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ userProfileAddedSuccessfully != null or userProfileModifiedSuccessfully != null or profileRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
 				  	<b><span th:if="${ userProfileAddedSuccessfully }" th:text="${ userProfileAddedSuccessfully }" class="text-center"></span></b>
 				  	<b><span th:if="${ userProfileModifiedSuccessfully }" th:text="${ userProfileModifiedSuccessfully }" class="text-center"></span></b>
 				  	<b><span th:if="${ profileRemovedSuccessfully }" th:text="${ profileRemovedSuccessfully }" class="text-center"></span></b>
-				  	
+
 					<span th:if="${ userProfileAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
 					<span th:if="${ userProfileModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
 					<span th:if="${ profileRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
@@ -58,11 +58,11 @@
 				   class="btn btn-default btn-sm btn-users" style="margin-right: 5px;"><span class="fa fa-download"> </span> <span th:text="#{toCSV.label}"></span></a>
 			</div>
 		</div> <!-- /. row User menu Box -->
-				
+
 
 		<!-- Table loader Ajax Gif -->
 		<div id="table-loader" class="table-loader">
-			<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+			<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
 			<p class="text-center" th:text="#{loading.table.label}"></p>
 		</div>
 
@@ -98,7 +98,7 @@
 				ajaxEncapsulation("/emc-metalnx-web/users/profile/findAll/", "GET", "", populateUserProfileTableDiv, null, null);
 			});
 		</script>
-				
+
 	</div> <!-- /. Page Content -->
 
 </body>
