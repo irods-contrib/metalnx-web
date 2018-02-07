@@ -27,7 +27,7 @@
 			<div class="row">
                 <div th:if="${templateNotAddedSuccessfully}" 
                     class="alert alert-danger alert-dismissible text-center col-xs-12" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
+                    <button type="button" class="close" data-dismiss="alert" title="Close">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
                     </button>
@@ -36,7 +36,7 @@
                 </div>
 				<div class="col-xs-12">
 					<div th:if="${#bools.isTrue(repeatedAVU)}" class="alert alert-danger alert-dismissible text-center" role="alert" >
-						<button type="button" class="close" data-dismiss="alert">
+						<button type="button" class="close" data-dismiss="alert" title="Close">
 					  		<span aria-hidden="true">&times;</span>
 					  		<span class="sr-only">Close</span>
 					  	</button>
@@ -48,7 +48,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Template Settings</h3>
 						</div>
-						<input type="hidden" th:field="*{id}" />
+						<input type="hidden" th:field="*{id}" title="id"/>
 						<div class="panel-body row">
 							<div class="col-xs-12 col-md-6">
 								<div class="form-group">
@@ -60,7 +60,7 @@
 										th:field="*{templateName}" 
 										placeholder="Inform a name for the new template."
 										th:readonly="${readonly ? 'readonly' : 'false'}" 
-										maxlength="100" />
+										maxlength="100"/>
                                     <i class="form-control-feedback glyphicon glyphicon-remove hideElement"
                                         id="invalidTemplateNameIcon"></i>
                                     <small class="help-block hideElement" id="invalidTemplateNameMsg"
@@ -105,18 +105,21 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title pull-left" th:text="#{templates.management.table.title}"></h3>
-							<a th:unless="${readonly}" id="addAttributeBtn" class="btn btn-primary btn-xs pull-right" data-toggle="modal" data-target="#newTemplateAVU" >
+							<a th:unless="${readonly}" id="addAttributeBtn" class="btn btn-primary btn-xs pull-right" data-toggle="modal" 
+							data-target="#newTemplateAVU" title="Add Metadata">
 								<i class="fa fa-plus"></i>
 								<span th:text="#{template.metadata.new.form.add.metadata}"></span>
 							</a>
 						</div>
 						<div class="panel-body row" id="actionBtnMetadataTemplateFields">	
 							<div class="col-sm-12">
-								<a style="visibility: hidden" id="deleteTemplateFieldsBtn" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteFieldModal" aria-label="delete template fields">
+								<a style="visibility: hidden" id="deleteTemplateFieldsBtn" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteFieldModal" 
+								aria-label="delete template fields" titlel="delete template fields">
 									<span class="glyphicon glyphicon-trash"> </span> 
 									<span th:text="#{template.metadata.new.form.delete.metadata}"></span>
 								</a>
-								<a style="visibility: hidden" id="editTemplateFieldsBtn" class="btn btn-link btn-sm" aria-label="edit metadata">
+								<a style="visibility: hidden" id="editTemplateFieldsBtn" class="btn btn-link btn-sm" aria-label="edit metadata"
+								title="edit metadata">
 									<span class="glyphicon glyphicon-pencil"> </span> 
 									<span th:text="#{template.metadata.new.form.edit.metadata}"></span>
 								</a>
@@ -127,10 +130,10 @@
 					
 					<div class="pull-right" >
 						<a type="button" class="btn btn-default btn-md" 
-							th:text="#{forms.cancel.action.button}" id="cancelTemplateFormBtn" th:href="@{${urlMap.URL_TEMPLATE_MANAGEMENT}}">
+							th:text="#{forms.cancel.action.button}" id="cancelTemplateFormBtn" th:href="@{${urlMap.URL_TEMPLATE_MANAGEMENT}}" title="Cancel">
 						</a>
 						<button type="button" class="btn btn-primary" th:unless="${readonly}"
-							th:text="#{forms.save.action.button}" id="submitTemplateFormBtn">
+							th:text="#{forms.save.action.button}" id="submitTemplateFormBtn" title="Save">
 						</button>
 					</div>
 					
@@ -142,7 +145,7 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 							<h4 class="modal-title" id="" th:text="#{template.add.attribute}">Add Attribute</h4>
@@ -164,8 +167,8 @@
 							</form>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-							<button type="button" class="btn btn-primary" id="addFieldBtn">Add</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal" title="Cancel">Cancel</button>
+							<button type="button" class="btn btn-primary" id="addFieldBtn" tilte="Add">Add</button>
 						</div>
 					</div>
 				</div>
