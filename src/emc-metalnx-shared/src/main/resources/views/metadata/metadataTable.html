@@ -440,6 +440,7 @@
                     "language": i18n,
                     "stateSave": true,
                     "autoWidth": false,
+                    "paging": false,
                     "stateSaveParams": function (settings, data) {
                         data.search.search = "";
                     },
@@ -450,12 +451,12 @@
 
                     },
                     "drawCallback": function(){
-                        $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+                       /* $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
                         $('.dataTables_paginate.paging_simple_numbers')
                         .css( 'display', this.api().data().length <= 0 ?
                              'none' :
                              'block'
-                        );
+                        );*/
                         $('input[name=selectAllMetadata]').prop("checked", false);
 
                     },
