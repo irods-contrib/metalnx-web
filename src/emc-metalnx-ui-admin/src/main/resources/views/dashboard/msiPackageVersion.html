@@ -22,7 +22,7 @@
 
 			<div class="col-xs-12 bg-warning" th:if="${msiGridInfo.isThereAnyPkgNotSupported() or msiGridInfo.isThereAnyPkgMissing()}" role="alert">
 				<p>
-					<i title="staus" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					<i title="status" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 					<span th:if="${msiGridInfo.isThereAnyPkgNotSupported()}" th:text="#{dashboard.card.msi.version.not.supported}"></span>
 					<span th:if="${msiGridInfo.isThereAnyPkgMissing()}" th:text="#{dashboard.card.msi.not.installed}"></span>
 				</p>
