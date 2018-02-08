@@ -241,7 +241,7 @@
 		<span th:text="#{empty.trash.label}"></span>
 	</a>
 
-	<div id="actionUpload">
+	<div id="actionUpload"  class="pull-right">
         <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
          	
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
@@ -252,13 +252,13 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            <a role="button" class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
             th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="upload files"
                data-target="#uploadModal" data-backdrop="static" data-keyboard="false" id="uploadIcon" title="Upload file(s) to iRods">
-                <i class="fa fa-cloud-upload fa-color pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                <i class="fa fa-cloud-upload fa-color"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
            
         </th:block>
@@ -271,13 +271,13 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            <a role="button" class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
             th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="add collection" 
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
-                <i class="fa fa-cloud-upload fa-color pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                <i class="fa fa-cloud-upload fa-color"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
 		</th:block>
 	</div>
