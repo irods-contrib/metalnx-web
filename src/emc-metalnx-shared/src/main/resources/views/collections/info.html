@@ -1,128 +1,264 @@
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.thymeleaf.org" lang="en"
-	layout:decorator="template">
-<body>
-	<div layout:fragment="content">
-		<div id="summary">
-			<p>This is the summary tab.</p>
-			<span th:text="${name}"></span>
+<th:block th:fragment="infoView">
+	<!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
+
+
+	<div class="col-md-12" th:unless="${dataProfile == null}">
+
+		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
+			<div class="panel property collection-tabs">
+				<div class="row">
+					<h4 class="property-title" th:text="#{text.info}">
+						<i class="fa fa-info-circle"></i>
+					</h4>
+					<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12 collLesserInfo divider"></div>
+					</div>
+				</div>
+				<div class="panel-info">
+
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.owner.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionOwnerName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label>Zone</label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionOwnerZone() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.created.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.modified.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.collectionmapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
+						</div>
+					</div>
+					<!-- Will we have checksum on collection??? <div class="row">
+                    <div class="text-right col-md-1 col-sm-4 col-xs-4"><label th:text="#{collections.management.checksum.label}"></label></div>
+                    <div class="col-md-9 col-sm-8 col-xs-8"><span th:text="${ dataProfile.getChecksum() }"></span></div>
+                </div> -->
+				</div>
+			</div>
 		</div>
 
-		<div id="tabs">
 
-			<ul>
-				<li><a href="#metadata"
-					th:onclick="'javascript:getMetadata(\'' + ${collectionAndDataObject.path} + '\');'">
-						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
-				</a></li>
-
-				<li><a href="#info"
-					th:onclick="'javascript:getInfoDetails(\'' + ${collectionAndDataObject.path} + '\');'">
-						<span><i class="fa fa-info-circle"></i></span> <span
-						title="File information">Info</span>
-				</a></li>
-
-				<li><a href="#permission" id="permissions"
-					th:onclick="'javascript:getPermDetails(\'' + ${collectionAndDataObject.path} + '\');'">
-						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-				</a></li>
-
-
-			</ul>
-
-			<div class="content_menu">
-				<div id="metadata">
-					<span th:text="${name}">This is metadata.</span>
+		<div th:if="${dataProfile.file}" th:fragment="FileInfoView">
+			<div class="panel property">
+				<div class="row">
+					<h4 class="property-title" th:text="#{text.info}">
+						<i class="fa fa-info-circle"></i>
+					</h4>
+					<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12 collLesserInfo divider"></div>
+					</div>
 				</div>
+				<div class="panel-info">
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.kind.dataobject}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getDataName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.kind.collection}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getCollectionName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.owner.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataOwnerName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label>Zone</label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataOwnerZone() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.created.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.modified.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.checksum.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span th:text="${ dataProfile.getDomainObject().getChecksum() }"></span>
+						</div>
+					</div>
 
-				<div id="info">
-					<span th:text="${name}"> This is info.</span>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datapath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datatypename.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataTypeName() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.expiry.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getExpiry() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.datamapid.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getDataMapId() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getSpecColType() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.objectpath.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span
+								th:text="${ dataProfile.getDomainObject().getObjectPath() }"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-12">
+							<label th:text="#{collections.management.table.comments.label}"></label>
+						</div>
+						<div class="col-md-10 col-sm-10 col-xs-12">
+							<span th:text="${ dataProfile.getDomainObject().getComments() }"></span>
+						</div>
+					</div>
+					<!-- <div class="row">
+						<div class="text-right col-md-1 col-sm-4 col-xs-4">
+							<label th:text="#{collections.management.table.replica.number.label}"></label>
+						</div>
+						<div class="col-md-9 col-sm-8 col-xs-8">
+							<span th:text="${ dataProfile.getDomainObject().getReplicationStatus() }"></span>
+						</div>
+					</div> -->
 				</div>
-
-				<div id="permission">
-					<span th:text="${name}">This is permission.</span>
-				</div>
-
 			</div>
 
-			<!-- <div class="content_menu">
-				<div id="metadata" th:if="${metadataFlag}">
-					<th:block th:include="metadata/metadataTable :: metadataTable"></th:block>
-				</div>
-
-				<div id="info" th:if="${infoFlag}">
-					<th:block th:include="collections/collectionInfo :: collectionInfo"></th:block>
-				</div>
-
-				<div id="permission" th:if="${permissionFlag}">
-					<th:block th:include="permissions/permissionDetails :: permissionDetails"></th:block>
-				</div>
-
-
-			</div> -->
-
-			<!-- 	<div id="tabs" th:unless="${collectionAndDataObject.isCollection()}">
-		
-		 	<ul>
-			<li><a href="#metadata"> <span><i class="fa fa-tags"></i></span>
-					<span title="Metadata">Metadata</span>
-			</a></li>
-
-			<li><a href="#info"> <span><i
-						class="fa fa-info-circle"></i></span> <span title="File information">Info</span>
-			</a></li>
-
-			<li><a href="#permission" id="permissions"> <span><i
-						class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-			</a></li>
-
-		</ul> 
-
-		<div class="content_menu">
-			<div id="metadata">
-				<span>This is metadata</span>
-			</div>
-
-			<div id="info">
-				<span>This is info</span>
-			</div>
-
-			<div id="permission">
-				<span>This is permission</span>
-			</div>
-
-		</div>-->
 		</div>
 
-
-		<!-- JQuery UI CSS -->
-		<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
-			th:href="@{/css/jquery-ui.min.css}" />
-		<!-- jQuery UI Version 1.11.4 -->
-		<script src="../static/js/jquery-1.11.4.js"
-			th:src="@{/js/jquery-ui.min.js}"></script>
-
-		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-		<script>
-			$(document).ready(function(e) {
-				$("#tabs").tabs();
-
-				/* var tab_a_selector = 'ul.ui-tabs-nav a';
-
-				 $(tab_a_selector).click(function() {
-					
-				    var href = this.href;
-				    alert("href subnews :: " +href);
-				     $("#subnews").load(href);
-				     window.location.hash = "subnav";
-				    alert("window.location.hash :: " +window.location.hash);
-				    e.preventDefault(); 
-				}); */
-			});
-		</script>
 	</div>
-</body>
 
-</html>
+
+
+	<script>
+		$(document).ready(function() {
+			console.log("CollectionInfo");
+			$("#collection-content").removeClass("collections-table");
+			$("#collection-content").addClass("property");
+		});
+	</script>
+</th:block>
+<!-- </div> -->

@@ -108,15 +108,15 @@
 </head>
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="groupFormTitle">
 		<div class="row">
 			<div class="col-sm-12">
 				<!-- Display page title as Add Group -->
-				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}"
+				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" id="groupFormTitle"
 					class="page-header pull-left" th:text="#{groups.add.form.title}"></h1>
 				<!-- Display page title as Modify Group -->
 				<h1 th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
-					class="page-header pull-left" th:text="#{groups.modify.form.title}"></h1>
+					class="page-header pull-left" th:text="#{groups.modify.form.title}" id="groupFormTitle"></h1>
 				<ol class="breadcrumb mlx pull-right ">
                 	<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }" th:text="#{groups.management.page.title}"></a></li>
                 	<li th:if="${#strings.containsIgnoreCase(requestMapping,'add')}" th:text="#{groups.add.form.title}" class="active"></li>
@@ -127,6 +127,7 @@
 			<form role="form" class="container-fluid registerForm" method="POST"
 				th:object="${groupForm}" th:action="@{${requestMapping}}">
 				<input
+					title="groupName"
 					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
 					type="hidden" th:field="*{groupname}" /> <input
 					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
@@ -140,13 +141,13 @@
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<label for="inputGroupname"
+									<label title="inputGroupname" for="inputGroupname"
 										th:text="#{gruops.add.form.group.name}"></label>
-									<input type="text" class="form-control" id="inputGroupname"
+									<input title="inputGroupname" type="text" class="form-control" id="inputGroupname"
 										th:field="*{groupname}"
 										th:placeholder="#{groups.add.form.placeholder.group.name}"
 										th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}" />
-									<i
+									<i title="invalidGroupnameIcon"
 										class="form-control-feedback glyphicon glyphicon-remove hideElement"
 										id="invalidGroupnameIcon"></i>
 									<small class="help-block hideElement" id="invalidGroupnameMsg"
@@ -155,7 +156,7 @@
 										th:text="#{groups.validation.name.blank}"></small>
 								</div>
 								<div class="form-group">
-									<label for="selectZone" th:text="#{groups.add.form.zone}"></label>
+									<label title="selectZone" for="selectZone" th:text="#{groups.add.form.zone}"></label>
 									<select class="form-control" name="zones" id="selectZone"
 										th:field="${groupForm.additionalInfo}"
 										th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}">
@@ -172,15 +173,15 @@
 					</div>
 				</div>
 				<!-- Available Users -->
-				<div class="col-sm-12" id="usersList">
+				<div class="col-sm-12" id="usersList" aria-labelledby="availableUsersTitle">
 					<div class="row">
 						<div class="panel panel-default">
 							<!-- Header -->
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.form.attach.to.group.label}"
+								<h3 th:text="#{groups.add.form.attach.to.group.label}" id="availableUsersTitle"
 									class="panel-title pull-left"></h3>
 								<button type="button" class="btn btn-primary btn-xs pull-right" id="hideUsersListBtn">
-									<i class="fa fa-check"></i>
+									<i title="check" class="fa fa-check"></i>
 									<span th:text="#{done.button.label}" ></span>
 								</button>
 							</div>
@@ -201,7 +202,7 @@
 											</thead>
 											<tbody id="fBody">
 												<tr th:each="user : ${users}" th:id="${user.username}">
-													<td><input type="checkbox" name="idsList"
+													<td><input type="checkbox" name="idsList" aria-label="select user ${user.username}"
 														th:value="${user.dataGridId}"
 														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
 													</td>
@@ -224,12 +225,12 @@
 				<!-- Attached users -->
 				<div class="row" id="attachedUsersList">
 					<div class="col-sm-12">
-						<div class="panel panel-default">
+						<div class="panel panel-default" aria-labelledby="attachedUsersListTitle">
 							<div class="panel-heading">
-								<h3 th:text="#{groups.add.attached.users.label}"
+								<h3 th:text="#{groups.add.attached.users.label}" id="attachedUsersListTitle"
 									class="panel-title pull-left"></h3>
-								<button type="button" class="btn btn-default btn-xs pull-right" id="showUsersListBtn" th:disabled="${ groupForm.getGroupname() == 'public' }">
-									<i class="fa fa-pencil"></i>
+								<button title="showUsersList" type="button" class="btn btn-default btn-xs pull-right" id="showUsersListBtn" th:disabled="${ groupForm.getGroupname() == 'public' }">
+									<i title="edit"  class="fa fa-pencil"></i>
 									<span th:text="#{groups.add.show.users.label}"></span>
 								</button>
 							</div>
@@ -276,9 +277,9 @@
 								<!-- Search box -->
 								<div class="col-sm-6">
 									<div class="form-group input-group">
-										<input id="searchTextForCollections" type="search"
-											class="form-control" th:placeholder="#{search.placeholder}" />
-										<span class="input-group-addon"> <i
+										<input title="search" id="searchTextForCollections" type="search"
+											class="form-control" th:placeholder="#{search.placeholder}" aria-label="search text"/>
+										<span class="input-group-addon"> <i title="search"
 											class="glyphicon glyphicon-search"></i>
 										</span>
 									</div>
@@ -289,7 +290,7 @@
 									id="collectionsViewForGroup"></div>
 								<!-- Table loader Ajax Gif -->
 								<div id="table-loader" class="table-loader col-sm-12">
-									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+									<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
 									<p class="text-center" th:text="#{loading.table.label}"></p>
 								</div>
 							</div>
@@ -297,7 +298,7 @@
 					</div>
 				</div>
 				<div class="pull-right">
-					<button type="button" class="btn btn-default btn-md"
+					<button title="cancel" type="button" class="btn btn-default btn-md"
 						th:text="#{forms.cancel.action.button}" data-toggle="modal"
 						data-target="#cancelModal"></button>
 					<button type="button" class="btn btn-primary"
@@ -310,7 +311,7 @@
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">
+								<button title="close" type="button" class="close" data-dismiss="modal">
 									<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 								</button>
 								<h4 class="modal-title" id="myCancelModalLabel"
@@ -320,7 +321,7 @@
 								<span th:text="#{confirmation.cancel.label}"></span>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default"
+								<button title="cancel" type="button" class="btn btn-default"
 									data-dismiss="modal" th:text="#{confirmation.message.cancel}"></button>
 								<a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"
 									class="btn btn-primary" th:text="#{confirmation.message.yes}">
@@ -449,7 +450,7 @@
 				$("#table-loader").show();
 				$("#collectionsViewForGroup").hide();
 
-				var url = "/emc-metalnx-web/collections/getDirectoriesAndFilesForGroupForm/";
+				var url = "/emc-metalnx-web/browse/getDirectoriesAndFilesForGroupForm/";
 				var retrievePermissions = !isAddAction;
 				setTimeout(function () {
 					ajaxEncapsulation(

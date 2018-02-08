@@ -28,18 +28,18 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="favoritePageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left">
+				<h1 id="favoritesPageTitle" class="page-header pull-left">
 					<span th:text="#{favorites.page.title}"></span>
 				</h1>
-				<a id="favorite-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<a id="favoritePageTitle"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 			</div>
 
             <div class="col-sm-12 hideElement" id="unfavFailMsg">
 				<div class="alert alert-danger alert-dismissible text-center" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
@@ -47,7 +47,7 @@
 				</div>
 			</div>
             <div class="col-sm-12 table-responsive" >
-				<table class="table table-hover" id="favoritesTable">
+				<table class="table table-hover" id="favoritesTable" summary="This contains favorite items.">
 					<thead>
 						<tr>
 							<th th:text="#{favorites.table.name.label}"></th>
@@ -100,7 +100,7 @@
 		    "columnDefs": [
                 {
                 	"render": function ( data, type, full, meta ) {
-						return '<a href="#" onclick="redirectToCollections(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
+						return '<a href="#" onclick="openInCollView(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
 					},
 					"width": "35%",
 					"targets": 0
@@ -127,7 +127,17 @@
                 }
             ]
 		});
+		
+		
+		
+		function openInCollView(path) {
+			window.open(
+					  '/emc-metalnx-web/collections' + path,
+					  '_blank' // <- This is what makes it open in a new window.
+					);
+		}
 
+		// FIXME: remove old nav - mcc
 		function redirectToCollections(path){
 			ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFavoritesToCollections/", "POST", {path: path},
 				function(){

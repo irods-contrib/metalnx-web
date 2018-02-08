@@ -116,6 +116,21 @@ This change requires the addition of this property to metalnx.properties,and for
 this property should be in settings.xml. See the CONFIGURATION.md and DEVELOPER-README.md for details. The sample
 metalnx.properties in /etc/irods-ext in this repo shows a sample configuration.
 
+#### NIEHS 500 Error on empty trash
+
+Incorporated new TrashOperationsAO code from https://github.com/DICE-UNC/jargon/issues/280
+
+This replaces the rule call, and now functions normally for logged in users. There remains a few issues with empty trash as rodsadmin but
+that will be addressed at the Jargon or iRODS level.
+
+#### return from search to collections using deep links #34
+
+As a transitional measure, the current favorites, search, and bookmarks functions have a listing that is distinct from the
+main collections browser view. In order to support deep linking and a reasonably functioning back button, selecting an item
+from any of these search views opens the collections view using the deep link approach in a new tab. This gives a reasonable
+experience that can suffice until the collections browser can be refactored to unify all of these searches into the same view.
+Maps to NIEHS #70
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

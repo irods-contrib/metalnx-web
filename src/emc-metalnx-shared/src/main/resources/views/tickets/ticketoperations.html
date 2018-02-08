@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
+                <button type="button" class="close" data-dismiss="modal" title="close">
                     <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                 </button>
                 <h4 class="modal-title" th:text="#{upload.label}"></h4>
@@ -11,7 +11,7 @@
                 <div class="hideElement" id="uploadMinMessage">
                     <div class="alert alert-warning alert-dismissible text-center"
                          role="alert">
-                        <button type="button" class="close" data-dismiss="alert">
+                        <button type="button" class="close" data-dismiss="alert" title="close">
                             <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                         </button>
                         <span>Select at least one file</span>
@@ -20,22 +20,22 @@
 
                 <form th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}" method="POST"
                       role="form" enctype="multipart/form-data" id="uploadForm">
-                    <input type="hidden" name="path" th:value="${path}" />
+                    <input type="hidden" name="path" th:value="${path}" title="path"/>
                     <p class="text-right">
                         <span id="numberFilesUpload">No</span><span>&nbsp;file(s) selected</span>
                     </p>
                     <div class="well">
-                        <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+                        <button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
                             <span th:text="#{select.files.upload}"></span>
                         </button>
-                        <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" />
+                        <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" title="Files" />
                         <div id="filesList"></div>
                     </div>
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{forms.cancel.action.button}" title="upload"></button>
                 <a type="button" class="btn btn-primary" id="ticketUploadButton">
                     <i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
                 </a>
@@ -63,22 +63,22 @@
         </h4>
 
         <p>
-            <label th:text="#{ticket.table.string.label}"></label> <br />
+            <label for="ticketString" th:text="#{ticket.table.string.label}"></label> <br />
             <span id="ticketString" th:text="${ticketString}"></span>
         </p>
 
         <p>
-            <label th:text="#{resources.table.path.label}"></label> <br />
+            <label for="ticketPath: th:text="#{resources.table.path.label}"></label> <br />
             <span id="ticketPath" th:text="${path}"></span>
         </p>
 
         <form id="ticketAccessForm" method="GET" th:action="@{${urlMap.URL_TICKETS_CLIENT + ticketString}}">
-            <input type="hidden" name="path" th:value="${path}" />
-            <button type="submit" class="btn btn-primary" id="ticketDownloadBtn">
+            <input type="hidden" name="path" th:value="${path}" title="path"/>
+            <button type="submit" class="btn btn-primary" id="ticketDownloadBtn" title="ticket download">
                 <i class="fa fa-download" aria-hidden="true"></i>
                 <span th:text="#{collections.management.btn.action.download}"></span>
             </button>
-            <button type="button" class="btn btn-primary" onclick="showTicketUploadModal();">
+            <button type="button" class="btn btn-primary" onclick="showTicketUploadModal();" title="ticket upload">
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 <span th:text="#{collections.management.btn.action.upload}"></span>
             </button>

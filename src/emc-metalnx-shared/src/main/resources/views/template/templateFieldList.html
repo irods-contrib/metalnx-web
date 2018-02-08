@@ -24,7 +24,7 @@
 				<thead> 
 					<tr>
 						<th class="text-center tableCheckBoxCol" th:unless="${readonly}">
-							<input type="checkbox" name="selectAllCheckboxes" value="1"/>
+							<input type="checkbox" name="selectAllCheckboxes" value="1" title="select all"/>
 						</th>
 						<th th:text="#{template.fields.management.table.attribute.label}"></th>
 						<th th:text="#{templates.fields.management.table.value.label}"></th>
@@ -36,22 +36,22 @@
 					<tr th:fragment="avuRow" th:each="templateField : ${templateFields}" th:id="${templateField.id} ? ${templateField.id} : ${'pos_' + templateField.formListPosition}" th:class="${templateField.id == null} ? 'info'">
 						<input type="hidden" th:value="${templateField.id} ? ${'id_' + templateField.id} : ${'pos_' + templateField.formListPosition}" name="avuPositions" />
 						<td class="text-center tableCheckBoxCol" th:if="${templateField.id != null}" th:unless="${readonly}">
-							<input type="checkbox" name="templateFieldFromDBCheckboxes" th:value="${templateField.id}"/>
+							<input type="checkbox" name="templateFieldFromDBCheckboxes" th:value="${templateField.id}" aria-label="template field" title="select template"/>
 						</td>
 						<td class="text-center" th:unless="${templateField.id != null}">
 							<input type="checkbox" name="templateFieldCheckboxes" th:value="${templateField.formListPosition}"/>
 						</td>
 						<td>
 							<span class="editable" th:text="${templateField.attribute}"></span>
-							<input class="hideElement col-sm-12" type="text" th:value="${templateField.attribute}" name="avuAttributes"/>
+							<input class="hideElement col-sm-12" type="text" th:value="${templateField.attribute}" name="avuAttributes" aria-label="avu attribute"/>
 						</td>
 						<td>
 							<span class="editable" th:text="${templateField.value}"></span>
-							<input class="hideElement col-sm-12" type="text" th:value="${templateField.value}" name="avuValues"/>
+							<input class="hideElement col-sm-12" type="text" th:value="${templateField.value}" name="avuValues" aria-label="avu value"/>
 						</td>
 						<td>
 							<span class="editable" th:text="${templateField.unit}"></span>
-							<input class="hideElement col-sm-12" type="text" th:value="${templateField.unit}" name="avuUnits"/>
+							<input class="hideElement col-sm-12" type="text" th:value="${templateField.unit}" name="avuUnits" aria-lavel="avu unit"/>
 						</td>
 					</tr>
 				</tbody>
@@ -63,12 +63,12 @@
 	</div>
 		
 	<!-- Remove Modal -->
-	<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="removeModalTitle" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-				  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}">
+				  <button type="button" class="close" data-dismiss="modal" title="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				  <h4 class="modal-title" id="removeModalTitle" th:text="#{confirmation.removal.title}">
 				  </h4>
 				</div>
 				<div class="modal-body">
@@ -78,10 +78,10 @@
 				</div>
 				<div class="modal-footer">
 				  <button type="button" class="btn btn-default" data-dismiss="modal" 
-				  	th:text="#{confirmation.message.cancel}">
+				  	th:text="#{confirmation.message.cancel}" title="Cancel">
 				  </button>
 				  <button id="removeFieldBtn" type="button" class="btn btn-primary" onclick="removeElementFromDB();" 
-				  	th:text="#{confirmation.message.yes}">
+				  	th:text="#{confirmation.message.yes}" title="Confirm">
 				  </button>
 				</div>
 			</div>
@@ -89,12 +89,12 @@
 	</div>
 	
 	<!-- Delete Field -->
-	<div class="modal fade" id="deleteFieldModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="deleteFieldModal" tabindex="-1" role="dialog" aria-labelledby="deleteFieldModalTitle" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-				  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				  <h4 class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
+				  <button type="button" class="close" data-dismiss="modal" title="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				  <h4 id="deleteFieldModalTitle" class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
 				</div>
 				<div class="modal-body">
 					<span th:text="#{confirmation.deletion.label}"></span>
@@ -102,10 +102,10 @@
 				</div>
 				<div class="modal-footer">
 				  <button type="button" class="btn btn-default" data-dismiss="modal" 
-				  	th:text="#{confirmation.message.cancel}">
+				  	th:text="#{confirmation.message.cancel}" title="Cancel">
 				  </button>
 				  <button type="button" class="btn btn-primary" onclick="deleteTemplateField();" 
-				  	th:text="#{confirmation.message.yes}">
+				  	th:text="#{confirmation.message.yes}" title="Confirm">
 				  </button>
 				</div>
 			</div>

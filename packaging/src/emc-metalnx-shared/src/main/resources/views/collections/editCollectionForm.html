@@ -28,7 +28,7 @@
 
 		<form role="form" class="container-fluid registerForm"
 			method="POST" th:object="${collection}"
-			th:action="@{${requestMapping}}">
+			th:action="@{/browse/modify/action}">
 
 			<input type="hidden" id="inputCollectionPath" th:field="*{path}" />
 			<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" />
@@ -58,5 +58,3 @@
 		});
 	</script>
 </div>
-
-

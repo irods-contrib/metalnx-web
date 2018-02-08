@@ -28,36 +28,36 @@
 
 <body>
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="usersTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
+				<h1  id="usersTitle" class="page-header pull-left" th:text="#{users.management.page.title}"></h1>
 				<a id="users-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
 				<div th:if="${ userAddedSuccessfully != null or userModifiedSuccessfully != null or userRemovedSuccessfully != null}"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
 				  	<b><span th:if="${ userAddedSuccessfully }" th:text="${ userAddedSuccessfully }" class="text-center"></span></b>
 				  	<b><span th:if="${ userModifiedSuccessfully }" th:text="${ userModifiedSuccessfully }" class="text-center"></span></b>
 				  	<b><span th:if="${ userRemovedSuccessfully }" th:text="${ userRemovedSuccessfully }" class="text-center"></span></b>
-				  	
+
 					<span th:if="${ userAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
 					<span th:if="${ userModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
 					<span th:if="${ userRemovedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
-				</div>	
-				
-				<div th:if="${ userNotRemovedSuccessfully != null}" 
+				</div>
+
+				<div th:if="${ userNotRemovedSuccessfully != null}"
 					class="alert alert-danger alert-dismissible text-center clear" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
 				  	<b><span th:if="${ userNotRemovedSuccessfully }" th:text="${ userNotRemovedSuccessfully }" class="text-center"></span></b>
-				  	
+
 					<span th:text="#{ users.not.removed.successfully }"></span>
-				</div>	
+				</div>
             </div>
         </div>
         <!-- Download CSV and Add User -->
@@ -71,7 +71,7 @@
         </div>
         <!-- Table loader Ajax Gif -->
         <div id="table-loader" class="table-loader">
-            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+            <img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
             <p class="text-center" th:text="#{loading.table.label}"></p>
         </div>
 
@@ -123,4 +123,3 @@
 </body>
 
 </html>
-

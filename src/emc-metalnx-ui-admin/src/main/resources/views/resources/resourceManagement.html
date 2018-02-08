@@ -29,41 +29,42 @@
 <body>
 
 	<!-- Page Content -->
-	<div layout:fragment="content">
+	<div layout:fragment="content" aria-labelledby="resourceManagementPageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{resources.management.page.title}"></h1>
+				<h1 id="resourceManagementPageTitle" class="page-header pull-left" th:text="#{resources.management.page.title}"></h1>
 				<span class="subtitle" th:text="#{resources.management.page.subtitle.list}"></span>
-				<a id="resources-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				<a id="resources-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
+
 				<div th:if="${ resourceAddedSuccessfully != null or
 								resourceModifiedSuccessfully != null or
-								resourceDeletedSuccessfully != null}" 
+								resourceDeletedSuccessfully != null}"
 					class="alert alert-success alert-dismissible text-center clear"
 					role="alert">
-					
-				  	<button type="button" class="close" data-dismiss="alert">
+
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
 				  	</button>
-				  	
+
 				  	<b><span th:if="${ resourceAddedSuccessfully }" th:text="${ resourceAddedSuccessfully }"></span></b>
 				  	<b><span th:if="${ resourceModifiedSuccessfully }" th:text="${ resourceModifiedSuccessfully }"></span></b>
 				  	<b><span th:if="${ resourceDeletedSuccessfully }" th:text="${ resourceDeletedSuccessfully }"></span></b>
-					
+
 					<span th:if="${ resourceAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
-					<span th:if="${ resourceModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>					
+					<span th:if="${ resourceModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
 					<span th:if="${ resourceDeletedSuccessfully }" th:text="#{ confirmation.delete.successfully }"></span>
-					
+
 				</div>
-				
+
 				<!-- Message when a resource cannot be deleted -->
 				<div th:if="${resourceNotDeletedSuccessfully}" class="alert alert-danger alert-dismissible text-center clear" role="alert">
-				  	<button type="button" class="close" data-dismiss="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
-				  	</button>			
-				  	
-				  	<span th:text="${ resourceNotDeletedSuccessfully }" style="font-weight: bold;"></span>				  		
+				  	</button>
+
+				  	<span th:text="${ resourceNotDeletedSuccessfully }" style="font-weight: bold;"></span>
 					<span th:text="#{ resources.deletion.not.successful.label }"></span>
 				</div>
 			</div>
@@ -72,30 +73,30 @@
             <div class="col-12-md">
                 <!-- Map view and list view for resources -->
                 <div class="col-sm-6">
-                    <a id="serverViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view.tooltip}" style="margin-right: 5px;">
+                    <a aria-label="server view" id="serverViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_SERVERS} }" th:title="#{resources.management.server.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-server"> </span>
                         <span th:text="#{resources.management.server.view.label}"> </span>
                     </a>
-                    <a id="mapViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view.tooltip}" style="margin-right: 5px;">
+                    <a aria-label="map view" id="mapViewBtn" class="btn btn-default btn-sm btn-resources-view" th:href="@{ ${urlMap.URL_RESOURCES_MAP} }" th:title="#{resources.management.map.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-sitemap"> </span>
                         <span th:text="#{resources.management.map.view.label}"> </span>
                     </a>
-                    <a id="listViewBtn" class="btn btn-default btn-sm btn-resources-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view.tooltip}" style="margin-right: 5px;">
+                    <a aria-label="list view" id="listViewBtn" class="btn btn-default btn-sm btn-resources-view" disabled="" th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }" th:title="#{resources.management.list.view.tooltip}" style="margin-right: 5px;">
                         <span class="fa fa-list"> </span>
                         <span th:text="#{resources.management.list.view.label}"> </span>
                     </a>
                 </div>
                 <!-- Add resource -->
                 <div class="col-sm-6 ">
-                    <a id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resources" th:text="#{resources.management.add.button}"></a>
+                    <a id="addResourceButton" th:href="@{ ${urlMap.URL_ADD_RESOURCE} }" class="btn btn-primary btn-sm btn-resources" th:text="#{resources.management.add.button}" aria-label="add resource"></a>
                 </div>
             </div>
         </div> <!-- /. row Search Box -->
-				
-				
+
+
         <!-- Table loader Ajax Gif -->
         <div id="table-loader" class="table-loader">
-            <img class="center-block" th:src="@{/images/ajax_loader.gif}" />
+            <img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
             <p class="text-center" th:text="#{loading.table.label}"></p>
         </div>
 
@@ -147,7 +148,7 @@
             });
             /*]]>*/
         </script>
-	
+
 	</div> <!-- /. Page Content -->
 
 </body>

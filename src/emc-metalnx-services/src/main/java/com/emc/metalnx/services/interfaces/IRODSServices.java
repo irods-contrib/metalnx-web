@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
+import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.BulkFileOperationsAO;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
@@ -29,6 +30,7 @@ import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.RuleProcessingAO;
 import org.irods.jargon.core.pub.SpecificQueryAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
+import org.irods.jargon.core.pub.TrashOperationsAO;
 import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
@@ -221,4 +223,13 @@ public interface IRODSServices {
 	 * @return {@link IRODSAccessObjectFactory} reference
 	 */
 	IRODSAccessObjectFactory getIrodsAccessObjectFactory();
+
+	/**
+	 * Obtain a reference to the {@link TrashOperationsAO}
+	 * 
+	 * @return {@link TrashOperationsAO}
+	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
+	 */
+	TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException;
 }

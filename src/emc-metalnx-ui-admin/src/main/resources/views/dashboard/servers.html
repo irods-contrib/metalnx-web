@@ -14,18 +14,19 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="serversList">
+<th:block th:fragment="serversList" aria-labelledby="irodsServersTitle">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h4 class="">iRODS Servers</h4>
+			<h4 id="irodsServersTitle" class="">iRODS Servers</h4>
+
 			<table class="dashboardServersList" width="100%">
 				<tr th:each="server : ${servers}">
 					<td>
-	                    <img alt="Server" class="dashboard-server-icon" 
+	                    <img alt="Server" class="dashboard-server-icon"
 									th:src="@{${ '/images/Server-' + server.machineStatus + '.png' }}" />
 					</td>
 					<td>
-						<a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}"></a>
+						<a th:href="@{'/dashboard/detail/' + ${server.hostname} + '/' }" th:text="${server.hostname}" aria-label="server details"></a>
 						<small th:text="${server.ip}"></small>
 					</td>
 				</tr>
@@ -35,7 +36,7 @@
 		<div class="rmd-status-msg">
 			<div th:if="${isRMDRunningOnAllServers == false}">
 				<div class="serverIcon">
-					<i class="fa fa-exclamation-triangle"></i>
+					<i title="status" class="fa fa-exclamation-triangle"></i>
 				</div>
 				<p>
 					<small th:text="#{dashboard.card.rmd.no.communication}"></small>
@@ -43,17 +44,17 @@
 			</div>
 			<div th:if="${isServerResponding == false}">
 				<div class="serverIcon">
-					<i class="fa fa-exclamation-triangle"></i>
+					<i title="status" class="fa fa-exclamation-triangle"></i>
 				</div>
 				<p>
 					<small title="Please check network connectivity to the server. Manually verify that iRODS and the RMD package are running on the servers.">
-						Unable to communicate with the iCAT server. 							
+						Unable to communicate with the iCAT server.
 					</small>
 				</p>
 			</div>
 		</div>
 	</div>
-		
+
 	<!-- RMD not running Modal -->
 	<div class="modal fade" id="rmdNotRunningModal" tabindex="-1" role="dialog" aria-labelledby="rmdNotRunningLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -64,19 +65,19 @@
 				  </h4>
 				</div>
 				<div class="modal-body">
-					Unable to communicate with MetaLnx remote monitor. 
+					Unable to communicate with MetaLnx remote monitor.
 					Manually verify that iRODS and the RMD package
 					are running on the server.
 				</div>
 				<div class="modal-footer">
-				  <button type="button" class="btn btn-primary" data-dismiss="modal" 
+				  <button type="button" class="btn btn-primary" data-dismiss="modal"
 				  	th:text="#{confirmation.message.ok}">
 				  </button>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
 		$("#rmdNotRunning").click(function (){
 			$("#rmdNotRunningModal").modal("show");

@@ -249,10 +249,10 @@ public class MetadataController {
 		}
 	}
 
-	@RequestMapping(value = "/getMetadata/")
+	@RequestMapping(value = "/getMetadata/", method = RequestMethod.POST)
 	public String getMetadata(final Model model, final String path)
 			throws DataGridConnectionRefusedException {
-		System.out.println("MetadataController getMetadata() starts !!");
+		logger.info("MetadataController getMetadata() starts !!");
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
 		DataGridCollectionAndDataObject dgColObj = null;
 
@@ -262,22 +262,17 @@ public class MetadataController {
 		} catch (DataGridException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path);
 		}
-
-		System.out.println("CurrentPath =======" +path);
-		System.out.println("dgColObj =======" +dgColObj);
-		System.out.println("permissionOnCurrentPath =======" +collectionService.getPermissionsForPath(path));
 		
 		model.addAttribute("permissionOnCurrentPath", collectionService.getPermissionsForPath(path));
 		model.addAttribute("dataGridMetadataList", metadataList);
 		model.addAttribute("currentPath", path);
 		model.addAttribute("collectionAndDataObject", dgColObj);
-		model.addAttribute("metadataFlag",true);
-		
-		System.out.println("MetadataController getMetadata() ends !!");
-		//return "metadata/metadataTable";		
-		return "collections/info";
+		model.addAttribute("metadataFlag",true);				
+			
+		logger.info("MetadataController getMetadata() ends !!");
+		return "metadata/metadataTable :: metadataTable";				
 	}
-
+	
 	@RequestMapping(value = "/addMetadata/")
 	public String setMetadata(final Model model, @RequestParam("path") final String path,
 			@RequestParam("attribute") final String attribute, @RequestParam("value") final String value,

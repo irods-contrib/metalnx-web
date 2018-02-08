@@ -42,14 +42,14 @@
 							<td th:text="${userProfile.getProfileName()}" class="col-profile-name"></td>
 							<td th:text="${userProfile.getDescription()}"></td>
 							<td>
-								<a class="btn btn-default btn-xs" th:id="${'btn_edit_' + userProfile.getProfileName()}"
+								<a class="btn btn-default btn-xs" th:id="${'btn_edit_' + userProfile.getProfileName()}" aria-label="edit"
 									th:href="${urlMap.URL_MODIFY_USER_PROFILE} + ${userProfile.profileId} + '/'">
-									<i class="fa fa-pencil"></i><span  th:text="#{users.profile.management.edit.button}"></span>
+									<i title="edit" class="fa fa-pencil"></i><span  th:text="#{users.profile.management.edit.button}"></span>
 								</a>
 								&nbsp; &nbsp;
-								<button type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + userProfile.getProfileName()}"
+								<button title="remove" type="button" class="btn btn-default btn-xs" th:id="${'btn_removal_' + userProfile.getProfileName()}" aria-label="remove"
 									th:onclick="'javascript:confirmUserProfileRemoval(\'' + ${userProfile.getProfileName()} + '\', \'' + ${userProfile.getProfileId()} + '\');'">
-									<i class="fa fa-trash-o"></i><span  th:text="#{users.profile.management.delete.button}"></span>
+									<i title="remove" class="fa fa-trash-o"></i><span  th:text="#{users.profile.management.delete.button}"></span>
 								</button>
 							</td>
 						</tr>
@@ -71,7 +71,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-					  <button type="button" class="close" data-dismiss="modal">
+					  <button title="close" type="button" class="close" data-dismiss="modal">
 					  	<span aria-hidden="true">&times;</span>
 					  	<span class="sr-only">Close</span>
 					  </button>
@@ -84,10 +84,10 @@
 						?
 					</div>
 					<div class="modal-footer">
-					  <button type="button" class="btn btn-default" data-dismiss="modal"
+					  <button title="confirmation" type="button" class="btn btn-default" data-dismiss="modal"
 					  	id="btnConfProfileRemoval_No" th:text="#{confirmation.message.cancel}">
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();"
+					  <button title="confirmation" type="button" class="btn btn-primary" onclick="removeElement();"
 					  	id="btnConfProfileRemoval_Yes" th:text="#{confirmation.message.yes}">
 					  </button>
 					</div>

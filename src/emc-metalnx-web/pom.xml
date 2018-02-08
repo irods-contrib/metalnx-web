@@ -30,6 +30,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.emc.metalnx</groupId>
+			<artifactId>emc-metalnx-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>

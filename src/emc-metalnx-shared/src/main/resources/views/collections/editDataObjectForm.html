@@ -14,8 +14,8 @@
   ~  limitations under the License.
   -->
 
-<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal">
+<div class="modal-header" aria-labelledby="myAddAndModifyModalLabel">
+	<button type="button" class="close" data-dismiss="modal" title="Close">
 		<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 	</button>
 	<h4 class="modal-title" id="myAddAndModifyModalLabel"
@@ -30,8 +30,8 @@
 			method="POST" th:object="${collection}"
 			th:action="@{${requestMapping}}">
 
-			<input type="hidden" id="inputCollectionPath" th:field="*{path}" />
-			<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" />
+			<input type="hidden" id="inputCollectionPath" th:field="*{path}" title="collection path"/>
+			<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" title="collection parent path"/>
 
 			<div class="form-group">
 				<b><span th:text="#{collections.add.form.current.path}"></span></b><br/>

@@ -23,15 +23,15 @@
 </head>
 
 <body>
-    <div layout:fragment="content">
+    <div layout:fragment="content" aria-labelledby="rulesManagementTitle">
 
-        <h1 class="page-header pull-left" th:text="#{rules.menu.title}"></h1>
+        <h1 id="rulesManagementTitle" class="page-header pull-left" th:text="#{rules.menu.title}"></h1>
 
         <div class="row" th:unless="${unexpectedError}">
             <div class="col-xs-12" style="margin: 5px 0 10px 0;">
-                <a role="button" href="#" class="btn btn-default" data-toggle="modal"
+                <a role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="upload"
                    data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
-                    <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                    <i title="upload" class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
                 </a>
             </div>
 
@@ -39,7 +39,7 @@
                 <div class="row browse-collection-files-content">
                     <div id="table-loader" class="table-loader col-sm-12 hideElement">
                         <div class="panel loading">
-                            <img class="center-block" th:src="@{/images/table_loading.svg}" />
+                            <img alt="loading" class="center-block" th:src="@{/images/table_loading.svg}" />
                         </div>
                     </div>
                     <div class="col-xs-12">
@@ -47,7 +47,7 @@
                             <thead>
                             <tr>
                                 <th class="tableCheckBoxCol">
-                                    <input type="checkbox" name="selectAllCheckboxes" value="1" disabled="true"/>
+                                    <input title="selectAllCheckboxes" type="checkbox" name="selectAllCheckboxes" value="1" disabled="true"/>
                                 </th>
                                 <th th:text="#{collections.management.table.collection.name.label}"></th>
                                 <th th:text="#{collections.management.table.owner.label}"></th>
@@ -62,20 +62,20 @@
             </div>
         </div>
 
-        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalTitle" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
+                        <button title="close" type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         </button>
-                        <h4 class="modal-title" th:text="#{upload.label}"></h4>
+                        <h4 id="uploadModalTitle" class="modal-title" th:text="#{upload.label}"></h4>
                     </div>
                     <div class="modal-body">
                         <div class="hideElement" id="uploadMinMessage">
                             <div class="alert alert-warning alert-dismissible text-center"
                                  role="alert">
-                                <button type="button" class="close" data-dismiss="alert">
+                                <button title="close" type="button" class="close" data-dismiss="alert">
                                     <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
                                 </button>
                                 <span>Select at least one file</span>
@@ -84,24 +84,24 @@
                         <!-- Form submitted as soon as the user selects all files to be uploaded -->
                         <form action="/emc-metalnx-web/upload/" method="POST"
                               role="form" enctype="multipart/form-data" id="uploadForm">
-                            <input type="hidden" id="ruleDeployment" />
+                            <input title="ruleDeployment" type="hidden" id="ruleDeployment" />
 
                             <p class="text-right">
                                 <span id="numberFilesUpload">No</span><span>&nbsp;file(s) selected</span>
                             </p>
                             <div class="well">
-                                <button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+                                <button title="browseButton" type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
                                     <span th:text="#{select.files.upload}"></span>
                                 </button>
-                                <input type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" accept=".re, .r" />
+                                <input title="inputFiles" type="file" multiple="multiple" name="files" id="inputFiles" class="form-control" accept=".re, .r" />
                                 <div id="filesList"> </div>
                             </div>
 
                             <div id="uploadControlOptions">
-                                <input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
+                                <input title="uploadDestinationPath" type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
                                 <div class="row form-group">
                                     <div class="col-md-6">
-                                        <input type="checkbox" id="inputOverwriteDuplicateFiles"
+                                        <input title="inputOverwriteDuplicateFiles" type="checkbox" id="inputOverwriteDuplicateFiles"
                                                name="inputOverwriteDuplicateFiles"
                                                th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;
                                         <span>Overwrite duplicate files</span>
@@ -112,10 +112,10 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                        <button title="cancel" type="button" class="btn btn-default" data-dismiss="modal"
                                 th:text="#{forms.cancel.action.button}"></button>
-                        <a type="button" class="btn btn-primary" id="uploadButton" target="_blank" href="?uploadNewTab=true">
-                            <i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+                        <a aria-label="upload" type="button" class="btn btn-primary" id="uploadButton" target="_blank" href="?uploadNewTab=true">
+                            <i title="upload" class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
                         </a>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                             data.search.search = "";
                         },
                         "ajax": {
-                            url: '/emc-metalnx-web/collections/getPaginatedJSONObjs/',
+                            url: '/emc-metalnx-web/browse/getPaginatedJSONObjs/',
                             data: {'rulesdeployment': true}
                         },
                         "initComplete": function(settings){

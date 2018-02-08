@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
   ~ Copyright (c) 2015-2017, Dell EMC
   ~
@@ -32,23 +31,24 @@
 </head>
 
 <body>
-	<div layout:fragment="content">
-		<h1 class="page-header pull-left" th:text="#{collections.management.page.title}" th:data-content="#{collection.title.popover}"></h1>
-		<a id="collections-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+	<div aria-labelledby="collManagement" layout:fragment="content">
+		<th:block th:include="collections/collectionHeader :: collectionHeaderView"></th:block>	
+					
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
-		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true">Search Results</a></li>
-		  <li class="active">Collections</li>
+		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
+		  <li class="active" th:text="#{text.collections}">Collections</li>
 		</ol>
 		<ol class="breadcrumb mlx"  th:if="${cameFromFilePropertiesSearch} == true"
 					id="backToFilePropertiesSearch">
-		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true">Search Results</a></li>
-		  <li class="active">Collections</li>
+		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
+		  <li class="active" th:text="#{text.collections}">Collections</li>
+		  
 		</ol>
         <div th:if="${unexpectedError}">
             <div class="alert alert-danger alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    <span aria-hidden="true">&times;</span> <span class="sr-only" th:text="#{text.close}">Close</span>
                 </button>
                 <span th:text="${'An unexpected error has happened. Please, contact your system administrator.'}"></span>
             </div>
@@ -214,26 +214,26 @@
 							<div role="tabpanel" class="tab-pane active" id="copyCollections">
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" name="/" title="/"
+										<a aria-label="copy collection" href="#" name="/" title="/"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
+											alt="copy collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
 										</a>
 									</p>
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}"
+										<a th:name="${homePath}" area-label="user home directory"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
-											<img alt="" class="folder-icon"
+											<img alt="user home directory" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public"
+										<a th:name="Public" th:title="Public" aria-label="public"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -273,8 +273,8 @@
 						    </div>
 						</div>
                         <div class="col-xs-12">
-                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked"/>
-                            <span th:text="#{copy.with.metadata.label}"></span>
+                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked" title="Copy with Metadata"/>
+                            <label for="inputCopyWithMetadata" th:text="#{copy.with.metadata.label}">Copy with metadata</label>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -282,10 +282,10 @@
 							<div class="col-md-12 pull-right targetPathInfoDiv">Copy to: <i class="fa fa-folder-o"></i> <span class="targetPathInfoSpan">/</span></div>
 							<div class="col-md-12">
 								<button type="button" class="btn btn-default cancelBtn"
-									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}">
+									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}" title="Cancel">
 								</button>
 								<button type="button" class="btn btn-primary" id="copyBtn"
-									th:text="#{copy.label}"></button>
+									th:text="#{copy.label}" title="Copy"></button>
 							</div>
 						</div>
 					</div>
@@ -303,7 +303,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" id="myMoveModalLabel">Move item to</h4>
+						<h4  class="modal-title" id="myMoveModalLabel">Move item to</h4>
 					</div>
 					<div class="modal-body">
 						<ul class="nav nav-tabs" role="tablist">
@@ -324,26 +324,26 @@
 							<div role="tabpanel" class="tab-pane active" id="moveCollections">
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" name="/" title="/"
+										<a name="/" title="/" aria-label="Move collection"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="" class="folder-icon" th:src="@{ /images/folder-16.png }"
+											alt="Move collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
 											name="/" /> <span>iRods</span>
 										</a>
 									</p>
 								</th:block>
 								<th:block th:unless="${userDetails.isAdmin()}">
 									<p>
-										<a href="#" th:name="${homePath}"
+										<a th:name="${homePath}" aria-label="User home dir"
 											th:title="${userDetails.getUsername()}"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'' + ${userDetails.getUsername()} + '\', \'' + ${homePath} + '\');'">
 
-											<img alt="" class="folder-icon"
+											<img alt="User home dir" class="folder-icon"
 											th:src="@{ /images/folder-16.png }" name="/" /> <span
 											th:text="${userDetails.getUsername()}"></span>
 										</a>
 									</p>
 									<p>
-										<a href="#" th:name="Public" th:title="Public"
+										<a th:name="Public" th:title="Public" aria-label="Public dir"
 											th:onclick="'javascript:getSubDirectoriesOldTree(\'Public\', \'' + ${publicPath} + '\');'">
 											<i class="glyphicon glyphicon-globe"></i> <span>Public</span>
 										</a>
@@ -409,7 +409,7 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{replicate.modal.title}"></h4>
+						<h4 id="myReplicateModalLabel" class="modal-title" th:text="#{replicate.modal.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<form action="/emc-metalnx-web/fileOperation/replicate/"
@@ -420,7 +420,7 @@
 									th:text="#{resource.label}"> </label>
 								<div id="replicate-loader" class="table-loader hideElement">
 									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-									<p class="text-center" th:text="#{loading.list.label}"></p>
+									<p class="text-center" th:text="#{loading.list.label}" alt="table loader"></p>
 								</div>
 								<div id="selectResourceForReplication"></div>
 							</div>
@@ -439,14 +439,14 @@
 
 		<!-- Delete Modal -->
 		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel" aria-hidden="true">
+			aria-labelledby="deleteModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
+						<h4 id="deleteModalLabel" class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.deletion.label}"></span> <span
@@ -465,14 +465,14 @@
 
 		<!-- Upload Modal -->
 		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel" aria-hidden="true">
+			aria-labelledby="uploadModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 class="modal-title" th:text="#{upload.label}"></h4>
+						<h4 id="uploadModalLabel" class="modal-title" th:text="#{upload.label}"></h4>
 					</div>
 					<div class="modal-body">
 						<div class="hideElement" id="uploadMinMessage">
@@ -492,34 +492,35 @@
 
 
 							<p class="text-right">
-								<span id="numberFilesUpload">No</span><span>&nbsp;file(s)
-									selected</span>
+								<label id="numberFilesUpload"># file(s)
+									selected</label>
 							</p>
 							<div class="well">
 								<!-- <div class="col-sm-4 col-sm-offset-4" style="align-items: center; display: flex; min-height: 100%;"> -->
-									<button type="button" class="btn btn-primary btn-sm" id="browseButton" style="margin: 10% auto;">
+									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
 									</button>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
-									id="inputFiles" class="form-control" />
+									id="inputFiles" class="form-control" title="Input File"/>
 								<div id="filesList">
 								</div>
 							</div>
 
 							<div id="uploadControlOptions">
-								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" />
+								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" title="Hidden upload path"/>
 
 									<div class="row form-group">
 										<th:block th:if="${dataGridUser.isAdvancedView()}">
-										<div class="col-md-6">Resource</div>
+										<div class="col-md-6" th:text="#{text.resource.name}">Resource</div>
 										<div class="col-md-6">
 												<input type="checkbox" id="inputReplica" name="replica"
-													value="1" /> &nbsp;&nbsp;<span>Replica</span>
+													value="1"  title="Replica" />
+													<label for="inputReplica" th:text="#{text.replica}">Replica</label>
 										</div>
 
 										<div class="col-md-6">
-											<select class="form-control" name="resourceToUpload"
+											<select class="form-control" name="resourceToUpload" aria-label="Resource to upload"
 												id="selectResourceToUpload">
 											</select>
 										</div>
@@ -534,15 +535,15 @@
 
  								<div class="row form-group">
 									<div class="col-md-6">
-										<input type="checkbox" id="inputOverwriteDuplicateFiles"
-											name="inputOverwriteDuplicateFiles"
+										<input type="checkbox" id="inputOverwriteDuplicateFiles" aria-label="overwrite on upload"
+											name="inputOverwriteDuplicateFiles" title="overwrite on upload"
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
 									<th:block th:if="${dataGridUser.isAdvancedView()}">
 									<div class="col-md-6">
-										<input type="checkbox" id="inputChecksum" name="checksum"
-										value="1" /> &nbsp;&nbsp;<span>Checksum</span>
+										<input type="checkbox" id="inputChecksum" name="checksum" aria-label="compute checksum"
+										title="compute checksum" value="1" /> &nbsp;&nbsp;<span>Checksum</span>
 									</div>
 									</th:block>
  								</div>
@@ -562,8 +563,8 @@
 									<table class="table">
 										<thead>
 											<tr>
-												<th>File Name</th>
-												<th>Upload Status</th>
+												<th th:text="#{text.file.name}">File Name</th>
+												<th th:text="#{collections.management.upload.upload.status}">Upload Status</th>
 											</tr>
 										</thead>
 										<tbody class="upload-window">
@@ -625,7 +626,7 @@
 						this.reset();
 					});
 					$('#filesList').html('');
-					$('#numberFilesUpload').html('No');
+					$('#numberFilesUpload').html('Number of files to upload');
 					$('#uploadControlOptions').hide();
 					$('#uploadForm').show();
 					$('#browseButton').show();
@@ -660,14 +661,15 @@
 
 
 			function getSubDirectories(path) {
+
 				//alert("getSubDirectories")
-				console.log("Collection managemnet - getSubDirectories()");
+				console.log("Collection management - getSubDirectories()");
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
-
-				setTimeout(function () {
-					ajaxEncapsulation("/emc-metalnx-web/collections/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
-					currentPath = path;
+													
+				setTimeout(function () {				
+					ajaxEncapsulation("/emc-metalnx-web/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
+					currentPath = path;								
 					console.log("currentpath " +currentPath);
 					console.log("path " +path)
 				}, 400);
@@ -686,7 +688,7 @@
 				var groupName = $("#collectionInfoGroupName").text();
 
 				ajaxEncapsulation(
-					"/emc-metalnx-web/collections/getSubDirectoriesOldTree/",
+					"/emc-metalnx-web/browse/getSubDirectoriesOldTree/",
 					"POST",
 					{path : directoryPath, groupName : groupName},
 					function (data){
@@ -722,13 +724,15 @@
 	        }
 
 	        function showModifyForm() {
-	        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
-
-	        	if (cbChecked > 1) return;
-
-                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
-                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
-                ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
+		        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
+	
+		        	if (cbChecked > 1) return;
+	
+	                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
+	                //alert(url);
+	                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
+	                //alert(path);
+	                ajaxEncapsulation(url, "GET", {path: path}, displayModifyForm, null, null, null);
 			}
 
 	        function submitForm() {
@@ -736,29 +740,46 @@
 					$(".registerForm").submit();
 				}
 	        }
+	        
+	        function callbackMoveAndCopyError(path){
+				$("#moveModal").modal("hide");
+
+				//reset the modal
+        		    cleanModals();
+
+				//updating the list of files and collections
+				currentPath = path;
+				
+	       		positionBrowserToPath(path); 
+
+				//xs$("#tree-view-panel-body").html(data);
+	        }
+
 
 	        function callbackMoveAndCopy(data){
 				$("#moveModal").modal("hide");
 
 				//reset the modal
-        		cleanModals();
+        		    cleanModals();
 
 				//updating the list of files and collections
 				currentPath = targetPath;
 				totalCheckboxesChecked = 0;
 
-	       		resetDataTablesStart();
+	       		//resetDataTablesStart();
+	       		
+	       		positionBrowserToPath(targetPath); 
 
 				$("#tree-view-panel-body").html(data);
 	        }
 
 	        function updateResourceForReplicationOptions() {
-	        	$("#selectResource > option").remove();
-    			$("#selectResourceToUpload > option").each(function() {
-    				if(!$(this).is(":selected")) {
-    					$("#selectResource").append($(this).clone());
-    				}
-    			});
+		        	$("#selectResource > option").remove();
+	    			$("#selectResourceToUpload > option").each(function() {
+	    				if(!$(this).is(":selected")) {
+	    					$("#selectResource").append($(this).clone());
+	    				}
+	    			});
 	        }
 
 	        $("#moveBtn").click(function() {
@@ -838,34 +859,41 @@
 
 				return paths;
 			}
+			
+			/**
+			* position the collection browser to the new path
+			*/
+			function positionBrowserToPath(path) {
+				window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+			}
 
 	        function deleteAction(){
-	        	setOperationInProgress();
-	        	$("#actions button").prop("disabled", true);
-	        	$('#actionsWait').show();
-	        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
-	        	$("#uploadIcon").prop("disabled", true);
-            	$("#uploadIcon").addClass("disabled");
-            	$("#showCollectionFormBtn").prop("disabled", true);
-            	$("#showCollectionFormBtn").addClass("disabled");
-
-            	var paths = findPathsSelected();
-            	var url = "/emc-metalnx-web/fileOperation/delete/";
-
-	        	ajaxEncapsulation(
-	        		url,
-	        		"POST",
-	        		{paths: paths},
-	        		function (data) {
-		        		unsetOperationInProgress();
-		        		resetDataTablesStart();
-	        			$("#tree-view-panel-body").html(data);
-
-					}
-				);
-
-				$("#deleteModal").modal("hide");
-				cleanModals();
+		        	setOperationInProgress();
+		        	$("#actions button").prop("disabled", true);
+		        	$('#actionsWait').show();
+		        	$('#actionLabel').html([[#{collections.empty.trash.status}]]);
+		        	$("#uploadIcon").prop("disabled", true);
+	            	$("#uploadIcon").addClass("disabled");
+	            	$("#showCollectionFormBtn").prop("disabled", true);
+	            	$("#showCollectionFormBtn").addClass("disabled");
+	
+	            	var paths = findPathsSelected();
+	            	var url = "/emc-metalnx-web/fileOperation/delete/";
+	
+		        	ajaxEncapsulation(
+		        		url,
+		        		"POST",
+		        		{paths: paths},
+		        		function (data) {
+			        		unsetOperationInProgress();
+			        		resetDataTablesStart();
+		        			$("#tree-view-panel-body").html(data);
+	
+						}
+					);
+	
+					$("#deleteModal").modal("hide");
+					cleanModals();
 	        }
 
 	        $('.modal').on('hidden.bs.modal', function(e){
@@ -946,10 +974,10 @@
 				$("#table-loader").show();
 				$("#table-loader").nextAll().remove();
 
-				url = "/emc-metalnx-web/collections/info/";
+				url = "/emc-metalnx-web/browse/info/";
 				ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/getBreadCrumbForObject/',
+					'/emc-metalnx-web/browse/getBreadCrumbForObject/',
 					"POST",
 					{path: path},
 					function(data){
@@ -957,14 +985,14 @@
 					}, null, null, null);
 	        }
 
-			function displayInfoDetails(data){
+			/* function displayInfoDetails(data){
 				//alert("displayInfoDetails");
 				$("#table-loader").hide();
 				$("#table-loader").after(data);
-	        }
+	        } */
 			function goBackHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goBackHistory/',
+					'/emc-metalnx-web/browse/goBackHistory/',
 					"POST",
 					{steps: steps},
 					displaySubDirectories,
@@ -973,7 +1001,7 @@
 			}
 			function goForwardHistory(steps){
 				ajaxEncapsulation(
-					'/emc-metalnx-web/collections/goForwardHistory/',
+					'/emc-metalnx-web/browse/goForwardHistory/',
 					"POST",
 					{steps: steps},
 					displaySubDirectories,
@@ -986,7 +1014,7 @@
 			    $('.targetPathInfoSpan').html(targetPath);
 			}
 
-			//this function below only wqorks with favorites and user bookmarks table because they have the same number of columns
+			//this function below only works with favorites and user bookmarks table because they have the same number of columns
 			function modalMoveCopyFavAndUserbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {
 				    "serverSide": true,

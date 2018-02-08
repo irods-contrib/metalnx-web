@@ -23,15 +23,15 @@
 <body>
 	<!-- Current Specific Queries Table -->
 	<div th:fragment="specificQueriesList" class="row">
-	
+
 		<div class="col-sm-12" th:if="${foundSpecificQueries}">
-		
+
 			<div class="alert" role="alert">
 				<p class="text-center">
 					<b><span th:text="${resultSize}"></span></b> <span th:text="#{specific.queries.table.results.found.label}"></span>.
 				</p>
 			</div>
-	
+
 			<div class="col-sm-12 scrollable-table">
 				<table class="table table-hover" id="specificQueriesTable">
 					<thead>
@@ -40,19 +40,19 @@
 							<th>Action</th>
 						</tr>
 					</thead>
-	
+
 					<tbody>
 						<tr th:each="specificQuery : ${specificQueries}">
 							<td th:text="${specificQuery.getAlias()}"></td>
 							<td>
-								<a class="btn btn-default btn-xs"
+								<a aria-label="modify specific query" class="btn btn-default btn-xs"
 									th:href="${urlMap.URL_MODIFY_SPECIFIC_QUERY_PAGE} + ${specificQuery.getAlias() + '/'}">
 									<span class="glyphicon glyphicon-pencil"> </span>
 								</a>
 								&nbsp; &nbsp;
-								<button type="button" class="btn btn-default btn-xs"
+								<button title="Remove" type="button" class="btn btn-default btn-xs"
 									th:onclick="'javascript:confirmSpecificQueryRemoval(\'' + ${specificQuery.getAlias()} + '\');'">
-									<span class="glyphicon glyphicon-trash"> </span>
+									<span title="remove" class="glyphicon glyphicon-trash"> </span>
 								</button>
 							</td>
 						</tr>
@@ -61,7 +61,7 @@
 			</div>
 			<!-- /. col-sm-12 -->
 		</div>
-		
+
 		<div class="col-sm-12" th:unless="${foundSpecificQueries}">
 			<div class="alert alert-danger" role="alert">
 				<p class="text-center">
@@ -69,50 +69,50 @@
 				</p>
 			</div>
 		</div>
-		
+
 		<!-- Modal -->
-		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="removalModal" tabindex="-1" role="dialog" aria-labelledby="removeModalTitle" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-					  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					  <h4 class="modal-title" id="myModalLabel" th:text="#{confirmation.removal.title}"></h4>
+					  <button title="close" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <h4 class="modal-title" id="removeModalTitle" th:text="#{confirmation.removal.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.removal.label}"></span>
-						<span id="elementToBeRemoved" style="font-weight: bold;"></span> 
+						<span id="elementToBeRemoved" style="font-weight: bold;"></span>
 						?
 					</div>
 					<div class="modal-footer">
-					  <button type="button" class="btn btn-default" data-dismiss="modal" 
+					  <button title="confirmation" type="button" class="btn btn-default" data-dismiss="modal"
 					  	th:text="#{confirmation.message.no}">
 					  </button>
-					  <button type="button" class="btn btn-primary" onclick="removeElement();" 
+					  <button title="confirmation" type="button" class="btn btn-primary" onclick="removeElement();"
 					  	th:text="#{confirmation.message.yes}">
 					  </button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<script type="text/javascript" th:src="@{/js/jquery.tablesorter.min.js}"></script>
-			
+
 		<script th:inline="javascript">
 			$(function(){
-				$("#specificQueriesTable").tablesorter(); 
+				$("#specificQueriesTable").tablesorter();
 			});
-			
+
 			function removeElement() {
 				var alias = $("#elementToBeRemoved").html();
 				window.location = [[${urlMap.URL_DELETE_SPECIFIC_QUERY}]] + alias + "/";
-			} 
-			
+			}
+
 	        function confirmSpecificQueryRemoval(alias) {
 				$("#elementToBeRemoved").html(alias);
 				$("#removalModal").modal("show");
 			}
-		</script>	
-		
+		</script>
+
 	</div>
 	<!-- /. row Current Specific Queries Table -->
 </body>

@@ -39,7 +39,7 @@
 		<div id="directoryPath">
 			<ol class="breadcrumb" style="color: #2C95DD;">
 				<!-- root item -->
-				<li><a href="#" title="/" onclick="javascript:getSubDirectoriesForUser('/');">iRods</a></li>
+				<li><a title="/" onclick="javascript:getSubDirectoriesForUser('/');" th:text="#{text.root}" aria-label="breadcrumb for root">Root(/)</a></li>
 
 				<!-- items underneath root -->
 				<th:block th:each="pathItem, iterationStatus : ${#strings.arraySplit(currentPath, '/')}">
@@ -47,6 +47,7 @@
 						<a href="#collectionsViewForUser"
 							th:if="${ iterationStatus.last == false }"
 							th:text="${ pathItem }"
+							aria-label="${ pathItem }"
 							th:with="pathUntilCurrentItem = ${ #strings.substringBefore(currentPath, pathItem) + pathItem }"
 							th:title="${ pathUntilCurrentItem }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${ pathUntilCurrentItem } + '\');'">
@@ -73,7 +74,7 @@
 					<th th:text="#{collections.management.table.modified.label}" class="hidden-xs hidden-sm"></th>
 					<th>
 						<span th:text="#{collections.management.table.permissions.label}"></span>
-						[<a href="#" data-toggle="tooltip" th:title="#{collections.management.table.permission.tooltip}">?</a>]
+						[<a data-toggle="tooltip" th:title="#{collections.management.table.permission.tooltip}">?</a>]
 					</th>
                     <th th:text="#{collections.management.table.bookmark.label}"></th>
 				</tr>
@@ -83,13 +84,14 @@
 				<tr th:each="collectionAndDataObject : ${dataGridCollectionAndDataObjectList}">
 					<!-- Collection name -->
 					<td>
-						<a href="#collectionsViewForUser"
+						<a
 							th:if="${ collectionAndDataObject.isCollection() }"
 							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }"
+							aria-label="${ collectionAndDataObject.getPath() }"
 							th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${collectionAndDataObject.getPath()} + '\');'">
 
-			               	<i th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
+			               	<i title="collection" th:if="${collectionAndDataObject.isCollection()}" class="fa fa-folder folder-icon"></i>
 							&nbsp;
 
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
@@ -99,7 +101,7 @@
 							th:name="${ collectionAndDataObject.getPath() }"
 							th:title="${ collectionAndDataObject.getPath() }">
 
-					        <i th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
+					        <i title="collection" th:unless="${collectionAndDataObject.isCollection()}" th:class="${ collectionAndDataObject.getIconToDisplay()}"></i>
 							&nbsp;
 
 							<span th:text="${ collectionAndDataObject.getName() }"></span>
@@ -125,15 +127,16 @@
 									<span th:text="#{collections.user.form.permissions}"></span><b th:text="${collectionAndDataObject.getName()}"></b><span>?</span>
 								</div>
 								<div class="recursiveQuestionButtonsWrapper">
-									<button type="button" class="btn-xs btn btn-link btn-recursive-cancel" th:text="#{confirmation.message.cancel}" th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${currentPath} + '\');'"></button>
-									<button type="button" class="btn-xs btn btn-default btn-recursive-no" th:text="#{confirmation.message.no}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'"></button>
-									<button type="button" class="btn-xs btn btn-default btn-recursive-yes" th:text="#{confirmation.message.yes}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', true)'"></button>
+									<button title="cancel" type="button" class="btn-xs btn btn-link btn-recursive-cancel" th:text="#{confirmation.message.cancel}" th:onclick="'javascript:getSubDirectoriesForUser(\'' + ${currentPath} + '\');'"></button>
+									<button title="no" type="button" class="btn-xs btn btn-default btn-recursive-no" th:text="#{confirmation.message.no}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'"></button>
+									<button title="yes" type="button" class="btn-xs btn btn-default btn-recursive-yes" th:text="#{confirmation.message.yes}" th:onclick="'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', true)'"></button>
 								</div>
 							</div>
 						</div>
 						<!-- <input type="hidden" th:id="${'recursive_' + collectionAndDataObject.getName() }" value="false"/> -->
 						<select th:id="${'permission_' + collectionAndDataObject.getName() }"
 						th:title="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
+						aria-label="${ 'Change permission for ' + collectionAndDataObject.getPath() }"
 						th:onchange="${collectionAndDataObject.isCollection()} ? 'javascript:showRecursiveQuestion(\'' + ${collectionAndDataObject.getName()} + '\')' : 'javascript:changePermission(\'' + ${collPath} + '\', \'' + ${collectionAndDataObject.getName()} + '\', false)'">
 							<option value="none">None</option>
 							<option value="read" th:selected="${#sets.contains(readPermissions, collPath) or #sets.contains(session.addReadPermissionsOnDirs, collPath) ? 'selected' : 'false'}">Read</option>
@@ -147,6 +150,7 @@
                     <!-- Bookmarks  -->
                     <td th:with="collPath = ${collectionAndDataObject.getPath()}">
                         <input
+														title="bookmark"
                             th:name='${collPath}'
                             type="checkbox"
                             class="userBookmarkCheckbox"

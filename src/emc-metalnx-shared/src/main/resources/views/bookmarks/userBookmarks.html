@@ -108,7 +108,7 @@
 			    "columnDefs": [
 	                {
 	                	"render": function ( data, type, full, meta ) {
-							return '<a href="#" onclick="redirectToCollections(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
+							return '<a href="#" onclick="openInCollView(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
 						},
 						"width": "25%",
 						"targets": 0
@@ -132,9 +132,18 @@
 	               	},
 	            ]
 			} );
+			
+			function openInCollView(path) {
+				window.open(
+						  '/emc-metalnx-web/collections' + path,
+						  '_blank' // <- This is what makes it open in a new window.
+						);
+			}
+			
+			// TODO: remove old methods
 
 			function redirectToCollections(path){
-				var url = "/emc-metalnx-web/collections/redirectFromUserBookmarksToCollections/";
+				var url = "/emc-metalnx-web/browse/redirectFromUserBookmarksToCollections/";
 				ajaxEncapsulation(url, "POST", {path: path}, showCollections, null, null, null);
 			}
 

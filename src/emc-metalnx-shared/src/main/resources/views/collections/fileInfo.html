@@ -1,0 +1,85 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org" lang="en"
+	layout:decorator="template">
+
+<body>
+	<div layout:fragment="content">
+
+		<div class="row">
+			<th:block th:include="collections/summary :: summaryView"></th:block>
+		</div>
+
+		<div id="tabs">
+				<ul>
+					<li><a href="#details"
+						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-info-circle"></i></span> <span
+							title="File information">Details</span>
+					</a></li>
+
+					<li><a href="#metadata"
+						th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
+					</a></li>
+
+					<li><a href="#permission" id="permissions"
+						th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+							<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
+					</a></li>
+					
+					<!-- <li><a href="#replica"> <span><i
+								class="fa fa-lock"></i></span> <span title="replica">Replica</span>
+					</a></li>
+					 -->
+					<li><a href="#preview"
+					th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'"> 
+						<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
+					</a></li>
+					
+				</ul>
+				
+				<div class="content_menu">
+					
+					<div id="details">
+						<th:block th:include="collections/info :: infoView"></th:block>
+						<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
+					</div>
+
+					<div id="metadata"></div>
+
+					<div id="permission"></div>
+				
+					<!-- <div id="replica">
+						<img class="center-block" th:src="@{/images/comingsoon.png}" />
+						<span><p>This feature is under construction. Please come back soon!</p></span>
+					</div> -->
+					<div id="preview">
+						<img id="previewFile"/>
+					</div>
+
+				</div>
+			</div>
+
+
+		
+		<!-- JQuery UI CSS -->
+		<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
+			th:href="@{/css/jquery-ui.min.css}" />
+		<!-- jQuery UI Version 1.11.4 -->
+		<script src="../static/js/jquery-1.11.4.js"
+			th:src="@{/js/jquery-ui.min.js}"></script>
+
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+		<script>
+			$(document).ready(function(e) {
+				$("#tabs").tabs();
+			});			
+			
+		</script>
+	</div>
+
+</body>
+
+</html>

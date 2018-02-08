@@ -27,6 +27,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.DataTransferOperations;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
+import org.irods.jargon.core.pub.TrashOperationsAO;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
@@ -278,18 +279,36 @@ public class FileOperationServiceImpl implements FileOperationService {
 	}
 
 	@Override
-	public boolean emptyTrash(DataGridUser user, String collectionPath) throws DataGridConnectionRefusedException {
-		if (user == null || collectionPath == null || collectionPath.isEmpty())
+	public boolean emptyTrash(DataGridUser user, String collectionPath)
+			throws DataGridConnectionRefusedException, JargonException {
+
+		logger.info("emptyTrash()");
+		if (user == null || collectionPath == null || collectionPath.isEmpty()) {
 			return false;
+		}
+
+		logger.info("user:{}", user);
+		logger.info("collectionPath:{}", collectionPath);
 
 		boolean itemsDeleted = false;
 
 		try {
-			String resc = irodsServices.getDefaultStorageResource();
-			rs.execEmptyTrashRule(resc, collectionPath, user.isAdmin());
+
+			TrashOperationsAO trashOperationsAO = irodsServices.getTrashOperationsAO();
+
+			/*
+			 * if (user.isAdmin()) { logger.info("delete as admin");
+			 * trashOperationsAO.emptyAllTrashAsAdmin(irodsServices.getCurrentUserZone(),
+			 * 0); // trashOperationsAO.emptyTrashAtPathAdminMode(collectionPath, "", //
+			 * irodsServices.getCurrentUserZone(), 0); itemsDeleted = true; } else {
+			 */
+			logger.info("delete as user");
+			trashOperationsAO.emptyTrashAtPathForLoggedInUser(collectionPath, irodsServices.getCurrentUserZone(), 0);
 			itemsDeleted = true;
-		} catch (DataGridRuleException e) {
-			logger.info("Could not empty trash: ", e.getMessage());
+			/* } */
+		} catch (JargonException je) {
+			logger.error("jargon exception emptying trash", je);
+			throw je;
 		}
 
 		return itemsDeleted;
