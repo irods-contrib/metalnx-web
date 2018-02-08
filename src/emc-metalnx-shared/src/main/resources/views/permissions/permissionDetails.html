@@ -303,6 +303,15 @@
                 /*********************************************************************/
                 /******************************* MISC ********************************/
                 /*********************************************************************/
+                
+                var permission = null;
+		        var groupsToHavePermissionsGranted = null;
+		        var usersToHavePermissionsGranted = null;
+		        var path = null;
+		        var currentPermissionTab = "groups";
+		        var datatable;
+		        var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
+
 
                 function showNotification(selectBox, label) {
                     selectBox.siblings(":not(.confirm-msg-table)").remove();
@@ -479,6 +488,8 @@
                     }
                     var successHandler = function(data) {
                         $("#newGroupPermissionModal").modal('hide');
+                        refreshPath = [[${collectionAndDataObject.getPath()}]];
+                        getPermissionDetails(refreshPath);
                     }
 
                     ajaxEncapsulation(url, "POST", postData, successHandler, null, null, null);
@@ -550,6 +561,8 @@
                     }
                     var successHandler = function(data) {
                         $("#newUserPermissionModal").modal('hide');
+                        refreshPath = [[${collectionAndDataObject.getPath()}]];
+                        getPermissionDetails(refreshPath);
                     }
 
                     ajaxEncapsulation(url, "POST", postData, successHandler, null, null, null);
