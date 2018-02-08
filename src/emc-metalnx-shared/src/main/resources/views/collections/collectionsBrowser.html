@@ -243,6 +243,7 @@
 
 	<div id="actionUpload">
         <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
+         	
             <a role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                title="add collection" th:title="#{collections.management.add.button}">
@@ -251,12 +252,17 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
+            <a class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+				<i class="fa fa-info-circle fa-color"></i>
+			</a>
             <a role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="upload files"
                data-target="#uploadModal" data-backdrop="static" data-keyboard="false" id="uploadIcon" title="Upload file(s) to iRods">
-                <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                <i class="fa fa-cloud-upload fa-color pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
+           
         </th:block>
-        <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
+        <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">         	
             <a disabled="true" role="button" href="#" class="btn btn-default pull-right" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection" title="add collection"
                th:title="#{collections.management.add.button}">
@@ -265,11 +271,15 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
+            <a class="btn btn-default" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+				<i class="fa fa-info-circle fa-color"></i>
+			</a>
             <a disabled="true" role="button" href="#" class="btn btn-default" data-toggle="modal" aria-label="add collection" 
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
-                <i class="fa fa-cloud-upload pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
+                <i class="fa fa-cloud-upload fa-color pull-left"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
-        </th:block>
+		</th:block>
 	</div>
 </div>
 
@@ -291,7 +301,7 @@
                         <th th:text="#{collections.management.table.kind.label}"></th>
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
-                        <th ></th>
+                        <th th:text="#{collections.management.table.action.label}"></th>
                     </tr>
                 </thead>
             </table>
@@ -497,7 +507,9 @@
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" name="' + full.path +'" onclick=getCollectionSummary("'+full.path+'") ><i class="fa fa-info-circle"></i></a>';
+                    		                  		
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
+    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
     					},
     					"width": "13%",
     					"targets": 6
@@ -657,6 +669,7 @@
 			}
 		}
 
+		
         $("#downloadBtn").click(function(e) {
         	e.preventDefault();
         	$("#uploadIcon").prop("disabled", true);
@@ -668,13 +681,13 @@
         	$("#actionsWait").show();
         	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
         	var prepareDownloadURL = $("#downloadBtn").attr("href");
-
+        	
 			var paths = [];
         	$("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
 				paths.push($(this).val());
-				alert($(this).val())
+				
 			});
-	
+			
         	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
 			$("#actions button").prop("disabled", true);
         });

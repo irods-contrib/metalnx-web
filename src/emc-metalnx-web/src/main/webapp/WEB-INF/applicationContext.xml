@@ -25,8 +25,8 @@
 			<list>
 
 
-				<value>file:/etc/irods-ext/metalnx.properties</value> 
-				<!-- <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value> -->
+				<!-- <value>file:/etc/irods-ext/metalnx.properties</value>  -->
+				<value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value>
 
 			</list>
 		</property>
@@ -36,8 +36,8 @@
 	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md 
 		doc at the top of the repo, -->
 		
-		 <import resource="file:/etc/irods-ext/metalnxConfig.xml" /> 
-		<!--<import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml"/>  -->
+		 <!-- <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  -->
+		<import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml"/> 
 
 
 	<!-- **************************************************************** -->

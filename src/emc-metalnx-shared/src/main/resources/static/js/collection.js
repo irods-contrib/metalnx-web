@@ -146,6 +146,7 @@ function unstarPath(path){
 }
 
 function positionBrowserToPath(path) {
+	alert("positionBrowserToPath :: " +path);
 	window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
 }
 
