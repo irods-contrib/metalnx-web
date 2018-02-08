@@ -103,12 +103,8 @@ function displayPermissionDetails(data){
 	$('#permission').html(data);
 	$("#permission").show();    
 }
-function getTestSubDirectories(){
-	alert("get directories");
-}
+
 function showPreview(){
-	alert("Show Preview");
-	
 	$.ajax({
 		type : "POST",
 		url : "/emc-metalnx-web/collectionInfo/getFile/",
@@ -167,7 +163,6 @@ function unstarPath(path){
 }
 
 function positionBrowserToPath(path) {
-	alert("positionBrowserToPath :: " +path);
 	window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
 }
 
