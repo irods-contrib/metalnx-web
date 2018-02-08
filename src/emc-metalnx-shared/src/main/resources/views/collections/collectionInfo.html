@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-sm-12" aria-labelledby="collInfoManagement"
 			layout:fragment="content">
-			
+
 			<div class="row">
 				<th:block
 					th:include="collections/collectionHeader :: collectionHeaderView"></th:block>
@@ -43,7 +43,6 @@
 
 
 					<div class="content_menu">
-
 						<div id="details">
 							<th:block th:include="collections/info :: infoView"></th:block>
 							<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
@@ -63,15 +62,13 @@
 				th:href="@{/css/jquery-ui.min.css}" />
 			<!-- jQuery UI Version 1.11.4 -->
 			<script src="../static/js/jquery-1.11.4.js"
-				th:src="@{/js/jquery-ui.min.js}"></script>
-
+				th:src="@{/js/jquery-ui.min.js}"></script>			
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 			<script>
 				$(document).ready(function(e) {
 					$("#tabs").tabs();
 				});
 			</script>
-
 		</div>
 	</div>
 </body>

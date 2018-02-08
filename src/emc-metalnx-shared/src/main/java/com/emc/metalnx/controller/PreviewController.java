@@ -56,77 +56,85 @@ public class PreviewController {
 		logger.info("prepareForPreview for {} ::" + path);
 		String mimeType = null;
 
-		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-		DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory
-				.instanceDataTypeResolutionService(irodsAccount);
-
 		try {
+			IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
+			DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory
+					.instanceDataTypeResolutionService(irodsAccount);
+
+			logger.info("dataTypeResolutionService created from factory:{}", dataTypeResolutionService);
+
+			logger.info("doing quick check for mime type");
 			mimeType = dataTypeResolutionService.quickMimeType(path);
-			logger.info("mimetype :: " + mimeType);
+			logger.info("mimetype:{}", mimeType);
+
+			redirectAttributes.addAttribute("path", path);
+
+			String template = null;
+
+			if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
+					|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
+				template = "redirect:/image/previewFilePath";
+			else
+				template = "collections/imagePreview :: noPreview";
+
+			return template;
 		} catch (JargonException e) {
 			logger.error("Could not retrieve data from path: {}", path, e);
 			throw new DataGridException(e.getMessage());
+		} catch (Exception e) {
+			logger.error("general exception generating preview", e);
+			throw new DataGridException(e.getLocalizedMessage());
 		}
-		redirectAttributes.addAttribute("path", path);
-
-		String template = null;
-
-		if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
-				|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
-			template = "redirect:/image/previewFilePath";
-		else
-			template = "collections/imagePreview :: noPreview";
-
-		return template;
 
 	}
-	
-	
-	
-/*	@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
-	public void prepareForPreview(@RequestParam("path") final String path) throws DataGridException {
-		
-		String mimeType = null;
-		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-		DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory.instanceDataTypeResolutionService(irodsAccount);
-		
-		try {
-			mimeType = dataTypeResolutionService.quickMimeType(path);
-			logger.info("mimetype :: " +mimeType);
-		} catch (JargonException e) {
-			logger.error("Could not retrieve data from path: {}", path, e);
-			throw new DataGridException(e.getMessage());
-		}
-		
-		if(mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif") || 
-				mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
-			getPreview(path);
-		else
-			noPreview();
-		
-	}
-	
-	public String noPreview() {
-		return "collections/imagePreview :: noPreview";
-	}
-	
-	
-	
-	//@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
-	public String getPreview(String path) throws DataGridException{
-		
-		previewFilePath = path;
-		logger.info("prepareForPreview for {} ::" +path);			
-		
-				
-		return "redirect:/image/previewFilePath";
-		
-		//return "collections/imagePreview :: imagePreview";
-	}
-	*/
 
-		// return "collections/imagePreview :: imagePreview";
-	
+	public DataTypeResolutionServiceFactory getDataTypeResolutionServiceFactory() {
+		return dataTypeResolutionServiceFactory;
+	}
+
+	public void setDataTypeResolutionServiceFactory(DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory) {
+		this.dataTypeResolutionServiceFactory = dataTypeResolutionServiceFactory;
+	}
+
+	/*
+	 * @RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
+	 * public void prepareForPreview(@RequestParam("path") final String path) throws
+	 * DataGridException {
+	 * 
+	 * String mimeType = null; IRODSAccount irodsAccount =
+	 * irodsServices.getUserAO().getIRODSAccount(); DataTypeResolutionService
+	 * dataTypeResolutionService =
+	 * dataTypeResolutionServiceFactory.instanceDataTypeResolutionService(
+	 * irodsAccount);
+	 * 
+	 * try { mimeType = dataTypeResolutionService.quickMimeType(path);
+	 * logger.info("mimetype :: " +mimeType); } catch (JargonException e) {
+	 * logger.error("Could not retrieve data from path: {}", path, e); throw new
+	 * DataGridException(e.getMessage()); }
+	 * 
+	 * if(mimeType.equalsIgnoreCase("image/png") ||
+	 * mimeType.equalsIgnoreCase("image/gif") ||
+	 * mimeType.equalsIgnoreCase("image/jpeg") ||
+	 * mimeType.equalsIgnoreCase("image/jpg")) getPreview(path); else noPreview();
+	 * 
+	 * }
+	 * 
+	 * public String noPreview() { return "collections/imagePreview :: noPreview"; }
+	 * 
+	 * 
+	 * 
+	 * //@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
+	 * public String getPreview(String path) throws DataGridException{
+	 * 
+	 * previewFilePath = path; logger.info("prepareForPreview for {} ::" +path);
+	 * 
+	 * 
+	 * return "redirect:/image/previewFilePath";
+	 * 
+	 * //return "collections/imagePreview :: imagePreview"; }
+	 */
+
+	// return "collections/imagePreview :: imagePreview";
 
 	/*
 	 * @RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)

@@ -46,6 +46,27 @@ function getPerview(path){
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
 }
 
+function getPermDetails(path){
+    $('#table-loader').nextAll().remove();
+	$('#table-loader').show();
+	$("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");
+	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
+
+	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
+}
+
+function displayPermDetails(data){
+    $('#table-loader').hide();
+    $("#table-loader").after(data);
+    $("#uploadIcon").prop("disabled", true);
+    $("#uploadIcon").addClass("disabled");
+    $("#showCollectionFormBtn").prop("disabled", true);
+    $("#showCollectionFormBtn").addClass("disabled");
+}
+
 function displayPreviewImage(data){
 	//$("#previewFile").attr("src","data:image/png;base64," + data);	
 	$("#preview").html(data);
@@ -80,7 +101,7 @@ function displayPermissionDetails(data){
      $("#showCollectionFormBtn").prop("disabled", true);
      $("#showCollectionFormBtn").addClass("disabled");*/
 	$('#permission').html(data);
-	//$("#permission").show();    
+	$("#permission").show();    
 }
 function getTestSubDirectories(){
 	alert("get directories");

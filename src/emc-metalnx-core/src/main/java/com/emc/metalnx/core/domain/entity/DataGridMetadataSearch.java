@@ -28,7 +28,7 @@ public class DataGridMetadataSearch {
 	private DataGridSearchOperatorEnum operator;
 	private String value;
 	private String unit;
-	private String regex = "([^A-Za-z0-9-_.,:=! ]+)";
+	private String regex = "([^A-Za-z0-9-_.,:=!/ ]+)";
 	private String attrColName = "m.meta_attr_name";
 	private String valueColName = "m.meta_attr_value";
 	private String unitColName = "m.meta_attr_unit";
