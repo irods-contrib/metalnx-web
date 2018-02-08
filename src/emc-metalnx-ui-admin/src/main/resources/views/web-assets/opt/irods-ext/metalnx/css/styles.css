@@ -1032,6 +1032,7 @@ span .label {
 	background-color: #f2f6f9;
 	border-radius: 0;
 	height:38px;
+  color: #287ea1;
 }
 
 .breadcrumb span{
@@ -1181,6 +1182,12 @@ ul{
 a.page-hint {
 /*font-size:1.3em;
 	margin-top:30px; */
+}
+
+.page-hint i{
+/*font-size:1.3em;
+	margin-top:30px; */
+  color: #287EA1;
 }
 
 .property{
@@ -2344,7 +2351,7 @@ form.registerForm .bootstrap-tagsinput {
 
 #metalnx-topnav {
   font-size: 15px;
-  background-color: #35394a;
+  background-color: #287ea1;
 }
 
 #metalnx-topnav>li>a:hover, #metalnx-topnav>li>a:focus {
@@ -2358,7 +2365,7 @@ form.registerForm .bootstrap-tagsinput {
 
 .close{
   color: #FFF;
-  opecity: 1;
+  opacity: 1;
 }
 
 .content_menu{
@@ -2374,13 +2381,53 @@ form.registerForm .bootstrap-tagsinput {
     pointer-events:none; //This makes it not clickable
     opacity:0.6;         //This grays it out to look disabled
 }
-.collection-header{
-  border-bottom:none;
-  margin: 0px 5px 0px 0px;
+
+td a {
+  cursor: pointer;
+}
+.collection-title h1,h2{
   padding-bottom:0;
   //font-size: 15px;
-  //background-color: ##CBDFF7;
+  color: #287EA1;
+  margin-bottom: 0;
 }
+
+.box-default{
+  border-top-color :red;
+  border-style: solid;
+}
+.box{
+  background-color:#C6DEFF;
+  border:1px solid transparent;
+  border-radius:4px;
+  box-shadow:rgba(0, 0, 0, 0.05) 0 1px 1px;
+  margin: 0px auto;
+}
+
+.box-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.box:before {
+    content: "";
+    display: block;
+    background: #A2E8A7;
+}
+.font-color{
+    color:#287EA1;
+}
+.fas-icon i{
+    font-size: 3em;
+    color: #287EA1;
+}
+
+.fa-color{
+    color: #287EA1;
+}
+
 
 /*.topnav{
   //width:100%;
