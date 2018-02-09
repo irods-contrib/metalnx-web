@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
@@ -71,25 +72,22 @@ public class CollectionInfoController {
 
 		logger.info("CollectionInfoController getTestCollectionInfo() starts !!");
 		final String path = "/" + extractFilePath(request);
-		logger.info("path ::" + path);
-		model.addAttribute("summary", "This is comming from the CollectionInfoController() - Test the main controller");
-
+		IconObject icon = null;
+		String mimeType = "" ;
+		String template = "";
+				
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = getCollectionDataProfile(path);
-
-		String iconToDisplay = "";
-
-		if (dataProfile != null && dataProfile.isFile())
-			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
-		if (dataProfile != null && !dataProfile.isFile())
-			iconToDisplay = iconService.getIconToDisplayCollection();
-
-		model.addAttribute("iconToDisplay", iconToDisplay);
+				
+		if (dataProfile != null && dataProfile.isFile()) {				
+			mimeType = dataProfile.getDataType().getMimeType();
+		}		
+		icon = getIcon(mimeType);
+		
+		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
 		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-		System.out.println("Absolute Path :: " + dataProfile.getAbsolutePath());
-		String template = "";
-
+		
 		if (!dataProfile.isFile())
 			template = "collections/collectionInfo";
 		if (dataProfile.isFile())
@@ -97,8 +95,6 @@ public class CollectionInfoController {
 
 		return template;
 
-		// :: mainPage(page='collections/collectionInfo', fragment='collectionInfo')";
-		// "main :: mainPage(page='some-page', fragment='somePage')";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,29 +127,28 @@ public class CollectionInfoController {
 		}
 
 	}
-
+	
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
-
 		logger.info("CollectionInfoController getCollectionFileInfo() starts :: " + path);
 
+		IconObject icon = null;
+		String mimeType = "" ;
+		
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = getCollectionDataProfile(path);
-
-		String iconToDisplay = "";
-
-		if (dataProfile != null && dataProfile.isFile())
-			iconToDisplay = iconService.getIconToDisplayFile(dataProfile.getDataType().getMimeType());
-		if (dataProfile != null && !dataProfile.isFile())
-			iconToDisplay = iconService.getIconToDisplayCollection();
-
-		model.addAttribute("iconToDisplay", iconToDisplay);
+		DataProfile dataProfile = getCollectionDataProfile(path);		
+		
+		if (dataProfile != null && dataProfile.isFile()) {				
+			mimeType = dataProfile.getDataType().getMimeType();
+		}		
+		icon = getIcon(mimeType);
+	
+		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
 
 		logger.info("getCollectionFileInfo() ends !!");
 		return "collections/info :: infoView";
-		// return "collections/info";
 	}
 
 	@RequestMapping(value = "/getFile/", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -163,6 +158,16 @@ public class CollectionInfoController {
 				.getResourceAsStream("C:/Users/hetalben/opt/etc/test-data/github-git-cheat-sheet.pdf");
 		logger.info("getFile() ends!!");
 		return IOUtils.toByteArray(in);
+	}
+	
+	public IconObject getIcon(String mimeType) {
+		IconObject icon = null;
+		if (!mimeType.isEmpty())			 
+			icon = iconService.getIconToDisplayFile(mimeType);
+		else
+			icon = iconService.getIconToDisplayCollection();
+
+		return icon;
 	}
 
 	/*

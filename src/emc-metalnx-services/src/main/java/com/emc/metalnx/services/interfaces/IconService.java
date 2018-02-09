@@ -1,8 +1,10 @@
 package com.emc.metalnx.services.interfaces;
 
+import com.emc.metalnx.core.domain.entity.IconObject;
+
 public interface IconService {
 
-	String getIconToDisplayFile(String mimeType);
-	String getIconToDisplayCollection();
+	IconObject getIconToDisplayFile(String mimeType);
+	IconObject getIconToDisplayCollection();
 
 }

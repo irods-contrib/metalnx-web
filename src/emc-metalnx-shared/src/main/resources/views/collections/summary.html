@@ -138,12 +138,11 @@
 			
 			<div class="col-md-4 col-sm-4 pull-right">
 				<div class="col-md-10 col-sm-10 col-lg-10 text-right font-color">					
-						<span><h5>Mime Type</h5></span><br /> <span
-								th:unless="${dataProfile.file}"><h3>Folder</h3></span> <span
-								th:if="${dataProfile.file}"><h3>File</h3></span>				
+						<span><h5>Mime Type</h5></span><br /> 
+							<span><h3 th:text= "${ icon.getType() }"></h3></span>
 				</div>
 				<div class="col-md-2 col-sm-2 col-lg-2 pull-right">
-					<a href="#" class="fas-icon"><i th:class="${ iconToDisplay }"></i></a>
+					<a href="#" class="fas-icon"><i th:class="${ icon.getMimeIcon() }"></i></a>
 				</div>				
 			</div>
 		
