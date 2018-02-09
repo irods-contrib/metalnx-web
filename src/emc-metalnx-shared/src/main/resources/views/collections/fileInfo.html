@@ -27,33 +27,20 @@
 					th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
 				</a></li>
-
-				<!-- <li><a href="#replica"> <span><i
-								class="fa fa-lock"></i></span> <span title="replica">Replica</span>
-					</a></li>
-					 -->
+				
 				<li><a href="#preview"
 					th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'">
 						<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
 				</a></li>
-
 			</ul>
 
 			<div class="content_menu">
 
 				<div id="details">
 					<th:block th:include="collections/info :: infoView"></th:block>
-					<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
 				</div>
-
-				<div id="metadata"></div>
-
+				<div id="metadata"></div>				
 				<div id="permission"></div>
-
-				<!-- <div id="replica">
-						<img class="center-block" th:src="@{/images/comingsoon.png}" />
-						<span><p>This feature is under construction. Please come back soon!</p></span>
-					</div> -->
 				<div id="preview">
 					<img id="previewFile" />
 				</div>
@@ -73,7 +60,11 @@
 		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 		<script>
 			$(document).ready(function(e) {
-				$("#tabs").tabs();
+				$("#tabs").tabs({
+					  beforeLoad: function( e, ui ) {
+					      ui.panel.html('<img th:src="@{/images/table_loading.svg}" />');
+					  }
+					});
 			});			
 			
 		</script>

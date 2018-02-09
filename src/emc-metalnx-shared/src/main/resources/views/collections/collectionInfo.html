@@ -33,20 +33,14 @@
 								<span><i class="fa fa-lock"></i></span> <span
 								title="Collection Permissions">Permissions</span>
 						</a></li>
-
 					</ul>
-
-
 
 					<div class="content_menu">
 						<div id="details">
 							<th:block th:include="collections/info :: infoView"></th:block>
-							<!-- <th:block th:unless="${dataProfile.file}" th:include="collections/collectionInfo :: collectionInfoView"></th:block> -->
 						</div>
 						<div id="metadata"></div>
-
 						<div id="permission"></div>
-
 					</div>
 				</div>
 			</div>
@@ -62,7 +56,12 @@
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 			<script>
 				$(document).ready(function(e) {
-					$("#tabs").tabs();
+					$("#tabs").tabs({
+						  beforeLoad: function( e, ui ) {
+							  alert("Hi");
+						      ui.panel.html('<img th:src="@{/images/table_loading.svg}" />');
+						  }
+						});
 				});
 			</script>
 		</div>
