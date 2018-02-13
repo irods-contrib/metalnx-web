@@ -136,12 +136,12 @@
 				</div>
 			</div>
 			
-			<div class="col-md-4 col-sm-4 pull-right">
-				<div class="col-md-10 col-sm-10 col-lg-10 text-right font-color">					
-						<span><h5>Mime Type</h5></span><br /> 
-							<span><h3 th:text= "${ icon.getType() }"></h3></span>
+			<div class="col-md-4 col-sm-4 pull-right mime-info">
+				<div class="mime-desc">					
+						<h5>Mime Type</h5>
+						<h3 th:text= "${ icon.getType() }"></h3>
 				</div>
-				<div class="col-md-2 col-sm-2 col-lg-2 pull-right">
+				<div class="mime-icon">
 					<a href="#" class="fas-icon"><i th:class="${ icon.getMimeIcon() }"></i></a>
 				</div>				
 			</div>
