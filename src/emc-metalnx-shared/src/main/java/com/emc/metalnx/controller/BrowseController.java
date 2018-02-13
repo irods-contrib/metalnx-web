@@ -87,7 +87,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
+@SessionAttributes({ "sourcePaths" , "topnavHeader" })
 @RequestMapping(value = "/browse")
 public class BrowseController {
 

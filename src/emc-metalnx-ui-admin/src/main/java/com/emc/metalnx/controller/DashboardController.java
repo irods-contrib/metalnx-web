@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
@@ -44,6 +45,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MSIService;
 import com.emc.metalnx.services.interfaces.ResourceService;
@@ -55,6 +57,7 @@ import com.emc.metalnx.services.interfaces.UserProfileService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
+@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/dashboard")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class DashboardController {
@@ -91,6 +94,9 @@ public class DashboardController {
 
 	@Autowired
 	private MSIService msiService;
+	
+	@Autowired
+	HeaderService headerService;
 
 	@Value("${msi.api.version}")
 	private String msiAPIVersionSupported;
@@ -150,6 +156,7 @@ public class DashboardController {
 		model.addAttribute("totalNumberOfFiles", totalNumberOfFiles);
 		model.addAttribute("totalNumberOfProfiles", totalNumberOfProfiles);
 		model.addAttribute("totalNumberOfTemplates", totalNumberOfTemplates);
+		model.addAttribute("topnavHeader", headerService.getheader("dashboard"));
 
 		return "dashboard/dashboard";
 	}

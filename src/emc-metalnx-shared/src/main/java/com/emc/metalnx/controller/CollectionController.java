@@ -49,6 +49,7 @@ import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -59,7 +60,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
+@SessionAttributes({ "sourcePaths" , "topnavHeader" })
 @RequestMapping(value = "/collections")
 public class CollectionController {
 
@@ -101,6 +102,9 @@ public class CollectionController {
 
 	@Autowired
 	RuleDeploymentService ruleDeploymentService;
+	
+	@Autowired
+	HeaderService headerService;
 
 	// parent path of the current directory in the tree view
 	private String parentPath;
@@ -187,6 +191,7 @@ public class CollectionController {
 			model.addAttribute("currentPath", currentPath);
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
+			model.addAttribute("topnavHeader", headerService.getheader("collections"));
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
 		} catch (JargonException | DataGridException e) {
 			logger.error("error establishing collection location", e);

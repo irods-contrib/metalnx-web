@@ -53,6 +53,7 @@ import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.UserService;
@@ -62,7 +63,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
+@SessionAttributes({ "sourcePaths" , "topnavHeader" })
 @RequestMapping(value = "/metadata")
 public class MetadataController {
 
@@ -83,6 +84,9 @@ public class MetadataController {
 
 	@Autowired
 	CollectionController collectionController;
+	
+	@Autowired
+	HeaderService headerService;
 
 	private String jsonMetadataSearch;
 
@@ -128,6 +132,7 @@ public class MetadataController {
 			model.addAttribute("jsonMetadataSearch", jsonMetadataSearch);
 		}
 		model.addAttribute("uiMode", uiMode);
+		model.addAttribute("topnavHeader", headerService.getheader("search"));
 		return "metadata/metadataDisplay";
 	}
 
@@ -190,6 +195,7 @@ public class MetadataController {
 			logger.error("Could not parse hashmap in metadata search to json: {}", e.getMessage());
 		}
 
+		
 		return jsonString;
 	}
 

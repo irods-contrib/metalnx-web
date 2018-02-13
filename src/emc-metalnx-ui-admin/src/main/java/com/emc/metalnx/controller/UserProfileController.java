@@ -21,6 +21,7 @@ import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.UserProfile;
 import com.emc.metalnx.modelattribute.user.profile.UserProfileForm;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.UserProfileService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/users/profile")
 public class UserProfileController {
 
@@ -51,12 +53,16 @@ public class UserProfileController {
 
     @Autowired
     LoggedUserUtils loggedUserUtils;
+    
+    @Autowired
+    HeaderService headerService;
 
     private List<String> groupIdsList = new ArrayList<String>();
     private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
 
     @RequestMapping(value = "/")
     public String index(Model model) {
+    	model.addAttribute("topnavHeader" , headerService.getheader("profiles"));
         return "userProfile/index";
     }
 

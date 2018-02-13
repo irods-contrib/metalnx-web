@@ -68,13 +68,14 @@ import com.emc.metalnx.modelattribute.enums.MetadataTemplateAccessType;
 import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.modelattribute.template.field.TemplateFieldForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.TemplateFieldService;
 import com.emc.metalnx.services.interfaces.TemplateService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "selectedTemplates" })
+@SessionAttributes({ "selectedTemplates", "topnavHeader" })
 @RequestMapping(value = "/templates")
 public class TemplateController {
 
@@ -92,6 +93,9 @@ public class TemplateController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
+	
+	@Autowired
+	HeaderService headerService;
 
 	@Value("${irods.zoneName}")
 	private String zoneName;
@@ -133,6 +137,7 @@ public class TemplateController {
 		}
 		selectedTemplates.clear();
 		model.addAttribute("uiMode", uiMode);
+		model.addAttribute("topnavHeader", headerService.getheader("template"));
 		return "template/templateManagement";
 	}
 

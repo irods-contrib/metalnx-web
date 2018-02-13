@@ -54,7 +54,7 @@ import java.util.*;
  */
 
 @Controller
-@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs" })
+@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs", "topnavHeader"})
 @RequestMapping("/users")
 public class UserController {
 
@@ -81,6 +81,9 @@ public class UserController {
 
     @Autowired
     LoggedUserUtils loggedUserUtils;
+    
+    @Autowired
+    HeaderService headerService;
 
     URLMap urlMap = new URLMap();
     private List<String> groupsToBeAdded = new ArrayList<String>();
@@ -107,7 +110,7 @@ public class UserController {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(Model model) {
-
+    	model.addAttribute("topnavHeader", headerService.getheader("users"));
         cleanPermissionsSets();
         return "users/user-management";
     }

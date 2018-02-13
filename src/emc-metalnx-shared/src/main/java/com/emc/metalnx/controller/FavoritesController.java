@@ -33,17 +33,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
 import com.emc.metalnx.services.interfaces.FavoritesService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
+@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/favorites")
 public class FavoritesController {
 	@Autowired
@@ -54,6 +57,9 @@ public class FavoritesController {
 
 	@Autowired
 	IRODSServices irodsServices;
+	
+	@Autowired
+	HeaderService headerService;
 
 	private static final String REQUEST_OK = "OK";
 	private static final String REQUEST_ERROR = "ERROR";
@@ -78,6 +84,7 @@ public class FavoritesController {
 		List<DataGridUserFavorite> userFavorites = user.getFavoritesSorted();
 
 		model.addAttribute("userFavorites", userFavorites);
+		model.addAttribute("topnavHeader", headerService.getheader("favorite"));
 
 		return "favorites/favorites";
 	}

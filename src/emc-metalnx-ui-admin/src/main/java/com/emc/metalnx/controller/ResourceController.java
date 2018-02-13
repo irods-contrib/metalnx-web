@@ -52,6 +52,7 @@ import com.emc.metalnx.core.domain.entity.enums.DataGridServerType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.modelattribute.enums.URLMap;
 import com.emc.metalnx.modelattribute.resource.ResourceForm;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MachineInfoService;
 import com.emc.metalnx.services.interfaces.ResourceService;
@@ -61,7 +62,7 @@ import com.emc.metalnx.services.interfaces.ZoneService;
 @Controller
 @RequestMapping(value = "/resources")
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
+@SessionAttributes({ "sourcePaths" , "topnavHeader" })
 public class ResourceController {
 
 	@Autowired
@@ -78,6 +79,9 @@ public class ResourceController {
 
 	@Autowired
 	IRODSServices irodsServices;
+	
+	@Autowired
+	HeaderService headerService;
 
 	@Value("${irods.host}")
 	private String irodsHost;
@@ -103,7 +107,7 @@ public class ResourceController {
 		model.addAttribute("resources", dataGridResources);
 		model.addAttribute("resultSize", dataGridResources.size());
 		model.addAttribute("foundResources", dataGridResources.size() > 0);
-
+		model.addAttribute("topnavHeader" , headerService.getheader("resources"));
 		return "resources/resourceManagement";
 	}
 

@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
-@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs", "addInheritanceOnDirs" })
+@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs", "addInheritanceOnDirs", "topnavHeader" })
 @RequestMapping(value = "/groups")
 public class GroupController {
 
@@ -63,6 +63,9 @@ public class GroupController {
 
     @Autowired
     LoggedUserUtils loggedUserUtils;
+    
+    @Autowired
+	HeaderService headerService;
 
     private GroupForm groupForm;
     private DataGridGroup currentGroup;
@@ -95,6 +98,7 @@ public class GroupController {
 
         List<DataGridGroup> groups = groupService.findAll();
         model.addAttribute("groups", groups);
+        model.addAttribute("topnavHeader", headerService.getheader("groups"));
         cleanModificationSets();
         return "groups/groupManagement";
     }

@@ -41,6 +41,7 @@ import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridUserBookmark;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserBookmarkService;
 import com.emc.metalnx.services.interfaces.UserService;
@@ -48,7 +49,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@SessionAttributes({ "addBookmarks", "removeBookmarks" })
+@SessionAttributes({ "addBookmarks", "removeBookmarks", "topnavHeader"})
 @RequestMapping(value = "/userBookmarks")
 public class UserBookmarkController {
 	@Autowired
@@ -65,6 +66,9 @@ public class UserBookmarkController {
 
 	@Autowired
 	AdminServices adminServices;
+	
+	@Autowired
+	HeaderService headerService;
 
 	private Set<String> addBookmark = new HashSet<String>();
 	private Set<String> removeBookmark = new HashSet<String>();
@@ -87,7 +91,7 @@ public class UserBookmarkController {
 
 		model.addAttribute("userBookmarks", userBookmakrs);
 		model.addAttribute("foundUserBookmarks", !userBookmakrs.isEmpty());
-
+		model.addAttribute("topnavHeader", headerService.getheader("shared"));
 		return "bookmarks/userBookmarks";
 	}
 
