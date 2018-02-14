@@ -26,9 +26,9 @@
 	<div layout:fragment="content" aria-labelledby="templatePageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 id="templatePageTitle" class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
+				<!-- <h1 id="templatePageTitle" class="page-header pull-left" th:text="#{metadata.template.management.page.title}"></h1>
 				<a id="templates-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
-				<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
+			 -->	<div th:if="${ templateAddedSuccessfully != null or templateModifiedSuccessfully != null or templateRemovedSuccessfully != null }"
 					class="alert alert-success alert-dismissible text-center clear" role="alert">
 				  	<button type="button" class="close" data-dismiss="alert" title="Close">
 				  		<span aria-hidden="true">&times;</span>
@@ -185,12 +185,12 @@
 				<script type="text/javascript" th:inline="javascript">
 					$(document).ready(function(){
 				        // Add popover on page title
-				        $('#templates-page-title').popover({
+				        /* $('#templates-page-title').popover({
 				    		title:[[#{metadata.template.management.page.title}]],
 				    		content:[[#{metadata.template.management.page.title.popover}]],
 				   			trigger: 'hover click',
 				       		placement: 'left',
-				   		});
+				   		}); */
 				    });
 					var files;
 

@@ -18,8 +18,9 @@
 				<h1 class="pull-left"
 			th:text="#{ ${ topnavHeader.getName() } }"
 			th:data-content="#{ ${ topnavHeader.getHint() } }"></h1>
-		<a aria-label="page help" href="#" id="page-title" role="button"
-			data-toggle="popover" title="Popover title" 
+		<a aria-label="page help" href="#" id="page-title" 
+			data-trigger="focus"
+			data-toggle="popover" th:title="#{ ${ topnavHeader.getName() } }"
 			data-content="And here's some amazing content. It's very engaging. Right?"
 			class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>				
 			</div>

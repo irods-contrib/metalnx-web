@@ -32,11 +32,11 @@
 
 <body>
 	<div aria-labelledby="collManagement" layout:fragment="content">
-		<h1 id="collManagement" class="collection-header pull-left"
+		<!-- <h1 id="collManagement" class="collection-header pull-left"
 		th:text="#{collections.management.page.title}"
 		th:data-content="#{collection.title.popover}"></h1>
 		<a aria-label="page help" id="collections-page-title" href="#"
-		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a> -->
 					
 		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
 					id="backToMetadataSearch">
@@ -614,7 +614,7 @@
 			var unexpectedError = [[${unexpectedError}]] != null;
 
 			$(document).ready(function(){
-
+/* 
 				// Add popover on page title
 		        $('#collections-page-title').popover({
 		    		title:[[#{collections.management.page.title}]],
@@ -622,7 +622,7 @@
 		   			trigger: 'hover click',
 		       		placement: 'left',
 		   		});
-
+ */
 				$('#uploadControlOptions').hide();
 
 				$('#uploadModal').on('show.bs.modal', function(){

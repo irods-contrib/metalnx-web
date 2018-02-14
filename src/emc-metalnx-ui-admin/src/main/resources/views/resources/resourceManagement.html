@@ -32,10 +32,10 @@
 	<div layout:fragment="content" aria-labelledby="resourceManagementPageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 id="resourceManagementPageTitle" class="page-header pull-left" th:text="#{resources.management.page.title}"></h1>
+				<!-- <h1 id="resourceManagementPageTitle" class="page-header pull-left" th:text="#{resources.management.page.title}"></h1>
 				<span class="subtitle" th:text="#{resources.management.page.subtitle.list}"></span>
 				<a id="resources-page-title" href="#" class="page-hint pull-left" aria-label="page help"><i class="fa fa-question-circle"></i></a>
-
+ -->
 				<div th:if="${ resourceAddedSuccessfully != null or
 								resourceModifiedSuccessfully != null or
 								resourceDeletedSuccessfully != null}"
@@ -123,12 +123,12 @@
                 });
 
                 // Add popover on page title
-                $('#resources-page-title').popover({
+                /* $('#resources-page-title').popover({
                     title:[[#{resources.management.page.title}]],
                     content:[[#{resources.management.popover}]],
                     trigger: 'hover click',
                     placement: 'left',
-                });
+                }); */
             });
             $(function() {
                 function populateResourceTableDiv(data) {

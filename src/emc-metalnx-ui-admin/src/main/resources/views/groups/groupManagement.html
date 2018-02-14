@@ -32,9 +32,9 @@
 	<div layout:fragment="content" aria-labelledby="groupManagementPageTitle">
 		<div class="row">
 			<div class="col-sm-12">
-				<h1 class="page-header pull-left" th:text="#{groups.management.page.title}" id="groupManagementPageTitle"></h1>
+				<!-- <h1 class="page-header pull-left" th:text="#{groups.management.page.title}" id="groupManagementPageTitle"></h1>
 				<a  id="groups-page-title" href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
-				<div th:if="${ groupAddedSuccessfully != null or groupModifiedSuccessfully != null or groupRemovedSuccessfully != null}" class="alert alert-success alert-dismissible text-center clear" role="alert">
+				 --><div th:if="${ groupAddedSuccessfully != null or groupModifiedSuccessfully != null or groupRemovedSuccessfully != null}" class="alert alert-success alert-dismissible text-center clear" role="alert">
 				  	<button title="close" type="button" class="close" data-dismiss="alert">
 				  		<span aria-hidden="true">&times;</span>
 				  		<span class="sr-only">Close</span>
@@ -77,7 +77,7 @@
 				<div id="groupListAsync"></div>
 
 				<script type="text/javascript" th:inline="javascript">
-					$(document).ready(function(){
+					/* $(document).ready(function(){
 						// Add popover on page title
 				        $('#groups-page-title').popover({
 				    		title:[[#{groups.management.page.title}]],
@@ -85,7 +85,7 @@
 				   			trigger: 'hover click',
 				       		placement: 'left',
 				   		});
-					});
+					}); */
 					$(function() {
 						function populateGroupTableDiv(data) {
 							$("#groupListAsync").html(data);

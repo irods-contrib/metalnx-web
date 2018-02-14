@@ -30,12 +30,12 @@
 	<!-- Page Content -->
 	<div layout:fragment="content" aria-labelledby="favoritePageTitle">
 		<div class="row">
-			<div class="col-sm-12">
+			<!-- <div class="col-sm-12">
 				<h1 id="favoritesPageTitle" class="page-header pull-left">
 					<span th:text="#{favorites.page.title}"></span>
 				</h1>
 				<a id="favoritePageTitle"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
-			</div>
+			</div> -->
 
             <div class="col-sm-12 hideElement" id="unfavFailMsg">
 				<div class="alert alert-danger alert-dismissible text-center" role="alert">
@@ -65,12 +65,12 @@
 		/*<![CDATA[*/
 		$(document).ready(function(){
 			// Add popover on page title
-		 	$('#favorite-page-title').popover({
+		 	/* $('#favorite-page-title').popover({
 		 		title:[[#{favorites.page.title}]],
 	    		content:[[#{favorites.page.title.popover}]],
 		 		trigger: 'hover click',
 	       		placement: 'left',
-	       	});
+	       	}); */
 	    });
         var datatable;
 		datatable = $('#favoritesTable').DataTable( {
