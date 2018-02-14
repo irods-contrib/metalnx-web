@@ -44,11 +44,12 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@SessionAttributes({ "addBookmarks", "removeBookmarks" })
+@SessionAttributes({ "addBookmarks", "removeBookmarks", "topnavHeader" })
 @RequestMapping(value = "/groupBookmarks")
 public class GroupBookmarkController {
 	@Autowired
@@ -95,7 +96,6 @@ public class GroupBookmarkController {
 		}
 
 		model.addAttribute("groups", groups);
-
 		return "groups/groupsCollections";
 	}
 
