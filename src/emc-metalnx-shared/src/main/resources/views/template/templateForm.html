@@ -23,7 +23,7 @@
 	
 	<body>
 		<div layout:fragment="content" th:with="readonly = ${metadataTemplateForm != null and metadataTemplateForm.owner != userDetails.username}" aria-labelledby="templateFormTitle">
-			<h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}" id="templateFormTitle"></h1>
+			<!-- <h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}" id="templateFormTitle"></h1> -->
 			<div class="row">
                 <div th:if="${templateNotAddedSuccessfully}" 
                     class="alert alert-danger alert-dismissible text-center col-xs-12" role="alert">

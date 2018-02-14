@@ -4,13 +4,13 @@
 	xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <div class="navbar-collapse" th:fragment="topnav">
 
-	<div class="row topnav">
+	<div class="datacommons_title">
 	
-		<div class="col-md-2 col-xs-3 pull-left">
-			<a href="#" class="topnav-icon"><i th:class="${ topnavHeader.getIcon() }" aria-hidden="true"></i></a>
+		<div class="datacommons_title-left">
+			<a href="#" class="datacommons_title-icon"><i th:class="${ topnavHeader.getIcon() }" aria-hidden="true"></i></a>
 		</div>
-		<div class="col-md-8 col-xs-6 topnav-fixed">
-			<div class="topnavbreadcrum"><a href="/divisions/index.htm">Divisions</a> &nbsp;»&nbsp; <a
+		<div class="datacommons_title-mid">
+			<div class="datacommons_title-breadcrum"><a href="/divisions/index.htm">Divisions</a> &nbsp;»&nbsp; <a
 				th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
 				<span> Data Commons</span>
 			</a> &nbsp;»&nbsp;</div>
@@ -25,10 +25,10 @@
 			class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>				
 			</div>
 		</div>
-		<div class="col-md-2 col-xs-3 pull-rigth">
-			<ul id="metalnx-topnav">
+		<div class="datacommons_title-right">
+			<ul class="datacommons_title-usermenu">
 				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#"> <i class="fa fa-user"></i> <span
+					data-toggle="dropdown" href="#"> <i class="fas fa-user-circle"></i> <span
 						class="navbar-top-links-text"
 						th:text="${userDetails.getUsername()}"></span> &nbsp; <i
 						class="fa fa-caret-down white-icon"></i>
