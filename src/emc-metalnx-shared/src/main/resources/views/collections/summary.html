@@ -32,7 +32,7 @@
 					<th:block th:if="${breadcrumb.items.size()} le 4"
 						th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
 						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
-							<li class="hidden-xs hidden-sm"><a href="#"
+							<li><a href="#"
 								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
 								th:text="${breadcrumbItem.name}"
 								th:title="${breadcrumbItem.path}"
@@ -47,13 +47,13 @@
 					</th:block>
 					<th:block th:if="${breadcrumb.items.size()} gt 4">
 						<li>...</li>
-						<li class="hidden-sm hidden-xs hidden-md"><a href="#"
+						<li><a href="#"
 							aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
 							th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'">
 						</a></li>
-						<li class="hidden-xs hidden-sm"><a href="#"
+						<li><a href="#"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
 							th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'">
@@ -63,9 +63,9 @@
 					</th:block>
 				</ol>
 
-				<div class="col-md-8 col-sm-8 col-xs-12 text-left">
-					<span class="collection-title"><h2
-							th:text="${ dataProfile.getChildName() }"></h2></span> <span><h4>Information</h4></span>
+				<div class="collection-title">
+					<h2 th:text="${ dataProfile.getChildName() }"></h2>
+					<h3>Information</h3>
 				</div>
 			</div>
 
