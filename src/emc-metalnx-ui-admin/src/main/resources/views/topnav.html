@@ -18,11 +18,13 @@
 				<h1 class="pull-left"
 			th:text="#{ ${ topnavHeader.getName() } }"
 			th:data-content="#{ ${ topnavHeader.getHint() } }"></h1>
-		<a aria-label="page help" href="#" id="page-title" 
+		<!-- <a aria-label="page help" href="#" id="page-title" 
 			data-trigger="focus"
 			data-toggle="popover" th:title="#{ ${ topnavHeader.getName() } }"
 			data-content="And here's some amazing content. It's very engaging. Right?"
-			class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>				
+			class="page-hint pull-left"> -->
+			<a aria-label="page help" id="page-title" href="#"
+		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>				
 			</div>
 		</div>
 		<div class="datacommons_title-right">
@@ -52,4 +54,23 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
+<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+$(document).ready(function(){
+
+	// Add popover on page title
+    $('#page-title').popover({
+		title:[[#{collections.management.page.title}]],
+		content:[[#{collection.title.popover}]],
+			trigger: 'hover click',
+   		placement: 'left',
+		});
+})
+/*]]>*/
+</script>
+
 </html>
