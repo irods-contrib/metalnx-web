@@ -191,7 +191,6 @@ public class CollectionController {
 			model.addAttribute("currentPath", currentPath);
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
-			model.addAttribute("topnavHeader", headerService.getheader("collections"));
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
 		} catch (JargonException | DataGridException e) {
 			logger.error("error establishing collection location", e);

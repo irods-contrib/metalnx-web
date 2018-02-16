@@ -21,7 +21,7 @@
          		</li>
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
-                        <li class="hidden-xs hidden-sm">
+                        <li>
                             <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
@@ -40,14 +40,14 @@
                 </th:block>
                 <th:block th:if="${breadcrumb.items.size()} gt 3">
                     <li>...</li>
-                    <li class="hidden-sm hidden-xs hidden-md">
+                    <li>
                         <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
                             th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'">
                         </a>
                     </li>                  
-                    <li class="hidden-xs hidden-sm">
+                    <li >
                         <a  href="#"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"

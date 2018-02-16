@@ -67,6 +67,7 @@ import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -129,6 +130,9 @@ public class BrowseController {
 
 	@Autowired
 	RuleDeploymentService ruleDeploymentService;
+	
+	@Autowired
+	HeaderService headerService;
 
 	// parent path of the current directory in the tree view
 	private String parentPath;
@@ -681,6 +685,7 @@ public class BrowseController {
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
+		model.addAttribute("topnavHeader", headerService.getheader("collections"));
 		return "redirect:/collections" + currentPath;
 	}
 
@@ -703,7 +708,8 @@ public class BrowseController {
 		model.addAttribute("parentPath", parentPath);
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-
+		model.addAttribute("topnavHeader", headerService.getheader("public"));
+		System.out.println("#################public");
 		return "redirect:/collections" + currentPath;
 	}
 
@@ -731,7 +737,9 @@ public class BrowseController {
 		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-
+		model.addAttribute("topnavHeader", headerService.getheader("trash"));
+		
+		System.out.println("#################Trash");
 		return "redirect:/collections" + currentPath;
 	}
 

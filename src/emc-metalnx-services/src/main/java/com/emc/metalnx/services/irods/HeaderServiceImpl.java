@@ -29,9 +29,9 @@ public class HeaderServiceImpl implements HeaderService{
 		headerMap.put("template", new HeaderObject("metadata.template.management.page.title", "fa fa-cubes" , "metadata.template.management.page.title.popover"));
 		headerMap.put("shared", new HeaderObject("group.collections.view.page.title", "fa fa-share-alt" , "group.collections.view.page.title.popover"));
 		headerMap.put("favorite", new HeaderObject("favorites.page.title", "fa fa-star" , "favorites.page.title.popover"));
-		/*headerMap.put("public", new HeaderObject("collections.management.page.title", "fa fa-globe" , "collection.title.popover"));
-		headerMap.put("collections", new HeaderObject("collections.management.page.title", "fa fa-trash" , "collection.title.popover"));
-*/		
+		headerMap.put("public", new HeaderObject("sidebar.user.public", "fa fa-globe" , "collection.title.popover"));
+		headerMap.put("trash", new HeaderObject("sidebar.user.trash", "fa fa-trash" , "collection.title.popover"));
+		
 		return headerMap;
 	}
 
@@ -42,7 +42,7 @@ public class HeaderServiceImpl implements HeaderService{
 		if(headerMap.containsKey(name)) 
 			headerObj = headerMap.get(name);			
 		else
-			headerObj = new HeaderObject("Unknown" , "fa fa-file-pdf-o" , "Unknown");
+			headerObj = new HeaderObject("Unknown" , "fa fa-question-circle" , "Unknown");
 		
 		return headerObj;
 	}
