@@ -2,6 +2,7 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 
@@ -1670,7 +1671,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 	text-align: right;
 	width:100%;
 	bottom: -6px;
-  font-size: 1.7em;
+  font-size: 1.0em;
   order: 1;
   padding-right:14px;
 }
@@ -2421,7 +2422,7 @@ td a {
   padding-right: 28px;
 }
 .datacommons_title-icon i{
-  font-size: 6em;
+  font-size: 4em;
   color: #FFFFFF;
   padding: 5px 5px 5px 25px;
 }
