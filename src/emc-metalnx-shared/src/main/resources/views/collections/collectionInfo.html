@@ -58,7 +58,6 @@
 				$(document).ready(function(e) {
 					$("#tabs").tabs({
 						  beforeLoad: function( e, ui ) {
-							  alert("Hi");
 						      ui.panel.html('<img th:src="@{/images/table_loading.svg}" />');
 						  }
 						});
