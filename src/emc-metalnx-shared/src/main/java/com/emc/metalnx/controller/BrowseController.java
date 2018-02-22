@@ -1023,7 +1023,8 @@ public class BrowseController {
 		model.addAttribute("requestMapping", "/browse/add/action/");
 		model.addAttribute("parentPath", parentPath);
 		setBreadcrumbToModel(model, dataGridObj);
+		logger.info("###################################################Returning after deletion #############################################");
 		return "collections/collectionsBrowser";
-		// return "collections/info";
+		
 	}
 }
