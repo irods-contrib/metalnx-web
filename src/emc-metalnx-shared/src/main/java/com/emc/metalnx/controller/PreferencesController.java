@@ -28,15 +28,18 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.modelattribute.preferences.UserPreferences;
+import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
+@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/preferences")
 public class PreferencesController {
 
@@ -48,6 +51,9 @@ public class PreferencesController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
+	
+	@Autowired
+	HeaderService headerService;
 
 	public final static Logger logger = LoggerFactory.getLogger(PreferencesController.class);
 
@@ -82,6 +88,7 @@ public class PreferencesController {
 
 		model.addAttribute("preferences", userPreferences);
 		model.addAttribute("uiMode", uiMode);
+		model.addAttribute("topnavHeader", headerService.getheader("prefrences"));
 
 		return "preferences/index";
 	}

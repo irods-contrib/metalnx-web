@@ -141,6 +141,7 @@ function deleteInfoAction(path){
 
 		}
 	);
+	//$("#deleteModal").modal("hide");
 	window.location.href = "/emc-metalnx-web/browse/home";
 }
 

@@ -31,6 +31,7 @@ public class HeaderServiceImpl implements HeaderService{
 		headerMap.put("favorite", new HeaderObject("favorites.page.title", "fa fa-star" , "favorites.page.title.popover"));
 		headerMap.put("public", new HeaderObject("sidebar.user.public", "fa fa-globe" , "collection.title.popover"));
 		headerMap.put("trash", new HeaderObject("sidebar.user.trash", "fa fa-trash" , "collection.title.popover"));
+		headerMap.put("prefrences", new HeaderObject("user.preferences.label", "fa fa-gear fa-fw" , "prferences.title.popover"));
 		
 		return headerMap;
 	}
