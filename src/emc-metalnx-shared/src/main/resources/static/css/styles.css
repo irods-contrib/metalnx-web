@@ -2443,7 +2443,7 @@ td a {
 .datacommons_title-usermenu .dropdown{
   display: inline-block;
   white-space: nowrap;
-  width: calc(100% - 37px);
+  /* width: calc(100% - 37px); - mcc */
 }
 .datacommons_title-usermenu .dropdown .dropdown-toggle{ text-decoration: none; }
 .datacommons_title-breadcrum{
