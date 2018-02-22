@@ -33,6 +33,7 @@ import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
@@ -1026,5 +1028,28 @@ public class BrowseController {
 		logger.info("###################################################Returning after deletion #############################################");
 		return "collections/collectionsBrowser";
 		
+	}
+	
+	@RequestMapping(value = "/summary/", method = RequestMethod.POST)
+	public String getSummary(final Model model, @RequestParam("path") final String path)
+			throws DataGridException {
+		logger.info("BrowseController getSummary() starts :: " + path);
+
+		IconObject icon = null;
+		String mimeType = "" ;
+		
+		@SuppressWarnings("rawtypes")
+		DataProfile dataProfile = cs.getCollectionDataProfile(path);		
+		
+		if (dataProfile != null && dataProfile.isFile()) {				
+			mimeType = dataProfile.getDataType().getMimeType();
+		}		
+		icon = cs.getIcon(mimeType);
+	
+		model.addAttribute("icon", icon);
+		model.addAttribute("dataProfile", dataProfile);
+
+		logger.info("getSummary() ends !!");
+		return "collections/info :: infoView";
 	}
 }

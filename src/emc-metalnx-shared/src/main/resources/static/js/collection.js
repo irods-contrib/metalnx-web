@@ -53,24 +53,6 @@ function displayPreviewImage(data){
 	$("#preview").html(data);	
 }
 
-function showPreview(){
-	$.ajax({
-		type : "POST",
-		url : "/emc-metalnx-web/collectionInfo/getFile/",
-		timeout : 100000,
-		success : function(data) {
-			console.log("SUCCESS: ", data);
-			console.log(data);
-		},
-		error : function(e) {
-			console.log("ERROR: ", e);
-			console.log(e);
-		},
-		done : function(e) {
-			console.log("DONE");
-		}
-	});
-}
 
 function starPath(path){
 	console.log("StarPath() starts");

@@ -77,12 +77,12 @@ public class CollectionInfoController {
 		String template = "";
 				
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = getCollectionDataProfile(path);
+		DataProfile dataProfile = collectionService.getCollectionDataProfile(path);
 				
 		if (dataProfile != null && dataProfile.isFile()) {				
 			mimeType = dataProfile.getDataType().getMimeType();
 		}		
-		icon = getIcon(mimeType);
+		icon = collectionService.getIcon(mimeType);
 		
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
@@ -97,37 +97,6 @@ public class CollectionInfoController {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
-
-		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-		logger.debug("got irodsAccount:{}", irodsAccount);
-
-		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);
-
-		logger.debug("got the dataProfilerService");
-
-		// DataProfilerSettings dataProfilerSettings = new DataProfilerSettings(); //
-		// TODO: allow clone()
-		try {
-			@SuppressWarnings("rawtypes")
-			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
-			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
-			logger.info("data profile retrieved:{}", dataProfile);
-
-			/*
-			 * TODO: after this do an if test and send to right view with the DataProfile in
-			 * the model
-			 */
-			return dataProfile;
-
-		} catch (JargonException e) {
-			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
-			throw new DataGridException(e.getMessage());
-		}
-
-	}
-	
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
@@ -137,12 +106,12 @@ public class CollectionInfoController {
 		String mimeType = "" ;
 		
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = getCollectionDataProfile(path);		
+		DataProfile dataProfile = collectionService.getCollectionDataProfile(path);		
 		
 		if (dataProfile != null && dataProfile.isFile()) {				
 			mimeType = dataProfile.getDataType().getMimeType();
 		}		
-		icon = getIcon(mimeType);
+		icon = collectionService.getIcon(mimeType);
 	
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
@@ -151,59 +120,7 @@ public class CollectionInfoController {
 		return "collections/info :: infoView";
 	}
 
-	@RequestMapping(value = "/getFile/", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public @ResponseBody byte[] getFile() throws IOException {
-		logger.info("getFile() starts!!");
-		InputStream in = getClass()
-				.getResourceAsStream("C:/Users/hetalben/opt/etc/test-data/github-git-cheat-sheet.pdf");
-		logger.info("getFile() ends!!");
-		return IOUtils.toByteArray(in);
-	}
-	
-	public IconObject getIcon(String mimeType) {
-		IconObject icon = null;
-		if (!mimeType.isEmpty())			 
-			icon = iconService.getIconToDisplayFile(mimeType);
-		else
-			icon = iconService.getIconToDisplayCollection();
 
-		return icon;
-	}
-
-	/*
-	 * @RequestMapping(value = "/collectionMetadata/", method = RequestMethod.POST)
-	 * public String getCollectionMetadata(final Model model, @RequestParam("path")
-	 * final String path) throws DataGridConnectionRefusedException {
-	 * 
-	 * logger.
-	 * info("-----------------------------getCollectionMetadata()-------------------------------- !!"
-	 * );
-	 * logger.info("------CollectionInfoController collectionMetadata() starts :: "
-	 * +path);
-	 * 
-	 * model.addAttribute("metadataName", "This is Metadata !!");
-	 * 
-	 * logger.info("MetadataName :: " +model.containsAttribute("MetadataName"));
-	 * //return "collections/info";
-	 * 
-	 * return "metadata/test";
-	 * 
-	 * }
-	 * 
-	 * @RequestMapping(value = "/collectionPermisssionDetails/", method =
-	 * RequestMethod.POST) public String getCollectionPermissionDetails(final Model
-	 * model, @RequestParam("path") final String path) throws
-	 * DataGridConnectionRefusedException { logger.
-	 * info("-----------------------------getCollectionPermissionDetails()-------------------------------- !!"
-	 * ); logger.
-	 * info("------CollectionInfoController collectionPermisssionDetails() starts :: "
-	 * +path);
-	 * 
-	 * model.addAttribute("permissionName", "This is Permission !!"); return
-	 * "collections/info";
-	 * 
-	 * }
-	 */
 	private String extractFilePath(HttpServletRequest request) throws JargonException {
 		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		try {

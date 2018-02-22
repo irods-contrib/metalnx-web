@@ -43,7 +43,7 @@ public class LoginController {
 
 		if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
-			return isUserAdmin ? "redirect:/dashboard/" : "redirect:/collections/";
+			return isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home/";
 		}
 
 		return "login/index";

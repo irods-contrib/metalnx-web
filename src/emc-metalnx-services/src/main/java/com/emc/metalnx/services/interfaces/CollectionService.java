@@ -21,13 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.domain.IRODSDomainObject;
 import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -419,5 +424,10 @@ public interface CollectionService {
 	 * @return correspondent trash for given path
 	 */
 	String getTrashForPath(String path);
+	
+	IconObject getIcon(String mimeType);
+	
+	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException;
+		
 
 }

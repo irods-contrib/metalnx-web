@@ -283,7 +283,7 @@
 	</div>
 </div>
 
-<div class="col-xs-12" th:if="${permissionType != 'none' or user.isAdmin()}">
+<div class="col-xs-12 main-collbrowse" th:if="${permissionType != 'none' or user.isAdmin()}">
     <div class="row browse-collection-files-content">
         <div id="table-loader" class="table-loader col-sm-12 hideElement">
             <div class="panel loading">
@@ -308,6 +308,17 @@
         </div>
     </div>
 </div>
+
+<aside class="left-canvas">
+	<h1>This is the canvas area</h1>
+	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi
+	inventore, nihil rem doloribus earum eveniet, eos sed nisi dolores quam
+	iste saepe mollitia odit architecto nobis! Rem velit, perferendis vero?
+	<br /> 
+	<a href="#" id="close-left-canvas"><h2>close</h2></a>
+
+</aside>
+
 
 <!-- Some items were not deleted -->
 <div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
@@ -370,6 +381,7 @@
     </div>
 </div>
 
+<script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
 <script type="text/javascript" th:src="@{/js/collection.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -513,12 +525,29 @@
     					},
     					"width": "13%",
     					"targets": 6
+                    },
+                    {
+                    	"render": function ( data, type, full, meta ) {
+                    		                  		
+    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
+    						'" onclick=getCanvasSummary("'+full.path+'") title="View info" ><i class="f06e"></i> </a>';
+    					},
+    					"width": "13%",
+    					"targets": 6
                     }
 
                 ]
     		} );
         	addCollectionActions('treeViewTable', datatable, advancedView);
             $("input[type=checkbox]").prop("disabled", false);
+            
+            
+           
+            
+            /* $('#treeViewTable tbody').on('mouseover' , 'tr' , function() {
+               alert("hovered");
+            }); */
+            
         });
 
 		$('#treeViewTable').on('page.dt', function (){
