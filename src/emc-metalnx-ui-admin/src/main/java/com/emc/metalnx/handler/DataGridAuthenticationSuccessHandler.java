@@ -59,7 +59,7 @@ public class DataGridAuthenticationSuccessHandler implements AuthenticationSucce
 		if(loggedUser.isAdmin()){
 			response.sendRedirect("/emc-metalnx-web/dashboard/");
 		}else{
-			response.sendRedirect("/emc-metalnx-web/collections/");
+			response.sendRedirect("/emc-metalnx-web/browse/home");
 		}
 
 	}

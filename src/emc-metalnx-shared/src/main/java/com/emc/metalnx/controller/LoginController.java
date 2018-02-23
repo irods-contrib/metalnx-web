@@ -42,7 +42,6 @@ public class LoginController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		System.out.println("loginView()");
 		if (auth instanceof UsernamePasswordAuthenticationToken) {
-			 
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
 			return isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home";
 		}

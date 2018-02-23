@@ -13,7 +13,7 @@
 }
 
 #hdr-junctiontitle a {
-  color:white;
+  color: white;
   display:block;
   margin:0;
   padding:0;
@@ -21,6 +21,8 @@
   width:350px;
 }
 
+/*
+moved to styles.css
 #page-wrapper {
   font-size: 15px;
-}
+}*/
