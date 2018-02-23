@@ -17,3 +17,4 @@ test*.properties
 Scripts/
 /.metadata/
 packaging/src
+**/*.bak
