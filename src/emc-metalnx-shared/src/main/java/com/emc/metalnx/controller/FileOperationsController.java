@@ -288,7 +288,14 @@ public class FileOperationsController {
 		model.addAttribute("currentPath", browseController.getCurrentPath());
 		model.addAttribute("parentPath", browseController.getParentPath());
 
+		//String template = "redirect:/collections" + browseController.getCurrentPath();
+		//logger.info("Returning after deletion  :: " +template);
+		//return template;
+		
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
+		
+		
+		
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)

@@ -626,6 +626,9 @@ public class BrowseController {
 
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
+		
+		String template = "redirect:/collections" + parentPath;
+		logger.info("Returning after renaming :: " +template);
 
 		return "redirect:/collections" + parentPath;
 	}

@@ -1,15 +1,30 @@
+var operationInProgress = false;
+
+$(document).ready(function(){
+	
+	window.addEventListener("beforeunload", function (e) {
+		if (operationInProgress) {
+			var confirmationMessage = "An operation is in progress. If you leave this window now the consequences are unpredictable.";
+			(e || window.event).returnValue = confirmationMessage;
+			return confirmationMessage;
+		}
+	});
+});
+
 /*function getCollectionSummary(path){	
-	alert(path);
-	var url = "/emc-metalnx-web/collectionInfo"+path;
-	getBreadcrumb(path);
-	console.log("URL :: " +url);
-	ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
+
+alert(path);
+var url = "/emc-metalnx-web/collectionInfo"+path;
+getBreadcrumb(path);
+console.log("URL :: " +url);
+ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
 }
 
 function displayCollectionSummary(data){
-	console.log("displayTestDetails()");	
-	$("#summary").html(data);	
+console.log("displayTestDetails()");	
+$("#summary").html(data);	
 }*/
+
 
 function getInfoDetails(path){
 	window.location.hash = "info";	
@@ -107,6 +122,7 @@ function fileDownload(path){
 }
 
 function deleteInfoAction(path){
+	setOperationInProgress();
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
 	$('#actionsWait').show();
@@ -120,12 +136,29 @@ function deleteInfoAction(path){
 		"POST",
 		{paths: paths},
 		function (data) {
-			$("#tree-view-panel-body").html(data);
+			unsetOperationInProgress();
+    		//resetDataTablesStart();
+			$('#actionsWait').hide();
+			//$("#tree-view-panel-body").html(data);
 
 		}
 	);
-	//$("#deleteModal").modal("hide");
-	window.location.href = "/emc-metalnx-web/browse/home";
+	$("#deleteModal").modal("hide");
+	cleanModals();
+	//window.location.href = "/emc-metalnx-web/browse/home";
+}
+
+function cleanModals() {
+	$(".modal").modal("hide");
+
+	//reset the modal
+	$(".modal a").each(function(){
+		if($(this).attr('onclick') !== undefined){
+			if($(this).attr('onclick').indexOf('retractElement') >= 0){
+				eval($(this).attr('onclick'));
+			}
+		}
+	});
 }
 
 function editInfo(path){
@@ -136,4 +169,11 @@ function handleDownload() {
 	window.location.href = "/emc-metalnx-web/fileOperation/download/";
 }
 
+function setOperationInProgress() {	
+	operationInProgress = true;
+}
+
+function unsetOperationInProgress() {
+	operationInProgress = false;
+}
 
