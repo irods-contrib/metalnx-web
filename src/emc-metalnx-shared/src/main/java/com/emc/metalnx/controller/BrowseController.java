@@ -372,13 +372,12 @@ public class BrowseController {
 	@RequestMapping(value = "/info/", method = RequestMethod.POST)
 	public String getFileInfo(final Model model, final String path) throws DataGridConnectionRefusedException {
 
-		System.out.println("CollectionController getInfoFile() starts !!");
+		logger.info("CollectionController getInfoFile() starts :: " +path);
 		DataGridCollectionAndDataObject dataGridObj = null;
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
 		try {
-			System.out.println("Path = " + path);
-
+		
 			dataGridObj = cs.findByName(path);
 
 			if (dataGridObj != null && !dataGridObj.isCollection()) {
@@ -403,10 +402,8 @@ public class BrowseController {
 		model.addAttribute("replicasMap", replicasMap);
 		model.addAttribute("infoFlag", true);
 
-		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
-		System.out.println("currentCollection.getName() == " + dataGridObj.getName());
 
-		System.out.println("CollectionController getInfoFile() ends !!");
+		logger.info("CollectionController getInfoFile() ends !!");
 		return "collections/info :: infoView";
 		// return "collections/info";
 	}
@@ -681,13 +678,15 @@ public class BrowseController {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "/home")
-	public String homeCollection(final Model model) throws DataGridException {
+	public String homeCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		model.addAttribute("topnavHeader", headerService.getheader("collections"));
+	
+		redirectAttributes.addAttribute("requestHeader", "collections");
+		
 		return "redirect:/collections" + currentPath;
 	}
 
@@ -698,7 +697,7 @@ public class BrowseController {
 	 * @return the collection management template
 	 */
 	@RequestMapping(value = "/public")
-	public String publicCollection(final Model model) throws DataGridException {
+	public String publicCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
 
@@ -710,8 +709,8 @@ public class BrowseController {
 		model.addAttribute("parentPath", parentPath);
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-		model.addAttribute("topnavHeader", headerService.getheader("public"));
-		System.out.println("#################public");
+	
+		redirectAttributes.addAttribute("requestHeader", "public");
 		return "redirect:/collections" + currentPath;
 	}
 
@@ -723,7 +722,7 @@ public class BrowseController {
 	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/trash")
-	public String trashCollection(final Model model) throws DataGridException {
+	public String trashCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
 
@@ -739,9 +738,8 @@ public class BrowseController {
 		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-		model.addAttribute("topnavHeader", headerService.getheader("trash"));
 		
-		System.out.println("#################Trash");
+		redirectAttributes.addAttribute("requestHeader", "trash");
 		return "redirect:/collections" + currentPath;
 	}
 

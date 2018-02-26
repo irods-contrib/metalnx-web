@@ -34,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -146,8 +147,8 @@ public class CollectionController {
 	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
-	public String indexViaUrl(final Model model, final HttpServletRequest request) {
-		logger.info("index()");
+	public String indexViaUrl(final Model model, final HttpServletRequest request,@ModelAttribute("requestHeader") String requestHeader) {
+		logger.info("index()##########################");
 
 		try {
 			final String path = "/" + extractFilePath(request);
@@ -192,6 +193,15 @@ public class CollectionController {
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
+			
+					
+			String headerParam = (requestHeader != null && !requestHeader.isEmpty())? requestHeader : "collections"; 
+			
+			logger.info("Header param is :: " +headerParam);
+			
+			model.addAttribute("topnavHeader", headerService.getheader(headerParam));
+			
+			
 		} catch (JargonException | DataGridException e) {
 			logger.error("error establishing collection location", e);
 			model.addAttribute("unexpectedError", true);
