@@ -49,15 +49,18 @@
 			<div class="col-md-10 col-sm-10 col-xs-8">
 				<h4 class=" thicker" th:text="#{collections.management.shareditems}"></h4>
 			</div>
-			<span class="thick" th:text="#{collections.management.shared.with}"></span>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<span class="thick" th:text="#{collections.management.shared.with}"></span>
+			</div>
+			
 		</div>
 
 
-		<div class="row thicker">
+		<div class="row">
 			<div class="col-md-2 col-sm-2 col-xs-2">
 				<span><i class="fa fa-info-circle" alt="Collection Info"></i></span>
 			</div>
-			<div class="col-md-10 col-sm-10 col-xs-10">
+			<div class="col-md-10 col-sm-10 col-xs-10 thicker">
 				<h4 th:unless="${dataProfile.file}"
 					th:text="#{collections.management.folder.information}"></h4>
 				<h4 th:if="${dataProfile.file}"
@@ -107,7 +110,7 @@
 				<label th:text="#{collections.management.table.size.label}"></label>
 			</div>
 			<div>
-				<span th:unless="${dataProfile.file}">...</span> <span
+				<span th:unless="${dataProfile.file}"> - </span> <span
 					th:if="${dataProfile.file}"
 					th:text="${ dataProfile.getDomainObject().getDisplayDataSize() }"></span>
 			</div>
