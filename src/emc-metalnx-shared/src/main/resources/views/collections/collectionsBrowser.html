@@ -309,15 +309,11 @@
     </div>
 </div>
 
-<aside class="left-canvas">
-	<h1>This is the canvas area</h1>
-	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi
-	inventore, nihil rem doloribus earum eveniet, eos sed nisi dolores quam
-	iste saepe mollitia odit architecto nobis! Rem velit, perferendis vero?
-	<br /> 
-	<a href="#" id="close-left-canvas"><h2>close</h2></a>
+<div>
+	<aside class="sideCanvas">
+	</aside>
+</div>
 
-</aside>
 
 
 <!-- Some items were not deleted -->
@@ -521,35 +517,24 @@
                     	"render": function ( data, type, full, meta ) {
                     		                  		
     						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
-    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
+    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + full.path + 
+        						'" id="open-left-canvas" onclick="getSideCanvas(\'' +full.path+ '\')" class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
     					},
-    					"width": "13%",
-    					"targets": 6
-                    },
-                    {
-                    	"render": function ( data, type, full, meta ) {
-                    		                  		
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
-    						'" onclick=getCanvasSummary("'+full.path+'") title="View info" ><i class="f06e"></i> </a>';
-    					},
-    					"width": "13%",
+    					"width": "20%",
     					"targets": 6
                     }
-
+                    
                 ]
     		} );
         	addCollectionActions('treeViewTable', datatable, advancedView);
             $("input[type=checkbox]").prop("disabled", false);
-            
-            
-           
-            
-            /* $('#treeViewTable tbody').on('mouseover' , 'tr' , function() {
-               alert("hovered");
-            }); */
+                 
             
         });
 
+      
+         
+         
 		$('#treeViewTable').on('page.dt', function (){
 		    $("#actions button").prop("disabled", true);
             $("#actionsWait").hide();
@@ -560,7 +545,8 @@
             $("#actionsWait").hide();
         });
 
-
+		
+		
         function selectAllCheckboxes() {
             $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
                 $(this).prop("checked", true);

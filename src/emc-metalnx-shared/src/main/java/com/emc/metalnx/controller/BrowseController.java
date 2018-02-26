@@ -1030,7 +1030,7 @@ public class BrowseController {
 		
 	}
 	
-	@RequestMapping(value = "/summary/", method = RequestMethod.POST)
+	@RequestMapping(value = "/summary", method = RequestMethod.POST)
 	public String getSummary(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
 		logger.info("BrowseController getSummary() starts :: " + path);
@@ -1041,15 +1041,17 @@ public class BrowseController {
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = cs.getCollectionDataProfile(path);		
 		
-		if (dataProfile != null && dataProfile.isFile()) {				
+		logger.info("DataProfiler is :: " +dataProfile);
+		
+		if (dataProfile != null && dataProfile.isFile()) {	
 			mimeType = dataProfile.getDataType().getMimeType();
 		}		
 		icon = cs.getIcon(mimeType);
 	
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
-
+		
 		logger.info("getSummary() ends !!");
-		return "collections/info :: infoView";
+		return "collections/summarySidenav :: SummarySidenavView";
 	}
 }

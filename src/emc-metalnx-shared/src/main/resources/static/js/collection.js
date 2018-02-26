@@ -1,4 +1,5 @@
-function getCollectionSummary(path){	
+/*function getCollectionSummary(path){	
+	alert(path);
 	var url = "/emc-metalnx-web/collectionInfo"+path;
 	getBreadcrumb(path);
 	console.log("URL :: " +url);
@@ -8,7 +9,7 @@ function getCollectionSummary(path){
 function displayCollectionSummary(data){
 	console.log("displayTestDetails()");	
 	$("#summary").html(data);	
-}
+}*/
 
 function getInfoDetails(path){
 	window.location.hash = "info";	
