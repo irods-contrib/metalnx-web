@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.exception.JargonException;
@@ -60,7 +59,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" , "topnavHeader" })
+@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/collections")
 public class CollectionController {
 
@@ -102,7 +101,7 @@ public class CollectionController {
 
 	@Autowired
 	RuleDeploymentService ruleDeploymentService;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -127,15 +126,6 @@ public class CollectionController {
 	private boolean cameFromBookmarks;
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
-
-	@PostConstruct
-	public void init() throws DataGridException {
-
-		cameFromMetadataSearch = false;
-		cameFromFilePropertiesSearch = false;
-		cameFromBookmarks = false;
-
-	}
 
 	/**
 	 * Responds the collections/ request
@@ -179,14 +169,13 @@ public class CollectionController {
 				return sb.toString();
 			}
 
+			logger.info("is collection...continue to collection management");
+
 			if (uiMode.equals(UI_USER_MODE)) {
 				model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 				model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
 			}
 
-			model.addAttribute("cameFromFilePropertiesSearch", cameFromFilePropertiesSearch);
-			model.addAttribute("cameFromMetadataSearch", cameFromMetadataSearch);
-			model.addAttribute("cameFromBookmarks", cameFromBookmarks);
 			model.addAttribute("uiMode", uiMode);
 			model.addAttribute("currentPath", currentPath);
 			model.addAttribute("parentPath", parentPath);
@@ -196,10 +185,6 @@ public class CollectionController {
 			logger.error("error establishing collection location", e);
 			model.addAttribute("unexpectedError", true);
 		}
-
-		cameFromMetadataSearch = false;
-		cameFromFilePropertiesSearch = false;
-		cameFromBookmarks = false;
 
 		logger.info("returning to collections/collectionManagement");
 
@@ -252,7 +237,7 @@ public class CollectionController {
 			cameFromMetadataSearch = false;
 			cameFromFilePropertiesSearch = false;
 			cameFromBookmarks = false;
-		} catch (DataGridException e) {
+		} catch (DataGridException | JargonException e) {
 			logger.error("Could not respond to request for collections: {}", e);
 			model.addAttribute("unexpectedError", true);
 		}

@@ -58,8 +58,10 @@ public interface CollectionService {
 	 *            file or collection path to be validated
 	 * @return True, if the path exists in the grid (path is a file or collection).
 	 *         False, otherwise.
+	 * @throws JargonException
+	 * @throws DataGridConnectionRefusedException
 	 */
-	boolean isPathValid(String path);
+	boolean isPathValid(String path) throws DataGridConnectionRefusedException, JargonException;
 
 	/**
 	 * Checks whether or not a given path is a path for a collection.
@@ -67,8 +69,9 @@ public interface CollectionService {
 	 * @param path
 	 * @return True, if the given path is a collection path. False, otherwise.
 	 * @throws DataGridException
+	 * @throws JargonException
 	 */
-	boolean isCollection(String path) throws DataGridException;
+	boolean isCollection(String path) throws DataGridException, JargonException;
 
 	/**
 	 * Checks whether or not a given path is a path for a data object.
@@ -76,8 +79,9 @@ public interface CollectionService {
 	 * @param path
 	 * @return True, if the given path is a data object path. False, otherwise.
 	 * @throws DataGridException
+	 * @throws JargonException
 	 */
-	boolean isDataObject(String path) throws DataGridException;
+	boolean isDataObject(String path) throws DataGridException, JargonException;
 
 	/**
 	 * Retrieves all collections and data objects that match a search term. All
@@ -114,7 +118,9 @@ public interface CollectionService {
 	 * @return permission type (read, write, own)
 	 * @throws DataGridConnectionRefusedException
 	 */
-	String getPermissionsForPath(String path) throws DataGridConnectionRefusedException;
+	String
+
+			getPermissionsForPath(String path) throws DataGridConnectionRefusedException;
 
 	/**
 	 * Gets the total number of replicas for a specific data object
@@ -189,8 +195,9 @@ public interface CollectionService {
 	 * @return DataGridCollectionAndDataObject of the given path null if no
 	 *         collections or data objects were found
 	 * @throws DataGridException
+	 * @throws FileNotFoundException
 	 */
-	DataGridCollectionAndDataObject findByName(String path) throws DataGridException;
+	DataGridCollectionAndDataObject findByName(String path) throws DataGridException, FileNotFoundException;
 
 	/**
 	 * Changes collection's name
@@ -328,8 +335,9 @@ public interface CollectionService {
 	 * @return Path to the compressed file, if any. Empty string, otherwise.
 	 * @throws IOException
 	 * @throws DataGridException
+	 * @throws JargonException
 	 */
-	String prepareFilesForDownload(String[] paths) throws IOException, DataGridException;
+	String prepareFilesForDownload(String[] paths) throws IOException, DataGridException, JargonException;
 
 	/**
 	 * Prepares files to be downloaded by compressing them into a single file.
@@ -339,8 +347,9 @@ public interface CollectionService {
 	 * @return Path to the compressed file, if any. Empty string, otherwise.
 	 * @throws IOException
 	 * @throws DataGridException
+	 * @throws JargonException
 	 */
-	String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException;
+	String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException, JargonException;
 
 	/**
 	 * Returns the inheritance option value for a given collection
