@@ -109,31 +109,7 @@
 </div>
 
 <!-- About modal -->
-<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog"
-     aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    About EMC MetaLnx UI <span th:text="${emcmetalnxVersion.VERSION}"></span>-<span
-                        th:text="${emcmetalnxVersion.BUILD_NUMBER}"></span>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <p th:text="#{about.modal}">
-
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">
-                    Ok</button>
-            </div>
-        </div>
-    </div>
-</div>
+<th:block th:include="misc/about"> </th:block>
 
 <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 <script src="../static/js/metisMenu.min.js" th:src="@{/js/metisMenu.min.js}"></script>

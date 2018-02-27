@@ -46,10 +46,10 @@
 
 <link href="../static/css/styles.css" rel="stylesheet"
 	th:href="@{/css/styles.css}" />
-	
+
 	<link href="../static/css/styles.css" rel="stylesheet"
 	th:href="@{/css/global.css}" />
-	
+
 <!-- Tags input -->
 <link href="../static/css/bootstrap-tagsinput.css" rel="stylesheet"
 	th:href="@{/css/bootstrap-tagsinput.css}"/>
@@ -111,37 +111,9 @@
 		<footer class="row"> &copy; 2015-2017 DELL EMC. All rights reserved. </footer>
 	</div>
 
-	<!-- About modal -->
-	<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-					</button>
-					<h4 class="modal-title" id="myModalLabel">
-						About EMC MetaLnx UI <span th:text="${emcmetalnxVersion.VERSION}"></span>-<span
-							th:text="${emcmetalnxVersion.BUILD_NUMBER}"></span>
-					</h4>
-				</div>
-				<div class="modal-body">
-					<p>
-						<i> This software contains the intellectual property of EMC
-							Corporation or is licensed to DELL EMC Corporation from third parties.
-							Use of this software and the intellectual property contained
-							therein is expressly limited to the terms and conditions of the
-							License Agreement under which it is provided by or on behalf of
-							EMC. </i>
-					</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">
-						Ok</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  <!-- About modal -->
+  <th:block th:include="misc/about"> </th:block>
+
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="../static/js/bootstrap.min.js"
