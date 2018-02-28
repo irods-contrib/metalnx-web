@@ -44,6 +44,7 @@ import org.irods.jargon.core.pub.domain.ClientHints;
 import org.irods.jargon.core.pub.domain.Collection;
 import org.irods.jargon.core.pub.domain.DataObject;
 import org.irods.jargon.core.pub.domain.IRODSDomainObject;
+import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
@@ -55,7 +56,6 @@ import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
-import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,6 @@ import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridInvalidPathException;
 import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
 import com.emc.metalnx.core.domain.exceptions.UnsupportedDataGridFeatureException;
 import com.emc.metalnx.services.interfaces.AdminServices;
@@ -116,8 +115,6 @@ public class CollectionServiceImpl implements CollectionService {
 	@Autowired
 	DataProfilerFactory dataProfilerFactory;
 
-
-
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
 			throws DataGridConnectionRefusedException, JargonException {
@@ -136,68 +133,41 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public boolean isPathValid(String path) {
+	public boolean isPathValid(String path) throws DataGridConnectionRefusedException, JargonException {
 		logger.info("isPathValid()");
 
 		boolean isValid = false;
 
 		try {
-			isValid = isCollection(path) || isDataObject(path);
-		} catch (DataGridException e) {
-			logger.error("Invalid path {}: {}", path, e.getMessage());
+			irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
+			isValid = true;
+		} catch (FileNotFoundException fnf) {
+			logger.warn("path not valid:{}", fnf);
+		} catch (DataGridConnectionRefusedException | JargonException e1) {
+			logger.error("error obtaining objStat for path:{}", path, e1);
+			throw e1;
 		}
 
 		return isValid;
 	}
 
 	@Override
-	public boolean isCollection(String path) throws DataGridException {
+	public boolean isCollection(String path) throws DataGridConnectionRefusedException, JargonException {
 		logger.info("isCollection()");
 
 		if (path == null || path.isEmpty())
 			return false;
 
-		IRODSFileFactory irodsFileFactory;
-		IRODSFile file;
-		boolean isColl = false;
+		ObjStat objStat = irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
+		return objStat.isSomeTypeOfCollection();
 
-		try {
-			irodsFileFactory = irodsServices.getIRODSFileFactory();
-			file = irodsFileFactory.instanceIRODSFile(path);
-			isColl = file.isDirectory();
-		} catch (JargonException e) {
-			logger.error("Could not check if {} is a collection: {}", path, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			logger.error("Invalid path for collection: {}", path, e.getMessage());
-			throw new DataGridInvalidPathException();
-		}
-
-		return isColl;
 	}
 
 	@Override
-	public boolean isDataObject(String path) throws DataGridException {
+	public boolean isDataObject(String path) throws DataGridConnectionRefusedException, JargonException {
 		logger.info("isDataObject()");
 
-		if (path == null || path.isEmpty())
-			return false;
-
-		IRODSFileFactory irodsFileFactory;
-		IRODSFile file;
-		boolean isFile = false;
-
-		try {
-			irodsFileFactory = irodsServices.getIRODSFileFactory();
-			file = irodsFileFactory.instanceIRODSFile(path);
-			isFile = file.isFile();
-		} catch (JargonException e) {
-			logger.error("Could not check if {} is data object: {}", path, e.getMessage());
-		} catch (IllegalArgumentException e) {
-			logger.error("Invalid path for data object: {}", path, e.getMessage());
-			throw new DataGridInvalidPathException();
-		}
-
-		return isFile;
+		return !isCollection(path);
 	}
 
 	@Override
@@ -366,6 +336,12 @@ public class CollectionServiceImpl implements CollectionService {
 
 		logger.info("getSubCollectionsAndDataObjectsUnderPath()");
 
+		if (parent == null || parent.isEmpty()) {
+			throw new IllegalArgumentException("null or empty parent");
+		}
+
+		logger.info("parent:{}", parent);
+
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = null;
@@ -473,7 +449,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public DataGridCollectionAndDataObject findByName(String path) throws DataGridException {
+	public DataGridCollectionAndDataObject findByName(String path) throws FileNotFoundException, DataGridException {
 
 		logger.info("findByName()");
 
@@ -485,19 +461,17 @@ public class CollectionServiceImpl implements CollectionService {
 		logger.info("Find collection or data object by name: {}", path);
 
 		CollectionAndDataObjectListAndSearchAO objectsAO = irodsServices.getCollectionAndDataObjectListAndSearchAO();
-		DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
 		DataGridCollectionAndDataObject dataGridCollectionAndDataObject;
 
 		try {
 			CollectionAndDataObjectListingEntry entry = objectsAO
 					.getCollectionAndDataObjectListingEntryAtGivenAbsolutePathWithHeuristicPathGuessing(path);
 			dataGridCollectionAndDataObject = this.mapListingEntryToDataGridCollectionAndDataObject(entry);
-			if (entry.isDataObject()) {
-				DataObject dobj = dataObjectAO.findByAbsolutePath(path);
-				dataGridCollectionAndDataObject.setChecksum(dobj.getChecksum());
-			}
+		} catch (FileNotFoundException fnf) {
+			logger.warn("file not found for path:{}", path);
+			throw fnf;
 		} catch (JargonException e) {
-			logger.debug("Could not find collection/data object by name: {}", path);
+			logger.debug("error finding collection/data object by name: {}", path);
 			throw new DataGridException("Could not find path " + path);
 		}
 
@@ -702,14 +676,15 @@ public class CollectionServiceImpl implements CollectionService {
 	 */
 
 	@Override
-	public String prepareFilesForDownload(String[] paths) throws IOException, DataGridException {
+	public String prepareFilesForDownload(String[] paths) throws IOException, DataGridException, JargonException {
 		logger.info("prepareFilesForDownload()");
 
 		return prepareFilesForDownload(Arrays.asList(paths));
 	}
 
 	@Override
-	public String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException {
+	public String prepareFilesForDownload(List<String> sourcePaths)
+			throws IOException, DataGridException, JargonException {
 		logger.info("prepareFilesForDownload()");
 
 		logger.info("Preparing files for download");
@@ -882,14 +857,8 @@ public class CollectionServiceImpl implements CollectionService {
 		String zone = irodsServices.getCurrentUserZone();
 
 		String homeDirectory = String.format("/%s/home/%s", zone, currentUser);
-
-		// checking if home directory exists in the grid file system
-		if (findByName(homeDirectory) != null) {
-			return homeDirectory;
-		}
-
-		// if a user's home directory cannot be found, set it to the root
-		return String.format("/%s", zone);
+		return homeDirectory; // it's safe to say if you have a user account you have a home or something is
+								// really wrong - mcc
 	}
 
 	@Override
@@ -1350,19 +1319,17 @@ public class CollectionServiceImpl implements CollectionService {
 		// if trash for path above is not found, user trash collection is used instead
 		return String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
 	}
-	
+
 	@Override
 	public IconObject getIcon(String mimeType) {
 		IconObject icon = null;
-		if (!mimeType.isEmpty())			 
+		if (!mimeType.isEmpty())
 			icon = iconService.getIconToDisplayFile(mimeType);
 		else
 			icon = iconService.getIconToDisplayCollection();
 
 		return icon;
 	}
-
-
 
 	/**
 	 * @return the adminServices

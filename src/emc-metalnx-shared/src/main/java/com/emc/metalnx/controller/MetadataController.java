@@ -29,6 +29,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" , "topnavHeader" })
+@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/metadata")
 public class MetadataController {
 
@@ -84,7 +85,7 @@ public class MetadataController {
 
 	@Autowired
 	CollectionController collectionController;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -195,7 +196,6 @@ public class MetadataController {
 			logger.error("Could not parse hashmap in metadata search to json: {}", e.getMessage());
 		}
 
-		
 		return jsonString;
 	}
 
@@ -257,7 +257,7 @@ public class MetadataController {
 
 	@RequestMapping(value = "/getMetadata/", method = RequestMethod.POST)
 	public String getMetadata(final Model model, final String path)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, FileNotFoundException {
 		logger.info("MetadataController getMetadata() starts !!");
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
 		DataGridCollectionAndDataObject dgColObj = null;
@@ -268,21 +268,21 @@ public class MetadataController {
 		} catch (DataGridException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path);
 		}
-		
+
 		model.addAttribute("permissionOnCurrentPath", collectionService.getPermissionsForPath(path));
 		model.addAttribute("dataGridMetadataList", metadataList);
 		model.addAttribute("currentPath", path);
 		model.addAttribute("collectionAndDataObject", dgColObj);
-		model.addAttribute("metadataFlag",true);				
-			
+		model.addAttribute("metadataFlag", true);
+
 		logger.info("MetadataController getMetadata() ends !!");
-		return "metadata/metadataTable :: metadataTable";				
+		return "metadata/metadataTable :: metadataTable";
 	}
-	
+
 	@RequestMapping(value = "/addMetadata/")
 	public String setMetadata(final Model model, @RequestParam("path") final String path,
 			@RequestParam("attribute") final String attribute, @RequestParam("value") final String value,
-			@RequestParam("unit") final String unit) throws DataGridConnectionRefusedException {
+			@RequestParam("unit") final String unit) throws DataGridConnectionRefusedException, FileNotFoundException {
 
 		if (metadataService.addMetadataToPath(path, attribute, value, unit)) {
 			model.addAttribute("addMetadataReturn", "success");
@@ -297,7 +297,7 @@ public class MetadataController {
 			@RequestParam("oldAttribute") final String oldAttribute, @RequestParam("oldValue") final String oldValue,
 			@RequestParam("oldUnit") final String oldUnit, @RequestParam("newAttribute") final String newAttribute,
 			@RequestParam("newValue") final String newValue, @RequestParam("newUnit") final String newUnit)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, FileNotFoundException {
 
 		if (metadataService.modMetadataFromPath(path, oldAttribute, oldValue, oldUnit, newAttribute, newValue,
 				newUnit)) {
@@ -310,7 +310,7 @@ public class MetadataController {
 
 	@RequestMapping(value = "/delMetadataListPrototype")
 	public String delMetadataListPrototype(final HttpServletRequest request, final Model model)
-			throws DataGridConnectionRefusedException {
+			throws DataGridConnectionRefusedException, FileNotFoundException {
 
 		String path = request.getParameter("path");
 		Integer length = Integer.valueOf(request.getParameter("length"));

@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,13 +174,13 @@ public class FileOperationsController {
 	 *            number of the replica that is going to be deleted
 	 * @return the template that shows the data object information with the replica
 	 *         table refreshed
-	 * @throws DataGridConnectionRefusedException
-	 *             if Metalnx cannot connect to the data grid
+	 * @throws DataGridException
+	 * @throws FileNotFoundException
 	 */
 	@RequestMapping(value = "deleteReplica", method = RequestMethod.POST)
 	public String deleteReplica(final Model model, @RequestParam("path") final String path,
 			@RequestParam("fileName") final String fileName, @RequestParam final String replicaNumber)
-			throws DataGridConnectionRefusedException {
+			throws FileNotFoundException, DataGridException {
 
 		boolean inAdminMode = loggedUserUtils.getLoggedDataGridUser().isAdmin();
 
@@ -241,7 +242,7 @@ public class FileOperationsController {
 			}
 		} catch (DataGridConnectionRefusedException e) {
 			throw e;
-		} catch (DataGridException | IOException e) {
+		} catch (DataGridException | IOException | JargonException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}

@@ -17,7 +17,6 @@
 package com.emc.metalnx.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,7 +89,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" , "topnavHeader" })
+@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/browse")
 public class BrowseController {
 
@@ -132,7 +131,7 @@ public class BrowseController {
 
 	@Autowired
 	RuleDeploymentService ruleDeploymentService;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -261,78 +260,6 @@ public class BrowseController {
 	}
 
 	/**
-	 * Goes back in collection historic stack
-	 *
-	 * @param model
-	 * @param steps
-	 * @return treeView template that renders all nodes of certain path (parent)
-	 * @throws DataGridConnectionRefusedException
-	 */
-	@RequestMapping(value = "/goBackHistory/", method = RequestMethod.POST)
-	public String goBackHistory(final Model model, @RequestParam("steps") final int steps)
-			throws DataGridException, JargonException {
-		if (collectionHistoryBack.size() < steps || steps < 1) {
-			model.addAttribute("invalidStepsBackwards", steps);
-			logger.info("It is not possible to go back {} steps, current stack size is {}", steps,
-					collectionHistoryBack.size());
-			return getCollBrowserView(model, currentPath);
-		}
-
-		logger.info("Going back {} steps in collection history", steps);
-
-		// pop paths from collectionHistoryBack and push them to
-		// collectionHistoryForward
-		while (collectionHistoryForward.size() >= MAX_HISTORY_SIZE) {
-			collectionHistoryForward.remove(0);
-		}
-		collectionHistoryForward.push(currentPath);
-		for (int i = 0; i < steps - 1; i++) {
-			String elementHistory = collectionHistoryBack.pop();
-			while (collectionHistoryForward.size() >= MAX_HISTORY_SIZE) {
-				collectionHistoryForward.remove(0);
-			}
-			collectionHistoryForward.push(elementHistory);
-		}
-
-		return getCollBrowserView(model, collectionHistoryBack.pop());
-	}
-
-	/**
-	 * Goes forward in collection historic stack
-	 *
-	 * @param model
-	 * @param steps
-	 * @return treeView template that renders all nodes of certain path (parent)
-	 * @throws DataGridConnectionRefusedException
-	 */
-	@RequestMapping(value = "/goForwardHistory/", method = RequestMethod.POST)
-	public String goForwardHistory(final Model model, @RequestParam("steps") final int steps)
-			throws DataGridException, JargonException {
-		if (collectionHistoryForward.size() < steps || steps < 1) {
-			model.addAttribute("invalidStepsForward", steps);
-			return getCollBrowserView(model, currentPath);
-		}
-
-		logger.info("Going {} steps forward in collection history", steps);
-
-		// pop paths from collectionHistoryBack and push them to
-		// collectionHistoryForward
-		while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-			collectionHistoryBack.remove(0);
-		}
-		collectionHistoryBack.push(currentPath);
-		for (int i = 0; i < steps - 1; i++) {
-			String elementHistory = collectionHistoryForward.pop();
-			while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-				collectionHistoryBack.remove(0);
-			}
-			collectionHistoryBack.push(elementHistory);
-		}
-
-		return getCollBrowserView(model, collectionHistoryForward.pop());
-	}
-
-	/**
 	 * Responds the getSubdirectories request finding collections and data objects
 	 * that exist underneath a certain path
 	 *
@@ -367,17 +294,18 @@ public class BrowseController {
 	 * @param path
 	 *            path to the data object to get checksum and replica information
 	 * @return the template that shows the data object information
-	 * @throws DataGridConnectionRefusedException
+	 * @throws DataGridException
+	 * @throws FileNotFoundException
 	 */
 	@RequestMapping(value = "/info/", method = RequestMethod.POST)
-	public String getFileInfo(final Model model, final String path) throws DataGridConnectionRefusedException {
+	public String getFileInfo(final Model model, final String path) throws DataGridException, FileNotFoundException {
 
-		logger.info("CollectionController getInfoFile() starts :: " +path);
+		logger.info("CollectionController getInfoFile() starts :: " + path);
 		DataGridCollectionAndDataObject dataGridObj = null;
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
 		try {
-		
+
 			dataGridObj = cs.findByName(path);
 
 			if (dataGridObj != null && !dataGridObj.isCollection()) {
@@ -395,13 +323,16 @@ public class BrowseController {
 			throw e;
 		} catch (DataGridException e) {
 			logger.error("Could not get file info for {}", path, e);
+			throw e;
+		} catch (FileNotFoundException e) {
+			logger.error("file does not exist for:{}", path, e);
+			throw e;
 		}
 
 		model.addAttribute("collectionAndDataObject", dataGridObj);
 		model.addAttribute("currentCollection", dataGridObj);
 		model.addAttribute("replicasMap", replicasMap);
 		model.addAttribute("infoFlag", true);
-
 
 		logger.info("CollectionController getInfoFile() ends !!");
 		return "collections/info :: infoView";
@@ -626,9 +557,9 @@ public class BrowseController {
 
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
-		
+
 		String template = "redirect:/collections" + parentPath;
-		logger.info("Returning after renaming :: " +template);
+		logger.info("Returning after renaming :: " + template);
 
 		return "redirect:/collections" + parentPath;
 	}
@@ -681,15 +612,15 @@ public class BrowseController {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "/home")
-	public String homeCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
+	public String homeCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-	
+
 		redirectAttributes.addAttribute("requestHeader", "collections");
-		
+
 		return "redirect:/collections" + currentPath;
 	}
 
@@ -700,7 +631,7 @@ public class BrowseController {
 	 * @return the collection management template
 	 */
 	@RequestMapping(value = "/public")
-	public String publicCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
+	public String publicCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
 
@@ -712,7 +643,7 @@ public class BrowseController {
 		model.addAttribute("parentPath", parentPath);
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-	
+
 		redirectAttributes.addAttribute("requestHeader", "public");
 		return "redirect:/collections" + currentPath;
 	}
@@ -725,7 +656,7 @@ public class BrowseController {
 	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/trash")
-	public String trashCollection(final Model model,RedirectAttributes redirectAttributes) throws DataGridException {
+	public String trashCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
 		// cleaning session variables
 		sourcePaths.clear();
 
@@ -741,32 +672,26 @@ public class BrowseController {
 		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
 		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 		model.addAttribute("resources", resourceService.findAll());
-		
+
 		redirectAttributes.addAttribute("requestHeader", "trash");
+
 		return "redirect:/collections" + currentPath;
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
 	public String getBreadCrumbForObject(final Model model, @RequestParam("path") String path)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException {
+		logger.info("getBreadCrumbForObject()");
 		if (path.isEmpty()) {
 			path = currentPath;
 		} else {
 			if (path.endsWith("/") && path.compareTo("/") != 0) {
 				path = path.substring(0, path.length() - 1);
 			}
-			if (!path.equals(currentPath)
-					&& (collectionHistoryBack.isEmpty() || !currentPath.equals(collectionHistoryBack.peek()))) {
-				while (collectionHistoryBack.size() >= MAX_HISTORY_SIZE) {
-					collectionHistoryBack.remove(0);
-				}
-				collectionHistoryBack.push(currentPath);
-				if (!collectionHistoryForward.isEmpty()) {
-					collectionHistoryForward.clear();
-				}
-			}
 			currentPath = path;
 		}
+
+		logger.info("path:{}", path);
 
 		setBreadcrumbToModel(model, path);
 		return "collections/collectionsBreadCrumb";
@@ -794,8 +719,11 @@ public class BrowseController {
 		try {
 			cs.findByName(newPath);
 			rc = "false";
-		} catch (DataGridException e) {
+		} catch (FileNotFoundException e) {
 			logger.debug("Path {} does not exist. Executing modification", newPath, e);
+		} catch (DataGridException e) {
+			logger.error("unexpected exception validating path:{}", newPath, e);
+			throw e;
 		}
 		return rc;
 	}
@@ -814,10 +742,15 @@ public class BrowseController {
 	 *            parameters passed in request
 	 * @return json with collections and data objects
 	 * @throws DataGridConnectionRefusedException
+	 * @throws JargonException
 	 */
 	@RequestMapping(value = "getPaginatedJSONObjs/")
 	@ResponseBody
-	public String getPaginatedJSONObjs(final HttpServletRequest request) throws DataGridConnectionRefusedException {
+	public String getPaginatedJSONObjs(final HttpServletRequest request)
+			throws DataGridConnectionRefusedException, JargonException {
+
+		logger.info("getPaginatedJSONObjs()");
+
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects;
 
 		int draw = Integer.parseInt(request.getParameter("draw"));
@@ -840,14 +773,23 @@ public class BrowseController {
 		String jsonString = "";
 
 		try {
+			logger.info("using path of:{}", currentPath);
 			String path = currentPath;
 			if (deployRule) {
 				path = ruleDeploymentService.getRuleCachePath();
 			}
 
-			Double startPage = Math.floor(start / length) + 1;
-			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(
-					path, searchString, startPage.intValue(), length, orderColumn, orderDir, pageContext);
+			Math.floor(start / length);
+			logger.info("getting subcollections under path:{}", path);
+			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPath(path); // TODO: temporary add
+																									// paging service
+
+			logger.debug("dataGridCollectionAndDataObjects:{}", dataGridCollectionAndDataObjects);
+			/*
+			 * cs.getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(
+			 * path, searchString, startPage.intValue(), length, orderColumn, orderDir,
+			 * pageContext);
+			 */
 			totalObjsForCurrentSearch = pageContext.getTotalNumberOfItems();
 			totalObjsForCurrentPath = pageContext.getTotalNumberOfItems();
 
@@ -855,15 +797,18 @@ public class BrowseController {
 			jsonResponse.put("recordsFiltered", String.valueOf(totalObjsForCurrentSearch));
 			jsonResponse.put("data", dataGridCollectionAndDataObjects);
 		} catch (DataGridConnectionRefusedException e) {
+			logger.error("connection refused", e);
 			throw e;
 		} catch (Exception e) {
 			logger.error("Could not get collections/data objs under path {}: {}", currentPath, e.getMessage());
+			throw new JargonException("exception getting paginated objects", e);
 		}
 
 		try {
 			jsonString = mapper.writeValueAsString(jsonResponse);
 		} catch (JsonProcessingException e) {
 			logger.error("Could not parse hashmap in collections to json: {}", e.getMessage());
+			throw new JargonException("exception in json parsing", e);
 		}
 
 		return jsonString;
@@ -915,18 +860,22 @@ public class BrowseController {
 	 *            Model attribute to set variables to be used in the view
 	 * @param path
 	 *            path that will be displayed in the breadcrumb
+	 * @throws DataGridException
 	 */
-	private void setBreadcrumbToModel(final Model model, final String path) {
+	private void setBreadcrumbToModel(final Model model, final String path) throws DataGridException {
 		DataGridCollectionAndDataObject obj;
 		try {
 			obj = cs.findByName(path);
-		} catch (DataGridException e) {
+		} catch (FileNotFoundException e) {
 			obj = new DataGridCollectionAndDataObject();
 			obj.setPath(path);
 			obj.setCollection(false);
 			obj.setParentPath(path.substring(0, path.lastIndexOf("/") + 1));
 			obj.setName(path.substring(path.lastIndexOf("/") + 1, path.length()));
 			logger.error("Could not find DataGridCollectionAndDataObject by path: {}", e.getMessage());
+		} catch (DataGridException e) {
+			logger.error("unable to find path for breadcrumb", e);
+			throw e;
 		}
 
 		setBreadcrumbToModel(model, obj);
@@ -941,20 +890,24 @@ public class BrowseController {
 	 *            {@code DataGridCollectionAndDataObject} object
 	 */
 	private void setBreadcrumbToModel(final Model model, final DataGridCollectionAndDataObject obj) {
-		ArrayList<String> listHistoryBack = new ArrayList<String>(collectionHistoryBack);
-		Collections.reverse(listHistoryBack);
+		logger.info("setBreadcrumbToModel()");
 
-		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
-		boolean isPathFavorite = favoritesService.isPathFavoriteForUser(user, obj.getPath());
+		if (model == null) {
+			throw new IllegalArgumentException("null model");
+		}
 
-		model.addAttribute("starredPath", isPathFavorite);
-		model.addAttribute("collectionPastHistory", listHistoryBack);
-		model.addAttribute("collectionPastHistoryEmpty", collectionHistoryBack.isEmpty());
-		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
-		model.addAttribute("collectionForwardHistoryEmpty", collectionHistoryForward.isEmpty());
-		model.addAttribute("collectionForwardHistory", collectionHistoryForward);
+		if (obj == null) {
+			throw new IllegalArgumentException("null obj");
+		}
+
+		logger.info("model:{}", model);
+		logger.info("obj:{}", obj);
+
 		model.addAttribute("collectionAndDataObject", obj);
-		model.addAttribute("breadcrumb", new DataGridBreadcrumb(obj.getPath()));
+		logger.info("path for breadcrumb:{}", obj.getPath());
+		DataGridBreadcrumb breadcrumb = new DataGridBreadcrumb(obj.getPath());
+		logger.info("breadcrumb is:{}", breadcrumb);
+		model.addAttribute("breadcrumb", breadcrumb);
 		model.addAttribute("homeCollectionName", irodsServices.getCurrentUser());
 	}
 
@@ -975,41 +928,52 @@ public class BrowseController {
 		logger.info("model:{}", model);
 		logger.info("path:{}", path);
 
-		if (cs.isPathValid(path)) {
-			if (path.endsWith("/") && path.compareTo("/") != 0) {
-				path = path.substring(0, path.length() - 1);
-			}
-
-		} else {
+		logger.info("find collection by name:{}", path);
+		DataGridCollectionAndDataObject dataGridObj = null;
+		try {
+			dataGridObj = cs.findByName(path);
+		} catch (FileNotFoundException fnf) {
+			logger.warn("file not found for:{}", path);
 			// I don't have a path so use the user home
+			logger.info("no path, so using user home directory");
 			model.addAttribute("invalidPath", path); // TODO: refactor into something more elegant - mcc
 			IRODSAccount irodsAccount = irodsServices.getCollectionAO().getIRODSAccount();
 			path = MiscIRODSUtils.buildIRODSUserHomeForAccountUsingDefaultScheme(irodsAccount);
+		}
 
+		if (path.endsWith("/") && path.compareTo("/") != 0) {
+			path = path.substring(0, path.length() - 1);
 		}
 
 		currentPath = path;
+		logger.info("currentPath:{}", currentPath);
 
 		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
-		logger.info("find collection by name:{}", path);
-		DataGridCollectionAndDataObject dataGridObj = cs.findByName(path);
-
-		if (dataGridObj.isDataObject()) {
-			dataGridObj.setChecksum(cs.getChecksum(path));
-			dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
-			dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
-		}
-
-		permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
 
 		if (zoneTrashPath == null || zoneTrashPath.isEmpty()) {
 			zoneTrashPath = String.format("/%s/trash", irodsServices.getCurrentUserZone());
 		}
 
-		CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
-		collectionForm.setInheritOption(cs.getInheritanceOptionForCollection(currentPath));
+		// TODO: do I really need these permission path checks? I can let iRODS worry
+		// about permissions - mcc
 
-		String permissionType = cs.getPermissionsForPath(path);
+		CollectionOrDataObjectForm collectionForm = new CollectionOrDataObjectForm();
+		String permissionType = "none";
+
+		if (dataGridObj.isProxy()) {
+			logger.info("this is a proxy, so fake out the options");
+			collectionForm.setInheritOption(false);
+			permissionType = "read";
+		} else {
+			logger.info("this is not a proxy, so gather permission info");
+
+			permissionType = cs.getPermissionsForPath(path);
+			collectionForm.setInheritOption(cs.getInheritanceOptionForCollection(currentPath));
+			permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
+		}
+
+		logger.debug("permission options are set");
+
 		boolean isPermissionOwn = "own".equals(permissionType);
 		boolean isTrash = path.contains(zoneTrashPath) && (isPermissionOwn || user.isAdmin());
 		boolean inheritanceDisabled = !isPermissionOwn && collectionForm.getInheritOption();
@@ -1025,33 +989,33 @@ public class BrowseController {
 		model.addAttribute("inheritanceDisabled", inheritanceDisabled);
 		model.addAttribute("requestMapping", "/browse/add/action/");
 		model.addAttribute("parentPath", parentPath);
+
 		setBreadcrumbToModel(model, dataGridObj);
-		logger.info("###################################################Returning after deletion #############################################");
+		logger.info("forwarding to collections/collectionsBrowser");
 		return "collections/collectionsBrowser";
-		
+
 	}
-	
+
 	@RequestMapping(value = "/summary", method = RequestMethod.POST)
-	public String getSummary(final Model model, @RequestParam("path") final String path)
-			throws DataGridException {
+	public String getSummary(final Model model, @RequestParam("path") final String path) throws DataGridException {
 		logger.info("BrowseController getSummary() starts :: " + path);
 
 		IconObject icon = null;
-		String mimeType = "" ;
-		
+		String mimeType = "";
+
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = cs.getCollectionDataProfile(path);		
-		
-		logger.info("DataProfiler is :: " +dataProfile);
-		
-		if (dataProfile != null && dataProfile.isFile()) {	
+		DataProfile dataProfile = cs.getCollectionDataProfile(path);
+
+		logger.info("DataProfiler is :: " + dataProfile);
+
+		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
-		}		
+		}
 		icon = cs.getIcon(mimeType);
-	
+
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
-		
+
 		logger.info("getSummary() ends !!");
 		return "collections/summarySidenav :: SummarySidenavView";
 	}

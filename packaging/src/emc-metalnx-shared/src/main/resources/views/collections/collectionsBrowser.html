@@ -299,17 +299,6 @@
     </div>
 </div>
 
-<!-- Some items were not deleted -->
-<div class="col-xs-12" th:unless="${permissionType != 'none' or user.isAdmin()}">
-    <div class="text-center" role="alert">
-        <span th:text="#{collections.management.msg.access.denied}"></span>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#" onclick="javascript:goBackHistory('1');">
-            <span>Back</span>
-        </a>
-    </div>
-</div>
-
 <!-- Empty Trash Modal -->
 <div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
 	 aria-labelledby="myModalLabel" aria-hidden="true">
