@@ -5,71 +5,81 @@
 	layout:decorator="template">
 
 <body>
-	<div aria-labelledby="collInfoManagement" layout:fragment="content">
-		<div class="row">
-			<th:block th:include="collections/summary :: summaryView"></th:block>
-		</div>
+	<div class="row">
 
-		<div id="tabs">
-			<ul>
-				<li><a href="#details"
-					th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-info-circle"></i></span> <span
-						title="File information">Details</span>
-				</a></li>
-
-				<li><a href="#metadata"
-					th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
-				</a></li>
-
-				<li><a href="#permission" id="permissions"
-					th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-lock"></i></span> <span title="Permissions">Permissions</span>
-				</a></li>
-				
-				<li><a href="#preview"
-					th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'">
-						<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
-				</a></li>
-			</ul>
-
-			<div class="content_menu">
-
-				<div id="details">
-					<th:block th:include="collections/info :: infoView"></th:block>
-				</div>
-				<div id="metadata"></div>				
-				<div id="permission"></div>
-				<div id="preview">
-					<img id="previewFile" />
-				</div>
-
+		<div aria-labelledby="collInfoManagement" layout:fragment="content">
+			<div class="row">
+				<th:block th:include="collections/summary :: summaryView"></th:block>
 			</div>
-		</div>
+
+			<div class="col-xs-12 tree-view-panel box">
+				<div class="tabpanel">
+					<ul id="tabs" class="nav nav-tabs">
+						<li class="active"><a href="#details" data-toggle="tab" role="tab"
+							th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-info-circle"></i></span> <span
+								title="File information">Details</span>
+						</a></li>
+
+						<li><a href="#metadata" data-toggle="tab" role="tab"
+							th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
+						</a></li>
+
+						<li><a href="#permission" id="permissions" data-toggle="tab" role="tab"
+							th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-lock"></i></span> <span
+								title="Permissions">Permissions</span>
+						</a></li>
+
+						<li><a href="#preview" data-toggle="tab" role="tab"
+							th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
+						</a></li>
+					</ul>
+
+					<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
+						<div id="details" class="tab-pane fade active in" role="tabpanel">
+							<th:block th:include="collections/details :: detailsView"></th:block>
+						</div>
+						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
+						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
+						<div id="preview" class="tab-pane fade" role="tabpanel">
+							<img id="previewFile"/>
+						</div>
+
+					</div>
+				</div>
+			</div>
 
 
+			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+			<script th:inline="javascript">
+				$(document).ready(function(e) {
 
-		<!-- JQuery UI CSS -->
-		<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
-			th:href="@{/css/jquery-ui.min.css}" />
-		<!-- jQuery UI Version 1.11.4 -->
-		<script src="../static/js/jquery-1.11.4.js"
-			th:src="@{/js/jquery-ui.min.js}"></script>
-
-		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-		<script>
-			$(document).ready(function(e) {
-				$("#tabs").tabs({
-					  beforeLoad: function( e, ui ) {
-					      ui.panel.html('<img th:src="@{/images/table_loading.svg}" />');
-					  }
+					/*Browser back button starts*/
+					// add a hash to the URL when the user clicks on a tab
+					$('a[data-toggle="tab"]').on('click', function(e) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						history.replaceState(null, null, $(this).attr('href'));
 					});
-			});			
-			
-		</script>
-	</div>
 
+					// navigate to a tab when the history changes
+					window.addEventListener("popstate", function(e) {
+						var activeTab = $('[href=' + location.hash + ']');
+						if (activeTab.length) {
+							activeTab.tab('show');
+						} else {
+							$('.nav-tabs a:first').tab('show');
+						}
+					});
+					/*Browser back button starts*/
+
+				});
+			</script>
+		</div>
+	</div>
 </body>
 
 </html>

@@ -14,14 +14,14 @@
   ~  limitations under the License.
   -->
 
-<th:block th:fragment="infoView">
+<th:block th:fragment="detailsView">
 	<!-- <div class="col-md-12" th:fragment="treeView" xmlns:th="http://www.w3.org/1999/xhtml"> -->
 
 
-	<div class="col-md-12" th:unless="${dataProfile == null}">
+	<div th:unless="${dataProfile == null}">
 
 		<div th:unless="${dataProfile.file}" th:fragment="collectionInfoView">
-			<div class="panel property collection-tabs">
+			<div class="panel property-tab collection-tabs">
 				<div class="row">
 					<h4 class="property-title" th:text="#{text.info}">
 						<i class="fa fa-info-circle"></i>
@@ -104,7 +104,7 @@
 
 
 		<div th:if="${dataProfile.file}" th:fragment="FileInfoView">
-			<div class="panel property">
+			<div class="panel property-tab collection-tabs">
 				<div class="row">
 					<h4 class="property-title" th:text="#{text.info}">
 						<i class="fa fa-info-circle"></i>

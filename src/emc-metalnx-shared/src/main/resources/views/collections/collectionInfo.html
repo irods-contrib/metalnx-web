@@ -12,56 +12,73 @@
 			<div class="row">
 				<th:block th:include="collections/summary :: summaryView"></th:block>
 			</div>
-
-			<div class="row box">
-				<div id="tabs" class=".box-content">
-					<ul>
-						<li><a href="#details"
-							th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+			
+			<div class="col-xs-12 tree-view-panel box">
+				<div class="tabpanel">
+					<ul id="tabs" class="nav nav-tabs">
+						<li class="active"><a href="#details" data-toggle="tab" role="tab"
+						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-info-circle" alt="File Info"></i></span> <span
 								title="collection information">Details</span>
 						</a></li>
 
-						<li><a href="#metadata"
-							th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+						<li><a href="#metadata" data-toggle="tab" role="tab"
+						th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-tags"></i></span> <span
 								title="Collection Metadata">Metadata</span>
 						</a></li>
 
-						<li><a href="#permission" id="permissions"
-							th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+						<li><a href="#permission" id="permissions" data-toggle="tab" role="tab"
+						th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-lock"></i></span> <span
 								title="Collection Permissions">Permissions</span>
 						</a></li>
 					</ul>
 
-					<div class="content_menu">
-						<div id="details">
-							<th:block th:include="collections/info :: infoView"></th:block>
+					<div id="table-loader" class="table-loader col-sm-12 hideElement">
+						<div class="panel loading property-tab">
+							<img alt="table loading" class="center-block"
+								th:src="@{/images/table_loading.svg}" />
 						</div>
-						<div id="metadata"></div>
-						<div id="permission"></div>
+					</div>
+
+					<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">			      
+						<div id="details" class="tab-pane fade active in" role="tabpanel">
+							 <th:block th:include="collections/details :: detailsView"></th:block></div>
+						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
+						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
 					</div>
 				</div>
 			</div>
 
 
 
-			<!-- JQuery UI CSS -->
-			<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
-				th:href="@{/css/jquery-ui.min.css}" />
-			<!-- jQuery UI Version 1.11.4 -->
-			<script src="../static/js/jquery-1.11.4.js"
-				th:src="@{/js/jquery-ui.min.js}"></script>			
+					
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-			<script>
-				$(document).ready(function(e) {
-					$("#tabs").tabs({
-						  beforeLoad: function( e, ui ) {
-						      ui.panel.html('<img th:src="@{/images/table_loading.svg}" />');
-						  }
-						});
-				});
+			<script th:inline="javascript">
+			 $(document).ready(function(e){		
+							 
+				 /*Browser back button starts*/
+				  // add a hash to the URL when the user clicks on a tab
+			 	   $('a[data-toggle="tab"]').on('click', function(e) {					 		
+			 		e.preventDefault();
+					e.stopImmediatePropagation();
+			 		history.replaceState(null, null, $(this).attr('href'));
+				  });  
+				  
+				  // navigate to a tab when the history changes
+				   window.addEventListener("popstate", function(e) {					   
+				    var activeTab = $('[href=' + location.hash + ']');
+				    if (activeTab.length) {	
+				      activeTab.tab('show');
+				    } else {		
+				      $('.nav-tabs a:first').tab('show');
+				    }
+				  }); 
+				  /*Browser back button starts*/
+				 
+			 });
+			 			
 			</script>
 		</div>
 	</div>

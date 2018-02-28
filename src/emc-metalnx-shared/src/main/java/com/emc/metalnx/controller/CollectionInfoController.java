@@ -117,7 +117,7 @@ public class CollectionInfoController {
 		model.addAttribute("dataProfile", dataProfile);
 
 		logger.info("getCollectionFileInfo() ends !!");
-		return "collections/info :: infoView";
+		return "collections/details :: detailsView";
 	}
 
 

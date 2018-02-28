@@ -148,7 +148,7 @@ public class CollectionController {
 	 */
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,@ModelAttribute("requestHeader") String requestHeader) {
-		logger.info("index()##########################");
+		logger.info("index()");
 
 		try {
 			final String path = "/" + extractFilePath(request);
