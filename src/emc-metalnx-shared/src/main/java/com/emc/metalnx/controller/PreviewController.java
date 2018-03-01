@@ -1,5 +1,9 @@
 package com.emc.metalnx.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.extensions.datatyper.DataTypeResolutionService;
@@ -17,8 +21,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PreviewService;
 
@@ -33,6 +39,9 @@ public class PreviewController {
 
 	@Autowired
 	IRODSServices irodsServices;
+
+	@Autowired
+	CollectionService collectionService;
 
 	@Autowired
 	DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory;
@@ -55,36 +64,42 @@ public class PreviewController {
 
 		logger.info("prepareForPreview for {} ::" + path);
 		String mimeType = null;
+		String template = null;
+		boolean permission = previewService.getPermission(path);
+		if(permission) {
+			try {
+				IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
+				DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory
+						.instanceDataTypeResolutionService(irodsAccount);
 
-		try {
-			IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-			DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory
-					.instanceDataTypeResolutionService(irodsAccount);
+				logger.info("dataTypeResolutionService created from factory:{}", dataTypeResolutionService);
 
-			logger.info("dataTypeResolutionService created from factory:{}", dataTypeResolutionService);
+				logger.info("doing quick check for mime type");
+				mimeType = dataTypeResolutionService.quickMimeType(path);
+				logger.info("mimetype:{}", mimeType);
 
-			logger.info("doing quick check for mime type");
-			mimeType = dataTypeResolutionService.quickMimeType(path);
-			logger.info("mimetype:{}", mimeType);
+				redirectAttributes.addAttribute("path", path);
 
-			redirectAttributes.addAttribute("path", path);
+				if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
+						|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
+					template = "redirect:/image/previewFilePath";
+				else
+					template = "collections/imagePreview :: noPreview";
 
-			String template = null;
-
-			if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
-					|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
-				template = "redirect:/image/previewFilePath";
-			else
-				template = "collections/imagePreview :: noPreview";
-
+				return template;
+			} catch (JargonException e) {
+				logger.error("Could not retrieve data from path: {}", path, e);
+				throw new DataGridException(e.getMessage());
+			} catch (Exception e) {
+				logger.error("general exception generating preview", e);
+				throw new DataGridException(e.getLocalizedMessage());
+			}
+		}else {			
+			template = "collections/imagePreview :: noPermission";
+			
 			return template;
-		} catch (JargonException e) {
-			logger.error("Could not retrieve data from path: {}", path, e);
-			throw new DataGridException(e.getMessage());
-		} catch (Exception e) {
-			logger.error("general exception generating preview", e);
-			throw new DataGridException(e.getLocalizedMessage());
 		}
+		
 
 	}
 

@@ -15,7 +15,7 @@
   -->
 
 <th:block th:fragment="imagePreview">
-	<div class="col-md-12">
+	<div class="col-md-12 panel property-tab collection-tabs">
 		<div>			
 			<img src="/emc-metalnx-web/image/preview/" alt="imagePreview" class="imageinfo" /> 			
 		</div>
@@ -23,9 +23,17 @@
 </th:block>
 
 <th:block th:fragment="noPreview">
-	<div class="col-md-12">
+	<div class="col-md-12 panel property-tab collection-tabs">
 		<div>						
 			<img th:src="@{/images/comingsoon.png}" alt="noPreview" class="imageinfo"/> 
+		</div>
+	</div>
+</th:block>
+
+<th:block th:fragment="noPermission">
+	<div class="col-md-12 panel property-tab collection-tabs">
+		<div>						
+			<img th:src="@{/images/noPermission.jpg}" alt="noPermission" class="imageinfo"/> 
 		</div>
 	</div>
 </th:block>
