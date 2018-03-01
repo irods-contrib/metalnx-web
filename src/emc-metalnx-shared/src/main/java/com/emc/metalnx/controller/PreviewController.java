@@ -83,6 +83,8 @@ public class PreviewController {
 				if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
 						|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
 					template = "redirect:/image/previewFilePath";
+				else if (mimeType.equalsIgnoreCase("application/pdf"))					
+					template = "redirect:/image/testPreviewPath";
 				else
 					template = "collections/imagePreview :: noPreview";
 

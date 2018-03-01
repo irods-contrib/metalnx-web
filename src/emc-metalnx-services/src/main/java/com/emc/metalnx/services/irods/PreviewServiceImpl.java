@@ -32,6 +32,8 @@ public class PreviewServiceImpl implements PreviewService {
 	@Autowired
 	CollectionService collectionService;
 
+	private static final String CONTENT_TYPE = "application/octet-stream";
+	
 	private static final Logger logger = LoggerFactory.getLogger(PreviewServiceImpl.class);
 
 	@Override
@@ -47,7 +49,7 @@ public class PreviewServiceImpl implements PreviewService {
 			IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();			
 			irodsFile = irodsFileFactory.instanceIRODSFile(path);			
 			irodsFileInputStream = irodsFileFactory.instanceIRODSFileInputStream(irodsFile);
-			response.setContentType("image/png");												
+			response.setContentType(CONTENT_TYPE);												
 			FileCopyUtils.copy(irodsFileInputStream, response.getOutputStream());
 
 		} catch (IOException | JargonException | DataGridConnectionRefusedException e) {		
