@@ -58,6 +58,23 @@
 
 					<span th:text="#{ users.not.removed.successfully }"></span>
 				</div>
+				
+				<div th:if="${ duplicateUser != null}"
+					class="alert alert-danger alert-dismissible text-center clear" role="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:text="${ users.add.error.duplicate.user }" class="text-center">Duplicate user error</span></b>
+				</div>
+				<div th:if="${ error != null}"
+					class="alert alert-danger alert-dismissible text-center clear" role="alert">
+				  	<button title="close" type="button" class="close" data-dismiss="alert">
+				  		<span aria-hidden="true">&times;</span>
+				  		<span class="sr-only">Close</span>
+				  	</button>
+				  	<b><span th:text="${ users.add.error }" class="text-center">User error</span></b>
+				</div>
             </div>
         </div>
         <!-- Download CSV and Add User -->

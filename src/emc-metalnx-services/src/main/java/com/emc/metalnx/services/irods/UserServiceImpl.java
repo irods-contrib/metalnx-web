@@ -86,6 +86,8 @@ public class UserServiceImpl implements UserService {
 	public boolean createUser(DataGridUser user, String password)
 			throws JargonException, DataGridConnectionRefusedException {
 
+		logger.info("createUser()");
+
 		UserAO userAO = irodsServices.getUserAO();
 
 		// Translating to iRODS model format
@@ -99,15 +101,23 @@ public class UserServiceImpl implements UserService {
 			irodsUser.setUserType(UserTypeEnum.RODS_USER);
 		}
 
+		logger.debug("adding...");
 		// Creating user
 		irodsUser = userAO.addUser(irodsUser);
+		logger.debug("...added");
 
 		user.setDataGridId(Long.parseLong(irodsUser.getId()));
 		user.setEnabled(true);
 		userDao.save(user);
 
-		// Setting password
-		userAO.changeAUserPasswordByAnAdmin(user.getUsername(), password);
+		logger.info("setting password if provided (may be a PAM user!)");
+		if (password == null || password.isEmpty()) {
+			logger.info("no password, assume is not standard auth");
+		} else {
+			logger.info("password was provided, set in irods");
+			// Setting password
+			userAO.changeAUserPasswordByAnAdmin(user.getUsername(), password);
+		}
 
 		return true;
 
