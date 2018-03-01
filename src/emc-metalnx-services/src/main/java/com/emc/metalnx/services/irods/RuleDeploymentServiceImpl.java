@@ -16,9 +16,10 @@
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.services.interfaces.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.Stream2StreamAO;
@@ -35,106 +36,113 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
+import com.emc.metalnx.services.interfaces.FileOperationService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.RuleDeploymentService;
+import com.emc.metalnx.services.interfaces.RuleService;
 
 @Service
 @Transactional
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.INTERFACES)
 public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentServiceImpl.class);
 
-    private static final int BUFFER_SIZE = 4 * 1024 * 1024;
-    private static final String RULE_CACHE_DIR_NAME = ".rulecache";
+	private static final int BUFFER_SIZE = 4 * 1024 * 1024;
+	private static final String RULE_CACHE_DIR_NAME = ".rulecache";
 
-    @Autowired
-    private IRODSServices irodsServices;
+	@Autowired
+	private IRODSServices irodsServices;
 
-    @Autowired
-    private FileOperationService fos;
+	@Autowired
+	private FileOperationService fos;
 
-    @Autowired
-    private ConfigService configService;
+	@Autowired
+	private ConfigService configService;
 
-    @Autowired
-    private RuleService ruleService;
+	@Autowired
+	private RuleService ruleService;
 
-    @Autowired
-    private CollectionService collectionService;
+	@Autowired
+	private CollectionService collectionService;
 
-    @Override
-    public void deployRule(MultipartFile file) throws DataGridException {
-        logger.info("Deploying rule");
+	@Override
+	public void deployRule(MultipartFile file) throws DataGridException, JargonException {
+		logger.info("Deploying rule");
 
-        if (file == null) {
-            logger.error("File could not be sent to the data grid. Rule file is null.");
-            throw new DataGridException("Rule file is null.");
-        }
+		if (file == null) {
+			logger.error("File could not be sent to the data grid. Rule file is null.");
+			throw new DataGridException("Rule file is null.");
+		}
 
-        if (!ruleCacheExists()) {
-            logger.info("Rule cache does not exist. Creating one.");
-            createRuleCache();
-        }
+		if (!ruleCacheExists()) {
+			logger.info("Rule cache does not exist. Creating one.");
+			createRuleCache();
+		}
 
-        InputStream inputStream;
-        try {
-            inputStream = file.getInputStream();
-        } catch (IOException e) {
-            logger.error("Could not get input stream from rule file: ", e.getMessage());
-            throw new DataGridException("Could not get input stream from ruleFile.");
-        }
+		InputStream inputStream;
+		try {
+			inputStream = file.getInputStream();
+		} catch (IOException e) {
+			logger.error("Could not get input stream from rule file: ", e.getMessage());
+			throw new DataGridException("Could not get input stream from ruleFile.");
+		}
 
-        // Getting DataObjectAO in order to create the new rule file
-        IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
-        Stream2StreamAO stream2StreamA0 = irodsServices.getStream2StreamAO();
-        IRODSFile targetFile = null;
+		// Getting DataObjectAO in order to create the new rule file
+		IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
+		Stream2StreamAO stream2StreamA0 = irodsServices.getStream2StreamAO();
+		IRODSFile targetFile = null;
 
-        try {
-            String ruleCacheDirPath = getRuleCachePath();
-            String ruleName = file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename();
-            targetFile = irodsFileFactory.instanceIRODSFile(ruleCacheDirPath, ruleName);
+		try {
+			String ruleCacheDirPath = getRuleCachePath();
+			String ruleName = file.getOriginalFilename().isEmpty() ? file.getName() : file.getOriginalFilename();
+			targetFile = irodsFileFactory.instanceIRODSFile(ruleCacheDirPath, ruleName);
 
-            stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
+			stream2StreamA0.transferStreamToFileUsingIOStreams(inputStream, (File) targetFile, 0, BUFFER_SIZE);
 
-            String resourceName = irodsServices.getDefaultStorageResource();
-            Resource resc = irodsServices.getResourceAO().findByName(resourceName);
-            String vaultPath = resc.getVaultPath();
-            String host = resc.getLocation();
+			String resourceName = irodsServices.getDefaultStorageResource();
+			Resource resc = irodsServices.getResourceAO().findByName(resourceName);
+			String vaultPath = resc.getVaultPath();
+			String host = resc.getLocation();
 
-            String ruleVaultPath = String.format("%s/%s/%s", vaultPath, RULE_CACHE_DIR_NAME, ruleName);
+			String ruleVaultPath = String.format("%s/%s/%s", vaultPath, RULE_CACHE_DIR_NAME, ruleName);
 
-            String ruleNameWithoutExtension = FilenameUtils.removeExtension(ruleName);
-            ruleService.execDeploymentRule(host, ruleNameWithoutExtension, ruleVaultPath);
-        } catch (JargonException e) {
-            if (targetFile != null) fos.deleteDataObject(targetFile.getPath(), true);
-            logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
-            throw new DataGridException("Upload failed. Resource(s) might be full.");
-        } finally {
-            try {
-                inputStream.close(); // Closing streams opened
-            } catch (IOException e) {
-                logger.error("Could close stream: ", e.getMessage());
-            }
-        }
-    }
+			String ruleNameWithoutExtension = FilenameUtils.removeExtension(ruleName);
+			ruleService.execDeploymentRule(host, ruleNameWithoutExtension, ruleVaultPath);
+		} catch (JargonException e) {
+			if (targetFile != null)
+				fos.deleteDataObject(targetFile.getPath(), true);
+			logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
+			throw new DataGridException("Upload failed. Resource(s) might be full.");
+		} finally {
+			try {
+				inputStream.close(); // Closing streams opened
+			} catch (IOException e) {
+				logger.error("Could close stream: ", e.getMessage());
+			}
+		}
+	}
 
-    @Override
-    public String getRuleCachePath() {
-        return String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
-    }
+	@Override
+	public String getRuleCachePath() {
+		return String.format("/%s/%s", configService.getIrodsZone(), RULE_CACHE_DIR_NAME);
+	}
 
-    @Override
-    public void createRuleCache() throws DataGridException {
-        String parentPath = String.format("/%s", configService.getIrodsZone());
-        DataGridCollectionAndDataObject ruleCacheDir =
-                new DataGridCollectionAndDataObject(getRuleCachePath(), parentPath, true);
-        collectionService.createCollection(ruleCacheDir);
-    }
+	@Override
+	public void createRuleCache() throws DataGridException {
+		String parentPath = String.format("/%s", configService.getIrodsZone());
+		DataGridCollectionAndDataObject ruleCacheDir = new DataGridCollectionAndDataObject(getRuleCachePath(),
+				parentPath, true);
+		collectionService.createCollection(ruleCacheDir);
+	}
 
-    @Override
-    public boolean ruleCacheExists() {
-        return collectionService.isPathValid(getRuleCachePath());
-    }
+	@Override
+	public boolean ruleCacheExists() throws DataGridConnectionRefusedException, JargonException {
+		return collectionService.isPathValid(getRuleCachePath());
+	}
 }

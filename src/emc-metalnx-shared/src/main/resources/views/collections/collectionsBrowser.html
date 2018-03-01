@@ -24,24 +24,6 @@
 	</div>
 </div>
 
-<!-- Invalid number of steps in history stack -->
-<div class="col-xs-12">
-	<div class="alert alert-danger" role="alert"
-		th:if="${invalidStepsBackwards != null}">
-		<p class="text-center">
-			It is not possible to go "<b th:text="${invalidStepsBackwards}"></b>" steps backwards in history stack.
-		</p>
-	</div>
-</div>
-<div class="col-xs-12">
-	<div class="alert alert-danger" role="alert"
-		th:if="${invalidStepsForward != null}">
-		<p class="text-center">
-			It is not possible to go "<b th:text="${invalidStepsForward}"></b>" steps forward in history stack.
-		</p>
-	</div>
-</div>
-
 <!-- Current Collections Table -->
 <div class="col-xs-12">
 	<div class="alert alert-danger" role="alert"
@@ -243,7 +225,7 @@
 
 	<div id="actionUpload">
         <th:block th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
-         	
+
             <a role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection"
                title="add collection" th:title="#{collections.management.add.button}">
@@ -252,7 +234,7 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
             th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
@@ -260,9 +242,9 @@
                data-target="#uploadModal" data-backdrop="static" data-keyboard="false" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload fa-color"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
-           
+
         </th:block>
-        <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">         	
+        <th:block th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
             <a disabled="true" role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal"
                data-target="#addAndModifyModal" id="showCollectionFormBtn" aria-label="add collection" title="add collection"
                th:title="#{collections.management.add.button}">
@@ -271,11 +253,11 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon" 
+            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
             th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
-            <a disabled="true" role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="add collection" 
+            <a disabled="true" role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="add collection"
                data-target="#uploadModal" id="uploadIcon" title="Upload file(s) to iRods">
                 <i class="fa fa-cloud-upload fa-color"></i><div class="btnLabel"><span th:text="#{collections.upload.button.label}"></span></div>
             </a>
@@ -283,7 +265,8 @@
 	</div>
 </div>
 
-<div class="col-xs-12 main-collbrowse" th:if="${permissionType != 'none' or user.isAdmin()}">
+
+<div class="col-xs-12"> <!--  th:if="${permissionType != 'none' or user.isAdmin()}">-->
     <div class="row browse-collection-files-content">
         <div id="table-loader" class="table-loader col-sm-12 hideElement">
             <div class="panel loading">
@@ -294,7 +277,7 @@
             <table class="table table-hover" id="treeViewTable" summary="Collection list">
                 <thead>
                     <tr>
-                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items" 
+                        <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items"
                         title="select all items"/></th>
                         <th th:text="#{collections.management.table.collection.name.label}"></th>
                         <th th:text="#{collections.management.table.owner.label}"></th>
@@ -394,10 +377,12 @@
 				var advancedView = [[${dataGridUser.isAdvancedView()}]];
 				console.log("collectionBrowser.html advancedView: " + advancedView);
         $(document).ready(function(e){
+        	
+        	console.log("ready");
 
         	if(![[${isCurrentPathCollection}]]){
         		console.log([[${isCurrentPathCollection}]]);
-        		console.log("collectionBrowser - document.getready() ");
+        		console.log("collectionBrowser - getting info details...not a collection ");
         		getInfoDetails([[${currentPath}]]);
         		return;
         	}
@@ -519,6 +504,7 @@
     						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
     						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + full.path + 
         						'" id="open-left-canvas" onclick="getSideCanvas(\'' +full.path+ '\')" class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
+
     					},
     					"width": "20%",
     					"targets": 6
@@ -579,7 +565,7 @@
 			}
 		});
 
-		
+
 
 		function treeViewTableItemOnClick() {
             var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
@@ -684,7 +670,7 @@
 			}
 		}
 
-		
+
         $("#downloadBtn").click(function(e) {
         	e.preventDefault();
         	$("#uploadIcon").prop("disabled", true);
@@ -696,13 +682,13 @@
         	$("#actionsWait").show();
         	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
         	var prepareDownloadURL = $("#downloadBtn").attr("href");
-        	
+
 			var paths = [];
         	$("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
 				paths.push($(this).val());
-				
+
 			});
-			
+
         	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
 			$("#actions button").prop("disabled", true);
         });
@@ -714,14 +700,14 @@
 
 			if (collPath != "") {
 				var oldCollName = collPath.substring(parentPath.length + 1, collPath.length);
-				
+
 			}
 
 			if(collPath == "" || oldCollName != newCollOrDataObjectName) {
 				validateCollectionNameAjax([[${urlMap.URL_COLLECTION_VALIDATE_NAME}]] + newCollOrDataObjectName, submitForm);
-				
+
 			}
-			else {				
+			else {
 				submitForm();
 			}
 		});

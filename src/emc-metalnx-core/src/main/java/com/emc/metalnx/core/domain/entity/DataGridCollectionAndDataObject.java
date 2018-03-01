@@ -46,7 +46,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
 	 * cannot see in iRODS, but is necessary in order to drill down when StrictACLs
 	 * are active
 	 */
-	private boolean isProxy = false;
+	private boolean proxy = false;
 
 	// number of matches on a metadata search
 	private int numberOfMatches;
@@ -458,7 +458,7 @@ public class DataGridCollectionAndDataObject implements Serializable {
 			builder.append("resourceName=").append(resourceName).append(", ");
 		}
 		builder.append("inheritanceOption=").append(inheritanceOption).append(", visibleToCurrentUser=")
-				.append(visibleToCurrentUser).append(", isProxy=").append(isProxy).append(", numberOfMatches=")
+				.append(visibleToCurrentUser).append(", proxy=").append(proxy).append(", numberOfMatches=")
 				.append(numberOfMatches).append("]");
 		return builder.toString();
 	}
@@ -502,10 +502,10 @@ public class DataGridCollectionAndDataObject implements Serializable {
 	}
 
 	public boolean isProxy() {
-		return isProxy;
+		return proxy;
 	}
 
 	public void setProxy(boolean isProxy) {
-		this.isProxy = isProxy;
+		this.proxy = isProxy;
 	}
 }

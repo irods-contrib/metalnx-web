@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
+import org.irods.jargon.core.utils.JargonVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
 			modelAndView.getModelMap().addAttribute("urlMap", urlMap);
 			modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
+			modelAndView.getModelMap().addAttribute("jargonVersion", new JargonVersion());
 			modelAndView.getModelMap().addAttribute("globalConfig", configService.getGlobalConfig());
 
 			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
