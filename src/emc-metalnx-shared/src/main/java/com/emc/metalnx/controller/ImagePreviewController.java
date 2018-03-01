@@ -69,6 +69,14 @@ public class ImagePreviewController {
 		logger.info("getPreviewFilePath() for {} ::" + path);
 		return "collections/imagePreview :: imagePreview";
 	}
+	
+	@RequestMapping(value = "/testPreviewPath", method = RequestMethod.GET)
+	public String testPreviewPath(final HttpServletResponse response, @ModelAttribute("path") String path)
+			throws JargonException {
+		previewFilePath = path;
+		logger.info("getPreviewFilePath() for {} ::" + path);
+		return "collections/imagePreview :: filePreview";
+	}
 
 	@RequestMapping(value = "/preview", method = RequestMethod.GET)
 	public void getImagePreview(final HttpServletResponse response) throws JargonException {

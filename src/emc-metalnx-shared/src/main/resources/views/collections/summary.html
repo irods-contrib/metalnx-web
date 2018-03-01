@@ -29,13 +29,14 @@
 		</div>
 	</div> -->
 	<div id="summary" class="container-fluid">
-		
+
 		<div class="row nopadding">
 
 			<div class="col-sm-4 col-md-4 col-xs-4 pull-right">
 				<div id="actionmenu" class="pull-right">
 					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle text-btn"
+						<button type="button"
+							class="btn btn-default dropdown-toggle text-btn"
 							data-toggle="dropdown" aria-expanded="false">
 							<span>Action</span> <span class="caret" /> <span class="sr-only">Toggle
 								Dropdown</span>
@@ -108,10 +109,15 @@
 						</th:block>
 						<th:block
 							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
-							<li class="collections-view"><span th:text="${ pathItem }"
-								th:title="${ pathItem }"> </span></li>
+							<li class="collections-view">
+								<span th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
 						</th:block>
+						
 					</th:block>
+					<li class="collections-view"><span
+						th:text="${ dataProfile.getChildName() }"
+						th:title="${ dataProfile.getChildName() }"> </span></li>
 					<th:block th:if="${breadcrumb.items.size()} gt 4">
 						<li>...</li>
 						<li><a href="#"
@@ -125,14 +131,15 @@
 							th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
 							th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'">
 						</a></li>
-						<li class="collections-view"><span th:text="${ pathItem }"
-							th:title="${ pathItem }"> </span></li>
+						<li class="collections-view">
+							<span th:text="${ dataProfile.getChildName() }"
+							th:title="${ dataProfile.getChildName() }"> </span>
+						</li>
 					</th:block>
 				</ol>
 
 				<div class="collection-title">
-					<h2 th:text="${ dataProfile.getChildName() }"></h2>
-					<h3>Information</h3>
+					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
 				</div>
 			</div>
 		</div>
@@ -146,8 +153,8 @@
 				<div class="mime-info">
 					<div class="mime-desc">
 
-						<i><span
-							class="mime-object" th:text="${ dataProfile.dataType.mimeType }"></span></i>
+						<i><span class="mime-object"
+							th:text="${ dataProfile.dataType.mimeType }"></span></i>
 					</div>
 				</div>
 			</div>
