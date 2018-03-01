@@ -16,5 +16,5 @@ target/
 test*.properties
 Scripts/
 /.metadata/
-packaging/src
+**/packaging/src
 **/*.bak
