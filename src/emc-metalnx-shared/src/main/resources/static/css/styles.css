@@ -1042,12 +1042,12 @@ span .label {
 .breadcrumb li {
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 10ch;
+    max-width: 25ch;
     white-space: nowrap;
 }
 
 .breadcrumb li:last-child {
-    max-width: 25ch;
+    max-width: 30ch;
 }
 
 #navigationBar{
@@ -1647,7 +1647,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .sidebar ul li a i{
   order:2;
   display: block;
-  font-size: 1.0em;
+  font-size: 1.7em;
 }
 .sidebar ul li a:hover, .sidebar ul li a:focus, .sidebar ul li a.active{
     color: #046383;
@@ -2186,10 +2186,10 @@ form.registerForm .bootstrap-tagsinput {
 @media (min-width: 1200px) {
     .breadcrumb li:nth-last-child(2),
     .breadcrumb li:nth-last-child(3) {
-        max-width:15ch;
+        max-width:25ch;
     }
     .breadcrumb li:last-child {
-        max-width: 25ch;
+        max-width: 35ch;
     }
     #editable-path {
     	    width:85%;
@@ -2475,6 +2475,66 @@ td a {
       color: #000000;
   }
 
+
+  .sideCanvas
+  {
+  	width: 30%;
+  	min-height: 100%;
+  	padding: 15px;
+  	box-sizing: border-box;
+  	background: #E0EBF3;
+  	color: black;
+  	position: absolute;
+  	top: 0;
+  	right: 0;
+  	z-index: 999;
+  	display: none;
+  }
+
+  .main-collbrowse
+  {
+  	width: 100%;
+  	min-height: 100%;
+  	padding: 30px;
+  	box-sizing: border-box;
+  }
+
+.closeCanvasbtn{
+  color: #287EA1;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+  opacity: 1;
+
+}
+.canvasMimetype{
+    padding: 15px;
+    background-color: #f2f6f9;
+    border-radius: 5px;
+}
+
+.thick {
+    font-weight: bold;
+}
+.thicker {
+    font-weight: 900;
+}
+.fa-small{
+    font-size: 6px;
+}
+.word-wrap{
+  overflow-wrap: break-word
+}
+
+.property-tab{
+    padding: 15px 15px 25px 15px;
+}
+
+.imageinfo{
+  max-width:100%;
+  max-height:100%;
+}
 /*.topnav{
   //width:100%;
   //position: relative;
@@ -2498,8 +2558,7 @@ td a {
 .color-blue{
   color:blue;
 }
-<<<<<<< HEAD
-=======
+
 .disabled {
     pointer-events:none; //This makes it not clickable
     opacity:0.6;         //This grays it out to look disabled
@@ -2509,7 +2568,6 @@ td a {
 td a {
   cursor: pointer;
 }
->>>>>>> 9387047d5acd5e69f4b9e2fa012a2e5c1df7b3de
 
 .font-awesometemplate {
     text-shadow: 1px 1px 1px #ccc;
