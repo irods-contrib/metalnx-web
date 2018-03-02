@@ -100,7 +100,7 @@
 		    "columnDefs": [
                 {
                 	"render": function ( data, type, full, meta ) {
-						return '<a href="#" onclick="openInCollView(\''+full.path+'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
+						return '<a href="#" onclick="openInCollView(\''+ full.path +'\')"><i class="'+full.displayIcon+'"></i>'+full.name+'</a>';
 					},
 					"width": "35%",
 					"targets": 0
@@ -128,36 +128,14 @@
             ]
 		});
 		
-		
-		
 		function openInCollView(path) {
 			window.open(
-					  '/emc-metalnx-web/collections' + path,
-					  '_blank' // <- This is what makes it open in a new window.
+					  '/emc-metalnx-web/collections' + encodeURI(path),
+					  '_self' // <- This is what makes it open in a new window.
 					);
 		}
 
-		// FIXME: remove old nav - mcc
-		function redirectToCollections(path){
-			ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFavoritesToCollections/", "POST", {path: path},
-				function(){
-					window.location = "/emc-metalnx-web/collections/";
-			}, null, null, null);
-		}
-		function unstarItem(path, icon){
-			ajaxEncapsulation(
-				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
-				"GET",
-				{path: path},
-				function(data){
-					if(data.indexOf("OK") >= 0){
-					    datatable.row($(this).parents('tr')).remove().draw();
-					}else{
-						$('#unfavFailMsg').show();
-					}
-				}, null, null, null
-			);
-		}
+		
 		/*]]>*/
 		</script>
 
