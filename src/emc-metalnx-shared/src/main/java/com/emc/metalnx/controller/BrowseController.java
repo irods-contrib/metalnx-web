@@ -132,7 +132,7 @@ public class BrowseController {
 
 	@Autowired
 	HeaderService headerService;
-
+	
 	// parent path of the current directory in the tree view
 	private String parentPath;
 
@@ -543,17 +543,40 @@ public class BrowseController {
 	@RequestMapping(value = "modify/action", method = RequestMethod.POST)
 	public String modifyAction(@ModelAttribute final CollectionOrDataObjectForm collForm,
 			final RedirectAttributes redirectAttributes) throws DataGridException {
+		logger.info("modify/action starts...");
 		String previousPath = collForm.getPath();
 		String parentPath = previousPath.substring(0, previousPath.lastIndexOf("/"));
 		String newPath = String.format("%s/%s", parentPath, collForm.getCollectionName());
-
-		logger.info("Modify action for " + previousPath + "/" + newPath);
+		logger.info("previousPath: "+ previousPath);
+		logger.info("parentPath: " + parentPath);
+		logger.info("newPath: "+ newPath);
+		logger.info("Path values used to modify/action previousPath: {} to newPath: {}", previousPath, newPath);
+		
+		
 		boolean modificationSuccessful = cs.modifyCollectionAndDataObject(previousPath, newPath,
 				collForm.getInheritOption());
-
+		
+		// checking if the previousPath collection/dataobject was marked as favorite: 
+		String username = irodsServices.getCurrentUser();
+		String zoneName = irodsServices.getCurrentUserZone();
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
+		boolean isMarkedFavorite = favoritesService.isPathFavoriteForUser(user, previousPath);
+		logger.info("Favorite status for previousPath: " + previousPath + " is: " + String.valueOf(isMarkedFavorite) );
+		
 		if (modificationSuccessful) {
 			logger.debug("Collection/Data Object {} modified to {}", previousPath, newPath);
-
+			
+			if (isMarkedFavorite) {
+				Set<String> toAdd = new HashSet<String>();
+				toAdd.add(newPath);
+				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+				if (operationResult) {
+					logger.info("Favorite re-added successfully for: " + newPath);
+				}
+				else {
+					logger.info("Error re-adding favorite to: " + newPath);
+				}
+			}
 			userBookmarkService.updateBookmark(previousPath, newPath);
 			groupBookmarkService.updateBookmark(previousPath, newPath);
 
