@@ -211,22 +211,22 @@ public class GroupBookmarkDaoImpl extends GenericDaoImpl<DataGridGroupBookmark, 
 
 	@Override
 	public boolean updateBookmark(String oldPath, String newPath) {
-		logger.debug("Updating bookmark");
+		logger.info("Updating bookmark for group");
 		
 		if (oldPath == null || newPath == null) {
-			logger.debug("Could not update bookmark. Null values provided");
+			logger.info("Could not update bookmark for group. Null values provided");
 			return false;
 		}
 		
 		if (oldPath.equals(newPath)) {
-			logger.debug("Old bookmark is the same as the new one. No need for an update.");
+			logger.info("Old bookmark is the same as the new one. No need for an update.");
 			return false;
 		}
 		
         Query q = sessionFactory.getCurrentSession().createQuery("update DataGridGroupBookmark set path = :newPath where path = :oldPath");
         q.setString("newPath", newPath);
         q.setString("oldPath", oldPath);
-        
+        logger.info("update query for group: " + q);
         return q.executeUpdate() > 0;		
 	}
 
