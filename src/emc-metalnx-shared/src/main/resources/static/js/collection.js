@@ -41,7 +41,7 @@ function getPermissionDetails(path){
 function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
 	window.location.hash = "preview";
-	var url = "/emc-metalnx-web/preview/prepareForPreview/";
+	var url = "/emc-metalnx-web/previewPreparation/";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
 }
 
@@ -135,15 +135,12 @@ function deleteInfoAction(path){
 			{paths: paths},
 			function (data) {
 				unsetOperationInProgress();
-				//resetDataTablesStart();
 				$('#actionsWait').hide();
-				//$("#tree-view-panel-body").html(data);
-
+				$('#deleteConfirmationModal').modal();				
 			}
 	);
 	$("#deleteModal").modal("hide");
 	cleanModals();
-	//window.location.href = "/emc-metalnx-web/browse/home";
 }
 
 function cleanModals() {

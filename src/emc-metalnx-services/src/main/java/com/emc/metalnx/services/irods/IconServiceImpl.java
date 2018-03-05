@@ -21,8 +21,6 @@ public class IconServiceImpl implements IconService {
 		myMap.put("image/jpeg", new IconObject("File" , "fa fa-file-image-o"));
 		myMap.put("image/png", new IconObject("File" , "fa fa-file-image-o"));
 		myMap.put("image/gif", new IconObject("File" , "fa fa-file-image-o"));
-		myMap.put("image/jpeg", new IconObject("File" , "fa fa-file-image-o"));
-		myMap.put("image/jpeg", new IconObject("File" , "fa fa-file-image-o"));
 		myMap.put("application/pdf", new IconObject("File" , "fa fa-file-pdf-o"));
 		
 		return myMap;

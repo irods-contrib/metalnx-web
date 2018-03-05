@@ -16,18 +16,7 @@
 
 <th:block th:fragment="summaryView">
 
-	<!-- <div class="col-sm-12">
-		<div
-			th:if="${failedDeletions != null and #lists.isEmpty(failedDeletions)}"
-			class="alert alert-success alert-dismissible text-center" role="alert">
-			<button type="button" class="close" data-dismiss="alert" title="Close">
-				<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-			</button>
-			<span th:if="${fileDeleted != null}"
-				th:text="|The file ${fileDeleted} was successfully deleted.|"></span>
-			<span th:unless="${fileDeleted != null}" th:text="#{collection.browser.files.deleted.success}"></span>
-		</div>
-	</div> -->
+	
 	<div id="summary" class="container-fluid">
 
 		<div class="row nopadding">
@@ -208,7 +197,22 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<!-- Delete Confirmation -->
 
+	<div id="deleteConfirmationModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">			
+				<div class="modal-body text-cente">
+					<strong>Success!</strong> The file was successfully deleted.<a
+						href="/emc-metalnx-web/browse/home">Go Back to Collection</a>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
 	<!-- Rename Modal -->
 
 	<div class="modal fade" id="renameModal" tabindex="-1" role="dialog"

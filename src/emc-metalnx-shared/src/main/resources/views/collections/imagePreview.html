@@ -17,8 +17,8 @@
 <th:block th:fragment="imagePreview">
 	<div class="col-md-12 panel property-tab collection-tabs">
 		<div>
-			<img src="/emc-metalnx-web/image/preview/" alt="imagePreview"
-				class="imageinfo" />
+			<img src="/emc-metalnx-web/preview/fileObjectPreview/" alt="imagePreview"
+				class="preview" />
 		</div>
 	</div>
 </th:block>
@@ -27,7 +27,7 @@
 	<div class="col-md-12 panel property-tab collection-tabs">
 		<div>
 			<img th:src="@{/images/comingsoon.png}" alt="noPreview"
-				class="imageinfo" />
+				class="preview" />
 		</div>
 	</div>
 </th:block>
@@ -36,16 +36,16 @@
 	<div class="col-md-12 panel property-tab collection-tabs">
 		<div>
 			<img th:src="@{/images/noPermission.jpg}" alt="noPermission"
-				class="imageinfo" />
+				class="preview" />
 		</div>
 	</div>
 </th:block>
 
 <th:block th:fragment="filePreview">
 	<div class="col-md-12 panel property-tab collection-tabs">
-		gfhgfhgfhf
 		<div>
-			<iframe th:src="@{/images/FitnessCenterpage1.pdf}" class="imageinfo">
+			<iframe type="application/pdf" src="/emc-metalnx-web/preview/fileObjectPreview/" 
+			class="preview">
 			</iframe>
 		</div>
 	</div>
