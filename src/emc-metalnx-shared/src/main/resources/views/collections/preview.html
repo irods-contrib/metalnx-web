@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+	<div th:fragment="imagePreview">
+		<div class="col-md-12 panel property-tab collection-tabs">
+				<img src="/emc-metalnx-web/preview/dataObjectPreview/"
+					alt="imagePreview" class="preview" />
+		</div>
+	</div>
+
+	<div th:fragment="noPreview">
+		<div class="col-md-12 panel property-tab collection-tabs">
+				<img th:src="@{/images/comingsoon.png}" alt="noPreview"
+					class="preview" />
+		</div>
+	</div>
+
+	<div th:fragment="noPermission">
+		<div class="col-md-12 panel property-tab collection-tabs">
+				<img th:src="@{/images/noPermission.jpg}" alt="noPermission"
+					class="preview" />
+		</div>
+	</div>
+
+	<div th:fragment="pdfFilePreview">
+		<div class="col-md-12 panel property-tab collection-tabs">
+				<iframe 
+					src="/emc-metalnx-web/preview/dataObjectPreview/" class="preview">
+				</iframe>				
+		</div>
+	</div>
+	
+	<div th:fragment="cmFilePreview">
+		<div class="col-md-12 panel property-tab collection-tabs">
+			<textarea class="cm-textarea"></textarea>
+			<button th:onclick="'javascript:save();'">Save</button>
+			<button th:onclick="'javascript:cancel();'">Cancel</button>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/jquery-ui.min.js}"></script>			
+		<script type="text/javascript" th:src="@{/js/preview.js}"></script>	
+	</div>		
+</body>
+</html>
+

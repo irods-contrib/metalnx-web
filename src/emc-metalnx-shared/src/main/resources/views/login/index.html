@@ -47,7 +47,7 @@
 	<body>
         <div class="login">
             <div class="login_title">
-                <img alt="EMC logo" th:src="@{/images/datacommons_logo.svg}" />
+                <h1 th:text="#{login.title}"></h1>
             </div>
             <div class="login_fields">
                 <form action="#" th:action="@{/login/authenticate/}" method="POST" id="authLogin">

@@ -357,6 +357,7 @@
 									resource.location.fonts=/fonts/,classpath:static/fonts/
 									resource.location.css=/css/,classpath:static/css/
 									resource.location.js=/js/,classpath:static/js/
+									resource.location.images=/images/,classpath:static/plugins/
 									resource.location.i18=classpath:i18n/messages
 									resource.location.i18-users=classpath:i18n-users/messages
 									

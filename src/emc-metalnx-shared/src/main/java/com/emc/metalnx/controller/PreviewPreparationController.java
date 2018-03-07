@@ -84,7 +84,7 @@ public class PreviewPreparationController {
 				throw new DataGridException(e.getLocalizedMessage());
 			}
 		}else {						
-			return "collections/imagePreview :: noPermission";
+			return "collections/preview :: noPermission";
 		}
 		
 

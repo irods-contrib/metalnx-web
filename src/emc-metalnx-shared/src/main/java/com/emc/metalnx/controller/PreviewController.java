@@ -96,7 +96,7 @@ public class PreviewController {
 	}
 	
 
-	@RequestMapping(value = "/fileObjectPreview", method = RequestMethod.GET)
+	@RequestMapping(value = "/dataObjectPreview", method = RequestMethod.GET)
 	public void getPreview(final HttpServletResponse response) throws JargonException {
 		previewService.filePreview(previewFilePath,previewMimeType, response);
 	}

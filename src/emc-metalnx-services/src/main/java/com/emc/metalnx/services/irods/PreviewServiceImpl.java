@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
-import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -36,22 +35,30 @@ public class PreviewServiceImpl implements PreviewService {
 	@Autowired
 	CollectionService collectionService;
 
-	private static final String CONTENT_TYPE = "application/octet-stream";
-	
 	private static final Logger logger = LoggerFactory.getLogger(PreviewServiceImpl.class);
 	
 	private static final Map<String,String> myMap = createMapToGetTemplate();
 	private static Map<String, String> createMapToGetTemplate()
 	{
 		Map<String, String> myMap = new HashMap<String, String>();
-		myMap.put("image/jpg", "collections/imagePreview :: imagePreview");
-		myMap.put("image/jpeg", "collections/imagePreview :: imagePreview");
-		myMap.put("image/png", "collections/imagePreview :: imagePreview");
-		myMap.put("image/gif", "collections/imagePreview :: imagePreview");
-		myMap.put("application/pdf", "collections/imagePreview :: filePreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/imagePreview :: filePreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/imagePreview :: filePreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "collections/imagePreview :: filePreview");
+		myMap.put("image/jpg", "collections/preview :: imagePreview");
+		myMap.put("image/jpeg", "collections/preview :: imagePreview");
+		myMap.put("image/png", "collections/preview :: imagePreview");
+		myMap.put("image/gif", "collections/preview :: imagePreview");
+		myMap.put("application/pdf", "collections/preview :: pdfFilePreview");
+		myMap.put("text/plain", "collections/preview :: cmFilePreview");
+		
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/preview :: filePreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/preview :: filePreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "collections/preview :: filePreview");
+		myMap.put("application/vnd.ms-excel", "collections/preview :: filePreview");
+		myMap.put("text/csv", "collections/preview :: filePreview");
+		myMap.put("application/msword", "collections/preview :: filePreview");
+		
+		
+		
+		
+		
 		/*myMap.put("application/vnd.ms-excel.template.macroenabled.12", "collections/imagePreview :: filePreview");
 		myMap.put("application/vnd.ms-excel.sheet.macroenabled.12", "collections/imagePreview :: filePreview");
 */		
@@ -109,16 +116,12 @@ public class PreviewServiceImpl implements PreviewService {
 
 	@Override
 	public String getTemplate(String mimeType) {
-
-		String template = "collections/imagePreview :: noPreview";
-		
+		String template = "collections/preview :: noPreview";		
 		if(myMap.containsKey(mimeType)) 
 			template = myMap.get(mimeType);			
 		
 		return template;
 	}
-
-
 
 
 }

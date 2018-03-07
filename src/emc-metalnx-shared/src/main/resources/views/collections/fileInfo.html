@@ -3,7 +3,9 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.thymeleaf.org" lang="en"
 	layout:decorator="template">
-
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/codemirror/lib/codemirror.css}" />
+</head>
 <body>
 	<div class="row">
 
@@ -45,14 +47,13 @@
 						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
 						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
 						<div id="preview" class="tab-pane fade" role="tabpanel">
-							<img id="previewFile"/>
 						</div>
 
 					</div>
 				</div>
-			</div>
-
-
+			
+			
+			<script type="text/javascript" th:src="@{/plugins/codemirror/lib/codemirror.js}"></script>		
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 			<script th:inline="javascript">
 				$(document).ready(function(e) {
@@ -78,6 +79,7 @@
 
 				});
 			</script>
+			</div>
 		</div>
 	</div>
 </body>

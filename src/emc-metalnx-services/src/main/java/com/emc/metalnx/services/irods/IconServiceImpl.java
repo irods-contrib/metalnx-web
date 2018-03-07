@@ -22,6 +22,11 @@ public class IconServiceImpl implements IconService {
 		myMap.put("image/png", new IconObject("File" , "fa fa-file-image-o"));
 		myMap.put("image/gif", new IconObject("File" , "fa fa-file-image-o"));
 		myMap.put("application/pdf", new IconObject("File" , "fa fa-file-pdf-o"));
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", new IconObject("File" , "fa fa-file-excel-o"));
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", new IconObject("File" , "fa fa-file-excel-o"));
+		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", new IconObject("File" , "fa fa-file-word-o"));
+		myMap.put("text/csv", new IconObject("File" , "fa fa-file-excel-o"));
+		myMap.put("text/plain", new IconObject("File" , "fa fa-file-text-o"));
 		
 		return myMap;
 	}
@@ -35,7 +40,7 @@ public class IconServiceImpl implements IconService {
 		if(myMap.containsKey(mimeType)) 
 			iconObj = myMap.get(mimeType);			
 		else
-			iconObj = new IconObject("File" , "fa fa-file-pdf-o");
+			iconObj = new IconObject("File" , "fa fa-file");
 		
 		return iconObj;
 
