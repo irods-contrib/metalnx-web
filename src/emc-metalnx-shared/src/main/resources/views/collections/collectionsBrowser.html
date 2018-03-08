@@ -217,6 +217,7 @@
 <!-- Bread Crumb -->
 <div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
 </div>
+
 <div class="col-md-2 col-sm-3 col-xs-12">
 	<a aria-label="empty trash" title="empty trash" href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
 		<span class="glyphicon glyphicon-trash"></span>
@@ -234,8 +235,8 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
-            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+            <a role="button" class="btn btn-default icon-btn"  id="infoIcon"
+            th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="upload files"
@@ -253,8 +254,8 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
-            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+            <a role="button" class="btn btn-default icon-btn"  id="infoIcon"
+            th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a disabled="true" role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="add collection"
@@ -442,7 +443,7 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
+    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+encodeURI(full.path)+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
@@ -477,8 +478,8 @@
                    	{
                     	"render": function ( data, type, full, meta ) {
 
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path +
-    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
+    						return '<a class="btn btn-default btn-xs" name="' + full.path +
+    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
     					},
     					"width": "13%",
     					"targets": 4
