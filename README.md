@@ -131,6 +131,11 @@ from any of these search views opens the collections view using the deep link ap
 experience that can suffice until the collections browser can be refactored to unify all of these searches into the same view.
 Maps to NIEHS #70
 
+#### URL encoding issues with collection browser links
+
+While still somewhat transitional (still some inconsistancies in how URLs and javascript methods operate) this generally improves support
+for files with embedded spaces and special characters. NIES #134
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

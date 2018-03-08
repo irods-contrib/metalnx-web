@@ -70,6 +70,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
 import com.emc.metalnx.core.domain.exceptions.UnsupportedDataGridFeatureException;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -103,6 +104,9 @@ public class CollectionServiceImpl implements CollectionService {
 	PermissionsService permissionsService;
 	@Autowired
 	FileOperationService fileOperationService;
+	@Autowired
+	FavoritesService favoritesService;
+	
 
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
@@ -501,7 +505,8 @@ public class CollectionServiceImpl implements CollectionService {
 					irodsFileSystemAO.renameFile(previousFile, newFile);
 				}
 			}
-
+			
+					
 			// Updating inheritance option on the collection, if needed
 			String zoneName = irodsFileSystemAO.getIRODSServerProperties().getRodsZone();
 			if (isDirectory) {

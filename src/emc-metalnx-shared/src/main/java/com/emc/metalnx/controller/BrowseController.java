@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.controller;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Transitional controller factors out all sub functions of the
  * {@link CollectionController} so that this controller can respond to 'deep
  * linkable' paths, including from breadcrumbs in the info pages
- * 
+ *
  * @author Mike Conway - NIEHS
  *
  */
@@ -392,6 +393,8 @@ public class BrowseController {
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
 		model.addAttribute("currentPath", path);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("readPermissions", readPermissions);
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
@@ -456,6 +459,8 @@ public class BrowseController {
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
 		model.addAttribute("currentPath", path);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("readPermissions", readPermissions);
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
@@ -543,17 +548,38 @@ public class BrowseController {
 	@RequestMapping(value = "modify/action", method = RequestMethod.POST)
 	public String modifyAction(@ModelAttribute final CollectionOrDataObjectForm collForm,
 			final RedirectAttributes redirectAttributes) throws DataGridException {
+		logger.info("modify/action starts...");
 		String previousPath = collForm.getPath();
 		String parentPath = previousPath.substring(0, previousPath.lastIndexOf("/"));
 		String newPath = String.format("%s/%s", parentPath, collForm.getCollectionName());
+		logger.info("previousPath: " + previousPath);
+		logger.info("parentPath: " + parentPath);
+		logger.info("newPath: " + newPath);
+		logger.info("Path values used to modify/action previousPath: {} to newPath: {}", previousPath, newPath);
 
-		logger.info("Modify action for " + previousPath + "/" + newPath);
 		boolean modificationSuccessful = cs.modifyCollectionAndDataObject(previousPath, newPath,
 				collForm.getInheritOption());
+
+		// checking if the previousPath collection/dataobject was marked as favorite:
+		String username = irodsServices.getCurrentUser();
+		String zoneName = irodsServices.getCurrentUserZone();
+		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
+		boolean isMarkedFavorite = favoritesService.isPathFavoriteForUser(user, previousPath);
+		logger.info("Favorite status for previousPath: " + previousPath + " is: " + String.valueOf(isMarkedFavorite));
 
 		if (modificationSuccessful) {
 			logger.debug("Collection/Data Object {} modified to {}", previousPath, newPath);
 
+			if (isMarkedFavorite) {
+				Set<String> toAdd = new HashSet<String>();
+				toAdd.add(newPath);
+				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+				if (operationResult) {
+					logger.info("Favorite re-added successfully for: " + newPath);
+				} else {
+					logger.info("Error re-adding favorite to: " + newPath);
+				}
+			}
 			userBookmarkService.updateBookmark(previousPath, newPath);
 			groupBookmarkService.updateBookmark(previousPath, newPath);
 
@@ -618,61 +644,7 @@ public class BrowseController {
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
 		model.addAttribute("topnavHeader", headerService.getheader("collections"));
-		return "redirect:/collections" + currentPath;
-	}
-
-	/**
-	 * Responds the collections/public request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 */
-	@RequestMapping(value = "/public")
-	public String publicCollection(final Model model) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		currentPath = cs.getHomeDirectyForPublic();
-		parentPath = currentPath;
-
-		model.addAttribute("publicPath", currentPath);
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-		model.addAttribute("topnavHeader", headerService.getheader("public"));
-		System.out.println("#################public");
-		return "redirect:/collections" + currentPath;
-	}
-
-	/**
-	 * Responds the collections/trash request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 * @throws DataGridException
-	 */
-	@RequestMapping(value = "/trash")
-	public String trashCollection(final Model model) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		if (userTrashPath == null || userTrashPath.equals("")) {
-			userTrashPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(),
-					irodsServices.getCurrentUser());
-		}
-		currentPath = userTrashPath;
-		parentPath = currentPath;
-
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-		model.addAttribute("topnavHeader", headerService.getheader("trash"));
-
-		System.out.println("#################Trash");
-		return "redirect:/collections" + currentPath;
+		return "redirect:/collections?path=" + currentPath;
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
@@ -706,6 +678,7 @@ public class BrowseController {
 	 * @return True, if the collection name can be used. False, otherwise.
 	 * @throws DataGridConnectionRefusedException
 	 */
+	// FIXME: urlencode? - mcc
 	@ResponseBody
 	@RequestMapping(value = "isValidCollectionName/{newObjectName}/", method = RequestMethod.GET, produces = {
 			"text/plain" })
@@ -831,7 +804,7 @@ public class BrowseController {
 
 	/**
 	 * Removes a path from the user's navigation history
-	 * 
+	 *
 	 * @param path
 	 *            path to be removed
 	 */
@@ -979,6 +952,8 @@ public class BrowseController {
 		model.addAttribute("isTrash", isTrash);
 		model.addAttribute("permissionType", permissionType);
 		model.addAttribute("currentPath", currentPath);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("isCurrentPathCollection", cs.isCollection(path));
 		model.addAttribute("user", user);
 		model.addAttribute("trashColl", cs.getTrashForPath(currentPath));

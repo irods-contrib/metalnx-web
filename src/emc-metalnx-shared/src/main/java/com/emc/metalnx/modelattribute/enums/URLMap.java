@@ -85,9 +85,10 @@ public class URLMap {
 	public static final String URL_DELETE_SPECIFIC_QUERY = "/emc-metalnx-web/specificqueries/remove/";
 	public static final String URL_SPECIFIC_QUERY_VALIDATE = "/emc-metalnx-web/specificqueries/validate/";
 
-	public static final String URL_HOME_COLLECTION_USER = "/browse/home";
-	public static final String URL_PUBLIC_COLLECTION_USER = "/browse/public/";
-	public static final String URL_TRASH_COLLECTION_USER = "/browse/trash/";
+	public static final String URL_TRASH_COLLECTION_USER = "/trash/getTrash/";	
+	public static final String URL_PUBLIC_COLLECTION_USER = "/public/getPublic/";
+	
+	public static final String URL_HOME_COLLECTION_USER = "/browse/home/";	
 	public static final String URL_ADD_COLLECTION_USER = "/emc-metalnx-web/browse/add/";
 	public static final String URL_MODIFY_COLLECTION_USER = "/emc-metalnx-web/fileOperation/modify/";
 	public static final String URL_DELETE_COLLECTION_USER = "/fileOperation/delete/";

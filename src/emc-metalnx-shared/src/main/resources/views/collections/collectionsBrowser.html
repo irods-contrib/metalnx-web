@@ -217,6 +217,7 @@
 <!-- Bread Crumb -->
 <div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12" th:include="${'collections/collectionsBreadCrumb'}">
 </div>
+
 <div class="col-md-2 col-sm-3 col-xs-12">
 	<a aria-label="empty trash" title="empty trash" href="#" th:if="${isTrash}" id="emptyTrashBtn" th:title="#{collections.empty.trash.button.tooltip}" class="pull-right btn btn-default" data-toggle="modal" data-target="#emptyTrashModal">
 		<span class="glyphicon glyphicon-trash"></span>
@@ -234,8 +235,8 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
-            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+            <a role="button" class="btn btn-default icon-btn"  id="infoIcon"
+            th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="upload files"
@@ -253,8 +254,8 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
-            th:onclick="'javascript:getCollectionSummary(\'' + ${currentPath} + '\');'" title="View info">
+            <a role="button" class="btn btn-default icon-btn"  id="infoIcon"
+            th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
             <a disabled="true" role="button" href="#" class="btn btn-default icon-btn" data-toggle="modal" aria-label="add collection"
@@ -279,8 +280,8 @@
                         <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items"
                         title="select all items"/></th>
                         <th th:text="#{collections.management.table.collection.name.label}"></th>
-                        <th th:text="#{collections.management.table.owner.label}"></th>
-                        <th th:text="#{collections.management.table.kind.label}"></th>
+                        <!-- <th th:text="#{collections.management.table.owner.label}"></th>
+                        <th th:text="#{collections.management.table.kind.label}"></th> -->
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
                         <th th:text="#{collections.management.table.action.label}"></th>
@@ -355,12 +356,8 @@
         var datatable;
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
 				var advancedView = [[${dataGridUser.isAdvancedView()}]];
-				console.log("collectionBrowser.html advancedView: " + advancedView);
-        $(document).ready(function(e){
-        	
-        	console.log("ready");
-
-        	if(![[${isCurrentPathCollection}]]){
+				$(document).ready(function(e){
+        	 	if(![[${isCurrentPathCollection}]]){
         		console.log([[${isCurrentPathCollection}]]);
         		console.log("collectionBrowser - getting info details...not a collection ");
         		getInfoDetails([[${currentPath}]]);
@@ -446,14 +443,14 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
+    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+encodeURI(full.path)+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
     					"targets": 1
                     },
 
-                    {
+                   /*  {
                     	"data": "owner",
                     	"width": "10%",
                     	"targets": 2
@@ -465,27 +462,27 @@
                     	"width": "10%",
                     	"targets": 3,
                     	"orderable": false
-                   	},
+                   	},*/
                     {
                     	"data": "modifiedAtFormatted",
                     	"width": "15%",
-                    	"targets": 4
+                    	"targets": 2
                    	},
                     {
                     	"render": function ( data, type, full, meta ){
                     		return full.collection? "-" : full.displaySize
                     	},
                     	"width": "13%",
-                    	"targets": 5
+                    	"targets": 3
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
 
-    						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path +
-    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
+    						return '<a class="btn btn-default btn-xs" name="' + full.path +
+    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
     					},
     					"width": "13%",
-    					"targets": 6
+    					"targets": 4
                     }
 
                 ]

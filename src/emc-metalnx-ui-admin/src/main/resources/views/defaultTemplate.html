@@ -157,6 +157,11 @@
 		    }else if(current_url.indexOf([[@{ ${urlMap.URL_GROUPS_BOOKMARKS} }]]) >= 0){
 		        $("#side-menu a[href='"+[[@{${urlMap.URL_USER_BOOKMARKS}}]]+"']").addClass("active");
 		        set_active_class = true;
+		    //making trash side-menu option active
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_TRASH_COLLECTION_USER} }]]) >= 0){
+		    	console.log("issue 145 trash block passed")
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
+		        set_active_class = true;
 	        //every other link
 		    }else if((current_url.indexOf($(this).attr('href')) >= 0)){
 				$(this).addClass("active");
