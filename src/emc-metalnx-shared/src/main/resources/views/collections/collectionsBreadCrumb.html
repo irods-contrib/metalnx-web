@@ -47,14 +47,14 @@
                         <a  aria-label="path breadcrumb for: /*[[${breadcrumb.items[breadcrumb.items.size()-3].name} ]]*/"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="positionBrowserToPath(encodeURI(\'/*[[${ breadcrumb.items[breadcrumb.items.size()-3].path }]]*/)\')">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
                         </a>
                     </li>
                     <li >
                         <a 
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="positionBrowserToPath(encodeURI(\'/*[[${ breadcrumb.items[breadcrumb.items.size()-2].path }]]*/)\')">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
                         </a>
                     </li>
                     <li class="collections-view">

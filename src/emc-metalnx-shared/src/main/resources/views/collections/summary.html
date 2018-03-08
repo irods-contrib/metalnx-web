@@ -86,6 +86,8 @@
 					</div>
 				</div>
 			</div>
+			
+			
 			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
 				<ol class="breadcrumb">
 					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
@@ -97,7 +99,7 @@
 								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
 								th:text="${breadcrumbItem.name}"
 								th:title="${breadcrumbItem.path}"
-								th:onclick="'javascript:positionBrowserToPath(\'encodeURI(${ breadcrumbItem.path })\');'">
+                                th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
 							</a></li>
 						</th:block>
 						<th:block
@@ -112,12 +114,12 @@
 							aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-							th:onclick="'javascript:positionBrowserToPath(\' encodeURI(${ breadcrumb.items[breadcrumb.items.size()-3].path }) + \');'">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
 						</a></li>
 						<li><a href="#"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-							th:onclick="'javascript:positionBrowserToPath(\' + encodeURI(${ breadcrumb.items[breadcrumb.items.size()-2].path }) + \');'">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
 						</a></li>
 						<li class="collections-view"><span th:text="${ pathItem }"
 							th:title="${ pathItem }"> </span></li>
