@@ -15,17 +15,20 @@
   -->
 <div class="breadcrumb-wrapper">
 
+
+
          <ol class="breadcrumb">
          		<li>
          			<a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i class="fa fa-home"></i></a>
          		</li>
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+                     
                         <li>
-                            <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+                            <a  href="#" aria-label="'path breadcrumb for:"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
-                                th:onclick="'javascript:positionBrowserToPath(encodeURI(\'${ breadcrumbItem.path) }\'));'">
+                                th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
                             </a>
                         </li>
                     </th:block>
@@ -41,17 +44,17 @@
                 <th:block th:if="${breadcrumb.items.size()} gt 3">
                     <li>...</li>
                     <li>
-                        <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
+                        <a  aria-label="path breadcrumb for: /*[[${breadcrumb.items[breadcrumb.items.size()-3].name} ]]*/"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="'javascript:positionBrowserToPath(encodeURI(\'${ breadcrumb.items[breadcrumb.items.size()-3].path })\');'">
+                            th:onclick="positionBrowserToPath(encodeURI(\'/*[[${ breadcrumb.items[breadcrumb.items.size()-3].path }]]*/)\')">
                         </a>
                     </li>
                     <li >
-                        <a  href="#"
+                        <a 
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="'javascript:positionBrowserToPath(encodeURI(\'${ breadcrumb.items[breadcrumb.items.size()-2].path })\');'">
+                            th:onclick="positionBrowserToPath(encodeURI(\'/*[[${ breadcrumb.items[breadcrumb.items.size()-2].path }]]*/)\')">
                         </a>
                     </li>
                     <li class="collections-view">
