@@ -280,8 +280,8 @@
                         <th class="tableCheckBoxCol"><input type="checkbox" name="selectAllCheckboxes" value="1" th:disabled="${currentPath == '/'}" aria-label="select all items"
                         title="select all items"/></th>
                         <th th:text="#{collections.management.table.collection.name.label}"></th>
-                        <th th:text="#{collections.management.table.owner.label}"></th>
-                        <th th:text="#{collections.management.table.kind.label}"></th>
+                        <!-- <th th:text="#{collections.management.table.owner.label}"></th>
+                        <th th:text="#{collections.management.table.kind.label}"></th> -->
                         <th th:text="#{collections.management.table.modified.label}"></th>
                         <th th:text="#{collections.management.table.size.label}"></th>
                         <th th:text="#{collections.management.table.action.label}"></th>
@@ -356,12 +356,8 @@
         var datatable;
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
 				var advancedView = [[${dataGridUser.isAdvancedView()}]];
-				console.log("collectionBrowser.html advancedView: " + advancedView);
-        $(document).ready(function(e){
-        	
-        	console.log("ready");
-
-        	if(![[${isCurrentPathCollection}]]){
+				$(document).ready(function(e){
+        	 	if(![[${isCurrentPathCollection}]]){
         		console.log([[${isCurrentPathCollection}]]);
         		console.log("collectionBrowser - getting info details...not a collection ");
         		getInfoDetails([[${currentPath}]]);
@@ -454,7 +450,7 @@
     					"targets": 1
                     },
 
-                    {
+                   /*  {
                     	"data": "owner",
                     	"width": "10%",
                     	"targets": 2
@@ -466,18 +462,18 @@
                     	"width": "10%",
                     	"targets": 3,
                     	"orderable": false
-                   	},
+                   	},*/
                     {
                     	"data": "modifiedAtFormatted",
                     	"width": "15%",
-                    	"targets": 4
+                    	"targets": 2
                    	},
                     {
                     	"render": function ( data, type, full, meta ){
                     		return full.collection? "-" : full.displaySize
                     	},
                     	"width": "13%",
-                    	"targets": 5
+                    	"targets": 3
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
@@ -486,7 +482,7 @@
     						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a>';
     					},
     					"width": "13%",
-    					"targets": 6
+    					"targets": 4
                     }
 
                 ]

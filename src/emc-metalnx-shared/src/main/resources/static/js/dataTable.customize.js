@@ -45,7 +45,6 @@ var i18n = {
 
 //Adds Action button on Collection table
 function addCollectionActions(table_id, datatable,advancedView){
-    console.log("## dataTable.customize.js advancedView:" + advancedView);
     var replicate = '';
     if(advancedView){
       replicate = replicate +
