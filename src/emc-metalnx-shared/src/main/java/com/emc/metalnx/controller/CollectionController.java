@@ -18,6 +18,7 @@ package com.emc.metalnx.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,14 +33,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
@@ -135,21 +134,32 @@ public class CollectionController {
 	 * @throws JargonException
 	 * @throws DataGridException
 	 */
-	@RequestMapping(value = "/**", method = RequestMethod.GET)
-	public String indexViaUrl(final Model model, final HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET)
+	public String indexViaUrl(final Model model, final HttpServletRequest request,
+			@RequestParam("path") final String path) {
 		logger.info("index()");
+		String myPath = path;
 
 		try {
-			final String path = "/" + extractFilePath(request);
-			logger.info("path ::" + path);
+
+			if (path == null || path.isEmpty()) {
+				myPath = cs.getHomeDirectyForCurrentUser();
+			} else {
+				myPath = URLDecoder.decode(path, "UTF-8"); // TODO: do I need to worry about decoding, versus configure
+															// in filter? - MCC
+				// see
+				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
+			}
+
+			logger.info("myPath:{}" + myPath);
 
 			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 			String uiMode = (String) request.getSession().getAttribute("uiMode");
 
-			sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(path);
-			CollectionAndPath collectionAndPath = MiscIRODSUtils.separateCollectionAndPathFromGivenAbsolutePath(path);
+			sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
+			CollectionAndPath collectionAndPath = MiscIRODSUtils.separateCollectionAndPathFromGivenAbsolutePath(myPath);
 			this.parentPath = collectionAndPath.getCollectionParent();
-			this.currentPath = path;
+			this.currentPath = myPath;
 
 			if (uiMode == null || uiMode.isEmpty()) {
 				boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
@@ -161,11 +171,11 @@ public class CollectionController {
 			 * 
 			 */
 
-			if (cs.isDataObject(path)) {
+			if (cs.isDataObject(myPath)) {
 				logger.info("redirect to info page");
 				StringBuilder sb = new StringBuilder();
-				sb.append("redirect:/collectionInfo");
-				sb.append(path);
+				sb.append("redirect:/collectionInfo?path=");
+				sb.append(myPath);
 				return sb.toString();
 			}
 
@@ -178,10 +188,11 @@ public class CollectionController {
 
 			model.addAttribute("uiMode", uiMode);
 			model.addAttribute("currentPath", currentPath);
+			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-		} catch (JargonException | DataGridException e) {
+		} catch (JargonException | DataGridException | UnsupportedEncodingException e) {
 			logger.error("error establishing collection location", e);
 			model.addAttribute("unexpectedError", true);
 		}
@@ -230,6 +241,8 @@ public class CollectionController {
 			model.addAttribute("cameFromBookmarks", cameFromBookmarks);
 			model.addAttribute("uiMode", uiMode);
 			model.addAttribute("currentPath", currentPath);
+			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
@@ -292,27 +305,6 @@ public class CollectionController {
 
 		currentPath = path;
 		parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
-	}
-
-	/**
-	 * TODO: refactor into a service object, including obtaining the encoding - mcc
-	 * 
-	 * @param request
-	 * @return
-	 * @throws JargonException
-	 */
-	private String extractFilePath(HttpServletRequest request) throws JargonException {
-		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		try {
-			path = URLDecoder.decode(path,
-					this.getIrodsServices().getIrodsAccessObjectFactory().getJargonProperties().getEncoding());
-		} catch (UnsupportedEncodingException | JargonException e) {
-			logger.error("unable to decode path", e);
-			throw new JargonException(e);
-		}
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		AntPathMatcher apm = new AntPathMatcher();
-		return apm.extractPathWithinPattern(bestMatchPattern, path);
 	}
 
 	public ResourceService getResourceService() {
