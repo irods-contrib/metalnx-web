@@ -2,7 +2,6 @@ package com.emc.metalnx.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +21,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -42,7 +39,7 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" , "topnavHeader" })
+@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/collectionInfo")
 public class CollectionInfoController {
 
@@ -66,28 +63,38 @@ public class CollectionInfoController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 
-	@RequestMapping(value = "/**", method = RequestMethod.GET)
-	public String getTestCollectionInfo(final Model model, HttpServletRequest request)
+	@RequestMapping(method = RequestMethod.GET)
+	public String index(final Model model, HttpServletRequest request, @RequestParam("path") final String path)
 			throws DataGridException, DataGridConnectionRefusedException, JargonException {
 
-		logger.info("CollectionInfoController getTestCollectionInfo() starts !!");
-		final String path = "/" + extractFilePath(request);
+		logger.info("index()");
+		if (path == null || path.isEmpty()) {
+			throw new IllegalArgumentException("null or empty path");
+		}
+
+		logger.info("path:{}", path);
+
+		String myPath = URLDecoder.decode(path);
+
+		logger.info("decoded myPath:{}", myPath);
+
 		IconObject icon = null;
-		String mimeType = "" ;
+		String mimeType = "";
 		String template = "";
-				
+
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = getCollectionDataProfile(path);
-				
-		if (dataProfile != null && dataProfile.isFile()) {				
+		DataProfile dataProfile = getCollectionDataProfile(myPath);
+
+		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
-		}		
+		}
+
 		icon = getIcon(mimeType);
-		
+
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
 		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-		
+
 		if (!dataProfile.isFile())
 			template = "collections/collectionInfo";
 		if (dataProfile.isFile())
@@ -127,23 +134,23 @@ public class CollectionInfoController {
 		}
 
 	}
-	
+
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
 		logger.info("CollectionInfoController getCollectionFileInfo() starts :: " + path);
 
 		IconObject icon = null;
-		String mimeType = "" ;
-		
+		String mimeType = "";
+
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = getCollectionDataProfile(path);		
-		
-		if (dataProfile != null && dataProfile.isFile()) {				
+		DataProfile dataProfile = getCollectionDataProfile(path);
+
+		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
-		}		
+		}
 		icon = getIcon(mimeType);
-	
+
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
 
@@ -159,63 +166,15 @@ public class CollectionInfoController {
 		logger.info("getFile() ends!!");
 		return IOUtils.toByteArray(in);
 	}
-	
+
 	public IconObject getIcon(String mimeType) {
 		IconObject icon = null;
-		if (!mimeType.isEmpty())			 
+		if (!mimeType.isEmpty())
 			icon = iconService.getIconToDisplayFile(mimeType);
 		else
 			icon = iconService.getIconToDisplayCollection();
 
 		return icon;
-	}
-
-	/*
-	 * @RequestMapping(value = "/collectionMetadata/", method = RequestMethod.POST)
-	 * public String getCollectionMetadata(final Model model, @RequestParam("path")
-	 * final String path) throws DataGridConnectionRefusedException {
-	 * 
-	 * logger.
-	 * info("-----------------------------getCollectionMetadata()-------------------------------- !!"
-	 * );
-	 * logger.info("------CollectionInfoController collectionMetadata() starts :: "
-	 * +path);
-	 * 
-	 * model.addAttribute("metadataName", "This is Metadata !!");
-	 * 
-	 * logger.info("MetadataName :: " +model.containsAttribute("MetadataName"));
-	 * //return "collections/info";
-	 * 
-	 * return "metadata/test";
-	 * 
-	 * }
-	 * 
-	 * @RequestMapping(value = "/collectionPermisssionDetails/", method =
-	 * RequestMethod.POST) public String getCollectionPermissionDetails(final Model
-	 * model, @RequestParam("path") final String path) throws
-	 * DataGridConnectionRefusedException { logger.
-	 * info("-----------------------------getCollectionPermissionDetails()-------------------------------- !!"
-	 * ); logger.
-	 * info("------CollectionInfoController collectionPermisssionDetails() starts :: "
-	 * +path);
-	 * 
-	 * model.addAttribute("permissionName", "This is Permission !!"); return
-	 * "collections/info";
-	 * 
-	 * }
-	 */
-	private String extractFilePath(HttpServletRequest request) throws JargonException {
-		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		try {
-			path = URLDecoder.decode(path,
-					this.getIrodsServices().getIrodsAccessObjectFactory().getJargonProperties().getEncoding());
-		} catch (UnsupportedEncodingException | JargonException e) {
-			logger.error("unable to decode path", e);
-			throw new JargonException(e);
-		}
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		AntPathMatcher apm = new AntPathMatcher();
-		return apm.extractPathWithinPattern(bestMatchPattern, path);
 	}
 
 	public DataProfilerFactory getDataProfilerFactory() {

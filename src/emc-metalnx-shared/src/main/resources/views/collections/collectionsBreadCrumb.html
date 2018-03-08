@@ -14,20 +14,23 @@
   ~  limitations under the License.
   -->
 <div class="breadcrumb-wrapper">
-    
+
+
+
          <ol class="breadcrumb">
          		<li>
          			<a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i class="fa fa-home"></i></a>
          		</li>
                 <th:block th:if="${breadcrumb.items.size()} le 3" th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
                     <th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+                     
                         <li>
-                            <a  href="#" aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+                            <a  href="#" aria-label="'path breadcrumb for:"
                                 th:text="${breadcrumbItem.name}"
                                 th:title="${breadcrumbItem.path}"
-                                th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumbItem.path } + '\');'">
+                                th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
                             </a>
-                        </li>                     
+                        </li>
                     </th:block>
                     <th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
                         <li class="collections-view">
@@ -41,19 +44,19 @@
                 <th:block th:if="${breadcrumb.items.size()} gt 3">
                     <li>...</li>
                     <li>
-                        <a  href="#" aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
+                        <a  aria-label="path breadcrumb for: /*[[${breadcrumb.items[breadcrumb.items.size()-3].name} ]]*/"
                             th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-3].path } + '\');'">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
                         </a>
-                    </li>                  
+                    </li>
                     <li >
-                        <a  href="#"
+                        <a 
                             th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
                             th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="'javascript:positionBrowserToPath(\'' + ${ breadcrumb.items[breadcrumb.items.size()-2].path } + '\');'">
+                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
                         </a>
-                    </li>                   
+                    </li>
                     <li class="collections-view">
                     <span th:if="${collectionAndDataObject.path != '/'}"
                           th:text="${ collectionAndDataObject.name }"
@@ -62,7 +65,7 @@
                     </li>
                 </th:block>
             </ol>
-       
+
         <div id="current-path-property" class="hidden">
             <ol class="breadcrumb info">
                 <th:block th:if="${collectionAndDataObject.isCollection()}">
@@ -93,18 +96,18 @@
     		content:[[#{collections.menu.options.tooltip}]],
    			trigger: 'hover',
        		placement: 'top',
-   		}); 
+   		});
      	// Add tooltip on History button
         $('#historyBtn').tooltip({
    			trigger: 'hover',
        		placement: 'top',
-   		}); 
+   		});
      	// Add tooltip on Back button
         $('#backBtn').tooltip({
    			trigger: 'hover',
        		placement: 'top',
        		container: 'body'
-   		}); 
+   		});
      	// Add tooltip on Forward button
         $('#forwardBtn').tooltip({
    			trigger: 'hover',
@@ -112,7 +115,7 @@
        		container: 'body'
    		});
     });
-    
+
 	/* $(document).click(function(e){
 		if(!$(e.target).is('.breadcrumb i.fa.fa-star')){
 			//$('#breadcrumbStar').popover("hide");
@@ -177,6 +180,6 @@
          $("#current-path .breadcrumb").css("background-color", "#ffffff");
       }
     }); */
-	
+
 /*]]>*/
 </script>

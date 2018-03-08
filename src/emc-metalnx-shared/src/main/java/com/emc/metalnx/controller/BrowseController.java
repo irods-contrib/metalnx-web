@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.controller;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Transitional controller factors out all sub functions of the
  * {@link CollectionController} so that this controller can respond to 'deep
  * linkable' paths, including from breadcrumbs in the info pages
- * 
+ *
  * @author Mike Conway - NIEHS
  *
  */
@@ -132,7 +133,7 @@ public class BrowseController {
 
 	@Autowired
 	HeaderService headerService;
-	
+
 	// parent path of the current directory in the tree view
 	private String parentPath;
 
@@ -392,6 +393,8 @@ public class BrowseController {
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
 		model.addAttribute("currentPath", path);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("readPermissions", readPermissions);
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
@@ -456,6 +459,8 @@ public class BrowseController {
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
 		model.addAttribute("currentPath", path);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("readPermissions", readPermissions);
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
@@ -547,33 +552,31 @@ public class BrowseController {
 		String previousPath = collForm.getPath();
 		String parentPath = previousPath.substring(0, previousPath.lastIndexOf("/"));
 		String newPath = String.format("%s/%s", parentPath, collForm.getCollectionName());
-		logger.info("previousPath: "+ previousPath);
+		logger.info("previousPath: " + previousPath);
 		logger.info("parentPath: " + parentPath);
-		logger.info("newPath: "+ newPath);
+		logger.info("newPath: " + newPath);
 		logger.info("Path values used to modify/action previousPath: {} to newPath: {}", previousPath, newPath);
-		
-		
+
 		boolean modificationSuccessful = cs.modifyCollectionAndDataObject(previousPath, newPath,
 				collForm.getInheritOption());
-		
-		// checking if the previousPath collection/dataobject was marked as favorite: 
+
+		// checking if the previousPath collection/dataobject was marked as favorite:
 		String username = irodsServices.getCurrentUser();
 		String zoneName = irodsServices.getCurrentUserZone();
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
 		boolean isMarkedFavorite = favoritesService.isPathFavoriteForUser(user, previousPath);
-		logger.info("Favorite status for previousPath: " + previousPath + " is: " + String.valueOf(isMarkedFavorite) );
-		
+		logger.info("Favorite status for previousPath: " + previousPath + " is: " + String.valueOf(isMarkedFavorite));
+
 		if (modificationSuccessful) {
 			logger.debug("Collection/Data Object {} modified to {}", previousPath, newPath);
-			
+
 			if (isMarkedFavorite) {
 				Set<String> toAdd = new HashSet<String>();
 				toAdd.add(newPath);
 				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
 				if (operationResult) {
 					logger.info("Favorite re-added successfully for: " + newPath);
-				}
-				else {
+				} else {
 					logger.info("Error re-adding favorite to: " + newPath);
 				}
 			}
@@ -641,9 +644,8 @@ public class BrowseController {
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
 		model.addAttribute("topnavHeader", headerService.getheader("collections"));
-		return "redirect:/collections" + currentPath;
+		return "redirect:/collections?path=" + currentPath;
 	}
-
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
 	public String getBreadCrumbForObject(final Model model, @RequestParam("path") String path)
@@ -676,6 +678,7 @@ public class BrowseController {
 	 * @return True, if the collection name can be used. False, otherwise.
 	 * @throws DataGridConnectionRefusedException
 	 */
+	// FIXME: urlencode? - mcc
 	@ResponseBody
 	@RequestMapping(value = "isValidCollectionName/{newObjectName}/", method = RequestMethod.GET, produces = {
 			"text/plain" })
@@ -801,7 +804,7 @@ public class BrowseController {
 
 	/**
 	 * Removes a path from the user's navigation history
-	 * 
+	 *
 	 * @param path
 	 *            path to be removed
 	 */
@@ -949,6 +952,8 @@ public class BrowseController {
 		model.addAttribute("isTrash", isTrash);
 		model.addAttribute("permissionType", permissionType);
 		model.addAttribute("currentPath", currentPath);
+		model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 		model.addAttribute("isCurrentPathCollection", cs.isCollection(path));
 		model.addAttribute("user", user);
 		model.addAttribute("trashColl", cs.getTrashForPath(currentPath));
