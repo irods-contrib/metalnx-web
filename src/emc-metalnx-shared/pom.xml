@@ -18,8 +18,8 @@
 	</parent>
 
 	<artifactId>emc-metalnx-shared</artifactId>
-
-	<dependencies>
+	
+	<dependencies>		
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
@@ -33,6 +33,11 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-typer</artifactId>
+			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-data-utils</artifactId>
 			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
