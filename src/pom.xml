@@ -74,7 +74,7 @@
 		<build.number>DEV</build.number>
 
 	</properties>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>internal.repo</id>
@@ -153,6 +153,11 @@
 			<dependency>
 				<groupId>org.irods.jargon</groupId>
 				<artifactId>jargon-ticket</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-data-utils</artifactId>
 				<version>${jargon.version}</version>
 			</dependency>
 			<dependency>

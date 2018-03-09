@@ -39,6 +39,8 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.datautils.filesampler.FileSamplerService;
+import org.irods.jargon.datautils.filesampler.FileSamplerServiceImpl;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.TicketServiceFactory;
 import org.irods.jargon.ticket.TicketServiceFactoryImpl;
@@ -107,9 +109,10 @@ public class IRODSServicesImpl implements IRODSServices {
 	}
 
 	@Override
-	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {		
-		return irodsAccessObjectFactory.getTrashOperationsAO(irodsAccount);		
-		//return (TrashOperationsAO) irodsAccessObjectFactory.getBulkFileOperationsAO(irodsAccount);
+	public TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException {
+		return irodsAccessObjectFactory.getTrashOperationsAO(irodsAccount);
+		// return (TrashOperationsAO)
+		// irodsAccessObjectFactory.getBulkFileOperationsAO(irodsAccount);
 	}
 
 	@Override
@@ -208,6 +211,11 @@ public class IRODSServicesImpl implements IRODSServices {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public FileSamplerService getFileSamplerService() throws DataGridConnectionRefusedException {
+		return new FileSamplerServiceImpl(irodsAccessObjectFactory, irodsAccount);
 	}
 
 	@Override

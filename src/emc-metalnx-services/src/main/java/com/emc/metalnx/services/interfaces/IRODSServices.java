@@ -35,6 +35,7 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.ticket.TicketAdminService;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -232,4 +233,11 @@ public interface IRODSServices {
 	 * @throws JargonException
 	 */
 	TrashOperationsAO getTrashOperationsAO() throws DataGridConnectionRefusedException, JargonException;
+
+	/**
+	 * 
+	 * @return
+	 * @throws DataGridConnectionRefusedException
+	 */
+	FileSamplerService getFileSamplerService() throws DataGridConnectionRefusedException;
 }

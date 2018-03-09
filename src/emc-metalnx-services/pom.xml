@@ -54,6 +54,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-data-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-ruleservice</artifactId>
 		</dependency>
 		<dependency>
