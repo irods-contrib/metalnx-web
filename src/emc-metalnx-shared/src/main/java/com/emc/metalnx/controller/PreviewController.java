@@ -53,7 +53,13 @@ public class PreviewController {
 	public String getPreview(final Model model, @RequestParam("path") final String path,
 			RedirectAttributes redirectAttributes) throws DataGridException {
 
-		logger.info("prepareForPreview for {} ::" + path);
+		logger.info("getPreview()");
+		if (path == null || path.isEmpty()) {
+			throw new IllegalArgumentException("null or empty path");
+		}
+
+		logger.info("path:{}", path);
+
 		String mimeType = null;
 
 		try {
@@ -72,10 +78,13 @@ public class PreviewController {
 			String template = null;
 
 			if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
-					|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg"))
+					|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg")) {
+				logger.info("showing image preview");
 				template = "redirect:/image/previewFilePath";
-			else
+			} else {
+				logger.info("no preview is available");
 				template = "collections/imagePreview :: noPreview";
+			}
 
 			return template;
 		} catch (JargonException e) {
