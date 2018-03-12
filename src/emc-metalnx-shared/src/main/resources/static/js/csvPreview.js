@@ -1,5 +1,4 @@
 $(document).ready(function(){
-	alert("CSV preview");
 	$('#csv').jexcel({
 	    csv:'/emc-metalnx-web/preview/dataObjectPreview/',
 	    csvHeaders:true,
