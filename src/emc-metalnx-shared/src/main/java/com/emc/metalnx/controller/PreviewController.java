@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -107,12 +108,12 @@ public class PreviewController {
 	}
 	
 	@RequestMapping(value = "/save" , method = RequestMethod.POST)
-	public String save(final Model model , @RequestParam("data") final String data) throws JargonException {
-		
-		
+	public String save(final Model model , @RequestParam("data") final String data) throws JargonException, 
+	DataGridConnectionRefusedException {
+			
 		logger.info("saving file chnage for :: " +previewFilePath+ " , and data :: " +data);	
-		
-	//	fileSamplerService.saveStringToFile(data, previewFilePath);
+		FileSamplerService fileSamplerService =  irodsServices.getFileSamplerService();
+		fileSamplerService.saveStringToFile(data, previewFilePath);
 		
 		model.addAttribute("success", true);
 		return "collections/preview :: cmFilePreview";
