@@ -1,4 +1,5 @@
 var editor;
+
 $(document).ready(function(){
 	var code = $(".cm-textarea")[0];
   	editor = CodeMirror.fromTextArea(code,{
