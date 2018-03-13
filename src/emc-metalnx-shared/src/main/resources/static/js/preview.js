@@ -31,7 +31,7 @@ function save() {
 
 function confirmSave(data){
 	//$('#successConfirmationModal').modal();	
-	Command: toastr["success"]("success", "Successfully Edited!!")
+	toastr.success("Successfully Edited!!" , "success")
 }
 
 function cancel() {
