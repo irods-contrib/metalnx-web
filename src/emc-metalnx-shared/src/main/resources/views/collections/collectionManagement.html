@@ -974,30 +974,6 @@
 					}, null, null, null);
 	        }
 
-			/* function displayInfoDetails(data){
-				//alert("displayInfoDetails");
-				$("#table-loader").hide();
-				$("#table-loader").after(data);
-	        } */
-			function goBackHistory(steps){
-				ajaxEncapsulation(
-					'/emc-metalnx-web/browse/goBackHistory/',
-					"POST",
-					{steps: steps},
-					displaySubDirectories,
-					null, null, null
-				);
-			}
-			function goForwardHistory(steps){
-				ajaxEncapsulation(
-					'/emc-metalnx-web/browse/goForwardHistory/',
-					"POST",
-					{steps: steps},
-					displaySubDirectories,
-					null, null, null
-				);
-			}
-
 			function moveTo(path){
 			    targetPath = path;
 			    $('.targetPathInfoSpan').html(targetPath);
