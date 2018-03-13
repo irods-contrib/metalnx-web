@@ -466,7 +466,7 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a name="' + full.path + '" onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
+    						return +full.collection?'<a  onclick=positionBrowserToPath("'+encodeURI(full.path)+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
@@ -502,8 +502,8 @@
                     	"render": function ( data, type, full, meta ) {
                     		                  		
     						return '<a href="/emc-metalnx-web/collectionInfo'+full.path+'" class="btn btn-default btn-xs" name="' + full.path + 
-    						'" onclick=getCollectionSummary("'+full.path+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + full.path + 
-        						'" id="open-left-canvas" onclick="getSideCanvas(\'' +full.path+ '\')" class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
+    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="" name="' + full.path + 
+        						'" id="open-left-canvas" onclick="getSideCanvas(\'' +encodeURI(full.path)+ '\')" class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
 
     					},
     					"width": "20%",
