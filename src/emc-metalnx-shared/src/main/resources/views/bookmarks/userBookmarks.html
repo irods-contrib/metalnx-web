@@ -135,22 +135,11 @@
 			
 			function openInCollView(path) {
 				window.open(
-						  '/emc-metalnx-web/collections' + path,
-						  '_blank' // <- This is what makes it open in a new window.
+						  '/emc-metalnx-web/collections' + encodeURI(path),
+						  '_self' // <- This is what makes it open in a new window.
 						);
 			}
 			
-			// TODO: remove old methods
-
-			function redirectToCollections(path){
-				var url = "/emc-metalnx-web/browse/redirectFromUserBookmarksToCollections/";
-				ajaxEncapsulation(url, "POST", {path: path}, showCollections, null, null, null);
-			}
-
-			function showCollections() {
-				window.location = "/emc-metalnx-web/collections/";
-
-			}
 		/*]]>*/
 		</script>
 

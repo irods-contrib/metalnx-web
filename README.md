@@ -135,6 +135,11 @@ Maps to NIEHS #70
 
 Enhance ability to browse down from root as non-admin user using heuristics and relaxing permission checks for a more intuitive experience
 
+#### URL encoding issues with collection browser links
+
+While still somewhat transitional (still some inconsistancies in how URLs and javascript methods operate) this generally improves support
+for files with embedded spaces and special characters. NIES #134
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
