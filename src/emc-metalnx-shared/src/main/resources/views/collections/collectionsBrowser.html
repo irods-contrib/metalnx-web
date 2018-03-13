@@ -377,7 +377,7 @@
 				var advancedView = [[${dataGridUser.isAdvancedView()}]];
 				console.log("collectionBrowser.html advancedView: " + advancedView);
         $(document).ready(function(e){
-        	
+
         	console.log("ready");
 
         	if(![[${isCurrentPathCollection}]]){
@@ -500,28 +500,28 @@
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
-                    		                  		
-    						return '<a href="/emc-metalnx-web/collectionInfo?path='+encodeURI(full.path)+'" class="btn btn-default btn-xs" name="' + full.path + 
-    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="" name="' + full.path + 
-        						'" id="open-left-canvas" onclick="getSideCanvas(\'' +encodeURI(full.path)+ '\')" class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
+
+    						return '<a href="/emc-metalnx-web/collectionInfo?path='+encodeURI(full.path)+'" class="btn btn-default btn-xs" name="' + full.path +
+    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + full.path +
+        						'" id="open-left-canvas" onclick=getSideCanvas("' + encodeURI(full.path) + '") class="btn btn-default btn-xs"  title="Snapshot" ><i class="fas fa-eye"></i> </a>';
 
 
     					},
     					"width": "20%",
     					"targets": 6
                     }
-                    
+
                 ]
     		} );
         	addCollectionActions('treeViewTable', datatable, advancedView);
             $("input[type=checkbox]").prop("disabled", false);
-                 
-            
+
+
         });
 
-      
-         
-         
+
+
+
 		$('#treeViewTable').on('page.dt', function (){
 		    $("#actions button").prop("disabled", true);
             $("#actionsWait").hide();
@@ -532,8 +532,8 @@
             $("#actionsWait").hide();
         });
 
-		
-		
+
+
         function selectAllCheckboxes() {
             $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
                 $(this).prop("checked", true);
