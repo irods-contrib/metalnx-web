@@ -1,5 +1,7 @@
 package com.emc.metalnx.controller;
 
+import java.net.URLDecoder;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,42 +65,22 @@ public class PreviewController {
 	 * @throws DataGridException
 	 */
 
-	/*@RequestMapping(value = "/imagePreview", method = RequestMethod.GET)
-	public String getImagePreview(final HttpServletResponse response, @ModelAttribute("path") String path,
-			@ModelAttribute("mimeType") String mimeType)
-			throws JargonException {
-		previewFilePath = path;
-		logger.info("getPreviewFilePath() for {} ::" + path);
-		return "collections/imagePreview :: imagePreview";
-	}
-	
-	@RequestMapping(value = "/FilePreview", method = RequestMethod.GET)
-	public String testPreviewPath(final HttpServletResponse response, @ModelAttribute("path") String path,
-			@ModelAttribute("mimeType") String mimeType)
-			throws JargonException {
-		previewFilePath = path;
-		logger.info("getPreviewFilePath() for {} ::" + path);
-		return "collections/imagePreview :: filePreview";
-	}*/
-	
 	@RequestMapping(value = "/templateByMimeType", method = RequestMethod.GET)
 	public String getTemplate(final HttpServletResponse response, @ModelAttribute("path") String path,
-			@ModelAttribute("mimeType") String mimeType)
-			throws JargonException {
-		
-		previewFilePath = path;
+			@ModelAttribute("mimeType") String mimeType) throws JargonException {
+
+		previewFilePath = URLDecoder.decode(path);
 		previewMimeType = mimeType;
-		
+
 		String template = previewService.getTemplate(mimeType);
-		
-		logger.info("getTemplate for {} ::" + path + " and mimetype :: " +mimeType);
+
+		logger.info("getTemplate for {} ::" + path + " and mimetype :: " + mimeType);
 		return template;
 	}
-	
 
 	@RequestMapping(value = "/dataObjectPreview", method = RequestMethod.GET)
 	public void getPreview(final HttpServletResponse response) throws JargonException {
-		previewService.filePreview(previewFilePath,previewMimeType, response);
+		previewService.filePreview(previewFilePath, previewMimeType, response);
 	}
 
 }

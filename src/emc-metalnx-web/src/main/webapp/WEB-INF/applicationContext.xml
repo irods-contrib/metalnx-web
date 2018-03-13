@@ -25,12 +25,10 @@
 			<list>
 					<value>file:/etc/irods-ext/metalnx.properties</value> 
 					<!--  <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value>    -->
-
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
-
 
 	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md 
 		doc at the top of the repo, -->
@@ -38,9 +36,6 @@
 	<!-- <import resource="file:/etc/irods-ext/metalnxConfig.xml" />   -->
 			<!--    <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml"/>   -->
 		 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
-		 <!--  <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml"/>   -->
-
-
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
@@ -93,11 +88,7 @@
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/dashboard/**" access="ROLE_ADMIN" />
 		<sec:intercept-url pattern="/preview/**" access="ROLE_ADMIN, ROLE_USER" />
-		<sec:intercept-url pattern="/image/**" access="ROLE_ADMIN, ROLE_USER" />
 		<sec:intercept-url pattern="/collections/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/collectionInfo/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-
 		<sec:intercept-url pattern="/browse/**" access="ROLE_ADMIN,ROLE_USER" />
 
 		<sec:intercept-url pattern="/fileOperation/**"

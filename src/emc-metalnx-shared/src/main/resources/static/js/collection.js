@@ -1,31 +1,30 @@
-/*function getCollectionSummary(path){	
-
-alert(path);
-var url = "/emc-metalnx-web/collectionInfo"+path;
-getBreadcrumb(path);
-console.log("URL :: " +url);
-ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
+function getCollectionSummary(path){
+	//var url = "/emc-metalnx-web/collectionInfo";
+	//getBreadcrumb(path);
+	//console.log("URL :: " +url);
+	//ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
+	console.log("getCollectionSummary()");
+	window.location.href = '/emc-metalnx-web/collectionInfo?path=' + path; //relative to domain
 }
 
 function displayCollectionSummary(data){
-console.log("displayTestDetails()");	
-$("#summary").html(data);	
-}*/
-
-function getInfoDetails(path){
-	/*$("#table-loader").show();
-	$("#details").hide();*/
-	window.location.hash = "details";	
-	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
-	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);	
+	console.log("displayTestDetails()");
+	$("#summary").html(data);
 }
 
-function getMetadata(path){	
+function getInfoDetails(path){
+	console.log("getInfoDetails()");
+	window.location.hash = "info";
+	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
+	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
+}
+
+function getMetadata(path){
 	console.log("Collection getMetadata() :: " +path);
 	/*$("#table-loader").show();
 	$("#metadata").hide();*/
 	window.location.hash = "metadata";
-	var url = "/emc-metalnx-web/metadata/getMetadata/";	
+	var url = "/emc-metalnx-web/metadata/getMetadata/";
 	ajaxEncapsulation(url , "POST", {path: path}, displayMetadata, null, null, null);
 }
 
@@ -34,7 +33,7 @@ function getPermissionDetails(path){
 	/*$("#table-loader").show();
 	$("#permission").hide();*/
 	window.location.hash = "permission";
-	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";	
+	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayPermissionDetails, null, null);
 }
 
@@ -42,19 +41,19 @@ function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
 	window.location.hash = "preview";
 	var url = "/emc-metalnx-web/previewPreparation/";
-	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);	
+	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);
 }
 
-function displayInfoDetails(data){	
+function displayInfoDetails(data){
 	/*$("#table-loader").hide();
 	$("#details").show();*/
 	$("#details").html(data);
 }
 
-function displayMetadata(data){	
+function displayMetadata(data){
 	/*$("#table-loader").hide();
 	$("#metadata").show();*/
-	$("#metadata").html(data);	
+	$("#metadata").html(data);
 }
 
 function displayPermissionDetails(data){
@@ -64,24 +63,24 @@ function displayPermissionDetails(data){
 }
 
 function displayPreviewImage(data){
-	$("#preview").html(data);	
+	$("#preview").html(data);
 }
 
 
 function starPath(path){
 	console.log("StarPath() starts");
 	//$('#breadcrumbStar').attr('onclick', '');
-	var url = "/emc-metalnx-web/favorites/addFavoriteToUser/";		
-	ajaxEncapsulation(url, "GET", {path: path}, 
+	var url = "/emc-metalnx-web/favorites/addFavoriteToUser/";
+	ajaxEncapsulation(url, "GET", {path: path},
 			function(data){
 		if(data.indexOf("OK") >= 0){
 			$('#breadcrumbStar i').removeClass('bm-unchecked').addClass('bm-checked');
-			$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
+			$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURI(path)+'")');
 			//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.unmark.button.tooltip}]]);
 		}else{
 			$('#breadcrumbStar').attr('data-content', 'Could not add path to favorites.')
 			$('#breadcrumbStar').popover("show");
-			$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
+			$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURI(path)+'")');
 		}
 
 	}, null, null, null);
@@ -91,28 +90,29 @@ function starPath(path){
 function unstarPath(path){
 	console.log("UnstarPath() starts !!");
 	//$('#breadcrumbStar').attr('onclick', '');
-	var url = "/emc-metalnx-web/favorites/removeFavoriteFromUser/";		
+	var url = "/emc-metalnx-web/favorites/removeFavoriteFromUser/";
 	ajaxEncapsulation(url, "GET", {path: path},
-			function(data){
-		if(data.indexOf("OK") >= 0){
-			$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
-			$('#breadcrumbStar').attr('onclick', 'starPath("'+path+'")');
-			//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
-		}else{
-			$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
-			$('#breadcrumbStar').popover("show");
-			$('#breadcrumbStar').attr('onclick', 'unstarPath("'+path+'")');
-		}
-	}, null, null, null);
+		function(data){
+			if(data.indexOf("OK") >= 0){
+				$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURI(path)+'")');
+				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
+			}else{
+				$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
+				$('#breadcrumbStar').popover("show");
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURI(path)+'")');
+			}
+		}, null, null, null);
 	console.log("UnstarPath() ends");
 }
 
 function positionBrowserToPath(path) {
-	window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+	console.log("positionBrowserToPath()");
+	window.location.href = '/emc-metalnx-web/collections?path=' + encodeURI(path); //relative to domain
 }
 
 function fileDownload(path){
-	console.log("File Download");	
+	console.log("File Download");
 	var prepareDownloadURL = "/emc-metalnx-web/fileOperation/prepareFilesForDownload/";
 	var paths = [];
 	paths.push(path);
@@ -136,7 +136,7 @@ function deleteInfoAction(path){
 			function (data) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();				
+				$('#deleteConfirmationModal').modal();
 			}
 	);
 	$("#deleteModal").modal("hide");
@@ -160,15 +160,14 @@ function editInfo(path){
 
 }
 
-function handleDownload() {	
+function handleDownload() {
 	window.location.href = "/emc-metalnx-web/fileOperation/download/";
 }
 
-function setOperationInProgress() {	
+function setOperationInProgress() {
 	operationInProgress = true;
 }
 
 function unsetOperationInProgress() {
 	operationInProgress = false;
 }
-

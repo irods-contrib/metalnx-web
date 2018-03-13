@@ -38,17 +38,7 @@
 		<a aria-label="page help" id="collections-page-title" href="#"
 		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a> -->
 					
-		<ol class="breadcrumb mlx"  th:if="${cameFromMetadataSearch} == true"
-					id="backToMetadataSearch">
-		  <li><a href="/emc-metalnx-web/metadata/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
-		  <li class="active" th:text="#{text.collections}">Collections</li>
-		</ol>
-		<ol class="breadcrumb mlx"  th:if="${cameFromFilePropertiesSearch} == true"
-					id="backToFilePropertiesSearch">
-		  <li><a href="/emc-metalnx-web/fileproperty/?backFromCollections=true" aria-hidden="true">Search Results</a></li>
-		  <li class="active" th:text="#{text.collections}">Collections</li>
-		  
-		</ol>
+		
         <div th:if="${unexpectedError}">
             <div class="alert alert-danger alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
@@ -614,15 +604,7 @@
 			var unexpectedError = [[${unexpectedError}]] != null;
 
 			$(document).ready(function(){
-/* 
-				// Add popover on page title
-		        $('#collections-page-title').popover({
-		    		title:[[#{collections.management.page.title}]],
-		    		content:[[#{collection.title.popover}]],
-		   			trigger: 'hover click',
-		       		placement: 'left',
-		   		});
- */
+
 				$('#uploadControlOptions').hide();
 
 				$('#uploadModal').on('show.bs.modal', function(){
@@ -650,6 +632,7 @@
 				});
 
 				if (!unexpectedError) {
+					console.log("calling getSubDirectories()");
 				    getSubDirectories([[${ currentPath }]]);
 				}
 
@@ -665,13 +648,13 @@
 
 
 			function getSubDirectories(path) {
-
-				//alert("getSubDirectories")
+				//FIXME: mcc - remove for deploy
 				console.log("Collection management - getSubDirectories()");
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
 													
-				setTimeout(function () {				
+				setTimeout(function () {		
+					console.log("calling getSubDirectories");
 					ajaxEncapsulation("/emc-metalnx-web/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
 					currentPath = path;								
 					console.log("currentpath " +currentPath);
@@ -681,6 +664,7 @@
 			}
 
 			function displaySubDirectories(data) {
+				console.log("displaySubDirectories()");
 			    resetDataTablesStart();
 				$("#table-loader").hide();
 				$("#tree-view-panel-body").show();
@@ -868,7 +852,8 @@
 			* position the collection browser to the new path
 			*/
 			function positionBrowserToPath(path) {
-				window.location.href = '/emc-metalnx-web/collections' + path; //relative to domain
+				console.log("positionBrowserToPath()"); //FIXME: remove for testing
+				window.location.href = '/emc-metalnx-web/collections?path=' + encodeURI(path); //relative to domain
 			}
 
 	        function deleteAction(){

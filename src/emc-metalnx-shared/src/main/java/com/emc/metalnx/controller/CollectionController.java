@@ -16,8 +16,8 @@
 
 package com.emc.metalnx.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,18 +29,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
@@ -136,21 +132,35 @@ public class CollectionController {
 	 * @throws JargonException
 	 * @throws DataGridException
 	 */
-	@RequestMapping(value = "/**", method = RequestMethod.GET)
-	public String indexViaUrl(final Model model, final HttpServletRequest request,@ModelAttribute("requestHeader") String requestHeader) {
-		logger.info("index()");
+
+	@RequestMapping(method = RequestMethod.GET)
+	public String indexViaUrl(final Model model, final HttpServletRequest request,
+			@RequestParam("path") final String path, @ModelAttribute("requestHeader") String requestHeader) {
+		logger.info("indexViaUrl()");
+		String myPath = path;
 
 		try {
-			final String path = "/" + extractFilePath(request);
-			logger.info("path ::" + path);
+
+			if (path == null || path.isEmpty()) {
+				logger.info("no path, go to home dir");
+				myPath = cs.getHomeDirectyForCurrentUser();
+			} else {
+				logger.info("path provided...go to:{}", path);
+				myPath = URLDecoder.decode(path); // TODO: do I need to worry about decoding, versus configure
+													// in filter? - MCC
+				// see
+				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
+			}
+
+			logger.info("myPath:{}" + myPath);
 
 			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 			String uiMode = (String) request.getSession().getAttribute("uiMode");
 
-			sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(path);
-			CollectionAndPath collectionAndPath = MiscIRODSUtils.separateCollectionAndPathFromGivenAbsolutePath(path);
+			sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
+			CollectionAndPath collectionAndPath = MiscIRODSUtils.separateCollectionAndPathFromGivenAbsolutePath(myPath);
 			this.parentPath = collectionAndPath.getCollectionParent();
-			this.currentPath = path;
+			this.currentPath = myPath;
 
 			if (uiMode == null || uiMode.isEmpty()) {
 				boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
@@ -162,11 +172,11 @@ public class CollectionController {
 			 * 
 			 */
 
-			if (cs.isDataObject(path)) {
+			if (cs.isDataObject(myPath)) {
 				logger.info("redirect to info page");
 				StringBuilder sb = new StringBuilder();
-				sb.append("redirect:/collectionInfo");
-				sb.append(path);
+				sb.append("redirect:/collectionInfo?path=");
+				sb.append(URLEncoder.encode(myPath));
 				return sb.toString();
 			}
 
@@ -179,24 +189,24 @@ public class CollectionController {
 
 			model.addAttribute("uiMode", uiMode);
 			model.addAttribute("currentPath", currentPath);
+			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-			
-					
-			String headerParam = (requestHeader != null && !requestHeader.isEmpty())? requestHeader : "collections"; 
-			
-			logger.info("Header param is :: " +headerParam);
-			
+
+			String headerParam = (requestHeader != null && !requestHeader.isEmpty()) ? requestHeader : "collections";
+
+			logger.info("Header param is :: " + headerParam);
+
 			model.addAttribute("topnavHeader", headerService.getheader(headerParam));
-			
-			
+
 		} catch (JargonException | DataGridException e) {
+
 			logger.error("error establishing collection location", e);
 			model.addAttribute("unexpectedError", true);
 		}
 
-		logger.info("returning to collections/collectionManagement");
+		logger.info("displaying collections/collectionManagement");
 
 		return "collections/collectionManagement";
 
@@ -240,6 +250,8 @@ public class CollectionController {
 			model.addAttribute("cameFromBookmarks", cameFromBookmarks);
 			model.addAttribute("uiMode", uiMode);
 			model.addAttribute("currentPath", currentPath);
+			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
@@ -253,76 +265,6 @@ public class CollectionController {
 		}
 		logger.info("returning to collections/collectionManagement");
 		return "collections/collectionManagement";
-	}
-
-	@RequestMapping(value = "redirectFromMetadataToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromMetadataToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromMetadataSearch = true;
-	}
-
-	@RequestMapping(value = "redirectFromFavoritesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFavoritesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromGroupsBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromGroupsBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromUserBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromUserBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromFilePropertiesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFilePropertiesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromFilePropertiesSearch = true;
-	}
-
-	/**
-	 * Sets the current path and parent path based on a given path.
-	 *
-	 * @param path
-	 *            new path to update current path and parent path
-	 */
-	private void assignNewValuesToCurrentAndParentPath(final String path) {
-		if (path == null || path.isEmpty()) {
-			return;
-		}
-
-		currentPath = path;
-		parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
-	}
-
-	/**
-	 * TODO: refactor into a service object, including obtaining the encoding - mcc
-	 * 
-	 * @param request
-	 * @return
-	 * @throws JargonException
-	 */
-	private String extractFilePath(HttpServletRequest request) throws JargonException {
-		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		try {
-			path = URLDecoder.decode(path,
-					this.getIrodsServices().getIrodsAccessObjectFactory().getJargonProperties().getEncoding());
-		} catch (UnsupportedEncodingException | JargonException e) {
-			logger.error("unable to decode path", e);
-			throw new JargonException(e);
-		}
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		AntPathMatcher apm = new AntPathMatcher();
-		return apm.extractPathWithinPattern(bestMatchPattern, path);
 	}
 
 	public ResourceService getResourceService() {

@@ -258,7 +258,24 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									
-
+									###################################### later add maven props to tune these
+									# info home page feature flags
+									# this controls the behavior of the data profiler and what information it will gather
+									irodsext.dataprofiler.retrieve.tickets=false
+									# process starred or favorites
+									irodsext.dataprofiler.retrieve.starred=true
+									# process shared
+									irodsext.dataprofiler.retrieve.shared=false
+									# tags and comments
+									irodsext.dataprofiler.retrieve.tags.and.comments=false
+									# metadata templates (currently not implemented)
+									irodsext.dataprofiler.retrieve.metadata.templates=false
+									
+									# save data type information for later use
+									irodsext.datatyper.persist.data.types=false
+									# perform a detailed versus a lightweight data typing, which may involve processing the file contents
+									irodsext.datatyper.detailed.determination=false
+									
 								</echo>
 							</tasks>
 						</configuration>
