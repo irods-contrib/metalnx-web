@@ -44,20 +44,15 @@ public class PreviewServiceImpl implements PreviewService {
 		myMap.put("image/jpg", "collections/preview :: imagePreview");
 		myMap.put("image/jpeg", "collections/preview :: imagePreview");
 		myMap.put("image/png", "collections/preview :: imagePreview");
-		myMap.put("image/gif", "collections/preview :: imagePreview");
-		myMap.put("application/pdf", "collections/preview :: pdfFilePreview");
-		myMap.put("text/plain", "collections/preview :: cmFilePreview");
-		
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/preview :: filePreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/preview :: filePreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "collections/preview :: filePreview");
-		myMap.put("application/vnd.ms-excel", "collections/preview :: filePreview");
-		myMap.put("text/csv", "collections/preview :: filePreview");
-		myMap.put("application/msword", "collections/preview :: filePreview");
-		
-		
-		
-		
+		myMap.put("image/gif", "collections/preview :: imagePreview");		
+		myMap.put("application/pdf", "collections/preview :: pdfFilePreview");		
+		myMap.put("text/plain", "collections/preview :: cmFilePreview");	
+		myMap.put("text/csv", "collections/preview :: csvFilePreview");	
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/preview :: noPreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/preview :: noPreview");
+		myMap.put("application/vnd.ms-excel", "collections/preview :: noPreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "collections/preview :: noPreview");
+		myMap.put("application/msword", "collections/preview :: noPreview");
 		
 		/*myMap.put("application/vnd.ms-excel.template.macroenabled.12", "collections/imagePreview :: filePreview");
 		myMap.put("application/vnd.ms-excel.sheet.macroenabled.12", "collections/imagePreview :: filePreview");

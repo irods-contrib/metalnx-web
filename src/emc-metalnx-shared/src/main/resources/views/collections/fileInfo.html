@@ -3,8 +3,11 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.thymeleaf.org" lang="en"
 	layout:decorator="template">
-<head>
-	<link rel="stylesheet" type="text/css" th:href="@{/plugins/codemirror/lib/codemirror.css}" />
+<head>	
+	<script type="text/javascript" th:src="@{/plugins/codemirror/lib/codemirror.js}"></script>	
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/codemirror/lib/codemirror.css}"/>
+	<script type="text/javascript" th:src="@{/plugins/jExcel/jquery.jexcel.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/jExcel/jquery.jexcel.min.css}"/>	
 </head>
 <body>
 	<div class="row">
@@ -51,9 +54,8 @@
 
 					</div>
 				</div>
-			
-			
-			<script type="text/javascript" th:src="@{/plugins/codemirror/lib/codemirror.js}"></script>		
+				
+				
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 			<script th:inline="javascript">
 				$(document).ready(function(e) {

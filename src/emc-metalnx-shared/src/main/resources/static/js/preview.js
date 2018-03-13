@@ -1,16 +1,41 @@
+var editor;
+
 $(document).ready(function(){
+	var code = $(".cm-textarea")[0];
+  	editor = CodeMirror.fromTextArea(code,{
+  		mode: "scheme",
+  		lineNumbers : true
+  		
+  	});
+  	
 	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status){
-        $('.cm-textarea').val(data);
-        var code = $(".cm-textarea")[0];
-     	var editor = CodeMirror.fromTextArea(code,{
-     		lineNumbers : true,
-     	});
-    });		 
+		editor.getDoc().setValue(data);
+    });		
+	
 });
 
+/*function looksLikeScheme(code) {
+    return !/^\s*\(\s*function\b/.test(code) && /^\s*[;\(]/.test(code);
+  }
+function update() {
+	alert("update");
+    editor.setOption("mode", looksLikeScheme(editor.getValue()) ? "scheme" : "javascript");
+}*/
+  
 function save() {
-	alert("this will save the data!!");
+	var data =  editor.getValue();
+	var url = "/emc-metalnx-web/preview/save/";
+	ajaxEncapsulation(url, "POST", {data: data}, confirmSave, null, null, null);	
+	
 }
+
+function confirmSave(data){
+	//$('#successConfirmationModal').modal();	
+	Command: toastr["success"]("success", "Successfully Edited!!")
+}
+
 function cancel() {
-	alert("this will cancel the event!!");
+	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status){
+		editor.getDoc().setValue(data);
+    });	
 }
