@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
@@ -73,7 +74,7 @@ public class TrashController {
 
 		model.addAttribute("currentPath", currentPath);
 		model.addAttribute("topnavHeader", headerService.getheader("trash"));
-
+		
 		return "redirect:/collections?path=" + currentPath;
 	}
 }

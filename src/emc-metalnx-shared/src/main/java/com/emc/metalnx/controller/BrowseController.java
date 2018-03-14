@@ -643,13 +643,13 @@ public class BrowseController {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "/home")
-	public String homeCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
+	public String homeCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		redirectAttributes.addAttribute("requestHeader", "collections");
+		model.addAttribute("topnavHeader", headerService.getheader("collections"));
 		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
