@@ -65,6 +65,6 @@ public class PublicController {
 		currentPath = cs.getHomeDirectyForPublic();
 		parentPath = currentPath;
 		model.addAttribute("topnavHeader", headerService.getheader("public"));
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
+		return "redirect:/collections?path=" + currentPath;
 	}
 }

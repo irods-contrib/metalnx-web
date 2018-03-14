@@ -74,6 +74,6 @@ public class TrashController {
 		model.addAttribute("currentPath", currentPath);
 		model.addAttribute("topnavHeader", headerService.getheader("trash"));
 
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
+		return "redirect:/collections?path=" + currentPath;
 	}
 }
