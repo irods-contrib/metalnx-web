@@ -374,12 +374,9 @@
         var currentPermissionTab = "groups";
         var datatable;
         var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
-				var advancedView = [[${dataGridUser.isAdvancedView()}]];
-				console.log("collectionBrowser.html advancedView: " + advancedView);
+		var advancedView = [[${dataGridUser.isAdvancedView()}]];
+				
         $(document).ready(function(e){
-
-        	console.log("ready");
-
         	if(![[${isCurrentPathCollection}]]){
         		console.log([[${isCurrentPathCollection}]]);
         		console.log("collectionBrowser - getting info details...not a collection ");

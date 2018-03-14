@@ -653,60 +653,6 @@ public class BrowseController {
 		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
-	/**
-	 * Responds the collections/public request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 */
-	@RequestMapping(value = "/public")
-	public String publicCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		currentPath = cs.getHomeDirectyForPublic();
-		parentPath = currentPath;
-
-		model.addAttribute("publicPath", currentPath);
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-		redirectAttributes.addAttribute("requestHeader", "public");
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
-	}
-
-	/**
-	 * Responds the collections/trash request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 * @throws DataGridException
-	 */
-	@RequestMapping(value = "/trash")
-	public String trashCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		if (userTrashPath == null || userTrashPath.equals("")) {
-			userTrashPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(),
-					irodsServices.getCurrentUser());
-		}
-		currentPath = userTrashPath;
-		parentPath = currentPath;
-
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-
-		redirectAttributes.addAttribute("requestHeader", "trash");
-		model.addAttribute("topnavHeader", headerService.getheader("collections"));
-
-		return "redirect:/collections?path=" + currentPath;
-	}
-
 	@RequestMapping(value = "/getBreadCrumbForObject/")
 	public String getBreadCrumbForObject(final Model model, @RequestParam("path") String path)
 			throws DataGridException {
