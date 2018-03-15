@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
@@ -65,6 +66,6 @@ public class PublicController {
 		currentPath = cs.getHomeDirectyForPublic();
 		parentPath = currentPath;
 		model.addAttribute("topnavHeader", headerService.getheader("public"));
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
+		return "redirect:/collections?path=" + currentPath;
 	}
 }

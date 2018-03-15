@@ -138,7 +138,7 @@ public class CollectionController {
 			@RequestParam("path") final String path, @ModelAttribute("requestHeader") String requestHeader) {
 		logger.info("indexViaUrl()");
 		String myPath = path;
-
+		logger.info("dp Header requestHeader is :: " + requestHeader);
 		try {
 
 			if (path == null || path.isEmpty()) {
@@ -193,13 +193,7 @@ public class CollectionController {
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-
-			String headerParam = (requestHeader != null && !requestHeader.isEmpty()) ? requestHeader : "collections";
-
-			logger.info("Header param is :: " + headerParam);
-
-			model.addAttribute("topnavHeader", headerService.getheader(headerParam));
-
+						
 		} catch (JargonException | DataGridException e) {
 
 			logger.error("error establishing collection location", e);

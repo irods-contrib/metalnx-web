@@ -575,8 +575,10 @@ public class BrowseController {
 
 			if (isMarkedFavorite) {
 				Set<String> toAdd = new HashSet<String>();
+				Set<String> toRemove = new HashSet<String>();
 				toAdd.add(newPath);
-				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+				toRemove.add(previousPath);
+				boolean operationResult = favoritesService.updateFavorites(user, toAdd, toRemove);
 				if (operationResult) {
 					logger.info("Favorite re-added successfully for: " + newPath);
 				} else {
@@ -643,68 +645,14 @@ public class BrowseController {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "/home")
-	public String homeCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
+	public String homeCollection(final Model model) throws DataGridException {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		redirectAttributes.addAttribute("requestHeader", "collections");
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
-	}
-
-	/**
-	 * Responds the collections/public request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 */
-	@RequestMapping(value = "/public")
-	public String publicCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		currentPath = cs.getHomeDirectyForPublic();
-		parentPath = currentPath;
-
-		model.addAttribute("publicPath", currentPath);
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-		redirectAttributes.addAttribute("requestHeader", "public");
-		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
-	}
-
-	/**
-	 * Responds the collections/trash request
-	 *
-	 * @param model
-	 * @return the collection management template
-	 * @throws DataGridException
-	 */
-	@RequestMapping(value = "/trash")
-	public String trashCollection(final Model model, RedirectAttributes redirectAttributes) throws DataGridException {
-		// cleaning session variables
-		sourcePaths.clear();
-
-		if (userTrashPath == null || userTrashPath.equals("")) {
-			userTrashPath = String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(),
-					irodsServices.getCurrentUser());
-		}
-		currentPath = userTrashPath;
-		parentPath = currentPath;
-
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
-
-		redirectAttributes.addAttribute("requestHeader", "trash");
 		model.addAttribute("topnavHeader", headerService.getheader("collections"));
-
-		return "redirect:/collections?path=" + currentPath;
+		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")

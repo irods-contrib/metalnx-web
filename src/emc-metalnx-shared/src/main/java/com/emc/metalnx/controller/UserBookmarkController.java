@@ -88,7 +88,8 @@ public class UserBookmarkController {
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(loggedUsername, loggedUserZoneName);
 
 		List<DataGridUserBookmark> userBookmakrs = user.getBookmarksSorted();
-
+		logger.info("userBookmarks found....");
+		logger.info(userBookmakrs.toString());
 		model.addAttribute("userBookmarks", userBookmakrs);
 		model.addAttribute("foundUserBookmarks", !userBookmakrs.isEmpty());
 		model.addAttribute("topnavHeader", headerService.getheader("shared"));
@@ -98,7 +99,7 @@ public class UserBookmarkController {
 	@RequestMapping(value = "/addBookmark/")
 	@ResponseStatus(value = HttpStatus.OK)
 	public void addBookmark(@RequestParam("path") final String path, final Model model) {
-
+		logger.info("addBookmark()");
 		// Remove from the in-memory list before checking database
 		if (removeBookmark.contains(path)) {
 			removeBookmark.remove(path);
@@ -111,7 +112,7 @@ public class UserBookmarkController {
 	@RequestMapping(value = "/removeBookmark/")
 	@ResponseStatus(value = HttpStatus.OK)
 	public void removeBookmark(@RequestParam("path") final String path) {
-
+		logger.info("removeBookmark()");
 		// Removing from the in-memory bookmarks list before checking database
 		if (addBookmark.contains(path)) {
 			addBookmark.remove(path);
@@ -124,6 +125,7 @@ public class UserBookmarkController {
 	@ResponseBody
 	public String addBookmarkToGroup(@RequestParam("username") final String username,
 			@RequestParam("path") final String path) {
+		logger.info("addBookmarkToGroup()");
 		String zoneName = irodsServices.getCurrentUserZone();
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, zoneName);
 
@@ -141,6 +143,7 @@ public class UserBookmarkController {
 	@ResponseBody
 	public String removeBookmarkFromGroup(@RequestParam("username") final String username,
 			@RequestParam("path") final String path) {
+		logger.info("removeBookmarkFromGroup()");
 		logger.info("Request for removing a {} bookmark from {}", path, username);
 
 		String zoneName = irodsServices.getCurrentUserZone();

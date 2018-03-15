@@ -130,9 +130,24 @@
 		
 		function openInCollView(path) {
 			window.open(
-					  '/emc-metalnx-web/collections' + encodeURI(path),
+					  '/emc-metalnx-web/collections?path=' + encodeURI(path),
 					  '_self' // <- This is what makes it open in a new window.
 					);
+		}
+		
+		function unstarItem(path){
+			ajaxEncapsulation(
+				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
+				"GET",
+				{path: path},
+				function(data){
+					if(data.indexOf("OK") >= 0){
+					    datatable.row($(this).parents('tr')).remove().draw();
+					}else{
+						$('#unfavFailMsg').show();
+					}
+				}, null, null, null 
+			);
 		}
 		
 		/*]]>*/
