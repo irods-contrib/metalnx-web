@@ -13,5 +13,6 @@ function getSideCanvas(path){
 
 function displaySideCanvas(data){
 	$('.sideCanvas').html(data);
+	$('.sideCanvas').appendTo("#page-nav-wrapper");
 	$(".sideCanvas").show();
 }

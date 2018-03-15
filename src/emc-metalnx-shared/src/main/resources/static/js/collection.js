@@ -112,7 +112,7 @@ function positionBrowserToPath(path) {
 }
 
 function fileDownload(path){
-	console.log("File Download");
+	$("#breadcrumDownloadBtn").prop("disabled", true);
 	var prepareDownloadURL = "/emc-metalnx-web/fileOperation/prepareFilesForDownload/";
 	var paths = [];
 	paths.push(path);
@@ -162,6 +162,7 @@ function editInfo(path){
 
 function handleDownload() {
 	window.location.href = "/emc-metalnx-web/fileOperation/download/";
+	$("#breadcrumDownloadBtn").prop("disabled", false);
 }
 
 function setOperationInProgress() {

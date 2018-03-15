@@ -30,15 +30,17 @@
 		</div>
 	</div>
 
-	<div th:fragment="cmFilePreview">
+	<div th:fragment="cmFilePreview">	
 		<div class="col-md-12 panel property-tab collection-tabs">
-			<textarea class="cm-textarea"></textarea>
+			<textarea class="cm-textarea">
+			</textarea>
 			<button th:onclick="'javascript:save();'">Save</button>
-			<button th:onclick="'javascript:cancel();'">Cancel</button>
+			<button th:onclick="'javascript:cancel();'">Cancel</button>		
 		</div>
-
+		
 		<!-- <script type="text/javascript" th:src="@{/js/jquery-ui.min.js}"></script> -->
 		<script type="text/javascript" th:src="@{/js/preview.js}"></script>
+		
 	</div>
 
 	<div th:fragment="csvFilePreview">

@@ -51,7 +51,7 @@
 						<li><a href="#"> <span>option2</span>
 						</a></li>
 					</ul> -->
-					<a id="breadcrumbStar" class="btn btn-default icon-btn" href="#"
+					<a id="breadcrumbStar" class="btn btn-default icon-btn" 
 						th:onclick="${dataProfile.starred}? 'javascript:unstarPath(\'' + ${dataProfile.getAbsolutePath()} + '\');' : 'javascript:starPath(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						data-toggle="popover" data-trigger="manual" data-content=""
 						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
@@ -59,7 +59,6 @@
 						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
 						aria-hidden="true"></i>
 					</a> <a id="breadcrumDownloadBtn" class="btn btn-default icon-btn"
-						href="#"
 						th:onclick="'javascript:fileDownload(\'' + ${dataProfile.getAbsolutePath()} + '\');'">
 						<i class="fa fa-download fa-color" aria-hidden="true"></i>
 					</a>

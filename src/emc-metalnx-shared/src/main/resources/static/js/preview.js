@@ -3,13 +3,37 @@ var editor;
 $(document).ready(function(){
 	var code = $(".cm-textarea")[0];
   	editor = CodeMirror.fromTextArea(code,{
-  		mode: "scheme",
-  		lineNumbers : true
-  		
+  		theme: "default",
+  		lineNumbers : true 		
   	});
   	
-	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status){
-		editor.getDoc().setValue(data);
+  	editor.getDoc().markText({
+    	  line: 5,
+    	  ch: 10
+    	}, {
+    	  line: 5,
+    	  ch: 39
+    	}, {
+    	  css: "color : red"
+    	});
+    	
+  	
+	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status, jqXHR){
+		var dispData;		
+		var contentType = jqXHR.getResponseHeader("content-type") || "";
+		
+		if (contentType.indexOf('text') > -1) {		     
+			dispData = data
+		}		
+		if (contentType.indexOf('xml') > -1) {		     
+			dispData = xmlToString(data);
+		}
+		if (contentType.indexOf('json') > -1) {
+			dispData = JSON.stringify(data);
+		} 
+		
+		editor.getDoc().setValue(dispData);
+		
     });		
 	
 });
@@ -30,8 +54,7 @@ function save() {
 }
 
 function confirmSave(data){
-	//$('#successConfirmationModal').modal();	
-	toastr.success("Successfully Edited!!" , "success")
+	toastr.success("Successfully Edited!!" , "success");
 }
 
 function cancel() {
@@ -39,3 +62,19 @@ function cancel() {
 		editor.getDoc().setValue(data);
     });	
 }
+
+function xmlToString(xmlData) { 
+
+    var xmlString;
+    //IE
+    if (window.ActiveXObject){
+        xmlString = xmlData.xml;
+    }
+    // code for Mozilla, Firefox, Opera, etc.
+    else{
+        xmlString = (new XMLSerializer()).serializeToString(xmlData);
+    }
+    return xmlString;
+}   
+
+
