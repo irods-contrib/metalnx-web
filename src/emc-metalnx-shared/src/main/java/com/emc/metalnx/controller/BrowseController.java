@@ -575,8 +575,10 @@ public class BrowseController {
 
 			if (isMarkedFavorite) {
 				Set<String> toAdd = new HashSet<String>();
+				Set<String> toRemove = new HashSet<String>();
 				toAdd.add(newPath);
-				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+				toRemove.add(previousPath);
+				boolean operationResult = favoritesService.updateFavorites(user, toAdd, toRemove);
 				if (operationResult) {
 					logger.info("Favorite re-added successfully for: " + newPath);
 				} else {
