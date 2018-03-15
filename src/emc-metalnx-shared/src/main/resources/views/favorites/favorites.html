@@ -130,7 +130,7 @@
 		
 		function openInCollView(path) {
 			window.open(
-					  '/emc-metalnx-web/collections' + encodeURI(path),
+					  '/emc-metalnx-web/collections?path=' + encodeURI(path),
 					  '_self' // <- This is what makes it open in a new window.
 					);
 		}
