@@ -135,6 +135,21 @@
 					);
 		}
 		
+		function unstarItem(path){
+			ajaxEncapsulation(
+				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
+				"GET",
+				{path: path},
+				function(data){
+					if(data.indexOf("OK") >= 0){
+					    datatable.row($(this).parents('tr')).remove().draw();
+					}else{
+						$('#unfavFailMsg').show();
+					}
+				}, null, null, null 
+			);
+		}
+		
 		/*]]>*/
 		</script>
 
