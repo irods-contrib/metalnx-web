@@ -49,26 +49,25 @@
 	</head>
 
 	<body>
-        <div class="login">
-            <div class="login_title">
-                <h1 th:text="#{login.title}"></h1>
-            </div>
-            <div class="login_fields">
-                <form action="#" th:action="@{/login/authenticate/}" method="POST" id="authLogin">
-                    <div class="login_fields_user">
-                        <div class="icon"><i class="fa fa-user" aria-hidden="true"></i></div>
-                        <input type="text" placeholder="username" name="username" id="inputUsernameLogin" aria-label="user name"
-                        title="user name"/>
-                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
+        <div id="login-wraper">         
+                <form action="#" th:action="@{/login/authenticate/}" method="POST" id="authLogin" class="form login-form">
+                	<legend> sign in to 
+                		<span class="blue" th:text="#{login.title}"></span>
+            		</legend>
+                    <div class="body">
+                        <label>Username</label>
+                        <input type="text" name="username" id="inputUsernameLogin"/>
+                        <!-- <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div> -->
+                 
+                        <label>Password</label>
+                        <input type="password" name="password" id="inputPasswordLogin"/>
+                        <!-- <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div> -->
                     </div>
-                    <div class="login_fields_password">
-                        <div class="icon"><i class="fa fa-lock" aria-hidden="true"></i></div>
-                        <input type="password" placeholder="password" name="password" id="inputPasswordLogin" aria-label="password"
-                        title="password"/>
-                        <div class="icon-input-check hidden"><i class="fa fa-check" aria-hidden="true"></i></div>
-                    </div>
-                    <div class="login_fields_submit">
-                        <input type="submit" value="Login" id="loginBtn"/>
+                                                
+                    <div class="footer">
+                    	<label class="checkbox inline">
+                        <input type="checkbox" id="inlineCheckbox1" value="option1" /> Remember me </label>                    	 	
+                        <button type="submit" value="Login" id="loginBtn" class="btn btn-success">Login</button>
 
 				            <th:block th:if="${globalConfig.isTicketsEnabled()}">
 											<a id="haveTicketBtn" href="#" onclick="showAnonymousLogin();" th:text="#{ticket.login.access}" aria-label="i have a ticket"></a>
@@ -95,8 +94,7 @@
                         <a href="#" onclick="showAuthLogin();" id="login-link" th:text="#{login.label}"></a>
                     </div>
                 </form>
-            </div>
-
+          
             <div class="login_msgs">
                 <i class="fa fa-exclamation-triangle"
                    th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? hidden"
@@ -107,9 +105,9 @@
                 <span class="hidden" id="invalidTicketMsg" th:text="#{login.invalid.ticket}"></span>
             </div>
 
-            <div class="login_copyright">
+           <!--  <div class="login_copyright">
                 <span th:text="#{login.copyright}"></span>
-            </div>
+            </div> -->
         </div>
 	</body>
 

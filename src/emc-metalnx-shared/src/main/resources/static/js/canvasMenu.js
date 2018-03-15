@@ -1,6 +1,6 @@
 $(document).ready(function(){
-  	$("#close-sidecanvas").click(function(){
-  		$('.sideCanvas').hide();
+  	$("#close-sidecanvas").click(function(){		
+  		$('.side-canvas').hide();
   	});
       
 });
@@ -11,8 +11,9 @@ function getSideCanvas(path){
 	ajaxEncapsulation(url, "POST", {path: path}, displaySideCanvas, null, null);
 }
 
-function displaySideCanvas(data){
-	$('.sideCanvas').html(data);
-	$('.sideCanvas').appendTo("#page-nav-wrapper");
-	$(".sideCanvas").show();
+function displaySideCanvas(data){	
+	$('.side-canvas').html(data);
+	//$('.side-canvas').remove();
+	$('.side-canvas').appendTo("#page-nav-wrapper");
+	$('.side-canvas').show();
 }
