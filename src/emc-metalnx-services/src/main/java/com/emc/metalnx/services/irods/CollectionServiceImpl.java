@@ -1410,6 +1410,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
+		
+		logger.info("*****************path **************" +path);
 		logger.debug("got irodsAccount:{}", irodsAccount);
 
 		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);

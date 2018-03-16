@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -980,14 +981,14 @@ public class BrowseController {
 	}
 
 	@RequestMapping(value = "/summary", method = RequestMethod.POST)
-	public String getSummary(final Model model, @RequestParam("path") final String path) throws DataGridException {
+	public String getSummary(final Model model, @RequestParam("path") final String path) throws DataGridException, UnsupportedEncodingException {
 		logger.info("BrowseController getSummary() starts :: " + path);
 
 		IconObject icon = null;
 		String mimeType = "";
 
 		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path));
+		DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
 
 		logger.info("DataProfiler is :: " + dataProfile);
 
