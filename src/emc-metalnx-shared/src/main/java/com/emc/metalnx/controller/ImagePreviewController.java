@@ -65,14 +65,18 @@ public class ImagePreviewController {
 	@RequestMapping(value = "/previewFilePath", method = RequestMethod.GET)
 	public String getPreviewFilePath(final HttpServletResponse response, @ModelAttribute("path") String path)
 			throws JargonException {
+		logger.info("previewFilePath()");
+		if (path == null || path.isEmpty()) {
+			throw new IllegalArgumentException("null or empty path");
+		}
 		previewFilePath = path;
-		logger.info("getPreviewFilePath() for {} ::" + path);
+		logger.info("getPreviewFilePath() for {}:", path);
 		return "collections/imagePreview :: imagePreview";
 	}
 
 	@RequestMapping(value = "/preview", method = RequestMethod.GET)
 	public void getImagePreview(final HttpServletResponse response) throws JargonException {
-		logger.info("getImagePreview() for {} ::" + previewFilePath);
+		logger.info("getImagePreview() for {} :", previewFilePath);
 		previewService.filePreview(previewFilePath, response);
 	}
 
