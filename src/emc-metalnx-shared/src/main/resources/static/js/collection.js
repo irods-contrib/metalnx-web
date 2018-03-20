@@ -140,10 +140,21 @@ function deleteInfoAction(path){
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
 				$('#deleteConfirmationModal').modal();
+				/*var url = "/emc-metalnx-web/browse/home;"
+				toastr.success("Successfully Edited!! " +
+						'<a href="'+ url +'">Go Back to Collection</a>' , "success");			*/
+
 			}
 	);
 	$("#deleteModal").modal("hide");
 	cleanModals();
+	
+	/*toastr.options = {
+		"positionClass": "toast-top-center",
+		"timeOut": "0",
+		"extendedTimeOut": "0",
+	}*/
+	
 }
 
 function cleanModals() {

@@ -8,14 +8,18 @@ $(document).ready(function(){
 
 function save() {
 	var data = $("#csv").jexcel("getData");
-	alert("this will save the data!!" +data+ " , ends !!");
+	console.log("Data :: "+data);
 	var url = "/emc-metalnx-web/preview/save/";
-	ajaxEncapsulation(url, "POST", {data: data}, confirmSave, null, null, null);	
+	ajaxEncapsulation(url, "POST", {data: data}, confirmSave, failSave, null, 'text/csv;charset=utf-8' , null);	
 }
 
 function confirmSave(data){
 	alert("success");
 	toastr.success("Successfully Edited!!" , "success")
+}
+
+function failSave(){
+	toastr.error("Something went wrong.Your chnages are not saved!!" , "Error")
 }
 
 function cancel() {

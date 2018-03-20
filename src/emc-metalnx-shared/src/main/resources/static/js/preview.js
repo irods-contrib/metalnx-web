@@ -21,17 +21,28 @@ $(document).ready(function(){
 	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status, jqXHR){
 		var dispData;		
 		var contentType = jqXHR.getResponseHeader("content-type") || "";
+		var mode; 
 		
 		if (contentType.indexOf('text') > -1) {		     
-			dispData = data
+			dispData = data,
+			mode = "plain/text";
 		}		
 		if (contentType.indexOf('xml') > -1) {		     
 			dispData = xmlToString(data);
+			mode = "xml";
 		}
 		if (contentType.indexOf('json') > -1) {
 			dispData = JSON.stringify(data);
+			mode = "application/ld+json";
+		} 
+		if (contentType.indexOf('html') > -1) {
+			dispData = JSON.stringify(data);
+			mode = "html"
+			
 		} 
 		
+		console.log("mode ::" +mode);
+		editor.setOption("mode" , mode);
 		editor.getDoc().setValue(dispData);
 		
     });		

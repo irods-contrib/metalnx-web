@@ -49,6 +49,7 @@ public class PreviewServiceImpl implements PreviewService {
 		myMap.put("text/plain", "collections/preview :: cmFilePreview");	
 		myMap.put("application/xml", "collections/preview :: cmFilePreview");	
 		myMap.put("application/json", "collections/preview :: cmFilePreview");
+		myMap.put("text/html", "collections/preview :: cmFilePreview");
 		myMap.put("text/csv", "collections/preview :: csvFilePreview");	
 		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/preview :: noPreview");
 		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/preview :: noPreview");
