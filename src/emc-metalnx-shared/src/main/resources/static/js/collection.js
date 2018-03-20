@@ -112,7 +112,10 @@ function positionBrowserToPath(path) {
 }
 
 function fileDownload(path){
-	$("#breadcrumDownloadBtn").prop("disabled", true);
+	$("#breadcrumDownloadBtn").attr('disabled','disabled');
+	$("#actionsWait").show();
+	//$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
+	$('#actionLabel').text($("#container").data("msg-txt"));
 	var prepareDownloadURL = "/emc-metalnx-web/fileOperation/prepareFilesForDownload/";
 	var paths = [];
 	paths.push(path);
@@ -161,8 +164,10 @@ function editInfo(path){
 }
 
 function handleDownload() {
+	
 	window.location.href = "/emc-metalnx-web/fileOperation/download/";
-	$("#breadcrumDownloadBtn").prop("disabled", false);
+	$("#breadcrumDownloadBtn").removeAttr("disabled");
+	$("#actionsWait").hide();
 }
 
 function setOperationInProgress() {

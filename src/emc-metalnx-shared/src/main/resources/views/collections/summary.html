@@ -16,7 +16,7 @@
 
 <th:block th:fragment="summaryView">
 
-	
+
 	<div id="summary" class="container-fluid">
 
 		<div class="row nopadding">
@@ -51,7 +51,7 @@
 						<li><a href="#"> <span>option2</span>
 						</a></li>
 					</ul> -->
-					<a id="breadcrumbStar" class="btn btn-default icon-btn" 
+					<a id="breadcrumbStar" class="btn btn-default icon-btn"
 						th:onclick="${dataProfile.starred}? 'javascript:unstarPath(\'' + ${dataProfile.getAbsolutePath()} + '\');' : 'javascript:starPath(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						data-toggle="popover" data-trigger="manual" data-content=""
 						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
@@ -69,20 +69,10 @@
 					aria-hidden="true"></i>
 				</a>-->
 				</div>
-				<div id="actionsWait" class="col-xs-12 hideElement">
-					<div id="panelWait">
-						<div class="progress">
-							<div class="progress-bar progress-bar-striped active"
-								role="progressbar" aria-valuenow="100" aria-valuemin="0"
-								aria-valuemax="100" style="width: 100%">
-								<span id="actionLabel"></span>
-							</div>
-						</div>
-					</div>
-				</div>
+
 			</div>
-			
-			
+
+
 			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
 				<ol class="breadcrumb">
 					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
@@ -94,16 +84,16 @@
 								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
 								th:text="${breadcrumbItem.name}"
 								th:title="${breadcrumbItem.path}"
-                                th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
 							</a></li>
 						</th:block>
 						<th:block
 							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
-							<li class="collections-view">
-								<span th:text="${ dataProfile.getChildName() }"
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
 								th:title="${ dataProfile.getChildName() }"> </span></li>
 						</th:block>
-						
+
 					</th:block>
 					<li class="collections-view"><span
 						th:text="${ dataProfile.getChildName() }"
@@ -114,17 +104,16 @@
 							aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
-                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
+							th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
 						</a></li>
 						<li><a href="#"
 							th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
 							th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
-                            th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
+							th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
 						</a></li>
-						<li class="collections-view">
-							<span th:text="${ dataProfile.getChildName() }"
-							th:title="${ dataProfile.getChildName() }"> </span>
-						</li>
+						<li class="collections-view"><span
+							th:text="${ dataProfile.getChildName() }"
+							th:title="${ dataProfile.getChildName() }"> </span></li>
 					</th:block>
 				</ol>
 
@@ -132,8 +121,26 @@
 					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
 				</div>
 			</div>
-		</div>
+			
+			<div id="container"
+				th:attr="data-msg-txt=#{collections.management.progress.label.download}"></div>
 
+			<div id="actionsWait" class="col-xs-12 hideElement">
+				<div id="panelWait">
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped active"
+							role="progressbar" aria-valuenow="100" aria-valuemin="0"
+							aria-valuemax="100" style="width: 100%">
+							<span id="actionLabel"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+					
+		</div>
+		
+		
+			
 		<div class="row box box-default">
 			<div class="col-sm-6 col-md-3 col-xs-12 text-left">
 				<div class="mime-icon">
@@ -198,35 +205,37 @@
 			</div>
 		</div>
 	</div>
-	
-	
+
+
 	<!-- Delete Confirmation -->
 
-	<div id="deleteConfirmationModal" class="modal fade" tabindex="-1" role="dialog">
+	<div id="deleteConfirmationModal" class="modal fade" tabindex="-1"
+		role="dialog">
 		<div class="modal-dialog">
-			<div class="modal-content">			
+			<div class="modal-content">
 				<div class="modal-body text-cente">
 					<strong>Success!</strong> The file was successfully deleted.<a
 						href="/emc-metalnx-web/browse/home">Go Back to Collection</a>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- success Confirmation -->
 
-	<div id="successConfirmationModal" class="modal fade" tabindex="-1" role="dialog">
+	<div id="successConfirmationModal" class="modal fade" tabindex="-1"
+		role="dialog">
 		<div class="modal-dialog">
-			<div class="modal-content">			
+			<div class="modal-content">
 				<div class="modal-body text-cente  alert alert-success">
 					<strong>Success!</strong> The file was successfully Edited.
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- Rename Modal -->
 
 	<div class="modal fade" id="renameModal" tabindex="-1" role="dialog"
