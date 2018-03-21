@@ -71,8 +71,6 @@
 		<sec:intercept-url pattern="/login/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 			
-			<sec:intercept-url pattern="/logout/**"
-			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
 		<!-- Static Resources -->
 		<sec:intercept-url pattern="/images/**"
