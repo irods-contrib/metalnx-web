@@ -4,8 +4,10 @@
 
 	<div th:fragment="imagePreview">
 		<div class="col-md-12 panel property-tab collection-tabs">
-			<img src="/emc-metalnx-web/preview/dataObjectPreview/"
-				alt="imagePreview" class="preview" />
+			<div  class="preview-img-container">
+				<img src="/emc-metalnx-web/preview/dataObjectPreview/"
+				alt="imagePreview"/>
+			</div>
 		</div>
 	</div>
 
@@ -32,7 +34,7 @@
 
 	<div th:fragment="cmFilePreview">	
 		<div class="col-md-12 panel property-tab collection-tabs">
-			<textarea class="cm-textarea">
+			<textarea class="cm-textarea preview">
 			</textarea>
 			<button th:onclick="'javascript:save();'">Save</button>
 			<button th:onclick="'javascript:cancel();'">Cancel</button>		
@@ -46,7 +48,7 @@
 	<div th:fragment="csvFilePreview">
 		<div class="col-md-12 panel property-tab collection-tabs">
 			CSV File Preview....
-			<div id="csv"></div>
+			<div id="csv" class="preview"></div>
 			
 			<!-- <button th:onclick="'javascript:save();'">Save</button>
 			<button th:onclick="'javascript:cancel();'">Cancel</button> -->

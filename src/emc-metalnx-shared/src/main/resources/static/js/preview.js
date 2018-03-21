@@ -37,7 +37,7 @@ $(document).ready(function(){
 		} 
 		if (contentType.indexOf('html') > -1) {
 			dispData = JSON.stringify(data);
-			mode = "html"
+			mode = "htmlmixed";
 			
 		} 
 		
