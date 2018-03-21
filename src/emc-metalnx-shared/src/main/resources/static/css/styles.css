@@ -2576,12 +2576,24 @@ td a {
 
 .property-tab{
     padding: 15px 15px 25px 15px;
+    height: auto;
 }
 
 .preview{
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 350px;
+  overflow-y: scroll;
 }
+
+.preview-img-container{
+  width: 100%;
+  height: auto;
+  overflow-x: scroll;
+}
+.preview-img-container img{
+  width: auto;
+}
+
 #csv table{
   width:100%;
   height:100%;
@@ -2589,82 +2601,5 @@ td a {
 #toast-container{
   font-size:1.8em;
 }
-/*#deleteConfirmationModal{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  display: table
-}
-#deleteConfirmationModa div.model-content{
-  display: table-cell;
-}*/
-
-/*.topnav{
-  //width:100%;
-  //position: relative;
-//  z-index: 2;
-  height: 50px;
-  background-color: #287EA1;
-}
-.topnav-usercontroll{
-  background-color: #287EA1;
-}
-.collection-header{
-  border-bottom:none;
-  margin: 0px 5px 0px 0px;
-  padding-bottom:0;
-  //font-size: 15px;
-
-}
-.collection-margin{
-  margin: 10px 10px;
-}
-.color-blue{
-  color:blue;
-}
-
-.disabled {
-    pointer-events:none; //This makes it not clickable
-    opacity:0.6;         //This grays it out to look disabled
-}
 
 
-td a {
-  cursor: pointer;
-}
-
-.font-awesometemplate {
-    text-shadow: 1px 1px 1px #ccc;
-    font-size: 6em;
-    padding-left: 40px;
-}
-
-.collectionFont{
-  color: #287EA1;
-}
-
-.breadcrumb a{
-    color: #287EA1;
-}
-.topnavbreadcrum{
-  min-width: 1026px;
-  max-width: 1026px;
-  font-size: small;
-}
-.topbar{
-  width: 100%;
-  heigth: 50px;
-  background-color:#287ea1;
-  color: #fff;
-}
-.topbar a{
-  color: #fff;
-}
-
-.collectionTable{
-  width: 100%;
-  overflow: auto
-}*/
