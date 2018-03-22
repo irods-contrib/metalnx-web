@@ -14,7 +14,7 @@ function displayCollectionSummary(data){
 
 function getInfoDetails(path){
 	console.log("getInfoDetails()");
-	window.location.hash = "info";
+	//window.location.hash = "info";
 	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 }
@@ -23,7 +23,7 @@ function getMetadata(path){
 	console.log("Collection getMetadata() :: " +path);
 	/*$("#table-loader").show();
 	$("#metadata").hide();*/
-	window.location.hash = "metadata";
+	//window.location.hash = "metadata";
 	var url = "/emc-metalnx-web/metadata/getMetadata/";
 	ajaxEncapsulation(url , "POST", {path: path}, displayMetadata, null, null, null);
 }
@@ -32,14 +32,14 @@ function getPermissionDetails(path){
 	console.log("Collection getPermDetails() :: " +path);
 	/*$("#table-loader").show();
 	$("#permission").hide();*/
-	window.location.hash = "permission";
+	//window.location.hash = "permission";
 	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayPermissionDetails, null, null);
 }
 
 function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
-	window.location.hash = "preview";
+	//window.location.hash = "preview";
 	var url = "/emc-metalnx-web/previewPreparation/";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);
 }
