@@ -127,7 +127,7 @@ function deleteInfoAction(path){
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
 	$('#actionsWait').show();
-
+	
 	var paths = [];
 	paths.push(path);
 	var url = "/emc-metalnx-web/fileOperation/delete/";
@@ -139,22 +139,11 @@ function deleteInfoAction(path){
 			function (data) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();
-				/*var url = "/emc-metalnx-web/browse/home;"
-				toastr.success("Successfully Edited!! " +
-						'<a href="'+ url +'">Go Back to Collection</a>' , "success");			*/
-
+				$('#deleteConfirmationModal').modal();								
 			}
 	);
 	$("#deleteModal").modal("hide");
 	cleanModals();
-	
-	/*toastr.options = {
-		"positionClass": "toast-top-center",
-		"timeOut": "0",
-		"extendedTimeOut": "0",
-	}*/
-	
 }
 
 function cleanModals() {
