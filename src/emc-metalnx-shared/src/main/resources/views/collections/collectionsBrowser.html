@@ -234,7 +234,7 @@
 
                 <div class="btnLabel"><span th:text="#{collections.add.button.label}"></span></div>
             </a>
-            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo'+${currentPath}" id="infoIcon"
+            <a role="button" class="btn btn-default icon-btn" th:href="'/emc-metalnx-web/collectionInfo?path='+${encodedCurrentPath}" id="infoIcon"
             th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'" title="View info">
 				<i class="fa fa-info-circle fa-color"></i>
 			</a>
