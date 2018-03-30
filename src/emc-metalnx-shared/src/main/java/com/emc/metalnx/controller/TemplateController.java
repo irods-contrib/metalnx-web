@@ -93,7 +93,7 @@ public class TemplateController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -179,7 +179,7 @@ public class TemplateController {
 		}
 
 		model.addAttribute("templateForm", templateForm);
-		model.addAttribute("requestMapping", "/collections/applyTemplatesToCollections/");
+		model.addAttribute("requestMapping", "/browse/applyTemplatesToCollections/");
 		model.addAttribute("templateFields", templateFields);
 		model.addAttribute("resultSize", templateFields.size());
 		model.addAttribute("foundTemplateFields", templateFields.size() > 0);
