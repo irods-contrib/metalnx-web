@@ -74,7 +74,29 @@
 
 
 			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
-				<ol class="breadcrumb">
+			
+			<ol class="breadcrumb">
+					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+							class="fa fa-home fa-color"></i></a></li>
+					<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+							<li><a href="#"
+								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+								th:text="${breadcrumbItem.name}"
+								th:title="${breadcrumbItem.path}"
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+							</a></li>
+						</th:block>
+						<th:block
+							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
+						</th:block>
+
+					</th:block>
+				</ol>
+				<!-- <ol class="breadcrumb">
 					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
 							class="fa fa-home fa-color"></i></a></li>
 					<th:block th:if="${breadcrumb.items.size()} le 4"
@@ -113,7 +135,7 @@
 							th:text="${ dataProfile.getChildName() }"
 							th:title="${ dataProfile.getChildName() }"> </span></li>
 					</th:block>
-				</ol>
+				</ol> -->
 
 				<div class="collection-title">
 					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
