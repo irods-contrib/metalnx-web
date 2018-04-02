@@ -1,5 +1,6 @@
 package com.emc.metalnx.controller;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
@@ -25,16 +27,16 @@ import com.emc.metalnx.services.interfaces.ResourceService;
 public class PublicController {
 	@Autowired
 	CollectionService cs;
-	
+
 	@Autowired
 	IRODSServices irodsServices;
-	
+
 	@Autowired
 	ResourceService resourceService;
-	
+
 	@Autowired
 	HeaderService headerService;
-	
+
 	// parent path of the current directory in the tree view
 	private String parentPath;
 
@@ -43,12 +45,12 @@ public class PublicController {
 
 	// Auxiliary structure to manage download, upload, copy and move operations
 	private List<String> sourcePaths;
-	
+
 	// variable to save trash path for the logged user
 	private String userTrashPath = "";
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PublicController.class);
-	
+
 	/**
 	 * Responds the collections/public request
 	 *
@@ -59,18 +61,11 @@ public class PublicController {
 	public String publicCollection(final Model model) throws DataGridException {
 		logger.info("publicCollection()");
 		// cleaning session variables
-		//sourcePaths.clear();
+		// sourcePaths.clear();
 
 		currentPath = cs.getHomeDirectyForPublic();
 		parentPath = currentPath;
-
-		model.addAttribute("publicPath", currentPath);
-		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("parentPath", parentPath);
-		model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-		model.addAttribute("resources", resourceService.findAll());
 		model.addAttribute("topnavHeader", headerService.getheader("public"));
-		System.out.println("#################public");
-		return "redirect:/collections" + currentPath;
+		return "redirect:/collections?path=" + currentPath;
 	}
 }

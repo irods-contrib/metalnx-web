@@ -1,41 +1,64 @@
 package com.emc.metalnx.controller;
 
-import org.irods.jargon.core.connection.IRODSAccount;
+import java.net.URLDecoder;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.extensions.datatyper.DataTypeResolutionService;
-import org.irods.jargon.extensions.datatyper.DataTypeResolutionServiceFactory;
+import org.irods.jargon.datautils.filesampler.FileSamplerService;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.IconService;
+import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.PreviewService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/preview")
 public class PreviewController {
 
 	@Autowired
-	PreviewService previewService;
+	CollectionService cs;
+
+	@Autowired
+	PermissionsService permissionsService;
+
+	@Autowired
+	DataProfilerFactory dataProfilerFactory;
 
 	@Autowired
 	IRODSServices irodsServices;
 
 	@Autowired
-	DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory;
+	IconService iconService;
+
+	@Autowired
+	ServletContext context;
+
+	@Autowired
+	PreviewService previewService;
+	
+	/*@Autowired
+	FileSamplerService fileSamplerService;*/
+	
+	private String previewFilePath;
+	private String previewMimeType;
 
 	private static final Logger logger = LoggerFactory.getLogger(PreviewController.class);
 
@@ -44,65 +67,38 @@ public class PreviewController {
 	 *
 	 * @param model
 	 * @return the collection management template
-	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
 	 * @throws DataGridException
 	 */
 
-	@RequestMapping(value = "/prepareForPreview", method = RequestMethod.GET)
-	public String getPreview(final Model model, @RequestParam("path") final String path,
-			RedirectAttributes redirectAttributes) throws DataGridException {
+	@RequestMapping(value = "/templateByMimeType", method = RequestMethod.GET)
+	public String getTemplate(final HttpServletResponse response, @ModelAttribute("path") String path,
+			@ModelAttribute("mimeType") String mimeType) throws JargonException {
 
-		logger.info("getPreview()");
-		if (path == null || path.isEmpty()) {
-			throw new IllegalArgumentException("null or empty path");
-		}
+		previewFilePath = URLDecoder.decode(path);
+		previewMimeType = mimeType;
 
-		logger.info("path:{}", path);
+		String template = previewService.getTemplate(mimeType);
 
-		String mimeType = null;
-
-		try {
-			IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-			DataTypeResolutionService dataTypeResolutionService = dataTypeResolutionServiceFactory
-					.instanceDataTypeResolutionService(irodsAccount);
-
-			logger.info("dataTypeResolutionService created from factory:{}", dataTypeResolutionService);
-
-			logger.info("doing quick check for mime type");
-			mimeType = dataTypeResolutionService.quickMimeType(path);
-			logger.info("mimetype:{}", mimeType);
-
-			redirectAttributes.addAttribute("path", path);
-
-			String template = null;
-
-			if (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/gif")
-					|| mimeType.equalsIgnoreCase("image/jpeg") || mimeType.equalsIgnoreCase("image/jpg")) {
-				logger.info("showing image preview");
-				template = "redirect:/image/previewFilePath";
-			} else {
-				logger.info("no preview is available");
-				template = "collections/imagePreview :: noPreview";
-			}
-
-			return template;
-		} catch (JargonException e) {
-			logger.error("Could not retrieve data from path: {}", path, e);
-			throw new DataGridException(e.getMessage());
-		} catch (Exception e) {
-			logger.error("general exception generating preview", e);
-			throw new DataGridException(e.getLocalizedMessage());
-		}
-
+		logger.info("getTemplate for {} ::" + path + " and mimetype :: " + mimeType);
+		return template;
 	}
 
-	public DataTypeResolutionServiceFactory getDataTypeResolutionServiceFactory() {
-		return dataTypeResolutionServiceFactory;
+	@RequestMapping(value = "/dataObjectPreview", method = RequestMethod.GET)
+	public void getPreview(final HttpServletResponse response) throws JargonException {
+		previewService.filePreview(previewFilePath, previewMimeType, response);
 	}
-
-	public void setDataTypeResolutionServiceFactory(DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory) {
-		this.dataTypeResolutionServiceFactory = dataTypeResolutionServiceFactory;
+	
+	@RequestMapping(value = "/save" , method = RequestMethod.POST)
+	public String save(final Model model , @RequestParam("data") final String data) throws JargonException, 
+	DataGridConnectionRefusedException {
+			
+		logger.info("saving file chnage for :: " +previewFilePath+ " , and data :: " +data);	
+		FileSamplerService fileSamplerService =  irodsServices.getFileSamplerService();
+		fileSamplerService.saveStringToFile(data, previewFilePath);
+		
+		model.addAttribute("success", true);
+		return "collections/preview :: cmFilePreview";
 	}
 
 }

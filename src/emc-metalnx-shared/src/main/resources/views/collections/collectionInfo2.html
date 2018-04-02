@@ -1,0 +1,123 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org" lang="en"
+	layout:decorator="template">
+
+<body>
+	<div class="row">
+		<div class="col-sm-12" aria-labelledby="collInfoManagement"
+			layout:fragment="content">
+
+			<div class="row">
+				<th:block th:include="collections/summary :: summaryView"></th:block>
+			</div>
+
+			
+				
+			<div class="col-xs-12 tree-view-panel box">
+				<div class="tabpanel">
+					<ul id="tabs" class="nav nav-tabs">
+						<li class="active"><a href="#details" data-toggle="tab" role="tab">
+								<span><i class="fa fa-info-circle" alt="File Info"></i></span> <span
+								title="collection information">Details</span>
+						</a></li>
+
+						<li><a href="#metadata" data-toggle="tab" role="tab"
+						th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-tags"></i></span> <span
+								title="Collection Metadata">Metadata</span>
+						</a></li>
+
+						<li><a href="#permission" id="permissions" data-toggle="tab" role="tab"
+						th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-lock"></i></span> <span
+								title="Collection Permissions">Permissions</span>
+						</a></li>
+					</ul>
+
+					<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
+						<div id="table-loader" class="table-loader col-sm-12 hideElement">
+				            <div class="panel loading">
+				                <img alt="table loading" class="center-block" th:src="@{/images/table_loading.svg}" />
+				            </div>
+				        </div>
+						<div id="details" class="tab-pane fade active in" role="tabpanel">
+							<!-- <th:block th:include="collections/info :: infoView"></th:block> --></div>
+						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
+						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
+					</div>
+				</div>
+			</div>
+
+
+
+					
+			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+			<script th:inline="javascript">
+			 $(document).ready(function(e){		
+			     // $('#tabs a:first').tab('show');
+			  			
+			      /* var url = document.location.toString();
+				  if (url.match('#')) {
+				      $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+				  } 
+
+				  // Change hash for page-reload
+				  $('.nav-tabs a').on('shown.bs.tab', function (e) {
+				      window.location.hash = e.target.hash;
+				  }) */
+				 /*  var hash = document.location.hash;
+				  var prefix = "!";
+				  if (hash) {
+				      hash = hash.replace(prefix,'');
+				      var hashPieces = hash.split('?');
+				      activeTab = $('[role="tablist"] a[href=' + hashPieces[0] + ']');
+				      activeTab.tab('show');
+				  }
+
+				  // Change hash for page-reload
+				  $('[role="tablist"] a').on('shown.bs.tab', function (e) {
+				      window.location.hash = e.target.hash.replace("#", "#" + prefix);
+				  });
+				  
+				  // add a hash to the URL when the user clicks on a tab
+			 	   $('a[data-toggle="tab"]').on('click', function(e) {
+			 		history.replaceState(null, null, $(this).attr('href'));
+				  });
+				  // navigate to a tab when the history changes
+				  window.addEventListener("popstate", function(e) {					 
+				    var activeTab = $('[href=' + location.hash + ']');
+				    if (activeTab.length) {			    	
+				      activeTab.tab('show');
+				    } else {			    	
+				      $('.nav-tabs a:first').tab('show');
+				    }
+				  });    */
+				  
+				  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+					  var target = $(e.target).attr("href") // activated tab
+					  alert("target:: " +target);
+					  alert([[${dataProfile.absolutePath}]]);
+					   if(target == 'details'){
+						  test([[${dataProfile.absolutePath}]]);
+					  }
+					   /*if(target == 'metadata'){
+						  getMetadata([[${dataProfile.absolutePath}]]);
+						  
+					  }
+					  if(target == 'permissions){
+						  getPermissionDetails([[${dataProfile.absolutePath}]]);
+					  }   */
+					});
+				   
+				});
+			function test(path){
+				alert("test :: " +path);
+			}
+			</script>
+		</div>
+	</div>
+</body>
+
+</html>

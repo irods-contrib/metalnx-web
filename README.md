@@ -131,6 +131,10 @@ from any of these search views opens the collections view using the deep link ap
 experience that can suffice until the collections browser can be refactored to unify all of these searches into the same view.
 Maps to NIEHS #70
 
+#### browsing up to zone or home for non-admin user niehs #128
+
+Enhance ability to browse down from root as non-admin user using heuristics and relaxing permission checks for a more intuitive experience
+
 #### URL encoding issues with collection browser links
 
 While still somewhat transitional (still some inconsistancies in how URLs and javascript methods operate) this generally improves support

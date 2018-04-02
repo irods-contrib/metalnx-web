@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.emc.metalnx.services.auth.IRODSAuthenticationProvider;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 
 @Controller
@@ -41,15 +40,11 @@ public class LoginController {
 	public String loginView(final Model model) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
 		if (auth instanceof UsernamePasswordAuthenticationToken) {
-			System.out.println("is instance of authtocken");
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
 			return isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home";
-		}else {
-			System.out.println("is not instance of authtocken");
 		}
-		
+
 		return "login/index";
 	}
 

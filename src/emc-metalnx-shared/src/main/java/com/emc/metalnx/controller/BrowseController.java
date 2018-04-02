@@ -16,6 +16,8 @@
 
 package com.emc.metalnx.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,7 @@ import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,7 @@ import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
@@ -187,6 +191,8 @@ public class BrowseController {
 	public String getAvailableRescForPath(final Model model, @RequestParam("isUpload") final boolean isUpload)
 			throws DataGridConnectionRefusedException {
 
+		logger.info("getAvailableRescForPath()");
+
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 		List<DataGridResource> resources = resourceService.findFirstLevelResources();
 
@@ -215,6 +221,8 @@ public class BrowseController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void switchMode(final Model model, final HttpServletRequest request,
 			@RequestParam("currentMode") final String currentMode, final RedirectAttributes redirectAttributes) {
+
+		logger.info("switchMode()");
 
 		// if the admin is currently seeing the Admin UI, we need to switch it
 		// over to the USER UI
@@ -299,12 +307,11 @@ public class BrowseController {
 	@RequestMapping(value = "/info/", method = RequestMethod.POST)
 	public String getFileInfo(final Model model, final String path) throws DataGridException, FileNotFoundException {
 
-		System.out.println("CollectionController getInfoFile() starts !!");
+		logger.info("CollectionController getInfoFile() starts :: " + path);
 		DataGridCollectionAndDataObject dataGridObj = null;
 		Map<DataGridCollectionAndDataObject, DataGridResource> replicasMap = null;
 
 		try {
-			System.out.println("Path = " + path);
 
 			dataGridObj = cs.findByName(path);
 
@@ -334,10 +341,7 @@ public class BrowseController {
 		model.addAttribute("replicasMap", replicasMap);
 		model.addAttribute("infoFlag", true);
 
-		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
-		System.out.println("currentCollection.getName() == " + dataGridObj.getName());
-
-		System.out.println("CollectionController getInfoFile() ends !!");
+		logger.info("CollectionController getInfoFile() ends !!");
 		return "collections/info :: infoView";
 		// return "collections/info";
 	}
@@ -537,7 +541,7 @@ public class BrowseController {
 			redirectAttributes.addFlashAttribute("missingPermissionError", true);
 		}
 
-		return "redirect:/collections" + currentPath;
+		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
 	/**
@@ -572,8 +576,10 @@ public class BrowseController {
 
 			if (isMarkedFavorite) {
 				Set<String> toAdd = new HashSet<String>();
+				Set<String> toRemove = new HashSet<String>();
 				toAdd.add(newPath);
-				boolean operationResult = favoritesService.updateFavorites(user, toAdd, null);
+				toRemove.add(previousPath);
+				boolean operationResult = favoritesService.updateFavorites(user, toAdd, toRemove);
 				if (operationResult) {
 					logger.info("Favorite re-added successfully for: " + newPath);
 				} else {
@@ -586,7 +592,10 @@ public class BrowseController {
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
 
-		return "redirect:/collections" + parentPath;
+		String template = "redirect:/collections" + parentPath;
+		logger.info("Returning after renaming :: " + template);
+
+		return "redirect:/collections?path=" + URLEncoder.encode(parentPath);
 	}
 
 	@RequestMapping(value = "applyTemplatesToCollections/", method = RequestMethod.POST)
@@ -594,7 +603,7 @@ public class BrowseController {
 			@ModelAttribute final MetadataTemplateForm template) throws DataGridConnectionRefusedException {
 		boolean templatesAppliedSuccessfully = applyTemplatesToPath(template);
 		redirectAttributes.addFlashAttribute("templatesAppliedSuccessfully", templatesAppliedSuccessfully);
-		return "redirect:/collections/";
+		return "redirect:/collections";
 	}
 
 	private boolean applyTemplatesToPath(final MetadataTemplateForm template)
@@ -644,20 +653,23 @@ public class BrowseController {
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
 		model.addAttribute("topnavHeader", headerService.getheader("collections"));
-		return "redirect:/collections?path=" + currentPath;
+		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
 	@RequestMapping(value = "/getBreadCrumbForObject/")
 	public String getBreadCrumbForObject(final Model model, @RequestParam("path") String path)
 			throws DataGridException {
 		logger.info("getBreadCrumbForObject()");
+
 		if (path.isEmpty()) {
 			path = currentPath;
 		} else {
 			if (path.endsWith("/") && path.compareTo("/") != 0) {
 				path = path.substring(0, path.length() - 1);
 			}
-			currentPath = path;
+
+			currentPath = URLDecoder.decode(path);
+
 		}
 
 		logger.info("path:{}", path);
@@ -966,5 +978,29 @@ public class BrowseController {
 		logger.info("forwarding to collections/collectionsBrowser");
 		return "collections/collectionsBrowser";
 
+	}
+
+	@RequestMapping(value = "/summary", method = RequestMethod.POST)
+	public String getSummary(final Model model, @RequestParam("path") final String path) throws DataGridException, UnsupportedEncodingException {
+		logger.info("BrowseController getSummary() starts :: " + path);
+
+		IconObject icon = null;
+		String mimeType = "";
+
+		@SuppressWarnings("rawtypes")
+		DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
+
+		logger.info("DataProfiler is :: " + dataProfile);
+
+		if (dataProfile != null && dataProfile.isFile()) {
+			mimeType = dataProfile.getDataType().getMimeType();
+		}
+		icon = cs.getIcon(mimeType);
+
+		model.addAttribute("icon", icon);
+		model.addAttribute("dataProfile", dataProfile);
+
+		logger.info("getSummary() ends !!");
+		return "collections/summarySidenav :: SummarySidenavView";
 	}
 }

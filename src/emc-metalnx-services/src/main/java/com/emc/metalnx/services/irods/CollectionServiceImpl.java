@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.FileNotFoundException;
@@ -42,6 +43,7 @@ import org.irods.jargon.core.pub.SpecificQueryAO;
 import org.irods.jargon.core.pub.domain.ClientHints;
 import org.irods.jargon.core.pub.domain.Collection;
 import org.irods.jargon.core.pub.domain.DataObject;
+import org.irods.jargon.core.pub.domain.IRODSDomainObject;
 import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -51,6 +53,9 @@ import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry.ObjectTyp
 import org.irods.jargon.core.query.JargonQueryException;
 import org.irods.jargon.core.query.SpecificQuery;
 import org.irods.jargon.core.query.SpecificQueryResultSet;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +68,7 @@ import com.emc.metalnx.core.domain.entity.DataGridGroupPermission;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUserPermission;
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -70,9 +76,9 @@ import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
 import com.emc.metalnx.core.domain.exceptions.UnsupportedDataGridFeatureException;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.irods.utils.SpecificQueryProvider;
@@ -105,8 +111,9 @@ public class CollectionServiceImpl implements CollectionService {
 	@Autowired
 	FileOperationService fileOperationService;
 	@Autowired
-	FavoritesService favoritesService;
-	
+	IconService iconService;
+	@Autowired
+	DataProfilerFactory dataProfilerFactory;
 
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
@@ -505,8 +512,7 @@ public class CollectionServiceImpl implements CollectionService {
 					irodsFileSystemAO.renameFile(previousFile, newFile);
 				}
 			}
-			
-					
+
 			// Updating inheritance option on the collection, if needed
 			String zoneName = irodsFileSystemAO.getIRODSServerProperties().getRodsZone();
 			if (isDirectory) {
@@ -1314,6 +1320,17 @@ public class CollectionServiceImpl implements CollectionService {
 		return String.format("/%s/trash/home/%s", irodsServices.getCurrentUserZone(), irodsServices.getCurrentUser());
 	}
 
+	@Override
+	public IconObject getIcon(String mimeType) {
+		IconObject icon = null;
+		if (!mimeType.isEmpty())
+			icon = iconService.getIconToDisplayFile(mimeType);
+		else
+			icon = iconService.getIconToDisplayCollection();
+
+		return icon;
+	}
+
 	/**
 	 * @return the adminServices
 	 */
@@ -1387,6 +1404,39 @@ public class CollectionServiceImpl implements CollectionService {
 	 */
 	public void setFileOperationService(FileOperationService fileOperationService) {
 		this.fileOperationService = fileOperationService;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
+		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
+		
+		logger.info("*****************path **************" +path);
+		logger.debug("got irodsAccount:{}", irodsAccount);
+
+		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);
+
+		logger.debug("got the dataProfilerService");
+
+		// DataProfilerSettings dataProfilerSettings = new DataProfilerSettings(); //
+		// TODO: allow clone()
+		try {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
+			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
+			logger.info("data profile retrieved:{}", dataProfile);
+
+			/*
+			 * TODO: after this do an if test and send to right view with the DataProfile in
+			 * the model
+			 */
+			return dataProfile;
+
+		} catch (JargonException e) {
+			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
+			throw new DataGridException(e.getMessage());
+		}
+
 	}
 
 }

@@ -44,6 +44,7 @@
 			<mvc:resources mapping="/fonts/**" location="/fonts/,classpath:static/fonts/" />
 			<mvc:resources mapping="/css/**" location="/css/,classpath:static/css/" />
 			<mvc:resources mapping="/js/**" location="/js/,classpath:static/js/" />
+			<mvc:resources mapping="/plugins/**" location="/plugins/,classpath:static/plugins/" />
 
 
 </beans>

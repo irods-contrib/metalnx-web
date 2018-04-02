@@ -16,10 +16,10 @@
 
 package com.emc.metalnx.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,13 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -134,19 +133,23 @@ public class CollectionController {
 	 * @throws JargonException
 	 * @throws DataGridException
 	 */
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
-			@RequestParam("path") final String path) {
-		logger.info("index()");
-		String myPath = path;
-
+			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader) {
+		logger.info("indexViaUrl()");
+		String myPath = path.orElse("");
+		logger.info("dp Header requestHeader is :: " + requestHeader);
 		try {
 
-			if (path == null || path.isEmpty()) {
+			if (myPath.isEmpty()) {
+				model.addAttribute("topnavHeader", headerService.getheader("collections"));
+				logger.info("no path, go to home dir");
 				myPath = cs.getHomeDirectyForCurrentUser();
 			} else {
-				myPath = URLDecoder.decode(path, "UTF-8"); // TODO: do I need to worry about decoding, versus configure
-															// in filter? - MCC
+				logger.info("path provided...go to:{}", path);
+				myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
+													// in filter? - MCC
 				// see
 				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
 			}
@@ -175,7 +178,7 @@ public class CollectionController {
 				logger.info("redirect to info page");
 				StringBuilder sb = new StringBuilder();
 				sb.append("redirect:/collectionInfo?path=");
-				sb.append(myPath);
+				sb.append(URLEncoder.encode(myPath));
 				return sb.toString();
 			}
 
@@ -192,12 +195,14 @@ public class CollectionController {
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-		} catch (JargonException | DataGridException | UnsupportedEncodingException e) {
+
+		} catch (JargonException | DataGridException e) {
+
 			logger.error("error establishing collection location", e);
 			model.addAttribute("unexpectedError", true);
 		}
 
-		logger.info("returning to collections/collectionManagement");
+		logger.info("displaying collections/collectionManagement");
 
 		return "collections/collectionManagement";
 
@@ -256,55 +261,6 @@ public class CollectionController {
 		}
 		logger.info("returning to collections/collectionManagement");
 		return "collections/collectionManagement";
-	}
-
-	@RequestMapping(value = "redirectFromMetadataToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromMetadataToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromMetadataSearch = true;
-	}
-
-	@RequestMapping(value = "redirectFromFavoritesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFavoritesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromGroupsBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromGroupsBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromUserBookmarksToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromUserBookmarksToCollections(@RequestParam final String path) {
-		cameFromBookmarks = true;
-		assignNewValuesToCurrentAndParentPath(path);
-	}
-
-	@RequestMapping(value = "redirectFromFilePropertiesToCollections/")
-	@ResponseStatus(value = HttpStatus.OK)
-	public void redirectFromFilePropertiesToCollections(@RequestParam final String path) {
-		assignNewValuesToCurrentAndParentPath(path);
-		cameFromFilePropertiesSearch = true;
-	}
-
-	/**
-	 * Sets the current path and parent path based on a given path.
-	 *
-	 * @param path
-	 *            new path to update current path and parent path
-	 */
-	private void assignNewValuesToCurrentAndParentPath(final String path) {
-		if (path == null || path.isEmpty()) {
-			return;
-		}
-
-		currentPath = path;
-		parentPath = currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
 	}
 
 	public ResourceService getResourceService() {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<aside class="side-canvas" style="display: block;"
+	th:fragment="SummarySidenavView">
+	<div class="nano-content">
+
+		<div>
+
+			<div th:if="${dataProfile == null}">
+				<div class="side-canvas_title">
+					<i th:class="${ icon.getMimeIcon() }"></i> <span
+						class="thick word-wrap">No data to display !!</span>
+				</div>
+
+				<button id="close-sidecanvas" type="button" class="closeCanvasbtn"
+					title="Close">
+					<span aria-hidden="true"><i class="fa fa-times"></i></span><span
+						class="sr-only">Close</span>
+				</button>
+			</div>
+
+			<div th:unless="${dataProfile == null}">
+
+				<div class="side-canvas_title">
+					<i th:class="${ icon.getMimeIcon() }"></i> <span
+						class="thick word-wrap" th:text="${ dataProfile.getChildName() }"></span>
+				</div>
+
+				<button id="close-sidecanvas" type="button" class="closeCanvasbtn"
+					title="Close">
+					<span aria-hidden="true"><i class="fa fa-times"></i></span><span
+						class="sr-only">Close</span>
+				</button>
+
+				<div class="canvasMimetype">
+					<div class="mime-icon">
+						<a href="#" class="fas-icon"><i
+							th:class="${ icon.getMimeIcon() }"></i></a>
+					</div>
+					<div class="mime-info">
+						<div class="mime-desc">
+							<i><span class="mime-object"
+								th:text="${ dataProfile.dataType.mimeType }"></span></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="side-canvas_content">
+				<!-- 	<div class="side-canvas_content-info">
+						<div class="side-canvas_section-icon">
+							<span><i class="fa fa-share-alt" alt="File Info"></i></span>
+						</div>
+						<h4 th:text="#{collections.management.shareditems}"></h4>
+						<h5 th:text="#{collections.management.shared.with}"></h5>
+					</div> -->
+
+					<div class="side-canvas_content-info">
+						<div class="side-canvas_section-icon">
+							<span><i class="fa fa-info-circle" alt="Collection Info"></i></span>
+						</div>
+						<h4 th:unless="${dataProfile.file}"
+							th:text="#{collections.management.folder.information}"></h4>
+						<h4 th:if="${dataProfile.file}"
+							th:text="#{collections.management.file.information}"></h4>
+					</div>
+
+					<div class="side-canvas_content-info">
+						<h5 th:text="#{collections.management.table.owner.label}"></h5>
+						<div>
+							<span th:unless="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getCollectionOwnerName() }"></span>
+							<span th:if="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getDataOwnerName() }"></span>
+						</div>
+					</div>
+
+
+					<div class="side-canvas_content-info">
+						<h5 th:text="#{collections.management.table.created.label}"></h5>
+						<div>
+							<span th:unless="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+							<span th:if="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getCreatedAt() }"></span>
+
+						</div>
+					</div>
+
+					<div class="side-canvas_content-info">
+						<h5 th:text="#{collections.management.table.modified.label}"></h5>
+						<div>
+							<span th:unless="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getModifiedAt() }"></span>
+							<span th:if="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getUpdatedAt() }"></span>
+						</div>
+					</div>
+
+					<div class="side-canvas_content-info">
+						<h5 th:text="#{collections.management.table.size.label}"></h5>
+						<div>
+							<span th:unless="${dataProfile.file}"> - </span> <span
+								th:if="${dataProfile.file}"
+								th:text="${ dataProfile.getDomainObject().getDisplayDataSize() }"></span>
+						</div>
+					</div>
+
+					<div class="side-canvas_content-info">
+						<h5 th:text="#{collections.management.location}"></h5>
+						<div>
+							<span class="word-wrap"
+								th:text="${ dataProfile.getParentPath() }"></span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+		<script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
+	</div>
+</aside>
+
+</html>
+

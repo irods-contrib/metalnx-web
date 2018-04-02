@@ -55,7 +55,7 @@
 
 		<!-- Files Upload -->
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
-		<commons-io.version>1.4</commons-io.version>
+		<commons-io.version>2.6</commons-io.version>
 
 		<!-- Cargo container -->
 		<cargo.version>1.4.11</cargo.version>
@@ -74,7 +74,7 @@
 		<build.number>DEV</build.number>
 
 	</properties>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>internal.repo</id>
@@ -153,6 +153,11 @@
 			<dependency>
 				<groupId>org.irods.jargon</groupId>
 				<artifactId>jargon-ticket</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-data-utils</artifactId>
 				<version>${jargon.version}</version>
 			</dependency>
 			<dependency>
