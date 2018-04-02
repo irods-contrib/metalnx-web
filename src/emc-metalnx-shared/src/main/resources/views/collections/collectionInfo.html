@@ -1,9 +1,14 @@
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.thymeleaf.org" lang="en"
 	layout:decorator="template">
 
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
 <body>
 	<div class="row">
 		<div class="col-sm-12" aria-labelledby="collInfoManagement"
@@ -15,7 +20,7 @@
 			
 			<div class="col-xs-12 tree-view-panel box">
 				<div class="tabpanel">
-					<ul id="tabs" class="nav nav-tabs">
+					<ul id="tabs" class="nav nav-tabs" role="tablist">
 						<li class="active"><a href="#details" data-toggle="tab" role="tab"
 						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-info-circle" alt="File Info"></i></span> <span
@@ -43,10 +48,10 @@
 					</div>
 
 					<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">			      
-						<div id="details" class="tab-pane fade active in" role="tabpanel">
+						<div id="details" class="tab-pane active" role="tabpanel">
 							 <th:block th:include="collections/details :: detailsView"></th:block></div>
-						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
-						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
+						<div id="metadata" class="tab-pane" role="tabpanel"></div>
+						<div id="permission" class="tab-pane" role="tabpanel"></div>
 					</div>
 				</div>
 			</div>
@@ -57,25 +62,27 @@
 			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 			<script th:inline="javascript">
 			 $(document).ready(function(e){		
-							 
-				 /*Browser back button starts*/
-				  // add a hash to the URL when the user clicks on a tab
-			 	   $('a[data-toggle="tab"]').on('click', function(e) {					 		
-			 		e.preventDefault();
-					e.stopImmediatePropagation();
-			 		history.replaceState(null, null, $(this).attr('href'));
-				  });  
+				 
+			 		$('.nav-tabs a').click(function (e) {	
+			 			e.preventDefault();
+						e.stopImmediatePropagation();
+						$(this).tab('show');
+			 			//history.replaceState(null, null, $(this).attr('href'));
+				  	});   
 				  
 				  // navigate to a tab when the history changes
-				   window.addEventListener("popstate", function(e) {					   
+				    /* window.addEventListener("popstate", function(e) {					   
 				    var activeTab = $('[href=' + location.hash + ']');
-				    if (activeTab.length) {	
-				      activeTab.tab('show');
-				    } else {		
-				      $('.nav-tabs a:first').tab('show');
-				    }
-				  }); 
-				  /*Browser back button starts*/
+				     if (activeTab.length) {					    	
+				    	 e.stopImmediatePropagation();
+				    	 activeTab.tab('show');	 
+				 
+				    } else {					    	
+				    	 $('.nav-tabs a:first').tab('show');
+				    	
+				    } 
+				  });    */
+				  
 				 
 			 });
 			 			

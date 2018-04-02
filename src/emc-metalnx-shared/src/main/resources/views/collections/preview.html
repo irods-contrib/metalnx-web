@@ -4,9 +4,10 @@
 
 	<div th:fragment="imagePreview">
 		<div class="col-md-12 panel property-tab collection-tabs">
-			<div  class="preview-img-container" style="padding : 4px;  overflow : auto; ">
+
+			<div class="preview-img-container">
 				<img src="/emc-metalnx-web/preview/dataObjectPreview/"
-				alt="imagePreview"/>
+					alt="imagePreview" />
 			</div>
 		</div>
 	</div>
@@ -32,27 +33,31 @@
 		</div>
 	</div>
 
-	<div th:fragment="cmFilePreview">	
+	<div th:fragment="cmFilePreview">
 		<div class="col-md-12 panel property-tab collection-tabs">
 			<textarea class="cm-textarea preview">
 			</textarea>
-			<button th:onclick="'javascript:save();'">Save</button>
-			<button th:onclick="'javascript:cancel();'">Cancel</button>		
 		</div>
-		
+		<div id="collectionPreviewSearchButtons" class="col-sm-12">
+			<button class="btn btn-primary btn-sm pull-right" type="button"
+				th:onclick="'javascript:save();'" title="Save">Save</button>
+			<button class="btn btn-default btn-sm pull-right" type="button"
+				th:onclick="'javascript:cancel();'" title="Cancel">Cancel</button>
+		</div>
+
 		<!-- <script type="text/javascript" th:src="@{/js/jquery-ui.min.js}"></script> -->
 		<script type="text/javascript" th:src="@{/js/preview.js}"></script>
-		
+
 	</div>
 
 	<div th:fragment="csvFilePreview">
 		<div class="col-md-12 panel property-tab collection-tabs">
 			CSV File Preview....
 			<div id="csv" class="preview"></div>
-			
+
 			<!-- <button th:onclick="'javascript:save();'">Save</button>
 			<button th:onclick="'javascript:cancel();'">Cancel</button> -->
-			
+
 			<script type="text/javascript" th:src="@{/js/jquery.csv-0.71.min.js}"></script>
 			<script type="text/javascript" th:src="@{/js/csvPreview.js}"></script>
 		</div>
