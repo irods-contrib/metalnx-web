@@ -61,9 +61,9 @@
 													<option value="NOT_LIKE">Does Not Contain</option>
 												</select>
 
-											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0" aria-label="search value" 
+											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0" aria-label="search value"
 											title="Search Metadata by value"/>
-                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0" aria-label="search unit" 
+                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0" aria-label="search unit"
                                             title="Search Metadata by unit"/>
 											<a role="button" class="btn btn-link btn-xs rmMetadataSearchRow" ><i class="fa fa-minus-circle" title="Remove this row"></i></a>
 										</div>
@@ -398,7 +398,7 @@
 			  		    	"columnDefs": [
 			                    {
 			                    	"render": function ( data, type, full, meta ) {
-			    						return full.visibleToCurrentUser ? '<a href="#" onclick="redirectFilePropertiesToCollections(\''+full.path+'\')"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
+			    						return full.visibleToCurrentUser ? '<a href="#" onclick="openInCollView(\''+full.path+'\')"><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</a>' :
 			    							'<span><i class="'+full.iconToDisplay+'"></i>  '+full.name+'</span>';
 			    					},
 			    					"title": [[#{collections.management.table.collection.name.label}]],
@@ -567,32 +567,17 @@
 						$('#submitPropertiesSearch').click();
 					});
 				});
-				
+
 				/*
-				* open the search result in a new tab
+				* open the search result
 				*/
 				function openInCollView(path) {
 					window.open(
-							  '/emc-metalnx-web/collections' + path,
+							  '/emc-metalnx-web/collections?path=' + encodeURI(path),
 							  '_blank' // <- This is what makes it open in a new window.
 							);
 				}
-				
-				//TODO: remove old methods in search
-				
-				function redirectMetadataToCollections(path){
-					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromMetadataToCollections/", "POST", {path: path},
-						function(){
-							window.location = "/emc-metalnx-web/collections/";
-					}, null, null, null);
-				}
-
-				function redirectFilePropertiesToCollections(path){
-					ajaxEncapsulation("/emc-metalnx-web/collections/redirectFromFilePropertiesToCollections/", "POST", {path: path},
-						function(){
-							window.location = "/emc-metalnx-web/collections/";
-					}, null, null, null);
-				}
+			
 				/*]]>*/
 			</script>
 		</div>

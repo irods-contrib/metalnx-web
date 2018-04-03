@@ -116,6 +116,8 @@
 		<sec:intercept-url pattern="/tickets/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/ticketclient/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<sec:intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER" />
+			
 		<sec:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
 		<sec:form-login login-processing-url="/login/authenticate/"

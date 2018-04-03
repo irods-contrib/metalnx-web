@@ -19,6 +19,7 @@ package com.emc.metalnx.controller;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -135,18 +136,19 @@ public class CollectionController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
-			@RequestParam("path") final String path, @ModelAttribute("requestHeader") String requestHeader) {
+			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader) {
 		logger.info("indexViaUrl()");
-		String myPath = path;
+		String myPath = path.orElse("");
 		logger.info("dp Header requestHeader is :: " + requestHeader);
 		try {
 
-			if (path == null || path.isEmpty()) {
+			if (myPath.isEmpty()) {
+				model.addAttribute("topnavHeader", headerService.getheader("collections"));
 				logger.info("no path, go to home dir");
 				myPath = cs.getHomeDirectyForCurrentUser();
 			} else {
 				logger.info("path provided...go to:{}", path);
-				myPath = URLDecoder.decode(path); // TODO: do I need to worry about decoding, versus configure
+				myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
 													// in filter? - MCC
 				// see
 				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
@@ -193,7 +195,7 @@ public class CollectionController {
 			model.addAttribute("parentPath", parentPath);
 			model.addAttribute("resources", resourceService.findAll());
 			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-						
+
 		} catch (JargonException | DataGridException e) {
 
 			logger.error("error establishing collection location", e);
