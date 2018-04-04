@@ -51,7 +51,7 @@ public class PreferencesController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -85,7 +85,8 @@ public class PreferencesController {
 		userPreferences.setLocaleLanguage(locale);
 		userPreferences.setForceFileOverwriting(loggedUser.isForceFileOverwriting());
 		userPreferences.setAdvancedView(loggedUser.isAdvancedView());
-
+		userPreferences.setMetadataUnitView(loggedUser.isMetadataUnitView());
+		logger.debug("logged in user preferences:{}", loggedUser);
 		model.addAttribute("preferences", userPreferences);
 		model.addAttribute("uiMode", uiMode);
 		model.addAttribute("topnavHeader", headerService.getheader("prefrences"));
@@ -106,6 +107,7 @@ public class PreferencesController {
 		loggedUser.setLocale(preferences.getLocaleLanguage());
 		loggedUser.setForceFileOverwriting(preferences.isForceFileOverwriting());
 		loggedUser.setAdvanceView(preferences.isAdvancedView());
+		loggedUser.setMetadataUnitView(preferences.isMetadataUnitView());
 		logger.debug("modified logged in user:{}", loggedUser);
 
 		userService.modifyUser(loggedUser);

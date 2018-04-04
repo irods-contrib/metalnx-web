@@ -1,0 +1,3 @@
+ALTER TABLE users 
+		ADD COLUMN metadata_unit_view BOOLEAN NOT NULL 
+		DEFAULT FALSE;

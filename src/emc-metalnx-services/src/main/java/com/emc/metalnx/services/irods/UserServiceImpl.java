@@ -223,6 +223,7 @@ public class UserServiceImpl implements UserService {
 			applicationUser.setUserType(modifyUser.getUserType());
 			applicationUser.setForceFileOverwriting(modifyUser.isForceFileOverwriting());
 			applicationUser.setAdvanceView(modifyUser.isAdvancedView());
+			applicationUser.setMetadataUnitView(modifyUser.isMetadataUnitView());
 			userDao.merge(applicationUser);
 
 			// Changing password if a new password is set

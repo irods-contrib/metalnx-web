@@ -21,6 +21,7 @@ public class UserPreferences {
 	private String localeLanguage;
 	private boolean forceFileOverwriting;
 	private boolean advancedView;
+	private boolean metadataUnitView;
 
 	/**
 	 * Returns whether forceFileOverwriting is set or not
@@ -62,6 +63,14 @@ public class UserPreferences {
 	public boolean isAdvancedView() {
 		return advancedView;
 	}
+	
+	/**
+	 * @return the <code>boolean</code> that is false for metadata's Unit visibility by default
+	 *         
+	 */
+	public boolean isMetadataUnitView() {
+		return metadataUnitView;
+	}
 
 	@Override
 	public String toString() {
@@ -71,11 +80,16 @@ public class UserPreferences {
 			builder.append("localeLanguage=").append(localeLanguage).append(", ");
 		}
 		builder.append("forceFileOverwriting=").append(forceFileOverwriting).append(", advancedView=")
-				.append(advancedView).append("]");
+				.append(advancedView).append(", metadataUnitView=")
+				.append(metadataUnitView).append("]");
 		return builder.toString();
 	}
 
 	public void setAdvancedView(boolean advancedView) {
 		this.advancedView = advancedView;
+	}
+	
+	public void setMetadataUnitView(boolean metadataUnitView) {
+		this.metadataUnitView = metadataUnitView;
 	}
 }
