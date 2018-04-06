@@ -97,6 +97,9 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 
 	@Column(name = "advanced_view", nullable = false)
 	private boolean advancedView;
+	
+	@Column(name = "metadata_unit_view", nullable = false)
+	private boolean metadataUnitView;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.DETACH, orphanRemoval = true)
 	private Set<DataGridUserBookmark> bookmarks;
@@ -216,6 +219,13 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 	public boolean isAdvancedView() {
 		return advancedView;
 	}
+	
+	/**
+	 * @return the metadata_unit_view
+	 */
+	public boolean isMetadataUnitView() {
+		return metadataUnitView;
+	}
 
 	/**
 	 * @param id
@@ -263,6 +273,14 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 	 */
 	public void setAdvanceView(boolean advancedView) {
 		this.advancedView = advancedView;
+	}
+	
+	/**
+	 * @param metadataUnitView
+	 *            to set
+	 */
+	public void setMetadataUnitView(boolean metadataUnitView) {
+		this.metadataUnitView = metadataUnitView;
 	}
 
 	/**
@@ -497,6 +515,10 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 			builder.append("title=").append(title).append(", ");
 		}
 		builder.append("advancedView=").append(advancedView).append(", ");
+		if (bookmarks != null) {
+			builder.append("bookmarks=").append(bookmarks).append(", ");
+		}
+		builder.append("metadataUnitView=").append(metadataUnitView).append(", ");
 		if (bookmarks != null) {
 			builder.append("bookmarks=").append(bookmarks).append(", ");
 		}
