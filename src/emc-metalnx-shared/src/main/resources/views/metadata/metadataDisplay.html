@@ -30,6 +30,8 @@
 		<!-- jQuery UI Timepicker -->
     	<script src="../static/js/jquery-ui-timepicker-addon.js" th:src="@{/js/jquery-ui-timepicker-addon.js}"></script>
 
+
+		<script src="../static/js/autocompleteAVU.js" th:src="@{/js/autocompleteAVU.js}"></script>
     	<title id="searchTitle" th:text="#{tab.title.search}">Metalnx - Search</title>
 	</head>
 
@@ -49,7 +51,7 @@
 							<div role="tabpanel" class="tab-pane active" id="metadata-search">
 								<div class="">
 									<div class="col-xs-12" ><p th:text="#{metadata.search.prompt}">Search for files and collections that <b>match one or more of the conditions</b> below:</p></div>
-									<form class="metadataSearchForm col-xs-12">
+							 		<!-- <form class="metadataSearchForm col-xs-12">
 										<div class="metadataSearchRow ">
 											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" placeholder="Attribute" id="metadataAttr0" aria-label="metadata attribute"
 											title="Search Metadata by attribute"/>
@@ -70,8 +72,42 @@
 										<div class="">
 											<a role="button" class="btn btn-link btn-xs" id="addMetadataSearchRow" title="Search criteria"><i class="fa fa-plus"></i>   <span th:text="#{metadata.search.add.criteria}"></span></a>
 										</div>
-									</form>
-									<div id="metadataSearchActionButtons" class="col-sm-12">
+									</form>  -->
+								<!-- Start autocomplete  -->
+								
+								<div class="metadataSearchForm col-xs-12">
+										<div class="metadataSearchRow ">
+											<input type="text" class="metadataAttr metadataSearchField form-control" name="attribute" 
+											placeholder="Type two characters of a city name..."  id="metadataAttr0" 
+											aria-label="metadata attribute"
+											title="Search Metadata by attribute"
+											data-item_id="id"
+											data-item_label="cityName" autocomplete="off"/>
+
+												<select id="" class="metadataOper metadataSearchField form-control" name="operator" aria-label="search operator">
+													<option value="EQUAL">Is (Equals)</option>
+													<option value="NOT_EQUAL">Is Not (Not Equals)</option>
+													<option selected="" value="LIKE">Contains</option>
+													<option value="NOT_LIKE">Does Not Contain</option>
+												</select>
+
+											<input type="text" class="metadataVal metadataSearchField form-control" name="value" placeholder="Value" id="metadataValue0" aria-label="search value"
+											title="Search Metadata by value"/>
+                                            <input type="text" class="metadataUnit metadataSearchField form-control" name="unit" placeholder="Unit" id="metadataUnit0" aria-label="search unit"
+                                            title="Search Metadata by unit"/>
+											<a role="button" class="btn btn-link btn-xs rmMetadataSearchRow" ><i class="fa fa-minus-circle" title="Remove this row"></i></a>
+										</div>
+										<div class="">
+											<a role="button" class="btn btn-link btn-xs" id="addMetadataSearchRow" title="Search criteria"><i class="fa fa-plus"></i>   <span th:text="#{metadata.search.add.criteria}"></span></a>
+										</div>
+										
+									</div> 
+									
+									
+									
+								
+								<!-- End autocomplete  -->
+								<div id="metadataSearchActionButtons" class="col-sm-12">
 										<button class="btn btn-primary btn-sm pull-right" id="submitMetadataSearch" type="button" th:text="#{text.search}" title="Search">Search</button>
 										<button class="btn btn-default btn-sm pull-right" id="resetMetadataSearch" type="button" th:text="#{text.reset}" title="Reset">Reset</button>
 									</div>
