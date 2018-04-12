@@ -3,7 +3,6 @@ package com.emc.metalnx.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.services.interfaces.AvuAutoCompleteDelegateService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/avuautocomplete")
 public class AvuAutocompleteController {
 
@@ -36,16 +35,16 @@ public class AvuAutocompleteController {
 
 	@Autowired
 	IRODSServices irodsService;
+	
+	@Autowired
+	AvuAutoCompleteDelegateService autoCompleteDelegateService;
 
 	private static final Logger logger = LoggerFactory.getLogger(AvuAutocompleteController.class);
 
 	@RequestMapping(value = "/getMetadataAttr", method = RequestMethod.GET)
-	public String getMetadataAttr(final HttpServletResponse response) throws JargonException {
+	public void getMetadataAttr(final HttpServletResponse response) throws JargonException {
 		logger.info("AvuAutocompleteController: getMetadataAttr()");
-
-		String jsonString = "";
-		
-		return jsonString;
+		autoCompleteDelegateService.getAvuAttrs();
 	}
 
 	public IRODSServices getIrodsService() {
