@@ -3,7 +3,7 @@ package com.emc.metalnx.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.datautils.avuautocomplete.AvuSearchResult;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService.AvuTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@RequestMapping(value = "/avuautocomplete", produces="application/json")
+@RequestMapping(value = "/avuAutoComplete", produces = "application/json")
 public class AvuAutocompleteController {
 
 	@Autowired
@@ -36,18 +36,24 @@ public class AvuAutocompleteController {
 
 	@Autowired
 	IRODSServices irodsService;
-	
+
 	@Autowired
 	AvuAutoCompleteDelegateService autoCompleteDelegateService;
 
 	private static final Logger logger = LoggerFactory.getLogger(AvuAutocompleteController.class);
 
-	@RequestMapping(value = "/getMetadataAttr", method = RequestMethod.GET, produces="application/json")
-	public @ResponseBody AvuSearchResult getMetadataAttr(final HttpServletResponse response) throws JargonException {
-		logger.info("AvuAutocompleteController: getMetadataAttr()");
-		 AvuSearchResult avuRes = autoCompleteDelegateService.getAvuAttrs();	
-		 logger.info("AvuREs: {}", avuRes);
-		 return avuRes;
+	@RequestMapping(value = "/getMetadataAttrs", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody String getMetadataAttr(final HttpServletResponse response, final String prefix,
+			final int offset, final AvuTypeEnum avuTypeEnum) throws JargonException {
+
+		logger.info("controller: /getMetadataAttrs ");
+		logger.info("prefix: {}", prefix);
+		logger.info("offset: {}", offset);
+		logger.info("avuTypeEnum: {}", avuTypeEnum);
+
+		String avuRes = autoCompleteDelegateService.getMetadataAttrs(prefix, offset, avuTypeEnum);
+		logger.info("AvuREs: {}", avuRes);
+		return avuRes;
 	}
 
 	public IRODSServices getIrodsService() {

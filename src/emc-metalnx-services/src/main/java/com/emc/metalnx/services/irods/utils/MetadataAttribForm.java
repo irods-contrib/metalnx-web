@@ -5,27 +5,27 @@ import java.util.List;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "MyResult")
+//@XmlRootElement(name = "MyResult")
 public class MetadataAttribForm {
 	/**
 	 * offset used to get this result set
 	 */
-	@XmlElement(name = "Offset")
+	//@XmlElement(name = "Offset")
 	private int offset = 0;
 	
 	/**
 	 * are there more elements to return from the original query?
 	 */
-	@XmlElement(name = "More")
+	//@XmlElement(name = "More")
 	private boolean more = false;
 	
 	/**
 	 * The actual avu attribute or value, as appropriate to the query
 	 */
-	@XmlElement(name="Elements")
+	//@XmlElement(name="Elements")
 	private List<String> elements = new ArrayList<String>();
 	
-	@XmlElement(name="NextOffset")
+	//@XmlElement(name="NextOffset")
 	private int nextOffset = 0;
 
 	/**

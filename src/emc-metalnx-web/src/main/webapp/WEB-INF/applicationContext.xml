@@ -25,11 +25,11 @@
 			<list>
 
 
-					<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value> -->
+				<value>file:///C:/opt/etc/irods-ext/metalnx.properties</value>
           		<!--  <value>file:/etc/irods-ext/metalnx.properties</value>   -->
-			       <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value>
+			    <!--  <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value> -->
 
-			
+
 
 			</list>
 		</property>
@@ -41,9 +41,9 @@
 
 
 
-	<!--   <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" />-->
+	<import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" />
 	<!--  <import resource="file:/etc/irods-ext/metalnxConfig.xml" />   -->
-	<import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" />
+	<!-- <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" /> -->
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
@@ -103,7 +103,7 @@
 		<sec:intercept-url pattern="/browse/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/trash/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/public/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/avuautocomplete/**" access="ROLE_ADMIN, ROLE_USER" />
+		<sec:intercept-url pattern="/avuAutoComplete/**" access="ROLE_ADMIN, ROLE_USER" />
 
 		<sec:intercept-url pattern="/fileOperation/**"
 			access="ROLE_ADMIN,ROLE_USER" />
