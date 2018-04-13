@@ -6,12 +6,15 @@ import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService.AvuType
 import org.irods.jargon.datautils.avuautocomplete.AvuSearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.emc.metalnx.services.interfaces.AvuAutoCompleteDelegateService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Transactional
@@ -20,22 +23,40 @@ public class AvuAutoCompleteDelegateServiceImpl implements AvuAutoCompleteDelega
 	@Autowired
 	private IRODSServices irodsServices;
 
-	
 	private static final Logger logger = LoggerFactory.getLogger(AvuAutoCompleteDelegateServiceImpl.class);
 
 	@Override
-	public AvuSearchResult getAvuAttrs() {
+	public String getMetadataAttrs(final String prefix, final int offset, final AvuTypeEnum avuTypeEnum) throws JargonException {
+				
+		logger.info("getMetadataAttrs()");
+		logger.info("prefix: {}", prefix);
+		logger.info("offset: {}", offset);
+		logger.info("avuTypeEnum: {}", avuTypeEnum);
+		
+		String jsonInString = "";
+
 		try {
-			AvuSearchResult result = new AvuSearchResult();
-			logger.info("AvuAutoCompleteDelegateServiceImpl: getAvuAttrs()");
+			AvuSearchResult result = new AvuSearchResult();			
 			AvuAutocompleteService autocompleteService = irodsServices.getAvuAutocompleteService();
-			result = autocompleteService.gatherAvailableAttributes("%", 0, AvuTypeEnum.COLLECTION);
-			logger.info("Result: {}", result);
-			return result;
-		} catch (JargonException e) {
-			e.printStackTrace();
+			result = autocompleteService.gatherAvailableAttributes(prefix, offset, avuTypeEnum);
+			logger.info("Result from jargon: {}", result);
+
+			//MetadataAttribForm jsonRes = new MetadataAttribForm();
+			//BeanUtils.copyProperties(result, jsonRes);
+			//logger.info("jargon result obj copied to jsonRes: {}", jsonRes);
+
+			// java pojo to json
+			ObjectMapper mapper = new ObjectMapper();
+			jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
+			logger.info("java pojo to jsonInString: {}", jsonInString);
+			
+		} catch (JargonException e) {			
+			throw e;			
 		}
-		return null;
+		catch (JsonProcessingException e) {
+			logger.error("JsonProsessingException: ", e.getMessage());
+		}
+		return jsonInString;
 	}
-	
+
 }
