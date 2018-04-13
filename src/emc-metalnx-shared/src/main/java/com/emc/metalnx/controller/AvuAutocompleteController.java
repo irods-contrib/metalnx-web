@@ -46,6 +46,8 @@ public class AvuAutocompleteController {
 	public @ResponseBody String getMetadataAttr(final HttpServletResponse response) throws JargonException {
 
 		logger.info("controller: /getMetadataAttrs ");
+		
+		//TODO: get parameters from controller call
 		String avuRes = autoCompleteDelegateService.getMetadataAttrs("%", 0, AvuTypeEnum.COLLECTION);
 		logger.info("AvuREs: {}", avuRes);
 		return avuRes;

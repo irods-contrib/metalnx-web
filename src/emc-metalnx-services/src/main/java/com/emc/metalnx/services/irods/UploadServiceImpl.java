@@ -98,7 +98,6 @@ public class UploadServiceImpl implements UploadService {
 		}
 
 		String defaultStorageResource = is.getDefaultStorageResource();
-
 		logger.info("Setting default resource to {}", destResc);
 
 		// Setting temporarily the defaultStorageResource for the logged user
