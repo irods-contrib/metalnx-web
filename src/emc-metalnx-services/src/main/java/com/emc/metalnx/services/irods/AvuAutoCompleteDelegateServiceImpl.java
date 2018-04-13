@@ -27,12 +27,18 @@ public class AvuAutoCompleteDelegateServiceImpl implements AvuAutoCompleteDelega
 	private static final Logger logger = LoggerFactory.getLogger(AvuAutoCompleteDelegateServiceImpl.class);
 
 	@Override
-	public String getMetadataAttrs(final String prefix, final int offset, final AvuTypeEnum avuTypeEnum) {
+	public String getMetadataAttrs(final String prefix, final int offset, final AvuTypeEnum avuTypeEnum) throws JargonException {
+		String jsonInString = "";
+
+		logger.info("prefix: {}", prefix);
+		logger.info("offset: {}", offset);
+		logger.info("avuTypeEnum: {}", avuTypeEnum);
+
 		try {
 			AvuSearchResult result = new AvuSearchResult();
 			logger.info("getMetadataAttrs()");
 			AvuAutocompleteService autocompleteService = irodsServices.getAvuAutocompleteService();
-			result = autocompleteService.gatherAvailableAttributes("%", 0, AvuTypeEnum.COLLECTION);
+			result = autocompleteService.gatherAvailableAttributes(prefix, offset, avuTypeEnum);
 			logger.info("Result from jargon: {}", result);
 
 			MetadataAttribForm jsonRes = new MetadataAttribForm();
@@ -42,14 +48,17 @@ public class AvuAutoCompleteDelegateServiceImpl implements AvuAutoCompleteDelega
 
 			// java pojo to json
 			ObjectMapper mapper = new ObjectMapper();
-			String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRes);
+			jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRes);
 
 			logger.info("java pojo to jsonInString: {}", jsonInString);
-			return jsonInString;
-		} catch (JargonException | JsonProcessingException e) {
-			e.printStackTrace();
+			
+		} catch (JargonException e) {			
+			throw e;			
 		}
-		return null;
+		catch (JsonProcessingException e) {
+			logger.error("JsonProsessingException: ", e.getMessage());
+		}
+		return jsonInString;
 	}
 
 }

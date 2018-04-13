@@ -43,15 +43,10 @@ public class AvuAutocompleteController {
 	private static final Logger logger = LoggerFactory.getLogger(AvuAutocompleteController.class);
 
 	@RequestMapping(value = "/getMetadataAttrs", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody String getMetadataAttr(final HttpServletResponse response, final String prefix,
-			final int offset, final AvuTypeEnum avuTypeEnum) throws JargonException {
+	public @ResponseBody String getMetadataAttr(final HttpServletResponse response) throws JargonException {
 
 		logger.info("controller: /getMetadataAttrs ");
-		logger.info("prefix: {}", prefix);
-		logger.info("offset: {}", offset);
-		logger.info("avuTypeEnum: {}", avuTypeEnum);
-
-		String avuRes = autoCompleteDelegateService.getMetadataAttrs(prefix, offset, avuTypeEnum);
+		String avuRes = autoCompleteDelegateService.getMetadataAttrs("%", 0, AvuTypeEnum.COLLECTION);
 		logger.info("AvuREs: {}", avuRes);
 		return avuRes;
 	}
