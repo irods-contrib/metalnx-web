@@ -23,24 +23,70 @@ $.widget("ui.autocomplete", $.ui.autocomplete, {
 $(document).ready(function(){
 	var attrVal;
 	var attributes;
-	$.getJSON( "../static/AVUMockJson.json", function( data ) {
-			attributes = data;
-		  console.log(attributes);//check data coming properly or not 
-
-		  //do rest of the coding accordingly
-		});
+	var attr;
 	
-	/*var availableTutorials = [
-		"ActionScript",
-		"Bootstrap",
-		"C",
-		"C++",
-		];
+	var nameArray = [];
+	
+	/*var attributes = $.get("/emc-metalnx-web/avuautocomplete/getMetadataAttrMock", function(data, status, jqXHR){
+		alert("getting jason data");		
+		console.log("data :: " +data);
+		return data;
+	});*/
+	
 
 	var options = {
-			minLength: 2,
-			autoFocus: true,
+	    source: function( request, response ) {
+	        $.ajax({
+	            dataType: "json",
+	            type : 'Get',
+	            url: '/emc-metalnx-web/avuautocomplete/getMetadataAttr',
+	            success: function(data) {
+	                $('input.metadataAttr').removeClass('ui-autocomplete-loading');  
+	                // hide loading image
 
+	                response( $.map( data, function(item) {
+	                	console.log(item.cityName);
+	                   return {
+	                	   label : item.cityName,
+	                	   value : item.id
+	                   };
+	                   
+	                }));
+	            },
+	            error: function(data) {
+	                $('input.metadataAttr').removeClass('ui-autocomplete-loading');  
+	            }
+	        });
+	    },
+	    minLength: 3,
+	    open: function() {},
+	    close: function() {},
+	    focus: function(event,ui) {
+	    	 
+	    	 $(this).val(ui.item.label);
+	    	 event.preventDefault();
+	    },
+	    select: function(event, ui) {
+	    	
+	    	 $(this).val(ui.item.label);
+	    	 event.preventDefault();
+	    }
+	
+	};
+	
+	var selector = 'input.metadataAttr';
+	$(document).on('keydown.autocomplete', selector, function() {
+		$(this).autocomplete(options);
+		
+	});
+	
+	
+	/*
+	console.log(attributes);
+	
+	var options = {
+			minLength: 2,
+			autoFocus: true,	       	                                                      
 			source: function(request, response) {
 				var _regexp = new RegExp(request.term, 'i');
 				var data = attributes.filter(function(item) {
@@ -48,52 +94,18 @@ $(document).ready(function(){
 				});
 				response(data);
 			},
-
-			search: function() {       
-			},
-
-			response: function() {     
-			},
-
-			focus: function(event, ui) {
-				$(this).val(ui.item[$(this).data().item_label]);
-				event.preventDefault();
-			},
-
-			select: function(event, ui) {
-				$(this).val(ui.item[$(this).data().item_label]);
-				var attr = ui.item[$(this).data().item_label];
-				if(attr == "Rome"){
-					attrVal=[100,200,300];
-				}
-				else if(attr == "Tokyo"){
-					attrVal=[1000,2000,3000];
-				}
-
-				console.log("Selected attributes value :: " +attrVal);
-				var $metadataValue = $("#metadataValue0");
-				$metadataValue.empty();
-				$.each(attrVal, function(index, value) {
-					$metadataValue.append("<option>" + value + "</option>");
-				});
-
-				event.preventDefault();
-			}
+			
 	};
-
-	var selector = 'input.metadataAttr';
-	$(document).on('keydown.autocomplete', selector, function() {
-		$(this).autocomplete({source : options});
-		
-	});*/
-	/* 
-  $('.metadataAttr').autocomplete({
+*/
+	
+	
+ /* $('.metadataAttr').autocomplete({
 	  source : availableTutorials
   });*/
 
-	/*  $('.metadataAttr').each(function() {
+/*  $('.metadataAttr').each(function() {
 
-	  alert("hi");
+	 
     var _this = $(this);
     var _data = _this.data();
 

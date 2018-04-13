@@ -1,5 +1,4 @@
-[
-		{"id": 1,"cityName": "Amsterdam"},
+attributes:[{"id": 1,"cityName": "Amsterdam"},
 		{"id": 2,"cityName": "Athens"},
 		{"id": 3,"cityName": "Baghdad"},
 		{"id": 4,"cityName": "Bangkok"},
