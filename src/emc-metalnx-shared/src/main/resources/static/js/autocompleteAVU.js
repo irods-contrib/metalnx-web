@@ -39,22 +39,28 @@ $(document).ready(function(){
 	        $.ajax({
 	            dataType: "json",
 	            type : 'Get',
-	            url: '/emc-metalnx-web/avuautocomplete/getMetadataAttr',
+	            url: '/emc-metalnx-web/avuAutoComplete/getMetadataAttrs',
 	            success: function(data) {
-	                $('input.metadataAttr').removeClass('ui-autocomplete-loading');  
+	                //$('input.metadataAttr').removeClass('ui-autocomplete-loading');  
 	                // hide loading image
-
-	                response( $.map( data, function(item) {
-	                	console.log(item.cityName);
+	              
+	            	 var _regexp = new RegExp(request.term, 'i');
+	                 var data = data.elements.filter(function(item) {
+	                   return item.match(_regexp);
+	                 });
+	                 	                     
+	                response(data);
+	               /* response( $.map( data, function(item) {
+	                	console.log(item.elements);
 	                   return {
-	                	   label : item.cityName,
-	                	   value : item.id
+	                	   label : item.elements,
+	                	   value : item.elements
 	                   };
 	                   
-	                }));
+	                }));*/
 	            },
 	            error: function(data) {
-	                $('input.metadataAttr').removeClass('ui-autocomplete-loading');  
+	              //  $('input.metadataAttr').removeClass('ui-autocomplete-loading');  
 	            }
 	        });
 	    },

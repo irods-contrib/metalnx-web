@@ -59,6 +59,17 @@ public class AvuAutocompleteController {
 		return avuRes;
 	}
 	
+	@RequestMapping(value = "/getMetadataValues", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody String getMetadataValues(final HttpServletResponse response) throws JargonException {
+
+		logger.info("controller: /getMetadataAttrs ");
+		
+		//TODO: get parameters from controller call
+		String avuRes = autoCompleteDelegateService.getMetadataAttrs("%", 0, AvuTypeEnum.COLLECTION);
+		logger.info("AvuREs: {}", avuRes);
+		return avuRes;
+	}
+	
 	@RequestMapping(value = "/getMetadataAttrMock", method = RequestMethod.GET , produces="application/json")
 	public @ResponseBody JSONArray getMetadataAttrMock(final Model model, final HttpServletResponse response) throws JargonException {
 		 JSONParser parser = new JSONParser();
