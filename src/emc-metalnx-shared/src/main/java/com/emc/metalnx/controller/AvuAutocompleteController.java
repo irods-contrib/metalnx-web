@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
@@ -60,12 +61,12 @@ public class AvuAutocompleteController {
 	}
 	
 	@RequestMapping(value = "/getMetadataValues", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody String getMetadataValues(final HttpServletResponse response) throws JargonException {
+	public @ResponseBody String getMetadataValues(final HttpServletResponse response, @RequestParam("attributeName") final String attributeName) throws JargonException {
 
-		logger.info("controller: /getMetadataAttrs ");
+		logger.info("controller: /getMetadataValues for :: " + attributeName);
 		
 		//TODO: get parameters from controller call
-		String avuRes = autoCompleteDelegateService.getMetadataAttrs("%", 0, AvuTypeEnum.COLLECTION);
+		String avuRes = autoCompleteDelegateService.getAvailableValues(attributeName,"%", 0, AvuTypeEnum.COLLECTION);
 		logger.info("AvuREs: {}", avuRes);
 		return avuRes;
 	}
