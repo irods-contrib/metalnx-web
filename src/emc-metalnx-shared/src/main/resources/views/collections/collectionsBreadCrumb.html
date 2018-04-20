@@ -34,7 +34,7 @@
 			</th:block>
 
 			<th:block th:unless="${dataGridUser.isAdvancedView()}">
-				<th:block th:if="${iterStat.index}>1">
+				<th:block th:if="${iterStat.index}>0">
 					<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
 						<li><a href="#" aria-label="'path breadcrumb for:"
 							th:text="${breadcrumbItem.name}" th:title="${breadcrumbItem.path}"
