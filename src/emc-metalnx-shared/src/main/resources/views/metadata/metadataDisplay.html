@@ -90,7 +90,7 @@
 									</form>  -->
 								<!-- Start autocomplete  -->
 
-								<div class="metadataSearchForm col-xs-12">
+								<form class="metadataSearchForm col-xs-12">
 									<div class="metadataSearchRow ">
 										<input type="text"
 											class="metadataAttr metadataSearchField form-control"
@@ -130,7 +130,7 @@
 											th:text="#{metadata.search.add.criteria}"></span></a>
 									</div>
 
-								</div>
+								</form>
 
 
 
@@ -335,6 +335,8 @@
 							attr = $(this).find(".metadataAttr").val();
 							value = $(this).find(".metadataVal").val();
 							unit = $(this).find(".metadataUnit").val();
+							
+							console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
 							if(attr == "" && value == "" && unit == "" && totalSearchCriteriaRows > 1) {
 								$(this).remove();
 								totalSearchCriteriaRows--;

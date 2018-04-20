@@ -143,6 +143,11 @@ public class MetadataController {
 			@RequestParam("draw") final int draw, @RequestParam("start") final int start,
 			@RequestParam("length") final int length) throws DataGridConnectionRefusedException {
 
+		logger.info("jsonMetadataSearch ::" +jsonMetadataSearch);
+		logger.info("draw ::" +draw);
+		logger.info("start ::" +start);
+		logger.info("length ::" +length);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonResponse = new HashMap<String, Object>();
 		jsonResponse.put("draw", String.valueOf(draw));
@@ -167,6 +172,11 @@ public class MetadataController {
 			JsonNode values = jsonObject.get("value");
 			JsonNode units = jsonObject.get("unit");
 
+			logger.info("attribute :: " +attributes);
+			logger.info("operators :: " +operators);
+			logger.info("values :: " +values);
+			logger.info("units :: " +units);
+			
 			for (int i = 0; i < attributes.size(); i++) {
 				String attr = attributes.get(i).textValue();
 				String val = values.get(i).textValue();
