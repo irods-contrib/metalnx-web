@@ -3,6 +3,8 @@
  */
 package com.emc.metalnx.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -35,7 +37,9 @@ public class DefaultController {
 
 	@Autowired
 	HeaderService headerService;
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(DefaultController.class);
+	
 	/**
 	 * 
 	 */
@@ -44,6 +48,7 @@ public class DefaultController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index() {
+		logger.info("DefaultController index()");
 		if (loggedUserUtils.getLoggedDataGridUser().isAdmin()) {
 			return "redirect:/dashboard/";
 		} else {
