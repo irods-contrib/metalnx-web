@@ -35,6 +35,7 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
 import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.ticket.TicketAdminService;
 
@@ -240,4 +241,13 @@ public interface IRODSServices {
 	 * @throws DataGridConnectionRefusedException
 	 */
 	FileSamplerService getFileSamplerService() throws DataGridConnectionRefusedException;
+
+	/**
+	 * Return an instance of the autocomplete service from Jargon
+	 * @return {@link AvuAutocompleteService}
+	 * @throws JargonException
+	 */
+	AvuAutocompleteService getAvuAutocompleteService() throws JargonException;
+	
+	
 }

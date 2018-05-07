@@ -39,6 +39,8 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteServiceImpl;
 import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.datautils.filesampler.FileSamplerServiceImpl;
 import org.irods.jargon.ticket.TicketAdminService;
@@ -359,6 +361,12 @@ public class IRODSServicesImpl implements IRODSServices {
 		}
 		return null;
 	}
+	
+	@Override
+	public AvuAutocompleteService getAvuAutocompleteService() throws JargonException {
+		// Returning AvuAutocompleteServiceImpl instance
+		return new AvuAutocompleteServiceImpl(irodsAccessObjectFactory, irodsAccount);
+	}
 
 	@Override
 	public ZoneAO getZoneAO() throws DataGridConnectionRefusedException {
@@ -452,6 +460,8 @@ public class IRODSServicesImpl implements IRODSServices {
 
 		return isAtLeastIrods420;
 	}
+	
+	
 
 	@Override
 	public IRODSAccessObjectFactory getIrodsAccessObjectFactory() {
