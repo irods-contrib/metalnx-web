@@ -64,7 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths"})
 @RequestMapping(value = "/metadata")
 public class MetadataController {
 
@@ -133,7 +133,6 @@ public class MetadataController {
 			model.addAttribute("jsonMetadataSearch", jsonMetadataSearch);
 		}
 		model.addAttribute("uiMode", uiMode);
-		model.addAttribute("topnavHeader", headerService.getheader("search"));
 		return "metadata/metadataDisplay";
 	}
 
@@ -147,7 +146,7 @@ public class MetadataController {
 		logger.info("draw ::" +draw);
 		logger.info("start ::" +start);
 		logger.info("length ::" +length);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonResponse = new HashMap<String, Object>();
 		jsonResponse.put("draw", String.valueOf(draw));
@@ -176,7 +175,7 @@ public class MetadataController {
 			logger.info("operators :: " +operators);
 			logger.info("values :: " +values);
 			logger.info("units :: " +units);
-			
+
 			for (int i = 0; i < attributes.size(); i++) {
 				String attr = attributes.get(i).textValue();
 				String val = values.get(i).textValue();

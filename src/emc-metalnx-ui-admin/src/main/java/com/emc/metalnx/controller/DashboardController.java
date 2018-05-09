@@ -57,7 +57,6 @@ import com.emc.metalnx.services.interfaces.UserProfileService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
-@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/dashboard")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class DashboardController {
@@ -94,7 +93,7 @@ public class DashboardController {
 
 	@Autowired
 	private MSIService msiService;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -156,7 +155,6 @@ public class DashboardController {
 		model.addAttribute("totalNumberOfFiles", totalNumberOfFiles);
 		model.addAttribute("totalNumberOfProfiles", totalNumberOfProfiles);
 		model.addAttribute("totalNumberOfTemplates", totalNumberOfTemplates);
-		model.addAttribute("topnavHeader", headerService.getheader("dashboard"));
 
 		return "dashboard/dashboard";
 	}

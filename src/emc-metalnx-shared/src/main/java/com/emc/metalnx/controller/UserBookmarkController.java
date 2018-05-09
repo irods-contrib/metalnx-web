@@ -49,7 +49,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@SessionAttributes({ "addBookmarks", "removeBookmarks", "topnavHeader"})
+@SessionAttributes({ "addBookmarks", "removeBookmarks"})
 @RequestMapping(value = "/userBookmarks")
 public class UserBookmarkController {
 	@Autowired
@@ -66,7 +66,7 @@ public class UserBookmarkController {
 
 	@Autowired
 	AdminServices adminServices;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -92,7 +92,6 @@ public class UserBookmarkController {
 		logger.info(userBookmakrs.toString());
 		model.addAttribute("userBookmarks", userBookmakrs);
 		model.addAttribute("foundUserBookmarks", !userBookmakrs.isEmpty());
-		model.addAttribute("topnavHeader", headerService.getheader("shared"));
 		return "bookmarks/userBookmarks";
 	}
 

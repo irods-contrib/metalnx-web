@@ -41,7 +41,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
-@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/users/profile")
 public class UserProfileController {
 
@@ -53,7 +52,7 @@ public class UserProfileController {
 
     @Autowired
     LoggedUserUtils loggedUserUtils;
-    
+
     @Autowired
     HeaderService headerService;
 
@@ -62,7 +61,6 @@ public class UserProfileController {
 
     @RequestMapping(value = "/")
     public String index(Model model) {
-    	model.addAttribute("topnavHeader" , headerService.getheader("profiles"));
         return "userProfile/index";
     }
 

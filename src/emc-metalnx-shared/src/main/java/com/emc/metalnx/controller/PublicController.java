@@ -22,7 +22,7 @@ import com.emc.metalnx.services.interfaces.ResourceService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/public")
 public class PublicController {
 	@Autowired
@@ -65,7 +65,6 @@ public class PublicController {
 
 		currentPath = cs.getHomeDirectyForPublic();
 		parentPath = currentPath;
-		model.addAttribute("topnavHeader", headerService.getheader("public"));
 		return "redirect:/collections?path=" + currentPath;
 	}
 }

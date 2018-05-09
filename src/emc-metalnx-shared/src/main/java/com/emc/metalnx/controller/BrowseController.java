@@ -92,7 +92,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/browse")
 public class BrowseController {
 
@@ -652,7 +652,6 @@ public class BrowseController {
 		sourcePaths.clear();
 		currentPath = cs.getHomeDirectyForCurrentUser();
 		parentPath = currentPath;
-		model.addAttribute("topnavHeader", headerService.getheader("collections"));
 		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 

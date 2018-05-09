@@ -46,7 +46,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/favorites")
 public class FavoritesController {
 	@Autowired
@@ -57,7 +56,7 @@ public class FavoritesController {
 
 	@Autowired
 	IRODSServices irodsServices;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -84,7 +83,7 @@ public class FavoritesController {
 		List<DataGridUserFavorite> userFavorites = user.getFavoritesSorted();
 
 		model.addAttribute("userFavorites", userFavorites);
-		model.addAttribute("topnavHeader", headerService.getheader("favorite"));
+
 
 		return "favorites/favorites";
 	}

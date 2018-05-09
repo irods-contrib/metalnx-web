@@ -62,7 +62,7 @@ import com.emc.metalnx.services.interfaces.ZoneService;
 @Controller
 @RequestMapping(value = "/resources")
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" , "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 public class ResourceController {
 
 	@Autowired
@@ -79,7 +79,7 @@ public class ResourceController {
 
 	@Autowired
 	IRODSServices irodsServices;
-	
+
 	@Autowired
 	HeaderService headerService;
 
@@ -107,7 +107,6 @@ public class ResourceController {
 		model.addAttribute("resources", dataGridResources);
 		model.addAttribute("resultSize", dataGridResources.size());
 		model.addAttribute("foundResources", dataGridResources.size() > 0);
-		model.addAttribute("topnavHeader" , headerService.getheader("resources"));
 		return "resources/resourceManagement";
 	}
 

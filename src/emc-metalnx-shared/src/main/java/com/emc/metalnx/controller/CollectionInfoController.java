@@ -34,7 +34,7 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/collectionInfo")
 public class CollectionInfoController {
 

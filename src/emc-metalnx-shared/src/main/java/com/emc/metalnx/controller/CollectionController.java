@@ -57,7 +57,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/collections")
 public class CollectionController {
 
@@ -143,7 +143,6 @@ public class CollectionController {
 		try {
 
 			if (myPath.isEmpty()) {
-				model.addAttribute("topnavHeader", headerService.getheader("collections"));
 				logger.info("no path, go to home dir");
 				myPath = cs.getHomeDirectyForCurrentUser();
 			} else {
@@ -171,7 +170,7 @@ public class CollectionController {
 
 			/*
 			 * See if it's a file or coll. A file redirects to the info page
-			 * 
+			 *
 			 */
 
 			if (cs.isDataObject(myPath)) {
@@ -211,7 +210,7 @@ public class CollectionController {
 	/**
 	 * Legacy index method used in other controllers, eventually factor out TODO:
 	 * factor this out and make explicit via urls etc - mcc
-	 * 
+	 *
 	 * @param model
 	 * @param request
 	 * @return
