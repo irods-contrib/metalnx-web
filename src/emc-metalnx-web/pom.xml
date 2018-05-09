@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>3.6.0</version>
+			<version>3.6.0</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 		<dependency>

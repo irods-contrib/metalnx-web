@@ -25,8 +25,8 @@
 			<list>
 
 
-				<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value> -->
-          		 <value>file:/etc/irods-ext/metalnx.properties</value>   
+				<value>file:///C:/opt/etc/irods-ext/metalnx.properties</value> 
+          		<!--  <value>file:/etc/irods-ext/metalnx.properties</value>   -->
 			   <!--   <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value> -->
 
 
@@ -41,8 +41,8 @@
 
 
 
-	<!-- <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" /> -->
-	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
+		<import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" />
+	 <!-- <import resource="file:/etc/irods-ext/metalnxConfig.xml" /> -->  
 	<!-- <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" />  -->
 
 	<!-- **************************************************************** -->
@@ -67,7 +67,8 @@
 		access a page with an expired session id, we return an error (403). By doing
 		that, all ajax calls will be able to handle forbidden access to any page. -->
 	<bean id="ep403"
-		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
+	</bean>
 
 	<sec:http auto-config="true" create-session="always"
 		entry-point-ref="ep403">
