@@ -95,7 +95,7 @@
 										<input type="text"
 											class="metadataAttr metadataSearchField form-control"
 											name="attribute"
-											placeholder="Type two characters of a city name..."
+											placeholder="Type three characters for auto populate..."
 											id="metadataAttr0" aria-label="metadata attribute"
 											title="Search Metadata by attribute" data-item_id="id"
 											data-item_label="cityName" autocomplete="off" /> <select
@@ -105,17 +105,17 @@
 											<option value="NOT_EQUAL">Is Not (Not Equals)</option>
 											<option selected="" value="LIKE">Contains</option>
 											<option value="NOT_LIKE">Does Not Contain</option>
-										</select> 
-										
+										</select>
+
 
 										<input type="text" list="metadataValueList0" id="metadataValue0"
 											class="metadataVal metadataSearchField form-control"
-											name="value" placeholder="Value" 
+											name="value" placeholder="Value"
 											aria-label="search value" title="Search Metadata by value" />
-											
+
 											<datalist id="metadataValueList0" class="metadataValueList"></datalist>
-										
-										
+
+
 										<input type="text"
 											class="metadataUnit metadataSearchField form-control"
 											name="unit" placeholder="Unit" id="metadataUnit0"
@@ -335,7 +335,7 @@
 							attr = $(this).find(".metadataAttr").val();
 							value = $(this).find(".metadataVal").val();
 							unit = $(this).find(".metadataUnit").val();
-							
+
 							console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
 							if(attr == "" && value == "" && unit == "" && totalSearchCriteriaRows > 1) {
 								$(this).remove();
@@ -680,7 +680,7 @@
 							  '_blank' // <- This is what makes it open in a new window.
 							);
 				}
-			
+
 				/*]]>*/
 			</script>
 	</div>
