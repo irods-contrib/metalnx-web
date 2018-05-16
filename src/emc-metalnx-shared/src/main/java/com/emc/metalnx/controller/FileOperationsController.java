@@ -249,8 +249,9 @@ public class FileOperationsController {
 	}
 
 	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(final HttpServletResponse response) throws DataGridConnectionRefusedException {
+	public void download(final HttpServletResponse response) throws DataGridConnectionRefusedException, JargonException {
 
+				
 		try {
 			fileOperationService.download(filePathToDownload, response, removeTempCollection);
 			filePathToDownload = "";

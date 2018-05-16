@@ -3,6 +3,8 @@
  */
 package com.emc.metalnx.services.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
@@ -24,6 +26,7 @@ public class GlobalConfig {
 	 */
 	private boolean uploadRulesEnabled = false;
 
+	
 	public boolean isTicketsEnabled() {
 		return ticketsEnabled;
 	}

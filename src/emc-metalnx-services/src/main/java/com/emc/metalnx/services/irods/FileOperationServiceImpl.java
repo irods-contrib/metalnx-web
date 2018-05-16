@@ -24,13 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.DataTransferOperations;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
 import org.irods.jargon.core.pub.TrashOperationsAO;
+import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
@@ -81,6 +85,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Autowired
 	private RuleService rs;
+	
+	@Autowired
+	private ConfigService configService;
 
 	@Override
 	public boolean copy(String sourcePath, String dstPath, boolean copyWithMetadata)
@@ -237,45 +244,60 @@ public class FileOperationServiceImpl implements FileOperationService {
 		return deleteSuccess;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean download(String path, HttpServletResponse response, boolean removeTempCollection)
-			throws DataGridException {
-
-		logger.debug("Downloading file ", path);
-
+			throws DataGridException, JargonException{
+		
+		logger.debug("Downloading file path: {}", path);
+		
+		
+		
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
+		DataProfile dataProfile = collectionService.getCollectionDataProfile(path);
+		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices.getCollectionAndDataObjectListAndSearchAO();
+		ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(path);
+		
+		logger.debug("Download limit:{}", configService.getDownloadLimit()); 
+		logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize()));
+		if(dataProfile.getMetadata().size() > objStat.getObjSize()) {
+		
+			logger.debug("Copying file into the HTTP response");
+			boolean isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
 
-		logger.debug("Copying file into the HTTP response");
+			String fileName = path.substring(path.lastIndexOf("/"), path.length());
+	
+			// getting the temporary collection name from the compressed file name,
+			// and removing the ".tar" extension from it
+			String tempColl = collectionService.getHomeDirectyForCurrentUser()
+					+ fileName.substring(0, fileName.length() - 4);
+	
+			/*
+			 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
+			 * fileName.substring(0, fileName.length() - 4);
+			 */
+	
+			logger.debug("Removing compressed file");
+	
+			// removing any temporary collections and tar files created for downloading
+			if (removeTempCollection) {
+				deleteDataObject(path, removeTempCollection);
+	
+				logger.debug("Removing temporary collection");
+	
+				// removing temporary collection
+				deleteCollection(tempColl, removeTempCollection);
+			}
 
-		boolean isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
-
-		String fileName = path.substring(path.lastIndexOf("/"), path.length());
-
-		// getting the temporary collection name from the compressed file name,
-		// and removing the ".tar" extension from it
-		String tempColl = collectionService.getHomeDirectyForCurrentUser()
-				+ fileName.substring(0, fileName.length() - 4);
-
-		/*
-		 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
-		 * fileName.substring(0, fileName.length() - 4);
-		 */
-
-		logger.debug("Removing compressed file");
-
-		// removing any temporary collections and tar files created for downloading
-		if (removeTempCollection) {
-			deleteDataObject(path, removeTempCollection);
-
-			logger.debug("Removing temporary collection");
-
-			// removing temporary collection
-			deleteCollection(tempColl, removeTempCollection);
+			return isDownloadSuccessful;
 		}
-
-		return isDownloadSuccessful;
+		else {
+			//Todo: Handle download error gracefully 
+			logger.debug("Download file size is over allowed limit!!!");
+			return false;
+		}
 	}
 
 	@Override

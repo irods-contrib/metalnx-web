@@ -79,7 +79,8 @@ public interface ConfigService {
 	 * @return String representing the irods default zone.
 	 */
 	String getIrodsZone();
-
+	
+	
 	/**
 	 * Find the jobs username.
 	 * 
@@ -102,6 +103,13 @@ public interface ConfigService {
 	 * @return String representing the authentication scheme.
 	 */
 	String getIrodsAuthScheme();
+	
+	/**
+	 * Find file download limit
+	 * 
+	 * @return String representing the download limit in Megabytes
+	 */
+	String getDownloadLimit();
 
 	/**
 	 * Checks whether or not the populate MSI flag is enabled

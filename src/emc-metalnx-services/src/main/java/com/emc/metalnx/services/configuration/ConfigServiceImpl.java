@@ -82,6 +82,9 @@ public class ConfigServiceImpl implements ConfigService {
 
 	@Value("${metalnx.enable.upload.rules}")
 	private boolean uploadRulesEnabled;
+	
+	@Value("${metalnx.download.limit}")
+	private String downloadLimit;
 
 	@Override
 	public GlobalConfig getGlobalConfig() {
@@ -159,6 +162,11 @@ public class ConfigServiceImpl implements ConfigService {
 	}
 
 	@Override
+	public String getDownloadLimit() {
+		return downloadLimit;
+	}
+
+	@Override
 	public boolean isPopulateMsiEnabled() {
 		return populateMsiEnabled;
 	}
@@ -166,7 +174,7 @@ public class ConfigServiceImpl implements ConfigService {
 	public boolean isTicketsEnabled() {
 		return ticketsEnabled;
 	}
-
+	
 	public void setTicketsEnabled(boolean ticketsEnabled) {
 		this.ticketsEnabled = ticketsEnabled;
 	}
