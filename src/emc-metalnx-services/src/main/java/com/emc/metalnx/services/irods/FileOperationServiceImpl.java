@@ -33,7 +33,6 @@ import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
-import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +84,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Autowired
 	private RuleService rs;
-	
+
 	@Autowired
 	private ConfigService configService;
 
@@ -244,60 +243,57 @@ public class FileOperationServiceImpl implements FileOperationService {
 		return deleteSuccess;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean download(String path, HttpServletResponse response, boolean removeTempCollection)
-			throws DataGridException, JargonException{
-		
+			throws DataGridException, JargonException {
+
 		logger.debug("Downloading file path: {}", path);
-		
-		
-		
+
+		boolean isDownloadSuccessful = false;
+
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
-		DataProfile dataProfile = collectionService.getCollectionDataProfile(path);
-		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices.getCollectionAndDataObjectListAndSearchAO();
+
+		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
+				.getCollectionAndDataObjectListAndSearchAO();
 		ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(path);
-		
-		logger.debug("Download limit:{}", configService.getDownloadLimit()); 
-		logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize()));
-		if(dataProfile.getMetadata().size() > objStat.getObjSize()) {
-		
+
+		logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
+		logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));
+
+		if ((objStat.getObjSize() / (1024 * 1024)) < Long.valueOf(configService.getDownloadLimit())) {
+
 			logger.debug("Copying file into the HTTP response");
-			boolean isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
-
-			String fileName = path.substring(path.lastIndexOf("/"), path.length());
-	
-			// getting the temporary collection name from the compressed file name,
-			// and removing the ".tar" extension from it
-			String tempColl = collectionService.getHomeDirectyForCurrentUser()
-					+ fileName.substring(0, fileName.length() - 4);
-	
-			/*
-			 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
-			 * fileName.substring(0, fileName.length() - 4);
-			 */
-	
-			logger.debug("Removing compressed file");
-	
-			// removing any temporary collections and tar files created for downloading
-			if (removeTempCollection) {
-				deleteDataObject(path, removeTempCollection);
-	
-				logger.debug("Removing temporary collection");
-	
-				// removing temporary collection
-				deleteCollection(tempColl, removeTempCollection);
-			}
-
-			return isDownloadSuccessful;
-		}
-		else {
-			//Todo: Handle download error gracefully 
+			isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
+		} else {
 			logger.debug("Download file size is over allowed limit!!!");
-			return false;
 		}
+		String fileName = path.substring(path.lastIndexOf("/"), path.length());
+
+		// getting the temporary collection name from the compressed file name,
+		// and removing the ".tar" extension from it
+		String tempColl = collectionService.getHomeDirectyForCurrentUser()
+				+ fileName.substring(0, fileName.length() - 4);
+
+		/*
+		 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
+		 * fileName.substring(0, fileName.length() - 4);
+		 */
+
+		logger.debug("Removing compressed file");
+
+		// removing any temporary collections and tar files created for downloading
+		if (removeTempCollection) {
+			deleteDataObject(path, removeTempCollection);
+
+			logger.debug("Removing temporary collection");
+
+			// removing temporary collection
+			deleteCollection(tempColl, removeTempCollection);
+		}
+
+		return isDownloadSuccessful;
 	}
 
 	@Override
