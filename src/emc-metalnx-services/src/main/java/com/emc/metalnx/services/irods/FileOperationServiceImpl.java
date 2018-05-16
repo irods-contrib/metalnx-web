@@ -254,7 +254,6 @@ public class FileOperationServiceImpl implements FileOperationService {
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
-
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
 		ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(path);

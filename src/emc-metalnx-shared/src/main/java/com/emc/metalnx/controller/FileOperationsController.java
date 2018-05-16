@@ -249,15 +249,20 @@ public class FileOperationsController {
 	}
 
 	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(final HttpServletResponse response) throws DataGridConnectionRefusedException, JargonException {
+	public void download(final Model model, final HttpServletResponse response)
+			throws DataGridConnectionRefusedException, JargonException {
 
-				
+		Boolean downloadStatus = false;
 		try {
-			fileOperationService.download(filePathToDownload, response, removeTempCollection);
+			downloadStatus = fileOperationService.download(filePathToDownload, response, removeTempCollection);
 			filePathToDownload = "";
 			removeTempCollection = false;
 		} catch (DataGridException | IOException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
+		}
+
+		if (!downloadStatus) {
+			// ToDo: Add logic to handle download limit error
 		}
 	}
 
@@ -290,14 +295,13 @@ public class FileOperationsController {
 		model.addAttribute("currentPath", browseController.getCurrentPath());
 		model.addAttribute("parentPath", browseController.getParentPath());
 
-		//String template = "redirect:/collections" + browseController.getCurrentPath();
-		//logger.info("Returning after deletion  :: " +template);
-		//return template;
-		
+		// String template = "redirect:/collections" +
+		// browseController.getCurrentPath();
+		// logger.info("Returning after deletion :: " +template);
+		// return template;
+
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
-		
-		
-		
+
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
