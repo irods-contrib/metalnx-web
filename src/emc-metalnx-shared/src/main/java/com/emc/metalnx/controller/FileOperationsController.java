@@ -242,9 +242,9 @@ public class FileOperationsController {
 				removeTempCollection = true;
 				
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);				
-				logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));			
+				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());			
 				
-				if ((objStat.getObjSize() / (1024 * 1024)) > Long.valueOf(configService.getDownloadLimit())) {
+				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
 					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
 				
@@ -259,9 +259,9 @@ public class FileOperationsController {
 				}
 				
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
-				logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));	
+				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());	
 				
-				if ((objStat.getObjSize() / (1024 * 1024)) > Long.valueOf(configService.getDownloadLimit())) {
+				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
 					removeTempCollection = true;
 					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
