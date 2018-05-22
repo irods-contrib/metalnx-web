@@ -410,6 +410,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 			logger.debug("Creating stream from {}", irodsFile);
 			irodsFileInputStream = irodsFileFactory.instanceIRODSFileInputStream(irodsFile);
+			
 
 			// set file mime type
 			response.setContentType(CONTENT_TYPE);
@@ -439,7 +440,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 				logger.error("Could not close stream(s): ", e.getMessage());
 			}
 		}
-
+		
 		return isCopySuccessFul;
 	}
 }

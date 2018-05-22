@@ -682,6 +682,7 @@
 			});
 
         	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
+        	
 			$("#actions button").prop("disabled", true);
         });
 
@@ -704,7 +705,9 @@
 			}
 		});
 
-        function handleDownload() {
+        function handleDownload(data) {
+        	console.log(data)        	
+        	alert(data.filePathToDownload)
         	console.log("collectionBrowser.html:: download ajax call success :: handleDownload()")
         	$("#actionsWait").hide();
         	$("#uploadIcon").prop("disabled", false);
@@ -716,7 +719,9 @@
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("disabled", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("disabled", false);
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
-        	window.location.href = "/emc-metalnx-web/fileOperation/download/";
+        	//window.location.href = "/emc-metalnx-web/fileOperation/download/";
+        	var path = data.filePathToDownload
+        	ajaxEncapsulation('/emc-metalnx-web/fileOperation/download/', "GET", {path: path}, downloadSucess, downloadFailure);
         }
 
 		function handleDownloadFailure() {
@@ -726,7 +731,15 @@
         	$("input[name=selectAllCheckboxes]").prop('checked', false);
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }
-
+		
+		function downloadSucess(){
+			console.log("Download ajax sucess method !")
+			//window.location.href = "/emc-metalnx-web/fileOperation/download/";			
+		}
+		
+		function downloadFailure(){
+			console.log("Download ajax failed!")
+		}
 
         function getBreadcrumb(path) {
         	ajaxEncapsulation(

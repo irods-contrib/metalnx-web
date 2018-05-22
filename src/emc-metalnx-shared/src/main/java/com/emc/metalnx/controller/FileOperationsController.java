@@ -28,6 +28,7 @@ import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.domain.ObjStat;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -81,7 +83,7 @@ public class FileOperationsController {
 
 	@Autowired
 	private LoggedUserUtils loggedUserUtils;
-	
+
 	@Autowired
 	private ConfigService configService;
 
@@ -228,15 +230,18 @@ public class FileOperationsController {
 		return collectionController.index(model, request);
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
-	public void prepareFilesForDownload(final HttpServletResponse response,
+	public @ResponseBody JSONObject prepareFilesForDownload(final HttpServletResponse response,
 			@RequestParam("paths[]") final String[] paths) throws DataGridConnectionRefusedException {
-		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
-				.getCollectionAndDataObjectListAndSearchAO();		
 
+		JSONObject prepareFileStatusJSONobj = new JSONObject();
+		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
+				.getCollectionAndDataObjectListAndSearchAO();
+		
 		try {
 			logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
-			
+
 			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
 				filePathToDownload = collectionService.prepareFilesForDownload(paths);
 				removeTempCollection = true;
@@ -247,7 +252,7 @@ public class FileOperationsController {
 				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
 					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
-				
+
 			} else {
 				// if a single file was selected, it will be transferred directly through the
 				// HTTP response
@@ -257,7 +262,7 @@ public class FileOperationsController {
 				if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
 					throw new DataGridException("Lack of permission to download file " + filePathToDownload);
 				}
-				
+
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
 				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());	
 				
@@ -272,22 +277,31 @@ public class FileOperationsController {
 			logger.error("Could not download selected items: ", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
+
+		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
+		prepareFileStatusJSONobj.put("removeTempCollection", removeTempCollection);
+
+		return prepareFileStatusJSONobj;
 	}
 
 	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(final Model model, final HttpServletResponse response)
+	public void download(final Model model, final HttpServletResponse response,
+			@RequestParam("path") final String path)
 			throws DataGridConnectionRefusedException, JargonException, IOException {
-
+		
+		if (path != null) {
+			logger.info("Coll/Obj to be downloaded at: {}", path);
+		}
 		Boolean downloadStatus = false;
 		try {
-			downloadStatus = fileOperationService.download(filePathToDownload, response, removeTempCollection);
-			filePathToDownload = "";
-			removeTempCollection = false;
+			downloadStatus = fileOperationService.download(path, response, removeTempCollection);
+			//filePathToDownload = "";
+			//removeTempCollection = false;
 		} catch (DataGridException | IOException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
-		
-		logger.info("download status: {}", Boolean.toString(downloadStatus));	
+
+		logger.info("download status: {}", Boolean.toString(downloadStatus));
 	}
 
 	@RequestMapping(value = "/delete/", method = RequestMethod.POST)
