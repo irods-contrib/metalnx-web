@@ -267,6 +267,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 			isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
 		} else {
 			logger.debug("Download file size is over allowed limit!!!");
+			isDownloadSuccessful = copyFileIntoHttpResponse(path, null);
 		}
 		String fileName = path.substring(path.lastIndexOf("/"), path.length());
 
@@ -438,6 +439,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 			logger.error("Could not put the file in the Http response ", e);
 			isCopySuccessFul = false;
 		} catch (JargonException e) {
+			logger.error("Could not copy file in the Http response: ", e.getMessage());
+			isCopySuccessFul = false;
+		} catch (NullPointerException e) {
 			logger.error("Could not copy file in the Http response: ", e.getMessage());
 			isCopySuccessFul = false;
 		}

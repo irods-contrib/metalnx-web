@@ -705,7 +705,7 @@
 		});
 
         function handleDownload() {
-        	console.log("collectionBrowser.html :: handleDownload()")
+        	console.log("collectionBrowser.html:: download ajax call success :: handleDownload()")
         	$("#actionsWait").hide();
         	$("#uploadIcon").prop("disabled", false);
             $("#uploadIcon").removeClass("disabled");
@@ -720,6 +720,7 @@
         }
 
 		function handleDownloadFailure() {
+			console.log("collectionBrowser.html:: download ajax call failure :: handleDownloadFailure()")
         	$("#actionsWait").hide();
         	$("#downloadFailureMessage").show();
         	$("input[name=selectAllCheckboxes]").prop('checked', false);

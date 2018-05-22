@@ -250,7 +250,7 @@ public class FileOperationsController {
 
 	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public void download(final Model model, final HttpServletResponse response)
-			throws DataGridConnectionRefusedException, JargonException {
+			throws DataGridConnectionRefusedException, JargonException, IOException {
 
 		Boolean downloadStatus = false;
 		try {
@@ -260,10 +260,14 @@ public class FileOperationsController {
 		} catch (DataGridException | IOException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
-
+		
+		logger.info("download status: {}", Boolean.toString(downloadStatus));
+		
 		if (!downloadStatus) {
-			// ToDo: Add logic to handle download limit error
-		}
+			logger.info("Download failed: redirecting to collection browser...");
+			response.sendRedirect("/emc-metalnx-web/browse/home");
+		}	
+		
 	}
 
 	@RequestMapping(value = "/delete/", method = RequestMethod.POST)
