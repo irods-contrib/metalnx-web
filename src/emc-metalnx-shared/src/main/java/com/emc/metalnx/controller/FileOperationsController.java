@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
+import org.irods.jargon.core.pub.domain.ObjStat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 
@@ -78,6 +81,9 @@ public class FileOperationsController {
 
 	@Autowired
 	private LoggedUserUtils loggedUserUtils;
+	
+	@Autowired
+	private ConfigService configService;
 
 	// contains the path to the file that will be downloaded
 	private String filePathToDownload;
@@ -225,11 +231,23 @@ public class FileOperationsController {
 	@RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
 	public void prepareFilesForDownload(final HttpServletResponse response,
 			@RequestParam("paths[]") final String[] paths) throws DataGridConnectionRefusedException {
+		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
+				.getCollectionAndDataObjectListAndSearchAO();		
 
 		try {
+			logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
+			
 			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
 				filePathToDownload = collectionService.prepareFilesForDownload(paths);
 				removeTempCollection = true;
+				
+				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);				
+				logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));			
+				
+				if ((objStat.getObjSize() / (1024 * 1024)) > Long.valueOf(configService.getDownloadLimit())) {
+					throw new JargonException("Files to download are out of limit " + filePathToDownload);
+				}
+				
 			} else {
 				// if a single file was selected, it will be transferred directly through the
 				// HTTP response
@@ -238,6 +256,14 @@ public class FileOperationsController {
 				String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
 				if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
 					throw new DataGridException("Lack of permission to download file " + filePathToDownload);
+				}
+				
+				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
+				logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));	
+				
+				if ((objStat.getObjSize() / (1024 * 1024)) > Long.valueOf(configService.getDownloadLimit())) {
+					removeTempCollection = true;
+					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
 			}
 		} catch (DataGridConnectionRefusedException e) {
@@ -261,13 +287,7 @@ public class FileOperationsController {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
 		
-		logger.info("download status: {}", Boolean.toString(downloadStatus));
-		
-		if (!downloadStatus) {
-			logger.info("Download failed: redirecting to collection browser...");
-			response.sendRedirect("/emc-metalnx-web/browse/home");
-		}	
-		
+		logger.info("download status: {}", Boolean.toString(downloadStatus));	
 	}
 
 	@RequestMapping(value = "/delete/", method = RequestMethod.POST)

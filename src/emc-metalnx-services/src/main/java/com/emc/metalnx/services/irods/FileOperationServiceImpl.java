@@ -24,12 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.DataTransferOperations;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
 import org.irods.jargon.core.pub.TrashOperationsAO;
-import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
@@ -47,7 +45,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
@@ -84,9 +81,6 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Autowired
 	private RuleService rs;
-
-	@Autowired
-	private ConfigService configService;
 
 	@Override
 	public boolean copy(String sourcePath, String dstPath, boolean copyWithMetadata)
@@ -254,21 +248,10 @@ public class FileOperationServiceImpl implements FileOperationService {
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
-		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
-				.getCollectionAndDataObjectListAndSearchAO();
-		ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(path);
-
-		logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
-		logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));
-
-		if ((objStat.getObjSize() / (1024 * 1024)) < Long.valueOf(configService.getDownloadLimit())) {
-
-			logger.debug("Copying file into the HTTP response");
-			isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
-		} else {
-			logger.debug("Download file size is over allowed limit!!!");
-			isDownloadSuccessful = copyFileIntoHttpResponse(path, null);
-		}
+	
+		logger.debug("Copying file into the HTTP response");
+		isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
+		
 		String fileName = path.substring(path.lastIndexOf("/"), path.length());
 
 		// getting the temporary collection name from the compressed file name,
