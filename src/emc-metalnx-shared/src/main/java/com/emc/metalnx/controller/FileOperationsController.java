@@ -88,7 +88,7 @@ public class FileOperationsController {
 	private ConfigService configService;
 
 	// contains the path to the file that will be downloaded
-	private String filePathToDownload;
+	//private String filePathToDownload;
 
 	// checks if it's necessary to remove any temporary collections created for
 	// downloading
@@ -238,17 +238,19 @@ public class FileOperationsController {
 		JSONObject prepareFileStatusJSONobj = new JSONObject();
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
-		
+
+		String filePathToDownload = "";
 		try {
 			logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
 
 			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
 				filePathToDownload = collectionService.prepareFilesForDownload(paths);
-				removeTempCollection = true;
-				
-				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);				
-				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());			
-				
+				// removeTempCollection = true;
+				removeTempCollection = false;
+
+				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
+				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());
+
 				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
 					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
@@ -264,10 +266,10 @@ public class FileOperationsController {
 				}
 
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
-				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());	
-				
+				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());
+
 				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
-					removeTempCollection = true;
+					// removeTempCollection = true;
 					throw new JargonException("Files to download are out of limit " + filePathToDownload);
 				}
 			}
@@ -275,28 +277,27 @@ public class FileOperationsController {
 			throw e;
 		} catch (DataGridException | IOException | JargonException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			//response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
 
 		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
-		prepareFileStatusJSONobj.put("removeTempCollection", removeTempCollection);
+		// prepareFileStatusJSONobj.put("removeTempCollection", removeTempCollection);
 
 		return prepareFileStatusJSONobj;
 	}
 
 	@RequestMapping(value = "/download/", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(final Model model, final HttpServletResponse response,
-			@RequestParam("path") final String path)
+	public void download(final Model model, final HttpServletResponse response, @RequestParam("path") final String path)
 			throws DataGridConnectionRefusedException, JargonException, IOException {
-		
+
 		if (path != null) {
 			logger.info("Coll/Obj to be downloaded at: {}", path);
 		}
 		Boolean downloadStatus = false;
 		try {
 			downloadStatus = fileOperationService.download(path, response, removeTempCollection);
-			//filePathToDownload = "";
-			//removeTempCollection = false;
+			// filePathToDownload = "";
+			// removeTempCollection = false;
 		} catch (DataGridException | IOException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
