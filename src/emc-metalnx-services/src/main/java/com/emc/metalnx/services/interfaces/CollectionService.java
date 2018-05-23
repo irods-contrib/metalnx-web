@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.IRODSDomainObject;
@@ -37,6 +35,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
+import com.emc.metalnx.core.domain.exceptions.FileSizeTooLargeException;
 
 public interface CollectionService {
 
@@ -350,11 +349,16 @@ public interface CollectionService {
 	 * @param sourcePaths
 	 *            list of files to compress into a single file
 	 * @return Path to the compressed file, if any. Empty string, otherwise.
+	 * @throws FileSizeTooLargeException
+	 *             {@link FileSizeTooLargeException} when bundle size exceeds max
 	 * @throws IOException
+	 *             {@link IOException}
 	 * @throws DataGridException
-	 * @throws JargonException
+	 *             {@link DataGridException}
+	 * 
 	 */
-	String prepareFilesForDownload(List<String> sourcePaths) throws IOException, DataGridException, JargonException;
+	String prepareFilesForDownload(List<String> sourcePaths)
+			throws FileSizeTooLargeException, IOException, DataGridException;
 
 	/**
 	 * Returns the inheritance option value for a given collection
@@ -433,10 +437,9 @@ public interface CollectionService {
 	 * @return correspondent trash for given path
 	 */
 	String getTrashForPath(String path);
-	
+
 	IconObject getIcon(String mimeType);
-	
+
 	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException;
-		
 
 }

@@ -1,6 +1,5 @@
 package com.emc.metalnx.services.irods;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -36,54 +34,59 @@ public class PreviewServiceImpl implements PreviewService {
 	CollectionService collectionService;
 
 	private static final Logger logger = LoggerFactory.getLogger(PreviewServiceImpl.class);
-	
-	private static final Map<String,String> myMap = createMapToGetTemplate();
-	private static Map<String, String> createMapToGetTemplate()
-	{
+
+	private static final Map<String, String> myMap = createMapToGetTemplate();
+
+	private static Map<String, String> createMapToGetTemplate() {
 		Map<String, String> myMap = new HashMap<String, String>();
 		myMap.put("image/jpg", "collections/preview :: imagePreview");
 		myMap.put("image/jpeg", "collections/preview :: imagePreview");
 		myMap.put("image/png", "collections/preview :: imagePreview");
-		myMap.put("image/gif", "collections/preview :: imagePreview");		
-		myMap.put("application/pdf", "collections/preview :: pdfFilePreview");		
-		myMap.put("text/plain", "collections/preview :: cmFilePreview");	
-		myMap.put("application/xml", "collections/preview :: cmFilePreview");	
+		myMap.put("image/gif", "collections/preview :: imagePreview");
+		myMap.put("application/pdf", "collections/preview :: pdfFilePreview");
+		myMap.put("text/plain", "collections/preview :: cmFilePreview");
+		myMap.put("application/xml", "collections/preview :: cmFilePreview");
 		myMap.put("application/json", "collections/preview :: cmFilePreview");
 		myMap.put("text/html", "collections/preview :: cmFilePreview");
-		myMap.put("text/csv", "collections/preview :: csvFilePreview");	
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "collections/preview :: noPreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", "collections/preview :: noPreview");
+		myMap.put("text/csv", "collections/preview :: csvFilePreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"collections/preview :: noPreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+				"collections/preview :: noPreview");
 		myMap.put("application/vnd.ms-excel", "collections/preview :: noPreview");
-		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "collections/preview :: noPreview");
+		myMap.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+				"collections/preview :: noPreview");
 		myMap.put("application/msword", "collections/preview :: noPreview");
-		
-		/*myMap.put("application/vnd.ms-excel.template.macroenabled.12", "collections/imagePreview :: filePreview");
-		myMap.put("application/vnd.ms-excel.sheet.macroenabled.12", "collections/imagePreview :: filePreview");
-*/		
+
+		/*
+		 * myMap.put("application/vnd.ms-excel.template.macroenabled.12",
+		 * "collections/imagePreview :: filePreview");
+		 * myMap.put("application/vnd.ms-excel.sheet.macroenabled.12",
+		 * "collections/imagePreview :: filePreview");
+		 */
 		return myMap;
 	}
-	
 
 	@Override
 	public boolean filePreview(String path, String mimeType, HttpServletResponse response) {
 
-		logger.info("getting file preview  for {} ::"  + path + " and mimetype :: " +mimeType);
+		logger.info("getting file preview  for {} ::" + path + " and mimetype :: " + mimeType);
 
-		boolean isCopySuccessFul = true;		
+		boolean isCopySuccessFul = true;
 		IRODSFileInputStream irodsFileInputStream = null;
-		IRODSFile irodsFile = null; 
+		IRODSFile irodsFile = null;
 
 		try {
-			IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();			
-			irodsFile = irodsFileFactory.instanceIRODSFile(path);			
+			IRODSFileFactory irodsFileFactory = irodsServices.getIRODSFileFactory();
+			irodsFile = irodsFileFactory.instanceIRODSFile(path);
 			irodsFileInputStream = irodsFileFactory.instanceIRODSFileInputStream(irodsFile);
-			response.setContentType(mimeType);												
+			response.setContentType(mimeType);
 			FileCopyUtils.copy(irodsFileInputStream, response.getOutputStream());
 
-		} catch (IOException | JargonException | DataGridConnectionRefusedException e) {		
+		} catch (IOException | JargonException e) {
 			e.printStackTrace();
 			isCopySuccessFul = false;
-		} 
+		}
 
 		finally {
 			try {
@@ -105,7 +108,7 @@ public class PreviewServiceImpl implements PreviewService {
 			String permissionType = collectionService.getPermissionsForPath(path);
 			if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
 				permission = false;
-			}			
+			}
 		} catch (DataGridException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
@@ -114,12 +117,11 @@ public class PreviewServiceImpl implements PreviewService {
 
 	@Override
 	public String getTemplate(String mimeType) {
-		String template = "collections/preview :: noPreview";		
-		if(myMap.containsKey(mimeType)) 
-			template = myMap.get(mimeType);			
-		
+		String template = "collections/preview :: noPreview";
+		if (myMap.containsKey(mimeType))
+			template = myMap.get(mimeType);
+
 		return template;
 	}
-
 
 }

@@ -285,7 +285,7 @@ public class FileOperationsController {
 			}
 		} catch (DataGridConnectionRefusedException e) {
 			throw e;
-		} catch (DataGridException | IOException | JargonException e) {
+		} catch (IOException | JargonException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
@@ -294,7 +294,6 @@ public class FileOperationsController {
 		prepareFileStatusJSONobj.put("length", length);
 		prepareFileStatusJSONobj.put("downloadLimitStatus", downloadLimitStatus);
 		prepareFileStatusJSONobj.put("message", message);
-		
 
 		return prepareFileStatusJSONobj;
 	}
