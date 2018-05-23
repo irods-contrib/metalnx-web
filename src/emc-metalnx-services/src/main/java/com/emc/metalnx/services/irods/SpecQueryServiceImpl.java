@@ -122,9 +122,6 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 		} catch (JargonQueryException e) {
 			logger.error("Could not get specific query: ", e);
 			throw new JargonException(e);
-		} catch (UnsupportedDataGridFeatureException e) {
-			logger.error("Could not get specific query: ", e);
-			throw new JargonException(e);
 		} finally {
 			try {
 				// after running the user specific query, we need to remove from the database
@@ -191,10 +188,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 		} catch (JargonQueryException e) {
 			logger.error("Could not get specific query: ", e);
 			throw new JargonException(e);
-		} catch (UnsupportedDataGridFeatureException e) {
-			logger.error("Could not get specific query: ", e);
-			throw new JargonException(e);
-		}
+		} 
 
 		return totalItems;
 	}
@@ -300,9 +294,6 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			logger.error("Could not get specific query: ", e);
 			throw e;
 		} catch (JargonQueryException e) {
-			logger.error("Could not get specific query: ", e);
-			throw new JargonException(e);
-		} catch (UnsupportedDataGridFeatureException e) {
 			logger.error("Could not get specific query: ", e);
 			throw new JargonException(e);
 		} finally {

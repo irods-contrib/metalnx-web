@@ -138,7 +138,7 @@ public class FilePropertyServiceImpl implements FilePropertyService {
 						pageContext.getStartItemNumber() + endIndexForDataObjs + dataGridCollections.size() - 1);
 			}
 
-		} catch (JargonException | UnsupportedDataGridFeatureException e) {
+		} catch (JargonException e) {
 			logger.error("Could not find data objects by metadata. ", e);
 			if (e.getCause() instanceof ConnectException) {
 				throw new DataGridConnectionRefusedException();

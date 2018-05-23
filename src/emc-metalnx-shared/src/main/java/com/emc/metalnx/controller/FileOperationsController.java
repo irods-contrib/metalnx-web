@@ -28,6 +28,7 @@ import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.domain.ObjStat;
+import org.irods.jargon.datautils.filesampler.FileTooLargeException;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,7 +258,7 @@ public class FileOperationsController {
 				length = objStat.getObjSize();
 				logger.debug("Collection/object size in bytes: {}", length);
 
-				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
+				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
 					message = "Files to download are out of limit";
 					logger.debug("Files to download are out of limit " + filePathToDownload);
@@ -277,15 +278,24 @@ public class FileOperationsController {
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
 				length = objStat.getObjSize();
 				logger.debug("Collection/object size in bytes: {}", length);
-				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
+				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
 					message = "Files to download are out of limit";
 
 				}
 			}
-		} catch (DataGridConnectionRefusedException e) {
-			throw e;
-		} catch (IOException | JargonException e) {
+		} 
+		catch(FileTooLargeException e) {
+			logger.error("File bundle size too large", e);
+			
+						
+			prepareFileStatusJSONobj.put("filePathToDownload", "");
+			prepareFileStatusJSONobj.put("length", 0);
+			prepareFileStatusJSONobj.put("downloadLimitStatus", "warn");
+			prepareFileStatusJSONobj.put("message", "File bundle size too large"); //TODO: internationalize message
+			
+		}
+		catch (IOException | JargonException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
