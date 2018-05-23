@@ -274,7 +274,7 @@
 				data-keyboard="false" id="uploadIcon"
 				title="Upload file(s) to iRods"> <i
 				class="fa fa-cloud-upload fa-color"></i>
-			<div class="btnLabel">
+				<div class="btnLabel">
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
@@ -304,7 +304,7 @@
 				aria-label="add collection" data-target="#uploadModal"
 				id="uploadIcon" title="Upload file(s) to iRods"> <i
 				class="fa fa-cloud-upload fa-color"></i>
-			<div class="btnLabel">
+				<div class="btnLabel">
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
@@ -767,7 +767,7 @@
 		});
 
         function handleDownload(data) {
-        	console.log(data)        	
+        	console.log(data)            	
         	alert(data.filePathToDownload)
         	console.log("collectionBrowser.html:: download ajax call success :: handleDownload()")
         	$("#actionsWait").hide();
@@ -779,10 +779,15 @@
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("disabled", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("disabled", false);
-        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");        	
         	
-        	if (data.downloadlimitStatus == 'true'){   	
-        		ajaxEncapsulation('/emc-metalnx-web/fileOperation/download/', "GET", {path: path}, downloadSucess, downloadFailure);
+        	if (data.downloadLimitStatus == "ok"){   
+        		alert("This is ok");
+        		window.location.href = "/emc-metalnx-web/fileOperation/download/";
+        		//ajaxEncapsulation('/emc-metalnx-web/fileOperation/download/', "GET", {path: path}, downloadSucess, downloadFailure);
+        	}
+        	else {
+        		toastr.warning("Error in download");
         	}
         }
 
@@ -794,15 +799,7 @@
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }
 		
-		function downloadSucess(){			
-			window.location.href = "/emc-metalnx-web/fileOperation/download/";
-			console.log("downloadSuccess() ajax sucess method !")
-		}
 		
-		function downloadFailure(){
-			console.log("Download ajax failed!")
-		}
-
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
    				'/emc-metalnx-web/browse/getBreadCrumbForObject/',

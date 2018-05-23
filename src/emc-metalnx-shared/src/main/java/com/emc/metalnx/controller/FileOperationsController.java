@@ -88,12 +88,12 @@ public class FileOperationsController {
 	private ConfigService configService;
 
 	// contains the path to the file that will be downloaded
-	//private String filePathToDownload;
+	// private String filePathToDownload;
 
 	// checks if it's necessary to remove any temporary collections created for
 	// downloading
 	private boolean removeTempCollection;
-	
+
 	private String filePathToDownload;
 
 	@PostConstruct
@@ -240,8 +240,10 @@ public class FileOperationsController {
 		JSONObject prepareFileStatusJSONobj = new JSONObject();
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
-		
-		boolean downloadlimitStatus = true;
+
+		String downloadLimitStatus = "ok";
+		String message = "";
+		long length = 0;
 
 		try {
 			logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
@@ -252,11 +254,13 @@ public class FileOperationsController {
 				removeTempCollection = false;
 
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
-				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());
+				length = objStat.getObjSize();
+				logger.debug("Collection/object size in bytes: {}", length);
 
 				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
-					downloadlimitStatus = false;
-					throw new JargonException("Files to download are out of limit " + filePathToDownload);
+					downloadLimitStatus = "warn";
+					message = "Files to download are out of limit";
+					logger.debug("Files to download are out of limit " + filePathToDownload);
 				}
 
 			} else {
@@ -266,15 +270,17 @@ public class FileOperationsController {
 				filePathToDownload = paths[0];
 				String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
 				if (permissionType.equalsIgnoreCase(DataGridPermType.NONE.name())) {
-					throw new DataGridException("Lack of permission to download file " + filePathToDownload);
+					downloadLimitStatus = "warn";
+					message = "Files do not have permissions";
 				}
 
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
-				logger.debug("Collection/object size in bytes: {}", objStat.getObjSize());
-
+				length = objStat.getObjSize();
+				logger.debug("Collection/object size in bytes: {}", length);
 				if (objStat.getObjSize() > Long.valueOf(configService.getDownloadLimit()) * 1024 * 1024) {
-					downloadlimitStatus = false;
-					throw new JargonException("Files to download are out of limit " + filePathToDownload);
+					downloadLimitStatus = "warn";
+					message = "Files to download are out of limit";
+
 				}
 			}
 		} catch (DataGridConnectionRefusedException e) {
@@ -285,8 +291,11 @@ public class FileOperationsController {
 		}
 
 		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
-		prepareFileStatusJSONobj.put("downloadlimitStatus", downloadlimitStatus);	
+		prepareFileStatusJSONobj.put("length", length);
+		prepareFileStatusJSONobj.put("downloadLimitStatus", downloadLimitStatus);
+		prepareFileStatusJSONobj.put("message", message);
 		
+
 		return prepareFileStatusJSONobj;
 	}
 
@@ -300,8 +309,8 @@ public class FileOperationsController {
 		Boolean downloadStatus = false;
 		try {
 			downloadStatus = fileOperationService.download(filePathToDownload, response, removeTempCollection);
-			// filePathToDownload = "";
-			// removeTempCollection = false;
+			filePathToDownload = "";
+			removeTempCollection = false;
 		} catch (DataGridException | IOException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 		}
