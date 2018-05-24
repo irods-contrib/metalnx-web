@@ -742,7 +742,7 @@
 
 			});
 
-        	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, handleDownloadFailure);
+        	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
         	
 			$("#actions button").prop("disabled", true);
         });
@@ -767,9 +767,9 @@
 		});
 
         function handleDownload(data) {
+        	console.log("collectionBrowser.html:: success call :: handleDownload()")
+        	
         	console.log(data)            	
-        	alert(data.filePathToDownload)
-        	console.log("collectionBrowser.html:: download ajax call success :: handleDownload()")
         	$("#actionsWait").hide();
         	$("#uploadIcon").prop("disabled", false);
             $("#uploadIcon").removeClass("disabled");
@@ -782,22 +782,21 @@
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");        	
         	
         	if (data.downloadLimitStatus == "ok"){   
-        		alert("This is ok");
         		window.location.href = "/emc-metalnx-web/fileOperation/download/";
-        		//ajaxEncapsulation('/emc-metalnx-web/fileOperation/download/', "GET", {path: path}, downloadSucess, downloadFailure);
         	}
         	else {
-        		toastr.warning("Error in download");
+        		toastr.warning("Download limit has been exceeded over 100MBs");
+        		$("#actionsWait").hide();
         	}
         }
 
-		function handleDownloadFailure() {
-			console.log("collectionBrowser.html:: download ajax call failure :: handleDownloadFailure()")
+		/*function handleDownloadFailure() {
+			console.log("collectionBrowser.html:: failure call :: handleDownloadFailure()")
         	$("#actionsWait").hide();
         	$("#downloadFailureMessage").show();
         	$("input[name=selectAllCheckboxes]").prop('checked', false);
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
-        }
+        }*/
 		
 		
         function getBreadcrumb(path) {

@@ -26,6 +26,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.IRODSDomainObject;
 import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
+import org.irods.jargon.zipservice.api.exception.ZipServiceException;
 
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
@@ -355,10 +356,12 @@ public interface CollectionService {
 	 *             {@link IOException}
 	 * @throws DataGridException
 	 *             {@link DataGridException}
+	 * @throws ZipServiceException 
+	 * @throws JargonException 
 	 * 
 	 */
 	String prepareFilesForDownload(List<String> sourcePaths)
-			throws FileSizeTooLargeException, IOException, DataGridException;
+			throws FileSizeTooLargeException, IOException, DataGridException, JargonException;
 
 	/**
 	 * Returns the inheritance option value for a given collection

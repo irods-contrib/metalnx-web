@@ -19,7 +19,6 @@ package com.emc.metalnx.services.irods;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +32,8 @@ import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.packinstr.StructFileExtAndRegInp.BundleType;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
-import org.irods.jargon.core.pub.BulkFileOperationsAO;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
@@ -57,6 +56,7 @@ import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
 import org.irods.jargon.zipservice.api.JargonZipService;
+import org.irods.jargon.zipservice.api.ZipServiceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -687,65 +687,50 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public String prepareFilesForDownload(List<String> sourcePaths)
-			throws FileSizeTooLargeException, IOException, DataGridException {
+	public String prepareFilesForDownload(List<String> sourcePaths) throws IOException, JargonException {
 		logger.info("prepareFilesForDownload()");
-
 		logger.info("Preparing files for download");
+
 		if (sourcePaths == null || sourcePaths.isEmpty()) {
 			return "";
 		}
 
-		Date currentDate = new Date();
-		String tempCollectionName = "mlx_download_" + System.currentTimeMillis();
-		String tempCollectionPath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName;
-		String filePathToBeBundled = tempCollectionPath;
-		String compressedFilePath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName + ".tar";
 		String path = "";
+		long bunLength;
+
+		JargonZipService jargonZipService = irodsServices.getJargonZipService();
+		ZipServiceConfiguration zipServiceConfiguration = new ZipServiceConfiguration();
 
 		logger.info("evaluating projected size of the bundle first!");
-
-		long bunLength;
 		try {
-			JargonZipService jargonZipService = irodsServices.getJargonZipService();
+
 			bunLength = jargonZipService.computeBundleSizeInBytes(sourcePaths);
+			/*
+			 * Download limit is in MB, bunLenght is in bytes
+			 */
+			logger.info("bunLength :{}", bunLength);
+			if (bunLength > configService.getDownloadLimit() * 1024 * 1024) {
+				throw new FileSizeTooLargeException("file size too large for bundle creation");
+			} else {
+				/*
+				 * Setting default BundleType to ZIP 
+				 * TODO: Add download bundle option as .tar to user preference
+				 */
+				zipServiceConfiguration.setPreferredBundleType(BundleType.ZIP);
+				jargonZipService.setZipServiceConfiguration(zipServiceConfiguration);
+
+				if (!sourcePaths.isEmpty()) {
+					logger.info("Copying files to be downloaded to the temporary collection");
+					IRODSFile zippedFile = jargonZipService.obtainBundleAsIrodsFileGivenPaths(sourcePaths);
+					path = zippedFile.getPath();
+					logger.info("Zipped collection path: {}", path);
+				}
+			}
 		} catch (JargonException e) {
 			logger.error("jargon exception", e);
 			throw new DataGridException(e);
 		}
-
-		/*
-		 * Download limit is in MB, bunLenght is in bytes
-		 */
-		if (bunLength > configService.getDownloadLimit() * 1024 * 1024) {
-			throw new FileSizeTooLargeException("file size too large for bundle creation");
-		}
-
-		// creating temporary collection for download
-		DataGridCollectionAndDataObject tempCollection = new DataGridCollectionAndDataObject(tempCollectionPath,
-				getHomeDirectyForCurrentUser(), true);
-
-		tempCollection.setCreatedAt(currentDate);
-		tempCollection.setModifiedAt(currentDate);
-		tempCollection.setInheritanceOption(false);
-
-		logger.debug("Creating temporary collection for download");
-
-		boolean isTempCollectionCreated = createCollection(tempCollection);
-
-		if (isTempCollectionCreated && !sourcePaths.isEmpty()) {
-			logger.info("Copying files to be downloaded to the temporary collection");
-
-			// copying all files and collections to be downloaded to the temporary
-			// collection
-			fileOperationService.copy(sourcePaths, tempCollectionPath, false);
-
-			// creating the compressed file (tar) into the temporary collection
-			logger.info("Compressing temporary collection");
-			compressTempFolderIntoDataGrid(filePathToBeBundled, compressedFilePath, "");
-			path = compressedFilePath;
-		}
-
+		
 		return path;
 	}
 
@@ -896,25 +881,25 @@ public class CollectionServiceImpl implements CollectionService {
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
 	 */
-	private boolean compressTempFolderIntoDataGrid(String filePathToBeBundled, String bundleFilePathTobeCreated,
-			String resource) throws DataGridConnectionRefusedException {
-
-		logger.info("compressTempFolderIntoDataGrid()");
-
-		boolean isZipFileCreatedSuccessfully = false;
-		BulkFileOperationsAO bulkFileOperationsAO = null;
-
-		try {
-			bulkFileOperationsAO = irodsServices.getBulkFileOperationsAO();
-			bulkFileOperationsAO.createABundleFromIrodsFilesAndStoreInIrodsWithForceOption(bundleFilePathTobeCreated,
-					filePathToBeBundled, resource);
-			isZipFileCreatedSuccessfully = true;
-		} catch (JargonException e) {
-			logger.error("Could not compress temporary folder: {}", e.getMessage());
-		}
-
-		return isZipFileCreatedSuccessfully;
-	}
+	/*
+	 * private boolean compressTempFolderIntoDataGrid(String filePathToBeBundled,
+	 * String bundleFilePathTobeCreated, String resource) throws
+	 * DataGridConnectionRefusedException {
+	 * 
+	 * logger.info("compressTempFolderIntoDataGrid()");
+	 * 
+	 * boolean isZipFileCreatedSuccessfully = false; BulkFileOperationsAO
+	 * bulkFileOperationsAO = null;
+	 * 
+	 * try { bulkFileOperationsAO = irodsServices.getBulkFileOperationsAO();
+	 * bulkFileOperationsAO.
+	 * createABundleFromIrodsFilesAndStoreInIrodsWithForceOption(
+	 * bundleFilePathTobeCreated, filePathToBeBundled, resource);
+	 * isZipFileCreatedSuccessfully = true; } catch (JargonException e) {
+	 * logger.error("Could not compress temporary folder: {}", e.getMessage()); }
+	 * 
+	 * return isZipFileCreatedSuccessfully; }
+	 */
 
 	/**
 	 * Lists all collections under the given path that match a search term. Any

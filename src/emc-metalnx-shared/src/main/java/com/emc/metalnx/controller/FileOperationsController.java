@@ -251,8 +251,7 @@ public class FileOperationsController {
 
 			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
 				filePathToDownload = collectionService.prepareFilesForDownload(paths);
-				// removeTempCollection = true;
-				removeTempCollection = false;
+				removeTempCollection = true;
 
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
 				length = objStat.getObjSize();
@@ -260,8 +259,16 @@ public class FileOperationsController {
 
 				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
-					message = "Files to download are out of limit";
-					logger.debug("Files to download are out of limit " + filePathToDownload);
+					message = "Compressed file exceeeds download limit";
+					logger.debug("Compressed file exceeds download limit " + filePathToDownload);
+
+					logger.debug("Removing temp compressed dataObj");
+					fileOperationService.deleteDataObject(filePathToDownload, removeTempCollection);
+
+					logger.debug("Removing temp collection");
+					fileOperationService.deleteCollection(
+							filePathToDownload.substring(0, filePathToDownload.lastIndexOf("/")), removeTempCollection);
+
 				}
 
 			} else {
@@ -284,18 +291,15 @@ public class FileOperationsController {
 
 				}
 			}
-		} 
-		catch(FileTooLargeException e) {
+		} catch (FileTooLargeException e) {
 			logger.error("File bundle size too large", e);
-			
-						
+
 			prepareFileStatusJSONobj.put("filePathToDownload", "");
 			prepareFileStatusJSONobj.put("length", 0);
 			prepareFileStatusJSONobj.put("downloadLimitStatus", "warn");
-			prepareFileStatusJSONobj.put("message", "File bundle size too large"); //TODO: internationalize message
-			
-		}
-		catch (IOException | JargonException e) {
+			prepareFileStatusJSONobj.put("message", "File bundle size too large"); // TODO: internationalize message
+
+		} catch (IOException | JargonException e) {
 			logger.error("Could not download selected items: ", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		}
