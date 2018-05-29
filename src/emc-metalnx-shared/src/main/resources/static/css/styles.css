@@ -174,7 +174,13 @@ table td{
   box-sizing: content-box;
 }
 #hdr-niehstitle{ box-sizing: content-box; }
-.modal-content{ font-size: 1.5rem; }
+.modal-content{font-size: 1.5rem;}
+#deleteConfirmationModal .modal-content{
+  background-color: #51A351;
+  color:#ffffff;
+}
+
+
 .modal-content .modal-title {color: #fff;}
 .pagination>.active>a {
   background-color: #046383;
@@ -1446,6 +1452,9 @@ alert-dialog {
 .navbar{
 	background: #7f7f7f;
 }
+.topnavbar{
+  background: #287EA1;
+}
 
 .navbar-toggle{
 	background: #7f7f7f;
@@ -1751,7 +1760,8 @@ a.btn-primary > i  {
 #metadataSearchActionButtons{ margin-bottom: 10px; }
 
 #propertiesSearchActionButtons button,
-#metadataSearchActionButtons button{
+#metadataSearchActionButtons button,
+#collectionPreviewSearchButtons button{
 	margin-left:10px;
 	min-width: 110px;
 }
@@ -2148,6 +2158,22 @@ form.registerForm .bootstrap-tagsinput {
 	    font-family: Verdana, Geneva, sans-serif;
 	}
 
+#sidebarnav ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #287EA1;
+  }
+#sidebarnav ul li a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+    content:'\f107';
+    display: inline-block;
+    font-size: 2rem;
+    /*content: '\f329';*/
+    font-family: 'FontAwesome';
+    display: block;
+    position: absolute;
+    right: 20px;
+    color:#ffffff;
+}
+
 	.navbar-top-links .dropdown-messages, .navbar-top-links .dropdown-tasks,
 		.navbar-top-links .dropdown-alerts {
 		margin-left: auto;
@@ -2406,7 +2432,7 @@ td a {
 }
 .datacommons_title-right{
   order: 3;
-  width: 200px;
+  width: 600px;
   text-align: right;
 }
 .datacommons_title .page-header{
@@ -2425,6 +2451,17 @@ td a {
   color: #FFFFFF;
   padding: 5px 5px 5px 25px;
 }
+
+.topnavbar-fa-style{
+  display: inline-block;
+  font-size: 2rem;
+  font-family: 'FontAwesome';
+  color: #fff;
+}
+.datacommons_title-right .navbar>li>a{
+  padding: 5px 5px;
+}
+
 .datacommons_title-usermenu{
   font-size: 1.7rem;
   display: inline-block;
@@ -2601,5 +2638,133 @@ td a {
 #toast-container{
   font-size:1.8em;
 }
+.menuHeader{
+   border-bottom: 1px solid #DDD;
+}
 
+.disabled {
+    pointer-events:none; //This makes it not clickable
+    opacity:0.6;         //This grays it out to look disabled
+}
 
+td a {
+  cursor: pointer;
+}
+
+/*#deleteConfirmationModal{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  display: table
+}
+#deleteConfirmationModa div.model-content{
+  display: table-cell;
+}*/
+
+/*.topnav{
+  //width:100%;
+  //position: relative;
+//  z-index: 2;
+  height: 50px;
+  background-color: #287EA1;
+}
+.topnav-usercontroll{
+  background-color: #287EA1;
+}
+.collection-header{
+  border-bottom:none;
+  margin: 0px 5px 0px 0px;
+  padding-bottom:0;
+  //font-size: 15px;
+
+}
+.collection-margin{
+  margin: 10px 10px;
+}
+.color-blue{
+  color:blue;
+}
+
+.font-awesometemplate {
+    text-shadow: 1px 1px 1px #ccc;
+    font-size: 6em;
+    padding-left: 40px;
+}
+
+.collectionFont{
+  color: #287EA1;
+}
+
+.breadcrumb a{
+    color: #287EA1;
+}
+.topnavbreadcrum{
+  min-width: 1026px;
+  max-width: 1026px;
+  font-size: small;
+}
+.topbar{
+  width: 100%;
+  heigth: 50px;
+  background-color:#287ea1;
+  color: #fff;
+}
+.topbar a{
+  color: #fff;
+}
+
+.collectionTable{
+  width: 100%;
+  overflow: auto
+}*/
+
+ul.bs-autocomplete-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow: auto;
+  z-index: 9999;
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0px 1px 6px 1px rgba(0, 0, 0, 0.4);
+}
+
+ul.bs-autocomplete-menu a {
+  font-weight: normal;
+  color: #333333;
+  font-size: 12px;
+}
+
+.ui-state-active,
+.ui-state-focus {
+  color: #23527c;
+  background-color: #eeeeee;
+}
+
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width:auto;
+        padding:0 10px;
+        border-bottom:none;
+    }
+
+    .hintText{
+      font-color: lightgray;
+      font-style: italic;
+    }
