@@ -39,11 +39,16 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.ZoneAO;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteServiceImpl;
 import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.datautils.filesampler.FileSamplerServiceImpl;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.TicketServiceFactory;
 import org.irods.jargon.ticket.TicketServiceFactoryImpl;
+import org.irods.jargon.zipservice.api.JargonZipService;
+import org.irods.jargon.zipservice.api.JargonZipServiceImpl;
+import org.irods.jargon.zipservice.api.ZipServiceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +137,15 @@ public class IRODSServicesImpl implements IRODSServices {
 		}
 
 		return version;
+	}
+
+	@Override
+	public JargonZipService getJargonZipService() throws JargonException {
+
+		logger.info("getJargonZipService()"); // TODO: make config metalnx.properties and/or config options
+		ZipServiceConfiguration zipServiceConfiguration = new ZipServiceConfiguration();
+		return new JargonZipServiceImpl(zipServiceConfiguration, irodsAccessObjectFactory, irodsAccount);
+
 	}
 
 	@Override
@@ -358,6 +372,12 @@ public class IRODSServicesImpl implements IRODSServices {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public AvuAutocompleteService getAvuAutocompleteService() throws JargonException {
+		// Returning AvuAutocompleteServiceImpl instance
+		return new AvuAutocompleteServiceImpl(irodsAccessObjectFactory, irodsAccount);
 	}
 
 	@Override

@@ -98,7 +98,6 @@ public class UploadServiceImpl implements UploadService {
 		}
 
 		String defaultStorageResource = is.getDefaultStorageResource();
-
 		logger.info("Setting default resource to {}", destResc);
 
 		// Setting temporarily the defaultStorageResource for the logged user
@@ -146,13 +145,14 @@ public class UploadServiceImpl implements UploadService {
 			}
 
 			isFileUploaded = true;
+		} catch (DataGridFileAlreadyExistsException e) {
+			logger.warn("File already exists..will rethrow.");
+			throw e;
 		} catch (JargonException e) {
 			fos.deleteDataObject(targetFile.getPath(), true);
 			logger.error("Upload stream failed from Metalnx to the data grid. {}", e.getMessage());
 			throw new DataGridException("Upload failed. Resource(s) might be full.");
-		} catch (DataGridFileAlreadyExistsException e) {
-			logger.warn("File already exists..will rethrow.");
-			throw e;
+
 		} catch (Throwable e) {
 			logger.error("Exception in upload processing", e);
 			throw new DataGridException("Could not upload due to system exception");

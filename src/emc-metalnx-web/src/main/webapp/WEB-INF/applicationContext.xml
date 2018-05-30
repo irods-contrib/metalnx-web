@@ -24,9 +24,12 @@
 		<property name="locations">
 			<list>
 
-					<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value> -->
-          		 <value>file:/etc/irods-ext/metalnx.properties</value>  
-			    <!--    <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value> -->
+
+				<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value>-->
+				<value>file:/etc/irods-ext/metalnx.properties</value>  
+				<!-- <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value> -->
+
+
 
 			</list>
 		</property>
@@ -37,9 +40,12 @@
 		doc at the top of the repo, -->
 
 
-	<!--   <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" />-->
-	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
-	<!--<import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" /> -->
+
+	<!-- <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" /> -->
+	<import resource="file:/etc/irods-ext/metalnxConfig.xml" /> 
+
+	<!-- <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" 
+		/> -->
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
@@ -62,8 +68,8 @@
 	<!-- Instead of redirecting the user to the login page when he tries to 
 		access a page with an expired session id, we return an error (403). By doing 
 		that, all ajax calls will be able to handle forbidden access to any page. -->
-	<bean id="ep403"
-		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+	<bean id="ep403" class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
+	</bean>
 
 	<sec:http auto-config="true" create-session="always"
 		entry-point-ref="ep403">
@@ -71,7 +77,7 @@
 		<!-- Login pages -->
 		<sec:intercept-url pattern="/login/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-			
+
 
 		<!-- Static Resources -->
 		<sec:intercept-url pattern="/images/**"
@@ -93,12 +99,16 @@
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/dashboard/**" access="ROLE_ADMIN" />
 		<sec:intercept-url pattern="/preview/**" access="ROLE_ADMIN, ROLE_USER" />
-		<sec:intercept-url pattern="/previewPreparation/**" access="ROLE_ADMIN, ROLE_USER" />
+		<sec:intercept-url pattern="/previewPreparation/**"
+			access="ROLE_ADMIN, ROLE_USER" />
 		<sec:intercept-url pattern="/collections/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/collectionInfo/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/collectionInfo/**"
+			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/browse/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/trash/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/public/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/avuAutoComplete/**"
+			access="ROLE_ADMIN, ROLE_USER" />
 
 		<sec:intercept-url pattern="/fileOperation/**"
 			access="ROLE_ADMIN,ROLE_USER" />
@@ -118,7 +128,7 @@
 		<sec:intercept-url pattern="/ticketclient/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER" />
-			
+
 		<sec:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
 		<sec:form-login login-processing-url="/login/authenticate/"

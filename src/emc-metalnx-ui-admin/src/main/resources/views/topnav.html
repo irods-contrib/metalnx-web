@@ -8,8 +8,8 @@
 		<div class="datacommons_title">
 
 			<div class="datacommons_title-left">
-				<a href="#" class="datacommons_title-icon"><i
-					th:class="${ topnavHeader.getIcon() }" aria-hidden="true"></i></a>
+			<!--	<a href="#" class="datacommons_title-icon"><i
+					th:class="${ topnavHeader.getIcon() }" aria-hidden="true"></i></a>-->
 			</div>
 			<div class="datacommons_title-mid">
 				<div class="datacommons_title-breadcrum">
@@ -18,12 +18,12 @@
 						<span> Data Commons</span>
 					</a> &nbsp;»&nbsp;
 				</div>
-				<div class="pull-left page-header">
+			<!--	<div class="pull-left page-header">
 					<h1 class="pull-left" th:text="#{ ${ topnavHeader.getName() } }"
 						th:data-content="#{ ${ topnavHeader.getHint() } }"></h1>
 					<a aria-label="page help" href="#" id="page-title"
 						class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
-				</div>
+				</div> -->
 			</div>
 			<div class="datacommons_title-right">
 				<ul class="datacommons_title-usermenu">
@@ -52,8 +52,8 @@
 				<!-- Upload notifications panel -->
 			</div>
 		</div>
-		
-		<script type="text/javascript" th:inline="javascript">
+
+	<!--	<script type="text/javascript" th:inline="javascript">
 			 $(document).ready(function(){
 				// Add popover on page title
 		        $('#page-title').popover({
@@ -63,9 +63,9 @@
 		       		placement: 'left',
 		   		});
 		        $('[data-toggle="tooltip"]').tooltip();
-			}); 
-			
-		</script>
+			});
+
+		</script> -->
 	</div>
 </body>
 </html>

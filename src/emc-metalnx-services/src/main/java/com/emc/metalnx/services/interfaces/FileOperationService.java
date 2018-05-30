@@ -134,9 +134,10 @@ public interface FileOperationService {
 	 *             if an error happen in the data grid
 	 * @throws IOException
 	 *             cannot create the tar ball file
+	 * @throws JargonException 
 	 */
 	boolean download(String path, HttpServletResponse httpResponse, boolean removeTempCollection)
-			throws DataGridException, IOException;
+			throws DataGridException, IOException, JargonException;
 
 	/**
 	 * Removes all items existing in the trash folder of a given user.

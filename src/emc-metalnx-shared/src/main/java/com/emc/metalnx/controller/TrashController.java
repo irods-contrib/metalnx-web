@@ -22,7 +22,6 @@ import com.emc.metalnx.services.interfaces.ResourceService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
 @RequestMapping(value = "/trash")
 public class TrashController {
 
@@ -73,8 +72,7 @@ public class TrashController {
 		parentPath = currentPath;
 
 		model.addAttribute("currentPath", currentPath);
-		model.addAttribute("topnavHeader", headerService.getheader("trash"));
-		
+
 		return "redirect:/collections?path=" + currentPath;
 	}
 }

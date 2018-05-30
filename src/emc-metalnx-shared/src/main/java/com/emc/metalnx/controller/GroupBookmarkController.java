@@ -49,7 +49,7 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@SessionAttributes({ "addBookmarks", "removeBookmarks", "topnavHeader" })
+@SessionAttributes({ "addBookmarks", "removeBookmarks" })
 @RequestMapping(value = "/groupBookmarks")
 public class GroupBookmarkController {
 	@Autowired

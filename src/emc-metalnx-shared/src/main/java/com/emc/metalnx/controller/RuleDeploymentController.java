@@ -31,18 +31,16 @@ import com.emc.metalnx.services.interfaces.HeaderService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/rules")
 public class RuleDeploymentController {
 
 	@Autowired
 	HeaderService headerService;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(RuleDeploymentController.class);
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Model model) {
-		model.addAttribute("topnavHeader", headerService.getheader("rules"));
 		logger.info("Rules page");
 		return "rules/rulesManagement";
 	}

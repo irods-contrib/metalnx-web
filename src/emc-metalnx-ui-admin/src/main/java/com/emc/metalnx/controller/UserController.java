@@ -78,7 +78,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @Controller
-@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs", "topnavHeader" })
+@SessionAttributes({ "addReadPermissionsOnDirs", "addWritePermissionsOnDirs", "addOwnerOnDirs" })
 @RequestMapping("/users")
 public class UserController {
 
@@ -133,7 +133,6 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String listUsers(Model model) {
-		model.addAttribute("topnavHeader", headerService.getheader("users"));
 		cleanPermissionsSets();
 		return "users/user-management";
 	}

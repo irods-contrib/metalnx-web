@@ -36,20 +36,21 @@ public class DataGridAuthenticationFailureHandler implements AuthenticationFailu
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	LocaleResolver localeResolver;
-	
+
 	@Value("${irods.zoneName}")
 	private String zoneName;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DataGridAuthenticationFailureHandler.class);
-	
+
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
-
+		logger.info("DataGridAuthenticationFailureHandler: onAuthenticationFailure()");
+		
 		//if we could not connect to the iCAT Server
 		if (exception instanceof DataGridServerException) {
 			logger.error("Server not respoding.", exception.getMessage());
@@ -58,7 +59,7 @@ public class DataGridAuthenticationFailureHandler implements AuthenticationFailu
 			logger.error("Database not respoding.", exception.getMessage());
 			response.sendRedirect("/emc-metalnx-web/login/databaseNotResponding/");
 		} else {
-			response.sendRedirect("/emc-metalnx-web/login/exception/");			
+			response.sendRedirect("/emc-metalnx-web/login/exception/");
 		}
 	}
 

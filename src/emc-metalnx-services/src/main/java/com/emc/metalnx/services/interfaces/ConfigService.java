@@ -104,6 +104,13 @@ public interface ConfigService {
 	String getIrodsAuthScheme();
 
 	/**
+	 * Find file download limit
+	 * 
+	 * @return long representing the download limit in Megabytes
+	 */
+	long getDownloadLimit();
+
+	/**
 	 * Checks whether or not the populate MSI flag is enabled
 	 * 
 	 * @return True, if populate is enabled. False, otherwise.

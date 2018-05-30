@@ -64,7 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths"})
 @RequestMapping(value = "/metadata")
 public class MetadataController {
 
@@ -133,7 +133,6 @@ public class MetadataController {
 			model.addAttribute("jsonMetadataSearch", jsonMetadataSearch);
 		}
 		model.addAttribute("uiMode", uiMode);
-		model.addAttribute("topnavHeader", headerService.getheader("search"));
 		return "metadata/metadataDisplay";
 	}
 
@@ -142,6 +141,11 @@ public class MetadataController {
 	public String searchByMetadata(@RequestParam(required = false) final String jsonMetadataSearch,
 			@RequestParam("draw") final int draw, @RequestParam("start") final int start,
 			@RequestParam("length") final int length) throws DataGridConnectionRefusedException {
+
+		logger.info("jsonMetadataSearch ::" +jsonMetadataSearch);
+		logger.info("draw ::" +draw);
+		logger.info("start ::" +start);
+		logger.info("length ::" +length);
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonResponse = new HashMap<String, Object>();
@@ -166,6 +170,11 @@ public class MetadataController {
 			JsonNode operators = jsonObject.get("operator");
 			JsonNode values = jsonObject.get("value");
 			JsonNode units = jsonObject.get("unit");
+
+			logger.info("attribute :: " +attributes);
+			logger.info("operators :: " +operators);
+			logger.info("values :: " +values);
+			logger.info("units :: " +units);
 
 			for (int i = 0; i < attributes.size(); i++) {
 				String attr = attributes.get(i).textValue();

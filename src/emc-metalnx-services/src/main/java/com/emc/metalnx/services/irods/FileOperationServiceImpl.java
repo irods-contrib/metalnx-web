@@ -44,7 +44,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
@@ -63,9 +62,6 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Autowired
 	private IRODSServices irodsServices;
-
-	@Autowired
-	private CollectionService collectionService;
 
 	@Autowired
 	private UserBookmarkService userBookmarkService;
@@ -239,39 +235,28 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Override
 	public boolean download(String path, HttpServletResponse response, boolean removeTempCollection)
-			throws DataGridException {
+			throws DataGridException, JargonException {
 
-		logger.debug("Downloading file ", path);
+		logger.debug("Downloading file path: {}", path);
+
+		boolean isDownloadSuccessful = false;
 
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
 
 		logger.debug("Copying file into the HTTP response");
+		isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
 
-		boolean isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
+		// getting the temporary collection name from the path
+		String tempColl = path.substring(0, path.lastIndexOf("/"));
 
-		String fileName = path.substring(path.lastIndexOf("/"), path.length());
-
-		// getting the temporary collection name from the compressed file name,
-		// and removing the ".tar" extension from it
-		String tempColl = collectionService.getHomeDirectyForCurrentUser()
-				+ fileName.substring(0, fileName.length() - 4);
-
-		/*
-		 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
-		 * fileName.substring(0, fileName.length() - 4);
-		 */
-
-		logger.debug("Removing compressed file");
-
-		// removing any temporary collections and tar files created for downloading
+		logger.debug("Removing any temporary collections and compressed files created for downloading");
 		if (removeTempCollection) {
+			logger.debug("Removing temporary dataObj");
 			deleteDataObject(path, removeTempCollection);
 
 			logger.debug("Removing temporary collection");
-
-			// removing temporary collection
 			deleteCollection(tempColl, removeTempCollection);
 		}
 
@@ -421,6 +406,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 			logger.error("Could not put the file in the Http response ", e);
 			isCopySuccessFul = false;
 		} catch (JargonException e) {
+			logger.error("Could not copy file in the Http response: ", e.getMessage());
+			isCopySuccessFul = false;
+		} catch (NullPointerException e) {
 			logger.error("Could not copy file in the Http response: ", e.getMessage());
 			isCopySuccessFul = false;
 		}

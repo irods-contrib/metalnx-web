@@ -34,7 +34,7 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths", "topnavHeader" })
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/collectionInfo")
 public class CollectionInfoController {
 
@@ -79,7 +79,7 @@ public class CollectionInfoController {
 
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
-
+		
 		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
 		}
@@ -93,7 +93,6 @@ public class CollectionInfoController {
 			template = "collections/collectionInfo";
 		if (dataProfile.isFile())
 			template = "collections/fileInfo";
-
 		return template;
 
 	}
@@ -110,7 +109,7 @@ public class CollectionInfoController {
 		String myPath = URLDecoder.decode(path);
 
 		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
-
+		
 		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
 		}
@@ -118,7 +117,7 @@ public class CollectionInfoController {
 
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
-
+		
 		logger.info("getCollectionFileInfo() ends !!");
 		return "collections/details :: detailsView";
 	}

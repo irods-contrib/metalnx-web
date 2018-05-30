@@ -18,6 +18,8 @@ package com.emc.metalnx.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,10 +37,12 @@ import com.emc.metalnx.services.auth.UserTokenDetails;
 @Controller
 @RequestMapping(value = "/login")
 public class LoginController {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String loginView(final Model model) {
-
+		logger.info("LoginContoller loginView()");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
@@ -50,7 +54,7 @@ public class LoginController {
 
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
 	public ModelAndView loginErrorHandler(final Exception e) {
-
+		logger.info("LoginContoller loginErrorHandler()");
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("usernameOrPasswordInvalid", true);
 
@@ -61,6 +65,7 @@ public class LoginController {
 	@ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
 	@ResponseBody
 	public String invalidSessionHandler(final HttpServletRequest response) {
+		logger.info("LoginContoller invalidSessionHandler()");
 		return "<script>window.location='/emc-metalnx-web/login/'</script>";
 	}
 
@@ -75,7 +80,7 @@ public class LoginController {
 
 	@RequestMapping(value = "/databaseNotResponding", method = RequestMethod.GET)
 	public ModelAndView databaseNotRespondingErrorHandler(final Exception e) {
-
+		logger.info("LoginContoller databaseNotResponding()");
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("databaseNotResponding", true);
 

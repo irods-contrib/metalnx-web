@@ -75,7 +75,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "selectedTemplates", "topnavHeader" })
+@SessionAttributes({ "selectedTemplates" })
 @RequestMapping(value = "/templates")
 public class TemplateController {
 
@@ -137,7 +137,6 @@ public class TemplateController {
 		}
 		selectedTemplates.clear();
 		model.addAttribute("uiMode", uiMode);
-		model.addAttribute("topnavHeader", headerService.getheader("template"));
 		return "template/templateManagement";
 	}
 

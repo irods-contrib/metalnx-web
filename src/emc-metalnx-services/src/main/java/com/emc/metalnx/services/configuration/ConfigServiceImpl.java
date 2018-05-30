@@ -83,6 +83,9 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${metalnx.enable.upload.rules}")
 	private boolean uploadRulesEnabled;
 
+	@Value("${metalnx.download.limit}")
+	private long downloadLimit;
+
 	@Override
 	public GlobalConfig getGlobalConfig() {
 		logger.info("getGlobalConfig()");
@@ -156,6 +159,11 @@ public class ConfigServiceImpl implements ConfigService {
 	@Override
 	public String getIrodsAuthScheme() {
 		return irodsAuthScheme;
+	}
+
+	@Override
+	public long getDownloadLimit() {
+		return downloadLimit;
 	}
 
 	@Override

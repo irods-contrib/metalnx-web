@@ -101,7 +101,7 @@ public class CollectionServiceImplTest {
 		irodsServices.irodsAccessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
 
 		CollectionServiceImpl collectionService = new CollectionServiceImpl();
-		collectionService.irodsServices = irodsServices;
+		collectionService.setIrodsServices(irodsServices);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append('/');

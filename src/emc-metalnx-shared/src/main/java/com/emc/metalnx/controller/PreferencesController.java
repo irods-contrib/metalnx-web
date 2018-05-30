@@ -39,7 +39,6 @@ import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
-@SessionAttributes("topnavHeader")
 @RequestMapping(value = "/preferences")
 public class PreferencesController {
 
@@ -89,7 +88,6 @@ public class PreferencesController {
 		logger.debug("logged in user preferences:{}", loggedUser);
 		model.addAttribute("preferences", userPreferences);
 		model.addAttribute("uiMode", uiMode);
-		model.addAttribute("topnavHeader", headerService.getheader("prefrences"));
 
 		return "preferences/index";
 	}
