@@ -32,7 +32,7 @@ Using maven properties, set up:
 				<flyway.jdbc.url>jdbc:postgresql://<address>:<port>/<metalnx-db-name></flyway.jdbc.url>
 				<flyway.db.user>irodsext</flyway.db.user>
 				<flyway.db.password>password</flyway.db.password>
-				<flyway.db.schema>IRODS-EXT</flyway.db.schema>
+				<flyway.db.schema>public</flyway.db.schema>
 			</properties>
 		
 		</profile>
