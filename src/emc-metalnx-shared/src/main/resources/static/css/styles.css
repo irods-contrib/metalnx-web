@@ -2433,7 +2433,7 @@ td a {
 }
 .datacommons_title-right{
   order: 3;
-  width: 600px;
+  /*width: 600px;*/
   text-align: right;
 }
 .datacommons_title .page-header{
