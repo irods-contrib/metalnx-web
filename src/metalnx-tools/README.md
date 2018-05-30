@@ -26,7 +26,7 @@ Using maven properties, set up:
 
 ```xml
 
-<profile>
+		<profile>
 			<id>flyway-local</id>
 			<properties>
 				<flyway.jdbc.url>jdbc:postgresql://<address>:<port>/<metalnx-db-name></flyway.jdbc.url>
