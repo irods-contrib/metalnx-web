@@ -1,4 +1,4 @@
-# MetaLnx Tools
+# Metalnx Tools
 
 ## Database schema migration and setup
 

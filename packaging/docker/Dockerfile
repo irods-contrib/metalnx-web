@@ -1,7 +1,7 @@
 FROM tomcat:jre8-alpine
 LABEL organization="iRODS"
 LABEL maintainer="michael.c.conway@gmail.com"
-LABEL description="iRODS MetaLnx Browser"
+LABEL description="iRODS Metalnx Browser"
 ADD runit.sh /
 
 ADD emc-metalnx-web.war /usr/local/tomcat/webapps/
