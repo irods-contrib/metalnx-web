@@ -162,8 +162,16 @@ public class CollectionServiceImpl implements CollectionService {
 		if (path == null || path.isEmpty())
 			return false;
 
-		ObjStat objStat = irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
-		return objStat.isSomeTypeOfCollection();
+		logger.info("getting objStat");
+
+		try {
+			ObjStat objStat = irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
+			logger.debug("objStat:{}", objStat);
+			return objStat.isSomeTypeOfCollection();
+		} catch (JargonException je) {
+			logger.error("error getting objStat", je);
+			throw je;
+		}
 
 	}
 
@@ -713,8 +721,8 @@ public class CollectionServiceImpl implements CollectionService {
 				throw new FileSizeTooLargeException("file size too large for bundle creation");
 			} else {
 				/*
-				 * Setting default BundleType to ZIP 
-				 * TODO: Add download bundle option as .tar to user preference
+				 * Setting default BundleType to ZIP TODO: Add download bundle option as .tar to
+				 * user preference
 				 */
 				zipServiceConfiguration.setPreferredBundleType(BundleType.ZIP);
 				jargonZipService.setZipServiceConfiguration(zipServiceConfiguration);
@@ -730,7 +738,7 @@ public class CollectionServiceImpl implements CollectionService {
 			logger.error("jargon exception", e);
 			throw new DataGridException(e);
 		}
-		
+
 		return path;
 	}
 

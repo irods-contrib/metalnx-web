@@ -236,6 +236,8 @@ public class IRODSServicesImpl implements IRODSServices {
 	public CollectionAndDataObjectListAndSearchAO getCollectionAndDataObjectListAndSearchAO()
 			throws DataGridConnectionRefusedException {
 
+		logger.info("getCollectionAndDataObjectListAndSearchAO()");
+
 		try {
 
 			// Returning CollectionAndDataObjectListAndSearchAO instance
