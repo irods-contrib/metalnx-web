@@ -151,6 +151,8 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 		this.irodsAccount = IRODSAccount.instance(this.irodsHost, Integer.parseInt(this.irodsPort), username, password,
 				"", this.irodsZoneName, "demoResc");
 		this.irodsAccount.setAuthenticationScheme(AuthScheme.findTypeByString(this.irodsAuthScheme));
+		logger.debug("configured auth scheme:{}", irodsAuthScheme);
+		logger.debug("set irodsAccount auth scheme to :{}", irodsAccount.getAuthenticationScheme());
 		logger.debug("Done.");
 
 		logger.debug(
@@ -167,6 +169,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 
 			// Settings iRODS account
 			this.irodsAccount = authResponse.getAuthenticatingIRODSAccount();
+			logger.debug("authenticating irodsAccount:{}", this.irodsAccount);
 
 			// Retrieving logging user
 			UserAO userAO = this.irodsAccessObjectFactory.getUserAO(this.irodsAccount);
@@ -188,8 +191,10 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 					user.setFirstName("");
 					user.setLastName("");
 					if (irodsUser.getUserType().equals(UserTypeEnum.RODS_ADMIN)) {
+						logger.debug("setting user type admin:{}", irodsUser.getUserType());
 						user.setUserType(UserTypeEnum.RODS_ADMIN.getTextValue());
 					} else {
+						logger.debug("setting user type rodsuser:{}", irodsUser.getUserType());
 						user.setUserType(UserTypeEnum.RODS_USER.getTextValue());
 					}
 					this.userDao.save(user);

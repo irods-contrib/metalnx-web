@@ -236,7 +236,12 @@ public class IRODSServicesImpl implements IRODSServices {
 	public CollectionAndDataObjectListAndSearchAO getCollectionAndDataObjectListAndSearchAO()
 			throws DataGridConnectionRefusedException {
 
+		logger.info("getCollectionAndDataObjectListAndSearchAO()");
+
 		try {
+
+			logger.debug("irodsAccount used:{}", irodsAccount);
+			logger.debug("authScheme:{}", irodsAccount.getAuthenticationScheme());
 
 			// Returning CollectionAndDataObjectListAndSearchAO instance
 			return irodsAccessObjectFactory.getCollectionAndDataObjectListAndSearchAO(irodsAccount);
@@ -244,12 +249,10 @@ public class IRODSServicesImpl implements IRODSServices {
 		} catch (JargonException e) {
 			logger.error("Could not instantiate CollectionAndDataObjectListAndSearchAO: ", e);
 
-			if (e.getCause() instanceof ConnectException) {
-				throw new DataGridConnectionRefusedException(e.getMessage());
-			}
+			throw new DataGridConnectionRefusedException(e.getMessage());
+
 		}
 
-		return null;
 	}
 
 	@Override

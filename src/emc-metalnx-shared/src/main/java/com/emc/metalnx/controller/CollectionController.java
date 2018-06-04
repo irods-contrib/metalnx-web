@@ -154,18 +154,26 @@ public class CollectionController {
 			}
 
 			logger.info("myPath:{}" + myPath);
+			String uiMode = "";
+			DataGridUser loggedUser = null;
+			try {
+				loggedUser = loggedUserUtils.getLoggedDataGridUser();
+				uiMode = (String) request.getSession().getAttribute("uiMode");
+				logger.info("loggedUser:{}", loggedUser);
 
-			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-			String uiMode = (String) request.getSession().getAttribute("uiMode");
+				sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
+				CollectionAndPath collectionAndPath = MiscIRODSUtils
+						.separateCollectionAndPathFromGivenAbsolutePath(myPath);
+				this.parentPath = collectionAndPath.getCollectionParent();
+				this.currentPath = myPath;
 
-			sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
-			CollectionAndPath collectionAndPath = MiscIRODSUtils.separateCollectionAndPathFromGivenAbsolutePath(myPath);
-			this.parentPath = collectionAndPath.getCollectionParent();
-			this.currentPath = myPath;
-
-			if (uiMode == null || uiMode.isEmpty()) {
-				boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
-				uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+				if (uiMode == null || uiMode.isEmpty()) {
+					boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
+					uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+				}
+			} catch (Exception je) {
+				logger.error("exception geting user and user mode info", je);
+				throw je;
 			}
 
 			/*
