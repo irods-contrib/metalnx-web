@@ -24,12 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
 import org.irods.jargon.core.pub.DataTransferOperations;
 import org.irods.jargon.core.pub.IRODSFileSystemAO;
 import org.irods.jargon.core.pub.TrashOperationsAO;
-import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.core.pub.io.IRODSFile;
 import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.core.pub.io.IRODSFileInputStream;
@@ -46,8 +44,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
-import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
@@ -68,9 +64,6 @@ public class FileOperationServiceImpl implements FileOperationService {
 	private IRODSServices irodsServices;
 
 	@Autowired
-	private CollectionService collectionService;
-
-	@Autowired
 	private UserBookmarkService userBookmarkService;
 
 	@Autowired
@@ -84,9 +77,6 @@ public class FileOperationServiceImpl implements FileOperationService {
 
 	@Autowired
 	private RuleService rs;
-
-	@Autowired
-	private ConfigService configService;
 
 	@Override
 	public boolean copy(String sourcePath, String dstPath, boolean copyWithMetadata)
@@ -254,41 +244,19 @@ public class FileOperationServiceImpl implements FileOperationService {
 		if (path == null || path.isEmpty() || response == null) {
 			return false;
 		}
-		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
-				.getCollectionAndDataObjectListAndSearchAO();
-		ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(path);
 
-		logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
-		logger.debug("Collection/object size:{}", Long.toString(objStat.getObjSize() / (1024 * 1024)));
+		logger.debug("Copying file into the HTTP response");
+		isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
 
-		if ((objStat.getObjSize() / (1024 * 1024)) < Long.valueOf(configService.getDownloadLimit())) {
+		// getting the temporary collection name from the path
+		String tempColl = path.substring(0, path.lastIndexOf("/"));
 
-			logger.debug("Copying file into the HTTP response");
-			isDownloadSuccessful = copyFileIntoHttpResponse(path, response);
-		} else {
-			logger.debug("Download file size is over allowed limit!!!");
-		}
-		String fileName = path.substring(path.lastIndexOf("/"), path.length());
-
-		// getting the temporary collection name from the compressed file name,
-		// and removing the ".tar" extension from it
-		String tempColl = collectionService.getHomeDirectyForCurrentUser()
-				+ fileName.substring(0, fileName.length() - 4);
-
-		/*
-		 * String tempTrashColl = getTrashDirectoryForCurrentUser() +
-		 * fileName.substring(0, fileName.length() - 4);
-		 */
-
-		logger.debug("Removing compressed file");
-
-		// removing any temporary collections and tar files created for downloading
+		logger.debug("Removing any temporary collections and compressed files created for downloading");
 		if (removeTempCollection) {
+			logger.debug("Removing temporary dataObj");
 			deleteDataObject(path, removeTempCollection);
 
 			logger.debug("Removing temporary collection");
-
-			// removing temporary collection
 			deleteCollection(tempColl, removeTempCollection);
 		}
 
@@ -438,6 +406,9 @@ public class FileOperationServiceImpl implements FileOperationService {
 			logger.error("Could not put the file in the Http response ", e);
 			isCopySuccessFul = false;
 		} catch (JargonException e) {
+			logger.error("Could not copy file in the Http response: ", e.getMessage());
+			isCopySuccessFul = false;
+		} catch (NullPointerException e) {
 			logger.error("Could not copy file in the Http response: ", e.getMessage());
 			isCopySuccessFul = false;
 		}

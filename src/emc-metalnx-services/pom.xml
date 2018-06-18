@@ -1,21 +1,16 @@
-<!--
-  ~ Copyright (c) 2015-2017, Dell EMC
-  ~
-  ~  Licensed under the Apache License, Version 2.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
-  ~
-  ~  http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
-  -->
+<?xml version="1.0" encoding="UTF-8"?><!-- ~ Copyright (c) 2015-2017, Dell 
+	EMC ~ ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ 
+	you may not use this file except in compliance with the License. ~ You may 
+	obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
+	~ ~ Unless required by applicable law or agreed to in writing, software ~ 
+	distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT 
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ~ See the 
+	License for the specific language governing permissions and ~ limitations 
+	under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
@@ -24,7 +19,7 @@
 	</parent>
 	<artifactId>emc-metalnx-services</artifactId>
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
 			<version>${jargon.version}</version>
@@ -62,6 +57,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-zipservice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-user-tagging</artifactId>
 		</dependency>
 		<dependency>
@@ -95,11 +94,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
 		<plugins>
-		<plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
@@ -108,10 +113,13 @@
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
-								<delete file="${basedir}/src/test/resources/testing.properties" />
-								<touch file="${basedir}/src/test/resources/testing.properties"
+								<delete
+									file="${basedir}/src/test/resources/testing.properties" />
+								<touch
+									file="${basedir}/src/test/resources/testing.properties"
 									mkdirs="true" />
-								<echo file="${basedir}/src/test/resources/testing.properties"
+								<echo
+									file="${basedir}/src/test/resources/testing.properties"
 									append="true">
 									test.data.directory=${jargon.test.data.directory}
 									test.irods.admin=${jargon.test.irods.admin}
@@ -179,10 +187,13 @@
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
-								<delete file="${basedir}/src/test/resources/test.metalnx.properties" />
-								<touch file="${basedir}/src/test/resources/test.metalnx.properties"
+								<delete
+									file="${basedir}/src/test/resources/test.metalnx.properties" />
+								<touch
+									file="${basedir}/src/test/resources/test.metalnx.properties"
 									mkdirs="true" />
-								<echo file="${basedir}/src/test/resources/test.metalnx.properties"
+								<echo
+									file="${basedir}/src/test/resources/test.metalnx.properties"
 									append="true">
 									irods.host=${jargon.test.irods.host}
 									irods.port=${jargon.test.irods.port}
@@ -258,23 +269,31 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-									
-									###################################### later add maven props to tune these
+
+									###################################### later add maven props to
+									tune these
 									# info home page feature flags
-									# this controls the behavior of the data profiler and what information it will gather
+									# this controls the
+									behavior of the data profiler and what information it will
+									gather
 									irodsext.dataprofiler.retrieve.tickets=false
-									# process starred or favorites
+									# process
+									starred or favorites
 									irodsext.dataprofiler.retrieve.starred=true
 									# process shared
 									irodsext.dataprofiler.retrieve.shared=false
 									# tags and comments
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
-									# metadata templates (currently not implemented)
+									#
+									metadata templates (currently not implemented)
 									irodsext.dataprofiler.retrieve.metadata.templates=false
 
-									# save data type information for later use
+									# save
+									data type information for later use
 									irodsext.datatyper.persist.data.types=false
-									# perform a detailed versus a lightweight data typing, which may involve processing the file contents
+									# perform a detailed
+									versus a lightweight data typing, which may involve processing
+									the file contents
 									irodsext.datatyper.detailed.determination=false
 
 								</echo>

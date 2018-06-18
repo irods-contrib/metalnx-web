@@ -69,6 +69,7 @@ public class HttpErrorController {
 	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
 		logger.error("500 - Internal Server Error");
 		logger.info("httpRequest:{}", httpRequest);
+		logger.info("model:{}", model);
 
 		return "httpErrors/500";
 	}

@@ -140,6 +140,10 @@ Enhance ability to browse down from root as non-admin user using heuristics and 
 While still somewhat transitional (still some inconsistancies in how URLs and javascript methods operate) this generally improves support
 for files with embedded spaces and special characters. NIES #134
 
+#### Add configurable download limit niehs #173
+
+Add a global configuration setting for a download limit on files for both single file and bundle downloads to metalnx.properties
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

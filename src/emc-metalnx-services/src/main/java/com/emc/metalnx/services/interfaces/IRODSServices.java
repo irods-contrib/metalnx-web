@@ -38,6 +38,7 @@ import org.irods.jargon.core.pub.io.IRODSFileFactory;
 import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
 import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.ticket.TicketAdminService;
+import org.irods.jargon.zipservice.api.JargonZipService;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 
@@ -244,10 +245,19 @@ public interface IRODSServices {
 
 	/**
 	 * Return an instance of the autocomplete service from Jargon
+	 * 
 	 * @return {@link AvuAutocompleteService}
 	 * @throws JargonException
 	 */
 	AvuAutocompleteService getAvuAutocompleteService() throws JargonException;
-	
-	
+
+	/**
+	 * Return an instance of the JargonZipService that handles bundles
+	 * 
+	 * @return {@link JargonZipService}
+	 * @throws JargonException
+	 *             {@link JargonException}
+	 */
+	JargonZipService getJargonZipService() throws JargonException;
+
 }

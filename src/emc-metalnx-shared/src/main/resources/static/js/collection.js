@@ -163,11 +163,17 @@ function editInfo(path){
 
 }
 
-function handleDownload() {
-	
-	window.location.href = "/emc-metalnx-web/fileOperation/download/";
-	$("#breadcrumDownloadBtn").removeAttr("disabled");
-	$("#actionsWait").hide();
+function handleDownload(data) {
+	console.log("collection.js :: success call :: handleDownload()")
+	if (data.downloadLimitStatus == "ok"){   
+		window.location.href = "/emc-metalnx-web/fileOperation/download/";
+		$("#breadcrumDownloadBtn").removeAttr("disabled");
+		$("#actionsWait").hide();
+	}
+	else {
+		toastr.warning("Download limit has been exceeded over 100MBs");
+		$("#actionsWait").hide();
+	}
 }
 
 function setOperationInProgress() {

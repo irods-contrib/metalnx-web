@@ -78,7 +78,8 @@ $(document).ready(function(){
 
 function getAttributeValues(attributeName,id){
 
-	var listId = $("#"+id).closest("div.metadataSearchRow").find("datalist").attr("id");	
+	var listId = $("#"+id).closest("div.metadataSearchRow").find("datalist").attr("id");
+	$("#"+listId).find('option').remove();
 	$.ajax({  	
 		dataType: "json",
 		type : 'Get',            

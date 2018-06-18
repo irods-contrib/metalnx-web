@@ -19,7 +19,6 @@ package com.emc.metalnx.services.irods;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +32,8 @@ import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.packinstr.StructFileExtAndRegInp.BundleType;
 import org.irods.jargon.core.protovalues.FilePermissionEnum;
-import org.irods.jargon.core.pub.BulkFileOperationsAO;
 import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.DataObjectAO;
@@ -56,6 +55,8 @@ import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
+import org.irods.jargon.zipservice.api.JargonZipService;
+import org.irods.jargon.zipservice.api.ZipServiceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,9 +74,10 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridQueryException;
-import com.emc.metalnx.core.domain.exceptions.UnsupportedDataGridFeatureException;
+import com.emc.metalnx.core.domain.exceptions.FileSizeTooLargeException;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
@@ -101,19 +103,21 @@ public class CollectionServiceImpl implements CollectionService {
 	private SpecificQueryProviderFactory specificQueryProviderFactory = new SpecificQueryProviderFactoryImpl();
 
 	@Autowired
-	AdminServices adminServices;
+	private AdminServices adminServices;
 	@Autowired
-	IRODSServices irodsServices;
+	private IRODSServices irodsServices;
 	@Autowired
-	ResourceService resourceService;
+	private ResourceService resourceService;
 	@Autowired
-	PermissionsService permissionsService;
+	private PermissionsService permissionsService;
 	@Autowired
-	FileOperationService fileOperationService;
+	private FileOperationService fileOperationService;
 	@Autowired
-	IconService iconService;
+	private IconService iconService;
 	@Autowired
-	DataProfilerFactory dataProfilerFactory;
+	private DataProfilerFactory dataProfilerFactory;
+	@Autowired
+	private ConfigService configService;
 
 	@Override
 	public boolean isFileInCollection(String filename, String collectionPath)
@@ -143,7 +147,7 @@ public class CollectionServiceImpl implements CollectionService {
 			isValid = true;
 		} catch (FileNotFoundException fnf) {
 			logger.warn("path not valid:{}", fnf);
-		} catch (DataGridConnectionRefusedException | JargonException e1) {
+		} catch (JargonException e1) {
 			logger.error("error obtaining objStat for path:{}", path, e1);
 			throw e1;
 		}
@@ -158,8 +162,16 @@ public class CollectionServiceImpl implements CollectionService {
 		if (path == null || path.isEmpty())
 			return false;
 
-		ObjStat objStat = irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
-		return objStat.isSomeTypeOfCollection();
+		logger.info("getting objStat");
+
+		try {
+			ObjStat objStat = irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
+			logger.debug("objStat:{}", objStat);
+			return objStat.isSomeTypeOfCollection();
+		} catch (JargonException je) {
+			logger.error("error getting objStat", je);
+			throw je;
+		}
 
 	}
 
@@ -683,54 +695,48 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	@Override
-	public String prepareFilesForDownload(List<String> sourcePaths)
-			throws IOException, DataGridException, JargonException {
+	public String prepareFilesForDownload(List<String> sourcePaths) throws IOException, JargonException {
 		logger.info("prepareFilesForDownload()");
-
 		logger.info("Preparing files for download");
+
 		if (sourcePaths == null || sourcePaths.isEmpty()) {
 			return "";
 		}
 
-		Date currentDate = new Date();
-		String tempCollectionName = "mlx_download_" + System.currentTimeMillis();
-		String tempCollectionPath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName;
-		String filePathToBeBundled = tempCollectionPath;
-		String compressedFilePath = getHomeDirectyForCurrentUser() + IRODS_PATH_SEPARATOR + tempCollectionName + ".tar";
 		String path = "";
+		long bunLength;
 
-		// if a single file was selected, it will be transferred directly
-		// through the HTTP response
-		if (sourcePaths.size() == 1 && isDataObject(sourcePaths.get(0))) {
-			path = sourcePaths.get(0);
-		}
-		// if two or more files will be downloaded, then a compressed file needs
-		// to be created in order to place all these files
-		else {
-			// creating temporary collection for download
-			DataGridCollectionAndDataObject tempCollection = new DataGridCollectionAndDataObject(tempCollectionPath,
-					getHomeDirectyForCurrentUser(), true);
+		JargonZipService jargonZipService = irodsServices.getJargonZipService();
+		ZipServiceConfiguration zipServiceConfiguration = new ZipServiceConfiguration();
 
-			tempCollection.setCreatedAt(currentDate);
-			tempCollection.setModifiedAt(currentDate);
-			tempCollection.setInheritanceOption(false);
+		logger.info("evaluating projected size of the bundle first!");
+		try {
 
-			logger.debug("Creating temporary collection for download");
+			bunLength = jargonZipService.computeBundleSizeInBytes(sourcePaths);
+			/*
+			 * Download limit is in MB, bunLenght is in bytes
+			 */
+			logger.info("bunLength :{}", bunLength);
+			if (bunLength > configService.getDownloadLimit() * 1024 * 1024) {
+				throw new FileSizeTooLargeException("file size too large for bundle creation");
+			} else {
+				/*
+				 * Setting default BundleType to ZIP TODO: Add download bundle option as .tar to
+				 * user preference
+				 */
+				zipServiceConfiguration.setPreferredBundleType(BundleType.ZIP);
+				jargonZipService.setZipServiceConfiguration(zipServiceConfiguration);
 
-			boolean isTempCollectionCreated = createCollection(tempCollection);
-
-			if (isTempCollectionCreated && !sourcePaths.isEmpty()) {
-				logger.info("Copying files to be downloaded to the temporary collection");
-
-				// copying all files and collections to be downloaded to the temporary
-				// collection
-				fileOperationService.copy(sourcePaths, tempCollectionPath, false);
-
-				// creating the compressed file (tar) into the temporary collection
-				logger.info("Compressing temporary collection");
-				compressTempFolderIntoDataGrid(filePathToBeBundled, compressedFilePath, "");
-				path = compressedFilePath;
+				if (!sourcePaths.isEmpty()) {
+					logger.info("Copying files to be downloaded to the temporary collection");
+					IRODSFile zippedFile = jargonZipService.obtainBundleAsIrodsFileGivenPaths(sourcePaths);
+					path = zippedFile.getPath();
+					logger.info("Zipped collection path: {}", path);
+				}
 			}
+		} catch (JargonException e) {
+			logger.error("jargon exception", e);
+			throw new DataGridException(e);
 		}
 
 		return path;
@@ -883,25 +889,25 @@ public class CollectionServiceImpl implements CollectionService {
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
 	 */
-	private boolean compressTempFolderIntoDataGrid(String filePathToBeBundled, String bundleFilePathTobeCreated,
-			String resource) throws DataGridConnectionRefusedException {
-
-		logger.info("compressTempFolderIntoDataGrid()");
-
-		boolean isZipFileCreatedSuccessfully = false;
-		BulkFileOperationsAO bulkFileOperationsAO = null;
-
-		try {
-			bulkFileOperationsAO = irodsServices.getBulkFileOperationsAO();
-			bulkFileOperationsAO.createABundleFromIrodsFilesAndStoreInIrodsWithForceOption(bundleFilePathTobeCreated,
-					filePathToBeBundled, resource);
-			isZipFileCreatedSuccessfully = true;
-		} catch (JargonException e) {
-			logger.error("Could not compress temporary folder: {}", e.getMessage());
-		}
-
-		return isZipFileCreatedSuccessfully;
-	}
+	/*
+	 * private boolean compressTempFolderIntoDataGrid(String filePathToBeBundled,
+	 * String bundleFilePathTobeCreated, String resource) throws
+	 * DataGridConnectionRefusedException {
+	 * 
+	 * logger.info("compressTempFolderIntoDataGrid()");
+	 * 
+	 * boolean isZipFileCreatedSuccessfully = false; BulkFileOperationsAO
+	 * bulkFileOperationsAO = null;
+	 * 
+	 * try { bulkFileOperationsAO = irodsServices.getBulkFileOperationsAO();
+	 * bulkFileOperationsAO.
+	 * createABundleFromIrodsFilesAndStoreInIrodsWithForceOption(
+	 * bundleFilePathTobeCreated, filePathToBeBundled, resource);
+	 * isZipFileCreatedSuccessfully = true; } catch (JargonException e) {
+	 * logger.error("Could not compress temporary folder: {}", e.getMessage()); }
+	 * 
+	 * return isZipFileCreatedSuccessfully; }
+	 */
 
 	/**
 	 * Lists all collections under the given path that match a search term. Any
@@ -978,7 +984,7 @@ public class CollectionServiceImpl implements CollectionService {
 			// Mapping spec query results to DataGrid* objects
 			itemsListingEntries = DataGridUtils.mapCollectionQueryResultSetToDataGridObjects(queryResultSet);
 			dataGridItemsList = DataGridUtils.mapListingEntryToDataGridCollectionAndDataObject(itemsListingEntries);
-		} catch (JargonException | JargonQueryException | UnsupportedDataGridFeatureException e) {
+		} catch (JargonException | JargonQueryException e) {
 			logger.error("Could not execute specific query to find collections matching a search text. ", e);
 		} finally {
 			try {
@@ -1063,7 +1069,7 @@ public class CollectionServiceImpl implements CollectionService {
 			dataGridList = DataGridUtils.mapQueryResultSetToDataGridObjectsForSearch(queryResultSet);
 			dataGridCollectionAndDataObjects
 					.addAll(DataGridUtils.mapListingEntryToDataGridCollectionAndDataObject(dataGridList));
-		} catch (JargonException | UnsupportedDataGridFeatureException e) {
+		} catch (JargonException e) {
 			logger.error("Could not execute specific query for listing data objects that match a search text", e);
 		} finally {
 			try {
@@ -1134,7 +1140,7 @@ public class CollectionServiceImpl implements CollectionService {
 			SpecificQueryResultSet queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery,
 					MAX_RESULTS_PER_PAGE, 0);
 			totalNumberOfItems = DataGridUtils.mapCountQueryResultSetToInteger(queryResultSet);
-		} catch (JargonException | JargonQueryException | UnsupportedDataGridFeatureException e) {
+		} catch (JargonException | JargonQueryException e) {
 			logger.error("Could not execute specific query to find collections matching a search text. ", e);
 		} finally {
 			try {
@@ -1200,7 +1206,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 			// Mapping spec query results to DataGrid* objects
 			totalNumberOfItems = DataGridUtils.mapCountQueryResultSetToInteger(queryResultSet);
-		} catch (JargonException | UnsupportedDataGridFeatureException e) {
+		} catch (JargonException e) {
 			logger.error(
 					"Could not execute specific query to get the total number of data objects matching a search text.",
 					e);
@@ -1410,8 +1416,8 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
-		
-		logger.info("*****************path **************" +path);
+
+		logger.info("*****************path **************" + path);
 		logger.debug("got irodsAccount:{}", irodsAccount);
 
 		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);
@@ -1437,6 +1443,38 @@ public class CollectionServiceImpl implements CollectionService {
 			throw new DataGridException(e.getMessage());
 		}
 
+	}
+
+	public SpecificQueryProviderFactory getSpecificQueryProviderFactory() {
+		return specificQueryProviderFactory;
+	}
+
+	public void setSpecificQueryProviderFactory(SpecificQueryProviderFactory specificQueryProviderFactory) {
+		this.specificQueryProviderFactory = specificQueryProviderFactory;
+	}
+
+	public IconService getIconService() {
+		return iconService;
+	}
+
+	public void setIconService(IconService iconService) {
+		this.iconService = iconService;
+	}
+
+	public DataProfilerFactory getDataProfilerFactory() {
+		return dataProfilerFactory;
+	}
+
+	public void setDataProfilerFactory(DataProfilerFactory dataProfilerFactory) {
+		this.dataProfilerFactory = dataProfilerFactory;
+	}
+
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 }

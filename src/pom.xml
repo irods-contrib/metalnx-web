@@ -55,7 +55,7 @@
 
 		<!-- Files Upload -->
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.5</commons-io.version>
 
 		<!-- Cargo container -->
 		<cargo.version>1.4.11</cargo.version>
@@ -148,6 +148,11 @@
 			<dependency>
 				<groupId>org.irods.jargon</groupId>
 				<artifactId>jargon-ruleservice</artifactId>
+				<version>${jargon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.irods.jargon</groupId>
+				<artifactId>jargon-zipservice</artifactId>
 				<version>${jargon.version}</version>
 			</dependency>
 			<dependency>
