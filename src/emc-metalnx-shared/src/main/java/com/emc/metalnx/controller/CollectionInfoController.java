@@ -77,26 +77,46 @@ public class CollectionInfoController {
 		String mimeType = "";
 		String template = "";
 
-		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
+		boolean access = accessCheck(myPath);
 		
-		if (dataProfile != null && dataProfile.isFile()) {
-			mimeType = dataProfile.getDataType().getMimeType();
+		if(access) {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
+			
+			if (dataProfile != null && dataProfile.isFile()) {
+				mimeType = dataProfile.getDataType().getMimeType();
+			}
+			icon = collectionService.getIcon(mimeType);
+
+			model.addAttribute("icon", icon);
+			model.addAttribute("dataProfile", dataProfile);
+			model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
+
+			if (!dataProfile.isFile())
+				template = "collections/collectionInfo";
+			if (dataProfile.isFile())
+				template = "collections/fileInfo";
+		}else {
+			
+			//no proxy then return "noaccess template" if proxy allowed then return read only metadata and request for access"
+			template = "collections/noAccessCollectionInfo";
 		}
-		icon = collectionService.getIcon(mimeType);
-
-		model.addAttribute("icon", icon);
-		model.addAttribute("dataProfile", dataProfile);
-		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-
-		if (!dataProfile.isFile())
-			template = "collections/collectionInfo";
-		if (dataProfile.isFile())
-			template = "collections/fileInfo";
+		
+		
 		return template;
 
 	}
-
+	
+	public boolean accessCheck(String path) {
+		logger.info("Collection with out having any access.");
+		return false;
+	}
+	
+	/*@RequestMapping(value = "/noAccessCollectionInfo", method = RequestMethod.GET)
+	public String noAccessCollectionInfo(final Model model, @RequestParam("path") final String path) {
+		logger.info("Collection with out having any access.");
+		return "collections/noAccessCollectionInfo";
+	}*/
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
