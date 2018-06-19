@@ -16,6 +16,7 @@
 
 package com.emc.metalnx.services.interfaces;
 
+import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.BulkFileOperationsAO;
 import org.irods.jargon.core.pub.CollectionAO;
@@ -41,6 +42,7 @@ import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.zipservice.api.JargonZipService;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 
 /**
  * Service that allows the user to get an instance of each iRODS AO by session.
@@ -259,5 +261,14 @@ public interface IRODSServices {
 	 *             {@link JargonException}
 	 */
 	JargonZipService getJargonZipService() throws JargonException;
+
+	/**
+	 * Return an iRODS admin account
+	 * 
+	 * @return {@link IRODSAccount} for the configured iRODS admin
+	 * @throws JargonException
+	 *             {@link JargonException}
+	 */
+	IRODSAccount getIrodsAdminAccount() throws DataGridException;
 
 }

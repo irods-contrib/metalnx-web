@@ -43,6 +43,7 @@ import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService;
 import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteServiceImpl;
 import org.irods.jargon.datautils.filesampler.FileSamplerService;
 import org.irods.jargon.datautils.filesampler.FileSamplerServiceImpl;
+import org.irods.jargon.midtier.utils.configuration.MidTierConfiguration;
 import org.irods.jargon.ticket.TicketAdminService;
 import org.irods.jargon.ticket.TicketServiceFactory;
 import org.irods.jargon.ticket.TicketServiceFactoryImpl;
@@ -60,6 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 
@@ -70,6 +72,9 @@ public class IRODSServicesImpl implements IRODSServices {
 
 	@Autowired
 	IRODSAccessObjectFactory irodsAccessObjectFactory;
+
+	@Autowired
+	MidTierConfiguration midTierConfiguration;
 
 	private UserTokenDetails userTokenDetails;
 	private IRODSAccount irodsAccount;
@@ -93,6 +98,20 @@ public class IRODSServicesImpl implements IRODSServices {
 
 	public IRODSServicesImpl(IRODSAccount acct) {
 		this.irodsAccount = acct;
+	}
+
+	@Override
+	public IRODSAccount getIrodsAdminAccount() throws DataGridException {
+		logger.info("getIrodsAdminAccount()");
+		try {
+			return IRODSAccount.instance(midTierConfiguration.getIrodsAdminAccountHost(),
+					midTierConfiguration.getIrodsAdminAccountPort(), midTierConfiguration.getIrodsAdminAccountUser(),
+					midTierConfiguration.getIrodsAdminAccountPassword(), "",
+					midTierConfiguration.getIrodsAdminAccountZone(), "");
+		} catch (JargonException e) {
+			logger.error("unable to build iRODS account for proxy admin", e);
+			throw new DataGridException(e);
+		}
 	}
 
 	@Override
