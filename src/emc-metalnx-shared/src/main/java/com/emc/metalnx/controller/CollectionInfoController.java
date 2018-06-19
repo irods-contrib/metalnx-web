@@ -12,6 +12,7 @@ import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +56,9 @@ public class CollectionInfoController {
 
 	@Autowired
 	DataProfilerSettings dataProfilerSettings;
+	
+	@Value("${access.proxy}")
+	private boolean proxy;
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 
@@ -97,9 +101,18 @@ public class CollectionInfoController {
 			if (dataProfile.isFile())
 				template = "collections/fileInfo";
 		}else {
-			
+			logger.info("Does not have access on this page !!");
 			//no proxy then return "noaccess template" if proxy allowed then return read only metadata and request for access"
-			template = "collections/noAccessCollectionInfo";
+			logger.info("proxy for no access:{}", proxy);
+			if(proxy) {		
+				//get data profile object here
+				template = "collections/noAccessCollectionInfo";
+				logger.info("returning to :{}", template);
+			}else {
+				template = "httpErrors/noAccess";
+				logger.info("returning to :{}", template);
+			}
+			
 		}
 		
 		
