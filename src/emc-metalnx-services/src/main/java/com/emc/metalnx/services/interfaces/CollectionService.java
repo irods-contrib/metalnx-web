@@ -356,8 +356,8 @@ public interface CollectionService {
 	 *             {@link IOException}
 	 * @throws DataGridException
 	 *             {@link DataGridException}
-	 * @throws ZipServiceException 
-	 * @throws JargonException 
+	 * @throws ZipServiceException
+	 * @throws JargonException
 	 * 
 	 */
 	String prepareFilesForDownload(List<String> sourcePaths)
@@ -437,12 +437,44 @@ public interface CollectionService {
 	 * Get trash path related to the current path
 	 * 
 	 * @param path
-	 * @return correspondent trash for given path
+	 *            {@code String} with the iRODS path
+	 * @return corresponding trash for given path
 	 */
 	String getTrashForPath(String path);
 
 	IconObject getIcon(String mimeType);
 
+	/**
+	 * Retrieve a data profile for the path
+	 * 
+	 * @param path
+	 *            {@code String} with the path
+	 * @return {@link DataProfile}
+	 * @throws DataGridException
+	 *             {@link DataGridException}
+	 */
 	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException;
+
+	/**
+	 * Retrieve a data profile for the path
+	 * 
+	 * @param path
+	 *            {@code String} with the path
+	 * @return {@link DataProfile}
+	 * @throws DataGridException
+	 *             {@link DataGridException}
+	 */
+	DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws DataGridException;
+
+	/**
+	 * Handy method probes user access to a path
+	 * 
+	 * @param path
+	 *            {@code String} with the path to check access on
+	 * @return {@code boolean} of {@code true} if the user has access
+	 * @throws DataGridException
+	 *             {@link DataGridException}
+	 */
+	boolean canUserAccessThisPath(String path) throws DataGridException;
 
 }

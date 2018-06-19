@@ -55,6 +55,7 @@ import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
+import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
 import org.irods.jargon.zipservice.api.JargonZipService;
 import org.irods.jargon.zipservice.api.ZipServiceConfiguration;
 import org.slf4j.Logger;
@@ -249,6 +250,26 @@ public class CollectionServiceImpl implements CollectionService {
 			throw new DataGridQueryException(e.getMessage());
 		}
 		return dataGridCollectionAndDataObjects;
+	}
+
+	@Override
+	public boolean canUserAccessThisPath(String path) throws DataGridException {
+		logger.info("canUserAccessThisPath()");
+		if (path == null || path.isEmpty()) {
+			throw new IllegalArgumentException("null or empty path");
+		}
+		logger.info("path:{}", path);
+		CollectionAndDataObjectListAndSearchAO lister = irodsServices.getCollectionAndDataObjectListAndSearchAO();
+		try {
+			lister.retrieveObjectStatForPath(path);
+			return true;
+		} catch (FileNotFoundException fnf) {
+			logger.warn("no access to file");
+			return false;
+		} catch (JargonException e) {
+			logger.error("exception obtaining objStat", e);
+			throw new DataGridException(e);
+		}
 	}
 
 	@Override
@@ -1417,27 +1438,56 @@ public class CollectionServiceImpl implements CollectionService {
 	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
 
-		logger.info("*****************path **************" + path);
-		logger.debug("got irodsAccount:{}", irodsAccount);
+		logger.info("path:{}", path);
+		logger.debug("irodsAccount:{}", irodsAccount);
 
 		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount);
 
-		logger.debug("got the dataProfilerService");
-
-		// DataProfilerSettings dataProfilerSettings = new DataProfilerSettings(); //
-		// TODO: allow clone()
 		try {
 			@SuppressWarnings("rawtypes")
 			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
 			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
 			logger.info("data profile retrieved:{}", dataProfile);
-
-			/*
-			 * TODO: after this do an if test and send to right view with the DataProfile in
-			 * the model
-			 */
 			return dataProfile;
 
+		} catch (JargonException e) {
+			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
+			throw new DataGridException(e.getMessage());
+		}
+
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws DataGridException {
+
+		logger.info("getCollectionDataProfileAsProxyAdmin()");
+		IRODSAccount irodsAccount = irodsServices.getIrodsAdminAccount();
+
+		if (path == null) {
+			throw new IllegalArgumentException("null path");
+		}
+
+		logger.info("path:{}", path);
+
+		DataProfilerSettings dataProfilerSettings = new DataProfilerSettings();
+		dataProfilerSettings.setDetectMimeAndInfoType(false);
+		dataProfilerSettings.setRetrieveAcls(false);
+		dataProfilerSettings.setRetrieveMetadata(true);
+		dataProfilerSettings.setRetrieveReplicas(false);
+		dataProfilerSettings.setRetrieveShared(false);
+		dataProfilerSettings.setRetrieveStarred(false);
+		dataProfilerSettings.setRetrieveTickets(false);
+
+		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount,
+				dataProfilerSettings);
+
+		try {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
+			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
+			logger.info("data profile retrieved:{}", dataProfile);
+			return dataProfile;
 		} catch (JargonException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
 			throw new DataGridException(e.getMessage());
