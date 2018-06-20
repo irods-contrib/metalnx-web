@@ -65,7 +65,7 @@ public class HttpErrorController {
 	 * @param model
 	 * @return the error 500 custom page
 	 */
-	@RequestMapping(value = "/501")
+	@RequestMapping(value = "/500")
 	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
 		logger.error("500 - Internal Server Error");
 		logger.info("httpRequest:{}", httpRequest);

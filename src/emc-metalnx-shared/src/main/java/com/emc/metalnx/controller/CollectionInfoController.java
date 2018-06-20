@@ -2,10 +2,14 @@ package com.emc.metalnx.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tika.metadata.Metadata;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.domain.IRODSDomainObject;
+import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -56,7 +61,7 @@ public class CollectionInfoController {
 
 	@Autowired
 	DataProfilerSettings dataProfilerSettings;
-	
+
 	@Value("${access.proxy}")
 	private boolean proxy;
 
@@ -81,12 +86,41 @@ public class CollectionInfoController {
 		String mimeType = "";
 		String template = "";
 
-		boolean access = accessCheck(myPath);
-		
-		if(access) {
-			@SuppressWarnings("rawtypes")
-			DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
+
+		if(!proxy) {
+			template = "httpErrors/noAccess";
+			logger.info("returning to :{}", template);
+		}else {
 			
+			boolean access = accessCheck(myPath);
+			logger.info("Has Access :: {}" ,access);		
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = null;
+			if(access){	
+
+				dataProfile = collectionService.getCollectionDataProfile(myPath);
+				if (!dataProfile.isFile())
+					template = "collections/collectionInfo";
+				if (dataProfile.isFile())
+					template = "collections/fileInfo";
+
+			}else {
+				logger.info("collection/file read only view");
+				dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
+				template = "collections/readOnlyCollectionInfo";
+				
+				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
+				model.addAttribute("dataGridMetadataList", metadataList);
+				logger.info("List Size :: {}" ,metadataList.size());
+				
+				for(MetaDataAndDomainData md : metadataList) {
+					logger.info("Attribute :: {}" , md.getAvuAttribute());
+					logger.info("Unit :: {}" , md.getAvuUnit());
+					logger.info("Value :: {}" , md.getAvuValue());
+				}
+				
+			}
+
 			if (dataProfile != null && dataProfile.isFile()) {
 				mimeType = dataProfile.getDataType().getMimeType();
 			}
@@ -96,40 +130,21 @@ public class CollectionInfoController {
 			model.addAttribute("dataProfile", dataProfile);
 			model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
 
-			if (!dataProfile.isFile())
-				template = "collections/collectionInfo";
-			if (dataProfile.isFile())
-				template = "collections/fileInfo";
-		}else {
-			logger.info("Does not have access on this page !!");
-			//no proxy then return "noaccess template" if proxy allowed then return read only metadata and request for access"
-			logger.info("proxy for no access:{}", proxy);
-			if(proxy) {		
-				//get data profile object here
-				template = "collections/noAccessCollectionInfo";
-				logger.info("returning to :{}", template);
-			}else {
-				template = "httpErrors/noAccess";
-				logger.info("returning to :{}", template);
-			}
-			
+			logger.info("returning to :{}", template);
+
 		}
-		
-		
+
+
 		return template;
 
 	}
-	
-	public boolean accessCheck(String path) {
+
+	public boolean accessCheck(String path) throws DataGridException {
+		boolean access = collectionService.canUserAccessThisPath(path);
 		logger.info("Collection with out having any access.");
-		return false;
+		return access;
 	}
-	
-	/*@RequestMapping(value = "/noAccessCollectionInfo", method = RequestMethod.GET)
-	public String noAccessCollectionInfo(final Model model, @RequestParam("path") final String path) {
-		logger.info("Collection with out having any access.");
-		return "collections/noAccessCollectionInfo";
-	}*/
+
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
@@ -142,7 +157,7 @@ public class CollectionInfoController {
 		String myPath = URLDecoder.decode(path);
 
 		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
-		
+
 		if (dataProfile != null && dataProfile.isFile()) {
 			mimeType = dataProfile.getDataType().getMimeType();
 		}
@@ -150,7 +165,7 @@ public class CollectionInfoController {
 
 		model.addAttribute("icon", icon);
 		model.addAttribute("dataProfile", dataProfile);
-		
+
 		logger.info("getCollectionFileInfo() ends !!");
 		return "collections/details :: detailsView";
 	}
@@ -192,4 +207,15 @@ public class CollectionInfoController {
 	public void setDataProfilerSettings(DataProfilerSettings dataProfilerSettings) {
 		this.dataProfilerSettings = dataProfilerSettings;
 	}
+	
+	@RequestMapping(value = "/accessRequest/", method = RequestMethod.POST)
+	public String sendAccessRequest(final Model model, @RequestParam("path") final String path)
+			throws DataGridException {
+		logger.info("requesting access : {}", path);
+		String template;
+		//template = "collections/emailFailure"
+		template = "collections/emailSuccess";
+		return template;
+	}
+	
 }

@@ -13,6 +13,7 @@ function displayCollectionSummary(data){
 }
 
 function getInfoDetails(path){
+	alert("getInfoDetails()");
 	console.log("getInfoDetails()");
 	//window.location.hash = "info";
 	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
@@ -182,4 +183,13 @@ function setOperationInProgress() {
 
 function unsetOperationInProgress() {
 	operationInProgress = false;
+}
+function accessRequest(path){
+	console.log("path :: " + path)
+	var url = "/emc-metalnx-web/collectionInfo/accessRequest/";
+	ajaxEncapsulation(url, "POST", {path: path}, emailConfirmation, null, null, null);
+}
+
+function emailConfirmation(data){
+	console.login("Email has been sent!!");
 }

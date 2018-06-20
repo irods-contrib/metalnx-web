@@ -74,7 +74,7 @@
 
 
 			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
-			<ol class="breadcrumb">
+				<ol class="breadcrumb">
 					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
 							class="fa fa-home fa-color"></i></a></li>
 					<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
@@ -234,7 +234,8 @@
 			<div class="modal-content">
 				<div class="modal-body text-cente">
 					<strong>Success!</strong> The file was successfully deleted.<a
-						href="/emc-metalnx-web/browse/home"> Go Back to Collection Home.</a>
+						href="/emc-metalnx-web/browse/home"> Go Back to Collection
+						Home.</a>
 				</div>
 
 			</div>
@@ -326,11 +327,90 @@
 	</script>
 </th:block>
 
-<th:block th:fragment="noAccessSummaryView">
+<th:block th:fragment="readOnlySummaryView">
 
-	<div>
-		<h1>This is no access summary view</h1>
+	<div id="summary" class="container-fluid">
+
+		<div class="row nopadding">
+			<div class="col-sm-12 col-md-12 col-xs-12 text-left">
+				<h4 class="errorMsg">You do not have access on this page.To view the full page please request an access.</h4>
+				<button class="btn btn-primary btn-sm pull-right" type="button"
+				th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'" title="Access Request">Access Request</button>
+			</div>
+		</div>
+		<div class="row nopadding">
+
+			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
+				<ol class="breadcrumb">
+					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+							class="fa fa-home fa-color"></i></a></li>
+					<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+							<li><a href="#"
+								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+								th:text="${breadcrumbItem.name}"
+								th:title="${breadcrumbItem.path}"
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+							</a></li>
+						</th:block>
+						<th:block
+							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
+						</th:block>
+
+					</th:block>
+				</ol>
+
+
+				<div class="collection-title">
+					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
+				</div>
+			</div>
+
+			<div id="container"
+				th:attr="data-msg-txt=#{collections.management.progress.label.download}"></div>
+
+			<div id="actionsWait" class="col-xs-12 hideElement">
+				<div id="panelWait">
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped active"
+							role="progressbar" aria-valuenow="100" aria-valuemin="0"
+							aria-valuemax="100" style="width: 100%">
+							<span id="actionLabel"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="row box box-default">
+			<div class="col-sm-6 col-md-3 col-xs-12 text-left">
+				<div class="mime-icon">
+					<a href="#" class="fas-icon"><i
+						th:class="${ icon.getMimeIcon() }"></i></a>
+				</div>
+				<div class="mime-info">
+					<div class="mime-desc">
+
+						<i><span class="mime-object"
+							th:text="${ dataProfile.dataType.mimeType }"></span></i>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
 	</div>
+
+
+
+
 
 </th:block>
 
