@@ -6,9 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tika.metadata.Metadata;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.pub.domain.IRODSDomainObject;
 import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
@@ -17,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.mail.MailException;
+//import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
@@ -31,18 +27,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.IconObject;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.service.mail.config.ApplicationConfig;
-import com.service.mail.entity.Mail;
-import com.service.mail.services.MailService;
+//import com.service.mail.config.ApplicationConfig;
+//import com.service.mail.entity.Mail;
+//import com.service.mail.services.MailService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -75,7 +69,7 @@ public class CollectionInfoController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(final Model model, HttpServletRequest request, @RequestParam("path") final String path)
-			throws DataGridException, DataGridConnectionRefusedException, JargonException {
+			throws DataGridException, JargonException {
 
 		logger.info("index()");
 		if (path == null || path.isEmpty()) {
@@ -92,54 +86,51 @@ public class CollectionInfoController {
 		String mimeType = "";
 		String template = "";
 
+		boolean access = accessCheck(myPath);
+		logger.info("Has Access :: {}", access);
+		@SuppressWarnings("rawtypes")
+		DataProfile dataProfile = null;
+		if (access) {
 
-		if(!proxy) {
-			template = "httpErrors/noAccess";
-			logger.info("returning to :{}", template);
-		}else {
-			
-			boolean access = accessCheck(myPath);
-			logger.info("Has Access :: {}" ,access);		
-			@SuppressWarnings("rawtypes")
-			DataProfile dataProfile = null;
-			if(access){	
+			dataProfile = collectionService.getCollectionDataProfile(myPath);
+			if (!dataProfile.isFile())
+				template = "collections/collectionInfo";
+			if (dataProfile.isFile())
+				template = "collections/fileInfo";
 
-				dataProfile = collectionService.getCollectionDataProfile(myPath);
-				if (!dataProfile.isFile())
-					template = "collections/collectionInfo";
-				if (dataProfile.isFile())
-					template = "collections/fileInfo";
+		} else {
 
-			}else {
+			if (!proxy) {
+				template = "httpErrors/noAccess";
+				logger.info("returning to :{}", template);
+				return template;
+			} else {
 				logger.info("collection/file read only view");
 				dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
 				template = "collections/readOnlyCollectionInfo";
-				
+
 				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
 				model.addAttribute("dataGridMetadataList", metadataList);
-				logger.info("List Size :: {}" ,metadataList.size());
-				
-				for(MetaDataAndDomainData md : metadataList) {
-					logger.info("Attribute :: {}" , md.getAvuAttribute());
-					logger.info("Unit :: {}" , md.getAvuUnit());
-					logger.info("Value :: {}" , md.getAvuValue());
+
+				for (MetaDataAndDomainData md : metadataList) {
+					logger.debug("Attribute :: {}", md.getAvuAttribute());
+					logger.debug("Unit :: {}", md.getAvuUnit());
+					logger.debug("Value :: {}", md.getAvuValue());
 				}
-				
 			}
-
-			if (dataProfile != null && dataProfile.isFile()) {
-				mimeType = dataProfile.getDataType().getMimeType();
-			}
-			icon = collectionService.getIcon(mimeType);
-
-			model.addAttribute("icon", icon);
-			model.addAttribute("dataProfile", dataProfile);
-			model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-
-			logger.info("returning to :{}", template);
 
 		}
 
+		if (dataProfile != null && dataProfile.isFile()) {
+			mimeType = dataProfile.getDataType().getMimeType();
+		}
+		icon = collectionService.getIcon(mimeType);
+
+		model.addAttribute("icon", icon);
+		model.addAttribute("dataProfile", dataProfile);
+		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
+
+		logger.info("returning to :{}", template);
 
 		return template;
 
@@ -213,37 +204,32 @@ public class CollectionInfoController {
 	public void setDataProfilerSettings(DataProfilerSettings dataProfilerSettings) {
 		this.dataProfilerSettings = dataProfilerSettings;
 	}
-	
+
 	@RequestMapping(value = "/accessRequest", method = RequestMethod.GET)
-	public String sendAccessRequest(final Model model, @RequestParam("path") final String path){
+	public String sendAccessRequest(final Model model, @RequestParam("path") final String path) {
 		logger.info("requesting access : {}", path);
 		String template = "";
-		
-		Mail mail = new Mail();
-		mail.setMailFrom("hetalben.patel@nih.gov");
-		mail.setMailTo("hetalben.patel@nih.gov");
-		mail.setMailSubject("DataCommons Access Request - Test");
-		mail.setMailContent("This is a test email for granting an access on \n "+path+"!!!\n\nThanks\nXXX");
-		AbstractApplicationContext context = null;
-		String emailResponse = "";
-		try {
-			context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
-			MailService mailService = (MailService) context.getBean("mailService");
-			mailService.sendEmail(mail);
-			emailResponse = "Your request has been sent successfully.";
-			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse :: success";
-		}catch(MailException me) {
-			me.printStackTrace();
-			emailResponse = "Sorry, Email sending fail.Try again later!!";
-			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse :: failure";
-		}finally {
-			context.close();
-		}
-		
-		logger.info("Returning to template :: {}" ,template);
+		/*
+		 * Mail mail = new Mail(); mail.setMailFrom("hetalben.patel@nih.gov");
+		 * mail.setMailTo("hetalben.patel@nih.gov");
+		 * mail.setMailSubject("DataCommons Access Request - Test");
+		 * mail.setMailContent("This is a test email for granting an access on \n " +
+		 * path + "!!!\n\nThanks\nXXX"); AbstractApplicationContext context = null;
+		 * String emailResponse = ""; try { context = new
+		 * AnnotationConfigApplicationContext(ApplicationConfig.class); MailService
+		 * mailService = (MailService) context.getBean("mailService");
+		 * mailService.sendEmail(mail); emailResponse =
+		 * "Your request has been sent successfully.";
+		 * model.addAttribute("emailResponse", emailResponse); template =
+		 * "collections/emailResponse :: success"; } catch (MailException me) {
+		 * me.printStackTrace(); emailResponse =
+		 * "Sorry, Email sending fail.Try again later!!";
+		 * model.addAttribute("emailResponse", emailResponse); template =
+		 * "collections/emailResponse :: failure"; } finally { context.close(); }
+		 */
+
+		logger.info("Returning to template :: {}", template);
 		return template;
 	}
-	
+
 }
