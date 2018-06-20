@@ -1,0 +1,31 @@
+
+	<th:block th:fragment="success">
+
+		<div id="success" class="container-fluid">
+
+			<div class="row nopadding">
+				<div class="col-sm-12 col-md-12 col-xs-12 text-left">
+					<h2 class="word-wrap" th:text="${ emailResponse }"></h2>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+		
+		
+	</th:block>
+
+	<th:block th:fragment="failure">
+
+		<div id="failure" class="container-fluid">
+
+			<div class="row nopadding">
+				<div class="col-sm-12 col-md-12 col-xs-12 text-left">
+					<h2 class="word-wrap" th:text="${ emailResponse }"></h2>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+		
+		
+	</th:block>
+

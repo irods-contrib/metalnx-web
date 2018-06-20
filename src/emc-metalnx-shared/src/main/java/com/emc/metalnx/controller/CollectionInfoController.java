@@ -17,7 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
@@ -37,6 +40,9 @@ import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
+import com.service.mail.config.ApplicationConfig;
+import com.service.mail.entity.Mail;
+import com.service.mail.services.MailService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -140,8 +146,8 @@ public class CollectionInfoController {
 	}
 
 	public boolean accessCheck(String path) throws DataGridException {
+		logger.info("checking access on this file :: {}");
 		boolean access = collectionService.canUserAccessThisPath(path);
-		logger.info("Collection with out having any access.");
 		return access;
 	}
 
@@ -208,13 +214,35 @@ public class CollectionInfoController {
 		this.dataProfilerSettings = dataProfilerSettings;
 	}
 	
-	@RequestMapping(value = "/accessRequest/", method = RequestMethod.POST)
-	public String sendAccessRequest(final Model model, @RequestParam("path") final String path)
-			throws DataGridException {
+	@RequestMapping(value = "/accessRequest", method = RequestMethod.GET)
+	public String sendAccessRequest(final Model model, @RequestParam("path") final String path){
 		logger.info("requesting access : {}", path);
-		String template;
-		//template = "collections/emailFailure"
-		template = "collections/emailSuccess";
+		String template = "";
+		
+		Mail mail = new Mail();
+		mail.setMailFrom("hetalben.patel@nih.gov");
+		mail.setMailTo("hetalben.patel@nih.gov");
+		mail.setMailSubject("DataCommons Access Request - Test");
+		mail.setMailContent("This is a test email for granting an access on \n "+path+"!!!\n\nThanks\nXXX");
+		AbstractApplicationContext context = null;
+		String emailResponse = "";
+		try {
+			context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+			MailService mailService = (MailService) context.getBean("mailService");
+			mailService.sendEmail(mail);
+			emailResponse = "Your request has been sent successfully.";
+			model.addAttribute("emailResponse" , emailResponse);
+			template = "collections/emailResponse :: success";
+		}catch(MailException me) {
+			me.printStackTrace();
+			emailResponse = "Sorry, Email sending fail.Try again later!!";
+			model.addAttribute("emailResponse" , emailResponse);
+			template = "collections/emailResponse :: failure";
+		}finally {
+			context.close();
+		}
+		
+		logger.info("Returning to template :: {}" ,template);
 		return template;
 	}
 	
