@@ -232,12 +232,12 @@ public class CollectionInfoController {
 			mailService.sendEmail(mail);
 			emailResponse = "Your request has been sent successfully.";
 			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse :: success";
+			template = "collections/emailResponse";
 		}catch(MailException me) {
 			me.printStackTrace();
 			emailResponse = "Sorry, Email sending fail.Try again later!!";
 			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse :: failure";
+			template = "collections/emailResponse";
 		}finally {
 			context.close();
 		}
