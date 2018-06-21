@@ -43,6 +43,7 @@ import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
@@ -102,6 +103,9 @@ public class CollectionController {
 
 	@Autowired
 	HeaderService headerService;
+
+	@Autowired
+	ConfigService configService;
 
 	// parent path of the current directory in the tree view
 	private String parentPath;
@@ -180,6 +184,12 @@ public class CollectionController {
 			 * See if it's a file or coll. A file redirects to the info page
 			 *
 			 */
+
+			// add does user have access?
+			// y - proceed
+			// n - do proxy check
+			// noproxy - show no access html view
+			// proxy - do the proxy read only and redirect to that view
 
 			if (cs.isDataObject(myPath)) {
 				logger.info("redirect to info page");
@@ -372,6 +382,14 @@ public class CollectionController {
 
 	public void setCurrentPath(String currentPath) {
 		this.currentPath = currentPath;
+	}
+
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 }

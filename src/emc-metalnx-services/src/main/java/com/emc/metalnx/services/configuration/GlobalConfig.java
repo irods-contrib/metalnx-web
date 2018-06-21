@@ -3,8 +3,6 @@
  */
 package com.emc.metalnx.services.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
@@ -26,7 +24,14 @@ public class GlobalConfig {
 	 */
 	private boolean uploadRulesEnabled = false;
 
-	
+	/**
+	 * Turn on or off the ability to generate no-access pages for files and
+	 * collections
+	 * 
+	 * @return {@code boolean} of {@code true} if no-access pages are enabled
+	 */
+	private boolean handleNoAccessViaProxy = false;
+
 	public boolean isTicketsEnabled() {
 		return ticketsEnabled;
 	}
@@ -39,7 +44,8 @@ public class GlobalConfig {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("GlobalConfig [ticketsEnabled=").append(ticketsEnabled).append(", uploadRulesEnabled=")
-				.append(uploadRulesEnabled).append("]");
+				.append(uploadRulesEnabled).append(", handleNoAccessViaProxy=").append(handleNoAccessViaProxy)
+				.append("]");
 		return builder.toString();
 	}
 
@@ -49,6 +55,14 @@ public class GlobalConfig {
 
 	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
 		this.uploadRulesEnabled = uploadRulesEnabled;
+	}
+
+	public boolean isHandleNoAccessViaProxy() {
+		return handleNoAccessViaProxy;
+	}
+
+	public void setHandleNoAccessViaProxy(boolean handleNoAccessViaProxy) {
+		this.handleNoAccessViaProxy = handleNoAccessViaProxy;
 	}
 
 }
