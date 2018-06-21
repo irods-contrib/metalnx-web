@@ -48,6 +48,7 @@ import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
@@ -108,6 +109,9 @@ public class CollectionController {
 	@Autowired
 	HeaderService headerService;
 
+	@Autowired
+	ConfigService configService;
+
 	// parent path of the current directory in the tree view
 	private String parentPath;
 
@@ -129,9 +133,6 @@ public class CollectionController {
 	private boolean cameFromBookmarks;
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
-
-	@Value("${access.proxy}")
-	private boolean proxy;
 
 	/**
 	 * Responds the collections/ request
@@ -155,7 +156,6 @@ public class CollectionController {
 
 		if(access) {
 			try {
-
 				if (myPath.isEmpty()) {
 					logger.info("no path, go to home dir");
 					myPath = cs.getHomeDirectyForCurrentUser();
@@ -190,6 +190,7 @@ public class CollectionController {
 					throw je;
 				}
 
+
 				/*
 				 * See if it's a file or coll. A file redirects to the info page
 				 *
@@ -222,7 +223,7 @@ public class CollectionController {
 				model.addAttribute("unexpectedError", true);
 			}
 		}else{
-			if (!proxy) {
+			if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
 				template = "httpErrors/noAccess";
 				logger.info("returning to :{}", template);
 				return template;
@@ -414,6 +415,14 @@ public class CollectionController {
 
 	public void setCurrentPath(String currentPath) {
 		this.currentPath = currentPath;
+	}
+
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 }

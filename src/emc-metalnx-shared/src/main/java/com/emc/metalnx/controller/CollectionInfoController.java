@@ -14,7 +14,6 @@ import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 //import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
@@ -31,6 +30,7 @@ import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -62,8 +62,8 @@ public class CollectionInfoController {
 	@Autowired
 	DataProfilerSettings dataProfilerSettings;
 
-	@Value("${access.proxy}")
-	private boolean proxy;
+	@Autowired
+	ConfigService configService;
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 
@@ -100,7 +100,7 @@ public class CollectionInfoController {
 
 		} else {
 
-			if (!proxy) {
+			if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
 				template = "httpErrors/noAccess";
 				logger.info("returning to :{}", template);
 				return template;
@@ -200,32 +200,35 @@ public class CollectionInfoController {
 		logger.info("requesting access : {}", path);
 		String template = "";
 
-		/*Mail mail = new Mail();
-		mail.setMailFrom("hetalben.patel@nih.gov");
-		mail.setMailTo("hetalben.patel@nih.gov");
-		mail.setMailSubject("DataCommons Access Request - Test");
-		mail.setMailContent("This is a test email for granting an access on \n "+path+"!!!\n\nThanks\nXXX");
-		AbstractApplicationContext context = null;
-		String emailResponse = "";
-		try {
-			context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
-			MailService mailService = (MailService) context.getBean("mailService");
-			mailService.sendEmail(mail);
-			emailResponse = "Your request has been sent successfully.";
-			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse";
-		}catch(MailException me) {
-			me.printStackTrace();
-			emailResponse = "Sorry, Email sending fail.Try again later!!";
-			model.addAttribute("emailResponse" , emailResponse);
-			template = "collections/emailResponse";
-		}finally {
-			context.close();
-		}*/
-		
+		/*
+		 * Mail mail = new Mail(); mail.setMailFrom("hetalben.patel@nih.gov");
+		 * mail.setMailTo("hetalben.patel@nih.gov");
+		 * mail.setMailSubject("DataCommons Access Request - Test");
+		 * mail.setMailContent("This is a test email for granting an access on \n "+path
+		 * +"!!!\n\nThanks\nXXX"); AbstractApplicationContext context = null; String
+		 * emailResponse = ""; try { context = new
+		 * AnnotationConfigApplicationContext(ApplicationConfig.class); MailService
+		 * mailService = (MailService) context.getBean("mailService");
+		 * mailService.sendEmail(mail); emailResponse =
+		 * "Your request has been sent successfully.";
+		 * model.addAttribute("emailResponse" , emailResponse); template =
+		 * "collections/emailResponse"; }catch(MailException me) { me.printStackTrace();
+		 * emailResponse = "Sorry, Email sending fail.Try again later!!";
+		 * model.addAttribute("emailResponse" , emailResponse); template =
+		 * "collections/emailResponse"; }finally { context.close(); }
+		 */
+
 		logger.info("Returning to template :: {}", template);
 
 		return template;
+	}
+
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 }

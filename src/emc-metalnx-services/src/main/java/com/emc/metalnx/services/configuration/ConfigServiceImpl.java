@@ -86,12 +86,16 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${metalnx.download.limit}")
 	private long downloadLimit;
 
+	@Value("${access.proxy}")
+	private boolean handleNoAccessViaProxy;
+
 	@Override
 	public GlobalConfig getGlobalConfig() {
 		logger.info("getGlobalConfig()");
 		GlobalConfig globalConfig = new GlobalConfig();
 		globalConfig.setTicketsEnabled(this.isTicketsEnabled());
 		globalConfig.setUploadRulesEnabled(isUploadRulesEnabled());
+		globalConfig.setHandleNoAccessViaProxy(handleNoAccessViaProxy);
 		logger.debug("globalConfig:{}", globalConfig);
 		return globalConfig;
 	}
@@ -210,14 +214,14 @@ public class ConfigServiceImpl implements ConfigService {
 		if (irodsJobUser != null) {
 			builder.append("irodsJobUser=").append(irodsJobUser).append(", ");
 		}
-		if (irodsJobPassword != null) {
-			builder.append("irodsJobPassword=").append(irodsJobPassword).append(", ");
-		}
+
 		if (irodsAuthScheme != null) {
 			builder.append("irodsAuthScheme=").append(irodsAuthScheme).append(", ");
 		}
 		builder.append("populateMsiEnabled=").append(populateMsiEnabled).append(", ticketsEnabled=")
-				.append(ticketsEnabled).append(", uploadRulesEnabled=").append(uploadRulesEnabled).append("]");
+				.append(ticketsEnabled).append(", uploadRulesEnabled=").append(uploadRulesEnabled)
+				.append(", downloadLimit=").append(downloadLimit).append(", handleNoAccessViaProxy=")
+				.append(handleNoAccessViaProxy).append("]");
 		return builder.toString();
 	}
 
@@ -228,5 +232,13 @@ public class ConfigServiceImpl implements ConfigService {
 
 	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
 		this.uploadRulesEnabled = uploadRulesEnabled;
+	}
+
+	public boolean isHandleNoAccessViaProxy() {
+		return handleNoAccessViaProxy;
+	}
+
+	public void setHandleNoAccessViaProxy(boolean handleNoAccessViaProxy) {
+		this.handleNoAccessViaProxy = handleNoAccessViaProxy;
 	}
 }
