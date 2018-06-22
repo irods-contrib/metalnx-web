@@ -60,6 +60,7 @@ import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import com.emc.metalnx.services.interfaces.UserBookmarkService;
 import com.emc.metalnx.services.interfaces.UserService;
+import com.emc.metalnx.services.interfaces.mail.MailService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -132,6 +133,9 @@ public class CollectionController {
 	private boolean cameFromFilePropertiesSearch;
 	private boolean cameFromBookmarks;
 
+	@Autowired
+	MailService mailService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
 	/**
@@ -237,6 +241,7 @@ public class CollectionController {
 
 				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
 				model.addAttribute("dataGridMetadataList", metadataList);
+				model.addAttribute("isMailEnabled", mailService.isMailEnabled());
 				if (dataProfile != null && dataProfile.isFile()) {
 					mimeType = dataProfile.getDataType().getMimeType();
 				}
