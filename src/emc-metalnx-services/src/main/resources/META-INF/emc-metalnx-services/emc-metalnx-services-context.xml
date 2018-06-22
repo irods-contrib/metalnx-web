@@ -134,7 +134,7 @@
 		<property name="smtpAuth" value="${mail.smtp.auth}" />
 		<property name="mailTransportProtocol" value="${mail.transport.protocol}" />
 		<property name="debug" value="${mail.debug}" />
-		<property name="enable" value="${mail.enable}" />
+		<property name="enabled" value="${mail.enabled}" />
 	</bean>
 
 

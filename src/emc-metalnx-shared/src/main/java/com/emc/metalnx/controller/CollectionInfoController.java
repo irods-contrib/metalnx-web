@@ -34,6 +34,8 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
+import com.emc.metalnx.services.interfaces.mail.Mail;
+import com.emc.metalnx.services.interfaces.mail.MailService;
 //import com.service.mail.config.ApplicationConfig;
 //import com.service.mail.entity.Mail;
 //import com.service.mail.services.MailService;
@@ -64,6 +66,9 @@ public class CollectionInfoController {
 
 	@Autowired
 	ConfigService configService;
+
+	@Autowired
+	MailService mailService;
 
 	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
 
@@ -131,7 +136,6 @@ public class CollectionInfoController {
 
 	}
 
-
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
 			throws DataGridException {
@@ -198,7 +202,15 @@ public class CollectionInfoController {
 	@RequestMapping(value = "/accessRequest", method = RequestMethod.GET)
 	public String sendAccessRequest(final Model model, @RequestParam("path") final String path) {
 		logger.info("requesting access : {}", path);
+
+		if (!mailService.isMailEnabled()) {
+			logger.error("access request should not be enabled, mail is disabled");
+			throw new IllegalStateException("should not be calling sendAccessRequest with mail disabled");
+		}
+
 		String template = "";
+		Mail mail = new Mail();
+		mail.setMailFrom("mike.conway@nih.gov");
 
 		/*
 		 * Mail mail = new Mail(); mail.setMailFrom("hetalben.patel@nih.gov");
