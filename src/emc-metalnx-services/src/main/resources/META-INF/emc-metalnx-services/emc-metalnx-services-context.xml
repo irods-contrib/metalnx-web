@@ -53,7 +53,7 @@
 	</bean>
 
 	<context:component-scan
-		base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh
+		base-package="com.emc.metalnx.services.irods com.emc.metalnx.services.ssh com.emc.metalnx.services.irods.mail 
 	    com.emc.metalnx.services.machine com.emc.metalnx.services.configuration com.emc.metalnx.services.zip" />
 
 	<bean id="midTierConfiguration"
@@ -123,6 +123,18 @@
 			ref="dataTypeResolutionServiceFactory" />
 		<property name="favoritesService" ref="favoritesService" />
 		<property name="userService" ref="userService" />
+	</bean>
+	
+	<bean id="mailProperties" class="com.emc.metalnx.services.irods.mail.MailProperties">
+		<property name="host" value="${mail.host}" />
+		<property name="port" value="${mail.port}" />
+		<property name="username" value="${mail.username}" />
+		<property name="password" value="${mail.password}" />
+		<property name="startTlsEnable" value="${mail.smtp.starttls.enable}" />
+		<property name="smtpAuth" value="${mail.smtp.auth}" />
+		<property name="mailTransportProtocol" value="${mail.transport.protocol}" />
+		<property name="debug" value="${mail.debug}" />
+		<property name="enable" value="${mail.enable}" />
 	</bean>
 
 

@@ -273,11 +273,11 @@
 			</dependency>
 
 			<!-- Logging libraries -->
-			<dependency>
+			<!--  <dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
-			</dependency>
+			</dependency>-->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>

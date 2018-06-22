@@ -22,21 +22,23 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-profiler</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-typer</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.emc.metalnx</groupId>
@@ -98,7 +100,17 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
 
 	</dependencies>
 
@@ -271,31 +283,33 @@
 									metalnx.download.limit=${metalnx.download.limit}
 									access.proxy=true
 
-									###################################### later add maven props to
-									tune these
-									# info home page feature flags
-									# this controls the
-									behavior of the data profiler and what information it will
-									gather
+									
 									irodsext.dataprofiler.retrieve.tickets=false
-									# process
-									starred or favorites
+								
 									irodsext.dataprofiler.retrieve.starred=true
-									# process shared
+									
 									irodsext.dataprofiler.retrieve.shared=false
-									# tags and comments
+								
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
-									#
-									metadata templates (currently not implemented)
+								
 									irodsext.dataprofiler.retrieve.metadata.templates=false
 
-									# save
-									data type information for later use
+								
 									irodsext.datatyper.persist.data.types=false
-									# perform a detailed
-									versus a lightweight data typing, which may involve processing
-									the file contents
+								
 									irodsext.datatyper.detailed.determination=false
+									
+									mail.enabled=false
+									mail.default-encoding=UTF-8
+									mail.host=example.com
+									mail.username=test
+									mail.password=test
+									mail.port=25
+									mail.smtp.starttls.enable=true
+									mail.smtp.auth=false
+									mail.transport.protocol=smtp
+									mail.debug=true
+																		
 
 								</echo>
 							</tasks>

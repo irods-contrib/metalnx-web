@@ -114,4 +114,17 @@
 		<property name="favoritesService" ref="favoritesService" />
 		<property name="userService" ref="userService" />
 	</bean>
+	
+	<bean id="mailProperties" class="com.emc.metalnx.services.irods.mail.MailProperties">
+		<property name="host" value="${mail.host}" />
+		<property name="port" value="${mail.port}" />
+		<property name="username" value="${mail.username}" />
+		<property name="password" value="${mail.password}" />
+		<property name="startTlsEnable" value="${mail.smtp.starttls.enable}" />
+		<property name="smtpAuth" value="${mail.smtp.auth}" />
+		<property name="mailTransportProtocol" value="${mail.transport.protocol}" />
+		<property name="debug" value="${mail.debug}" />
+		<property name="enabled" value="${mail.enabled}" />
+	</bean>
+	
 </beans>
