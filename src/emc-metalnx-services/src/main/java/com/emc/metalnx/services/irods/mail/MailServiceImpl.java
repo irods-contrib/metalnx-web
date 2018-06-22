@@ -2,6 +2,7 @@ package com.emc.metalnx.services.irods.mail;
 
 import javax.annotation.PostConstruct;
 
+import org.irods.jargon.midtier.utils.configuration.MidTierConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class MailServiceImpl implements MailService {
 
 	@Autowired
 	private MailProperties mailProperties;
+
+	@Autowired
+	private MidTierConfiguration midTierConfiguration;
 
 	private JavaMailSender javaMailSender;
 
@@ -92,7 +96,9 @@ public class MailServiceImpl implements MailService {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.emc.metalnx.services.irods.mail.MailService#isMailEnabled()
 	 */
 	@Override
@@ -104,8 +110,12 @@ public class MailServiceImpl implements MailService {
 		return this.getMailProperties().isEnabled();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.emc.metalnx.services.irods.mail.MailService#sendEmail(com.emc.metalnx.services.interfaces.mail.Mail)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.emc.metalnx.services.irods.mail.MailService#sendEmail(com.emc.metalnx.
+	 * services.interfaces.mail.Mail)
 	 */
 	@Override
 	public void sendEmail(Mail mail) {
@@ -122,6 +132,19 @@ public class MailServiceImpl implements MailService {
 		}
 
 		logger.info("sending mail:{}", mail);
+
+		if (mail.getMailTo() == null || mail.getMailTo().isEmpty()) {
+			logger.info("no email to field, use rods admin");
+			if (midTierConfiguration.getIrodsAdminEmail() == null
+					|| midTierConfiguration.getIrodsAdminEmail().isEmpty()) {
+				logger.warn("#################################################");
+				logger.warn("mail address for rods admin not configured, will ignore this message");
+				logger.warn("#################################################");
+				return;
+			} else {
+				mail.setMailTo(midTierConfiguration.getIrodsAdminEmail());
+			}
+		}
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(mail.getMailFrom());
@@ -145,6 +168,14 @@ public class MailServiceImpl implements MailService {
 
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
+	}
+
+	public MidTierConfiguration getMidTierConfiguration() {
+		return midTierConfiguration;
+	}
+
+	public void setMidTierConfiguration(MidTierConfiguration midTierConfiguration) {
+		this.midTierConfiguration = midTierConfiguration;
 	}
 
 }

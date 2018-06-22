@@ -15,6 +15,11 @@ import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
 public class MidTierConfiguration {
 
 	/**
+	 * iRODS admin email, can be left blank
+	 */
+	private String irodsAdminEmail = "";
+
+	/**
 	 * iRODS admin account host
 	 */
 	private String irodsAdminAccountHost = "";
@@ -222,6 +227,21 @@ public class MidTierConfiguration {
 
 	public void setIrodsAdminAccountAuthScheme(String irodsAdminAccountAuthScheme) {
 		this.irodsAdminAccountAuthScheme = irodsAdminAccountAuthScheme;
+	}
+
+	/**
+	 * @return the irodsAdminEmail
+	 */
+	public String getIrodsAdminEmail() {
+		return irodsAdminEmail;
+	}
+
+	/**
+	 * @param irodsAdminEmail
+	 *            the irodsAdminEmail to set
+	 */
+	public void setIrodsAdminEmail(String irodsAdminEmail) {
+		this.irodsAdminEmail = irodsAdminEmail;
 	}
 
 }
