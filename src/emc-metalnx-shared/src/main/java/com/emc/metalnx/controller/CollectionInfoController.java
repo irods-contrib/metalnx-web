@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.mail.MailException;
 //import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,11 +112,13 @@ public class CollectionInfoController {
 				return template;
 			} else {
 				logger.info("collection/file read only view");
+				logger.info("email service enabled :: {} ",mailService.isMailEnabled());				
 				dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
 				template = "collections/readOnlyCollectionInfo";
 
 				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
 				model.addAttribute("dataGridMetadataList", metadataList);
+				model.addAttribute("isMailEnabled", mailService.isMailEnabled());
 
 			}
 
@@ -212,23 +215,27 @@ public class CollectionInfoController {
 		Mail mail = new Mail();
 		mail.setMailFrom("mike.conway@nih.gov");
 
-		/*
-		 * Mail mail = new Mail(); mail.setMailFrom("hetalben.patel@nih.gov");
-		 * mail.setMailTo("hetalben.patel@nih.gov");
-		 * mail.setMailSubject("DataCommons Access Request - Test");
-		 * mail.setMailContent("This is a test email for granting an access on \n "+path
-		 * +"!!!\n\nThanks\nXXX"); AbstractApplicationContext context = null; String
-		 * emailResponse = ""; try { context = new
-		 * AnnotationConfigApplicationContext(ApplicationConfig.class); MailService
-		 * mailService = (MailService) context.getBean("mailService");
-		 * mailService.sendEmail(mail); emailResponse =
-		 * "Your request has been sent successfully.";
-		 * model.addAttribute("emailResponse" , emailResponse); template =
-		 * "collections/emailResponse"; }catch(MailException me) { me.printStackTrace();
-		 * emailResponse = "Sorry, Email sending fail.Try again later!!";
-		 * model.addAttribute("emailResponse" , emailResponse); template =
-		 * "collections/emailResponse"; }finally { context.close(); }
-		 */
+
+
+		mail.setMailFrom("hetalben.patel@nih.gov");
+		mail.setMailTo("hetalben.patel@nih.gov");
+		mail.setMailSubject("DataCommons Access Request - Test");
+		mail.setMailContent("This is a test email for granting an access on \n "+path
+				+"!!!\n\nThanks\nXXX"); 
+
+		String emailResponse = ""; 
+		try { 			 
+			mailService.sendEmail(mail); 
+			emailResponse = "Your request has been sent successfully.";
+			model.addAttribute("emailResponse" , emailResponse); 
+			template = "collections/emailResponse"; 
+		}catch(MailException me) { 
+			me.printStackTrace();
+			emailResponse = "Sorry, Email sending fail.Try again later!!";
+			model.addAttribute("emailResponse" , emailResponse); 
+			template = "collections/emailResponse"; 
+		}
+
 
 		logger.info("Returning to template :: {}", template);
 
