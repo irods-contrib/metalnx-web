@@ -183,6 +183,14 @@ mail.debug=true
 
 ```
 
+Note that a default email address for rods admin is now configurable in metalnx.properties at:
+
+```
+# may be left blank this is the default email for any messages generated from metalnx
+irods.admin.email=
+
+```
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
