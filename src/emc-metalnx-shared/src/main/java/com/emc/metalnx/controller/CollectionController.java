@@ -24,11 +24,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.core.utils.CollectionAndPath;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
+import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +44,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.FavoritesService;
@@ -140,88 +145,116 @@ public class CollectionController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
-			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader) {
+			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader) throws DataGridException {
 		logger.info("indexViaUrl()");
 		String myPath = path.orElse("");
 		logger.info("dp Header requestHeader is :: " + requestHeader);
-		try {
+		String template = "";
 
-			if (myPath.isEmpty()) {
-				logger.info("no path, go to home dir");
-				myPath = cs.getHomeDirectyForCurrentUser();
-			} else {
-				logger.info("path provided...go to:{}", path);
-				myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
-													// in filter? - MCC
-				// see
-				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
-			}
+		boolean access = cs.canUserAccessThisPath(myPath);
+		logger.info("Has Access :: {}", access);
 
-			logger.info("myPath:{}" + myPath);
-			String uiMode = "";
-			DataGridUser loggedUser = null;
+		if(access) {
 			try {
-				loggedUser = loggedUserUtils.getLoggedDataGridUser();
-				uiMode = (String) request.getSession().getAttribute("uiMode");
-				logger.info("loggedUser:{}", loggedUser);
-
-				sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
-				CollectionAndPath collectionAndPath = MiscIRODSUtils
-						.separateCollectionAndPathFromGivenAbsolutePath(myPath);
-				this.parentPath = collectionAndPath.getCollectionParent();
-				this.currentPath = myPath;
-
-				if (uiMode == null || uiMode.isEmpty()) {
-					boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
-					uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+				if (myPath.isEmpty()) {
+					logger.info("no path, go to home dir");
+					myPath = cs.getHomeDirectyForCurrentUser();
+				} else {
+					logger.info("path provided...go to:{}", path);
+					myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
+					// in filter? - MCC
+					// see
+					// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
 				}
-			} catch (Exception je) {
-				logger.error("exception geting user and user mode info", je);
-				throw je;
+
+				logger.info("myPath:{}" + myPath);
+				String uiMode = "";
+				DataGridUser loggedUser = null;
+				try {
+					loggedUser = loggedUserUtils.getLoggedDataGridUser();
+					uiMode = (String) request.getSession().getAttribute("uiMode");
+					logger.info("loggedUser:{}", loggedUser);
+
+					sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
+					CollectionAndPath collectionAndPath = MiscIRODSUtils
+							.separateCollectionAndPathFromGivenAbsolutePath(myPath);
+					this.parentPath = collectionAndPath.getCollectionParent();
+					this.currentPath = myPath;
+
+					if (uiMode == null || uiMode.isEmpty()) {
+						boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
+						uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+					}
+				} catch (Exception je) {
+					logger.error("exception geting user and user mode info", je);
+					throw je;
+				}
+
+
+				/*
+				 * See if it's a file or coll. A file redirects to the info page
+				 *
+				 */
+
+				if (cs.isDataObject(myPath)) {
+					logger.info("redirect to info page");
+					StringBuilder sb = new StringBuilder();
+					sb.append("redirect:/collectionInfo?path=");
+					sb.append(URLEncoder.encode(myPath));
+					return sb.toString();
+				}
+
+				logger.info("is collection...continue to collection management");
+
+				if (uiMode.equals(UI_USER_MODE)) {
+					model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
+					model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
+				}
+
+				model.addAttribute("uiMode", uiMode);
+				model.addAttribute("currentPath", currentPath);
+				model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+				model.addAttribute("parentPath", parentPath);
+				model.addAttribute("resources", resourceService.findAll());
+				model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
+				template ="collections/collectionManagement";			
+			} catch (JargonException e) {
+				logger.error("error establishing collection location", e);
+				model.addAttribute("unexpectedError", true);
 			}
+		}else{
+			if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
+				template = "httpErrors/noAccess";
+				logger.info("returning to :{}", template);
+				return template;
+			} else {
+				DataProfile dataProfile = null;
+				IconObject icon = null;
+				String mimeType = "";
+				logger.info("collection/file read only view");
+				dataProfile = cs.getCollectionDataProfileAsProxyAdmin(myPath);
+				template = "collections/readOnlyCollectionInfo";
 
-			/*
-			 * See if it's a file or coll. A file redirects to the info page
-			 *
-			 */
+				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
+				model.addAttribute("dataGridMetadataList", metadataList);
+				if (dataProfile != null && dataProfile.isFile()) {
+					mimeType = dataProfile.getDataType().getMimeType();
+				}
+				icon = cs.getIcon(mimeType);
 
-			// add does user have access?
-			// y - proceed
-			// n - do proxy check
-			// noproxy - show no access html view
-			// proxy - do the proxy read only and redirect to that view
+				model.addAttribute("icon", icon);
+				model.addAttribute("dataProfile", dataProfile);
+				model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
 
-			if (cs.isDataObject(myPath)) {
-				logger.info("redirect to info page");
-				StringBuilder sb = new StringBuilder();
-				sb.append("redirect:/collectionInfo?path=");
-				sb.append(URLEncoder.encode(myPath));
-				return sb.toString();
+				logger.info("returning to :{}", template);
+
 			}
-
-			logger.info("is collection...continue to collection management");
-
-			if (uiMode.equals(UI_USER_MODE)) {
-				model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-				model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-			}
-
-			model.addAttribute("uiMode", uiMode);
-			model.addAttribute("currentPath", currentPath);
-			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
-			model.addAttribute("parentPath", parentPath);
-			model.addAttribute("resources", resourceService.findAll());
-			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-
-		} catch (JargonException e) {
-
-			logger.error("error establishing collection location", e);
-			model.addAttribute("unexpectedError", true);
 		}
+
 
 		logger.info("displaying collections/collectionManagement");
 
-		return "collections/collectionManagement";
+		return template;
 
 	}
 

@@ -86,7 +86,7 @@ public class CollectionInfoController {
 		String mimeType = "";
 		String template = "";
 
-		boolean access = accessCheck(myPath);
+		boolean access = collectionService.canUserAccessThisPath(path);
 		logger.info("Has Access :: {}", access);
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = null;
@@ -112,11 +112,6 @@ public class CollectionInfoController {
 				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
 				model.addAttribute("dataGridMetadataList", metadataList);
 
-				for (MetaDataAndDomainData md : metadataList) {
-					logger.debug("Attribute :: {}", md.getAvuAttribute());
-					logger.debug("Unit :: {}", md.getAvuUnit());
-					logger.debug("Value :: {}", md.getAvuValue());
-				}
 			}
 
 		}
@@ -136,11 +131,6 @@ public class CollectionInfoController {
 
 	}
 
-	public boolean accessCheck(String path) throws DataGridException {
-		logger.info("checking access on this file :: {}");
-		boolean access = collectionService.canUserAccessThisPath(path);
-		return access;
-	}
 
 	@RequestMapping(value = "/collectionFileInfo/", method = RequestMethod.POST)
 	public String getCollectionFileInfo(final Model model, @RequestParam("path") final String path)
