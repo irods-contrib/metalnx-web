@@ -51,12 +51,27 @@
 
 	<bean id="midTierConfiguration"
 		class="org.irods.jargon.midtier.utils.configuration.MidTierConfiguration">
-		<property name="utilizePackingStreams" value="${utilize.packing.streams}"/>
-		<property name="authType" value="${irods.auth.scheme}" /> <!--  STANDARD,PAM -->
-		<property name="defaultStorageResource" value="${default.storage.resource}" />
-		<property name="sslNegotiationPolicy" value="${ssl.negotiation.policy}" />
+		<property name="utilizePackingStreams"
+			value="${utilize.packing.streams}" />
+		<property name="authType" value="${irods.auth.scheme}" /> <!-- STANDARD,PAM -->
+		<property name="defaultStorageResource"
+			value="${default.storage.resource}" />
+		<property name="sslNegotiationPolicy"
+			value="${ssl.negotiation.policy}" />
 		<property name="computeChecksum" value="${compute.checksum}" />
+		<property name="irodsAdminAccountHost" value="${irods.host}" />
+		<property name="irodsAdminAccountPort" value="${irods.port}" />
+		<property name="irodsAdminAccountUser"
+			value="${irods.admin.user}" />
+		<property name="irodsAdminAccountPassword"
+			value="${irods.admin.password}" />
+		<property name="irodsAdminAccountZone"
+			value="${irods.zoneName}" />
+		<property name="irodsAdminAccountAuthScheme"
+			value="${irods.admin.authscheme}" />
+		<property name="irodsAdminEmail" value="${irods.admin.email}"/>
 	</bean>
+
 	
 	<!-- settings to influence the behavior of the 'home pages' for data objects 
 		and collections -->

@@ -144,6 +144,12 @@ for files with embedded spaces and special characters. NIES #134
 
 Add a global configuration setting for a download limit on files for both single file and bundle downloads to metalnx.properties
 
+#### Clicking on the rules icon in the left menu starts a repeating loop of rules page refreshes. #54
+
+Added logic in RuleDeploymentService to create the /zone/.rulecache file if it does not exist in an installation. This is done using the 
+iRODS admin account specified in metalnx.properties. The absense of the .rulecache file was causing the errors in MetaLnx collection browsing.
+
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
