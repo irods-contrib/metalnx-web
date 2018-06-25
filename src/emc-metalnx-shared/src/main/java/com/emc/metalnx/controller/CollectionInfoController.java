@@ -213,10 +213,6 @@ public class CollectionInfoController {
 
 		String template = "";
 		Mail mail = new Mail();
-		mail.setMailFrom("mike.conway@nih.gov");
-
-
-
 		mail.setMailFrom("hetalben.patel@nih.gov");
 		mail.setMailTo("hetalben.patel@nih.gov");
 		mail.setMailSubject("DataCommons Access Request - Test");

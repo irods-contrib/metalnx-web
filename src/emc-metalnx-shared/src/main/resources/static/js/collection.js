@@ -185,13 +185,7 @@ function unsetOperationInProgress() {
 	operationInProgress = false;
 }
 function accessRequest(path){
-	console.log("path :: " + path)
-	var url = "/emc-metalnx-web/collectionInfo/accessRequest/";
-	//ajaxEncapsulation(url, "POST", {path: path}, null, null, null, null);
+	alert("path :: " + path)
 	window.location.href = '/emc-metalnx-web/collectionInfo/accessRequest?path=' + path;
 }
 
-function emailConfirmation(data){
-	console.log("Email has been sent!!");
-	$("#success").html(data);
-}
