@@ -107,9 +107,12 @@ function unstarPath(path){
 	console.log("UnstarPath() ends");
 }
 
+/*
+path should be urlencoded already
+*/
 function positionBrowserToPath(path) {
 	console.log("positionBrowserToPath()");
-	window.location.href = '/emc-metalnx-web/collections?path=' + encodeURI(path); //relative to domain
+	window.location.href = '/emc-metalnx-web/collections?path=' + path; //relative to domain
 }
 
 function fileDownload(path){
@@ -128,7 +131,7 @@ function deleteInfoAction(path){
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
 	$('#actionsWait').show();
-	
+
 	var paths = [];
 	paths.push(path);
 	var url = "/emc-metalnx-web/fileOperation/delete/";
@@ -140,7 +143,7 @@ function deleteInfoAction(path){
 			function (data) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();								
+				$('#deleteConfirmationModal').modal();
 			}
 	);
 	$("#deleteModal").modal("hide");
@@ -166,7 +169,7 @@ function editInfo(path){
 
 function handleDownload(data) {
 	console.log("collection.js :: success call :: handleDownload()")
-	if (data.downloadLimitStatus == "ok"){   
+	if (data.downloadLimitStatus == "ok"){
 		window.location.href = "/emc-metalnx-web/fileOperation/download/";
 		$("#breadcrumDownloadBtn").removeAttr("disabled");
 		$("#actionsWait").hide();
@@ -188,4 +191,3 @@ function accessRequest(path){
 	alert("path :: " + path)
 	window.location.href = '/emc-metalnx-web/collectionInfo/accessRequest?path=' + path;
 }
-
