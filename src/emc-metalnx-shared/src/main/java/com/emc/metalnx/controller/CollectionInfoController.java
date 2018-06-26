@@ -199,7 +199,8 @@ public class CollectionInfoController {
 
 		String response = "";
 		Mail mail = new Mail();
-		mail.setMailTo("mike.conway@nih.gov");
+		mail.setMailTo("");
+		mail.setMailFrom("");
 		mail.setMailSubject("DataCommons Access Request - Test");
 		StringBuilder sb = new StringBuilder();
 		sb.append("user:");
@@ -207,13 +208,13 @@ public class CollectionInfoController {
 		sb.append(" is requesting access to resource:");
 		sb.append(path);
 		mail.setMailContent(sb.toString());
-	
-		try { 			 
-			mailService.sendEmail(mail); 
+
+		try {
+			mailService.sendEmail(mail);
 			response = "Your request has been sent successfully.";
-		}catch(MailException me) { 
+		} catch (MailException me) {
 			me.printStackTrace();
-			response = "Sorry, Email sending fail.Try again later!!";			
+			response = "Sorry, Email sending fail.Try again later!!";
 		}
 
 		return response;

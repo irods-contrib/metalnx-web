@@ -31,7 +31,6 @@ import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -135,7 +134,7 @@ public class CollectionController {
 
 	@Autowired
 	MailService mailService;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
 	/**
@@ -149,7 +148,8 @@ public class CollectionController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
-			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader) throws DataGridException {
+			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader)
+			throws DataGridException {
 		logger.info("indexViaUrl()");
 		String myPath = path.orElse("");
 		logger.info("dp Header requestHeader is :: " + requestHeader);
@@ -158,7 +158,7 @@ public class CollectionController {
 		boolean access = cs.canUserAccessThisPath(myPath);
 		logger.info("Has Access :: {}", access);
 
-		if(access) {
+		if (access) {
 			try {
 				if (myPath.isEmpty()) {
 					logger.info("no path, go to home dir");
@@ -194,7 +194,6 @@ public class CollectionController {
 					throw je;
 				}
 
-
 				/*
 				 * See if it's a file or coll. A file redirects to the info page
 				 *
@@ -221,17 +220,18 @@ public class CollectionController {
 				model.addAttribute("parentPath", parentPath);
 				model.addAttribute("resources", resourceService.findAll());
 				model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
-				template ="collections/collectionManagement";			
+				template = "collections/collectionManagement";
 			} catch (JargonException e) {
 				logger.error("error establishing collection location", e);
 				model.addAttribute("unexpectedError", true);
 			}
-		}else{
+		} else {
 			if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
 				template = "httpErrors/noAccess";
 				logger.info("returning to :{}", template);
 				return template;
 			} else {
+				@SuppressWarnings("rawtypes")
 				DataProfile dataProfile = null;
 				IconObject icon = null;
 				String mimeType = "";
@@ -255,7 +255,6 @@ public class CollectionController {
 
 			}
 		}
-
 
 		logger.info("displaying collections/collectionManagement");
 
