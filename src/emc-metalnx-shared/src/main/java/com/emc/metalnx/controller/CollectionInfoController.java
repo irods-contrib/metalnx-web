@@ -23,6 +23,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
@@ -203,6 +204,7 @@ public class CollectionInfoController {
 	}
 
 	@RequestMapping(value = "/accessRequest", method = RequestMethod.GET)
+	@ResponseBody
 	public String sendAccessRequest(final Model model, @RequestParam("path") final String path) {
 		logger.info("requesting access : {}", path);
 
@@ -211,31 +213,27 @@ public class CollectionInfoController {
 			throw new IllegalStateException("should not be calling sendAccessRequest with mail disabled");
 		}
 
-		String template = "";
+		String response = "";
 		Mail mail = new Mail();
 		mail.setMailFrom("hetalben.patel@nih.gov");
-		mail.setMailTo("hetalben.patel@nih.gov");
+		//mail.setMailTo("hetalben.patel@nih.gov");
 		mail.setMailSubject("DataCommons Access Request - Test");
 		mail.setMailContent("This is a test email for granting an access on \n "+path
 				+"!!!\n\nThanks\nXXX"); 
 
-		String emailResponse = ""; 
+		
 		try { 			 
 			mailService.sendEmail(mail); 
-			emailResponse = "Your request has been sent successfully.";
-			model.addAttribute("emailResponse" , emailResponse); 
-			template = "collections/emailResponse"; 
+			response = "Your request has been sent successfully.";
 		}catch(MailException me) { 
 			me.printStackTrace();
-			emailResponse = "Sorry, Email sending fail.Try again later!!";
-			model.addAttribute("emailResponse" , emailResponse); 
-			template = "collections/emailResponse"; 
+			response = "Sorry, Email sending fail.Try again later!!";			
 		}
 
 
-		logger.info("Returning to template :: {}", template);
+		logger.info("Response :: {}", response);
 
-		return template;
+		return response;
 	}
 
 	public ConfigService getConfigService() {

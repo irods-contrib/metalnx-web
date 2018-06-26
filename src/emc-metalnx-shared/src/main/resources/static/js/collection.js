@@ -13,7 +13,6 @@ function displayCollectionSummary(data){
 }
 
 function getInfoDetails(path){
-	alert("getInfoDetails()");
 	console.log("getInfoDetails()");
 	//window.location.hash = "info";
 	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
@@ -188,6 +187,14 @@ function unsetOperationInProgress() {
 	operationInProgress = false;
 }
 function accessRequest(path){
-	alert("path :: " + path)
-	window.location.href = '/emc-metalnx-web/collectionInfo/accessRequest?path=' + path;
+	//alert("path :: " + path)
+	var url = "/emc-metalnx-web/collectionInfo/accessRequest";
+	//window.location.href = '/emc-metalnx-web/collectionInfo/accessRequest?path=' + path;	
+	ajaxEncapsulation(url, "GET", {path: path}, loadEmailResponse, null, null, null);
+}
+function loadEmailResponse(data){
+	$("#readOnlyData").hide();
+	$("#responseTxt").innerHTML = data;
+	$("#emailResponse").show();
+	
 }
