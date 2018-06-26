@@ -299,18 +299,18 @@
 								
 									irodsext.datatyper.detailed.determination=false
 									
-									mail.enabled=false
+									mail.enabled=${metalnx.mail.enabled}
 									mail.default-encoding=UTF-8
-									mail.host=example.com
-									mail.username=test
-									mail.password=test
-									mail.port=25
-									mail.smtp.starttls.enable=true
-									mail.smtp.auth=false
-									mail.transport.protocol=smtp
-									mail.debug=true
-																		
-
+									mail.host=${metalnx.mail.host}
+									mail.username=${metalnx.mail.username}
+									mail.password=${metalnx.mail.password}
+									mail.port=${metalnx.mail.port}
+									mail.smtp.starttls.enable=${metalnx.starttls.enable}
+									mail.smtp.auth=${metalnx.smtp.auth}
+									mail.transport.protocol=${metalnx.transport.protocol}
+									mail.debug=${metalnx.mail.debug}
+									mail.from=${metalnx.mail.from}
+									mail.to=${metalnx.mail.to}											
 								</echo>
 							</tasks>
 						</configuration>

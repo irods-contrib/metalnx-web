@@ -146,9 +146,21 @@ public class MailServiceImpl implements MailService {
 			}
 		}
 
+		if (mail.getMailFrom() == null || mail.getMailFrom().isEmpty()) {
+			logger.info("no email from field, use rods admin");
+			if (mailProperties.getFrom() == null || midTierConfiguration.getIrodsAdminEmail().isEmpty()) {
+				logger.warn("#################################################");
+				logger.warn("mail address for rods admin not configured, will ignore this message");
+				logger.warn("#################################################");
+				return;
+			} else {
+				mail.setMailFrom(mailProperties.getFrom());
+			}
+		}
+
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(mail.getMailFrom());
-		//message.setTo(mail.getMailTo());
+		message.setTo(mail.getMailTo());
 		message.setSubject(mail.getMailSubject());
 		message.setText(mail.getMailContent());
 		javaMailSender.send(message);

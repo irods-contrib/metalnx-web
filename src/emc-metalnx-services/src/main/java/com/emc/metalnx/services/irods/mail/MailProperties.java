@@ -15,6 +15,7 @@ public class MailProperties {
 	private int port = 22;
 	private String username = "";
 	private String password = "";
+	private String from = "";
 	private boolean startTlsEnable = false;
 	private boolean smtpAuth = false;
 	private String mailTransportProtocol = "";
@@ -100,6 +101,39 @@ public class MailProperties {
 
 	public void setDefaultEncoding(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("MailProperties [");
+		if (host != null) {
+			builder.append("host=").append(host).append(", ");
+		}
+		builder.append("port=").append(port).append(", ");
+		if (username != null) {
+			builder.append("username=").append(username).append(", ");
+		}
+		if (from != null) {
+			builder.append("from=").append(from).append(", ");
+		}
+		builder.append("startTlsEnable=").append(startTlsEnable).append(", smtpAuth=").append(smtpAuth).append(", ");
+		if (mailTransportProtocol != null) {
+			builder.append("mailTransportProtocol=").append(mailTransportProtocol).append(", ");
+		}
+		if (defaultEncoding != null) {
+			builder.append("defaultEncoding=").append(defaultEncoding).append(", ");
+		}
+		builder.append("debug=").append(debug).append(", enabled=").append(enabled).append("]");
+		return builder.toString();
 	}
 
 }

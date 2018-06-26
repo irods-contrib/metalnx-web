@@ -1,6 +1,5 @@
 package com.emc.metalnx.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -19,13 +18,11 @@ import org.springframework.mail.MailException;
 //import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.emc.metalnx.core.domain.entity.IconObject;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -112,7 +109,7 @@ public class CollectionInfoController {
 				return template;
 			} else {
 				logger.info("collection/file read only view");
-				logger.info("email service enabled :: {} ",mailService.isMailEnabled());				
+				logger.info("email service enabled :: {} ", mailService.isMailEnabled());
 				dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
 				template = "collections/readOnlyCollectionInfo";
 
@@ -150,6 +147,7 @@ public class CollectionInfoController {
 		@SuppressWarnings("rawtypes")
 		String myPath = URLDecoder.decode(path);
 
+		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
 
 		if (dataProfile != null && dataProfile.isFile()) {
@@ -162,20 +160,6 @@ public class CollectionInfoController {
 
 		logger.info("getCollectionFileInfo() ends !!");
 		return "collections/details :: detailsView";
-	}
-
-	private String extractFilePath(HttpServletRequest request) throws JargonException {
-		String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		try {
-			path = URLDecoder.decode(path,
-					this.getIrodsServices().getIrodsAccessObjectFactory().getJargonProperties().getEncoding());
-		} catch (UnsupportedEncodingException | JargonException e) {
-			logger.error("unable to decode path", e);
-			throw new JargonException(e);
-		}
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		AntPathMatcher apm = new AntPathMatcher();
-		return apm.extractPathWithinPattern(bestMatchPattern, path);
 	}
 
 	public DataProfilerFactory getDataProfilerFactory() {
@@ -214,24 +198,27 @@ public class CollectionInfoController {
 		String template = "";
 		Mail mail = new Mail();
 		mail.setMailFrom("hetalben.patel@nih.gov");
-		mail.setMailTo("hetalben.patel@nih.gov");
+		mail.setMailTo("mike.conway@nih.gov");
 		mail.setMailSubject("DataCommons Access Request - Test");
-		mail.setMailContent("This is a test email for granting an access on \n "+path
-				+"!!!\n\nThanks\nXXX"); 
+		StringBuilder sb = new StringBuilder();
+		sb.append("user:");
+		sb.append(irodsServices.getCurrentUser());
+		sb.append(" is requesting access to resource:");
+		sb.append(path);
+		mail.setMailContent(sb.toString());
 
-		String emailResponse = ""; 
-		try { 			 
-			mailService.sendEmail(mail); 
+		String emailResponse = "";
+		try {
+			mailService.sendEmail(mail);
 			emailResponse = "Your request has been sent successfully.";
-			model.addAttribute("emailResponse" , emailResponse); 
-			template = "collections/emailResponse"; 
-		}catch(MailException me) { 
+			model.addAttribute("emailResponse", emailResponse);
+			template = "collections/emailResponse";
+		} catch (MailException me) {
 			me.printStackTrace();
 			emailResponse = "Sorry, Email sending fail.Try again later!!";
-			model.addAttribute("emailResponse" , emailResponse); 
-			template = "collections/emailResponse"; 
+			model.addAttribute("emailResponse", emailResponse);
+			template = "collections/emailResponse";
 		}
-
 
 		logger.info("Returning to template :: {}", template);
 
