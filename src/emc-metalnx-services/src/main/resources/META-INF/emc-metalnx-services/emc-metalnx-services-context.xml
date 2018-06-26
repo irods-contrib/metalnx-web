@@ -131,6 +131,7 @@
 		<property name="port" value="${mail.port}" />
 		<property name="username" value="${mail.username}" />
 		<property name="password" value="${mail.password}" />
+		<property name="from" value="${mail.from}" />
 		<property name="startTlsEnable" value="${mail.smtp.starttls.enable}" />
 		<property name="smtpAuth" value="${mail.smtp.auth}" />
 		<property name="mailTransportProtocol" value="${mail.transport.protocol}" />

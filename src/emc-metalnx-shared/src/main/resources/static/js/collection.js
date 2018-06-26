@@ -187,9 +187,7 @@ function unsetOperationInProgress() {
 	operationInProgress = false;
 }
 function accessRequest(path){
-	//alert("path :: " + path)
 	var url = "/emc-metalnx-web/collectionInfo/accessRequest";
-	//window.location.href = '/emc-metalnx-web/collectionInfo/accessRequest?path=' + path;	
 	ajaxEncapsulation(url, "GET", {path: path}, loadEmailResponse, null, null, null);
 }
 function loadEmailResponse(data){
