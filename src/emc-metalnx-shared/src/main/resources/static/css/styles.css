@@ -2470,7 +2470,6 @@ td a {
   margin-top: 20px;
 }
 .datacommons_title-usermenu:before{
-  content:'\f2bd';
   display: inline-block;
   font-size: 2rem;
   font-family: 'FontAwesome';
