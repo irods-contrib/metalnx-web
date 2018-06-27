@@ -42,8 +42,6 @@ import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridChecksumException;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.FileOperationService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
@@ -326,16 +324,16 @@ public class FileOperationServiceImpl implements FileOperationService {
 	}
 
 	@Override
-	public void replicateDataObject(String path, String targetResource, boolean inAdminMode)
-			throws DataGridReplicateException, DataGridConnectionRefusedException {
+	public void replicateDataObject(String path, String targetResource, boolean inAdminMode) throws DataGridException {
 		logger.info("Replicating {} into the resource {} [admin mode: {}]", path, targetResource, inAdminMode);
-
+		// TODO: respect admin flag when replication services enhanced in Jargon
 		try {
-			rs.execReplDataObjRule(targetResource, path, inAdminMode);
-		} catch (DataGridRuleException e) {
+			DataObjectAO dataObjectAO = irodsServices.getDataObjectAO();
+			dataObjectAO.replicateIrodsDataObject(path, targetResource);
+		} catch (JargonException e) {
 			logger.info("File replication failed ({}) into the resource {} [admin mode: {}]", path, targetResource,
 					inAdminMode);
-			throw new DataGridReplicateException("File replication failed.");
+			throw new DataGridException("File replication failed.");
 		}
 	}
 

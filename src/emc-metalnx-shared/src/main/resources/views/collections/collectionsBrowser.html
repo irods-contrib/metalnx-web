@@ -447,6 +447,9 @@
     		    "autoWidth": false,
     		    "processing": true,
 						"searching": false,
+						"paging": false,
+					//	"pagingType": "full_numbers",
+					//	"lengthMenu": [10, 25, 50, 75, 100],
     		    "stateSaveParams": function (settings, data) {
     		    	data.search.search = "";
     		    },
@@ -488,12 +491,12 @@
     	            }
     	        },
     	        "drawCallback": function(){
-    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+    	           /* $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
     	            $('.dataTables_paginate.paging_simple_numbers')
     	            .css( 'display', this.api().data().length <= 0 ?
     	                 'none' :
     	                 'block'
-    	            )
+    	            )*/
     	            $('input[name=selectAllCheckboxes]').prop("checked", false);
     	        },
   		    	"columnDefs": [
@@ -570,9 +573,6 @@
 
 
         });
-
-
-
 
 		$('#treeViewTable').on('page.dt', function (){
 		    $("#actions button").prop("disabled", true);
@@ -743,7 +743,7 @@
 			});
 
         	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
-        	
+
 			$("#actions button").prop("disabled", true);
         });
 
@@ -768,8 +768,8 @@
 
         function handleDownload(data) {
         	console.log("collectionBrowser.html:: success call :: handleDownload()")
-        	
-        	console.log(data)            	
+
+        	console.log(data)
         	$("#actionsWait").hide();
         	$("#uploadIcon").prop("disabled", false);
             $("#uploadIcon").removeClass("disabled");
@@ -779,9 +779,9 @@
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("disabled", false);
         	$("#treeViewTable input[name=selectAllCheckboxes]").prop("disabled", false);
-        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");        	
-        	
-        	if (data.downloadLimitStatus == "ok"){   
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
+
+        	if (data.downloadLimitStatus == "ok"){
         		window.location.href = "/emc-metalnx-web/fileOperation/download/";
         	}
         	else {
@@ -797,8 +797,8 @@
         	$("input[name=selectAllCheckboxes]").prop('checked', false);
         	$("input[name=collectionPathCheckboxes]").prop('checked', false);
         }*/
-		
-		
+
+
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
    				'/emc-metalnx-web/browse/getBreadCrumbForObject/',
