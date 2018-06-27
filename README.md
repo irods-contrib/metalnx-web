@@ -149,6 +149,11 @@ Add a global configuration setting for a download limit on files for both single
 Added logic in RuleDeploymentService to create the /zone/.rulecache file if it does not exist in an installation. This is done using the 
 iRODS admin account specified in metalnx.properties. The absense of the .rulecache file was causing the errors in MetaLnx collection browsing.
 
+#### Replicating files onto multiple storage resources during metalnx upload is not working #53
+
+Replaced rule based replication with direct call to work around a possible iRODS rule engine bug
+
+
 
 #### NIEHS identified misc theming issues
 

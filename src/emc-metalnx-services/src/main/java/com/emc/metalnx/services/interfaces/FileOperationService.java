@@ -27,7 +27,6 @@ import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridChecksumException;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 
 public interface FileOperationService {
 
@@ -134,7 +133,7 @@ public interface FileOperationService {
 	 *             if an error happen in the data grid
 	 * @throws IOException
 	 *             cannot create the tar ball file
-	 * @throws JargonException 
+	 * @throws JargonException
 	 */
 	boolean download(String path, HttpServletResponse httpResponse, boolean removeTempCollection)
 			throws DataGridException, IOException, JargonException;
@@ -176,13 +175,11 @@ public interface FileOperationService {
 	 *            resource where the replica will be stored
 	 * @param inAdminMode
 	 *            replicate object in admin mode (-M option)
-	 * @throws DataGridReplicateException
-	 *             is thrown if replication fails
-	 * @throws DataGridConnectionRefusedException
-	 *             is thrown if Metalnx cannot connect to the data grid
+	 * 
+	 * @throws DataGridException
+	 *             {@link DataGridException}
 	 */
-	void replicateDataObject(String path, String targetResource, boolean inAdminMode)
-			throws DataGridConnectionRefusedException, DataGridReplicateException;
+	void replicateDataObject(String path, String targetResource, boolean inAdminMode) throws DataGridException;
 
 	/**
 	 * Computes checksum for a given path.
