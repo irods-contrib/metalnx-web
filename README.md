@@ -56,7 +56,7 @@ metalnx.properties settings (reflected in the example etc/irods-ext/metalnx.prop
 ```
 mail.enable=false
 mail.default-encoding=UTF-8
-mail.host=mailfwd.nih.gov
+mail.host=some.smpt.org
 mail.username=
 mail.password=
 mail.port=25
