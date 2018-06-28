@@ -1,5 +1,6 @@
 package com.emc.metalnx.services.interfaces.mail;
 
+import javax.mail.SendFailedException;
 /**
  * Interface describing basic mail messaging service, configured through
  * {@MailProperties} in a deployment situation. This service must be enabled and
@@ -24,6 +25,6 @@ public interface MailService {
 	 * @param {@link
 	 * 			Mail} with message contents
 	 */
-	void sendEmail(Mail mail);
+	void sendEmail(Mail mail) throws SendFailedException;
 
 }

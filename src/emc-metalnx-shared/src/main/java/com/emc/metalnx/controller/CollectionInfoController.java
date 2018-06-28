@@ -3,6 +3,10 @@ package com.emc.metalnx.controller;
 import java.net.URLDecoder;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.exception.JargonException;
@@ -209,12 +213,15 @@ public class CollectionInfoController {
 		sb.append(path);
 		mail.setMailContent(sb.toString());
 
+
 		try {
 			mailService.sendEmail(mail);
 			response = "Your request has been sent successfully.";
-		} catch (MailException me) {
-			me.printStackTrace();
+		} catch (Exception e) {
 			response = "Sorry, Email sending fail.Try again later!!";
+			logger.error("mail exception occured");
+			e.printStackTrace();
+
 		}
 
 		return response;
