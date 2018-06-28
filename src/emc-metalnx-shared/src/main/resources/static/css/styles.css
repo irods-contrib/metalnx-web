@@ -2,6 +2,7 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 
@@ -1679,7 +1680,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 	text-align: right;
 	width:100%;
 	bottom: -6px;
-  font-size: 1.7em;
+  font-size: 1.1em;
   order: 1;
   padding-right:14px;
 }
@@ -2432,7 +2433,7 @@ td a {
 }
 .datacommons_title-right{
   order: 3;
-  width: 600px;
+  /*width: 600px;*/
   text-align: right;
 }
 .datacommons_title .page-header{
@@ -2447,7 +2448,7 @@ td a {
   padding-right: 28px;
 }
 .datacommons_title-icon i{
-  font-size: 6em;
+  font-size: 4em;
   color: #FFFFFF;
   padding: 5px 5px 5px 25px;
 }
@@ -2469,7 +2470,6 @@ td a {
   margin-top: 20px;
 }
 .datacommons_title-usermenu:before{
-  content:'\f2bd';
   display: inline-block;
   font-size: 2rem;
   font-family: 'FontAwesome';
@@ -2479,7 +2479,7 @@ td a {
 .datacommons_title-usermenu .dropdown{
   display: inline-block;
   white-space: nowrap;
-  width: calc(100% - 37px);
+  /* width: calc(100% - 37px); - mcc */
 }
 .datacommons_title-usermenu .dropdown .dropdown-toggle{ text-decoration: none; }
 .datacommons_title-breadcrum{

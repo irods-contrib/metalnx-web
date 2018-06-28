@@ -52,7 +52,6 @@ import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridReplicateException;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.ConfigService;
@@ -217,7 +216,7 @@ public class FileOperationsController {
 			for (String sourcePathItem : sourcePaths) {
 				try {
 					fileOperationService.replicateDataObject(sourcePathItem, targetResource, inAdminMode);
-				} catch (DataGridReplicateException e) {
+				} catch (DataGridException e) {
 					String item = sourcePathItem.substring(sourcePathItem.lastIndexOf("/") + 1,
 							sourcePathItem.length());
 					failedReplicas.add(item);

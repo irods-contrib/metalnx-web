@@ -447,6 +447,9 @@
     		    "autoWidth": false,
     		    "processing": true,
 						"searching": false,
+						"paging": false,
+					//	"pagingType": "full_numbers",
+					//	"lengthMenu": [10, 25, 50, 75, 100],
     		    "stateSaveParams": function (settings, data) {
     		    	data.search.search = "";
     		    },
@@ -488,12 +491,12 @@
     	            }
     	        },
     	        "drawCallback": function(){
-    	            $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+    	           /* $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
     	            $('.dataTables_paginate.paging_simple_numbers')
     	            .css( 'display', this.api().data().length <= 0 ?
     	                 'none' :
     	                 'block'
-    	            )
+    	            )*/
     	            $('input[name=selectAllCheckboxes]').prop("checked", false);
     	        },
   		    	"columnDefs": [
@@ -570,9 +573,6 @@
 
 
         });
-
-
-
 
 		$('#treeViewTable').on('page.dt', function (){
 		    $("#actions button").prop("disabled", true);

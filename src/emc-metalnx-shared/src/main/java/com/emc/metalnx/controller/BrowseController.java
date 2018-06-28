@@ -727,8 +727,7 @@ public class BrowseController {
 	 */
 	@RequestMapping(value = "getPaginatedJSONObjs/")
 	@ResponseBody
-	public String getPaginatedJSONObjs(final HttpServletRequest request)
-			throws DataGridConnectionRefusedException, JargonException {
+	public String getPaginatedJSONObjs(final HttpServletRequest request) throws DataGridException {
 
 		logger.info("getPaginatedJSONObjs()");
 
@@ -737,9 +736,6 @@ public class BrowseController {
 		int draw = Integer.parseInt(request.getParameter("draw"));
 		int start = Integer.parseInt(request.getParameter("start"));
 		int length = Integer.parseInt(request.getParameter("length"));
-		String searchString = request.getParameter("search[value]");
-		int orderColumn = Integer.parseInt(request.getParameter("order[0][column]"));
-		String orderDir = request.getParameter("order[0][dir]");
 		boolean deployRule = request.getParameter("rulesdeployment") != null;
 
 		// Pagination context to get the sequence number for the listed items
@@ -755,9 +751,17 @@ public class BrowseController {
 
 		try {
 			logger.info("using path of:{}", currentPath);
+			logger.debug("deployRule:{}", deployRule);
 			String path = currentPath;
 			if (deployRule) {
+				logger.debug("getting rule cache path");
 				path = ruleDeploymentService.getRuleCachePath();
+				currentPath = path;
+				logger.info("rule cache path:{}", path);
+				if (!ruleDeploymentService.ruleCacheExists()) {
+					logger.warn("no rule cache in place, create zone/.ruleCache directory");
+					ruleDeploymentService.createRuleCache();
+				}
 			}
 
 			Math.floor(start / length);
@@ -782,14 +786,14 @@ public class BrowseController {
 			throw e;
 		} catch (Exception e) {
 			logger.error("Could not get collections/data objs under path {}: {}", currentPath, e.getMessage());
-			throw new JargonException("exception getting paginated objects", e);
+			throw new DataGridException("exception getting paginated objects", e);
 		}
 
 		try {
 			jsonString = mapper.writeValueAsString(jsonResponse);
 		} catch (JsonProcessingException e) {
 			logger.error("Could not parse hashmap in collections to json: {}", e.getMessage());
-			throw new JargonException("exception in json parsing", e);
+			throw new DataGridException("exception in json parsing", e);
 		}
 
 		return jsonString;
@@ -980,7 +984,8 @@ public class BrowseController {
 	}
 
 	@RequestMapping(value = "/summary", method = RequestMethod.POST)
-	public String getSummary(final Model model, @RequestParam("path") final String path) throws DataGridException, UnsupportedEncodingException {
+	public String getSummary(final Model model, @RequestParam("path") final String path)
+			throws DataGridException, UnsupportedEncodingException {
 		logger.info("BrowseController getSummary() starts :: " + path);
 
 		IconObject icon = null;

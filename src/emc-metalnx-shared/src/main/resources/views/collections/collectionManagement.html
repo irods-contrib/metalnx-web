@@ -26,7 +26,7 @@
     <!-- Bootstrap Validator JS -->
     <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
     <!-- Copy to clipboard JS-->
-    <script src="../static/js/copyToClipboard.js" th:src="@{/js/copyToClipboard.js}"></script>   
+    <script src="../static/js/copyToClipboard.js" th:src="@{/js/copyToClipboard.js}"></script>
 	<title th:text="#{tab.title.collections}">EMC Metalnx - Collections</title>
 </head>
 
@@ -37,8 +37,8 @@
 		th:data-content="#{collection.title.popover}"></h1>
 		<a aria-label="page help" id="collections-page-title" href="#"
 		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a> -->
-					
-		
+
+
         <div th:if="${unexpectedError}">
             <div class="alert alert-danger alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
@@ -648,15 +648,14 @@
 
 
 			function getSubDirectories(path) {
-				//FIXME: mcc - remove for deploy
-				console.log("Collection management - getSubDirectories()");
+			
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
-													
-				setTimeout(function () {		
+
+				setTimeout(function () {
 					console.log("calling getSubDirectories");
 					ajaxEncapsulation("/emc-metalnx-web/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
-					currentPath = path;								
+					currentPath = path;
 					console.log("currentpath " +currentPath);
 					console.log("path " +path)
 				}, 400);
@@ -713,9 +712,9 @@
 
 	        function showModifyForm() {
 		        	var cbChecked = $('input[name="collectionPathCheckboxes"]:checked').length;
-	
+
 		        	if (cbChecked > 1) return;
-	
+
 	                var url = [[ ${ urlMap.URL_MODIFY_COLLECTION_USER } ]];
 	                //alert(url);
 	                var path = $('input[name="collectionPathCheckboxes"]:checked').val();
@@ -728,7 +727,7 @@
 					$(".registerForm").submit();
 				}
 	        }
-	        
+
 	        function callbackMoveAndCopyError(path){
 				$("#moveModal").modal("hide");
 
@@ -737,8 +736,8 @@
 
 				//updating the list of files and collections
 				currentPath = path;
-				
-	       		positionBrowserToPath(path); 
+
+	       		positionBrowserToPath(path);
 
 				//xs$("#tree-view-panel-body").html(data);
 	        }
@@ -755,8 +754,8 @@
 				totalCheckboxesChecked = 0;
 
 	       		//resetDataTablesStart();
-	       		
-	       		positionBrowserToPath(targetPath); 
+
+	       		positionBrowserToPath(targetPath);
 
 				$("#tree-view-panel-body").html(data);
 	        }
@@ -847,7 +846,7 @@
 
 				return paths;
 			}
-			
+
 			/**
 			* position the collection browser to the new path
 			*/
@@ -865,10 +864,10 @@
 	            	$("#uploadIcon").addClass("disabled");
 	            	$("#showCollectionFormBtn").prop("disabled", true);
 	            	$("#showCollectionFormBtn").addClass("disabled");
-	
+
 	            	var paths = findPathsSelected();
 	            	var url = "/emc-metalnx-web/fileOperation/delete/";
-	
+
 		        	ajaxEncapsulation(
 		        		url,
 		        		"POST",
@@ -877,10 +876,10 @@
 			        		unsetOperationInProgress();
 			        		resetDataTablesStart();
 		        			$("#tree-view-panel-body").html(data);
-	
+
 						}
 					);
-	
+
 					$("#deleteModal").modal("hide");
 					cleanModals();
 	        }
