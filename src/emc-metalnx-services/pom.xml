@@ -15,28 +15,30 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>2.0.0</version>
+		<version>2.0.1</version>
 	</parent>
 	<artifactId>emc-metalnx-services</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-profiler</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-typer</artifactId>
-			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.emc.metalnx</groupId>
@@ -98,7 +100,17 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
 
 	</dependencies>
 
@@ -267,21 +279,37 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
+									access.proxy=true
 
 									
 									irodsext.dataprofiler.retrieve.tickets=false
-									
+								
 									irodsext.dataprofiler.retrieve.starred=true
+									
 									irodsext.dataprofiler.retrieve.shared=false
+								
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
 								
 									irodsext.dataprofiler.retrieve.metadata.templates=false
 
-									
+								
 									irodsext.datatyper.persist.data.types=false
-									
-									irodsext.datatyper.detailed.determination=false
+								
 
+									irodsext.datatyper.detailed.determination=false
+									
+									mail.enabled=${metalnx.mail.enabled}
+									mail.default-encoding=UTF-8
+									mail.host=${metalnx.mail.host}
+									mail.username=${metalnx.mail.username}
+									mail.password=${metalnx.mail.password}
+									mail.port=${metalnx.mail.port}
+									mail.smtp.starttls.enable=${metalnx.starttls.enable}
+									mail.smtp.auth=${metalnx.smtp.auth}
+									mail.transport.protocol=${metalnx.transport.protocol}
+									mail.debug=${metalnx.mail.debug}
+									mail.from=${metalnx.mail.from}
+									mail.to=${metalnx.mail.to}											
 								</echo>
 							</tasks>
 						</configuration>
