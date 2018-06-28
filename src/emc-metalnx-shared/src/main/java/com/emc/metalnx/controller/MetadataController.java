@@ -343,10 +343,12 @@ public class MetadataController {
 
 	@RequestMapping(value = "/exportToCSV")
 	public void exportToCSV(final HttpServletResponse response) throws IOException, DataGridConnectionRefusedException {
+		logger.info("MetadataContoller :: exportToCSV() :: starts!");
+		
 		String filePath = collectionController.getCurrentPath();
-
+		logger.info("FilePath:: {}", filePath);
+		
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(filePath);
-
 		setReponseHeaderForCSVExport(response);
 		ServletOutputStream outputStream = response.getOutputStream();
 
