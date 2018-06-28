@@ -1,11 +1,16 @@
 package com.emc.metalnx.services.irods.mail;
 
 import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.ParseException;
 
 import org.irods.jargon.midtier.utils.configuration.MidTierConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -118,7 +123,7 @@ public class MailServiceImpl implements MailService {
 	 * services.interfaces.mail.Mail)
 	 */
 	@Override
-	public void sendEmail(Mail mail) {
+	public void sendEmail(Mail mail) throws SendFailedException{
 		logger.info("sendMail()");
 		if (mail == null) {
 			throw new IllegalArgumentException("Null mail");
@@ -131,39 +136,64 @@ public class MailServiceImpl implements MailService {
 			return;
 		}
 
-		logger.info("sending mail:{}", mail);
+		//logger.info("sending mail:{}", mail);
+		logger.info("#################################################");
+		logger.info("Mail To :: ", mailProperties.getTo().toString());
+		logger.info("Mail From :: ", mailProperties.getFrom().toString());
+		logger.info("#################################################");
 
 		if (mail.getMailTo() == null || mail.getMailTo().isEmpty()) {
-			logger.info("no email to field, use rods admin");
-			if (midTierConfiguration.getIrodsAdminEmail() == null
+			
+			if(mailProperties.getTo() != null && !mailProperties.getTo().isEmpty()) {
+				logger.info("setting to email id from properties.");
+				mail.setMailTo(mailProperties.getTo());
+			}else if (midTierConfiguration.getIrodsAdminEmail() == null
 					|| midTierConfiguration.getIrodsAdminEmail().isEmpty()) {
+
 				logger.warn("#################################################");
-				logger.warn("mail address for rods admin not configured, will ignore this message");
+				logger.warn("mail To address for rods admin not configured, will ignore this message");
 				logger.warn("#################################################");
-				return;
+				throw new SendFailedException();
 			} else {
+				logger.info("no email to field, use rods admin");
 				mail.setMailTo(midTierConfiguration.getIrodsAdminEmail());
 			}
 		}
 
 		if (mail.getMailFrom() == null || mail.getMailFrom().isEmpty()) {
-			logger.info("no email from field, use rods admin");
-			if (mailProperties.getFrom() == null || midTierConfiguration.getIrodsAdminEmail().isEmpty()) {
-				logger.warn("#################################################");
-				logger.warn("mail address for rods admin not configured, will ignore this message");
-				logger.warn("#################################################");
-				return;
-			} else {
+			
+			if (mailProperties.getFrom() != null && !mailProperties.getFrom().isEmpty()) {
+				logger.info("setting from email id from properties.");
 				mail.setMailFrom(mailProperties.getFrom());
+			}else if(midTierConfiguration.getIrodsAdminEmail()== null || midTierConfiguration.getIrodsAdminEmail().isEmpty()) {
+				logger.warn("#################################################");
+				logger.warn("mail From address for rods admin not configured, will ignore this message");
+				logger.warn("#################################################");
+				throw new SendFailedException();
+			} else {
+				logger.info("no email from field, use rods admin");
+				mail.setMailFrom(midTierConfiguration.getIrodsAdminEmail());
 			}
 		}
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(mail.getMailFrom());
-		message.setTo(mail.getMailTo());
+		message.setTo(mail.getMailTo());		
 		message.setSubject(mail.getMailSubject());
 		message.setText(mail.getMailContent());
+
+		if (mailProperties.getCc() != null && !mailProperties.getCc().isEmpty()) {
+			logger.info("setting cc email id from properties.");
+			String cc = mailProperties.getCc();
+			String[] ccRecipient =  cc.split(",");
+			mail.setMailCc(ccRecipient);
+			message.setCc(mail.getMailCc());
+		}
+
+		logger.info("sending mail::{}", message);
 		javaMailSender.send(message);
+
+
 	}
 
 	public MailProperties getMailProperties() {

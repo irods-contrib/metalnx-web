@@ -16,6 +16,8 @@ public class MailProperties {
 	private String username = "";
 	private String password = "";
 	private String from = "";
+	private String to = "";
+	private String cc = "";
 	private boolean startTlsEnable = false;
 	private boolean smtpAuth = false;
 	private String mailTransportProtocol = "";
@@ -24,6 +26,7 @@ public class MailProperties {
 	private boolean enabled = false;
 
 	public String getHost() {
+		System.out.println("Host :: " +host);
 		return host;
 	}
 
@@ -32,6 +35,7 @@ public class MailProperties {
 	}
 
 	public int getPort() {
+		System.out.println("Port :: " +port);
 		return port;
 	}
 
@@ -40,6 +44,7 @@ public class MailProperties {
 	}
 
 	public String getUsername() {
+		
 		return username;
 	}
 
@@ -111,6 +116,23 @@ public class MailProperties {
 		this.from = from;
 	}
 
+	
+	public String getTo() {
+		return to;
+	}
+
+	public void setTo(String to) {
+		this.to = to;
+	}
+
+	public String getCc() {
+		return cc;
+	}
+
+	public void setCc(String cc) {
+		this.cc = cc;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -124,6 +146,12 @@ public class MailProperties {
 		}
 		if (from != null) {
 			builder.append("from=").append(from).append(", ");
+		}
+		if (to != null) {
+			builder.append("to=").append(to).append(", ");
+		}
+		if (cc != null) {
+			builder.append("cc=").append(cc).append(", ");
 		}
 		builder.append("startTlsEnable=").append(startTlsEnable).append(", smtpAuth=").append(smtpAuth).append(", ");
 		if (mailTransportProtocol != null) {
