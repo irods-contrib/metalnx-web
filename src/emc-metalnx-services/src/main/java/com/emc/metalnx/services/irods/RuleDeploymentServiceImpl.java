@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.CollectionAO;
 import org.irods.jargon.core.pub.Stream2StreamAO;
 import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.io.IRODSFile;
@@ -36,8 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.ConfigService;
@@ -135,14 +135,123 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 
 	@Override
 	public void createRuleCache() throws DataGridException {
-		String parentPath = String.format("/%s", configService.getIrodsZone());
-		DataGridCollectionAndDataObject ruleCacheDir = new DataGridCollectionAndDataObject(getRuleCachePath(),
-				parentPath, true);
-		collectionService.createCollection(ruleCacheDir);
+		logger.info("createRuleCache()");
+		String ruleCachePath = getRuleCachePath();
+		logger.info("ruleCachePath:{}", ruleCachePath);
+		IRODSAccount adminAccount = irodsServices.getIrodsAdminAccount();
+
+		try {
+			IRODSFileFactory irodsFileFactory = irodsServices.getIrodsAccessObjectFactory()
+					.getIRODSFileFactory(adminAccount);
+
+			IRODSFile newFile = irodsFileFactory.instanceIRODSFile(ruleCachePath);
+			newFile.mkdirs();
+
+			// Updating inheritance option on the collection, if needed
+			CollectionAO collectionAO = irodsServices.getCollectionAO();
+			collectionAO.setAccessPermissionInherit("", ruleCachePath, true);
+			logger.info("created!");
+
+		} catch (JargonException e) {
+			logger.debug("Could not create a rule cache collection in the data grid: {}", e.getMessage());
+			throw new DataGridException(e.getMessage());
+		}
+
 	}
 
 	@Override
-	public boolean ruleCacheExists() throws DataGridConnectionRefusedException, JargonException {
-		return collectionService.isPathValid(getRuleCachePath());
+	public boolean ruleCacheExists() throws JargonException {
+		logger.info("ruleCacheExists()");
+		IRODSAccount adminAccount = irodsServices.getIrodsAdminAccount();
+		String ruleCachePath = getRuleCachePath();
+
+		try {
+			IRODSFileFactory irodsFileFactory = irodsServices.getIrodsAccessObjectFactory()
+					.getIRODSFileFactory(adminAccount);
+
+			IRODSFile newFile = irodsFileFactory.instanceIRODSFile(ruleCachePath);
+			return newFile.exists();
+
+		} catch (JargonException e) {
+			logger.debug("Could not create a rule cache collection in the data grid: {}", e.getMessage());
+			throw new DataGridException(e.getMessage());
+		}
+
 	}
+
+	/**
+	 * @return the irodsServices
+	 */
+	public IRODSServices getIrodsServices() {
+		return irodsServices;
+	}
+
+	/**
+	 * @param irodsServices
+	 *            the irodsServices to set
+	 */
+	public void setIrodsServices(IRODSServices irodsServices) {
+		this.irodsServices = irodsServices;
+	}
+
+	/**
+	 * @return the fos
+	 */
+	public FileOperationService getFos() {
+		return fos;
+	}
+
+	/**
+	 * @param fos
+	 *            the fos to set
+	 */
+	public void setFos(FileOperationService fos) {
+		this.fos = fos;
+	}
+
+	/**
+	 * @return the configService
+	 */
+	public ConfigService getConfigService() {
+		return configService;
+	}
+
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
+
+	/**
+	 * @return the ruleService
+	 */
+	public RuleService getRuleService() {
+		return ruleService;
+	}
+
+	/**
+	 * @param ruleService
+	 *            the ruleService to set
+	 */
+	public void setRuleService(RuleService ruleService) {
+		this.ruleService = ruleService;
+	}
+
+	/**
+	 * @return the collectionService
+	 */
+	public CollectionService getCollectionService() {
+		return collectionService;
+	}
+
+	/**
+	 * @param collectionService
+	 *            the collectionService to set
+	 */
+	public void setCollectionService(CollectionService collectionService) {
+		this.collectionService = collectionService;
+	}
+
 }

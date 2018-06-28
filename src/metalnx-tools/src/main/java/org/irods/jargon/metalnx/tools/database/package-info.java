@@ -1,9 +1,6 @@
 /**
- * 
- */
-/**
- * Tools to support setup and migration of MetaLnx database schema
- * 
+ * Tools to support setup and migration of Metalnx database schema
+ *
  * @author Mike Conway - NIEHS
  *
  */

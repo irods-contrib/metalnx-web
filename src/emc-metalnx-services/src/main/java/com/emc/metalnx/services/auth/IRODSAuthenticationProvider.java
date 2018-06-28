@@ -279,4 +279,12 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 			return "ROLE_USER";
 		}
 	}
+
+	public String getIrodsAuthScheme() {
+		return irodsAuthScheme;
+	}
+
+	public void setIrodsAuthScheme(String irodsAuthScheme) {
+		this.irodsAuthScheme = irodsAuthScheme;
+	}
 }
