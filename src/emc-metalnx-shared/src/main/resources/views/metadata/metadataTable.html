@@ -187,10 +187,12 @@
 						style="" title="Add">
 						<i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
 					</button>
-					<button id="exportMetadataToCSV"
-						class="btn btn-default btn-property btn-sm" href="#" style="" title="Download">
-						<i class="fa fa-download"></i> <span
-							th:text="#{metadata.tab.btn.csv}"></span>
+					<button 
+						id="exportMetadataToCSV"
+						class="btn btn-default btn-property btn-sm"
+						th:onclick="'javascript:exportMetadataToCSV(\'' + ${currentPath} +'\');'"
+						style="" title="Download">
+						<i class="fa fa-download"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
 					</button>
 				</div>
 				<div class="col-md-12 col-sm-12">
@@ -353,6 +355,10 @@
                 console.log(disableDelBtn);
                 return disableDelBtn;
             }
+            
+            function exportMetadataToCSV(path) {
+            	window.location = '/emc-metalnx-web/metadata/exportToCSV/?path=' + path;
+            }
 
             $(document).ready(function(){
 
@@ -474,10 +480,7 @@
                     $('#deleteMetadataModal').modal('show');
                 });
             });
-
-            $("#exportMetadataToCSV").click(function() {
-                window.location = "/emc-metalnx-web/metadata/exportToCSV/";
-            });
+             
         /*]]>*/
         </script>
 	</div>
