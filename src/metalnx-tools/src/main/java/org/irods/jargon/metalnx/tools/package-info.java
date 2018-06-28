@@ -1,9 +1,6 @@
 /**
- * 
- */
-/**
- * Tools supporting administration and running of MetaLnx
- * 
+ * Tools supporting administration and running of Metalnx
+ *
  * @author Mike Conway - NIEHS
  *
  */

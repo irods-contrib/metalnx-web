@@ -24,11 +24,11 @@
             <table class="table table-striped">
               <tbody>
                 <tr>
-                  <td th:text="#{about.metalnx.version}">MetaLnx Version</td>
+                  <td th:text="#{about.metalnx.version}">Metalnx Version</td>
                   <td>${EmcMetalnxVersion.VERSION}</td>
                 </tr>
                 <tr>
-                  <td th:text="#{about.metalnx.build.time}">MetaLnx Build Time</td>
+                  <td th:text="#{about.metalnx.build.time}">Metalnx Build Time</td>
                   <td>${EmcMetalnxVersion.BUILD_TIME}</td>
                 </tr>
                 <tr>

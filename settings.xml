@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+
+	<!-- what follows is an example maven settings.xml profile for jargon testing.
+		This is picked up by the jargon pom file and used to generate a testing.properties
+		file in the java test resources directory -->
+
+
+	<profiles>
+    <profile>
+        <id>flyway-local</id>
+        <properties>
+          <flyway.jdbc.url>jdbc:postgresql://server1.local:5432/IRODS-EXT</flyway.jdbc.url>
+          <flyway.db.user>irodsext</flyway.db.user>
+          <flyway.db.password>password</flyway.db.password>
+          <flyway.db.schema>public</flyway.db.schema>
+        </properties>
+      </profile>
+   </profile>
+   
+   
+   <activeProfiles>
+		<activeProfile>flyway-loxal</activeProfile>
+		
+	</activeProfiles>
+
+</settings>

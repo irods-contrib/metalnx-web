@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>2.0.0</version>
+		<version>2.0.1</version>
 	</parent>
 	<artifactId>emc-metalnx-services</artifactId>
 	<dependencies>
@@ -218,14 +218,12 @@
 									default.storage.resource=${jargon.test.irods.resource}
 									ssl.negotiation.policy=${metalnx.ssl.policy}
 
-									##########################################################
 
 									utilize.packing.streams=${metalnx.packing.streams}
 
 
 									compute.checksum=${metalnx.compute.checksum}
 
-									##########################################################
 
 									db.driverClassName=${metalnx.jdbc.driver}
 									db.url=${metalnx.jdbc.url}
@@ -297,6 +295,7 @@
 								
 									irodsext.datatyper.persist.data.types=false
 								
+
 									irodsext.datatyper.detailed.determination=false
 									
 									mail.enabled=${metalnx.mail.enabled}

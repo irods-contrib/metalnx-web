@@ -43,7 +43,7 @@ The Metalnx container is hosted on DockerHub under the **metalnx** account. You 
     
 ### Configuring a self-signed SSL cert for iRODS transport
 
-If you have a self-signed certificate for iRODS SSL, it needs to be known by the JVM running MetaLnx. This can be accomplished by adding the ssl public key as a file called server.crt mounted as a volume that appears under /tmp/cert in docker, 
+If you have a self-signed certificate for iRODS SSL, it needs to be known by the JVM running Metalnx. This can be accomplished by adding the ssl public key as a file called server.crt mounted as a volume that appears under /tmp/cert in docker, 
 
 ```
 -v /home/hostvolumehere:/tmp/cert

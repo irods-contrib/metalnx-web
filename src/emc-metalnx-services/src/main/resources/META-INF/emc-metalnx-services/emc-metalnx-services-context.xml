@@ -137,6 +137,8 @@
 		<property name="mailTransportProtocol" value="${mail.transport.protocol}" />
 		<property name="debug" value="${mail.debug}" />
 		<property name="enabled" value="${mail.enabled}" />
+		<property name="to" value="${mail.to}" />
+		<property name="cc" value="${mail.cc}" />
 	</bean>
 
 

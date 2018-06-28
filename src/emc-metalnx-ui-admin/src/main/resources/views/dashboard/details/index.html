@@ -110,7 +110,7 @@
 										<span th:text="${server.hostname}"></span>
 									</p>
 									<p>
-										<b>MetaLnx Remote Monitor </b> <br />
+										<b>Metalnx Remote Monitor </b> <br />
 										<span th:text="${server.rmdPackageVersion}"></span> -
 										<span th:text="${server.rmdPackageRelease}"></span>
 									</p>
@@ -336,7 +336,7 @@
 				ajaxEncapsulation(url, "POST", {hostname : serverHostname}, displayTotalStorageInfo, null);
 
 
-				// Requesting machine's health information to MetaLnx
+				// Requesting machine's health information to Metalnx
 				var rmdBaseScheme = "POST";
 				var rmdBaseUrl = "/emc-metalnx-web/monitor/";
 				var requestsInfo = [

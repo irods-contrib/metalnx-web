@@ -1,4 +1,4 @@
-# MetaLnx Web assets
+# Metalnx Web assets
 
 This collection is an optional set of resources accessed by the metalnx pipeline, providing
 a way to plug in site-specific themes. This is a first iteration and if there are better/cleaner

@@ -22,5 +22,7 @@ public class MetalnxTestUtils {
 	public static final String MAIL_DEBUG = "mail.debug";
 	public static final String MAIL_TO = "mail.to";
 	public static final String MAIL_FROM = "mail.from";
+	public static final String MAIL_CC = "mail.cc";
+	
 
 }

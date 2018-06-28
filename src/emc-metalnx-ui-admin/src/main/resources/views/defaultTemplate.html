@@ -43,6 +43,9 @@
 <!-- Custom Fonts -->
 <link href="../static/css/font-awesome.min.css" rel="stylesheet"
 	type="text/css" th:href="@{/css/font-awesome.min.css}" />
+	<!-- Custom Fonts -->
+<link href="../static/css/fontawesome-5.0.13.min.css" rel="stylesheet"
+	type="text/css" th:href="@{/css/fontawesome-5.0.13.min.css}" />
 
 <link href="../static/css/styles.css" rel="stylesheet"
 	th:href="@{/css/styles.css}" />
@@ -82,76 +85,30 @@
 
 	<div id="wrapper">
 
-		<!-- Navigation -->
-		<nav class="navbar navbar-default navbar-static-top" role="navigation"
-			style="margin-bottom: 0;">
-			<div class="navbar-header col-sm-12" style="margin-bottom: 0;">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
+		<th:block th:include="topnav :: topnav">
+		</th:block>
 
-				<!-- EMC metalnx logo -->
-				<a class="navbar-brand" th:href="@{ ${urlMap.URL_COLLECTIONS_MANAGEMENT} }">
-					<img  alt="EMC logo" src="../static/images/logo.svg"
-                		th:src="@{/images/logo.svg}" />
-					<img class="hidden" alt="EMC logo" src="../static/images/logo.svg"
-						  th:src="@{/images/logo.svg}" />
-				</a>
-				<!-- EMC metalnx logo - end -->
+		<div class="page-nav-wrapper" id="page-nav-wrapper">
+			<aside class="navbar-default sidebar" role="navigation">
+				<th:block th:include="sidenav :: sidenav">
+				</th:block>
+				<!-- sidenav extracted out to fragment -->
+			</aside>
 
-				<!-- Topbar links -->
-				<ul class="nav navbar-top-links navbar-right pull-right">
+			<!-- Page Content -->
+			<div id="page-wrapper">
+				<!-- SKIPNAV ANCHOR -->
+				<a name="skipnav-anchor"></a>
 
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-user"></i>
-							<span class="navbar-top-links-text" th:text="${userDetails.getUsername()}"></span> &nbsp;
-							<i class="fa fa-caret-down white-icon"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-user">
-							<li><a th:href="@{/preferences/}"><i
-									class="fa fa-gear fa-fw"></i> <span
-									th:text="#{user.preferences.label}"></span></a></li>
-							<li class="divider"></li>
-							<li><a href="#" data-toggle="modal"
-								data-target="#aboutModal"><i class="fa fa-info-circle"></i>
-									<span>About</span></a></li>
-							<li class="divider"></li>
-							<li><a th:href="@{/logout/}"><i
-									class="fa fa-sign-out"></i> <span
-									th:text="#{user.logout.label}"></span></a></li>
-						</ul> <!-- /.dropdown-user --></li>
-					<!-- /.dropdown -->
-				</ul>
-				<!-- /.navbar-top-links -->
-
-        <!-- Upload notifications panel -->
-      </div>
-
-
-			<!-- /.navbar-static-side -->
-		</nav>
-		<!-- /.navbar-header -->
-		<aside class="navbar-default sidebar" role="navigation" >
- 		<th:block th:include="sidenav :: sidenav"> </th:block>
-		<!-- sidenav extracted out to fragment --></aside>
-
-
-		<!-- Page Content -->
-		<div id="page-wrapper">
-			<div class="row">
-				<div class="col-sm-12" layout:fragment="content">
-					<h1 class="page-header">Title here</h1>
-
+				<div class="row">
+					<div class="col-sm-12" layout:fragment="content">
+						<h1 class="page-header">Title here</h1>
+					</div>
+					<!-- /.col-sm-12 -->
 				</div>
-				<!-- /.col-sm-12 -->
+				<!-- /.row -->
 			</div>
-			<!-- /.row -->
 		</div>
-		<!-- /#page-wrapper -->
 
 		<!-- Footer -->
 		<footer class="row"> &copy; 2015-2017 DELL EMC. All rights reserved. </footer>

@@ -95,7 +95,7 @@
 
 	<security-constraint>
 		<web-resource-collection>
-			<web-resource-name>MetaLnx webapp</web-resource-name>
+			<web-resource-name>Metalnx webapp</web-resource-name>
 			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		

@@ -1,6 +1,6 @@
-# MetaLnx Configuration and Installation notes
+# Metalnx Configuration and Installation notes
 
-MetaLnx has a bias towards deployment as a Docker image, and will continue to evolve so that it can be clustered
+Metalnx has a bias towards deployment as a Docker image, and will continue to evolve so that it can be clustered
 and scaled horizontally using an orchestration tool such as Kubernetes, as
 part of a suite of mid-tier components that can work together to create a complete CI environment.
 
@@ -10,7 +10,7 @@ This project contains a sample /etc/irods-ext directory with a metalnx.propertie
 These two files must be mounted as a volume at /etc/irods-ext, or be present in the same directory when running
 in a web container directly on the host OS.
 
-Generally, MetaLnx is configured through a metalnx.properties file, documented below. This controls optthe ional behaviors
+Generally, Metalnx is configured through a metalnx.properties file, documented below. This controls optthe ional behaviors
 and customizations with the exception of theming (custom images, banners, css, messages). The metalnx.properties
 in the provided /etc/irods-ext directory can serve as a template.
 
@@ -28,11 +28,11 @@ See the DEVELOPER-README.md and the README.md in the src/metalnx-tools for infor
 
 ## Web app theming and customization
 
-By default, MetaLnx uses the resource support of Spring MVC, e.g. https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-static-resources.
+By default, Metalnx uses the resource support of Spring MVC, e.g. https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-static-resources.
 
 The provided /etc/irods-ext/metalnxConfig.xml can be used as provided to load the default baseline theming, this file must be present.
 
-Note that by default, MetaLnx is looking at internal static files from the webapp and classpath, thus no
+Note that by default, Metalnx is looking at internal static files from the webapp and classpath, thus no
 special customization is needed to run the base image. This does allow a site-specific override
 of the css, image, js, as well as the i18n message resource bundles.
 

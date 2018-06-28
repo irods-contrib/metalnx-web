@@ -147,7 +147,7 @@ public class CollectionServiceImpl implements CollectionService {
 			irodsServices.getCollectionAndDataObjectListAndSearchAO().retrieveObjectStatForPath(path);
 			isValid = true;
 		} catch (FileNotFoundException fnf) {
-			logger.warn("path not valid:{}", fnf);
+			logger.warn("path not found:{}", path);
 		} catch (JargonException e1) {
 			logger.error("error obtaining objStat for path:{}", path, e1);
 			throw e1;
@@ -1471,7 +1471,7 @@ public class CollectionServiceImpl implements CollectionService {
 		logger.info("path:{}", path);
 
 		DataProfilerSettings dataProfilerSettings = new DataProfilerSettings();
-		dataProfilerSettings.setDetectMimeAndInfoType(false);
+		dataProfilerSettings.setDetectMimeAndInfoType(true);
 		dataProfilerSettings.setRetrieveAcls(false);
 		dataProfilerSettings.setRetrieveMetadata(true);
 		dataProfilerSettings.setRetrieveReplicas(false);

@@ -8,13 +8,13 @@ package com.emc.metalnx.services.interfaces.mail;
  */
 public class Mail {
 
-	private String mailFrom;
-	private String mailTo;
-	private String mailCc;
-	private String mailBcc;
-	private String mailSubject;
-	private String mailContent;
-	private String contentType;
+	private String mailFrom = "" ;
+	private String mailTo = "" ;
+	private String[] mailCc;
+	private String mailBcc = "";
+	private String mailSubject = "";
+	private String mailContent = "";
+	private String contentType = "";
 
 	public Mail() {
 		contentType = "text/plain";
@@ -36,11 +36,11 @@ public class Mail {
 		this.mailBcc = mailBcc;
 	}
 
-	public String getMailCc() {
+	public String[] getMailCc() {
 		return mailCc;
 	}
 
-	public void setMailCc(String mailCc) {
+	public void setMailCc(String[] mailCc) {
 		this.mailCc = mailCc;
 	}
 
