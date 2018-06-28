@@ -28,7 +28,7 @@ This software is provided under the Software license provided in the <a href="LI
 ### Changes
 
 
-#### Graceful page showing no access to requested item? For thunderstone when no access #188
+#### Graceful page showing no access to requested item #46
 
 Add a configurable and defeatable handler for collection browser and info pages that can show a no-access page with basic
 data and metadata. This is especially useful in scenarios where an external index has produced a link to an iRODS path. By default,
@@ -74,7 +74,3 @@ Note that a default email address for rods admin is now configurable in metalnx.
 irods.admin.email=
 
 ```
-#### Clicking on the rules icon in the left menu starts a repeating loop of rules page refreshes. #54
-
-Added logic in RuleDeploymentService to create the /zone/.rulecache file if it does not exist in an installation. This is done using the
-iRODS admin account specified in metalnx.properties. The absense of the .rulecache file was causing the errors in MetaLnx collection browsing.

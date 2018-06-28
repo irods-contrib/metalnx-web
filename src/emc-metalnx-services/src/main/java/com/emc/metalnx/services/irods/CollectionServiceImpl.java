@@ -1471,7 +1471,7 @@ public class CollectionServiceImpl implements CollectionService {
 		logger.info("path:{}", path);
 
 		DataProfilerSettings dataProfilerSettings = new DataProfilerSettings();
-		dataProfilerSettings.setDetectMimeAndInfoType(false);
+		dataProfilerSettings.setDetectMimeAndInfoType(true);
 		dataProfilerSettings.setRetrieveAcls(false);
 		dataProfilerSettings.setRetrieveMetadata(true);
 		dataProfilerSettings.setRetrieveReplicas(false);
