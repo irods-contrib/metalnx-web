@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.core.utils.CollectionAndPath;
@@ -44,6 +45,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.IconObject;
+import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
@@ -149,7 +151,7 @@ public class CollectionController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
 			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader)
-			throws DataGridException {
+					throws DataGridException{
 		logger.info("indexViaUrl()");
 		String myPath = path.orElse("");
 		logger.info("dp Header requestHeader is :: " + requestHeader);
@@ -194,21 +196,6 @@ public class CollectionController {
 					throw je;
 				}
 
-				/*
-				 * See if it's a file or coll. A file redirects to the info page
-				 *
-				 */
-
-				if (cs.isDataObject(myPath)) {
-					logger.info("redirect to info page");
-					StringBuilder sb = new StringBuilder();
-					sb.append("redirect:/collectionInfo?path=");
-					sb.append(URLEncoder.encode(myPath));
-					return sb.toString();
-				}
-
-				logger.info("is collection...continue to collection management");
-
 				if (uiMode.equals(UI_USER_MODE)) {
 					model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
 					model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
@@ -221,7 +208,7 @@ public class CollectionController {
 				model.addAttribute("resources", resourceService.findAll());
 				model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
 				template = "collections/collectionManagement";
-			} catch (JargonException e) {
+			}catch (JargonException e) {
 				logger.error("error establishing collection location", e);
 				model.addAttribute("unexpectedError", true);
 			}
@@ -235,9 +222,22 @@ public class CollectionController {
 				DataProfile dataProfile = null;
 				IconObject icon = null;
 				String mimeType = "";
+
 				logger.info("collection/file read only view");
-				dataProfile = cs.getCollectionDataProfileAsProxyAdmin(myPath);
-				template = "collections/readOnlyCollectionInfo";
+
+				try {
+					dataProfile = cs.getCollectionDataProfileAsProxyAdmin(myPath);
+					template = "collections/readOnlyCollectionInfo";
+				} catch (FileNotFoundException e) {		
+					logger.error("#########################");
+					logger.error("collection does not exist.");
+					e.printStackTrace();
+					logger.error("#########################");
+
+					template = "httpErrors/noFileOrCollection";
+					return template;
+				}
+
 
 				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
 				model.addAttribute("dataGridMetadataList", metadataList);

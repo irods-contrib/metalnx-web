@@ -364,7 +364,7 @@ public class BrowseController {
 	public String getDirectoriesAndFilesForGroupForm(final Model model, @RequestParam("path") String path,
 			@RequestParam("groupName") final String groupName,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+					throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
 			path = "/";
 		}
@@ -427,7 +427,7 @@ public class BrowseController {
 	public String getDirectoriesAndFilesForUser(final Model model, @RequestParam("path") final String path,
 			@RequestParam("username") final String username,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+					throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 
 		List<DataGridCollectionAndDataObject> list = new ArrayList<DataGridCollectionAndDataObject>();
 		Set<String> readPermissions = new HashSet<String>();
@@ -692,7 +692,7 @@ public class BrowseController {
 	// FIXME: urlencode? - mcc
 	@ResponseBody
 	@RequestMapping(value = "isValidCollectionName/{newObjectName}/", method = RequestMethod.GET, produces = {
-			"text/plain" })
+	"text/plain" })
 	public String isValidCollectionName(@PathVariable final String newObjectName) throws DataGridException {
 		String rc = "true";
 		String newPath = String.format("%s/%s", currentPath, newObjectName);
@@ -767,7 +767,7 @@ public class BrowseController {
 			Math.floor(start / length);
 			logger.info("getting subcollections under path:{}", path);
 			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPath(path); // TODO: temporary add
-																									// paging service
+			// paging service
 
 			logger.debug("dataGridCollectionAndDataObjects:{}", dataGridCollectionAndDataObjects);
 			/*
@@ -991,20 +991,27 @@ public class BrowseController {
 		IconObject icon = null;
 		String mimeType = "";
 
-		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
+		try {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
+			logger.info("DataProfiler is :: " + dataProfile);
 
-		logger.info("DataProfiler is :: " + dataProfile);
+			if (dataProfile != null && dataProfile.isFile()) {
+				mimeType = dataProfile.getDataType().getMimeType();
+			}
+			icon = cs.getIcon(mimeType);
 
-		if (dataProfile != null && dataProfile.isFile()) {
-			mimeType = dataProfile.getDataType().getMimeType();
+			model.addAttribute("icon", icon);
+			model.addAttribute("dataProfile", dataProfile);
+
+			logger.info("getSummary() ends !!");
+			return "collections/summarySidenav :: SummarySidenavView";
+		} catch (FileNotFoundException e) {		
+			logger.error("#########################");
+			logger.error("collection does not exist.");
+			e.printStackTrace();
+			logger.error("#########################");		
+			return "httpErrors/noAccess";
 		}
-		icon = cs.getIcon(mimeType);
-
-		model.addAttribute("icon", icon);
-		model.addAttribute("dataProfile", dataProfile);
-
-		logger.info("getSummary() ends !!");
-		return "collections/summarySidenav :: SummarySidenavView";
 	}
 }

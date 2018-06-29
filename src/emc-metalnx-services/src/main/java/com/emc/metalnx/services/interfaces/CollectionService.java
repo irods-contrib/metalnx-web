@@ -452,8 +452,9 @@ public interface CollectionService {
 	 * @return {@link DataProfile}
 	 * @throws DataGridException
 	 *             {@link DataGridException}
+	 * @throws FileNotFoundException 
 	 */
-	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException;
+	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws FileNotFoundException, DataGridException;
 
 	/**
 	 * Retrieve a data profile for the path
@@ -464,7 +465,7 @@ public interface CollectionService {
 	 * @throws DataGridException
 	 *             {@link DataGridException}
 	 */
-	DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws DataGridException;
+	DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws FileNotFoundException , DataGridException;
 
 	/**
 	 * Handy method probes user access to a path

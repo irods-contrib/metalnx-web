@@ -9,6 +9,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
@@ -98,44 +99,56 @@ public class CollectionInfoController {
 		logger.info("Has Access :: {}", access);
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = null;
-		if (access) {
+		try{
+			if (access) {
 
-			dataProfile = collectionService.getCollectionDataProfile(myPath);
-			if (!dataProfile.isFile())
-				template = "collections/collectionInfo";
-			if (dataProfile.isFile())
-				template = "collections/fileInfo";
 
-		} else {
+				dataProfile = collectionService.getCollectionDataProfile(myPath);
+				if (!dataProfile.isFile())
+					template = "collections/collectionInfo";
+				if (dataProfile.isFile())
+					template = "collections/fileInfo";
 
-			if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
-				template = "httpErrors/noAccess";
-				logger.info("returning to :{}", template);
-				return template;
+
 			} else {
-				logger.info("collection/file read only view");
-				logger.info("email service enabled :: {} ", mailService.isMailEnabled());
-				dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
-				template = "collections/readOnlyCollectionInfo";
 
-				List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
-				model.addAttribute("dataGridMetadataList", metadataList);
-				model.addAttribute("isMailEnabled", mailService.isMailEnabled());
+				if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
+					template = "httpErrors/noAccess";
+					logger.info("returning to :{}", template);
+					return template;
+				} else {
+					logger.info("collection/file read only view");
+					logger.info("email service enabled :: {} ", mailService.isMailEnabled());
 
+					dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
+					template = "collections/readOnlyCollectionInfo";
+
+					List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
+					model.addAttribute("dataGridMetadataList", metadataList);
+					model.addAttribute("isMailEnabled", mailService.isMailEnabled());
+				}
+			}
+			if (dataProfile != null && dataProfile.isFile()) {
+				mimeType = dataProfile.getDataType().getMimeType();
 			}
 
+			icon = collectionService.getIcon(mimeType);
+			model.addAttribute("icon", icon);
+			model.addAttribute("dataProfile", dataProfile);
+			model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
+
+			logger.info("returning to :{}", template);
+		}catch (FileNotFoundException e) {		
+			logger.error("#########################");
+			logger.error("collection does not exist.");
+			e.printStackTrace();
+			logger.error("#########################");
+
+			template = "httpErrors/noFileOrCollection";
+			return template;
 		}
 
-		if (dataProfile != null && dataProfile.isFile()) {
-			mimeType = dataProfile.getDataType().getMimeType();
-		}
-		icon = collectionService.getIcon(mimeType);
 
-		model.addAttribute("icon", icon);
-		model.addAttribute("dataProfile", dataProfile);
-		model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
-
-		logger.info("returning to :{}", template);
 
 		return template;
 
@@ -152,19 +165,27 @@ public class CollectionInfoController {
 		@SuppressWarnings("rawtypes")
 		String myPath = URLDecoder.decode(path);
 
-		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
-
-		if (dataProfile != null && dataProfile.isFile()) {
-			mimeType = dataProfile.getDataType().getMimeType();
+		try {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = collectionService.getCollectionDataProfile(myPath);
+			if (dataProfile != null && dataProfile.isFile()) {
+				mimeType = dataProfile.getDataType().getMimeType();
+			}
+			icon = collectionService.getIcon(mimeType);
+			model.addAttribute("icon", icon);
+			model.addAttribute("dataProfile", dataProfile);
+			logger.info("getCollectionFileInfo() ends !!");
+			
+			return "collections/details :: detailsView";
+			
+		}catch (FileNotFoundException e) {		
+			logger.error("#########################");
+			logger.error("collection does not exist.");
+			e.printStackTrace();
+			logger.error("#########################");		
+			return "httpErrors/noFileOrCollection";
 		}
-		icon = collectionService.getIcon(mimeType);
 
-		model.addAttribute("icon", icon);
-		model.addAttribute("dataProfile", dataProfile);
-
-		logger.info("getCollectionFileInfo() ends !!");
-		return "collections/details :: detailsView";
 	}
 
 	public DataProfilerFactory getDataProfilerFactory() {

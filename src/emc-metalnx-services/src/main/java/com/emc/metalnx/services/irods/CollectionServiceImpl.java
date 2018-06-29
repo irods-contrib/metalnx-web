@@ -1435,7 +1435,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException {
+	public DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws FileNotFoundException , DataGridException {
 		IRODSAccount irodsAccount = irodsServices.getUserAO().getIRODSAccount();
 
 		logger.info("path:{}", path);
@@ -1459,7 +1459,7 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws DataGridException {
+	public DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path) throws FileNotFoundException, DataGridException {
 
 		logger.info("getCollectionDataProfileAsProxyAdmin()");
 		IRODSAccount irodsAccount = irodsServices.getIrodsAdminAccount();
@@ -1488,6 +1488,9 @@ public class CollectionServiceImpl implements CollectionService {
 			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
 			logger.info("data profile retrieved:{}", dataProfile);
 			return dataProfile;
+		} catch (FileNotFoundException fnf) {
+			logger.warn("file not found for path:{}", path);
+			throw fnf;
 		} catch (JargonException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
 			throw new DataGridException(e.getMessage());
