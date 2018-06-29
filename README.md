@@ -155,6 +155,12 @@ Replaced rule based replication with direct call to work around a possible iRODS
 Temporarily turned off collection paging as the jQuery data tables is exhibiting some sort of bug where the paging chrome is displayed,
 but paging and paging size are not active. This will be revisited in a collection listing cleanup and refactoring effort in a follow up release.
 
+#### Metalnx 2.0 src files must be updated with BSD 3-clause license #46
+
+Updated licensing, code to reflect transition of codebase to iRODS Consortium
+
+
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
