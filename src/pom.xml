@@ -20,7 +20,7 @@
 		<project.version>1.4.0</project.version>
 
 		<!-- Jargon -->
-		<jargon.version>4.3.0.1-SNAPSHOT</jargon.version>
+		<jargon.version>4.3.1.0-SNAPSHOT</jargon.version>
 
 		<!-- Spring -->
 		<spring.version>4.3.6.RELEASE</spring.version>
