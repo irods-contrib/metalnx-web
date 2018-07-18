@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -157,8 +155,11 @@ public class CollectionController {
 				this.currentPath = myPath;
 
 				if (uiMode == null || uiMode.isEmpty()) {
+					logger.debug("no ui mode specified");
 					boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
+					logger.debug("isUserAdmin? {}", isUserAdmin);
 					uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+					logger.info("as uiMode:{}", uiMode);
 				}
 			} catch (Exception je) {
 				logger.error("exception geting user and user mode info", je);
