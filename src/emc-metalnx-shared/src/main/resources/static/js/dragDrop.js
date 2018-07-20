@@ -22,6 +22,7 @@ if (isAdvancedUpload) {
 		$form.removeClass('is-dragover');
 	})
 	.on('drop', function(e) {
-		droppedFiles = e.originalEvent.dataTransfer.files;
+		//droppedFiles = e.originalEvent.dataTransfer.files;
+    $("input[name='files']").click();
 	});
 }
