@@ -6,6 +6,9 @@
 <html lang="en" layout:decorator="template">
 
 <head>
+	<!-- Cusom DragnDrop CSS -->
+	<link href="../static/css/dragDrop.css" rel="stylesheet" th:href="@{/css/dragDrop.css}"/>
+
 	<!-- JQuery UI CSS -->
 	<link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
 	<!-- jQuery UI Version 1.11.4 -->
@@ -483,6 +486,7 @@
 									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
 									</button>
+									<span id="dragAndDrop">Or Drag and drop them here.</span>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
 									id="inputFiles" class="form-control" title="Input File"/>
@@ -583,6 +587,10 @@
         <script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 		<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
+
+		<!-- Cusom DragnDrop JS -->
+		<script type="text/javascript" th:src="@{/js/dragDrop.js}"/>
+
 		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 			var targetPath = "/";
@@ -637,7 +645,7 @@
 
 
 			function getSubDirectories(path) {
-			
+
 				$("#table-loader").show();
 				$("#tree-view-panel-body").hide();
 

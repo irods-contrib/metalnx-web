@@ -1,3 +1,17 @@
-.well {
-	color:grey;
+#dragAndDrop {
+	display:none;
+}
+
+#uploadModal.has-advanced-upload .well {
+	background-color: grey;
+	outline: 2px dashed black;
+	outline-offset: -10px;
+}
+
+#uploadModal.is-dragover .well{
+	background-color: white;
+}
+
+#uploadModal.has-advanced-upload #dragAndDrop {
+	display: inline;
 }
