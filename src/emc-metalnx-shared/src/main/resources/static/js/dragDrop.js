@@ -6,7 +6,7 @@ var isAdvancedUpload = function() {
 }();
 
 var $form = $('#uploadModal');
-var $well = $('#dropArea');
+var $dropArea = $('#dropArea');
 
 if (isAdvancedUpload) {
   $form.addClass('has-advanced-upload');
@@ -21,10 +21,10 @@ if (isAdvancedUpload) {
     $('input[type="file"]').prop('files', droppedFiles);
 	});
 
-	$well.on('dragover dragenter', function() {
-    $well.addClass('is-dragover');
+	$dropArea.on('dragover dragenter', function() {
+    $dropArea.addClass('is-dragover');
 	})
 	.on('dragleave dragend drop', function() {
-		$well.removeClass('is-dragover');
+		$dropArea.removeClass('is-dragover');
 	});
 }
