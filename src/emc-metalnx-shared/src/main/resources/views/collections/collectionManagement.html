@@ -481,7 +481,7 @@
 								<label id="numberFilesUpload"># file(s)
 									selected</label>
 							</p>
-							<div class="well">
+							<div class="well" id="dropArea">
 								<!-- <div class="col-sm-4 col-sm-offset-4" style="align-items: center; display: flex; min-height: 100%;"> -->
 									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
@@ -616,6 +616,7 @@
 					$('#beforeUpload').show();
 					$('#afterUpload').hide();
 					$('#afterUploadCancel').hide();
+					$('#inputOverwriteDuplicateFiles').show();
 					// Hiding the resource selection box on the upload modal
 					$("#selectResource").prop("disabled", true);
 				});
