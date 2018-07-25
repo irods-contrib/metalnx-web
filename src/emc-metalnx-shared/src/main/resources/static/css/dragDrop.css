@@ -2,13 +2,13 @@
 	display:none;
 }
 
-#uploadModal.has-advanced-upload .well {
+#dropArea.has-advanced-upload {
 	background-color: grey;
 	outline: 2px dashed black;
 	outline-offset: -10px;
 }
 
-#uploadModal.is-dragover .well{
+#dropArea.is-dragover {
 	background-color: white;
 }
 
