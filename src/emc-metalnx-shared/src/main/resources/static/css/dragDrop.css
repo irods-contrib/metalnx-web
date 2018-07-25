@@ -12,6 +12,6 @@
 	background-color: white;
 }
 
-#uploadModal.has-advanced-upload #dragAndDrop {
+#uploadModal.has-advanced-upload #advancedUploadMessage {
 	display: inline;
 }

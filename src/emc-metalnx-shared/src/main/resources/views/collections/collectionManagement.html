@@ -486,7 +486,7 @@
 									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
 									</button>
-									<span id="dragAndDrop">Or Drag and drop them here.</span>
+									<span id="advancedUploadMessage">Or Drag and drop them here.</span>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
 									id="inputFiles" class="form-control" title="Input File"/>
@@ -616,7 +616,6 @@
 					$('#beforeUpload').show();
 					$('#afterUpload').hide();
 					$('#afterUploadCancel').hide();
-					$('#inputOverwriteDuplicateFiles').show();
 					// Hiding the resource selection box on the upload modal
 					$("#selectResource").prop("disabled", true);
 				});
