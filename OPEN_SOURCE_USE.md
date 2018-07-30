@@ -1,22 +1,21 @@
-EMC METALNX
+Metalnx
 ===================================
 
 Open Source Usage
-=========================================
+===================================
 
-Revision 1.0 
+Revision 2.0
 
-6/2016 
+7/2018
 
-----------------------------------
+--------------------------------
 
-Copyright © 2015-2017 Dell EMC.
+Copyright (c) 2018, University of North Carolina at Chapel Hill
+Copyright (c) 2015-2017, Dell EMC
 
-This software is provided under the Software license provided in the <a href="LICENSE"> LICENSE </a> file.
+This software is provided under the BSD 3-Clause License.
 
-The information in this file is provided “as is.” EMC Corporation makes no representations or warranties of any kind with respect to the information in this publication, and specifically disclaims implied warranties of merchantability or fitness for a particular purpose. 
-
--------------------------------- 
+--------------------------------
 
 <a name="introduction"></a>
 ## OVERVIEW 
