@@ -159,6 +159,9 @@ but paging and paging size are not active. This will be revisited in a collectio
 
 Updated licensing, code to reflect transition of codebase to iRODS Consortium
 
+#### PR #67 from JustKyle addding drag and drop file uploading
+
+Community feature adding drag and drop to file uploading. Thanks to Kyle!
 
 
 #### NIEHS identified misc theming issues
