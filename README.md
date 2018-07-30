@@ -72,5 +72,35 @@ Note that a default email address for rods admin is now configurable in metalnx.
 ```
 # may be left blank this is the default email for any messages generated from metalnx
 irods.admin.email=
-
 ```
+
+Add a global configuration setting for a download limit on files for both single file and bundle downloads to metalnx.properties
+
+#### Clicking on the rules icon in the left menu starts a repeating loop of rules page refreshes. #54
+
+Added logic in RuleDeploymentService to create the /zone/.rulecache file if it does not exist in an installation. This is done using the
+iRODS admin account specified in metalnx.properties. The absense of the .rulecache file was causing the errors in MetaLnx collection browsing.
+
+#### Replicating files onto multiple storage resources during metalnx upload is not working #53
+
+Replaced rule based replication with direct call to work around a possible iRODS rule engine bug
+
+#### collection paging (page size) not working #52
+
+Temporarily turned off collection paging as the jQuery data tables is exhibiting some sort of bug where the paging chrome is displayed,
+but paging and paging size are not active. This will be revisited in a collection listing cleanup and refactoring effort in a follow up release.
+
+#### Metalnx 2.0 src files must be updated with BSD 3-clause license #46
+
+Updated licensing, code to reflect transition of codebase to iRODS Consortium
+
+#### PR #67 from JustKyle addding drag and drop file uploading
+
+Community feature adding drag and drop to file uploading. Thanks to Kyle!
+
+
+#### NIEHS identified misc theming issues
+
+* #22 fix search text
+
+* #25 search - default to 'contains'
