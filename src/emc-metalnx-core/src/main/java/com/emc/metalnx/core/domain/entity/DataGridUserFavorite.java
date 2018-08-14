@@ -1,6 +1,6 @@
  /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
  /* Copyright (c) 2015-2017, Dell EMC */
- 
+
 
 package com.emc.metalnx.core.domain.entity;
 
@@ -28,7 +28,7 @@ import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Audited
+//@Audited
 @Table(name = "user_favorites", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "path_hash" }))
 public class DataGridUserFavorite implements Serializable, Comparable<DataGridUserFavorite> {
 
