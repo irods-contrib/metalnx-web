@@ -163,6 +163,11 @@ Updated licensing, code to reflect transition of codebase to iRODS Consortium
 
 Community feature adding drag and drop to file uploading. Thanks to Kyle!
 
+#### switching rodsadmin <-> rodsuser seems to not result in a change to interface
+
+Allow Metalnx DB to update user type based on changes to the iRODS role of a user. This
+bug prevented changing from rodsuser to rodsadmin and would not show admin features.
+
 
 #### NIEHS identified misc theming issues
 

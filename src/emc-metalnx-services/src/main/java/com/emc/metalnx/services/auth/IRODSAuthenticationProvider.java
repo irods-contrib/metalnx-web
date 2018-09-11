@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.auth;
 
@@ -82,6 +80,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 
 			try {
 				irodsUser = this.irodsAccessObjectFactory.getUserAO(this.irodsAccount).findByName(username);
+				logger.debug("irodsUser:{}", irodsUser);
 			} catch (JargonException e) {
 				logger.error("Could not find user: " + e.getMessage());
 			}
@@ -92,6 +91,8 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 			} else {
 				grantedAuth = new IRODSUserGrantedAuthority();
 			}
+
+			logger.info("granted authority:{}", grantedAuth);
 
 			// Settings granted authorities
 			List<GrantedAuthority> grantedAuths = new ArrayList<GrantedAuthority>();
@@ -164,7 +165,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 			UserAO userAO = this.irodsAccessObjectFactory.getUserAO(this.irodsAccount);
 			User irodsUser = userAO.findByName(username);
 
-			// If the user is found and has administrator permissions
+			// If the user is found
 			if (irodsUser.getUserType().equals(UserTypeEnum.RODS_ADMIN)
 					|| irodsUser.getUserType().equals(UserTypeEnum.RODS_USER)) {
 
@@ -187,6 +188,16 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 						user.setUserType(UserTypeEnum.RODS_USER.getTextValue());
 					}
 					this.userDao.save(user);
+				} else {
+					// check for an update of user type
+
+					if (user.getUserType() != irodsUser.getUserType().getTextValue()) {
+						logger.info("updating user type based on iRODS current value");
+						user.setUserType(irodsUser.getUserType().getTextValue());
+						this.userDao.merge(user);
+						logger.info("updated user type in db");
+					}
+
 				}
 
 				this.user = user;
