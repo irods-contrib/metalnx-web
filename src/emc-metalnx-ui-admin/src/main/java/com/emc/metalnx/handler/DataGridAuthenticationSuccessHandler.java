@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.handler;
 
@@ -32,5 +30,13 @@ public class DataGridAuthenticationSuccessHandler extends SavedRequestAwareAuthe
 	 * 
 	 * }
 	 */
+
+	/**
+	 * 
+	 */
+	private DataGridAuthenticationSuccessHandler() {
+		super();
+		setUseReferer(true);
+	}
 
 }
