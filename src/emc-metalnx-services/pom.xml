@@ -17,18 +17,15 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
-			<version>${jargon.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-profiler</artifactId>
-			<version>${jargon.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-typer</artifactId>
-			<version>${jargon.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>

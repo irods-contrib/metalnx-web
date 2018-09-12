@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -24,14 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
@@ -302,7 +299,7 @@ public class DashboardController {
 	}
 
 	@RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
-	public String getMSIPackageVersion(Model model) throws DataGridConnectionRefusedException {
+	public String getMSIPackageVersion(Model model) throws DataGridException {
 		logger.info("getMSIPackageVersion()");
 		DataGridMSIPkgInfo msiGridInfo = msiService.getMSIPkgInfo();
 		List<DataGridServer> serverList = msiGridInfo.getServers();
@@ -314,8 +311,7 @@ public class DashboardController {
 	}
 
 	@RequestMapping(value = "/msiInstalledList")
-	public String getMSIInstalledList(Model model, @RequestParam("host") String hostname)
-			throws DataGridConnectionRefusedException, DataGridRuleException {
+	public String getMSIInstalledList(Model model, @RequestParam("host") String hostname) throws DataGridException {
 		logger.info("getMSIINstalledList()");
 		DataGridServer server = msiService.getMSIsInstalled(hostname);
 		model.addAttribute("server", server);

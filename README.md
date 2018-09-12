@@ -168,6 +168,10 @@ Community feature adding drag and drop to file uploading. Thanks to Kyle!
 Allow Metalnx DB to update user type based on changes to the iRODS role of a user. This
 bug prevented changing from rodsuser to rodsadmin and would not show admin features.
 
+#### Fix Rule error listing microservices
+
+Fix stack traces that resulted from acquiring list of microservices for the dashboard by switching to calling jargon environment services to obtain the microservice list
+
 
 #### NIEHS identified misc theming issues
 

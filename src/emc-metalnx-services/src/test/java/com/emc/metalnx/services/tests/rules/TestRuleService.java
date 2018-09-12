@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.tests.rules;
 
@@ -28,6 +26,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,7 +164,7 @@ public class TestRuleService {
 	}
 
 	@Test
-	public void testGetMSIsRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+	public void testGetMSIsRule() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
 		output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);
@@ -185,7 +184,7 @@ public class TestRuleService {
 	}
 
 	@Test
-	public void testGetMSIsRuleNoReturn() throws DataGridRuleException, DataGridConnectionRefusedException {
+	public void testGetMSIsRuleNoReturn() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
 		output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);

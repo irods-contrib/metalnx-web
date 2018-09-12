@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
@@ -10,6 +8,8 @@ import java.util.Map;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
+import org.irods.jargon.core.pub.EnvironmentalInfoAO;
 import org.irods.jargon.core.rule.IRODSRuleExecResult;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.slf4j.Logger;
@@ -140,15 +140,14 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	@Override
-	public List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException {
+	public List<String> execGetMSIsRule(String host)
+			throws OperationNotSupportedByThisServerException, JargonException {
 		logger.info("Get Microservices Rule called");
+		/* delegate to Jargon to get MSI list */
 
-		DataGridRule rule = new DataGridRule(DataGridRule.GET_MSIS_RULE, host);
-		rule.setOutputRuleParams("msis");
+		EnvironmentalInfoAO environmentalInfoAO = this.is.getEnvironmentalInfoAO();
+		return environmentalInfoAO.listAvailableMicroservices();
 
-		logger.debug(rule.toString());
-
-		return DataGridCoreUtils.getMSIsAsList((String) executeRule(rule.toString()).get("*msis").getResultObject());
 	}
 
 	@Override

@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.tests.msi;
 
@@ -21,6 +19,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,9 +32,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MSIService;
@@ -117,17 +114,17 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testEmptyHost() throws DataGridConnectionRefusedException {
+	public void testEmptyHost() throws DataGridException {
 		assertNull(msiService.getMSIsInstalled(""));
 	}
 
 	@Test
-	public void testNullHost() throws DataGridConnectionRefusedException {
+	public void testNullHost() throws DataGridException {
 		assertNull(msiService.getMSIsInstalled(null));
 	}
 
 	@Test
-	public void testOtherMSIInstalledFor420() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testOtherMSIInstalledFor420() throws OperationNotSupportedByThisServerException, JargonException {
 		when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
 		when(irodsServices.isAtLeastIrods420()).thenReturn(true);
 		DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
@@ -137,7 +134,7 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testOtherMSIInstalledFor41() throws OperationNotSupportedByThisServerException, JargonException {
 		when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(otherMSIList);
 		when(irodsServices.isAtLeastIrods420()).thenReturn(false);
 		DataGridServer server = msiService.getMSIsInstalled("server1.test.com");
@@ -147,7 +144,7 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testNoOtherMSIInstalledFor41() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testNoOtherMSIInstalledFor41() throws OperationNotSupportedByThisServerException, JargonException {
 		when(irodsServices.isAtLeastIrods420()).thenReturn(false);
 		when(mockRuleService.execGetMSIsRule(anyString())).thenReturn(new ArrayList<>());
 		when(mockConfigService.getOtherMSIsExpected()).thenReturn(new ArrayList<>());
@@ -158,7 +155,7 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testNoOtherMSIListed() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testNoOtherMSIListed() throws OperationNotSupportedByThisServerException, JargonException {
 		String testMSI = "libmsitest_installed.so";
 
 		List<String> otherMSIListWithEmptyString = new ArrayList<>();
@@ -177,7 +174,7 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testGetMSIInstalledFor420Server() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testGetMSIInstalledFor420Server() throws OperationNotSupportedByThisServerException, JargonException {
 		List<String> msis = new ArrayList<>(mlxMSIList);
 		msis.addAll(irods42MSIs);
 		msis.addAll(otherMSIList);
@@ -193,7 +190,7 @@ public class TestMSIService {
 	}
 
 	@Test
-	public void testGetMSIInstalledFor41XServer() throws DataGridConnectionRefusedException, DataGridRuleException {
+	public void testGetMSIInstalledFor41XServer() throws OperationNotSupportedByThisServerException, JargonException {
 		List<String> msis = new ArrayList<>(mlxMSIList);
 		msis.addAll(irods41XMSIs);
 		msis.addAll(otherMSIList);
