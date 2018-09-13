@@ -3,6 +3,7 @@
 
 package com.emc.metalnx.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import com.emc.metalnx.core.domain.entity.DataGridServer;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -79,6 +81,9 @@ public class DashboardController {
 
 	@Autowired
 	private MSIService msiService;
+
+	@Autowired
+	private ConfigService configService;
 
 	@Autowired
 	HeaderService headerService;
@@ -301,11 +306,25 @@ public class DashboardController {
 	@RequestMapping(value = "/msiPackageVersion/", method = RequestMethod.GET)
 	public String getMSIPackageVersion(Model model) throws DataGridException {
 		logger.info("getMSIPackageVersion()");
-		DataGridMSIPkgInfo msiGridInfo = msiService.getMSIPkgInfo();
-		List<DataGridServer> serverList = msiGridInfo.getServers();
-		model.addAttribute("msiGridInfo", msiGridInfo);
-		model.addAttribute("servers", serverList);
-		model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
+
+		if (configService.isPopulateMsiEnabled()) {
+
+			DataGridMSIPkgInfo msiGridInfo = msiService.getMSIPkgInfo();
+			List<DataGridServer> serverList = msiGridInfo.getServers();
+			model.addAttribute("msiGridInfo", msiGridInfo);
+			model.addAttribute("servers", serverList);
+			model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
+
+		} else {
+			/* config service turns off msi so send blank data */
+			logger.info("no msi info available due to configuration");
+			DataGridMSIPkgInfo msiGridInfo = new DataGridMSIPkgInfo(new ArrayList<DataGridServer>(), "");
+			List<DataGridServer> serverList = msiGridInfo.getServers();
+			model.addAttribute("msiGridInfo", msiGridInfo);
+			model.addAttribute("servers", serverList);
+			model.addAttribute("msiAPIVersionSupported", msiAPIVersionSupported);
+
+		}
 
 		return "dashboard/msiPackageVersion";
 	}

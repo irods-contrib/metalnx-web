@@ -172,6 +172,13 @@ bug prevented changing from rodsuser to rodsadmin and would not show admin featu
 
 Fix stack traces that resulted from acquiring list of microservices for the dashboard by switching to calling jargon environment services to obtain the microservice list
 
+Quieted stack traces when MSIs not installed by respecting the metalnx.properties
+
+```
+populate.msi.enabled=false
+
+```
+
 
 #### NIEHS identified misc theming issues
 
