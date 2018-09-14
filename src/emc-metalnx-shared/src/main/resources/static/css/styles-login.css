@@ -250,7 +250,7 @@ img {
     margin-left: -235px;
     padding: 25px;
     width: 520px;
-    height: 380px;
+    height: 500px;
     background: white;
     text-align: center;
 }
@@ -275,6 +275,11 @@ input[type="text"], input[type="password"]{
 
 input, textarea, .uneditable-input {
     width: 206px;
+}
+
+#authScheme {
+    width: 206px;
+    display: inline-block;
 }
 
 .login-form .footer .checkbox.inline input[type="checkbox"] {
