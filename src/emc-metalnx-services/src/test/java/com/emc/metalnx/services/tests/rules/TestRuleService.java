@@ -29,6 +29,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -163,7 +164,7 @@ public class TestRuleService {
 		assertTrue(rule.toString().contains("OUTPUT *output_param"));
 	}
 
-	@Test
+	@Ignore /* switched to jargon list msis */
 	public void testGetMSIsRule() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
@@ -183,7 +184,7 @@ public class TestRuleService {
 		assertTrue(msis.contains("libmsi4.so"));
 	}
 
-	@Test
+	@Ignore /* switched to jargon list msis */
 	public void testGetMSIsRuleNoReturn() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
