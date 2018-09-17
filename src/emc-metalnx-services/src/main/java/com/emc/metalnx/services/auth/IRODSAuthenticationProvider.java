@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.irods.jargon.core.connection.AuthScheme;
 import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.connection.auth.AuthResponse;
@@ -26,6 +28,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.TransactionException;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.emc.metalnx.core.domain.dao.UserDao;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
@@ -67,10 +72,25 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 		AuthResponse authResponse;
 		UsernamePasswordAuthenticationToken authObject;
 
+		RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
+		AuthScheme authSchemeEnum = null;
+
+		if (RequestContextHolder.getRequestAttributes() != null) {
+			HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
+			String authScheme = request.getParameter("authScheme");
+			logger.info("authScheme:{}", authScheme);
+			authSchemeEnum = AuthScheme.findTypeByString(authScheme);
+		}
+
+		if (authSchemeEnum == null) {
+			logger.error("cannot find auth scheme in request");
+			throw new DataGridAuthenticationException("no auth scheme found in request");
+		}
+
 		logger.debug("Setting username {}", username);
 
 		try {
-			authResponse = this.authenticateAgainstIRODS(username, password);
+			authResponse = this.authenticateAgainstIRODS(username, password, authSchemeEnum);
 
 			// Settings iRODS account
 			this.irodsAccount = authResponse.getAuthenticatedIRODSAccount();
@@ -127,7 +147,8 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 
-	private AuthResponse authenticateAgainstIRODS(String username, String password) throws JargonException {
+	private AuthResponse authenticateAgainstIRODS(String username, String password, AuthScheme authScheme)
+			throws JargonException {
 		if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
 			throw new DataGridAuthenticationException("Username or password invalid: null or empty value(s) provided");
 		} else if (username.equalsIgnoreCase(IRODS_ANONYMOUS_ACCOUNT)) {
@@ -140,6 +161,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 		logger.debug("Creating IRODSAccount object.");
 		this.irodsAccount = IRODSAccount.instance(this.irodsHost, Integer.parseInt(this.irodsPort), username, password,
 				"", this.irodsZoneName, "demoResc");
+		irodsAccount.setAuthenticationScheme(authScheme);
 		this.irodsAccount.setAuthenticationScheme(AuthScheme.findTypeByString(this.irodsAuthScheme));
 		logger.debug("configured auth scheme:{}", irodsAuthScheme);
 		logger.debug("set irodsAccount auth scheme to :{}", irodsAccount.getAuthenticationScheme());

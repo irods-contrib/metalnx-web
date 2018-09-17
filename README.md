@@ -179,6 +179,10 @@ populate.msi.enabled=false
 
 ```
 
+#### Add override of login over metalnx.properties to allow standard or PAM
+
+Add a dropdown that can select an alternative authentication method (currently standard or pam auth). This defaults to the pre-configured auth method in metalnx.properties.
+
 
 #### NIEHS identified misc theming issues
 

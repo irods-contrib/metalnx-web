@@ -3,6 +3,9 @@
 
 package com.emc.metalnx.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.connection.AuthScheme;
@@ -44,7 +47,11 @@ public class LoginController {
 			model = new ModelAndView(redirect);
 		} else {
 			model = new ModelAndView("login/index");
-			model.addObject("authTypes", AuthScheme.getAuthSchemeList());
+			List<String> authTypes = new ArrayList<String>();
+			authTypes.add(AuthScheme.STANDARD.getTextValue());
+			authTypes.add(AuthScheme.PAM.getTextValue());
+			model.addObject("authTypes", authTypes);
+			model.addObject("defaultAuthType", configService.getIrodsAuthScheme());
 		}
 
 		return model;

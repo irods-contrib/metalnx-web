@@ -1656,7 +1656,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 .sidebar ul li a i{
   order:2;
   display: block;
-  font-size: 1.7em;
+  font-size: 1.1em;
 }
 .sidebar ul li a:hover, .sidebar ul li a:focus, .sidebar ul li a.active{
     color: #046383;
@@ -1680,7 +1680,7 @@ ul.navbar-top-links > li.open > a.dropdown-toggle{
 	text-align: right;
 	width:100%;
 	bottom: -6px;
-  font-size: 1.1em;
+  font-size: 1em;
   order: 1;
   padding-right:14px;
 }
@@ -2499,7 +2499,7 @@ td a {
   text-decoration: none;
 }
 .datacommons_title .navbar-top-links-text {
-  white-space: pre-wrap;
+  /*white-space: pre-wrap;*/
 }
 @media ( max-width : 1440px) {
   .datacommons_title .datacommons_title-mid {
