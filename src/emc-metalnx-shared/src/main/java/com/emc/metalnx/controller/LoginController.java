@@ -39,22 +39,27 @@ public class LoginController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView loginView(final Model inModel) {
 		logger.info("LoginContoller loginView()");
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ModelAndView model = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
 		if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
 			String redirect = isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home";
 			model = new ModelAndView(redirect);
 		} else {
 			model = new ModelAndView("login/index");
-			List<String> authTypes = new ArrayList<String>();
-			authTypes.add(AuthScheme.STANDARD.getTextValue());
-			authTypes.add(AuthScheme.PAM.getTextValue());
-			model.addObject("authTypes", authTypes);
-			model.addObject("defaultAuthType", configService.getIrodsAuthScheme());
+			addAuthTypesAndDefaultAuthToModel(model);
 		}
 
 		return model;
+	}
+
+	private void addAuthTypesAndDefaultAuthToModel(ModelAndView model) {
+		List<String> authTypes = new ArrayList<String>();
+		authTypes.add(AuthScheme.STANDARD.getTextValue());
+		authTypes.add(AuthScheme.PAM.getTextValue());
+		model.addObject("authTypes", authTypes);
+		model.addObject("defaultAuthType", configService.getIrodsAuthScheme());
 	}
 
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
@@ -62,6 +67,7 @@ public class LoginController {
 		logger.info("LoginContoller loginErrorHandler()");
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("usernameOrPasswordInvalid", true);
+		addAuthTypesAndDefaultAuthToModel(model);
 
 		return model;
 	}
@@ -79,6 +85,7 @@ public class LoginController {
 
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("serverNotResponding", true);
+		addAuthTypesAndDefaultAuthToModel(model);
 
 		return model;
 	}
@@ -88,6 +95,7 @@ public class LoginController {
 		logger.info("LoginContoller databaseNotResponding()");
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("databaseNotResponding", true);
+		addAuthTypesAndDefaultAuthToModel(model);
 
 		return model;
 	}
