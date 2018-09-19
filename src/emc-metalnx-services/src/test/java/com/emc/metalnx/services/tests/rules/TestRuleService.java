@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.tests.rules;
 
@@ -28,8 +26,10 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -164,8 +164,8 @@ public class TestRuleService {
 		assertTrue(rule.toString().contains("OUTPUT *output_param"));
 	}
 
-	@Test
-	public void testGetMSIsRule() throws DataGridRuleException, DataGridConnectionRefusedException {
+	@Ignore /* switched to jargon list msis */
+	public void testGetMSIsRule() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
 		output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);
@@ -184,8 +184,8 @@ public class TestRuleService {
 		assertTrue(msis.contains("libmsi4.so"));
 	}
 
-	@Test
-	public void testGetMSIsRuleNoReturn() throws DataGridRuleException, DataGridConnectionRefusedException {
+	@Ignore /* switched to jargon list msis */
+	public void testGetMSIsRuleNoReturn() throws OperationNotSupportedByThisServerException, JargonException {
 		Map<String, IRODSRuleExecResultOutputParameter> result = new HashMap<>();
 		IRODSRuleExecResultOutputParameter output = new IRODSRuleExecResultOutputParameter();
 		output.setOutputParamType(IRODSRuleExecResultOutputParameter.OutputParamType.STRING);

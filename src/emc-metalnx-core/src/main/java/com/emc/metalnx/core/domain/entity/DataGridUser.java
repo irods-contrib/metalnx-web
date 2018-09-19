@@ -1,6 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.core.domain.entity;
 
@@ -23,11 +22,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 @Entity
-@Audited
+// @Audited
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = { "username", "additional_info" }))
 public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 
@@ -86,7 +84,7 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 
 	@Column(name = "advanced_view", nullable = false)
 	private boolean advancedView;
-	
+
 	@Column(name = "metadata_unit_view", nullable = false)
 	private boolean metadataUnitView;
 
@@ -208,7 +206,7 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 	public boolean isAdvancedView() {
 		return advancedView;
 	}
-	
+
 	/**
 	 * @return the metadata_unit_view
 	 */
@@ -263,7 +261,7 @@ public class DataGridUser implements Serializable, Comparable<DataGridUser> {
 	public void setAdvanceView(boolean advancedView) {
 		this.advancedView = advancedView;
 	}
-	
+
 	/**
 	 * @param metadataUnitView
 	 *            to set

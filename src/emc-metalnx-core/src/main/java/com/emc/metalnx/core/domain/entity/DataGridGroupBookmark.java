@@ -1,6 +1,6 @@
  /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
  /* Copyright (c) 2015-2017, Dell EMC */
- 
+
 
 package com.emc.metalnx.core.domain.entity;
 
@@ -26,7 +26,7 @@ import org.hibernate.envers.NotAudited;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
 
 @Entity
-@Audited
+//@Audited
 @Table(name = "group_bookmarks")
 public class DataGridGroupBookmark implements Serializable, Comparable<DataGridGroupBookmark> {
 

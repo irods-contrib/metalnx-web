@@ -78,7 +78,6 @@
 		<sec:intercept-url pattern="/login/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-
 		<!-- Static Resources -->
 		<sec:intercept-url pattern="/images/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -151,14 +150,13 @@
 			authentication-failure-url="/login/exception"
 			authentication-success-handler-ref="customAuthenticationSuccessHandler"
 			authentication-failure-handler-ref="customAuthenticationFailureHandler"
-			default-target-url="/collections/" login-page="/login/"
-			password-parameter="password" username-parameter="username" />
+			default-target-url="/dashboard/" login-page="/login/"
+			password-parameter="password" username-parameter="username"
+			always-use-default-target="false" />
 
-		<sec:logout logout-url="/logout/"
-			success-handler-ref="logoutHandler" />
-	<!--
-		<sec:session-management
-			invalid-session-url="/login/invalidSession/" /> -->
+		<sec:logout logout-url="/logout/" success-handler-ref="logoutHandler" />
+
+		<sec:session-management invalid-session-url="/login/invalidSession/" />
 
 	</sec:http>
 

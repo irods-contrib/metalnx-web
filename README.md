@@ -98,6 +98,26 @@ Updated licensing, code to reflect transition of codebase to iRODS Consortium
 
 Community feature adding drag and drop to file uploading. Thanks to Kyle!
 
+#### switching rodsadmin <-> rodsuser seems to not result in a change to interface
+
+Allow Metalnx DB to update user type based on changes to the iRODS role of a user. This
+bug prevented changing from rodsuser to rodsadmin and would not show admin features.
+
+#### Fix Rule error listing microservices
+
+Fix stack traces that resulted from acquiring list of microservices for the dashboard by switching to calling jargon environment services to obtain the microservice list
+
+Quieted stack traces when MSIs not installed by respecting the metalnx.properties
+
+```
+populate.msi.enabled=false
+
+```
+
+#### Add override of login over metalnx.properties to allow standard or PAM
+
+Add a dropdown that can select an alternative authentication method (currently standard or pam auth). This defaults to the pre-configured auth method in metalnx.properties.
+
 
 #### NIEHS identified misc theming issues
 

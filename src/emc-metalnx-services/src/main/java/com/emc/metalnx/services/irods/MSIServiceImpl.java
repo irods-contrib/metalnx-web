@@ -1,13 +1,13 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.emc.metalnx.core.domain.entity.DataGridMSIPkgInfo;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridServer;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.core.domain.exceptions.DataGridRuleException;
 import com.emc.metalnx.core.domain.utils.DataGridCoreUtils;
 import com.emc.metalnx.services.interfaces.ConfigService;
@@ -50,19 +50,19 @@ public class MSIServiceImpl implements MSIService {
 	private List<DataGridServer> servers = new ArrayList<>();
 
 	@Override
-	public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridConnectionRefusedException {
+	public DataGridMSIPkgInfo getMSIPkgInfo() throws DataGridException {
 		return new DataGridMSIPkgInfo(getMSIInfoForAllServers(), configService.getMsiAPIVersionSupported());
 	}
 
 	@Override
-	public DataGridServer getMSIsInstalled(String host) throws DataGridConnectionRefusedException {
+	public DataGridServer getMSIsInstalled(String host) throws DataGridException {
 		if (host == null || host.isEmpty())
 			return null;
 		return findServerByHostname(host);
 	}
 
 	@Override
-	public List<DataGridServer> getMSIInfoForAllServers() throws DataGridConnectionRefusedException {
+	public List<DataGridServer> getMSIInfoForAllServers() throws DataGridException {
 		servers = resourceService.getAllResourceServers(resourceService.findAll());
 		for (DataGridServer server : servers)
 			setMSIInfoForServer(server);
@@ -70,7 +70,7 @@ public class MSIServiceImpl implements MSIService {
 	}
 
 	@Override
-	public void setMSIInfoForServer(DataGridServer server) throws DataGridConnectionRefusedException {
+	public void setMSIInfoForServer(DataGridServer server) throws DataGridException {
 		List<String> irodsMSIs = irodsServices.isAtLeastIrods420() ? configService.getIrods42MSIsExpected()
 				: configService.getIrods41MSIsExpected();
 
@@ -88,12 +88,18 @@ public class MSIServiceImpl implements MSIService {
 			server.setMSIInstalledList(ruleService.execGetMSIsRule(server.getHostname()));
 		} catch (DataGridRuleException e) {
 			logger.error("Failed to get MSIs installed for server: ", server.getHostname());
+			throw new DataGridException("general exception getting msis for server", e);
+		} catch (OperationNotSupportedByThisServerException e) {
+			logger.warn("msi information not supported by this server version, will ignore");
+		} catch (JargonException e) {
+			logger.error("general jargon exception getting msis for server", e);
+			throw new DataGridException(e);
 		}
 
 	}
 
 	@Override
-	public boolean isMSIAPICompatibleInResc(String resource) throws DataGridConnectionRefusedException {
+	public boolean isMSIAPICompatibleInResc(String resource) throws DataGridException {
 		if (servers == null || servers.isEmpty())
 			getMSIInfoForAllServers();
 
@@ -123,7 +129,7 @@ public class MSIServiceImpl implements MSIService {
 	 *            server's hostname
 	 * @return server instance
 	 */
-	private DataGridServer findServerByHostname(String host) throws DataGridConnectionRefusedException {
+	private DataGridServer findServerByHostname(String host) throws DataGridException {
 		getMSIInfoForAllServers(); // update list of servers
 
 		DataGridServer server = null;

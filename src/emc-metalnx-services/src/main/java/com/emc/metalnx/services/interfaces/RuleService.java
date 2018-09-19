@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.interfaces;
 
@@ -10,6 +8,7 @@ import java.util.Map;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 
 import com.emc.metalnx.core.domain.entity.DataGridResource;
@@ -41,8 +40,14 @@ public interface RuleService {
 	 * @param host
 	 *            server's hostname
 	 * @return List of MSIs on the server that resource is.
+	 * @throws JargonException
+	 *             {@link JargonException} for general errors
+	 * @throws OperationNotSupportedByThisServerException
+	 *             {@link OperationNotSupportedByThisServerException} if
+	 *             microservice listing not available on this server version
 	 */
-	List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException;
+	List<String> execGetMSIsRule(String host) throws DataGridConnectionRefusedException, DataGridRuleException,
+			OperationNotSupportedByThisServerException, JargonException;
 
 	/**
 	 * Executes the get version MSI.
