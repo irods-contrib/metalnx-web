@@ -1,11 +1,11 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.interfaces;
 
 import java.util.List;
+
+import org.irods.jargon.core.connection.AuthScheme;
 
 import com.emc.metalnx.services.configuration.GlobalConfig;
 
@@ -124,4 +124,12 @@ public interface ConfigService {
 	 *         applied based on file type
 	 */
 	boolean isUploadRulesEnabled();
+
+	/**
+	 * Default auth scheme used at login time by the user on the login form
+	 * 
+	 * @return {@code String} with the stringified representation of the jargon
+	 *         {@link AuthScheme}
+	 */
+	String getDefaultIrodsAuthScheme();
 }

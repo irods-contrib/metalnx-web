@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.configuration;
 
@@ -53,6 +51,9 @@ public class ConfigServiceImpl implements ConfigService {
 
 	@Value("${irods.zoneName}")
 	private String irodsZone;
+
+	@Value("${irods.auth.scheme}")
+	private String defaultIrodsAuthScheme;
 
 	@Value("${jobs.irods.username}")
 	private String irodsJobUser;
@@ -217,5 +218,14 @@ public class ConfigServiceImpl implements ConfigService {
 
 	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
 		this.uploadRulesEnabled = uploadRulesEnabled;
+	}
+
+	@Override
+	public String getDefaultIrodsAuthScheme() {
+		return defaultIrodsAuthScheme;
+	}
+
+	public void setDefaultIrodsAuthScheme(String defaultIrodsAuthScheme) {
+		this.defaultIrodsAuthScheme = defaultIrodsAuthScheme;
 	}
 }

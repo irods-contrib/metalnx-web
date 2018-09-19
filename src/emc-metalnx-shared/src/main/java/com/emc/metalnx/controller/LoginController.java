@@ -59,7 +59,7 @@ public class LoginController {
 		authTypes.add(AuthScheme.STANDARD.getTextValue());
 		authTypes.add(AuthScheme.PAM.getTextValue());
 		model.addObject("authTypes", authTypes);
-		model.addObject("defaultAuthType", configService.getIrodsAuthScheme());
+		model.addObject("defaultAuthType", configService.getDefaultIrodsAuthScheme());
 	}
 
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
