@@ -116,6 +116,23 @@
 						<div class="col-md-12 col-sm-12 collLesserInfo divider"></div>
 					</div>
 				</div>
+				<div class="panel-info-header">
+					<div class="row">
+						<div class="text-right col-md-2 col-sm-2 col-xs-4">
+							<label th:text="#{collections.management.table.absolute.path.label}"></label>
+						</div>
+						<div class="col-md-8 col-sm-8 col-xs-6">
+							<span id="absPath"
+								th:text="${ dataProfile.getDomainObject().getAbsolutePath() }"></span>
+								
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getAbsolutePath()}">
+ 									<i class="fa fa-files-o" aria-hidden="true"></i>
+								</button>
+						</div>
+					</div>
+				</div>
 				<div class="panel-info">
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-4">
@@ -181,9 +198,14 @@
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
 							<label th:text="#{collections.management.table.datapath.label}"></label>
 						</div>
-						<div class="col-md-10 col-sm-10 col-xs-12">
+						<div class="col-md-8 col-sm-8 col-xs-10">
 							<span
 								th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getDataPath()}">
+ 									<i class="fa fa-files-o" aria-hidden="true"></i>
+								</button>
 						</div>
 					</div>
 					<div class="row">

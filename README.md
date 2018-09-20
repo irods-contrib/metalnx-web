@@ -184,6 +184,11 @@ populate.msi.enabled=false
 Add a dropdown that can select an alternative authentication method (currently standard or pam auth). This defaults to the pre-configured auth method in metalnx.properties.
 
 
+#### add 'copyable' path for collection and data object #72
+
+Add clipboard functionality to paths on the info views to allow easy copy to clipboard on the colleciton and data object info pages
+
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
