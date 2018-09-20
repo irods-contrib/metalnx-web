@@ -37,15 +37,15 @@
 				</div>
 				<div class="panel-info-header">
 					<div class="row">
-						<form> 
+						<form>
 							<div class="form-check text-right col-md-12 col-sm-12 col-xs-12 float-right">
 								<input type="checkbox" class="form-check-input"
-									id="inheritCheck" th:onclick="'javascript:showInheritanceAction();'" 
+									id="inheritCheck" th:onclick="'javascript:showInheritanceAction();'"
 									th:checked="${dataProfile.getDomainObject().inheritanceSet() ? 'checked' : 'false' }"
 									aria-label="collection inheritance checkbox"
 									title="collection inheritance checkbox" /> <label
 									class="form-check-label" for="inheritCheck"
-									
+
 									th:text="#{collections.management.table.inheritance.label}">Inheritance</label>
 							</div>
 						</form>
@@ -140,11 +140,11 @@
 						<div class="text-right col-md-2 col-sm-2 col-xs-4">
 							<label
 								th:text="#{collections.management.table.absolute.path.label}"></label>
+
 						</div>
 						<div class="col-md-8 col-sm-8 col-xs-6">
 							<span id="absPath"
 								th:text="${ dataProfile.getDomainObject().getAbsolutePath() }"></span>
-
 						</div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
 							<button class="btn"
@@ -227,6 +227,11 @@
 								th:attr="data-clipboard-text=${dataProfile.getDomainObject().getDataPath()}">
 								<i class="fa fa-files-o" aria-hidden="true"></i>
 							</button>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getDataPath()}">
+ 									<i class="fa fa-files-o" aria-hidden="true"></i>
+								</button>
 						</div>
 					</div>
 					<div class="row">
