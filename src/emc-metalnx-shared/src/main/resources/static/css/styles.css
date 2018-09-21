@@ -1297,6 +1297,7 @@ a.page-hint {
     background-color: #f2f6f9;
     border-radius: 5px;
     margin-bottom: 10px;
+    margin-top: 10px; 
 }
 
 .panel-info span{

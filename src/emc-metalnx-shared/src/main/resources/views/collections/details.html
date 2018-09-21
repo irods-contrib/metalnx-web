@@ -19,21 +19,37 @@
 				<div class="panel-info-header">
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-4">
-							<label th:text="#{collections.management.table.absolute.path.label}"></label>
+							<label
+								th:text="#{collections.management.table.absolute.path.label}"></label>
 						</div>
 						<div class="col-md-8 col-sm-8 col-xs-6">
 							<span id="absPath"
 								th:text="${ dataProfile.getDomainObject().getAbsolutePath() }"></span>
-								
+
 						</div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
-								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getAbsolutePath()}">
- 									<i class="fa fa-files-o" aria-hidden="true"></i>
-								</button>
+							<button class="btn"
+								th:attr="data-clipboard-text=${dataProfile.getDomainObject().getAbsolutePath()}">
+								<i class="fa fa-files-o" aria-hidden="true"></i>
+							</button>
 						</div>
 					</div>
 				</div>
-					
+				<div class="panel-info-header">
+					<div class="row">
+						<form action="">
+							<div class="form-check text-right col-md-2 col-sm-2 col-xs-4">
+								<input type="checkbox" class="form-check-input"
+									id="inheritCheck"
+									th:checked="${dataProfile.getDomainObject().inheritanceSet() ? 'checked' : 'false' }"
+									aria-label="collection inheritance checkbox"
+									title="collection inheritance checkbox" /> <label
+									class="form-check-label" for="inheritCheck"
+									th:text="#{collections.management.table.inheritance.label}">Inheritance</label>
+							</div>
+						</form>
+					</div>
+				</div>
 				<div class="panel-info">
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-4">
@@ -72,7 +88,8 @@
 					</div>
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label th:text="#{collections.management.table.collectionmapid.label}"></label>
+							<label
+								th:text="#{collections.management.table.collectionmapid.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span
@@ -81,7 +98,8 @@
 					</div>
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+							<label
+								th:text="#{collections.management.table.speccoltype.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span
@@ -119,17 +137,19 @@
 				<div class="panel-info-header">
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-4">
-							<label th:text="#{collections.management.table.absolute.path.label}"></label>
+							<label
+								th:text="#{collections.management.table.absolute.path.label}"></label>
 						</div>
 						<div class="col-md-8 col-sm-8 col-xs-6">
 							<span id="absPath"
 								th:text="${ dataProfile.getDomainObject().getAbsolutePath() }"></span>
-								
+
 						</div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
-								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getAbsolutePath()}">
- 									<i class="fa fa-files-o" aria-hidden="true"></i>
-								</button>
+							<button class="btn"
+								th:attr="data-clipboard-text=${dataProfile.getDomainObject().getAbsolutePath()}">
+								<i class="fa fa-files-o" aria-hidden="true"></i>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -199,13 +219,13 @@
 							<label th:text="#{collections.management.table.datapath.label}"></label>
 						</div>
 						<div class="col-md-8 col-sm-8 col-xs-10">
-							<span
-								th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
+							<span th:text="${ dataProfile.getDomainObject().getDataPath() }"></span>
 						</div>
 						<div class="col-md-2 col-sm-2 col-xs-2">
-								<button class="btn" th:attr="data-clipboard-text=${dataProfile.getDomainObject().getDataPath()}">
- 									<i class="fa fa-files-o" aria-hidden="true"></i>
-								</button>
+							<button class="btn"
+								th:attr="data-clipboard-text=${dataProfile.getDomainObject().getDataPath()}">
+								<i class="fa fa-files-o" aria-hidden="true"></i>
+							</button>
 						</div>
 					</div>
 					<div class="row">
@@ -213,12 +233,14 @@
 							<label th:text="#{collections.management.table.size.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
-							<span th:text="${ dataProfile.getDomainObject().getDisplayDataSize() }"></span>
+							<span
+								th:text="${ dataProfile.getDomainObject().getDisplayDataSize() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label th:text="#{collections.management.table.datatypename.label}"></label>
+							<label
+								th:text="#{collections.management.table.datatypename.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span
@@ -230,8 +252,7 @@
 							<label th:text="#{collections.management.table.expiry.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
-							<span
-								th:text="${ dataProfile.getDomainObject().getExpiry() }"></span>
+							<span th:text="${ dataProfile.getDomainObject().getExpiry() }"></span>
 						</div>
 					</div>
 					<div class="row">
@@ -239,13 +260,13 @@
 							<label th:text="#{collections.management.table.datamapid.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
-							<span
-								th:text="${ dataProfile.getDomainObject().getDataMapId() }"></span>
+							<span th:text="${ dataProfile.getDomainObject().getDataMapId() }"></span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="text-right col-md-2 col-sm-2 col-xs-12">
-							<label th:text="#{collections.management.table.speccoltype.label}"></label>
+							<label
+								th:text="#{collections.management.table.speccoltype.label}"></label>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
 							<span
@@ -269,7 +290,7 @@
 							<span th:text="${ dataProfile.getDomainObject().getComments() }"></span>
 						</div>
 					</div>
-					
+
 					<!-- <div class="row">
 						<div class="text-right col-md-1 col-sm-4 col-xs-4">
 							<label th:text="#{collections.management.table.replica.number.label}"></label>
@@ -287,7 +308,7 @@
 
 
 
-	<script>
+	<script type="text/javascript">
 		$(document).ready(function() {
 			console.log("CollectionInfo");
 			$("#collection-content").removeClass("collections-table");
