@@ -6,8 +6,8 @@
 
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
 	<div class="row">
@@ -17,32 +17,36 @@
 			<div class="row">
 				<th:block th:include="collections/summary :: summaryView"></th:block>
 			</div>
-			
+
 			<div class="col-xs-12 tree-view-panel box">
 				<div class="tabpanel">
 					<ul id="tabs" class="nav nav-tabs" role="tablist">
-						<li class="active"><a href="#details" data-toggle="tab" role="tab"
-						th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+						<li class="active"><a href="#details" data-toggle="tab"
+							role="tab"
+							th:onclick="'javascript:getInfoDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-info-circle" alt="File Info"></i></span> <span
 								title="collection information">Details</span>
 						</a></li>
 
 						<li><a href="#metadata" data-toggle="tab" role="tab"
-						th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+							th:onclick="'javascript:getMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-tags"></i></span> <span
 								title="Collection Metadata">Metadata</span>
 						</a></li>
 
-						<li><a href="#permission" id="permissions" data-toggle="tab" role="tab"
-						th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
+						<li><a href="#permission" id="permissions" data-toggle="tab"
+							role="tab"
+							th:onclick="'javascript:getPermissionDetails(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-lock"></i></span> <span
 								title="Collection Permissions">Permissions</span>
 						</a></li>
 					</ul>
 
-					<div class="tab-content" style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">			      
+					<div class="tab-content"
+						style="border: 1px solid #ddd; background-color: #fff; padding-top: 15px;">
 						<div id="details" class="tab-pane active" role="tabpanel">
-							 <th:block th:include="collections/details :: detailsView"></th:block></div>
+							<th:block th:include="collections/details :: detailsView"></th:block>
+						</div>
 						<div id="metadata" class="tab-pane" role="tabpanel"></div>
 						<div id="permission" class="tab-pane" role="tabpanel"></div>
 					</div>
@@ -50,10 +54,44 @@
 			</div>
 
 
+			<!-- Update inheritance modal -->
+			//HERE!!!
+			<div class="modal fade" id="updateInheritanceModal" tabindex="-1"
+				role="dialog" aria-labelledby="updateInheritanceModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								title="Close">
+								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+							</button>
+							<h4 id="updateInheritanceModalLabel" class="modal-title"
+								th:text="#{collections.management.inheritance.modal.title}"></h4>
+						</div>
+						<div class="modal-body container">
+							<div class="row">
+								<div class="col">
+									<span
+										th:text="#{collections.management.inheritance.modal.prompt}"></span>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal" th:text="#{confirmation.message.cancel}"
+									title="Cancel"></button>
+								<button type="button" class="btn btn-primary"
+									th:onclick="'javascript:deleteInfoAction(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+									th:text="#{confirmation.message.yes}" title="Confirm"></button>
+							</div>
+						</div>
+					</div>
+				</div>
 
-					
-			<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-			<script th:inline="javascript">
+
+
+				<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+				<script th:inline="javascript" type="text/javascript">
 			 $(document).ready(function(e){		
 				 
 			 		$('.nav-tabs a').click(function (e) {	
@@ -80,6 +118,7 @@
 			 });
 			 			
 			</script>
+			</div>
 		</div>
 	</div>
 </body>

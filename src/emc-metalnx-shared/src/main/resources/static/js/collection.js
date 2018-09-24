@@ -122,11 +122,12 @@ function fileDownload(path){
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
 }
 
-function updateInheritanceAction(path, inheritance, recursive) {
-	setOperationInProgress();
-	console.log("Ready for update of inheritance");
-	toastr.success("Inheritance updated");
-	unsetOperationInProgress();
+function updateInheritanceAction(path, inheritance) {
+	//setOperationInProgress();
+	//console.log("Ready for update of inheritance");
+	//toastr.success("Inheritance updated");
+	//unsetOperationInProgress();
+	$("#updateInheritanceModal").modal("show");
 }
 
 function deleteInfoAction(path){
