@@ -324,6 +324,16 @@
 				</div>
 				<div class="modal-body container">
 					<div class="row">
+						<div class="col-1">
+								<label for="inheritCollectionAbsolutePath"
+											th:text="#{collections.management.table.absolute.path.label}"></label>
+						</div>
+						<div class="col">
+								<span id="inheritCollectionAbsolutePath"
+									th:text="${dataProfile.getAbsolutePath()}"></span>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col">
 							<span
 								th:text="#{collections.management.inheritance.modal.prompt}"></span>
