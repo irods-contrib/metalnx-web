@@ -122,6 +122,13 @@ function fileDownload(path){
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
 }
 
+function updateInheritanceAction(path, inheritance, recursive) {
+	setOperationInProgress();
+	console.log("Ready for update of inheritance");
+	toastr.success("Inheritance updated");
+	unsetOperationInProgress();
+}
+
 function deleteInfoAction(path){
 	setOperationInProgress();
 	console.log("Ready for deletion");
