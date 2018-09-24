@@ -37,14 +37,15 @@
 				</div>
 				<div class="panel-info-header">
 					<div class="row">
-						<form action="updateInheritanceAction('foo', true, true)"> // HERE:
+						<form> 
 							<div class="form-check text-right col-md-12 col-sm-12 col-xs-12 float-right">
 								<input type="checkbox" class="form-check-input"
-									id="inheritCheck"
+									id="inheritCheck" onclick="updateInheritanceAction('foo', true, true)" 
 									th:checked="${dataProfile.getDomainObject().inheritanceSet() ? 'checked' : 'false' }"
 									aria-label="collection inheritance checkbox"
 									title="collection inheritance checkbox" /> <label
 									class="form-check-label" for="inheritCheck"
+									
 									th:text="#{collections.management.table.inheritance.label}">Inheritance</label>
 							</div>
 						</form>
