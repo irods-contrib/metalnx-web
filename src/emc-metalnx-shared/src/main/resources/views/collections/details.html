@@ -40,7 +40,7 @@
 						<form> 
 							<div class="form-check text-right col-md-12 col-sm-12 col-xs-12 float-right">
 								<input type="checkbox" class="form-check-input"
-									id="inheritCheck" onclick="updateInheritanceAction(\'' + ${dataProfile.getDomainObject.getAbsolutePath()} + '\', true)" 
+									id="inheritCheck" th:onclick="'javascript:updateInheritanceAction(\'' + ${dataProfile.getDomainObject().getAbsolutePath()} + '\', true);'" 
 									th:checked="${dataProfile.getDomainObject().inheritanceSet() ? 'checked' : 'false' }"
 									aria-label="collection inheritance checkbox"
 									title="collection inheritance checkbox" /> <label
@@ -308,6 +308,7 @@
 	</div>
 
 
+	<script type="text/javascript" th:src="@{/js/collection.js}"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
