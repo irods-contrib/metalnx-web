@@ -123,12 +123,10 @@ function fileDownload(path){
 }
 
 function updateInheritanceAction(path, inheritance) {
-	//setOperationInProgress();
-	//console.log("Ready for update of inheritance");
-	//toastr.success("Inheritance updated");
-	//unsetOperationInProgress();
 	$("#updateInheritanceModal").modal("show");
 }
+
+
 
 function deleteInfoAction(path){
 	setOperationInProgress();

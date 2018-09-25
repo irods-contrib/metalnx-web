@@ -323,29 +323,37 @@
 						th:text="#{collections.management.inheritance.modal.title}"></h4>
 				</div>
 				<div class="modal-body container">
-					<div class="row">
-						<div class="col-1">
-								<label for="inheritCollectionAbsolutePath"
-											th:text="#{collections.management.table.absolute.path.label}"></label>
-						</div>
-						<div class="col">
-								<span id="inheritCollectionAbsolutePath"
-									th:text="${dataProfile.getAbsolutePath()}"></span>
-						</div>
-					</div>
+					
 					<div class="row">
 						<div class="col">
 							<span
 								th:text="#{collections.management.inheritance.modal.prompt}"></span>
 						</div>
 					</div>
+					<div class="row pb-3">
+						<div class="col">
+								<label for="inheritCollectionAbsolutePath"
+							
+											th:text="#{collections.management.table.absolute.path.label}" class="text-center"></label>
+						</div>
+					</div>
+					<div class="row pb-5">
+				
+						<div class="col">
+								<span id="inheritCollectionAbsolutePath"
+									th:text="${dataProfile.getAbsolutePath()}"></span>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal"
-						th:text="#{confirmation.message.cancel}" title="Cancel"></button>
+						th:text="#{confirmation.message.cancel}" title="Cancel" th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
 					<button type="button" class="btn btn-primary"
-						th:onclick="'javascript:deleteInfoAction(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						th:onclick="'javascript:updateInheritance(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						th:text="#{confirmation.message.yes}" title="Confirm"></button>
+						<button type="button" class="btn btn-primary"
+						th:onclick="'javascript:updateInheritanceRecursively(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						th:text="#{confirmation.message.yes.recursively}" title="Confirm recursively"></button>
 				</div>
 			</div>
 		</div>
