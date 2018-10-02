@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.irodsext.dataprofiler.favorites.FavoritesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridUserFavorite;
-import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserService;

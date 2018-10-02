@@ -20,6 +20,12 @@
 			<groupId>com.emc.metalnx</groupId>
 			<artifactId>emc-metalnx-shared</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

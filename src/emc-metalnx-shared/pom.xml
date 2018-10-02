@@ -13,8 +13,8 @@
 	</parent>
 
 	<artifactId>emc-metalnx-shared</artifactId>
-	
-	<dependencies>		
+
+	<dependencies>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
@@ -32,14 +32,14 @@
 			<artifactId>jargon-data-utils</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.emc.metalnx</groupId>
+			<groupId>org.irods.jargon</groupId>
 			<artifactId>emc-metalnx-services</artifactId>
-			<version>${project.version}</version>
+			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.emc.metalnx</groupId>
+			<groupId>org.irods.jargon</groupId>
 			<artifactId>emc-metalnx-core</artifactId>
-			<version>${project.version}</version>
+			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -65,7 +65,6 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
@@ -101,6 +100,16 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-htmlunit-driver</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -129,7 +138,7 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- 
+		<!--
 		<dependency>
 			<groupId>com.service.mail</groupId>
 			<artifactId>emailService</artifactId>
@@ -208,7 +217,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				
+
 			</plugins>
 		</pluginManagement>
 	</build>

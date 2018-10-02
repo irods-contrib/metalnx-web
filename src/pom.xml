@@ -82,8 +82,6 @@
 	</distributionManagement>
 
 	<modules>
-		<module>emc-metalnx-core</module>
-		<module>emc-metalnx-services</module>
 		<module>emc-metalnx-shared</module>
 		<module>emc-metalnx-ui-admin</module>
 		<module>emc-metalnx-web</module>

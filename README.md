@@ -119,6 +119,10 @@ populate.msi.enabled=false
 Add a dropdown that can select an alternative authentication method (currently standard or pam auth). This defaults to the pre-configured auth method in metalnx.properties.
 
 
+#### Factor out favorites and other code under data profiler #75
+
+factor out data-profiler dependencies from metalnx-core and services into jargon-irods-ext to clean up some circular maven dependency issues. This allows the metalnx notion of shares, favorites, etc to be visible to clients other than metalnx
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
