@@ -1,8 +1,11 @@
 package com.emc.metalnx.controller;
 
+import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
@@ -14,11 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
@@ -98,6 +105,31 @@ public class PreviewController {
 		fileSamplerService.saveStringToFile(data, previewFilePath);
 		
 		model.addAttribute("success", true);
+		return "collections/preview :: cmFilePreview";
+	}
+	
+	@RequestMapping(value = "/saveCsv" , method = RequestMethod.POST)
+	public String saveCsv(final Model model , @RequestBody String data) throws JargonException, 
+	DataGridConnectionRefusedException {
+			
+		logger.info("saving file chnage for :: " +previewFilePath+ " , and data :: " +data);	
+		
+		/*MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		MultipartFile multipartFile = multipartRequest.getFile("file");
+		
+		logger.info("multipartFile:{}", multipartFile);*/
+		
+		byte[] bytes;
+		
+			/*bytes = multipartFile.getBytes();
+			String completeData = new String(bytes);*/
+	        
+			FileSamplerService fileSamplerService =  irodsServices.getFileSamplerService();
+			fileSamplerService.saveStringToFile(data, previewFilePath);
+					
+			model.addAttribute("success", true);
+		
+        
 		return "collections/preview :: cmFilePreview";
 	}
 
