@@ -200,6 +200,7 @@ function unsetOperationInProgress() {
 	cleanModals();
 	operationInProgress = false;
 }
+
 function accessRequest(path){
 	var url = "/emc-metalnx-web/collectionInfo/accessRequest";
 	ajaxEncapsulation(url, "GET", {path: path}, loadEmailResponse, null, null, null);
@@ -208,5 +209,5 @@ function loadEmailResponse(data){
 	$("#readOnlyData").hide();
 	$("#responseTxt").text(data);
 	$("#emailResponse").show();
-	
+
 }

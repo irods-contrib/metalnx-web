@@ -182,6 +182,7 @@
 						th:onclick="'javascript:exportMetadataToCSV(\'' + ${currentPath} +'\');'"
 						style="" title="Download">
 						<i class="fa fa-download"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
+
 					</button>
 				</div>
 				<div class="col-md-12 col-sm-12">
@@ -426,6 +427,7 @@
                 });
 
                 $('.enableEditAVUActionColumn').click(function(){
+
                      $(this).parents('tr').find('.metadataCheckbox').prop('disabled', true);
                     $(this).parents('tr').find('span').addClass('hidden');
                     $(this).parents('tr').find('input:text').removeClass('hidden');
