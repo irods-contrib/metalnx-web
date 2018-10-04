@@ -22,8 +22,8 @@
 
 
 				<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value>-->
-				<!--  <value>file:/etc/irods-ext/metalnx.properties</value>  -->
-				<value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value>  
+				<value>file:/etc/irods-ext/metalnx.properties</value> 
+				<!--  <value>file:///C:/Users/hetalben/opt/etc/irods-ext/metalnx.properties</value>  -->
 
 
 
@@ -36,9 +36,9 @@
 		doc at the top of the repo, -->
 
 	<!-- <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" /> -->
-	<!--  <import resource="file:/etc/irods-ext/metalnxConfig.xml" />   -->
+	<import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
 
-	<import resource="file:///C:/Users/hetalben/opt/etc/irodsContrib/metalnxConfig.xml"/>
+	<!-- <import resource="file:///C:/Users/hetalben/opt/etc/irodsContrib/metalnxConfig.xml"/>  -->
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
