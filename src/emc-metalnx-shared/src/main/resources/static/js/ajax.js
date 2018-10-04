@@ -1,6 +1,6 @@
  /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
  /* Copyright (c) 2015-2017, Dell EMC */
- 
+
 
 /**
  * JS file that has an Ajax method that encapsulates all Ajax calls. In this encapsulated call,
@@ -10,7 +10,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
     if (contentType == null || typeof contentType === 'undefined') {
         contentType = "application/x-www-form-urlencoded; charset=UTF-8";
     }
-    
+
     $.ajax({
         url: url,
         type: method,
@@ -42,7 +42,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
             503: function(response){
                 window.location= "/emc-metalnx-web/httpError/serverNotResponding/";
             }
-        }		
+        }
     }).done(callbacks);
 }
 

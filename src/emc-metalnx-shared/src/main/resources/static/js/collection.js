@@ -122,10 +122,37 @@ function fileDownload(path){
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
 }
 
-function updateInheritanceAction(path, inheritance) {
+function showInheritanceAction() {
 	$("#updateInheritanceModal").modal("show");
 }
 
+
+function updateInheritanceNonRecursive(path) {
+	updateInheritance(path, false);
+}
+
+
+function updateInheritanceRecursive(path) {
+	updateInheritance(path, true);
+}
+
+
+function updateInheritance(path, isRecursive) {
+	console.log("updateInheritance()");
+	console.log("path:" + path);
+	console.log("recursive:" + isRecursive);
+
+
+
+
+-------- here!!!!! -----
+
+	var inheritanceValue = !($('#').is(':checked'));
+
+	setOperationInProgress();
+	toastr["success"]("Operation successful", "inheritance value was updated successfully");
+	unsetOperationInProgress();
+}
 
 
 function deleteInfoAction(path){
@@ -133,7 +160,7 @@ function deleteInfoAction(path){
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
 	$('#actionsWait').show();
-	
+
 	var paths = [];
 	paths.push(path);
 	var url = "/emc-metalnx-web/fileOperation/delete/";
@@ -145,7 +172,7 @@ function deleteInfoAction(path){
 			function (data) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();								
+				$('#deleteConfirmationModal').modal();
 			}
 	);
 	$("#deleteModal").modal("hide");
@@ -171,7 +198,7 @@ function editInfo(path){
 
 function handleDownload(data) {
 	console.log("collection.js :: success call :: handleDownload()")
-	if (data.downloadLimitStatus == "ok"){   
+	if (data.downloadLimitStatus == "ok"){
 		window.location.href = "/emc-metalnx-web/fileOperation/download/";
 		$("#breadcrumDownloadBtn").removeAttr("disabled");
 		$("#actionsWait").hide();
@@ -187,5 +214,6 @@ function setOperationInProgress() {
 }
 
 function unsetOperationInProgress() {
+	cleanModals();
 	operationInProgress = false;
 }
