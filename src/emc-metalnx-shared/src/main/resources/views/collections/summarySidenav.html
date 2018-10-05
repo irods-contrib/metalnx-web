@@ -49,7 +49,7 @@
 				</div>
 
 				<div class="side-canvas_content">
-				<!-- 	<div class="side-canvas_content-info">
+					<!-- 	<div class="side-canvas_content-info">
 						<div class="side-canvas_section-icon">
 							<span><i class="fa fa-share-alt" alt="File Info"></i></span>
 						</div>
@@ -116,13 +116,59 @@
 						</div>
 					</div>
 
+					<div class="side-canvas_content-info">
+						<div>
+							<a href="#metadata" data-toggle="tab" role="tab"
+							th:onclick="'javascript:showMetadata(\'' + ${dataProfile.absolutePath} + '\');'">
+								<span><i class="fa fa-tags"></i></span> <span title="Metadata">Metadata</span>
+						</a>
+						</div>
+					</div>
 				</div>
 			</div>
 
+			
 		</div>
+		
+		<!-- Read-only Model -->
+			<div class="modal fade" id="snapshotMetadataModal" tabindex="-1"
+				role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								title="Close">
+								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+							</button>
+
+						</div>
+						<div class="modal-body">
+						<!-- Metadata successfully modified -->
+							<div class="alert alert-success text-center"
+								id="metadataSuccessModMsg" role="alert"
+								th:if="${modMetadataReturn} == 'success'">
+								<button type="button" class="close" data-dismiss="alert"
+									aria-label="Close" title="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<p th:text="#{metadata.modal.feedback.msg.edited}"></p>
+							</div>
+							<div id="snapshotMetadata"></div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		
 		<script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
 	</div>
 </aside>
+
+
 
 </html>
 

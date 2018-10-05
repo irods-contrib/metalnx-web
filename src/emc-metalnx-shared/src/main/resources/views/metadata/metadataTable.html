@@ -3,8 +3,7 @@
 
 
 
-<div th:fragment="metadataTable"
-	xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="metadataTable" xmlns:th="http://www.w3.org/1999/xhtml">
 	<div id="collections-content" class="panel property-tab">
 		<th:block th:if="${collectionAndDataObject != null}">
 			<!-- Modal Add/Edit -->
@@ -58,7 +57,8 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
-								data-dismiss="modal" th:text="#{metadata.modal.add.btn.cancel}" title="Cancel"></button>
+								data-dismiss="modal" th:text="#{metadata.modal.add.btn.cancel}"
+								title="Cancel"></button>
 							<button type="button" class="btn btn-primary"
 								onclick="saveMetadata();" id="saveMetadata"
 								th:text="#{metadata.modal.add.btn.save}" title="Save"></button>
@@ -83,9 +83,9 @@
 						</div>
 						<div class="modal-body">
 							<input type="hidden" id="deleteOneAVU" title="avu" /> <input
-								type="hidden" id="deleteMetadataAttribute" title="avu attr" /> <input
-								type="hidden" id="deleteMetadataValue" title="avu val" /> <input
-								type="hidden" id="deleteMetadataUnit" title="avu unit" />
+								type="hidden" id="deleteMetadataAttribute" title="avu attr" />
+							<input type="hidden" id="deleteMetadataValue" title="avu val" />
+							<input type="hidden" id="deleteMetadataUnit" title="avu unit" />
 							<p th:text="#{metadata.modal.delete.msg.info}"></p>
 							<p th:text="#{metadata.modal.delete.msg.confirm}"></p>
 						</div>
@@ -177,7 +177,8 @@
 						<i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
 					</button>
 					<button id="exportMetadataToCSV"
-						class="btn btn-default btn-property btn-sm" href="#" style="" title="Download">
+						class="btn btn-default btn-property btn-sm" href="#" style=""
+						title="Download">
 						<i class="fa fa-download"></i> <span
 							th:text="#{metadata.tab.btn.csv}"></span>
 					</button>
@@ -188,7 +189,8 @@
 			</div>
 
 			<th:block th:unless="${#lists.isEmpty(dataGridMetadataList)}">
-				<table class="table table-hover" id="metadaTable" summary="This Contains Metadata">
+				<table class="table table-hover" id="metadaTable"
+					summary="This Contains Metadata">
 					<thead>
 						<tr>
 							<th class="tableCheckBoxCol"
@@ -207,27 +209,30 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="dataGridMetadata : ${dataGridMetadataList}">
+						<tr th:each="dataGridMetadata : ${dataGridMetadataList}"
+							class="currentRow">
 							<td
 								th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
 								<input
 								th:attr="data-path=${currentPath}, data-attr=${dataGridMetadata.getAttribute()}, data-val=${dataGridMetadata.getValue()}, data-unit=${dataGridMetadata.getUnit()}"
-								class="metadataCheckbox" type="checkbox" title="select metadata"/>
+								class="metadataCheckbox" type="checkbox" title="select metadata" />
 							</td>
-							<td><span th:text="${dataGridMetadata.getAttribute()}"></span><input
-								class="hidden newAttrMetadataTable" type="text"
-								th:value="${dataGridMetadata.getAttribute()}" title="name"/></td>
-							<td><span th:text="${dataGridMetadata.getValue()}"></span><input
-								class="hidden newValMetadataTable" type="text"
-								th:value="${dataGridMetadata.getValue()}" title="value"/></td>
+							<td class="clickable"><span th:text="${dataGridMetadata.getAttribute()}"
+								class="attr"></span><input class="hidden newAttrMetadataTable"
+								type="text" th:value="${dataGridMetadata.getAttribute()}"
+								title="name" /></td>
+							<td class="clickable"><span th:text="${dataGridMetadata.getValue()}"
+								class="value"></span><input class="hidden newValMetadataTable"
+								type="text" th:value="${dataGridMetadata.getValue()}"
+								title="value" /></td>
 							<th:block th:if="${dataGridUser.isMetadataUnitView()}">
 								<td th:if="${#strings.isEmpty(dataGridMetadata.getUnit())}"><span>-</span><input
 									class="hidden newUnitMetadataTable" type="text"
-									th:value="${dataGridMetadata.getUnit()}" title="unit"/></td>
+									th:value="${dataGridMetadata.getUnit()}" title="unit" /></td>
 								<td th:unless="${#strings.isEmpty(dataGridMetadata.getUnit())}"><span
 									th:text="${dataGridMetadata.getUnit()}"></span><input
 									class="hidden newUnitMetadataTable" type="text"
-									th:value="${dataGridMetadata.getUnit()}" title="unit"/></td>
+									th:value="${dataGridMetadata.getUnit()}" title="unit" /></td>
 							</th:block>
 							<td
 								th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
@@ -257,6 +262,45 @@
 					</tbody>
 				</table>
 			</th:block>
+
+			<!-- Read-only Model -->
+			<div class="modal fade" id="viewMetadataModal" tabindex="-1"
+				role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								title="Close">
+								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+							</button>
+							<h4 class="modal-title">View Attribute and Value</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="text-right col-md-2 col-sm-2 col-xs-4">
+									<label>Attribute</label>
+								</div>
+								<div class="col-md-10 col-sm-10 col-xs-8">
+									<span id="attrModal"></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="text-right col-md-2 col-sm-2 col-xs-4">
+									<label>Value</label>
+								</div>
+								<div class="col-md-10 col-sm-10 col-xs-8">
+									<span id="valueModal"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</th:block>
 
 		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
@@ -377,7 +421,8 @@
                 });
 
                 $('.enableEditAVUActionColumn').click(function(){
-                    $(this).parents('tr').find('.metadataCheckbox').prop('disabled', true);
+                	alert("This is clicked");
+                     $(this).parents('tr').find('.metadataCheckbox').prop('disabled', true);
                     $(this).parents('tr').find('span').addClass('hidden');
                     $(this).parents('tr').find('input:text').removeClass('hidden');
                     $(this).parents('tr').find('.enableEditAVUActionColumn').addClass('hidden');
@@ -387,8 +432,22 @@
                     $(this).parents('tr').find('.saveEditAVUActionColumn > span.btn-save-label').removeClass('hidden');
                     console.log("removed hidden from save btn");
                     $(this).parents('tr').find('.cancelEditAVUActionColumn > span.btn-cancel-label').removeClass('hidden');
-                    console.log("removed hidden from cancel btn");
+                    console.log("removed hidden from cancel btn"); 
                 });
+                          
+            	$("tr.currentRow").on("click",function(event){
+            		if (!($(event.target).is('input')) && !($(event.target).is('button')) 
+            				&& !($(event.target).is('button span')) && !($(event.target).is('i'))){
+            			$('#viewMetadataModal').modal();               	
+                    	$("#attrModal").text($(this).find('.attr').text());
+                    	$("#valueModal").text($(this).find('.value').text());
+            		}
+                	
+                });
+                
+            	/* $('tr.currentRow input button i').click(function(e) {
+            	    e.stopPropagation();
+            	}); */
                 $('.cancelEditAVUActionColumn').click(function(){
                     $(this).parents('tr').find('.metadataCheckbox').prop('disabled', false);
                     $(this).parents('tr').find('span').removeClass('hidden');

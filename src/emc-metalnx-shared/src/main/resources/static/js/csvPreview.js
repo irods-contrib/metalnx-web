@@ -8,9 +8,12 @@ $(document).ready(function(){
 
 function save() {
 	var data = $("#csv").jexcel("getData");
+	var csvData = $.csv.fromArrays(data);
 	console.log("Data :: "+data);
-	var url = "/emc-metalnx-web/preview/save/";
-	ajaxEncapsulation(url, "POST", {data: data}, confirmSave, failSave, null, 'text/csv;charset=utf-8' , null);	
+	console.log("csvData :: "+csvData);
+	var url = "/emc-metalnx-web/preview/saveCsv/";
+	ajaxEncapsulation(url, "POST", {data: csvData}, confirmSave, failSave, null, "text/csv", null);	
+	//ajaxEncapsulation(url, "POST", {data: data}, confirmSave, failSave, null, 'text/csv;charset=utf-8' , null);	
 }
 
 function confirmSave(data){
