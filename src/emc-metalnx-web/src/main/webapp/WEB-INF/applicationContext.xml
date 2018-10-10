@@ -104,6 +104,7 @@
 
 		<sec:intercept-url pattern="/fileOperation/**"
 			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/inheritance/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/upload/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/fileproperty/**"
