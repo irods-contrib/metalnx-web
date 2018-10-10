@@ -109,30 +109,27 @@ function showInheritanceAction() {
 	$("#updateInheritanceModal").modal("show");
 }
 
-
 function updateInheritanceNonRecursive(path) {
 	updateInheritance(path, false);
 }
-
 
 function updateInheritanceRecursive(path) {
 	updateInheritance(path, true);
 }
 
-
 function updateInheritance(path, isRecursive) {
 	console.log("updateInheritance()");
 	console.log("path:" + path);
 	console.log("recursive:" + isRecursive);
+	var inheritanceValue = ($('#').is(':checked'));
+	console.log("inheritanceValue:" + inheritanceValue);
 
-
-
-
--------- here!!!!! -----
-
-	var inheritanceValue = !($('#').is(':checked'));
-
+	var inheritanceUrl = "/emc-metalnx-web/inheritance";
 	setOperationInProgress();
+	ajaxEncapsulation(inheritanceUrl, "PUT", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
+}
+
+function inheritanceSuccessful() {
 	toastr["success"]("Operation successful", "inheritance value was updated successfully");
 	unsetOperationInProgress();
 }
@@ -200,4 +197,3 @@ function unsetOperationInProgress() {
 	cleanModals();
 	operationInProgress = false;
 }
-
