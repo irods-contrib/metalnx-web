@@ -189,6 +189,10 @@ Add a dropdown that can select an alternative authentication method (currently s
 Add clipboard functionality to paths on the info views to allow easy copy to clipboard on the colleciton and data object info pages
 
 
+#### Add inherit flag and ability to update to coll info view
+
+Added inheritance flag to the info view for collections and allow modification
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text
