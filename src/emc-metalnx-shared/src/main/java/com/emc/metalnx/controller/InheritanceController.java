@@ -3,18 +3,20 @@
 
 package com.emc.metalnx.controller;
 
+import java.util.Map;
+
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
@@ -30,8 +32,7 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
  */
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths" })
-@RequestMapping(value = "/inheritance")
+@RequestMapping("/inheritance")
 public class InheritanceController {
 
 	@Autowired
@@ -53,21 +54,29 @@ public class InheritanceController {
 	 * @throws DataGridException
 	 * @throws JargonException
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	@ResponseStatus(value = HttpStatus.OK)
-	public void modify(@RequestParam("targetPath") final String targetPath,
+	@RequestMapping(method = RequestMethod.POST)
+	// @ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<?> modify(Model model, @RequestParam("path") final String targetPath,
 			@RequestParam("inherit") final boolean inherit, @RequestParam("recursive") final boolean recursive)
 			throws DataGridException, JargonException {
 
 		logger.info("modify()");
 
-		if (targetPath == null || targetPath.isEmpty()) {
-			throw new IllegalArgumentException("null targetPath");
-		}
+		// if (targetPath == null || targetPath.isEmpty()) {
+		// throw new IllegalArgumentException("null targetPath");
+		// }
 
 		logger.info("targetPath:{}", targetPath);
 		logger.info("inherit:{}", inherit);
 		logger.info("recursive: {}", recursive);
+
+		Map modelMap = model.asMap();
+		logger.info("have modelmap:{}", modelMap);
+		for (Object modelKey : modelMap.keySet()) {
+			Object modelValue = modelMap.get(modelKey);
+			logger.info(modelKey + " -- " + modelValue);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
 
 	}
 

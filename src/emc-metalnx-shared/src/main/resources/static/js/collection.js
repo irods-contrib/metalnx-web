@@ -126,7 +126,7 @@ function updateInheritance(path, isRecursive) {
 
 	var inheritanceUrl = "/emc-metalnx-web/inheritance";
 	setOperationInProgress();
-	ajaxEncapsulation(inheritanceUrl, "PUT", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
+	ajaxEncapsulation(inheritanceUrl, "POST", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
 }
 
 function inheritanceSuccessful() {
