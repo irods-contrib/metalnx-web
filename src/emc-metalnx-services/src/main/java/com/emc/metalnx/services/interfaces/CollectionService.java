@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.interfaces;
 
@@ -345,8 +343,8 @@ public interface CollectionService {
 	 *             {@link IOException}
 	 * @throws DataGridException
 	 *             {@link DataGridException}
-	 * @throws ZipServiceException 
-	 * @throws JargonException 
+	 * @throws ZipServiceException
+	 * @throws JargonException
 	 * 
 	 */
 	String prepareFilesForDownload(List<String> sourcePaths)
@@ -433,5 +431,20 @@ public interface CollectionService {
 	IconObject getIcon(String mimeType);
 
 	DataProfile<IRODSDomainObject> getCollectionDataProfile(String path) throws DataGridException;
+
+	/**
+	 * Update the collection inheritance value
+	 * 
+	 * @param path
+	 *            {@code String} with the collection path
+	 * @param inheritOption
+	 *            {@code boolean} with the inheritance setting
+	 * @param recursive
+	 *            {@code boolean} indicating whether to apply the setting
+	 *            recursively
+	 * @throws DataGridException
+	 *             {@link DataGridException}
+	 */
+	void modifyInheritance(String path, boolean inheritOption, boolean recursive) throws DataGridException;
 
 }

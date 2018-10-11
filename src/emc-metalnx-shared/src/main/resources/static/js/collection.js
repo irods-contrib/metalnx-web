@@ -121,7 +121,7 @@ function updateInheritance(path, isRecursive) {
 	console.log("updateInheritance()");
 	console.log("path:" + path);
 	console.log("recursive:" + isRecursive);
-	var inheritanceValue = ($('#').is(':checked'));
+	var inheritanceValue = ($('#inheritCheck').is(':checked'));
 	console.log("inheritanceValue:" + inheritanceValue);
 
 	var inheritanceUrl = "/emc-metalnx-web/inheritance";

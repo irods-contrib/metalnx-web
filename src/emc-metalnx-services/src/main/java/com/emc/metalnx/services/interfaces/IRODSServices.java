@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.interfaces;
 
@@ -259,5 +257,13 @@ public interface IRODSServices {
 	 *             {@link JargonException}
 	 */
 	IRODSAccount getIrodsAdminAccount() throws DataGridException;
+
+	/**
+	 * Handy method to determine if the logged in user is acting in the role of
+	 * administrator
+	 * 
+	 * @return {@code boolean} indicating {@code true} if user is an admin
+	 */
+	boolean isActingAsAdmin();
 
 }

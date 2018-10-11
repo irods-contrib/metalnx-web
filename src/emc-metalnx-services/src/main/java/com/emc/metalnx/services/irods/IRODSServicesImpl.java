@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
@@ -487,6 +485,11 @@ public class IRODSServicesImpl implements IRODSServices {
 	@Override
 	public IRODSAccessObjectFactory getIrodsAccessObjectFactory() {
 		return irodsAccessObjectFactory;
+	}
+
+	@Override
+	public boolean isActingAsAdmin() {
+		return this.getUserTokenDetails().getUser().isAdmin();
 	}
 
 	public UserTokenDetails getUserTokenDetails() {

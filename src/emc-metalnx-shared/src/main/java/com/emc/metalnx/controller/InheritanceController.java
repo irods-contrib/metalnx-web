@@ -3,8 +3,6 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.Map;
-
 import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +68,9 @@ public class InheritanceController {
 		logger.info("inherit:{}", inherit);
 		logger.info("recursive: {}", recursive);
 
-		Map modelMap = model.asMap();
-		logger.info("have modelmap:{}", modelMap);
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			logger.info(modelKey + " -- " + modelValue);
-		}
+		cs.modifyInheritance(targetPath, inherit, recursive);
+
+		logger.info("inheritance set");
 		return new ResponseEntity<>(HttpStatus.OK);
 
 	}
