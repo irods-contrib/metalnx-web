@@ -137,7 +137,11 @@
 		<sec:session-management invalid-session-url="/login/invalidSession/" /> 
 
 	</sec:http>
-
+	
+	<bean id="exceptionFilter" class="com.emc.metalnx.services.auth.MetalnxExceptionTranslationFilter">
+	 <constructor-arg ref="ep403"/>
+	</bean>
+	
 	<sec:authentication-manager>
 		<sec:authentication-provider ref="customAuthenticationProvider" />
 	</sec:authentication-manager>
