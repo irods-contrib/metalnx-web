@@ -5,8 +5,10 @@ package com.emc.metalnx.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.connection.AuthScheme;
 import org.slf4j.Logger;
@@ -16,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,18 +35,34 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 @RequestMapping(value = "/login")
 public class LoginController {
 
+	public static final String AJAX_ORIG_PATH = "ajaxOrigPath";
+
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
 	private ConfigService configService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView loginView(final Model inModel) {
+	public ModelAndView loginView(final Model inModel, final HttpServletRequest request,
+			final HttpServletResponse response) {
 		logger.info("LoginContoller loginView()");
 		ModelAndView model = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-		if (auth instanceof UsernamePasswordAuthenticationToken) {
+		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+		logger.info("last saved request was:{}", savedRequest);
+
+		Map<String, String[]> params = request.getParameterMap();
+		if (params.containsKey(AJAX_ORIG_PATH)) {
+			logger.info("have an original path from an ajax call to use to construct the redirect");
+			StringBuilder sb = new StringBuilder();
+			sb.append("redirect:");
+			sb.append(trimContextString(params.get(AJAX_ORIG_PATH)[0]));
+			sb.append("?");
+			sb.append(request.getQueryString());
+			logger.debug("redirect to:{}", sb.toString());
+			model = new ModelAndView(sb.toString());
+		} else if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
 			String redirect = isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home";
 			model = new ModelAndView(redirect);
@@ -52,6 +72,29 @@ public class LoginController {
 		}
 
 		return model;
+	}
+
+	/*
+	 * interim method to lop off the context string which comes from the javascript
+	 * ajax processing.
+	 */
+	private String trimContextString(String pathString) {
+		logger.debug("trimContextString()");
+		if (pathString == null || pathString.isEmpty()) {
+			throw new IllegalArgumentException("null or empty pathString");
+		}
+
+		logger.debug("pathString:{}", pathString);
+
+		int idx = pathString.indexOf("/emc-metalnx-web");
+		if (idx == -1) {
+			throw new IllegalArgumentException("not a path string, expected metalnx context");
+		}
+
+		String newPath = pathString.substring(idx + 16);
+		logger.debug("newPath:{}", newPath);
+		return newPath;
+
 	}
 
 	private void addAuthTypesAndDefaultAuthToModel(ModelAndView model) {
@@ -75,8 +118,12 @@ public class LoginController {
 	@RequestMapping(value = "/invalidSession/", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
 	@ResponseBody
-	public String invalidSessionHandler(final HttpServletRequest response) {
+	public String invalidSessionHandler(final HttpServletRequest request, final HttpServletResponse response) {
 		logger.info("LoginContoller invalidSessionHandler()");
+		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+		logger.info("last saved request was:{}", savedRequest);
+		logger.info("request url was:{}", request.getRequestURL());
+
 		return "<script>window.location='/emc-metalnx-web/login/'</script>";
 	}
 

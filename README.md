@@ -193,6 +193,10 @@ Add clipboard functionality to paths on the info views to allow easy copy to cli
 
 Added inheritance flag to the info view for collections and allow modification
 
+#### 'remembering' login/exception as a last path causes display of error when login succeeded
+
+Overhaul of handling of session/login timeout behavior. This is complicated by the mixing of 'thymeleaf' server rendered pages mixed with AJAX operations and caused inconsistent behavior where sometimes the operation before the timeout would be remembered and sometimes it would not. In addition, a login exception would cause repeated redisplay of the login screen even when login had succeeded. The javascript 'ajax()' method was overloaded by wrapping the success handling code to look for the login page and record the current location as a ajaxOrigPath parameter That could be used to reposition the browser after a successful login. This was a pretty significant reworking of the timeout handling.
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

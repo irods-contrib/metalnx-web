@@ -19,7 +19,21 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
         data: params,
         async: true,
         cache: false,
-        success: successFunction,
+        // wrap success to check for invalid session or login exception errors
+        success: function (data, status, jqXHR) {
+
+          if (data.search("XXXLOGINXXX") >= 0) {
+                console.log("current location = " + window.location);
+                console.log("location path =" + window.location.pathname);
+                window.location= "/emc-metalnx-web/login/" + window.location.search + "&ajaxOrigPath=" + window.location.pathname;
+                return false;
+          }
+
+          if (successFunction) {
+            	   successFunction(data, status, jqXHR);
+          }
+
+        },
         error: errorFunction,
         complete: function() {
             $(".alert-danger").delay(12000).fadeOut('slow');

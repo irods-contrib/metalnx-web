@@ -421,7 +421,6 @@
                 });
 
                 $('.enableEditAVUActionColumn').click(function(){
-                	alert("This is clicked");
                      $(this).parents('tr').find('.metadataCheckbox').prop('disabled', true);
                     $(this).parents('tr').find('span').addClass('hidden');
                     $(this).parents('tr').find('input:text').removeClass('hidden');
@@ -432,19 +431,19 @@
                     $(this).parents('tr').find('.saveEditAVUActionColumn > span.btn-save-label').removeClass('hidden');
                     console.log("removed hidden from save btn");
                     $(this).parents('tr').find('.cancelEditAVUActionColumn > span.btn-cancel-label').removeClass('hidden');
-                    console.log("removed hidden from cancel btn"); 
+                    console.log("removed hidden from cancel btn");
                 });
-                          
+
             	$("tr.currentRow").on("click",function(event){
-            		if (!($(event.target).is('input')) && !($(event.target).is('button')) 
+            		if (!($(event.target).is('input')) && !($(event.target).is('button'))
             				&& !($(event.target).is('button span')) && !($(event.target).is('i'))){
-            			$('#viewMetadataModal').modal();               	
+            			$('#viewMetadataModal').modal();
                     	$("#attrModal").text($(this).find('.attr').text());
                     	$("#valueModal").text($(this).find('.value').text());
             		}
-                	
+
                 });
-                
+
             	/* $('tr.currentRow input button i').click(function(e) {
             	    e.stopPropagation();
             	}); */
