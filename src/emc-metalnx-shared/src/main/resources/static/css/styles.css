@@ -1292,6 +1292,14 @@ a.page-hint {
     border-radius: 5px;
 }
 
+.panel-info-header{
+    padding: 15px;
+    background-color: #f2f6f9;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px; 
+}
+
 .panel-info span{
     word-break: break-all;
 }

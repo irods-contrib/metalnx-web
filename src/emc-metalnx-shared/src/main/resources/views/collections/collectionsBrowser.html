@@ -427,6 +427,9 @@
         		getInfoDetails([[${currentPath}]]);
         		return;
         	}
+        	
+        	var i = 0;
+        	
         	datatable = $('#treeViewTable').DataTable( {
     		    "serverSide": true,
     		    "dom": dtPatternMlxCollections,
@@ -545,10 +548,13 @@
                    	{
                     	"render": function ( data, type, full, meta ) {
 
-    						return '<a href="/emc-metalnx-web/collectionInfo?path='+encodeURI(full.path)+'" class="btn btn-default btn-xs" name="' + full.path +
-    						'" onclick=getCollectionSummary("'+encodeURI(full.path)+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + full.path +
-        						'" id="open-left-canvas" onclick=getSideCanvas("' + encodeURI(full.path) + '") class="btn btn-default btn-xs"  title="Quick View" ><i class="fa fa-eye"></i> </a>';
-
+                    		var encodedName = encodeURI(full.name);
+                    		var encodedPath = encodeURI(full.path);
+                    		var idVal = "row" + i++;
+                    		
+                    		return '<a href="/emc-metalnx-web/collectionInfo?path='+encodedPath+'" class="btn btn-default btn-xs" name="' + idVal +
+    						'" onclick=getCollectionSummary("'+encodedPath+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + idVal +
+        						'" id="open-left-canvas" onclick=getSideCanvas("'+encodedPath+'","'+idVal+'") class="btn btn-default btn-xs"  title="Quick View" ><i class="fa fa-eye"></i> </a>';
 
     					},
     					"width": "20%",

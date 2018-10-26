@@ -43,8 +43,6 @@
 	<import resource="file:/etc/irods-ext/metalnxConfig.xml" />
 	<!--  <import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml" />  -->
 
-
-
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
 	<!-- AuthenticationProvider -->
@@ -118,10 +116,9 @@
 
 		<sec:intercept-url pattern="/fileOperation/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/upload/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/metadata/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/inheritance/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/upload/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/fileproperty/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/templates/**"
@@ -156,9 +153,11 @@
 
 		<sec:logout logout-url="/logout/" success-handler-ref="logoutHandler" />
 
-		<sec:session-management invalid-session-url="/login/invalidSession/" />
-
 	</sec:http>
+	<!--
+	<bean id="exceptionFilter" class="com.emc.metalnx.services.auth.MetalnxExceptionTranslationFilter">
+	 <constructor-arg ref="ep403"/>
+	</bean>-->
 
 	<sec:authentication-manager>
 		<sec:authentication-provider

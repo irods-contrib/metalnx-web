@@ -138,13 +138,6 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>com.service.mail</groupId>
-			<artifactId>emailService</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency> -->
-
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
 <dependency>

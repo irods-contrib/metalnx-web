@@ -1,6 +1,6 @@
  /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
  /* Copyright (c) 2015-2017, Dell EMC */
- 
+
 
 /**
  * JS file that has an Ajax method that encapsulates all Ajax calls. In this encapsulated call,
@@ -10,7 +10,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
     if (contentType == null || typeof contentType === 'undefined') {
         contentType = "application/x-www-form-urlencoded; charset=UTF-8";
     }
-    
+
     $.ajax({
         url: url,
         type: method,
@@ -19,7 +19,21 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
         data: params,
         async: true,
         cache: false,
-        success: successFunction,
+        // wrap success to check for invalid session or login exception errors
+        success: function (data, status, jqXHR) {
+
+          if (data.search("XXXLOGINXXX") >= 0) {
+                console.log("current location = " + window.location);
+                console.log("location path =" + window.location.pathname);
+                window.location= "/emc-metalnx-web/login/" + window.location.search + "&ajaxOrigPath=" + window.location.pathname;
+                return false;
+          }
+
+          if (successFunction) {
+            	   successFunction(data, status, jqXHR);
+          }
+
+        },
         error: errorFunction,
         complete: function() {
             $(".alert-danger").delay(12000).fadeOut('slow');
@@ -42,7 +56,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
             503: function(response){
                 window.location= "/emc-metalnx-web/httpError/serverNotResponding/";
             }
-        }		
+        }
     }).done(callbacks);
 }
 

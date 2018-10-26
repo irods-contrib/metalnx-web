@@ -5,7 +5,11 @@ $(document).ready(function(){
       
 });
 
-function getSideCanvas(path){
+function getSideCanvas(path,name){
+	
+	var cls = '.'+name	
+	$(cls).parent('td').parent('tr').addClass('panel-error'); //to change the color of selected line
+	
 	var url = "/emc-metalnx-web/browse/summary";		 
 	console.log("URL :: " +url);
 	ajaxEncapsulation(url, "POST", {path: path}, displaySideCanvas, null, null);
@@ -17,3 +21,16 @@ function displaySideCanvas(data){
 	$("#page-nav-wrapper").append(data);
 	
 }
+
+function showMetadata(path){
+	console.log("showMetadata :: " +path);
+	var url = "/emc-metalnx-web/metadata/getMetadata/";
+	ajaxEncapsulation(url , "POST", {path: path}, displayMetadataSnapshot, null, null, null);
+	
+}
+
+function displayMetadataSnapshot(data){
+	$('#snapshotMetadataModal').modal(); 
+	$("#snapshotMetadata").html(data);
+}
+

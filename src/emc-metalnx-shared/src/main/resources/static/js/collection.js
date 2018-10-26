@@ -1,20 +1,12 @@
 function getCollectionSummary(path){
-	//var url = "/emc-metalnx-web/collectionInfo";
-	//getBreadcrumb(path);
-	//console.log("URL :: " +url);
-	//ajaxEncapsulation(url, "GET", {path: path}, displayCollectionSummary, null, null);
-	console.log("getCollectionSummary()");
 	window.location.href = '/emc-metalnx-web/collectionInfo?path=' + path; //relative to domain
 }
 
 function displayCollectionSummary(data){
-	console.log("displayTestDetails()");
 	$("#summary").html(data);
 }
 
 function getInfoDetails(path){
-	console.log("getInfoDetails()");
-	//window.location.hash = "info";
 	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 }
@@ -38,8 +30,6 @@ function getPerview(path){
 }
 
 function displayInfoDetails(data){
-	/*$("#table-loader").hide();
-	$("#details").show();*/
 	$("#details").html(data);
 }
 
@@ -118,6 +108,36 @@ function fileDownload(path){
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
 }
 
+function showInheritanceAction() {
+	$("#updateInheritanceModal").modal("show");
+}
+
+function updateInheritanceNonRecursive(path) {
+	updateInheritance(path, false);
+}
+
+function updateInheritanceRecursive(path) {
+	updateInheritance(path, true);
+}
+
+function updateInheritance(path, isRecursive) {
+	console.log("updateInheritance()");
+	console.log("path:" + path);
+	console.log("recursive:" + isRecursive);
+	var inheritanceValue = ($('#inheritCheck').is(':checked'));
+	console.log("inheritanceValue:" + inheritanceValue);
+
+	var inheritanceUrl = "/emc-metalnx-web/inheritance";
+	setOperationInProgress();
+	ajaxEncapsulation(inheritanceUrl, "POST", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
+}
+
+function inheritanceSuccessful() {
+	toastr["success"]("Operation successful", "inheritance value was updated successfully");
+	unsetOperationInProgress();
+}
+
+
 function deleteInfoAction(path){
 	setOperationInProgress();
 	console.log("Ready for deletion");
@@ -177,6 +197,7 @@ function setOperationInProgress() {
 }
 
 function unsetOperationInProgress() {
+	cleanModals();
 	operationInProgress = false;
 }
 function accessRequest(path){

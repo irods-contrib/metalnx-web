@@ -1,8 +1,14 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
+<<<<<<< HEAD
 ## Version: 2.0.1-SNAPSHOT
 ## Git Tag:
 ## Date:
+=======
+## Version: 2.0.0-RELEASE
+## Git Tag: 2.0.0-RELEASE
+## Date: Oct 25, 2018
+>>>>>>> master
 
 Metalnx is a web application designed to work alongside the [iRODS - Integrated Rule-Oriented Data System](http://www.irods.org). It provides a graphical UI that can help simplify most administration,
 collection management, and metadata management tasks removing the need to memorize the long list of icommands.
@@ -119,9 +125,28 @@ populate.msi.enabled=false
 Add a dropdown that can select an alternative authentication method (currently standard or pam auth). This defaults to the pre-configured auth method in metalnx.properties.
 
 
+<<<<<<< HEAD
 #### Factor out favorites and other code under data profiler #75
 
 factor out data-profiler dependencies from metalnx-core and services into jargon-irods-ext to clean up some circular maven dependency issues. This allows the metalnx notion of shares, favorites, etc to be visible to clients other than metalnx
+=======
+#### add 'copyable' path for collection and data object #72
+
+Add clipboard functionality to paths on the info views to allow easy copy to clipboard on the colleciton and data object info pages
+
+
+#### Add inherit flag and ability to update to coll info view
+
+Added inheritance flag to the info view for collections and allow modification
+
+#### 'remembering' login/exception as a last path causes display of error when login succeeded
+
+Overhaul of handling of session/login timeout behavior. This is complicated by the mixing of 'thymeleaf' server rendered pages mixed with AJAX operations and caused inconsistent behavior where sometimes the operation before the timeout would be remembered and sometimes it would not. In addition, a login exception would cause repeated redisplay of the login screen even when login had succeeded. The javascript 'ajax()' method was overloaded by wrapping the success handling code to look for the login page and record the current location as a ajaxOrigPath parameter That could be used to reposition the browser after a successful login. This was a pretty significant reworking of the timeout handling.
+
+#### invalid coll browse when spaces in name #205 (NIEHS)
+
+Better handling of special chars and spaces in file names when using the summary pop up right hand panel in the collection browser.
+>>>>>>> master
 
 #### NIEHS identified misc theming issues
 

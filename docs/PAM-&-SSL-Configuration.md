@@ -1,22 +1,23 @@
-This post explains how to configure Metalnx to work with an iRODS grid set up to use SSL and PAM.
+This document explains how to configure Metalnx to work with an iRODS grid set up to use SSL and PAM.
 
-There are few different ways to use SSL with our without PAM in your system:
+There are few different ways to use SSL with or without PAM in your system:
 
 ![](https://github.com/Metalnx/metalnx-web/blob/master/docs/IMAGES/mlx-ssl-config.png)
 
 ## iRODS
 
-In this section, we provide a quick guide on how to configure iRODS with SSL. If you want more information about it, we encourage you to check out this [SSL and PAM presentation](http://slides.com/irods/ugm2016-ssl-and-pam#/) by iRODS.
+In this section, we provide a quick guide on how to configure iRODS with SSL. If you want more information about it, we encourage you to check out this [SSL and PAM presentation](http://slides.com/irods/ugm2018-ssl-and-pam-configuration#/) by iRODS.
 
-To configure SSL in iRODS you need create a directory on the icat server to hold the certificates. For the purpose of this Wiki post, we use self-signed certificates, but the process is similar if you have a certificate issued by a certificate authority. 
+To configure SSL in iRODS you need to create a directory on the catalog provider to hold the certificates. For the purpose of this document, we use self-signed certificates, but the process is similar if you have a certificate issued by a certificate authority. 
 
-Run the following commands to create the private key, certificate and Diffie-Hellman parameters in `/etc/irods/ssl/`:
+Run the following commands to create the private key, certificate, and Diffie-Hellman parameters in `/etc/irods/ssl/`:
         
     $ mkdir /etc/irods/ssl
     $ cd /etc/irods/ssl
-    $ openssl genrsa -out irods.key                                     # generate an RSA key
+    $ openssl genrsa -out irods.key                                     # Generate an RSA key
     $ openssl req -new -x509 -key irods.key -out irods.crt -days 365    # Generate self-signed certificate
     $ openssl dhparam -2 -out dhparams.pem 2048                         # Generate some Diffie-Hellman parameters
+    $ chmod 600 server.key                                              # Limit permission on the key
 
 Make sure your */etc/irods/ssl* looks like:
 
@@ -24,10 +25,10 @@ Make sure your */etc/irods/ssl* looks like:
 $ ls -l /etc/irods/ssl
 -rw-rw-r-- 1 irods irods 1277 Dec 13 01:48 irods.crt
 -rw-rw-r-- 1 irods irods  424 Dec 13 01:50 dhparams.pem
--rw-rw-r-- 1 irods irods 1675 Dec 13 01:46 server.key
+-rw------- 1 irods irods 1675 Dec 13 01:46 server.key
 ```
 
-In addition, change the iCAT server to require SSL for all connections. Update the `/etc/irods/core.re` file to use `CS_NEG_REQUIRE` as follows:
+In addition, change the catalog provider to require SSL for all connections.  Update the `/etc/irods/core.re` file to use `CS_NEG_REQUIRE` as follows:
 
     acPreConnect(*OUT) { *OUT="CS_NEG_REQUIRE"; }
 
@@ -35,7 +36,7 @@ Now, update the clients to use SSL. The first client we will update is the iRODS
 
 ```
 {
-    "irods_host": "icat.com",
+    "irods_host": "provider.example.org",
     "irods_port": 1247,
     "irods_default_resource": "demoResc",
     "irods_home": "/tempZone/home/rods",
@@ -60,7 +61,8 @@ Now, update the clients to use SSL. The first client we will update is the iRODS
     "irods_ssl_certificate_chain_file": "/etc/irods/ssl/irods.crt",
     "irods_ssl_certificate_key_file": "/etc/irods/ssl/server.key",
     "irods_ssl_dh_params_file": "/etc/irods/ssl/dhparams.pem",
-    "irods_ssl_ca_certificate_file": "/etc/irods/ssl/irods.crt"
+    "irods_ssl_ca_certificate_file": "/etc/irods/ssl/irods.crt",
+    "irods_ssl_verify_server": "cert"
 }
 ```
 Notice that we changed the `irods_client_server_policy` to `CS_NEG_REQUIRE` and added SSL configuration parameters:
@@ -73,26 +75,26 @@ Notice that we changed the `irods_client_server_policy` to `CS_NEG_REQUIRE` and 
 
 Restart the iRODS service:
 
-    ./iRODS/irodsctl restart
+    ./irodsctl restart
 
 ### Log in iRODS
 
 After all that configuration, you should be able to log in iRODS without any problems.
 
-	$ iinit 
+	$ iinit
 	Enter your current iRODS password:
 	$ ils
 	/tempZone/home/rods
-	
+
 ### PAM Configuration
 
 This section provides you a quick explanation on how to set up PAM authentication in iRODS. If you do not want use PAM in your system, go to the Metalnx Configuration section.
 
 ### iRODS PAM file
 
-First, we need to configure the iRODS PAM file: 
+First, we need to configure the iRODS PAM file:
 
-    sudo su - root -c 'echo "auth sufficient pam_unix.so" > /etc/pam.d/irods' 
+    sudo su - root -c 'echo "auth sufficient pam_unix.so" > /etc/pam.d/irods'
 
 In this case, the `pam_unix.so` module is used for traditional password authentication.
 
@@ -127,7 +129,7 @@ Now, update the `irods_environment.json` file on the client, set the `irods_user
 
 ```
 {
-    "irods_host": "icat.renci.org",
+    "irods_host": "provider.example.org",
     "irods_zone_name": "tempZone",
     "irods_port": 1247,
     "irods_user_name": "bob",
