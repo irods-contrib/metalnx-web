@@ -3,10 +3,6 @@ package com.emc.metalnx.controller;
 import java.net.URLDecoder;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
@@ -19,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.mail.MailException;
 //import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,16 +94,14 @@ public class CollectionInfoController {
 		logger.info("Has Access :: {}", access);
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = null;
-		try{
+		try {
 			if (access) {
-
 
 				dataProfile = collectionService.getCollectionDataProfile(myPath);
 				if (!dataProfile.isFile())
 					template = "collections/collectionInfo";
 				if (dataProfile.isFile())
 					template = "collections/fileInfo";
-
 
 			} else {
 
@@ -138,7 +131,7 @@ public class CollectionInfoController {
 			model.addAttribute("breadcrumb", new DataGridBreadcrumb(dataProfile.getAbsolutePath()));
 
 			logger.info("returning to :{}", template);
-		}catch (FileNotFoundException e) {		
+		} catch (FileNotFoundException e) {
 			logger.error("#########################");
 			logger.error("collection does not exist.");
 			e.printStackTrace();
@@ -147,8 +140,6 @@ public class CollectionInfoController {
 			template = "httpErrors/noFileOrCollection";
 			return template;
 		}
-
-
 
 		return template;
 
@@ -175,14 +166,14 @@ public class CollectionInfoController {
 			model.addAttribute("icon", icon);
 			model.addAttribute("dataProfile", dataProfile);
 			logger.info("getCollectionFileInfo() ends !!");
-			
+
 			return "collections/details :: detailsView";
-			
-		}catch (FileNotFoundException e) {		
+
+		} catch (FileNotFoundException e) {
 			logger.error("#########################");
 			logger.error("collection does not exist.");
 			e.printStackTrace();
-			logger.error("#########################");		
+			logger.error("#########################");
 			return "httpErrors/noFileOrCollection";
 		}
 
@@ -233,7 +224,6 @@ public class CollectionInfoController {
 		sb.append(" is requesting access to resource:");
 		sb.append(path);
 		mail.setMailContent(sb.toString());
-
 
 		try {
 			mailService.sendEmail(mail);

@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -353,7 +351,7 @@ public class BrowseController {
 	public String getDirectoriesAndFilesForGroupForm(final Model model, @RequestParam("path") String path,
 			@RequestParam("groupName") final String groupName,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-					throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
 			path = "/";
 		}
@@ -416,7 +414,7 @@ public class BrowseController {
 	public String getDirectoriesAndFilesForUser(final Model model, @RequestParam("path") final String path,
 			@RequestParam("username") final String username,
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
-					throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
+			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 
 		List<DataGridCollectionAndDataObject> list = new ArrayList<DataGridCollectionAndDataObject>();
 		Set<String> readPermissions = new HashSet<String>();
@@ -681,7 +679,7 @@ public class BrowseController {
 	// FIXME: urlencode? - mcc
 	@ResponseBody
 	@RequestMapping(value = "isValidCollectionName/{newObjectName}/", method = RequestMethod.GET, produces = {
-	"text/plain" })
+			"text/plain" })
 	public String isValidCollectionName(@PathVariable final String newObjectName) throws DataGridException {
 		String rc = "true";
 		String newPath = String.format("%s/%s", currentPath, newObjectName);
@@ -995,11 +993,11 @@ public class BrowseController {
 
 			logger.info("getSummary() ends !!");
 			return "collections/summarySidenav :: SummarySidenavView";
-		} catch (FileNotFoundException e) {		
+		} catch (FileNotFoundException e) {
 			logger.error("#########################");
 			logger.error("collection does not exist.");
 			e.printStackTrace();
-			logger.error("#########################");		
+			logger.error("#########################");
 			return "httpErrors/noAccess";
 		}
 	}

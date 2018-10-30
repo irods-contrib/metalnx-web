@@ -40,7 +40,7 @@
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>emc-metalnx-core</artifactId>
 			<version>${jargon.version}</version>
-			<exclusions>
+			<!-- <exclusions>
 				<exclusion>
 					<groupId>xml-apis</groupId>
 					<artifactId>xml-apis</artifactId>
@@ -49,7 +49,7 @@
 					<groupId>dom4j</groupId>
 					<artifactId>dom4j</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions>  -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -63,6 +63,13 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+		<dependency>
+		    <groupId>dom4j</groupId>
+		    <artifactId>dom4j</artifactId>
+		    <version>1.6.1</version>
+		</dependency>
+		
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
