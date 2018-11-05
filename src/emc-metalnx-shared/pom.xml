@@ -133,12 +133,12 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.datacommons</groupId>
 			<artifactId>notification-client</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		 <dependency>
+		<!--  <dependency>
 			<groupId>org.datacommons</groupId>
 			<artifactId>notification-server</artifactId>
 			<version>1.0.0</version>

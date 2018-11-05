@@ -38,7 +38,7 @@
 	<!-- <import resource="file:///C:/opt/etc/irods-ext/metalnxConfig.xml" /> -->
 	<!--  <import resource="file:/etc/irods-ext/metalnxConfig.xml" />   -->
 
-	<import resource="file:///C:/Users/hetalben/opt/etc/irodsContrib/metalnxConfig.xml"/>
+	<import resource="file:///C:/Users/hetalben/opt/etc/irods-ext/metalnxConfig.xml"/>
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University 
+	of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,15 +15,15 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-extensions-if</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-profiler</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>irodsext-data-typer</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -87,7 +88,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.datacommons</groupId>
+			<artifactId>notification-client</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 	</dependencies>
 
@@ -257,18 +262,18 @@
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
 
-									
+
 									irodsext.dataprofiler.retrieve.tickets=false
-									
+
 									irodsext.dataprofiler.retrieve.starred=true
 									irodsext.dataprofiler.retrieve.shared=false
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
-								
+
 									irodsext.dataprofiler.retrieve.metadata.templates=false
 
-									
+
 									irodsext.datatyper.persist.data.types=false
-									
+
 									irodsext.datatyper.detailed.determination=false
 
 								</echo>
