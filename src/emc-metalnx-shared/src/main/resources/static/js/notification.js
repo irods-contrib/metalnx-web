@@ -96,3 +96,22 @@ function deleteNotificationList(){
 	$('.modal-backdrop.fade.in').remove();*/
 	ajaxEncapsulation("/emc-metalnx-web/notification/deleteNotifications", "POST", {params: params, length: params.length}, displayNotification, null, null, null);
 }
+function markToSeen(){
+	alert("delete notifications confirmed !!");
+	//var currentPath = [[${currentPath}]];
+	var params = [];
+
+	//if($('#deleteOneAVU').val() != "true"){
+		$('.notificationCheckbox:checked').each(function(){
+			params.push({ "uuid": $(this).attr('data-val')});
+			console.log("uuid :: " +$(this).attr('data-val'));
+		});
+	/*}else{
+		params.push({"attribute": $('#deleteMetadataAttribute').val(), "value":  $('#deleteMetadataValue').val(), "unit": $('#deleteMetadataUnit').val()});
+	}*/
+	/*$('#table-loader').show();
+	$("#table-loader").nextAll().remove();
+	$('#deleteMetadataModal').modal('hide');
+	$('.modal-backdrop.fade.in').remove();*/
+	ajaxEncapsulation("/emc-metalnx-web/notification/markToSeen", "POST", {params: params, length: params.length}, displayNotification, null, null, null);
+}

@@ -64,6 +64,25 @@ public class NotificationController{
 		return responseEntity;
 	}
 
+	@RequestMapping(value = "/markToSeen")
+	public String markToSeen(final HttpServletRequest request, final Model model){
+
+		Integer length = Integer.valueOf(request.getParameter("length"));
+		List<String> list = new ArrayList<>();
+
+		for (int i = 0; i < length; i++) {
+			list.add(request.getParameter("params[" + i + "][uuid]"));
+		}
+		
+		for(String elem : list) {
+			logger.info("element: " +elem);
+		}
+		notificationService.markToSeen(list);
+		//model.addAttribute("delMetadataReturn", "failure");
+			
+		
+		return getAllNotifications(model);
+	}
 	@RequestMapping(value = "/deleteNotifications")
 	public String deleteNotifications(final HttpServletRequest request, final Model model){
 
@@ -72,6 +91,10 @@ public class NotificationController{
 
 		for (int i = 0; i < length; i++) {
 			list.add(request.getParameter("params[" + i + "][uuid]"));
+		}
+		
+		for(String elem : list) {
+			logger.info("element: " +elem);
 		}
 		notificationService.deleteNotifications(list);
 		//model.addAttribute("delMetadataReturn", "failure");

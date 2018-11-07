@@ -12,6 +12,7 @@ public interface NotificationService {
 	public Map<String, Integer> getUnseenCounts(String userId);
 	//public List<String> addAllNotification(Notification userId);
 	public void deleteNotifications(List<String> uuids);
+	public void markToSeen(List<String> uuids);
 	
 	
 	

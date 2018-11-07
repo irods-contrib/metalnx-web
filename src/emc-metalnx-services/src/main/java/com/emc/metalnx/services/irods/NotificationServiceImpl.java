@@ -55,6 +55,13 @@ public class NotificationServiceImpl implements NotificationService{
 	public void deleteNotifications(List<String> uuids) {
 		// TODO Auto-generated method stub
 		
+		
 	}
 
+	@Override
+	public void markToSeen(List<String> uuids) {
+		/* NOTE - Conversion should be kept in the services-- this should be the list of String/UUIDs. 
+			and the services should convert to any supported or desired format.*/
+		apiInstance.markSeen(uuidList);
+	}
 }
