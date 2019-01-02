@@ -4,6 +4,9 @@
 package com.emc.metalnx.handler;
 
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 public class DataGridAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 

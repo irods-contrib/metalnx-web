@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -25,6 +23,7 @@ import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
+import org.irodsext.dataprofiler.favorites.FavoritesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,6 @@ import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.FavoritesService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
@@ -756,7 +754,7 @@ public class BrowseController {
 			Math.floor(start / length);
 			logger.info("getting subcollections under path:{}", path);
 			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPath(path); // TODO: temporary add
-																									// paging service
+			// paging service
 
 			logger.debug("dataGridCollectionAndDataObjects:{}", dataGridCollectionAndDataObjects);
 			/*
@@ -980,20 +978,27 @@ public class BrowseController {
 		IconObject icon = null;
 		String mimeType = "";
 
-		@SuppressWarnings("rawtypes")
-		DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
+		try {
+			@SuppressWarnings("rawtypes")
+			DataProfile dataProfile = cs.getCollectionDataProfile(URLDecoder.decode(path, "UTF-8"));
+			logger.info("DataProfiler is :: " + dataProfile);
 
-		logger.info("DataProfiler is :: " + dataProfile);
+			if (dataProfile != null && dataProfile.isFile()) {
+				mimeType = dataProfile.getDataType().getMimeType();
+			}
+			icon = cs.getIcon(mimeType);
 
-		if (dataProfile != null && dataProfile.isFile()) {
-			mimeType = dataProfile.getDataType().getMimeType();
+			model.addAttribute("icon", icon);
+			model.addAttribute("dataProfile", dataProfile);
+
+			logger.info("getSummary() ends !!");
+			return "collections/summarySidenav :: SummarySidenavView";
+		} catch (FileNotFoundException e) {
+			logger.error("#########################");
+			logger.error("collection does not exist.");
+			e.printStackTrace();
+			logger.error("#########################");
+			return "httpErrors/noAccess";
 		}
-		icon = cs.getIcon(mimeType);
-
-		model.addAttribute("icon", icon);
-		model.addAttribute("dataProfile", dataProfile);
-
-		logger.info("getSummary() ends !!");
-		return "collections/summarySidenav :: SummarySidenavView";
 	}
 }

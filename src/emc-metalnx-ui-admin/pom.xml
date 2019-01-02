@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>2.0.0</version>
+		<version>2.0.1</version>
 	</parent>
 
 	<artifactId>emc-metalnx-ui-admin</artifactId>
@@ -20,6 +20,12 @@
 			<groupId>com.emc.metalnx</groupId>
 			<artifactId>emc-metalnx-shared</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -48,7 +54,7 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									<echo message="copy template from local default" /> 
+									<echo message="copy template from local default" />
 										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
@@ -82,8 +88,8 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									  <echo message="copy template from ${metalnx.custom.template}" /> 
-									
+									  <echo message="copy template from ${metalnx.custom.template}" />
+
 										<copy  overwrite="true" file="${metalnx.custom.template}"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
 									</tasks>

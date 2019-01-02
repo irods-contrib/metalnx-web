@@ -107,6 +107,18 @@ In addition, an additional profile for Metalnx is required, like this...
 				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
         <metalnx.enable.tickets>true</metalnx.enable.tickets>
         <metalnx.enable.upload.rules>false</metalnx.enable.upload.rules>
+        <metalnx.download.limit>100</metalnx.download.limit>
+				<metalnx.mail.enabled>false</metalnx.mail.enabled>
+				<metalnx.mail.host></metalnx.mail.host>
+				<metalnx.mail.user></metalnx.mail.user>
+				<metalnx.mail.password></metalnx.mail.password>
+				<metalnx.mail.port>25</metalnx.mail.port>
+				<metalnx.starttls.enable>true</metalnx.starttls.enable>
+				<metalnx.smtp.auth>true</metalnx.smtp.auth>
+				<metalnx.transport.protocol>smtp</metalnx.transport.protocol>
+				<metalnx.mail.debug>true</metalnx.mail.debug>
+				<metalnx.mail.from></metalnx.mail.from>
+        <metalnx.mail.to></metalnx.mail.to>
 			</properties>
 		</profile>
 

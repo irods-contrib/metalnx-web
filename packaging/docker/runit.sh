@@ -10,5 +10,4 @@ else
 fi
 
 echo "running catalina"
-catalina.sh run
-
+catalina.sh run > /tmp/catalina.out

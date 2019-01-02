@@ -176,11 +176,13 @@
 						style="" title="Add">
 						<i class="fa fa-plus"></i> <span th:text="#{metadata.tab.btn.add}"></span>
 					</button>
-					<button id="exportMetadataToCSV"
-						class="btn btn-default btn-property btn-sm" href="#" style=""
-						title="Download">
-						<i class="fa fa-download"></i> <span
-							th:text="#{metadata.tab.btn.csv}"></span>
+					<button
+						id="exportMetadataToCSV"
+						class="btn btn-default btn-property btn-sm"
+						th:onclick="'javascript:exportMetadataToCSV(\'' + ${currentPath} +'\');'"
+						style="" title="Download">
+						<i class="fa fa-download"></i> <span th:text="#{metadata.tab.btn.csv}"></span>
+
 					</button>
 				</div>
 				<div class="col-md-12 col-sm-12">
@@ -387,6 +389,10 @@
                 return disableDelBtn;
             }
 
+            function exportMetadataToCSV(path) {
+            	window.location = '/emc-metalnx-web/metadata/exportToCSV/?path=' + path;
+            }
+
             $(document).ready(function(){
 
                 $('#delMetadataBtn').prop("disabled", true);
@@ -421,7 +427,7 @@
                 });
 
                 $('.enableEditAVUActionColumn').click(function(){
-                	alert("This is clicked");
+
                      $(this).parents('tr').find('.metadataCheckbox').prop('disabled', true);
                     $(this).parents('tr').find('span').addClass('hidden');
                     $(this).parents('tr').find('input:text').removeClass('hidden');
@@ -432,19 +438,19 @@
                     $(this).parents('tr').find('.saveEditAVUActionColumn > span.btn-save-label').removeClass('hidden');
                     console.log("removed hidden from save btn");
                     $(this).parents('tr').find('.cancelEditAVUActionColumn > span.btn-cancel-label').removeClass('hidden');
-                    console.log("removed hidden from cancel btn"); 
+                    console.log("removed hidden from cancel btn");
                 });
-                          
+
             	$("tr.currentRow").on("click",function(event){
-            		if (!($(event.target).is('input')) && !($(event.target).is('button')) 
+            		if (!($(event.target).is('input')) && !($(event.target).is('button'))
             				&& !($(event.target).is('button span')) && !($(event.target).is('i'))){
-            			$('#viewMetadataModal').modal();               	
+            			$('#viewMetadataModal').modal();
                     	$("#attrModal").text($(this).find('.attr').text());
                     	$("#valueModal").text($(this).find('.value').text());
             		}
-                	
+
                 });
-                
+
             	/* $('tr.currentRow input button i').click(function(e) {
             	    e.stopPropagation();
             	}); */
@@ -523,9 +529,6 @@
                 });
             });
 
-            $("#exportMetadataToCSV").click(function() {
-                window.location = "/emc-metalnx-web/metadata/exportToCSV/";
-            });
         /*]]>*/
         </script>
 	</div>

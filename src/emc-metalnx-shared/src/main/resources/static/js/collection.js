@@ -89,9 +89,12 @@ function unstarPath(path){
 	console.log("UnstarPath() ends");
 }
 
+/*
+path should be urlencoded already
+*/
 function positionBrowserToPath(path) {
 	console.log("positionBrowserToPath()");
-	window.location.href = '/emc-metalnx-web/collections?path=' + encodeURI(path); //relative to domain
+	window.location.href = '/emc-metalnx-web/collections?path=' + path; //relative to domain
 }
 
 function fileDownload(path){
@@ -105,12 +108,42 @@ function fileDownload(path){
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
 }
 
+function showInheritanceAction() {
+	$("#updateInheritanceModal").modal("show");
+}
+
+function updateInheritanceNonRecursive(path) {
+	updateInheritance(path, false);
+}
+
+function updateInheritanceRecursive(path) {
+	updateInheritance(path, true);
+}
+
+function updateInheritance(path, isRecursive) {
+	console.log("updateInheritance()");
+	console.log("path:" + path);
+	console.log("recursive:" + isRecursive);
+	var inheritanceValue = ($('#inheritCheck').is(':checked'));
+	console.log("inheritanceValue:" + inheritanceValue);
+
+	var inheritanceUrl = "/emc-metalnx-web/inheritance";
+	setOperationInProgress();
+	ajaxEncapsulation(inheritanceUrl, "POST", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
+}
+
+function inheritanceSuccessful() {
+	toastr["success"]("Operation successful", "inheritance value was updated successfully");
+	unsetOperationInProgress();
+}
+
+
 function deleteInfoAction(path){
 	setOperationInProgress();
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
 	$('#actionsWait').show();
-	
+
 	var paths = [];
 	paths.push(path);
 	var url = "/emc-metalnx-web/fileOperation/delete/";
@@ -122,7 +155,7 @@ function deleteInfoAction(path){
 			function (data) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();								
+				$('#deleteConfirmationModal').modal();
 			}
 	);
 	$("#deleteModal").modal("hide");
@@ -148,7 +181,7 @@ function editInfo(path){
 
 function handleDownload(data) {
 	console.log("collection.js :: success call :: handleDownload()")
-	if (data.downloadLimitStatus == "ok"){   
+	if (data.downloadLimitStatus == "ok"){
 		window.location.href = "/emc-metalnx-web/fileOperation/download/";
 		$("#breadcrumDownloadBtn").removeAttr("disabled");
 		$("#actionsWait").hide();
@@ -164,6 +197,17 @@ function setOperationInProgress() {
 }
 
 function unsetOperationInProgress() {
+	cleanModals();
 	operationInProgress = false;
 }
 
+function accessRequest(path){
+	var url = "/emc-metalnx-web/collectionInfo/accessRequest";
+	ajaxEncapsulation(url, "GET", {path: path}, loadEmailResponse, null, null, null);
+}
+function loadEmailResponse(data){
+	$("#readOnlyData").hide();
+	$("#responseTxt").text(data);
+	$("#emailResponse").show();
+
+}
