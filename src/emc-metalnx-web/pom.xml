@@ -87,6 +87,12 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jglobus</groupId>
+					<artifactId>gss</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- JUnit -->
