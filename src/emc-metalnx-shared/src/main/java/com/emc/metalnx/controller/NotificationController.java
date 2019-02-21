@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 
+import org.irods.jargon.extensions.notification.NotificationService;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.services.interfaces.NotificationService;
+
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
