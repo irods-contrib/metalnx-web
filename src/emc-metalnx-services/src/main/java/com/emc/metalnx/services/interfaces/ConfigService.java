@@ -132,4 +132,12 @@ public interface ConfigService {
 	 *         {@link AuthScheme}
 	 */
 	String getDefaultIrodsAuthScheme();
+
+	/**
+	 * Indicates whether the admin dashboard is enabled
+	 * 
+	 * @return {@code boolean} of {@code true} if the dashboard function is
+	 *         implemented
+	 */
+	boolean isDashboardEnabled();
 }

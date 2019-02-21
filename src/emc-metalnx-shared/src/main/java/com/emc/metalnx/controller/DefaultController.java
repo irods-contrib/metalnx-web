@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserService;
@@ -37,9 +38,12 @@ public class DefaultController {
 
 	@Autowired
 	HeaderService headerService;
-	
+
+	@Autowired
+	ConfigService configService;
+
 	private static final Logger logger = LoggerFactory.getLogger(DefaultController.class);
-	
+
 	/**
 	 * 
 	 */
@@ -50,7 +54,11 @@ public class DefaultController {
 	public String index() {
 		logger.info("DefaultController index()");
 		if (loggedUserUtils.getLoggedDataGridUser().isAdmin()) {
-			return "redirect:/dashboard/";
+			if (configService.isDashboardEnabled()) {
+				return "redirect:/dashboard/";
+			} else {
+				return "redirect:/browse/home";
+			}
 		} else {
 			return "redirect:/browse/home";
 		}

@@ -3,8 +3,6 @@
  */
 package com.emc.metalnx.services.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
@@ -26,7 +24,11 @@ public class GlobalConfig {
 	 */
 	private boolean uploadRulesEnabled = false;
 
-	
+	/**
+	 * Turn the dashboard admin view on and off
+	 */
+	private boolean dashboardEnabled = false;
+
 	public boolean isTicketsEnabled() {
 		return ticketsEnabled;
 	}
@@ -39,7 +41,7 @@ public class GlobalConfig {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("GlobalConfig [ticketsEnabled=").append(ticketsEnabled).append(", uploadRulesEnabled=")
-				.append(uploadRulesEnabled).append("]");
+				.append(uploadRulesEnabled).append(", dashboardEnabled=").append(dashboardEnabled).append("]");
 		return builder.toString();
 	}
 
@@ -49,6 +51,21 @@ public class GlobalConfig {
 
 	public void setUploadRulesEnabled(boolean uploadRulesEnabled) {
 		this.uploadRulesEnabled = uploadRulesEnabled;
+	}
+
+	/**
+	 * @return the dashboardEnabled
+	 */
+	public boolean isDashboardEnabled() {
+		return dashboardEnabled;
+	}
+
+	/**
+	 * @param dashboardEnabled
+	 *            the dashboardEnabled to set
+	 */
+	public void setDashboardEnabled(boolean dashboardEnabled) {
+		this.dashboardEnabled = dashboardEnabled;
 	}
 
 }

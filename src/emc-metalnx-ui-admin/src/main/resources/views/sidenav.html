@@ -6,13 +6,15 @@
 	<ul class="nav" id="side-menu">
 		<!-- If user typer currently logged in is an admin, the items below are available otherwise the user cannot use them -->
 		<th:block th:if="${userDetails.isAdmin()}">
-			<li>
-				<!-- Dashboard sidebar item--> <a
-				th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
-					<i class="fa fa-tachometer"></i> &nbsp; <span
-					th:text="#{dashboard.menu.title}"></span>
-			</a>
-			</li>
+			<th:block th:if="${globalConfig.isDashboardEnabled()}">
+				<li>
+					<!-- Dashboard sidebar item--> <a
+					th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
+						<i class="fa fa-tachometer"></i> &nbsp; <span
+						th:text="#{dashboard.menu.title}"></span>
+				</a>
+				</li>
+			</th:block>
 			<!-- Resource sidebar item -->
 			<li><a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i
 					class="fa fa-database"></i> &nbsp; <span

@@ -70,6 +70,9 @@ public class ConfigServiceImpl implements ConfigService {
 	@Value("${metalnx.enable.tickets}")
 	private boolean ticketsEnabled;
 
+	@Value("${metalnx.enable.dashboard}")
+	private boolean dashboardEnabled;
+
 	@Value("${metalnx.enable.upload.rules}")
 	private boolean uploadRulesEnabled;
 
@@ -82,6 +85,7 @@ public class ConfigServiceImpl implements ConfigService {
 		GlobalConfig globalConfig = new GlobalConfig();
 		globalConfig.setTicketsEnabled(this.isTicketsEnabled());
 		globalConfig.setUploadRulesEnabled(isUploadRulesEnabled());
+		globalConfig.setDashboardEnabled(dashboardEnabled);
 		logger.debug("globalConfig:{}", globalConfig);
 		return globalConfig;
 	}
@@ -197,6 +201,9 @@ public class ConfigServiceImpl implements ConfigService {
 		if (irodsZone != null) {
 			builder.append("irodsZone=").append(irodsZone).append(", ");
 		}
+		if (defaultIrodsAuthScheme != null) {
+			builder.append("defaultIrodsAuthScheme=").append(defaultIrodsAuthScheme).append(", ");
+		}
 		if (irodsJobUser != null) {
 			builder.append("irodsJobUser=").append(irodsJobUser).append(", ");
 		}
@@ -207,7 +214,9 @@ public class ConfigServiceImpl implements ConfigService {
 			builder.append("irodsAuthScheme=").append(irodsAuthScheme).append(", ");
 		}
 		builder.append("populateMsiEnabled=").append(populateMsiEnabled).append(", ticketsEnabled=")
-				.append(ticketsEnabled).append(", uploadRulesEnabled=").append(uploadRulesEnabled).append("]");
+				.append(ticketsEnabled).append(", dashboardEnabled=").append(dashboardEnabled)
+				.append(", uploadRulesEnabled=").append(uploadRulesEnabled).append(", downloadLimit=")
+				.append(downloadLimit).append("]");
 		return builder.toString();
 	}
 
@@ -227,5 +236,14 @@ public class ConfigServiceImpl implements ConfigService {
 
 	public void setDefaultIrodsAuthScheme(String defaultIrodsAuthScheme) {
 		this.defaultIrodsAuthScheme = defaultIrodsAuthScheme;
+	}
+
+	@Override
+	public boolean isDashboardEnabled() {
+		return dashboardEnabled;
+	}
+
+	public void setDashboardEnabled(boolean dashboardEnabled) {
+		this.dashboardEnabled = dashboardEnabled;
 	}
 }

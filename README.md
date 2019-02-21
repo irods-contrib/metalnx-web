@@ -201,6 +201,20 @@ Overhaul of handling of session/login timeout behavior. This is complicated by t
 
 Better handling of special chars and spaces in file names when using the summary pop up right hand panel in the collection browser.
 
+
+
+#### dashboard slow to load #84
+
+Made the dashboard view optional, with the plan in later releases to revisit the performance monitor to
+make it asynchronous and caching. This updates the metalnx.properties file to add a new optional
+
+```
+
+# show dashboard (off by default due to performance issues)
+metalnx.enable.dashboard=false
+
+```
+
 #### NIEHS identified misc theming issues
 
 * #22 fix search text

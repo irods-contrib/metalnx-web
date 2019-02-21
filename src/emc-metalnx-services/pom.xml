@@ -256,7 +256,7 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-
+									metalnx.enable.dashboard=true 
 
 									irodsext.dataprofiler.retrieve.tickets=false
 
