@@ -1,11 +1,8 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +32,7 @@ import com.emc.metalnx.core.domain.entity.DataGridUserBookmark;
 import com.emc.metalnx.core.domain.entity.DataGridUserPermission;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
@@ -116,10 +114,11 @@ public class PermissionsController {
 	 * @throws JargonException
 	 * @throws FileNotFoundException
 	 */
-	@RequestMapping(value = "/getPermissionDetails/" , method = RequestMethod.POST)
-	public String getPermissionDetails(final Model model, @RequestParam("path") final String path) throws DataGridConnectionRefusedException {
-		
-		logger.debug("Getting permission info for {}", path);
+	@RequestMapping(value = "/getPermissionDetails/", method = RequestMethod.POST)
+	public String getPermissionDetails(final Model model, @RequestParam("path") final String path)
+			throws DataGridException {
+
+		logger.info("Getting permission info for {}", path);
 
 		DataGridCollectionAndDataObject obj = null;
 		List<DataGridFilePermission> permissions;
@@ -156,12 +155,8 @@ public class PermissionsController {
 			obj = cs.findByName(path);
 			ps.resolveMostPermissiveAccessForUser(obj, loggedUser);
 		} catch (Exception e) {
-			logger.error("Could not get permission details {}: {}", path, e.getMessage());
-
-			groupPermissions = new ArrayList<>();
-			userPermissions = new ArrayList<>();
-			groupsWithBookmarks = new HashSet<>();
-			usersWithBookmarks = new HashSet<>();
+			logger.error("Could not get permission details: {}", path, e);
+			throw new DataGridException("error getting permissions", e);
 		}
 
 		model.addAttribute("usersWithBookmarks", usersWithBookmarks);
@@ -175,10 +170,8 @@ public class PermissionsController {
 		model.addAttribute("isCollection", isCollection);
 		model.addAttribute("permissionOnCurrentPath", cs.getPermissionsForPath(path));
 		model.addAttribute("permissionFlag", true);
-		
-		System.out.println("permissionOnCurrentPath =======" + cs.getPermissionsForPath(path));
-		System.out.println("------Permission Conroller - /getPermissionDetail/ ends------");
-		return "permissions/permissionDetails :: permissionDetails";		
+
+		return "permissions/permissionDetails :: permissionDetails";
 	}
 
 	@RequestMapping(value = "/changePermissionForGroup/")

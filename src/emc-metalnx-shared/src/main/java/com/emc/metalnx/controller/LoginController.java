@@ -64,7 +64,17 @@ public class LoginController {
 			model = new ModelAndView(sb.toString());
 		} else if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
-			String redirect = isUserAdmin ? "redirect:/dashboard/" : "redirect:/browse/home";
+			String redirect = "";
+			if (isUserAdmin) {
+				if (configService.isDashboardEnabled()) {
+					redirect = "redirect:/dashboard/";
+				} else {
+					redirect = "redirect:/browse/home";
+				}
+			} else {
+				redirect = "redirect:/browse/home";
+
+			}
 			model = new ModelAndView(redirect);
 		} else {
 			model = new ModelAndView("login/index");
