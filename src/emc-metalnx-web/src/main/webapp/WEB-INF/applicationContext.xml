@@ -19,12 +19,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-
-
-				<!-- <value>file:///C:/opt/etc/irods-ext/metalnx.properties</value>-->
 				<value>file:/etc/irods-ext/metalnx.properties</value> 
-				 <!-- <value>file:/Users/conwaymc/Documents/docker/ml_dfc/etc/irods-ext/metalnx.properties</value>   -->
-
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
@@ -33,10 +28,7 @@
 	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md 
 		doc at the top of the repo, -->
 
-	<!-- <import resource="file:/Users/conwaymc/Documents/docker/ml_dfc/etc/irods-ext/metalnxConfig.xml" /> -->
 	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
-
-	<!-- <import resource="file:///C:/Users/hetalben/opt/etc/irodsContrib/metalnxConfig.xml"/>  -->
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
