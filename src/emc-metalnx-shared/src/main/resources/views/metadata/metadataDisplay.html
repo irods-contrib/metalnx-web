@@ -345,7 +345,7 @@
 			    		    	data.search.search = "";
 			    		    },
 			    		    "ajax": {
-			    		        "url": '/emc-metalnx-web/metadata/search/',
+			    		        "url": '/metalnx/metadata/search/',
 			    		        "type": "POST",
 			    		        "data": function ( d ) {
 			    		        	//this code adds a new parameter in the request
@@ -440,7 +440,7 @@
 			    		} );
 						//Download search results as CSV file
 					    $('div.download_csv').html(
-				    		'<a href="/emc-metalnx-web/metadata/downloadCSVResults/" class="btn btn-default">'+
+				    		'<a href="/metalnx/metadata/downloadCSVResults/" class="btn btn-default">'+
 				    		'<span class="fa fa-download"> </span> CSV'+
 				    		'</a>'
 					    );
@@ -464,7 +464,7 @@
 			    		    	data.search.search = "";
 			    		    },
 			    		    "ajax": {
-			    		        "url": '/emc-metalnx-web/fileproperty/search/',
+			    		        "url": '/metalnx/fileproperty/search/',
 			    		        "data": function ( d ) {
 			    		            return $.extend( {}, d, {
 			    		            	"jsonFilePropertySearch": JSON.stringify($('.propertiesSearchForm').serializeObject())
@@ -665,7 +665,7 @@
 				*/
 				function openInCollView(path) {
 					window.open(
-							  '/emc-metalnx-web/collections?path=' + encodeURI(path),
+							  '/metalnx/collections?path=' + encodeURI(path),
 							  '_blank' // <- This is what makes it open in a new window.
 							);
 				}

@@ -96,7 +96,7 @@ public class LoginController {
 
 		logger.debug("pathString:{}", pathString);
 
-		int idx = pathString.indexOf("/emc-metalnx-web");
+		int idx = pathString.indexOf("/metalnx");
 		if (idx == -1) {
 			throw new IllegalArgumentException("not a path string, expected metalnx context");
 		}
@@ -134,7 +134,7 @@ public class LoginController {
 		logger.info("last saved request was:{}", savedRequest);
 		logger.info("request url was:{}", request.getRequestURL());
 
-		return "<script>window.location='/emc-metalnx-web/login/'</script>";
+		return "<script>window.location='/metalnx/login/'</script>";
 	}
 
 	@RequestMapping(value = "/serverNotResponding", method = RequestMethod.GET)

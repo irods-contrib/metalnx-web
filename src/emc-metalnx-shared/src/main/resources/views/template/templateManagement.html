@@ -116,7 +116,7 @@
 								</div>
 
 								<!-- Form submitted as soon as the user selects all files to be uploaded -->
-								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
+								<form action="/metalnx/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
 									<div class="form-group">
 										<span>Select files for upload &nbsp;</span>
 										<button type="button" class="btn btn-primary" id="templateBrowseButton" title="Browse">
@@ -192,7 +192,7 @@
 
 						// Loads results in user management page
 						function loadTemplateResults() {
-							var url = "/emc-metalnx-web/templates/findAll/";
+							var url = "/metalnx/templates/findAll/";
 							ajaxEncapsulation(url, "GET", "", populateTemplateTableDiv, null, null);
 						}
 
@@ -232,7 +232,7 @@
 				        	formData.append('suffix', $("#suffixInput").val());
 
 				        	$.ajax({
-				        		url:'/emc-metalnx-web/templates/import/',
+				        		url:'/metalnx/templates/import/',
 				        		type:'POST',
 								//Ajax events
 								success:  function(data) {
@@ -260,10 +260,10 @@
 										alert("internal error");
 									},
 									408: function(response){
-										window.location= "/emc-metalnx-web/login/";
+										window.location= "/metalnx/login/";
 									},
 									403: function(response){
-										window.location= "/emc-metalnx-web/login/";
+										window.location= "/metalnx/login/";
 									}
 								}
 				        	});

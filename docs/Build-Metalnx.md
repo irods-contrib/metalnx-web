@@ -27,7 +27,7 @@ Browse to the Metalnx `src` folder in the repository you cloned from the git rep
     emc-metalnx-services
     emc-metalnx-shared
     emc-metalnx-ui-admin
-    emc-metalnx-web
+    metalnx
     pom.xml
 
 Under the source folder run the following command for a quickstart:
@@ -40,21 +40,21 @@ Maven is based around the central concept of a [build lifecycle](https://maven.a
 
 You do not have to worry about downloading any dependencies. Maven will take care of that for you. Any other package that Metalnx requires will be downloaded from the [Maven repository](http://mvnrepository.com/). 
 
-After downloading all dependencies, Maven will build all Metalnx subprojects in the following order: *emc-metalnx-core*, *emc-metalnx-services*, *emc-metalnx-shared*, *emc-metalnx-ui-admin* and *emc-metalnx-web*.
+After downloading all dependencies, Maven will build all Metalnx subprojects in the following order: *emc-metalnx-core*, *emc-metalnx-services*, *emc-metalnx-shared*, *emc-metalnx-ui-admin* and *metalnx*.
 
 ## Finding the `war` file
 
-When build is completed, you will get a **BUILD SUCCESS** message. Now, the Metalnx `war` file exists and it is ready to be deployed. The `war` file is named `emc-metalnx-web.war` and it can be found under `metalnx-web/emc-metalnx-web/target`.
+When build is completed, you will get a **BUILD SUCCESS** message. Now, the Metalnx `war` file exists and it is ready to be deployed. The `war` file is named `metalnx.war` and it can be found under `metalnx-web/metalnx/target`.
 
 ## Deploying the Metalnx `war` file
 
-With the `emc-metalnx-web.war` file in hand, it is easy to deploy it in on an Apache Tomcat server. 
+With the `metalnx.war` file in hand, it is easy to deploy it in on an Apache Tomcat server. 
 
 There are few different ways to deploy `war` files in a Tomcat instance. In this tutorial, we will deploy Metalnx through the Tomcat Manager App available at `http://{your-tomcat-host}:{your-tomcat-port}/manager/html`.
 
 ![Tomcat Manager app]
 
-Once on this application manager page, you can select the `war` file to deploy (under the *Deploy*) section, find `emc-metalnx-web.war` on your file system, select it, and click deploy. 
+Once on this application manager page, you can select the `war` file to deploy (under the *Deploy*) section, find `metalnx.war` on your file system, select it, and click deploy. 
 
 *This operation may take a few minutes to complete.*
 

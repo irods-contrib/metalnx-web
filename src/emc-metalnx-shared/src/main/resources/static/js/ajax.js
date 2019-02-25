@@ -25,7 +25,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
           if (data.search("XXXLOGINXXX") >= 0) {
                 console.log("current location = " + window.location);
                 console.log("location path =" + window.location.pathname);
-                window.location= "/emc-metalnx-web/login/" + window.location.search + "&ajaxOrigPath=" + window.location.pathname;
+                window.location= "/metalnx/login/" + window.location.search + "&ajaxOrigPath=" + window.location.pathname;
                 return false;
           }
 
@@ -45,16 +45,16 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
         },
         statusCode: {
             500: function(response){
-                window.location= "/emc-metalnx-web/httpError/500/";
+                window.location= "/metalnx/httpError/500/";
             },
             408: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             },
             403: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             },
             503: function(response){
-                window.location= "/emc-metalnx-web/httpError/serverNotResponding/";
+                window.location= "/metalnx/httpError/serverNotResponding/";
             }
         }
     }).done(callbacks);

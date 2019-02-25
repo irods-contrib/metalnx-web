@@ -253,7 +253,7 @@
 
 				$('body').on('change', '#groupsListTable input[type=checkbox]', function(){
 					if($(this).is(":checked")){
-					    ajaxEncapsulation('/emc-metalnx-web/users/profile/addGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/users/profile/addGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
 					    var newRow = $(this).closest("tr").clone();
 						newRow.find("td:first").remove();
 						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
@@ -261,7 +261,7 @@
 						datatableAttachedGroups.row.add(newRow).draw();
 					}
 					else {
-					    ajaxEncapsulation('/emc-metalnx-web/users/profile/removeGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/users/profile/removeGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
 					    var elementID = $(this).parent().parent().attr("id") + "_attached";
 						var trElement = $("tr[id='" + elementID + "']");
 						datatableAttachedGroups.row(trElement).remove().draw();

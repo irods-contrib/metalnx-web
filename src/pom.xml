@@ -85,7 +85,7 @@
 		<module>emc-metalnx-services</module>
 		<module>emc-metalnx-shared</module>
 		<module>emc-metalnx-ui-admin</module>
-		<module>emc-metalnx-web</module>
+		<module>metalnx-web</module>
 		<module>metalnx-tools</module>
 	</modules>
 

@@ -14,7 +14,7 @@
 		<version>2.0.0-RELEASE</version>
 	</parent>
 
-	<artifactId>emc-metalnx-web</artifactId>
+	<artifactId>metalnx-web</artifactId>
 
 	<packaging>war</packaging>
 
@@ -137,7 +137,7 @@
 	</profiles>
 
 	<build>
-		<finalName>emc-metalnx-web</finalName>
+		<finalName>metalnx</finalName>
 
 		<resources>
 			<resource>
@@ -170,7 +170,7 @@
 						<configuration>
 							<tasks>
 								<echo message="copying war file up to docker" />
-								<copy file="target/emc-metalnx-web.war" todir="../../packaging/docker" />
+								<copy file="target/metalnx.war" todir="../../packaging/docker" />
 
 
 								<echo message="war file copied " />
@@ -198,7 +198,7 @@
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>RemoteTomcatServer</server>
-					<path>/emc-metalnx-web</path>
+					<path>/metalnx</path>
 				</configuration>
 			</plugin>
 

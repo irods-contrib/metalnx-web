@@ -27,7 +27,7 @@ $(document).ready(function(){
 				$.ajax({
 					dataType: "json",
 					type : 'Get',           
-					url: '/emc-metalnx-web/avuAutoComplete/getMetadataAttrs',
+					url: '/metalnx/avuAutoComplete/getMetadataAttrs',
 					success: function(data) {
 						//$('input.metadataAttr').removeClass('ui-autocomplete-loading');  
 						// hide loading image	              
@@ -83,7 +83,7 @@ function getAttributeValues(attributeName,id){
 	$.ajax({  	
 		dataType: "json",
 		type : 'Get',            
-		url: '/emc-metalnx-web/avuAutoComplete/getMetadataValues',
+		url: '/metalnx/avuAutoComplete/getMetadataValues',
 		data: {attributeName : attributeName},
 		success: function(data) {
 

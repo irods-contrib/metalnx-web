@@ -18,7 +18,7 @@ $(document).ready(function(){
     	});
     	
   	
-	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status, jqXHR){
+	$.get("/metalnx/preview/dataObjectPreview/", function(data, status, jqXHR){
 		var dispData;		
 		var contentType = jqXHR.getResponseHeader("content-type") || "";
 		var mode; 
@@ -59,7 +59,7 @@ function update() {
   
 function save() {
 	var data =  editor.getValue();
-	var url = "/emc-metalnx-web/preview/save/";
+	var url = "/metalnx/preview/save/";
 	ajaxEncapsulation(url, "POST", {data: data}, confirmSave, null, null, null);	
 	
 }
@@ -69,7 +69,7 @@ function confirmSave(data){
 }
 
 function cancel() {
-	$.get("/emc-metalnx-web/preview/dataObjectPreview/", function(data, status){
+	$.get("/metalnx/preview/dataObjectPreview/", function(data, status){
 		editor.getDoc().setValue(data);
     });	
 }

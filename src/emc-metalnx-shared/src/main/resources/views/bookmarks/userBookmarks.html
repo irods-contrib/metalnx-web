@@ -78,7 +78,7 @@
 			    "autoWidth": false,
 					"searching": false,
 			    "ajax": {
-			        url: '/emc-metalnx-web/userBookmarks/bookmarksPaginated/',
+			        url: '/metalnx/userBookmarks/bookmarksPaginated/',
 			    },
 			    "order": [[ 3, 'desc' ], [0, 'asc']],
 			    "initComplete": function(settings){
@@ -124,7 +124,7 @@
 
 			function openInCollView(path) {
 				window.open(
-						  '/emc-metalnx-web/collections?path=' + encodeURI(path),
+						  '/metalnx/collections?path=' + encodeURI(path),
 						  '_self' // <- This is what makes it open in a new window.
 						);
 			}

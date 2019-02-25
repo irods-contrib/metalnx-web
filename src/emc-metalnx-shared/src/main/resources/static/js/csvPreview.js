@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$('#csv').jexcel({
-	    csv:'/emc-metalnx-web/preview/dataObjectPreview/',
+	    csv:'/metalnx/preview/dataObjectPreview/',
 	    csvHeaders:true,
 	    colWidths: [70, 500,500],
 	});
@@ -11,7 +11,7 @@ function save() {
 	var csvData = $.csv.fromArrays(data);
 	console.log("Data :: "+data);
 	console.log("csvData :: "+csvData);
-	var url = "/emc-metalnx-web/preview/saveCsv/";
+	var url = "/metalnx/preview/saveCsv/";
 	ajaxEncapsulation(url, "POST", {data: csvData}, confirmSave, failSave, null, "text/csv", null);	
 	//ajaxEncapsulation(url, "POST", {data: data}, confirmSave, failSave, null, 'text/csv;charset=utf-8' , null);	
 }
@@ -27,7 +27,7 @@ function failSave(){
 
 function cancel() {
 	$('#csv').jexcel({
-	    csv:'/emc-metalnx-web/preview/dataObjectPreview/',
+	    csv:'/metalnx/preview/dataObjectPreview/',
 	    csvHeaders:true,
 	    colWidths: [70, 500,500],
 	});

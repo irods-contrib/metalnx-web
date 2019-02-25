@@ -70,7 +70,7 @@
             - [Handler](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#handler)
             - [Interceptors](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#interceptors)
             - [Jobs](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#jobs)
-      - [emc-metalnx-web](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#emc-metalnx-web)
+      - [metalnx](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#metalnx)
          - [Test](https://github.com/Metalnx/metalnx-web/wiki/Metalnx-Architecture#test-package)
 - [Build Metalnx](https://github.com/Metalnx/metalnx-web/wiki/Build-Metalnx)
     - [Metalnx Repository](https://github.com/Metalnx/metalnx-web/wiki/Build-Metalnx#metalnx-repository)

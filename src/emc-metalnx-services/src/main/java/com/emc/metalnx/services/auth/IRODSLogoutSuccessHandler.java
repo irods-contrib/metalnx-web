@@ -56,7 +56,7 @@ public class IRODSLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler imp
 			logger.info("invalidating session");
 			request.getSession().invalidate();
 
-			response.sendRedirect("/emc-metalnx-web/login/");
+			response.sendRedirect("/metalnx/login/");
 			logger.info("User {} disconnected successfully", username);
 		} catch (Exception e) {
 			logger.info("User session is already expired. There is no need to clear session.");

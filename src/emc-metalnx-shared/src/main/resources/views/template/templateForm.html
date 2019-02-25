@@ -167,7 +167,7 @@
 			<script th:inline="javascript">
 			
 				$(function() {
-					var url = "/emc-metalnx-web/templates/listTemplateFields/";
+					var url = "/metalnx/templates/listTemplateFields/";
 					var template = $('#templateName').val();
 					ajaxEncapsulation(url, "POST", {template : template}, displayTemplateFieldsPaginated, null, null, null);
 					createAccessTypeTooltip();
@@ -198,7 +198,7 @@
 				});
 				
 				$("#addFieldBtn").click(function() {
-					var url = "/emc-metalnx-web/templates/addFieldToCurrentTemplate";
+					var url = "/metalnx/templates/addFieldToCurrentTemplate";
 					
 					$("#addTemplateFieldForm").append('<input type="hidden" value="'+$('#templateName').val()+'" name="templateName"/>');
 					

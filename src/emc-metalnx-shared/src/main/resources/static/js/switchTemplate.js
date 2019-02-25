@@ -9,9 +9,9 @@ $("#adminModeBtn").click(function(){
 	$("#adminModeBtn").addClass("btn-primary");	
 	$("#userModeBtn").addClass("btn-default");
 
-	$.post("/emc-metalnx-web/browse/switchMode/", {currentMode: "user"},
+	$.post("/metalnx/browse/switchMode/", {currentMode: "user"},
 		function(response){
-			window.location = "/emc-metalnx-web/dashboard/";
+			window.location = "/metalnx/dashboard/";
 		}
 	);
 });
@@ -23,9 +23,9 @@ $("#userModeBtn").click(function(){
 	$("#userModeBtn").addClass("btn-primary");
 	$("#adminModeBtn").addClass("btn-default");
 
-	$.post("/emc-metalnx-web/collections/switchMode/", {currentMode: "admin"},
+	$.post("/metalnx/collections/switchMode/", {currentMode: "admin"},
 		function(response){
-			window.location = "/emc-metalnx-web/collections/";
+			window.location = "/metalnx/collections/";
 		}
 	);
 });

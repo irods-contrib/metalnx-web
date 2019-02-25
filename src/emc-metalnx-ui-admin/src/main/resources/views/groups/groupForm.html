@@ -31,44 +31,44 @@
 			//identify permission and add it to user
 			if(permission == 'read'){
 
-				url = "/emc-metalnx-web/groups/addReadPermission/";
+				url = "/metalnx/groups/addReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
 				    checkGroupBookmark(bookmarkCheckbox);
 				}, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);
 
 			} else if(permission == 'write'){
 
-				url = "/emc-metalnx-web/groups/addWritePermission/";
+				url = "/metalnx/groups/addWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
                     checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 
 			} else if(permission == 'own'){
 
-				url = "/emc-metalnx-web/groups/addOwner/";
+				url = "/metalnx/groups/addOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
                     checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 
 			} else {
 				//this case is for when user chooses to give none of the permissions above
-				url = "/emc-metalnx-web/groups/removeReadPermission/";
+				url = "/metalnx/groups/removeReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
 
-				url = "/emc-metalnx-web/groups/removeWritePermission/";
+				url = "/metalnx/groups/removeWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
 
-				url = "/emc-metalnx-web/groups/removeOwner/";
+				url = "/metalnx/groups/removeOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
 
 				bookmarkCheckbox.prop('checked', false);
 				bookmarkCheckbox.attr("disabled", true);
 
 				// Removing bookmarks for the modified item
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
 			}
 		}
 
@@ -85,10 +85,10 @@
 			var url = "";
 			var checkbox = $("#inheritance_" + collectionShortName);
 			if (checkbox.is(":checked")) {
-				url = "/emc-metalnx-web/groups/addInheritance/"
+				url = "/metalnx/groups/addInheritance/"
 			}
 			else {
-				url = "/emc-metalnx-web/groups/removeInheritance/"
+				url = "/metalnx/groups/removeInheritance/"
 			}
 			ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
 		}
@@ -418,7 +418,7 @@
 				$('body').on('change', '#usersList input[type=checkbox]', function(){
 				//$("#usersList input[type=checkbox]").change(function(){
 					if($(this).is(":checked")){
-					    ajaxEncapsulation('/emc-metalnx-web/groups/addUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/groups/addUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
 					    var newRow = $(this).closest("tr").clone();
 						newRow.find("td:first").remove();
 						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
@@ -426,7 +426,7 @@
 						datatableAttachedUsers.row.add(newRow).draw();
 					}
 					else {
-					    ajaxEncapsulation('/emc-metalnx-web/groups/removeUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/groups/removeUserToSaveList/', "POST", {userId: $(this).val()}, null, null, null);
 					    var elementID = $(this).parent().parent().attr("id") + "_attached";
 						var trElement = $("tr[id='" + elementID + "']");
 						datatableAttachedUsers.row(trElement).remove().draw();
@@ -439,7 +439,7 @@
 				$("#table-loader").show();
 				$("#collectionsViewForGroup").hide();
 
-				var url = "/emc-metalnx-web/browse/getDirectoriesAndFilesForGroupForm/";
+				var url = "/metalnx/browse/getDirectoriesAndFilesForGroupForm/";
 				var retrievePermissions = !isAddAction;
 				setTimeout(function () {
 					ajaxEncapsulation(

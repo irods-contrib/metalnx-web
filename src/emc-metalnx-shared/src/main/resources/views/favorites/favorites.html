@@ -70,7 +70,7 @@
 		    "autoWidth": false,
 				"searching": false,
 		    "ajax": {
-		        url: '/emc-metalnx-web/favorites/favoritesPaginated/',
+		        url: '/metalnx/favorites/favoritesPaginated/',
 		    },
 		    "order": [[ 3, 'desc' ]],
 		    "initComplete": function(settings){
@@ -119,14 +119,14 @@
 		
 		function openInCollView(path) {
 			window.open(
-					  '/emc-metalnx-web/collections?path=' + encodeURI(path),
+					  '/metalnx/collections?path=' + encodeURI(path),
 					  '_self' // <- This is what makes it open in a new window.
 					);
 		}
 		
 		function unstarItem(path){
 			ajaxEncapsulation(
-				'/emc-metalnx-web/favorites/removeFavoriteFromUser/',
+				'/metalnx/favorites/removeFavoriteFromUser/',
 				"GET",
 				{path: path},
 				function(data){
