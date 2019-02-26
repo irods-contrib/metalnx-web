@@ -61,6 +61,22 @@ Add clipboard functionality to paths on the info views to allow easy copy to cli
 
 Added inheritance flag to the info view for collections and allow modification
 
+#### Add mapping to friendly names for auth types #88
+
+Add ability to change login options to site-specific. This means instead of showing "PAM" as a Login
+option it can say "Example Corp. Account", etc. The property is described in the etc/irods-ext sample in this subproject
+
+```
+
+#############################
+# misc ui configuration niceties
+#############################
+# allow translation of iRODS auth types to user friendly names in login
+# in the form irodstype:displaytype|
+metalnx.authtype.mappings=PAM:NIH Login|STANDARD:iRODS Auth
+
+```
+
 ### Changed
 
 #### Obtain necessary props from irods-ext file #7

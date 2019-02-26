@@ -3,14 +3,11 @@
 
 package com.emc.metalnx.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.irods.jargon.core.connection.AuthScheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,10 +105,11 @@ public class LoginController {
 	}
 
 	private void addAuthTypesAndDefaultAuthToModel(ModelAndView model) {
-		List<String> authTypes = new ArrayList<String>();
-		authTypes.add(AuthScheme.STANDARD.getTextValue());
-		authTypes.add(AuthScheme.PAM.getTextValue());
-		model.addObject("authTypes", authTypes);
+		/*
+		 * Auth schemes are provided in metalnx.properties and can be updated to provide
+		 * user friendly auth types, like "Example Corp. Login"
+		 */
+		model.addObject("authTypes", configService.listAuthTypeMappings());
 		model.addObject("defaultAuthType", configService.getDefaultIrodsAuthScheme());
 	}
 
