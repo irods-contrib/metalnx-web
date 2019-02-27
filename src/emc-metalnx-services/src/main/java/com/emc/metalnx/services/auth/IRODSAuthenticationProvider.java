@@ -209,6 +209,7 @@ public class IRODSAuthenticationProvider implements AuthenticationProviderServic
 						logger.debug("setting user type rodsuser:{}", irodsUser.getUserType());
 						user.setUserType(UserTypeEnum.RODS_USER.getTextValue());
 					}
+
 					this.userDao.save(user);
 				} else {
 					// check for an update of user type

@@ -177,7 +177,6 @@
 		<property name="paramName" value="language" />
 	</bean>
 
-
 	<!-- MVC Interceptors -->
 	<mvc:interceptors>
 		<bean class="com.emc.metalnx.interceptors.HttpResponseHandlerInterceptor"
