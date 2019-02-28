@@ -22,7 +22,7 @@ function ajaxEncapsulation(url, method, params, successFunction, errorFunction, 
         // wrap success to check for invalid session or login exception errors
         success: function (data, status, jqXHR) {
 
-          if (data.search("XXXLOGINXXX") >= 0) {
+          if (String(data).search("XXXLOGINXXX") >= 0) {
                 console.log("current location = " + window.location);
                 console.log("location path =" + window.location.pathname);
                 window.location= "/metalnx/login/" + window.location.search + "&ajaxOrigPath=" + window.location.pathname;

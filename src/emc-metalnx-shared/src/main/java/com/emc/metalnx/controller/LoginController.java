@@ -50,18 +50,36 @@ public class LoginController {
 		logger.info("last saved request was:{}", savedRequest);
 
 		Map<String, String[]> params = request.getParameterMap();
+		String redirect = "";
+
 		if (params.containsKey(AJAX_ORIG_PATH)) {
 			logger.info("have an original path from an ajax call to use to construct the redirect");
-			StringBuilder sb = new StringBuilder();
-			sb.append("redirect:");
-			sb.append(trimContextString(params.get(AJAX_ORIG_PATH)[0]));
-			sb.append("?");
-			sb.append(request.getQueryString());
-			logger.debug("redirect to:{}", sb.toString());
-			model = new ModelAndView(sb.toString());
+			String origPath = params.get(AJAX_ORIG_PATH)[0];
+			if (origPath.indexOf("isAjax=true}") > -1) {
+				logger.info("don't redirect to ajax paths");
+				boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
+				if (isUserAdmin) {
+					if (configService.isDashboardEnabled()) {
+						redirect = "redirect:/dashboard/";
+					} else {
+						redirect = "redirect:/browse/home";
+					}
+				} else {
+					redirect = "redirect:/browse/home";
+				}
+				model = new ModelAndView(redirect);
+
+			} else {
+				StringBuilder sb = new StringBuilder();
+				sb.append("redirect:");
+				sb.append(trimContextString(params.get(AJAX_ORIG_PATH)[0]));
+				sb.append("?");
+				sb.append(request.getQueryString());
+				logger.debug("redirect to:{}", sb.toString());
+				model = new ModelAndView(sb.toString());
+			}
 		} else if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
-			String redirect = "";
 			if (isUserAdmin) {
 				if (configService.isDashboardEnabled()) {
 					redirect = "redirect:/dashboard/";
@@ -98,7 +116,7 @@ public class LoginController {
 			throw new IllegalArgumentException("not a path string, expected metalnx context");
 		}
 
-		String newPath = pathString.substring(idx + 16);
+		String newPath = pathString.substring(idx + 8);
 		logger.debug("newPath:{}", newPath);
 		return newPath;
 
