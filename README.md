@@ -10,20 +10,42 @@ The preferred method of deployment is via Docker.  You can deploy Metalnx direct
 First, [create and configure a database for Metalnx's use (this is for caching and other local information)](src/metalnx-tools/README.md).
 
 ```
-cd src/metalnx-tools
-mvn flyway:migrate
+cp flyway.conf.template flyway.conf
 ```
 
-[Configuration](CONFIGURATION.md) of the default server can change many things about how Metalnx looks and behaves.
- - SSL to iRODS
- - SSL to User (in the browser)
+Update the database connection information in `flyway.conf` and then run the flyway database migration tool:
+```
+docker run --rm \
+  -v `pwd`/src/metalnx-tools/src/main/resources/migrations:/flyway/sql \
+  -v `pwd`:/flyway/conf \
+  boxfuse/flyway migrate
+```
+
+You will probably need to add `--add-host` to the docker command so that the flyway container can see the database server.
+If the database is running directly on the host machine, then the host IP may be the Docker bridge network IP:
+```
+  --add-host hostcomputer:172.17.0.1 \
+```
+
+Additional maven-based migration information can be found in [src/metalnx-tools](src/metalnx-tools/README.md).
+
+
+[Configuration](CONFIGURATION.md) of the default application can change many things about how Metalnx looks and behaves.
  - Configuration of Zone information, and features to display
  - Theming with custom CSS/Logo
 
-Run an existing container with zone-specific configuration:
+Create a copy of the default `etc/irods-ext` directory, update `metalnx.properties` and `metalnxConfig.xml`, and then run a container with the new configuration:
 ```
-docker run -d -v `pwd`/mylocal-irods-ext:/etc/irods-ext irods-contrib/metalnx:latest .
+docker run -d \
+  -v `pwd`/mylocal-irods-ext:/etc/irods-ext \
+  irods-contrib/metalnx:latest .
 ```
+
+To map a local directory with SSL certificates (self-signed or from a CA), the container will look in `/tmp/cert`:
+```
+ -v /home/mcc/webdavcert:/tmp/cert \
+```
+
 
 Or...
 
@@ -58,7 +80,9 @@ docker build -t myimages/metalnx:latest .
 If you're deploying your own image (built just above):
 
 ```
-docker run -d -v `pwd`/mylocal-irods-ext:/etc/irods-ext myimages/metalnx:latest
+docker run -d \
+  -v `pwd`/mylocal-irods-ext:/etc/irods-ext \
+  myimages/metalnx:latest
 ```
 
 ### More information
