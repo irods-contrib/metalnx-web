@@ -73,4 +73,4 @@ This software is provided under the [BSD-3 License](LICENSE.md).
 
 ### Changes
 
-Refer to the [CHANGELOG.md](CHANGELOG file) for the latest changes
+Refer to the [CHANGELOG file](CHANGELOG.md) for the latest changes
