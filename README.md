@@ -57,7 +57,7 @@ docker run -d \
 
 To map a local directory with SSL certificates (self-signed or from a CA), the container will look in `/tmp/cert`:
 ```
- -v /home/mcc/webdavcert:/tmp/cert \
+ -v `pwd`/mylocal-certs:/tmp/cert \
 ```
 
 The login screen should appear when requested in a web browser:
