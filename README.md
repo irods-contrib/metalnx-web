@@ -7,13 +7,25 @@ Metalnx is a web application designed to work alongside [iRODS](http://www.irods
 
 The preferred method of deployment is via Docker.  You can deploy Metalnx directly from Docker Hub.
 
-First, [create and configure a database for Metalnx's use (this is for caching and other local information)](src/metalnx-tools/README.md).
+### Prepare the database
 
+First, create and configure a database for Metalnx's use (this is for caching and other local information).
+
+```
+$ (sudo) su - postgres
+postgres$ psql
+psql> CREATE USER metalnx WITH PASSWORD 'changeme';
+psql> CREATE DATABASE "IRODS-EXT";
+psql> GRANT ALL PRIVILEGES ON DATABASE "IRODS-EXT" TO metalnx;
+```
+
+Then, create and update the database connection information in `flyway.conf`:
 ```
 cp flyway.conf.template flyway.conf
 ```
 
-Update the database connection information in `flyway.conf` and then run the flyway database migration tool:
+Then run the flyway database migration tool:
+
 ```
 docker run --rm \
   -v `pwd`/src/metalnx-tools/src/main/resources/migrations:/flyway/sql \
@@ -29,6 +41,7 @@ If the database is running directly on the host machine, then the host IP may be
 
 Additional maven-based migration information can be found in [src/metalnx-tools](src/metalnx-tools/README.md).
 
+### Prepare the application
 
 [Configuration](CONFIGURATION.md) of the default application can change many things about how Metalnx looks and behaves.
  - Configuration of Zone information, and features to display
@@ -37,6 +50,7 @@ Additional maven-based migration information can be found in [src/metalnx-tools]
 Create a copy of the default `etc/irods-ext` directory, update `metalnx.properties` and `metalnxConfig.xml`, and then run a container with the new configuration:
 ```
 docker run -d \
+  -p 8080:8080
   -v `pwd`/mylocal-irods-ext:/etc/irods-ext \
   irods-contrib/metalnx:latest .
 ```
@@ -45,6 +59,14 @@ To map a local directory with SSL certificates (self-signed or from a CA), the c
 ```
  -v /home/mcc/webdavcert:/tmp/cert \
 ```
+
+The login screen should appear when requested in a web browser:
+
+```
+http://x.x.x.x:8080/metalnx
+```
+
+
 
 
 Or...
