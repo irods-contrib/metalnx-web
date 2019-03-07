@@ -93,9 +93,6 @@ public class MetadataServiceImpl implements MetadataService {
 		int totalCollections;
 		int totalDataObjects;
 
-		int endIndexForDataObjs;
-		int endIndexForCollections;
-
 		try {
 			String zone = irodsServices.getCurrentUserZone();
 
@@ -115,7 +112,6 @@ public class MetadataServiceImpl implements MetadataService {
 				SpecificQueryResultSet resultSetColls = specQueryService.searchByMetadata(searchList, zone, true,
 						pageContext, start, length);
 				dataGridCollections = DataGridUtils.mapMetadataResultSetToDataGridCollections(resultSetColls);
-				endIndexForCollections = dataGridCollections.size();
 				dataGridCollectionAndDataObjects.addAll(dataGridCollections);
 			}
 
@@ -136,9 +132,6 @@ public class MetadataServiceImpl implements MetadataService {
 				dataGridObjects = DataGridUtils.mapMetadataResultSetToDataGridObjects(resultSetDataObjs);
 				dataGridCollectionAndDataObjects.addAll(dataGridObjects);
 			}
-
-			dataGridCollectionAndDataObjects.addAll(dataGridCollections);
-			dataGridCollectionAndDataObjects.addAll(dataGridObjects);
 
 			pageContext.setEndItemNumber(start + dataGridCollectionAndDataObjects.size() - 1);
 
