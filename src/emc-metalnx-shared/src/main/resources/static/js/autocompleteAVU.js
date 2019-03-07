@@ -55,7 +55,7 @@ $(document).ready(function(){
 				$(this).val(ui.item.label);
 				event.preventDefault();
 				var selectedObj = ui.item.label; 
-				console.log("Value selected :: " + selectedObj);
+				//console.log("Value selected :: " + selectedObj);
 				var _id = $(this).attr("id");
 				getAttributeValues(selectedObj, _id);
 			}
@@ -66,7 +66,7 @@ $(document).ready(function(){
 	var selector = 'input.metadataAttr';
 	$(document).on('keydown.autocomplete', selector, function() {
 		$(this).autocomplete(options).data('ui-autocomplete')._renderItem = function(ul, item) {
-			console.log(item.label);
+			//console.log(item.label);
 			return $('<li></li>')
 			.data("item.autocomplete", item)
 			.append('<a>' + item.label + '</a>')

@@ -31,7 +31,7 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 	 */
 	@Override
 	public String buildSpecificQueryForMetadataSearch(List<DataGridMetadataSearch> metadataSearch, String zone,
-			boolean searchAgainstColls) {
+			boolean searchAgainstColls, final int offset, final int limit) {
 		// This is the first part of the query. It selects all objects (collections or
 		// data objects)
 		// that has a piece of metadata matching the query
@@ -74,6 +74,17 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 			gb.append("      c.coll_inheritance");
 			gb.append(" ORDER BY totalMatches DESC, c.coll_name ");
 			gb.append(" ) AS ms ");
+
+			if (limit > 0) {
+				gb.append(" LIMIT ");
+				gb.append(limit);
+			}
+
+			if (offset > 0) {
+				gb.append(" OFFSET ");
+				gb.append(offset);
+			}
+
 		} else {
 			objQuery.append(
 					" SELECT obj_name, size, obj_owner, repl_num, create_ts, modify_ts, resc_name, parent_path, totalMatches");
@@ -104,6 +115,16 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 			gb.append("      c.coll_name");
 			gb.append(" ORDER BY totalMatches DESC, d.data_name ");
 			gb.append(" ) AS ms ");
+
+			if (limit > 0) {
+				gb.append(" LIMIT ");
+				gb.append(limit);
+			}
+
+			if (offset > 0) {
+				gb.append(" OFFSET ");
+				gb.append(offset);
+			}
 		}
 
 		for (DataGridMetadataSearch d : metadataSearch) {
@@ -184,7 +205,7 @@ public class PostgresSpecificQueryProviderImpl implements SpecificQueryProvider 
 		StringBuilder query = new StringBuilder();
 
 		query.append("WITH searchMetadata AS (");
-		query.append(this.buildSpecificQueryForMetadataSearch(metadataSearch, zone, searchAgainstColls));
+		query.append(this.buildSpecificQueryForMetadataSearch(metadataSearch, zone, searchAgainstColls, 0, 0));
 		query.append(") ");
 		query.append("SELECT COUNT(*) ");
 		query.append("FROM searchMetadata ");

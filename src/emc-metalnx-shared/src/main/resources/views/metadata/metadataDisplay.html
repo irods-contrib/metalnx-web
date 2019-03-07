@@ -325,7 +325,7 @@
 							value = $(this).find(".metadataVal").val();
 							unit = $(this).find(".metadataUnit").val();
 
-							console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
+							//console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
 							if(attr == "" && value == "" && unit == "" && totalSearchCriteriaRows > 1) {
 								$(this).remove();
 								totalSearchCriteriaRows--;
@@ -333,6 +333,7 @@
 						});
 
 						datatable = $('#treeViewTable').DataTable( {
+							"paging": true,
 			    		    "serverSide": true,
 			    		    "dom": dtPatternForMetadata,
 			    		    "language": i18n,
@@ -451,7 +452,8 @@
 							datatable.destroy();
 							$('#metadataSearchTableResults #treeViewTable').empty();
 						}
-						datatable = $('#treeViewTable').DataTable( {
+						datatable = $('#treeViewTable').DataTable( { 
+							"paging": true,
 			    		    "serverSide": true,
 			    		    "dom": dtPatternForMetadata,
 			    		    "language": i18n,
@@ -530,7 +532,7 @@
 			                    	"title": [[#{collections.management.table.size.label}]],
 			                    	"width": "10%",
 			                    	"targets": 5
-			                   	},
+			                   	}/*,
 			                    {
 			                    	"data": "resourceName",
 			                    	"render": function ( data, type, full, meta ){
@@ -539,7 +541,7 @@
 			                    	"title": [[#{collections.management.table.resource.label}]],
 			                    	"width": "10%",
 			                    	"targets": 6
-			                   	}
+			                   	}*/
 			                ]
 			    		} );
 

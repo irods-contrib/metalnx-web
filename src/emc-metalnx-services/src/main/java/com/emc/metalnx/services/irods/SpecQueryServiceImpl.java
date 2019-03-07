@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
@@ -36,6 +34,10 @@ import com.emc.metalnx.services.machine.util.DataGridUtils;
 @Service
 @Transactional
 public class SpecQueryServiceImpl implements SpecQueryService {
+	private static final int MAX_QUERY_ROWS = 256
+
+	;
+
 	@Autowired
 	AdminServices adminServices;
 
@@ -76,9 +78,35 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	}
 
 	@Override
-	public SpecificQueryResultSet searchByMetadata(List<DataGridMetadataSearch> metadataSearch, String zone,
-			boolean searchAgainstColls, DataGridPageContext pageContext, int offset, int limit)
+	public SpecificQueryResultSet searchByMetadata(final List<DataGridMetadataSearch> metadataSearch, final String zone,
+			final boolean searchAgainstColls, final DataGridPageContext pageContext, final int offset, final int limit)
 			throws DataGridConnectionRefusedException, JargonException {
+
+		logger.info("searchByMetadata()");
+
+		if (metadataSearch == null || metadataSearch.isEmpty()) {
+			throw new IllegalArgumentException("null or empty metadataSearch");
+		}
+
+		if (pageContext == null) {
+			throw new IllegalArgumentException("null pageContext");
+		}
+
+		logger.info("offset:{}", offset);
+		logger.info("limit:{}", limit);
+
+		if (offset < 0) {
+			throw new IllegalArgumentException("offset cannot be < 0");
+		}
+
+		if (limit <= 0) {
+			throw new IllegalArgumentException("limit cannot be <= 0");
+		}
+
+		logger.info("metadataSearch:{}", metadataSearch);
+		logger.info("zone:{}", zone);
+		logger.info("searchAgainstColls:{}", searchAgainstColls);
+		logger.info("pageContext:{}", pageContext);
 
 		SpecificQueryAO specificQueryAO = null;
 		SpecificQuery specQuery = null;
@@ -90,7 +118,8 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 			ClientHints clientHints = this.irodsServices.getEnvironmentalInfoAO().retrieveClientHints(false);
 			SpecificQueryProvider provider = specificQueryProviderFactory.instance(clientHints.whatTypeOfIcatIsIt());
-			String query = provider.buildSpecificQueryForMetadataSearch(metadataSearch, zone, searchAgainstColls);
+			String query = provider.buildSpecificQueryForMetadataSearch(metadataSearch, zone, searchAgainstColls,
+					offset, limit);
 
 			// Creating Specific Query instance
 			SpecificQueryDefinition queryDef = new SpecificQueryDefinition();
@@ -104,7 +133,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 			logger.info("Specific query: {}", query.toString());
 
-			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, 99999, 0);
+			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, limit, offset);
 		} catch (JargonException e) {
 			logger.error("Could not get specific query: ", e);
 			throw e;
@@ -126,13 +155,10 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	/**
 	 * Counts the number of items matching a metadata search criteria.
 	 *
-	 * @param metadataSearch
-	 *            metadata criteria
-	 * @param zone
-	 *            zone name
-	 * @param searchAgainstColls
-	 *            flag set to true when searching collections and false when
-	 *            searching data data objects
+	 * @param metadataSearch     metadata criteria
+	 * @param zone               zone name
+	 * @param searchAgainstColls flag set to true when searching collections and
+	 *                           false when searching data data objects
 	 * @return total number of items matching a metadata search criteria
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
@@ -165,7 +191,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			specQuery = SpecificQuery.instanceWithNoArguments(userSQLAlias, 0, zone);
 			logger.info("Specific query: {}", query.toString());
 
-			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, 99999, 0);
+			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, MAX_QUERY_ROWS, 0);
 
 			// after running the user specific query, we need to remove from the database
 			specificQueryAO.removeSpecificQueryByAlias(userSQLAlias);
@@ -177,7 +203,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 		} catch (JargonQueryException e) {
 			logger.error("Could not get specific query: ", e);
 			throw new JargonException(e);
-		} 
+		}
 
 		return totalItems;
 	}
@@ -185,13 +211,10 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	/**
 	 * Counts the number of items matching a file properties search criteria.
 	 *
-	 * @param filePropertiesSearch
-	 *            filePropertiesSearch criteria
-	 * @param zone
-	 *            zone name
-	 * @param searchAgainstColls
-	 *            flag set to true when searching collections and false when
-	 *            searching data data objects
+	 * @param filePropertiesSearch filePropertiesSearch criteria
+	 * @param zone                 zone name
+	 * @param searchAgainstColls   flag set to true when searching collections and
+	 *                             false when searching data data objects
 	 * @return total number of items matching a file properties search criteria
 	 * @throws DataGridConnectionRefusedException
 	 * @throws UnsupportedDataGridFeatureException
@@ -230,7 +253,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 			logger.info("Specific query: {}", query.toString());
 
-			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, 99999, 0);
+			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, MAX_QUERY_ROWS, 0);
 
 			// after running the user specific query, we need to remove from the database
 			specificQueryAO.removeSpecificQueryByAlias(userSQLAlias);
@@ -278,7 +301,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 
 			logger.info("Specific query: {}", query);
 
-			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, 99999, 0);
+			queryResultSet = specificQueryAO.executeSpecificQueryUsingAlias(specQuery, MAX_QUERY_ROWS, 0);
 		} catch (JargonException e) {
 			logger.error("Could not get specific query: ", e);
 			throw e;
@@ -321,8 +344,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	}
 
 	/**
-	 * @param irodsServices
-	 *            the irodsServices to set
+	 * @param irodsServices the irodsServices to set
 	 */
 	public void setIrodsServices(IRODSServices irodsServices) {
 		this.irodsServices = irodsServices;
@@ -336,8 +358,7 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 	}
 
 	/**
-	 * @param adminServices
-	 *            the adminServices to set
+	 * @param adminServices the adminServices to set
 	 */
 	public void setAdminServices(AdminServices adminServices) {
 		this.adminServices = adminServices;

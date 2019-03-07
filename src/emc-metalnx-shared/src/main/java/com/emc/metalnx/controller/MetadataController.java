@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -53,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
-@SessionAttributes({ "sourcePaths"})
+@SessionAttributes({ "sourcePaths" })
 @RequestMapping(value = "/metadata")
 public class MetadataController {
 
@@ -93,9 +91,6 @@ public class MetadataController {
 	@Value("${irods.zoneName}")
 	private String zoneName;
 
-	// current page the user currently is (pagination)
-	private int currPage = 1;
-
 	// current metadata search
 	List<DataGridMetadataSearch> currSearch;
 
@@ -129,12 +124,12 @@ public class MetadataController {
 	@ResponseBody
 	public String searchByMetadata(@RequestParam(required = false) final String jsonMetadataSearch,
 			@RequestParam("draw") final int draw, @RequestParam("start") final int start,
-			@RequestParam("length") final int length) throws DataGridConnectionRefusedException {
+			@RequestParam("length") final int length) throws DataGridException {
 
-		logger.info("jsonMetadataSearch ::" +jsonMetadataSearch);
-		logger.info("draw ::" +draw);
-		logger.info("start ::" +start);
-		logger.info("length ::" +length);
+		logger.info("jsonMetadataSearch {}", jsonMetadataSearch);
+		logger.info("draw:{}", draw);
+		logger.info("start {}", start);
+		logger.info("length:{}", length);
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonResponse = new HashMap<String, Object>();
@@ -146,7 +141,8 @@ public class MetadataController {
 
 		try {
 			if (jsonMetadataSearch != null) {
-				currPage = (int) (Math.floor(start / length) + 1);
+				// currPage = (int) (Math.floor(start / length) + 1);
+				// logger.info("currPage:{}", currPage);
 				this.jsonMetadataSearch = jsonMetadataSearch;
 			}
 
@@ -160,10 +156,10 @@ public class MetadataController {
 			JsonNode values = jsonObject.get("value");
 			JsonNode units = jsonObject.get("unit");
 
-			logger.info("attribute :: " +attributes);
-			logger.info("operators :: " +operators);
-			logger.info("values :: " +values);
-			logger.info("units :: " +units);
+			logger.info("attribute:{}", attributes);
+			logger.info("operators:{}", operators);
+			logger.info("values:{}", values);
+			logger.info("units:{}", units);
 
 			for (int i = 0; i < attributes.size(); i++) {
 				String attr = attributes.get(i).textValue();
@@ -177,29 +173,31 @@ public class MetadataController {
 
 			DataGridPageContext pageContext = new DataGridPageContext();
 			List<DataGridCollectionAndDataObject> dgCollDataObjs = metadataService.findByMetadata(currSearch,
-					pageContext, currPage, length);
+					pageContext, start, length);
 
 			jsonResponse.put("recordsTotal", String.valueOf(pageContext.getTotalNumberOfItems()));
 			jsonResponse.put("recordsFiltered", String.valueOf(pageContext.getTotalNumberOfItems()));
 			jsonResponse.put("data", dgCollDataObjs);
 		} catch (DataGridConnectionRefusedException e) {
+			logger.error("connection error doing search", e);
 			throw e;
 		} catch (Exception e) {
 			logger.error("Could not search by metadata: ", e.getMessage());
+			throw new DataGridException(e);
 		}
 
 		try {
 			jsonString = mapper.writeValueAsString(jsonResponse);
 		} catch (JsonProcessingException e) {
 			logger.error("Could not parse hashmap in metadata search to json: {}", e.getMessage());
+			throw new DataGridException(e);
 		}
 
 		return jsonString;
 	}
 
 	@RequestMapping(value = "/downloadCSVResults/")
-	public void exportSearchResultsToCSVFile(final HttpServletResponse response)
-			throws DataGridConnectionRefusedException, IOException {
+	public void exportSearchResultsToCSVFile(final HttpServletResponse response) throws DataGridException, IOException {
 
 		String loggedUser = loggedUserUtils.getLoggedDataGridUser().getUsername();
 		String date = new SimpleDateFormat(METADATA_CSV_DATE_FORMAT).format(new Date());
@@ -254,8 +252,7 @@ public class MetadataController {
 	}
 
 	@RequestMapping(value = "/getMetadata/", method = RequestMethod.POST)
-	public String getMetadata(final Model model, final String path)
-			throws DataGridConnectionRefusedException, FileNotFoundException {
+	public String getMetadata(final Model model, final String path) throws DataGridException, FileNotFoundException {
 		logger.info("MetadataController getMetadata() starts !!");
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
 		DataGridCollectionAndDataObject dgColObj = null;
@@ -280,7 +277,7 @@ public class MetadataController {
 	@RequestMapping(value = "/addMetadata/")
 	public String setMetadata(final Model model, @RequestParam("path") final String path,
 			@RequestParam("attribute") final String attribute, @RequestParam("value") final String value,
-			@RequestParam("unit") final String unit) throws DataGridConnectionRefusedException, FileNotFoundException {
+			@RequestParam("unit") final String unit) throws DataGridException, FileNotFoundException {
 
 		if (metadataService.addMetadataToPath(path, attribute, value, unit)) {
 			model.addAttribute("addMetadataReturn", "success");
@@ -295,7 +292,7 @@ public class MetadataController {
 			@RequestParam("oldAttribute") final String oldAttribute, @RequestParam("oldValue") final String oldValue,
 			@RequestParam("oldUnit") final String oldUnit, @RequestParam("newAttribute") final String newAttribute,
 			@RequestParam("newValue") final String newValue, @RequestParam("newUnit") final String newUnit)
-			throws DataGridConnectionRefusedException, FileNotFoundException {
+			throws DataGridException, FileNotFoundException {
 
 		if (metadataService.modMetadataFromPath(path, oldAttribute, oldValue, oldUnit, newAttribute, newValue,
 				newUnit)) {
@@ -308,7 +305,7 @@ public class MetadataController {
 
 	@RequestMapping(value = "/delMetadataListPrototype")
 	public String delMetadataListPrototype(final HttpServletRequest request, final Model model)
-			throws DataGridConnectionRefusedException, FileNotFoundException {
+			throws DataGridException, FileNotFoundException {
 
 		String path = request.getParameter("path");
 		Integer length = Integer.valueOf(request.getParameter("length"));
@@ -331,7 +328,7 @@ public class MetadataController {
 	}
 
 	@RequestMapping(value = "/exportToCSV")
-	public void exportToCSV(final HttpServletResponse response) throws IOException, DataGridConnectionRefusedException {
+	public void exportToCSV(final HttpServletResponse response) throws IOException, DataGridException {
 		String filePath = collectionController.getCurrentPath();
 
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(filePath);

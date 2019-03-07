@@ -201,7 +201,9 @@ metalnx.enable.dashboard=false
 The original web context 'emc-metalnx-web' and the deployed war file name has been updated to simply 'metalnx'. In later versions,
 this will be site-configurable, but for now there is some legacy hard coded path information.
 
+#### metadata query page functionality not working #96
 
+Metadata paging and page size changes were not working. Fixed code to respond properly to paging and to resize and limit results per user input on the results table.
 
 ### Removed
 

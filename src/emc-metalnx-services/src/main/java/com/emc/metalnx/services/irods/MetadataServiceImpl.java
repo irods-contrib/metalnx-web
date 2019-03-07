@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
@@ -35,6 +33,7 @@ import com.emc.metalnx.core.domain.entity.DataGridMetadata;
 import com.emc.metalnx.core.domain.entity.DataGridMetadataSearch;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
@@ -60,17 +59,40 @@ public class MetadataServiceImpl implements MetadataService {
 	private static final Logger logger = LoggerFactory.getLogger(MetadataServiceImpl.class);
 
 	@Override
-	public List<DataGridCollectionAndDataObject> findByMetadata(List<DataGridMetadataSearch> searchList,
-			DataGridPageContext pageContext, int pageNum, int pageSize) throws DataGridConnectionRefusedException {
+	public List<DataGridCollectionAndDataObject> findByMetadata(final List<DataGridMetadataSearch> searchList,
+			final DataGridPageContext pageContext, final int start, final int length) throws DataGridException {
+
+		logger.info("findByMetadata()");
+
+		if (searchList == null || searchList.isEmpty()) {
+			throw new IllegalArgumentException("null or empty searchList");
+		}
+
+		if (pageContext == null) {
+			throw new IllegalArgumentException("null pageContext");
+		}
+
+		logger.info("searchList:{}", searchList);
+		logger.info("pageContext:{}", pageContext);
+		logger.info("start:{}", start);
+		logger.info("length:{}", length);
+		int endIndex = start + length - 1;
+		logger.info("endIndex:{}", endIndex);
+
+		/*
+		 * Need to translate from indexes in terms of collections + data objects into
+		 * separate indexes for collections (first) and data objects (second)
+		 * 
+		 * User pages presents as continuous.
+		 */
 
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = new ArrayList<>();
-		List<DataGridCollectionAndDataObject> dataGridObjects;
-		List<DataGridCollectionAndDataObject> dataGridCollections;
+		List<DataGridCollectionAndDataObject> dataGridObjects = new ArrayList<>();
+		List<DataGridCollectionAndDataObject> dataGridCollections = new ArrayList<>();
 
 		int totalCollections;
 		int totalDataObjects;
-		int startIndex = (pageNum - 1) * pageSize;
-		int endIndex = (pageNum * pageSize) - 1;
+
 		int endIndexForDataObjs;
 		int endIndexForCollections;
 
@@ -80,60 +102,52 @@ public class MetadataServiceImpl implements MetadataService {
 			totalCollections = specQueryService.countCollectionsMatchingMetadata(searchList, zone);
 			totalDataObjects = specQueryService.countDataObjectsMatchingMetadata(searchList, zone);
 
-			pageContext.setStartItemNumber(startIndex + 1);
+			logger.info("totalCollections:{}", totalCollections);
+			logger.info("totalDataObjects:{}", totalDataObjects);
+
+			pageContext.setStartItemNumber(start);
 			pageContext.setTotalNumberOfItems(totalCollections + totalDataObjects);
 
-			if (endIndex + 1 <= totalCollections) {
+			if (start + 1 < totalCollections) {
+				logger.info("have some collections to query");
+
 				// looking for collections
 				SpecificQueryResultSet resultSetColls = specQueryService.searchByMetadata(searchList, zone, true,
-						pageContext, startIndex, pageSize);
-
+						pageContext, start, length);
 				dataGridCollections = DataGridUtils.mapMetadataResultSetToDataGridCollections(resultSetColls);
-
 				endIndexForCollections = dataGridCollections.size();
-
 				dataGridCollectionAndDataObjects.addAll(dataGridCollections);
-
-				pageContext.setEndItemNumber(pageContext.getStartItemNumber() + endIndexForCollections - 1);
-			} else if (startIndex + 1 > totalCollections) {
-				// looking for data objects
-				SpecificQueryResultSet resultSetDataObjs = specQueryService.searchByMetadata(searchList, zone, false,
-						pageContext, startIndex - totalCollections, pageSize);
-
-				dataGridObjects = DataGridUtils.mapMetadataResultSetToDataGridObjects(resultSetDataObjs);
-
-				pageContext.setEndItemNumber(pageContext.getStartItemNumber() + dataGridObjects.size() - 1);
-
-				dataGridCollectionAndDataObjects.addAll(dataGridObjects);
-			} else {
-				// looking for collections
-				SpecificQueryResultSet resultSetColls = specQueryService.searchByMetadata(searchList, zone, true,
-						pageContext, startIndex, pageSize);
-
-				dataGridCollections = DataGridUtils.mapMetadataResultSetToDataGridCollections(resultSetColls);
-
-				endIndexForDataObjs = pageSize - (totalCollections % pageSize);
-
-				// looking for data objects
-				SpecificQueryResultSet resultSetDataObjs = specQueryService.searchByMetadata(searchList, zone, false,
-						pageContext, 0, endIndexForDataObjs);
-
-				dataGridObjects = DataGridUtils.mapMetadataResultSetToDataGridObjects(resultSetDataObjs);
-
-				endIndexForDataObjs = endIndexForDataObjs > dataGridObjects.size() ? dataGridObjects.size()
-						: endIndexForDataObjs;
-
-				dataGridCollectionAndDataObjects.addAll(dataGridCollections);
-				dataGridCollectionAndDataObjects.addAll(dataGridObjects);
-
-				pageContext.setEndItemNumber(
-						pageContext.getStartItemNumber() + endIndexForDataObjs + dataGridCollections.size() - 1);
 			}
 
+			/*
+			 * See if I need to add data objects, if I've found some collections, make up
+			 * the remainder of the length in data objects
+			 */
+
+			int dataObjectRemainder = length - dataGridCollections.size();
+
+			if (dataObjectRemainder > 0) {
+
+				// looking for data objects
+				logger.info("looking for data objects, second branch...");
+
+				SpecificQueryResultSet resultSetDataObjs = specQueryService.searchByMetadata(searchList, zone, false,
+						pageContext, start, dataObjectRemainder);
+				dataGridObjects = DataGridUtils.mapMetadataResultSetToDataGridObjects(resultSetDataObjs);
+				dataGridCollectionAndDataObjects.addAll(dataGridObjects);
+			}
+
+			dataGridCollectionAndDataObjects.addAll(dataGridCollections);
+			dataGridCollectionAndDataObjects.addAll(dataGridObjects);
+
+			pageContext.setEndItemNumber(start + dataGridCollectionAndDataObjects.size() - 1);
+
 		} catch (DataGridConnectionRefusedException e) {
+			logger.error("data grid connection refused exception", e);
 			throw e;
 		} catch (Exception e) {
-			logger.error("Could not find data objects by metadata. ", e.getMessage());
+			logger.error("Could not find data objects by metadata.", e);
+			throw new DataGridException("error finding by metadata", e);
 		}
 
 		populateVisibilityForCurrentUser(dataGridCollectionAndDataObjects);
@@ -141,7 +155,7 @@ public class MetadataServiceImpl implements MetadataService {
 	}
 
 	@Override
-	public List<DataGridMetadata> findMetadataValuesByPath(String path) throws DataGridConnectionRefusedException {
+	public List<DataGridMetadata> findMetadataValuesByPath(String path) throws DataGridException {
 
 		List<MetaDataAndDomainData> metadataList;
 		List<DataGridMetadata> dataGridMetadataList = new ArrayList<>();
@@ -184,9 +198,9 @@ public class MetadataServiceImpl implements MetadataService {
 
 			Collections.sort(dataGridMetadataList);
 		} catch (JargonQueryException e) {
-			logger.error("Error getting metadata info from collection: " + e.toString());
+			logger.error("Error getting metadata info from collection", e);
 		} catch (JargonException e) {
-			logger.error("Error getting metadata info from dataobject: " + e.toString());
+			logger.error("Error getting metadata info from dataobject", e.toString());
 		}
 
 		return dataGridMetadataList;
@@ -297,13 +311,12 @@ public class MetadataServiceImpl implements MetadataService {
 	 * Sets whether or not a user can check an object resulting from a metadata
 	 * search
 	 *
-	 * @param objectList
-	 *            list of data objects/collections
+	 * @param objectList list of data objects/collections
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@Override
 	public void populateVisibilityForCurrentUser(List<DataGridCollectionAndDataObject> objectList)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException {
 
 		if (objectList == null || objectList.isEmpty()) {
 			return;
@@ -329,12 +342,13 @@ public class MetadataServiceImpl implements MetadataService {
 
 			} catch (final Exception e) {
 				logger.error("Could not get permissions for current user: {}", e.getMessage());
+				throw new DataGridException("error getting collection permissions", e);
 			}
 		}
 	}
 
 	@Override
-	public boolean copyMetadata(String srcPath, String dstPath) throws DataGridConnectionRefusedException {
+	public boolean copyMetadata(String srcPath, String dstPath) throws DataGridException {
 		if (srcPath == null || srcPath.isEmpty() || dstPath == null || dstPath.isEmpty())
 			return false;
 
