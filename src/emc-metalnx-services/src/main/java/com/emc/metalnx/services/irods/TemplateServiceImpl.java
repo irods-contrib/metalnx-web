@@ -1,204 +1,288 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.services.irods;
 
-import com.emc.com.emc.metalnx.core.xml.MlxMetadataAVU;
-import com.emc.com.emc.metalnx.core.xml.MlxMetadataTemplate;
-import com.emc.com.emc.metalnx.core.xml.MlxMetadataTemplates;
-import com.emc.metalnx.core.domain.dao.TemplateDao;
-import com.emc.metalnx.core.domain.dao.TemplateFieldDao;
-import com.emc.metalnx.core.domain.entity.DataGridTemplate;
-import com.emc.metalnx.core.domain.entity.DataGridTemplateField;
-import com.emc.metalnx.core.domain.exceptions.DataGridTemplateAttrException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTemplateUnitException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTemplateValueException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTooLongTemplateNameException;
-import com.emc.metalnx.services.interfaces.TemplateService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.irods.jargon.core.exception.DataNotFoundException;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import com.emc.metalnx.core.domain.dao.TemplateDao;
+import com.emc.metalnx.core.domain.dao.TemplateFieldDao;
+import com.emc.metalnx.core.domain.entity.DataGridTemplate;
+import com.emc.metalnx.core.domain.entity.DataGridTemplateField;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.TemplateService;
+import com.emc.metalnx.services.irods.template.SerializedMetadataTemplate;
+import com.emc.metalnx.services.irods.template.SerializedTemplateField;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Transactional
 public class TemplateServiceImpl implements TemplateService {
 
-    @Autowired
-    private TemplateDao templateDao;
+	@Autowired
+	private TemplateDao templateDao;
 
-    @Autowired
-    private TemplateFieldDao templateFieldDao;
+	@Autowired
+	private TemplateFieldDao templateFieldDao;
 
-    private static final Logger logger = LoggerFactory.getLogger(TemplateServiceImpl.class);
+	private ObjectMapper objectMapper = new ObjectMapper();
+	org.joda.time.format.DateTimeFormatter dateParser = ISODateTimeFormat.dateTimeNoMillis();
 
-    @Override
-    public boolean modifyTemplate(DataGridTemplate template) {
-        if (template == null) {
-            return false;
-        }
+	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone
+																			// offset
 
-        templateDao.merge(template);
+	private static final Logger logger = LoggerFactory.getLogger(TemplateServiceImpl.class);
 
-        return true;
-    }
+	@Override
+	public boolean modifyTemplate(DataGridTemplate template) {
+		if (template == null) {
+			return false;
+		}
 
-    @Override
-    public DataGridTemplate findById(long id) {
-        return templateDao.findById(id);
-    }
+		templateDao.merge(template);
 
-    @Override
-    public DataGridTemplate findByName(String templateName) {
-        return templateDao.findByName(templateName);
-    }
+		return true;
+	}
 
-    @Override
-    public long createTemplate(DataGridTemplate dataGridTemplate) {
-        Date today = new Date();
+	@Override
+	public DataGridTemplate findById(long id) {
+		return templateDao.findById(id);
+	}
 
-        dataGridTemplate.setVersion(1);
-        dataGridTemplate.setCreateTs(today);
-        dataGridTemplate.setModifyTs(today);
+	@Override
+	public DataGridTemplate findByName(String templateName) {
+		return templateDao.findByName(templateName);
+	}
 
-        long id = templateDao.save(dataGridTemplate);
+	@Override
+	public long createTemplate(DataGridTemplate dataGridTemplate) {
+		Date today = new Date();
 
-        return id;
-    }
+		dataGridTemplate.setVersion(1);
+		dataGridTemplate.setCreateTs(today);
+		dataGridTemplate.setModifyTs(today);
 
-    @Override
-    public List<DataGridTemplate> findAll() {
-        List<DataGridTemplate> dataGridTemplates = templateDao.findAll(DataGridTemplate.class);
+		long id = templateDao.save(dataGridTemplate);
 
-        Collections.sort(dataGridTemplates);
+		return id;
+	}
 
-        return dataGridTemplates;
-    }
+	@Override
+	public List<DataGridTemplate> findAll() {
+		List<DataGridTemplate> dataGridTemplates = templateDao.findAll(DataGridTemplate.class);
 
-    @Override
-    public boolean deleteTemplate(long id) {
-        /*
-         * we need to remove all template fields existing in a template before
-         * removing the Template itself
-         */
-        List<DataGridTemplateField> templateFields = this.listTemplateFields(id);
-        for (DataGridTemplateField templateField : templateFields) {
-            templateFieldDao.delete(templateField);
-        }
+		Collections.sort(dataGridTemplates);
 
-        return templateDao.deleteById(id);
-    }
+		return dataGridTemplates;
+	}
 
-    @Override
-    public List<DataGridTemplate> findByQueryString(String queryString) {
-        List<DataGridTemplate> templates = templateDao.findByQueryString(queryString);
-        Collections.sort(templates);
-        return templates;
-    }
+	@Override
+	public boolean deleteTemplate(long id) {
+		/*
+		 * we need to remove all template fields existing in a template before removing
+		 * the Template itself
+		 */
+		List<DataGridTemplateField> templateFields = this.listTemplateFields(id);
+		for (DataGridTemplateField templateField : templateFields) {
+			templateFieldDao.delete(templateField);
+		}
 
-    @Override
-    public List<DataGridTemplateField> listTemplateFields(String template) {
-        List<DataGridTemplateField> templateFields = templateDao.listTemplateFields(template);
-        Collections.sort(templateFields);
-        return templateFields;
-    }
+		return templateDao.deleteById(id);
+	}
 
-    @Override
-    public List<DataGridTemplateField> listTemplateFields(Long id) {
-        List<DataGridTemplateField> templateFields = templateDao.listTemplateFields(id);
-        Collections.sort(templateFields);
-        return templateFields;
-    }
+	@Override
+	public List<DataGridTemplate> findByQueryString(String queryString) {
+		List<DataGridTemplate> templates = templateDao.findByQueryString(queryString);
+		Collections.sort(templates);
+		return templates;
+	}
 
-    @Override
-    public List<DataGridTemplate> listPublicTemplates() {
-        return templateDao.listPublicTemplates();
-    }
+	@Override
+	public List<DataGridTemplateField> listTemplateFields(String template) {
+		List<DataGridTemplateField> templateFields = templateDao.listTemplateFields(template);
+		Collections.sort(templateFields);
+		return templateFields;
+	}
 
-    @Override
-    public List<DataGridTemplate> listPrivateTemplatesByUser(String user) {
-        return templateDao.listPrivateTemplatesByUser(user);
-    }
+	@Override
+	public List<DataGridTemplateField> listTemplateFields(Long id) {
+		List<DataGridTemplateField> templateFields = templateDao.listTemplateFields(id);
+		Collections.sort(templateFields);
+		return templateFields;
+	}
 
-    @Override
-    public boolean importXmlMetadataTemplate(InputStream inStream, String owner, String prefix, String suffix) throws JAXBException,
-            DataGridTooLongTemplateNameException, DataGridTemplateAttrException, DataGridTemplateValueException, DataGridTemplateUnitException {
+	@Override
+	public List<DataGridTemplate> listPublicTemplates() {
+		return templateDao.listPublicTemplates();
+	}
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(MlxMetadataTemplates.class);
-        Unmarshaller un = jaxbContext.createUnmarshaller();
-        MlxMetadataTemplates ts = (MlxMetadataTemplates) un.unmarshal(inStream);
+	@Override
+	public List<DataGridTemplate> listPrivateTemplatesByUser(String user) {
+		return templateDao.listPrivateTemplatesByUser(user);
+	}
 
-        boolean result = true;
+	@Override
+	public boolean importMetadataTemplate(InputStream inStream, String owner, String prefix, String suffix)
+			throws MetadataTemplateException, DataGridException {
+		logger.info("importMetadataTemplate()");
 
-        for (MlxMetadataTemplate t : ts.getTemplates()) {
+		if (inStream == null) {
+			throw new IllegalArgumentException("null inStream");
+		}
 
-            String newTemplateName = String.format("%s%s%s", prefix, t.getName(), suffix);
+		if (owner == null || owner.isEmpty()) {
+			throw new IllegalArgumentException("null owner");
+		}
 
-            if (findByName(newTemplateName) != null) {
-                logger.info("Template with name {} already exists on the database", newTemplateName);
-                result = false;
-                continue;
-            }
+		if (prefix == null) {
+			prefix = "";
+		}
 
-            DataGridTemplate nt = new DataGridTemplate();
-            nt.setTemplateName(newTemplateName);
-            nt.setDescription(t.getDescription());
-            nt.setUsageInformation(t.getUsageInfo());
-            nt.setAccessType(t.getAccessType());
-            nt.setOwner(owner);
+		if (suffix == null) {
+			suffix = "";
+		}
 
-            nt.setFields(new HashSet<DataGridTemplateField>());
-            long tid = createTemplate(nt);
-            nt.setId(tid);
+		SerializedMetadataTemplate template;
+		try {
+			template = objectMapper.readValue(inStream, SerializedMetadataTemplate.class);
+		} catch (IOException e) {
+			logger.error("error parsing metadata template", e);
+			throw new MetadataTemplateException("error parsing template from JSON", e);
+		}
 
-            for (MlxMetadataAVU a : t.getMetadatas()) {
-                DataGridTemplateField na = new DataGridTemplateField();
-                na.setAttribute(a.getAttribute());
-                na.setValue(a.getValue());
-                na.setUnit(a.getUnit());
-                na.setTemplate(nt);
-                templateFieldDao.save(na);
-            }
-        }
-        return result;
-    }
+		String newTemplateName = String.format("%s%s%s", prefix, template.getTemplateName(), suffix);
+		logger.info("newTemplateName:{}", newTemplateName);
 
-    @Override
-    public MlxMetadataTemplate mapDataGridTemplateToXml(DataGridTemplate template) {
-        // Mapping DB entity to XML entity
-        MlxMetadataTemplate t = new MlxMetadataTemplate();
-        t.setName(template.getTemplateName());
-        t.setDescription(template.getDescription());
-        t.setUsageInfo(template.getUsageInformation());
-        t.setAccessType(template.getAccessType());
+		DataGridTemplate dataGridTemplate = new DataGridTemplate();
+		dataGridTemplate.setAccessType(template.getAccessType());
 
-        for (DataGridTemplateField field : template.getFields()) {
-            MlxMetadataAVU avu = new MlxMetadataAVU();
-            avu.setAttribute(field.getAttribute());
-            avu.setValue(field.getValue());
-            avu.setUnit(field.getUnit());
-            t.getMetadatas().add(avu);
-        }
+		/*
+		 * if dates are provided, use those, otherwise init with current timestamp.
+		 * Dates are in ISO data format
+		 */
 
-        return t;
-    }
+		if (template.getIso8601CreateDate() != null && !template.getIso8601CreateDate().isEmpty()) {
+			dataGridTemplate.setCreateTs(dateParser.parseDateTime(template.getIso8601CreateDate()).toDate());
+		} else {
+			dataGridTemplate.setCreateTs(new Date());
+		}
 
-    @Override
-    public int countAll() {
-        int count = templateDao.findAll(DataGridTemplate.class).size();
+		if (template.getIso8601ModifyDate() != null && !template.getIso8601ModifyDate().isEmpty()) {
+			dataGridTemplate.setModifyTs(dateParser.parseDateTime(template.getIso8601ModifyDate()).toDate());
+		}
 
-        return count;
-    }
+		dataGridTemplate.setDescription(template.getDescription());
+		dataGridTemplate.setOwner(owner);
+		dataGridTemplate.setTemplateName(newTemplateName);
+		dataGridTemplate.setVersion(template.getVersion());
+		long templateId = this.createTemplate(dataGridTemplate);
+		dataGridTemplate.setId(templateId);
+		for (SerializedTemplateField field : template.getTemplateFields()) {
+			DataGridTemplateField templateField = new DataGridTemplateField();
+			templateField.setTemplate(dataGridTemplate);
+			templateField.setAttribute(field.getAttribute());
+			templateField.setOrder(field.getFieldOrder());
+			templateField.setTemplate(dataGridTemplate);
+			templateField.setUnit(field.getUnit());
+			templateField.setValue(field.getValue());
+			templateFieldDao.save(templateField);
+		}
+
+		return true;
+	}
+
+	@Override
+	public String exportMetadataTemplateAsJsonString(long id)
+			throws DataNotFoundException, MetadataTemplateException, DataGridException {
+		logger.info("exportMetadataTemplateAsJsonString()");
+
+		DataGridTemplate template = this.findById(id);
+		if (template == null) {
+			logger.warn("no data found for template with id:{}", id);
+			throw new DataNotFoundException("no template found");
+		}
+
+		logger.info("template:{}", template);
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		df.setTimeZone(tz);
+		String nowAsISO = df.format(new Date());
+
+		SerializedMetadataTemplate serialized = new SerializedMetadataTemplate();
+		serialized.setAccessType(template.getAccessType());
+		serialized.setDescription(template.getDescription());
+		serialized.setIdentifier(String.valueOf(template.getId()));
+
+		if (template.getCreateTs() != null) {
+			serialized.setIso8601CreateDate(df.format(template.getCreateTs()));
+		}
+
+		if (template.getModifyTs() != null) {
+			serialized.setIso8601ModifyDate(df.format(template.getModifyTs()));
+		}
+
+		serialized.setTemplateName(template.getTemplateName());
+		serialized.setTemplateOwner(template.getOwner());
+		serialized.setVersion(template.getVersion());
+
+		SerializedTemplateField serializedField;
+		for (DataGridTemplateField field : template.getFields()) {
+			logger.info("field:{}", field);
+			serializedField = new SerializedTemplateField();
+			serializedField.setAttribute(field.getAttribute());
+			serializedField.setFieldOrder(field.getOrder());
+			serializedField.setIdentifier(String.valueOf(field.getId()));
+			serializedField.setUnit(field.getUnit());
+			serializedField.setValue(field.getValue());
+			serialized.getTemplateFields().add(serializedField);
+
+		}
+
+		logger.info("build serialized template:{}", serialized);
+		try {
+			return objectMapper.writeValueAsString(serialized);
+		} catch (JsonProcessingException e) {
+			logger.error("error serializig metadata template to json", e);
+			throw new MetadataTemplateException("error serializing metadata template", e);
+		}
+
+	}
+
+	@Override
+	public int countAll() {
+		int count = templateDao.findAll(DataGridTemplate.class).size();
+
+		return count;
+	}
+
+	public TemplateDao getTemplateDao() {
+		return templateDao;
+	}
+
+	public void setTemplateDao(TemplateDao templateDao) {
+		this.templateDao = templateDao;
+	}
+
+	public TemplateFieldDao getTemplateFieldDao() {
+		return templateFieldDao;
+	}
+
+	public void setTemplateFieldDao(TemplateFieldDao templateFieldDao) {
+		this.templateFieldDao = templateFieldDao;
+	}
 }

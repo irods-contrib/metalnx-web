@@ -416,6 +416,12 @@
 				<scope>test</scope>
 			</dependency>
 
+			<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+			<dependency>
+					<groupId>joda-time</groupId>
+					<artifactId>joda-time</artifactId>
+					<version>2.10.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -124,7 +124,7 @@ function addTemplateActionBtn(table_id, datatable){
             '</button>' +
            '  <ul class="dropdown-menu" role="menu">' +
                 '<li>'+
-                    '<a href="#" onclick="javascript:exportFilesToXML();" class=""><i class="fa fa-external-link"></i> Export</a>' +
+                    '<a href="#" onclick="javascript:exportFilesToJSON();" class=""><i class="fa fa-external-link"></i> Export</a>' +
                 '</li>' +
                 '<li>' +
 '                    <a href="#" id="removeTemplatesBtn" onclick="javascript:confirmTemplateRemoval();" class=""><i class="glyphicon glyphicon-trash"></i> Delete</a>' +

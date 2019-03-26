@@ -87,8 +87,10 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
-
+		<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -256,7 +258,7 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-									metalnx.enable.dashboard=true 
+									metalnx.enable.dashboard=true
 
 									irodsext.dataprofiler.retrieve.tickets=false
 

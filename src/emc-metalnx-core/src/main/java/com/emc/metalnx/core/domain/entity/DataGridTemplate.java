@@ -1,12 +1,12 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.core.domain.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTooLongTemplateNameException;
@@ -66,7 +65,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	private Date modifyTs;
 
 	@OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
-	private Set<DataGridTemplateField> fields;
+	private Set<DataGridTemplateField> fields = new HashSet<>();
 
 	private static final int TEMPLATE_NAME_MAX_LENGTH = 100;
 	private static final int TEMPLATE_DESC_MAX_LENGTH = 100;
@@ -94,8 +93,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param owner
-	 *            the owner to set
+	 * @param owner the owner to set
 	 */
 	public void setOwner(String owner) {
 		this.owner = owner;
@@ -109,8 +107,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param description the description to set
 	 * @throws DataGridTooLongTemplateNameException
 	 */
 	public void setDescription(String description) throws DataGridTooLongTemplateNameException {
@@ -129,8 +126,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param createTs
-	 *            the createTs to set
+	 * @param createTs the createTs to set
 	 */
 	public void setCreateTs(Date createTs) {
 		this.createTs = createTs;
@@ -144,8 +140,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param modifyTs
-	 *            the modifyTs to set
+	 * @param modifyTs the modifyTs to set
 	 */
 	public void setModifyTs(Date modifyTs) {
 		this.modifyTs = modifyTs;
@@ -159,8 +154,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -174,8 +168,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param the
-	 *            templateName to set
+	 * @param the templateName to set
 	 * @throws DataGridTooLongTemplateNameException
 	 */
 	public void setTemplateName(String templateName) throws DataGridTooLongTemplateNameException {
@@ -195,8 +188,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param usageInformation
-	 *            the usageInformation to set
+	 * @param usageInformation the usageInformation to set
 	 */
 	public void setUsageInformation(String usageInformation) {
 		this.usageInformation = usageInformation;
@@ -210,8 +202,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param accessType
-	 *            the accessType to set
+	 * @param accessType the accessType to set
 	 */
 	public void setAccessType(String accessType) {
 		this.accessType = accessType;
@@ -225,8 +216,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param fields
-	 *            the fields to set
+	 * @param fields the fields to set
 	 */
 	public void setFields(Set<DataGridTemplateField> fields) {
 		this.fields = fields;
@@ -240,8 +230,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param version
-	 *            the version to set
+	 * @param version the version to set
 	 */
 	public void setVersion(Integer version) {
 		this.version = version;
@@ -255,8 +244,7 @@ public class DataGridTemplate implements Serializable, Comparable<DataGridTempla
 	}
 
 	/**
-	 * @param isModified
-	 *            the isModified to set
+	 * @param isModified the isModified to set
 	 */
 	public void setModified(boolean isModified) {
 		this.isModified = isModified;

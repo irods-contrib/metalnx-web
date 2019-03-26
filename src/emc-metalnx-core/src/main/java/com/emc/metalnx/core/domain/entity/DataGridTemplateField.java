@@ -1,6 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.core.domain.entity;
 
@@ -16,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridTemplateAttrException;
@@ -102,8 +100,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -117,8 +114,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param attribute
-	 *            the attribute to set
+	 * @param attribute the attribute to set
 	 * @throws DataGridTemplateAttrException
 	 */
 	public void setAttribute(String attribute) throws DataGridTemplateAttrException {
@@ -138,8 +134,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param value the value to set
 	 * @throws DataGridTemplateValueException
 	 */
 	public void setValue(String value) throws DataGridTemplateValueException {
@@ -159,8 +154,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param unit
-	 *            the unit to set
+	 * @param unit the unit to set
 	 * @throws DataGridTemplateUnitException
 	 */
 	public void setUnit(String unit) throws DataGridTemplateUnitException {
@@ -180,8 +174,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param template
-	 *            the template to set
+	 * @param template the template to set
 	 */
 	public void setTemplate(DataGridTemplate template) {
 		this.template = template;
@@ -195,8 +188,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param startRange
-	 *            the startRange to set
+	 * @param startRange the startRange to set
 	 */
 	public void setStartRange(float startRange) {
 		this.startRange = startRange;
@@ -210,8 +202,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param endRange
-	 *            the endRange to set
+	 * @param endRange the endRange to set
 	 */
 	public void setEndRange(float endRange) {
 		this.endRange = endRange;
@@ -225,8 +216,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 	}
 
 	/**
-	 * @param order
-	 *            the order to set
+	 * @param order the order to set
 	 */
 	public void setOrder(int order) {
 		this.order = order;
@@ -251,9 +241,7 @@ public class DataGridTemplateField implements Serializable, Comparable<DataGridT
 		}
 		builder.append("startRange=").append(startRange).append(", endRange=").append(endRange).append(", order=")
 				.append(order).append(", ");
-		if (template != null) {
-			builder.append("template=").append(template);
-		}
+
 		builder.append("]");
 		return builder.toString();
 	}
