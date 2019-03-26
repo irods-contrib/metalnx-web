@@ -205,6 +205,41 @@ this will be site-configurable, but for now there is some legacy hard coded path
 
 Metadata paging and page size changes were not working. Fixed code to respond properly to paging and to resize and limit results per user input on the results table.
 
+#### Error uploading template #97
+
+Removed XML import/export of metadata templates and substituted a simplified JSON structure
+
+example JSON  
+
+```json
+
+{
+	"id": "0",
+	"template-name": "boo",
+	"template-owner": "me",
+	"description": "desc",
+	"access-type": "PUBLIC",
+	"version": 0,
+	"create-date": "",
+	"modify-date": "",
+	"template-fields": [{
+		"id": "",
+		"attribute": "a2",
+		"value": "foo",
+		"unit": "",
+		"field_order": 1
+	}, {
+		"id": "",
+		"attribute": "",
+		"value": "",
+		"unit": "",
+		"field_order": 0
+	}]
+}
+
+
+```
+
 ### Removed
 
 #### ticket tests failing when run together, possible iRODS issue #16
