@@ -9,23 +9,21 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.exception.OperationNotSupportedByThisServerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -38,7 +36,6 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MSIService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleService;
-import com.emc.metalnx.services.irods.MSIServiceImpl;
 
 /**
  * Test for Rule Service
@@ -47,8 +44,7 @@ import com.emc.metalnx.services.irods.MSIServiceImpl;
 @ContextConfiguration("classpath:test-services-context.xml")
 @WebAppConfiguration
 public class TestMSIService {
-
-	@InjectMocks
+	@Autowired
 	private MSIService msiService;
 
 	@Mock
@@ -68,10 +64,11 @@ public class TestMSIService {
 
 	private List<DataGridServer> servers;
 
-	@PostConstruct
-	public void init() {
-		msiService = spy(MSIServiceImpl.class); // partial mocking
+	@Before
+	public void setUp() throws JargonException, DataGridException {
 
+		// msiService = spy(MSIServiceImpl.class); // partial mocking
+		msiService = Mockito.mock(MSIService.class);
 		servers = new ArrayList<>();
 
 		MSIUtils msiUtils = new MSIUtils();
@@ -82,10 +79,6 @@ public class TestMSIService {
 		irods41XMSIs = msiUtils.getIrods41XMSIs();
 		irods42MSIs = msiUtils.getIrods420MSIs();
 		otherMSIList = msiUtils.getOtherMSIs();
-	}
-
-	@Before
-	public void setUp() throws JargonException, DataGridException {
 		MockitoAnnotations.initMocks(this);
 
 		DataGridServer s1 = new DataGridServer();

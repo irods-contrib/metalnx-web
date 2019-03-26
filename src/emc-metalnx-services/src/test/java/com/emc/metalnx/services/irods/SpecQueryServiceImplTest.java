@@ -23,6 +23,7 @@ import org.irods.jargon.testutils.filemanip.FileGenerator;
 import org.irods.jargon.testutils.filemanip.ScratchFileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -33,8 +34,6 @@ import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
 import com.emc.metalnx.core.domain.entity.enums.FilePropertyField;
 import com.emc.metalnx.services.interfaces.AdminServices;
 import com.emc.metalnx.services.interfaces.IRODSServices;
-
-import junit.framework.Assert;
 
 public class SpecQueryServiceImplTest {
 

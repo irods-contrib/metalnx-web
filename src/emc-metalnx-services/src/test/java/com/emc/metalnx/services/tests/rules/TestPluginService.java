@@ -21,7 +21,6 @@ import org.irods.jargon.core.exception.OperationNotSupportedByThisServerExceptio
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
@@ -49,7 +48,6 @@ import com.emc.metalnx.services.tests.msi.MSIUtils;
 public class TestPluginService {
 
 	public static final String DELIMITER = ",";
-	@InjectMocks
 	private MSIService msiService = new MSIServiceImpl();
 
 	@Mock

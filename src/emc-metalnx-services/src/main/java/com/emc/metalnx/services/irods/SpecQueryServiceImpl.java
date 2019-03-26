@@ -88,10 +88,6 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			throw new IllegalArgumentException("null or empty metadataSearch");
 		}
 
-		if (pageContext == null) {
-			throw new IllegalArgumentException("null pageContext");
-		}
-
 		logger.info("offset:{}", offset);
 		logger.info("limit:{}", limit);
 
@@ -99,8 +95,8 @@ public class SpecQueryServiceImpl implements SpecQueryService {
 			throw new IllegalArgumentException("offset cannot be < 0");
 		}
 
-		if (limit <= 0) {
-			throw new IllegalArgumentException("limit cannot be <= 0");
+		if (limit < 0) {
+			throw new IllegalArgumentException("limit cannot be < 0");
 		}
 
 		logger.info("metadataSearch:{}", metadataSearch);

@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,7 +39,6 @@ import com.emc.metalnx.services.tests.msi.MSIUtils;
 public class TestConfigService {
 
 	public static final String DELIMITER = ",";
-	@InjectMocks
 	private ConfigService configService;
 
 	private static String msiVersion;
@@ -47,8 +46,9 @@ public class TestConfigService {
 
 	@PostConstruct
 	public void init() {
-		configService = spy(ConfigServiceImpl.class); // partial mocking
 
+		configService = spy(ConfigServiceImpl.class); // partial mocking
+		configService = Mockito.mock(ConfigService.class);
 		MSIUtils msiUtils = new MSIUtils();
 
 		msiVersion = MSIUtils.getMsiVersion();

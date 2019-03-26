@@ -158,6 +158,9 @@ public class PermissionsServiceImpl implements PermissionsService {
 			if (ufp.getUserType().compareTo(RODS_GROUP) == 0) {
 
 				String groupDataGridId = ufp.getUserId();
+				if (groupDataGridId.isEmpty()) {
+					groupDataGridId = "0";
+				}
 
 				// If the ID is not known yet, we need to create a new entry for it
 				if (!idGroupsPermissions.containsKey(groupDataGridId)) {
@@ -384,8 +387,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 	 * Gets the list of file permissions on the requested object. The object can be
 	 * a collection as a single data object.
 	 *
-	 * @param path
-	 *            the path to the object
+	 * @param path the path to the object
 	 * @return list of {@link UserFilePermission}
 	 * @throws FileNotFoundException
 	 * @throws JargonException
@@ -401,11 +403,10 @@ public class PermissionsServiceImpl implements PermissionsService {
 	 * Gets the list of file permissions on the requested object for a particular
 	 * user. The object can be a collection as a single data object.
 	 *
-	 * @param path
-	 *            the path to the object
-	 * @param username
-	 *            user name to get the permissions on the given path. If no user
-	 *            name is required, an empty String or null should be provided
+	 * @param path     the path to the object
+	 * @param username user name to get the permissions on the given path. If no
+	 *                 user name is required, an empty String or null should be
+	 *                 provided
 	 * @return list of {@link UserFilePermission}
 	 * @throws FileNotFoundException
 	 * @throws JargonException
