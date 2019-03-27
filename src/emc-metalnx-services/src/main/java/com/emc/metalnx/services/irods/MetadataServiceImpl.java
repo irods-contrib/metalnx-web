@@ -105,7 +105,7 @@ public class MetadataServiceImpl implements MetadataService {
 			pageContext.setStartItemNumber(start);
 			pageContext.setTotalNumberOfItems(totalCollections + totalDataObjects);
 
-			if (start + 1 < totalCollections) {
+			if (start + 1 <= totalCollections) {
 				logger.info("have some collections to query");
 
 				// looking for collections
