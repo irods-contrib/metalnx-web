@@ -240,6 +240,11 @@ example JSON
 
 ```
 
+#### Metadata search only returns data object #98
+
+Unit tests and tweaks of data display for metadata search
+
+
 ### Removed
 
 #### ticket tests failing when run together, possible iRODS issue #16

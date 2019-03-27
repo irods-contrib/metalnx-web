@@ -205,7 +205,7 @@ public class TestMetadataCase {
 		List<DataGridMetadataSearch> testSearch = new ArrayList<>();
 		testSearch.add(new DataGridMetadataSearch(expectedAttribName, expectedAttribValue, expectedAttribUnits,
 				DataGridSearchOperatorEnum.EQUAL));
-		objs = metadataService.findByMetadata(testSearch, new DataGridPageContext(), 1, 100);
+		objs = metadataService.findByMetadata(testSearch, new DataGridPageContext(), 0, 100);
 		int ctr = 0;
 		for (DataGridCollectionAndDataObject obj : objs) {
 			if (!obj.getPath().contains("trash")) {
