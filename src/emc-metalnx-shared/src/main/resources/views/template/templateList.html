@@ -39,7 +39,7 @@
 									type="checkbox"
 									name="selectedTemplates"
 									th:id="${'template_' + template.id }"
-									th:value="${ template.id }" 
+									th:value="${ template.id }"
 									title="Select Template"/>
 							</td>
 							<td>
@@ -215,10 +215,10 @@
 				$("#removalModal").modal("show");
 			}
 
-			function exportFilesToXML() {
+			function exportFilesToJSON() {
 				$("input[type=checkbox]").prop("checked", false);
 				$("#actions a").hide();
-				window.location = "/metalnx/templates/exportTemplatesToXMLFile/";
+				window.location = "/metalnx/templates/exportTemplates/";
 			}
 
 			function getSelectedTemplate(checkbox) {
