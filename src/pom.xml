@@ -12,7 +12,7 @@
 		<project.version>2.0.0</project.version>
 
 		<!-- Jargon -->
-		<jargon.version>4.3.0.2-SNAPSHOT</jargon.version>
+		<jargon.version>4.3.0.2-RELEASE</jargon.version>
 
 		<!-- Spring -->
 		<spring.version>4.3.18.RELEASE</spring.version>
