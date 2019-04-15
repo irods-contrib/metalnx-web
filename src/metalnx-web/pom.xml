@@ -2,8 +2,6 @@
 	of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
-
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -16,10 +14,8 @@
 		<version>2.0.1</version>
 	</parent>
 
-	<artifactId>emc-metalnx-web</artifactId>
-
+	<artifactId>metalnx-web</artifactId>
 	<packaging>war</packaging>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.emc.metalnx</groupId>
@@ -63,22 +59,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
-		<dependency>
-		    <groupId>dom4j</groupId>
-		    <artifactId>dom4j</artifactId>
-		    <version>1.6.1</version>
-		</dependency>
-		
-
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.7.1</version><!--$NO-MVN-MAN-VER$ -->
-		</dependency>
-
-
+			<version>3.7.1</version><!--$NO-MVN-MAN-VER$-->
+			</dependency>
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -100,7 +86,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -117,8 +102,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-support -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -131,20 +114,22 @@
 			<artifactId>guava</artifactId>
 			<version>23.0</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jglobus</groupId>
+					<artifactId>gss</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
@@ -178,8 +163,7 @@
 	</profiles>
 
 	<build>
-		<finalName>emc-metalnx-web</finalName>
-
+		<finalName>metalnx</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -201,7 +185,6 @@
 				</includes>
 			</resource>
 		</resources>
-
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -211,12 +194,8 @@
 						<configuration>
 							<tasks>
 								<echo message="copying war file up to docker" />
-								<copy file="target/emc-metalnx-web.war"
-									todir="../../packaging/docker" />
-
-
+								<copy file="target/metalnx.war" todir="../../packaging/docker" />
 								<echo message="war file copied " />
-
 							</tasks>
 						</configuration>
 						<goals>
@@ -232,7 +211,6 @@
 					<packagingExcludes>WEB-INF/web.xml</packagingExcludes>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -240,19 +218,16 @@
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>RemoteTomcatServer</server>
-					<path>/emc-metalnx-web</path>
+					<path>/metalnx</path>
 				</configuration>
 			</plugin>
-
-
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.20.1</version>
-				<configuration />
-
-
-			</plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.20.1</version>
+        <configuration>
+        </configuration>
+      </plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>

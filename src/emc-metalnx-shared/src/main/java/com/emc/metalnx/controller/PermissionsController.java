@@ -171,6 +171,7 @@ public class PermissionsController {
 		model.addAttribute("permissionOnCurrentPath", cs.getPermissionsForPath(path));
 		model.addAttribute("permissionFlag", true);
 
+		logger.debug("------Permission Conroller - /getPermissionDetail/ ends------");
 		return "permissions/permissionDetails :: permissionDetails";
 	}
 

@@ -12,7 +12,7 @@
     layout:decorator="template">
 
 <head>
-	<title th:text="#{tab.title.resources}">EMC Metalnx - Resources</title>
+	<title th:text="#{tab.title.resources}">Metalnx - Resources</title>
 
 	<!-- D3 Library -->
     <script th:src="@{/js/d3.min.js}"></script>
@@ -292,7 +292,7 @@
 						}
 
 						function viewInfo(){
-							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
+							var url = "/metalnx/resources/viewInfo/" + resourceName +"/";
 							ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 						}
 
@@ -332,7 +332,7 @@
 						}
 
 						function addChild() {
-							window.location = "/emc-metalnx-web/resources/add/" + resourceName +"/";
+							window.location = "/metalnx/resources/add/" + resourceName +"/";
 						}
 
 						$.fn.extend({

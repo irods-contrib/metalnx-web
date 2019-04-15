@@ -4,7 +4,7 @@ LABEL maintainer="michael.c.conway@gmail.com"
 LABEL description="iRODS Metalnx Browser"
 ADD runit.sh /
 
-ADD emc-metalnx-web.war /usr/local/tomcat/webapps/
+ADD metalnx.war /usr/local/tomcat/webapps/
 CMD ["/runit.sh"]
 
 

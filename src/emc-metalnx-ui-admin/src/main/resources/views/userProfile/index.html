@@ -12,7 +12,7 @@
     layout:decorator="template">
 
 <head>
-	<title th:text="#{tab.title.profile}">EMC Metalnx - Profile</title>
+	<title th:text="#{tab.title.profile}">Metalnx - Profile</title>
 </head>
 
 <body>
@@ -84,7 +84,7 @@
 					$("#table-loader").hide();
 					$("#userProfilesListAsync").show();
 				}
-				ajaxEncapsulation("/emc-metalnx-web/users/profile/findAll/", "GET", "", populateUserProfileTableDiv, null, null);
+				ajaxEncapsulation("/metalnx/users/profile/findAll/", "GET", "", populateUserProfileTableDiv, null, null);
 			});
 		</script>
 

@@ -8,8 +8,7 @@
 		<th:block th:if="${userDetails.isAdmin()}">
 			<th:block th:if="${globalConfig.isDashboardEnabled()}">
 				<li>
-					<!-- Dashboard sidebar item--> <a
-					th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
+					<!-- Dashboard sidebar item--> <a th:href="@{ ${urlMap.URL_DASHBOARD} }"> 
 						<i class="fa fa-tachometer"></i> &nbsp; <span
 						th:text="#{dashboard.menu.title}"></span>
 				</a>

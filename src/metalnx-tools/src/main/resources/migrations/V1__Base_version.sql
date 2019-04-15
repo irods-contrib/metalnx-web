@@ -17,7 +17,6 @@ CREATE TABLE group_bookmarks (
 );
 
 
-ALTER TABLE group_bookmarks OWNER TO irodsext;
 
 --
 -- Name: group_bookmarks_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -34,9 +33,6 @@ CREATE TABLE group_bookmarks_aud (
     group_id bigint
 );
 
-
-ALTER TABLE group_bookmarks_aud OWNER TO irodsext;
-
 --
 -- Name: group_bookmarks_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -48,8 +44,6 @@ CREATE SEQUENCE group_bookmarks_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE group_bookmarks_id_seq OWNER TO irodsext;
 
 --
 -- Name: group_bookmarks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -70,8 +64,6 @@ CREATE TABLE groups (
 );
 
 
-ALTER TABLE groups OWNER TO irodsext;
-
 --
 -- Name: groups_aud; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -85,9 +77,6 @@ CREATE TABLE groups_aud (
     groupname character varying(60)
 );
 
-
-ALTER TABLE groups_aud OWNER TO irodsext;
-
 --
 -- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -99,8 +88,6 @@ CREATE SEQUENCE groups_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE groups_id_seq OWNER TO irodsext;
 
 --
 -- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -120,9 +107,6 @@ CREATE SEQUENCE hibernate_sequence
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE hibernate_sequence OWNER TO irodsext;
-
 --
 -- Name: metadata_fields; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -138,8 +122,6 @@ CREATE TABLE metadata_fields (
     template_id bigint NOT NULL
 );
 
-
-ALTER TABLE metadata_fields OWNER TO irodsext;
 
 --
 -- Name: metadata_fields_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -159,8 +141,6 @@ CREATE TABLE metadata_fields_aud (
 );
 
 
-ALTER TABLE metadata_fields_aud OWNER TO irodsext;
-
 --
 -- Name: metadata_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -172,8 +152,6 @@ CREATE SEQUENCE metadata_fields_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE metadata_fields_id_seq OWNER TO irodsext;
 
 --
 -- Name: metadata_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -191,8 +169,6 @@ CREATE TABLE revinfo (
     revtstmp bigint
 );
 
-
-ALTER TABLE revinfo OWNER TO irodsext;
 
 --
 -- Name: template_fields; Type: TABLE; Schema: public; Owner: irodsext
@@ -212,8 +188,6 @@ CREATE TABLE template_fields (
     template_id bigint NOT NULL
 );
 
-
-ALTER TABLE template_fields OWNER TO irodsext;
 
 --
 -- Name: template_fields_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -235,9 +209,6 @@ CREATE TABLE template_fields_aud (
     template_id bigint
 );
 
-
-ALTER TABLE template_fields_aud OWNER TO irodsext;
-
 --
 -- Name: template_fields_template_field_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -249,8 +220,6 @@ CREATE SEQUENCE template_fields_template_field_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE template_fields_template_field_id_seq OWNER TO irodsext;
 
 --
 -- Name: template_fields_template_field_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -277,7 +246,6 @@ CREATE TABLE templates (
 );
 
 
-ALTER TABLE templates OWNER TO irodsext;
 
 --
 -- Name: templates_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -299,8 +267,6 @@ CREATE TABLE templates_aud (
 );
 
 
-ALTER TABLE templates_aud OWNER TO irodsext;
-
 --
 -- Name: templates_template_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -312,8 +278,6 @@ CREATE SEQUENCE templates_template_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE templates_template_id_seq OWNER TO irodsext;
 
 --
 -- Name: templates_template_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -337,8 +301,6 @@ CREATE TABLE user_bookmarks (
 );
 
 
-ALTER TABLE user_bookmarks OWNER TO irodsext;
-
 --
 -- Name: user_bookmarks_aud; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -356,8 +318,6 @@ CREATE TABLE user_bookmarks_aud (
 );
 
 
-ALTER TABLE user_bookmarks_aud OWNER TO irodsext;
-
 --
 -- Name: user_bookmarks_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -369,8 +329,6 @@ CREATE SEQUENCE user_bookmarks_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE user_bookmarks_id_seq OWNER TO irodsext;
 
 --
 -- Name: user_bookmarks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -394,8 +352,6 @@ CREATE TABLE user_favorites (
 );
 
 
-ALTER TABLE user_favorites OWNER TO irodsext;
-
 --
 -- Name: user_favorites_aud; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -413,8 +369,6 @@ CREATE TABLE user_favorites_aud (
 );
 
 
-ALTER TABLE user_favorites_aud OWNER TO irodsext;
-
 --
 -- Name: user_favorites_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -426,8 +380,6 @@ CREATE SEQUENCE user_favorites_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE user_favorites_id_seq OWNER TO irodsext;
 
 --
 -- Name: user_favorites_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext
@@ -447,8 +399,6 @@ CREATE TABLE user_profile (
 );
 
 
-ALTER TABLE user_profile OWNER TO irodsext;
-
 --
 -- Name: user_profile_aud; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -462,8 +412,6 @@ CREATE TABLE user_profile_aud (
 );
 
 
-ALTER TABLE user_profile_aud OWNER TO irodsext;
-
 --
 -- Name: user_profile_groups; Type: TABLE; Schema: public; Owner: irodsext
 --
@@ -473,8 +421,6 @@ CREATE TABLE user_profile_groups (
     group_id bigint NOT NULL
 );
 
-
-ALTER TABLE user_profile_groups OWNER TO irodsext;
 
 --
 -- Name: user_profile_groups_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -487,8 +433,6 @@ CREATE TABLE user_profile_groups_aud (
     revtype smallint
 );
 
-
-ALTER TABLE user_profile_groups_aud OWNER TO irodsext;
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: irodsext
@@ -514,8 +458,6 @@ CREATE TABLE users (
     userprofile_id bigint
 );
 
-
-ALTER TABLE users OWNER TO irodsext;
 
 --
 -- Name: users_aud; Type: TABLE; Schema: public; Owner: irodsext
@@ -544,8 +486,6 @@ CREATE TABLE users_aud (
 );
 
 
-ALTER TABLE users_aud OWNER TO irodsext;
-
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: irodsext
 --
@@ -557,8 +497,6 @@ CREATE SEQUENCE users_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE users_id_seq OWNER TO irodsext;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: irodsext

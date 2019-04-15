@@ -172,10 +172,10 @@
 		$(".bookmarkCheckbox").click(function () {
 			var path = $(this).attr('name');
 			if( $(this).is(":checked") ) {
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 			}
 			else {
-				ajaxEncapsulation('/emc-metalnx-web/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
+				ajaxEncapsulation('/metalnx/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
 			}
 		});
 

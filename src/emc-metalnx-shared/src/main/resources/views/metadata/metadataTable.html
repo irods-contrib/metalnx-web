@@ -323,7 +323,7 @@
                 $("#table-loader").nextAll().remove();
                 $('#deleteMetadataModal').modal('hide');
                 $('.modal-backdrop.fade.in').remove();
-                ajaxEncapsulation("/emc-metalnx-web/metadata/delMetadataListPrototype/", "POST", {path:currentPath, params: params, length: params.length}, displayMetadata, null, null, null);
+                ajaxEncapsulation("/metalnx/metadata/delMetadataListPrototype/", "POST", {path:currentPath, params: params, length: params.length}, displayMetadata, null, null, null);
             }
 
             function saveMetadata(){
@@ -376,7 +376,7 @@
                 var unit = $('#newUnitModal').val();
                 $('#table-loader').show();
                 $("#table-loader").nextAll().remove();
-                ajaxEncapsulation("/emc-metalnx-web/metadata/addMetadata/", "POST", {path: path, attribute: attr, value: val, unit: unit}, displayMetadata, null, null, null);
+                ajaxEncapsulation("/metalnx/metadata/addMetadata/", "POST", {path: path, attribute: attr, value: val, unit: unit}, displayMetadata, null, null, null);
             }
 
             function disableDeletion() {
@@ -475,7 +475,7 @@
                     $('#table-loader').show();
                     $("#table-loader").nextAll().remove();
                     ajaxEncapsulation(
-                        "/emc-metalnx-web/metadata/modMetadata/",
+                        "/metalnx/metadata/modMetadata/",
                         "POST",
                         {path: path, oldAttribute: oldAttr, oldValue: oldVal, oldUnit: (oldUnit?oldUnit:""), newAttribute: newAttr, newValue: newVal, newUnit: (newUnit?newUnit:"")},
                         displayMetadata, null, null, null
@@ -529,6 +529,9 @@
                 });
             });
 
+            $("#exportMetadataToCSV").click(function() {
+                window.location = "/metalnx/metadata/exportToCSV/";
+            });
         /*]]>*/
         </script>
 	</div>

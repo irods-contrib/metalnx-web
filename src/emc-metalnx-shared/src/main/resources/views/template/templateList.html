@@ -39,7 +39,7 @@
 									type="checkbox"
 									name="selectedTemplates"
 									th:id="${'template_' + template.id }"
-									th:value="${ template.id }" 
+									th:value="${ template.id }"
 									title="Select Template"/>
 							</td>
 							<td>
@@ -57,7 +57,7 @@
 							<td >
 								<a type="button" class="btn btn-default btn-xs" title="Edit"
 								th:id="${'btn_modify_' + template.templateName}"
-								th:href="'/emc-metalnx-web/templates/modify/?templateId='+${template.id}" aria-label="edit template">
+								th:href="'/metalnx/templates/modify/?templateId='+${template.id}" aria-label="edit template">
 									<i class="fa fa-pencil"></i><span th:text="#{templates.edit.button}"></span>
 								</a>
 							</td>
@@ -103,7 +103,7 @@
 
 					//select all collections
 					if($(this).is(":checked")){
-						url = "/emc-metalnx-web/templates/selectTemplate/";
+						url = "/metalnx/templates/selectTemplate/";
 						$("#fBody input[name=selectedTemplates]").each(function(){
 							var id = $(this).attr("value");
 							$(this).prop("checked", true);
@@ -123,7 +123,7 @@
 					//unselect all collections
 					else {
 						$("#actions button").prop("disabled", true);
-						url = "/emc-metalnx-web/templates/unselectTemplate/";
+						url = "/metalnx/templates/unselectTemplate/";
 						$("#fBody input[name=selectedTemplates]").each(function(){
 							var id = $(this).attr("value");
 							$(this).prop("checked", false);
@@ -138,11 +138,11 @@
 
 					if($(this).is(":checked")){
 						$("#actions button").prop("disabled", false);
-						url = "/emc-metalnx-web/templates/selectTemplate/";
+						url = "/metalnx/templates/selectTemplate/";
 						var totalCheckboxesChecked = $("#fBody input[type=checkbox]:checked").length;
 					}
 					else {
-						url = "/emc-metalnx-web/templates/unselectTemplate/";
+						url = "/metalnx/templates/unselectTemplate/";
 						var totalCheckboxesChecked = $("#fBody input[type=checkbox]:checked").length;
 						if(totalCheckboxesChecked >= 1) {
 						    $("#actions button").prop("disabled", false);
@@ -215,10 +215,10 @@
 				$("#removalModal").modal("show");
 			}
 
-			function exportFilesToXML() {
+			function exportFilesToJSON() {
 				$("input[type=checkbox]").prop("checked", false);
 				$("#actions a").hide();
-				window.location = "/emc-metalnx-web/templates/exportTemplatesToXMLFile/";
+				window.location = "/metalnx/templates/exportTemplates/";
 			}
 
 			function getSelectedTemplate(checkbox) {

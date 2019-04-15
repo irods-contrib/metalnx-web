@@ -43,12 +43,12 @@ public class DataGridAuthenticationFailureHandler implements AuthenticationFailu
 		//if we could not connect to the iCAT Server
 		if (exception instanceof DataGridServerException) {
 			logger.error("Server not respoding.", exception.getMessage());
-			response.sendRedirect("/emc-metalnx-web/login/serverNotResponding/");
+			response.sendRedirect("/metalnx/login/serverNotResponding/");
 		} else if (exception instanceof DataGridDatabaseException) {
 			logger.error("Database not respoding.", exception.getMessage());
-			response.sendRedirect("/emc-metalnx-web/login/databaseNotResponding/");
+			response.sendRedirect("/metalnx/login/databaseNotResponding/");
 		} else {
-			response.sendRedirect("/emc-metalnx-web/login/exception/");
+			response.sendRedirect("/metalnx/login/exception/");
 		}
 	}
 

@@ -7,7 +7,7 @@
 <html lang="en" layout:decorator="template" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
-<title th:text="#{tab.title.templates}">EMC Metalnx - Templates</title>
+<title th:text="#{tab.title.templates}">Metalnx - Templates</title>
 </head>
 
 <body>
@@ -78,7 +78,7 @@
 						    	<span class="sr-only">Toggle Dropdown</span>
 						  	</a>
 						  	<ul class="dropdown-menu" role="menu">
-						    	<li><a href="#" data-toggle="modal" data-target="#uploadModal">Import XML template</a></li>
+						    	<li><a href="#" data-toggle="modal" data-target="#uploadModal" th:text="#{ templates.metadata.import }">Import JSON template</a></li>
 						    </ul>
 						</div>
 					</div>
@@ -116,7 +116,7 @@
 								</div>
 
 								<!-- Form submitted as soon as the user selects all files to be uploaded -->
-								<form action="/emc-metalnx-web/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
+								<form action="/metalnx/templates/import/" method="POST" role="form" enctype="multipart/form-data" id="uploadForm" >
 									<div class="form-group">
 										<span>Select files for upload &nbsp;</span>
 										<button type="button" class="btn btn-primary" id="templateBrowseButton" title="Browse">
@@ -192,7 +192,7 @@
 
 						// Loads results in user management page
 						function loadTemplateResults() {
-							var url = "/emc-metalnx-web/templates/findAll/";
+							var url = "/metalnx/templates/findAll/";
 							ajaxEncapsulation(url, "GET", "", populateTemplateTableDiv, null, null);
 						}
 
@@ -232,7 +232,7 @@
 				        	formData.append('suffix', $("#suffixInput").val());
 
 				        	$.ajax({
-				        		url:'/emc-metalnx-web/templates/import/',
+				        		url:'/metalnx/templates/import/',
 				        		type:'POST',
 								//Ajax events
 								success:  function(data) {
@@ -260,10 +260,10 @@
 										alert("internal error");
 									},
 									408: function(response){
-										window.location= "/emc-metalnx-web/login/";
+										window.location= "/metalnx/login/";
 									},
 									403: function(response){
-										window.location= "/emc-metalnx-web/login/";
+										window.location= "/metalnx/login/";
 									}
 								}
 				        	});

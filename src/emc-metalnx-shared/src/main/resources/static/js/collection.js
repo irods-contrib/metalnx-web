@@ -1,5 +1,5 @@
 function getCollectionSummary(path){
-	window.location.href = '/emc-metalnx-web/collectionInfo?path=' + path; //relative to domain
+	window.location.href = '/metalnx/collectionInfo?path=' + path; //relative to domain
 }
 
 function displayCollectionSummary(data){
@@ -7,25 +7,25 @@ function displayCollectionSummary(data){
 }
 
 function getInfoDetails(path){
-	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
+	var url = "/metalnx/collectionInfo/collectionFileInfo/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 }
 
 function getMetadata(path){
 	console.log("Collection getMetadata() :: " +path);
-	var url = "/emc-metalnx-web/metadata/getMetadata/";
+	var url = "/metalnx/metadata/getMetadata/";
 	ajaxEncapsulation(url , "POST", {path: path}, displayMetadata, null, null, null);
 }
 
 function getPermissionDetails(path){
 	console.log("Collection getPermDetails() :: " +path);
-	var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
+	var url = "/metalnx/permissions/getPermissionDetails/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayPermissionDetails, null, null);
 }
 
 function getPerview(path){
 	console.log("Collection getPreview() :: " + path)
-	var url = "/emc-metalnx-web/previewPreparation/";
+	var url = "/metalnx/previewPreparation/";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);
 }
 
@@ -53,7 +53,7 @@ function displayPreviewImage(data){
 function starPath(path){
 	console.log("StarPath() starts");
 	//$('#breadcrumbStar').attr('onclick', '');
-	var url = "/emc-metalnx-web/favorites/addFavoriteToUser/";
+	var url = "/metalnx/favorites/addFavoriteToUser/";
 	ajaxEncapsulation(url, "GET", {path: path},
 			function(data){
 		if(data.indexOf("OK") >= 0){
@@ -73,7 +73,7 @@ function starPath(path){
 function unstarPath(path){
 	console.log("UnstarPath() starts !!");
 	//$('#breadcrumbStar').attr('onclick', '');
-	var url = "/emc-metalnx-web/favorites/removeFavoriteFromUser/";
+	var url = "/metalnx/favorites/removeFavoriteFromUser/";
 	ajaxEncapsulation(url, "GET", {path: path},
 		function(data){
 			if(data.indexOf("OK") >= 0){
@@ -94,7 +94,7 @@ path should be urlencoded already
 */
 function positionBrowserToPath(path) {
 	console.log("positionBrowserToPath()");
-	window.location.href = '/emc-metalnx-web/collections?path=' + path; //relative to domain
+	window.location.href = '/metalnx/collections?path=' + encodeURI(path); //relative to domain
 }
 
 function fileDownload(path){
@@ -102,7 +102,7 @@ function fileDownload(path){
 	$("#actionsWait").show();
 	//$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
 	$('#actionLabel').text($("#container").data("msg-txt"));
-	var prepareDownloadURL = "/emc-metalnx-web/fileOperation/prepareFilesForDownload/";
+	var prepareDownloadURL = "/metalnx/fileOperation/prepareFilesForDownload/";
 	var paths = [];
 	paths.push(path);
 	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
@@ -127,7 +127,7 @@ function updateInheritance(path, isRecursive) {
 	var inheritanceValue = ($('#inheritCheck').is(':checked'));
 	console.log("inheritanceValue:" + inheritanceValue);
 
-	var inheritanceUrl = "/emc-metalnx-web/inheritance";
+	var inheritanceUrl = "/metalnx/inheritance";
 	setOperationInProgress();
 	ajaxEncapsulation(inheritanceUrl, "POST", {path: path, recursive: isRecursive, inherit: inheritanceValue}, inheritanceSuccessful(), null);
 }
@@ -146,7 +146,7 @@ function deleteInfoAction(path){
 
 	var paths = [];
 	paths.push(path);
-	var url = "/emc-metalnx-web/fileOperation/delete/";
+	var url = "/metalnx/fileOperation/delete/";
 
 	ajaxEncapsulation(
 			url,
@@ -182,7 +182,7 @@ function editInfo(path){
 function handleDownload(data) {
 	console.log("collection.js :: success call :: handleDownload()")
 	if (data.downloadLimitStatus == "ok"){
-		window.location.href = "/emc-metalnx-web/fileOperation/download/";
+		window.location.href = "/metalnx/fileOperation/download/";
 		$("#breadcrumDownloadBtn").removeAttr("disabled");
 		$("#actionsWait").hide();
 	}

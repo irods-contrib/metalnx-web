@@ -27,7 +27,7 @@ public class Http403ForbiddenEntryPoint implements AuthenticationEntryPoint {
 		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
 		logger.info("last saved request was:{}", savedRequest);
 
-		response.sendRedirect("/emc-metalnx-web/login/exception/");
+		response.sendRedirect("/metalnx/login/exception/");
 	}
 
 }

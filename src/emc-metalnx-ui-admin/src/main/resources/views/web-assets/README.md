@@ -5,7 +5,7 @@ a way to plug in site-specific themes. This is a first iteration and if there ar
 ways to do this we will adjust...
 
 By default metalnx will look internally in the classpath as indicated by the metalnxConfig.xml file
-that is part of the SpringMVC configuration. The emc-metalnx-web application.xml looks
+that is part of the SpringMVC configuration. The metalnx application.xml looks
 for metalnxConfig.xml to be in the /etc/irods-ext/metalnx directory, and by default
 it looks in the classpath. Setting this xml in this fashion will use the recommended /opt/irods-ext/metalnx
 assets

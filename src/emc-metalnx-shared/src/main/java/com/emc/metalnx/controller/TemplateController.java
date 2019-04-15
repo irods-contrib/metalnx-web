@@ -1,11 +1,10 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +15,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.emc.com.emc.metalnx.core.xml.MlxMetadataTemplate;
-import com.emc.com.emc.metalnx.core.xml.MlxMetadataTemplates;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridTemplate;
 import com.emc.metalnx.core.domain.entity.DataGridTemplateField;
@@ -58,6 +52,7 @@ import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.modelattribute.template.field.TemplateFieldForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.HeaderService;
+import com.emc.metalnx.services.interfaces.MetadataTemplateException;
 import com.emc.metalnx.services.interfaces.TemplateFieldService;
 import com.emc.metalnx.services.interfaces.TemplateService;
 import com.emc.metalnx.services.interfaces.UserService;
@@ -489,45 +484,45 @@ public class TemplateController {
 		}
 	}
 
-	@RequestMapping(value = "/exportTemplatesToXMLFile/")
-	public void exportTemplateListToXMLFile(final HttpServletResponse response) {
+	@RequestMapping(value = "/exportTemplates/")
+	public void exportTemplates(final HttpServletResponse response) throws DataGridException {
 		try {
-			setReponseHeaderForXmlExport(response);
+			setReponseHeaderForJsonExport(response);
+			String jsonString;
 
-			// Creating marshaller mechanism
-			JAXBContext jaxbContext = JAXBContext.newInstance(MlxMetadataTemplates.class);
-			Marshaller m = jaxbContext.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-			// Creating XML data structure for exporting
-			MlxMetadataTemplates ts = new MlxMetadataTemplates();
+			response.getOutputStream().write("{\"templates\":[".getBytes());
+			int ctr = 0;
 
 			for (Long templateId : selectedTemplates) {
+				jsonString = templateService.exportMetadataTemplateAsJsonString(Long.valueOf(templateId));
 
-				// Getting template data
-				DataGridTemplate template = templateService.findById(Long.valueOf(templateId));
+				logger.debug("exporting template:{}", jsonString);
+				response.getOutputStream().write(jsonString.getBytes());
+				if (ctr + 1 < selectedTemplates.size()) {
+					response.getOutputStream().write(",".getBytes());
+					ctr++;
+				}
 
-				// Mapping DB entity to XML entity
-				MlxMetadataTemplate t = templateService.mapDataGridTemplateToXml(template);
-				ts.getTemplates().add(t);
 			}
 
-			// Marshalling and flushing stream
-			m.marshal(ts, response.getOutputStream());
-			response.getOutputStream().flush();
+			response.getOutputStream().write("]}".getBytes());
 
+			response.getOutputStream().flush();
 			selectedTemplates.clear();
 
-		} catch (JAXBException | IOException e) {
+		} catch (Exception e) {
 			logger.error("Could not export templates using metadata", e);
+			throw new DataGridException("unable to export template", e);
 		}
 	}
 
 	@RequestMapping(value = "/import/", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public String importXMLFile(final Model model, final HttpServletRequest request,
-			final RedirectAttributes redirect) {
+	public String importJsonFile(final Model model, final HttpServletRequest request, final RedirectAttributes redirect)
+			throws MetadataTemplateException, DataGridException {
+
+		logger.info("importJsonFile()");
 
 		String responseString = "ok";
 
@@ -537,20 +532,21 @@ public class TemplateController {
 			List<MultipartFile> multipartFiles = multipartRequest.getFiles("file");
 			String prefix = multipartRequest.getParameter("prefix");
 			String suffix = multipartRequest.getParameter("suffix");
-
+			InputStream jsonStream;
 			try {
-				String username = loggedUserUtils.getLoggedDataGridUser().getUsername();
-				boolean result = templateService.importXmlMetadataTemplate(multipartFiles.get(0).getInputStream(),
-						username, prefix, suffix);
-
-				if (!result) {
-					responseString = "partial";
-				}
-
-			} catch (JAXBException | IOException | DataGridException e) {
-				logger.error("Could not import metadata templates", e);
-				responseString = "error";
+				jsonStream = multipartFiles.get(0).getInputStream();
+			} catch (IOException e) {
+				logger.error("Io excepion getting JSON data for template", e);
+				throw new MetadataTemplateException("error getting JSON stream", e);
 			}
+			if (jsonStream == null) {
+				logger.error("no json input stream found");
+				throw new MetadataTemplateException("error importing input stream, no json multipart file found");
+			}
+
+			// try {
+			String username = loggedUserUtils.getLoggedDataGridUser().getUsername();
+			this.templateService.importMetadataTemplate(jsonStream, username, prefix, suffix);
 
 		}
 		return responseString;
@@ -617,14 +613,14 @@ public class TemplateController {
 	 * *************************************************************************
 	 */
 
-	private void setReponseHeaderForXmlExport(final HttpServletResponse response) {
+	private void setReponseHeaderForJsonExport(final HttpServletResponse response) {
 		String loggedUser = loggedUserUtils.getLoggedDataGridUser().getUsername();
 		String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-		String filename = String.format("template_%s_%s.xml", loggedUser, date);
+		String filename = String.format("template_%s_%s.json", loggedUser, date);
 
 		// Setting CSV Mime type
-		response.setContentType("text/xml");
+		response.setContentType("application/json");
 		response.setHeader("Content-disposition", "attachment;filename=" + filename);
 	}
 
@@ -663,8 +659,7 @@ public class TemplateController {
 	 * Maps a single instance of DataGridTemplateField into a TemplateFieldForm
 	 * object
 	 *
-	 * @param dataGridTempField
-	 *            DataGridTemplateField object
+	 * @param dataGridTempField DataGridTemplateField object
 	 * @return TemplateFieldForm object
 	 */
 	private TemplateFieldForm mapDataGridTempToFieldForm(final DataGridTemplateField dataGridTempField) {
@@ -692,11 +687,10 @@ public class TemplateController {
 	 * Maps a single instance of DataGridTemplateField into a TemplateFieldForm
 	 * object
 	 *
-	 * @param dataGridTempField
-	 *            DataGridTemplateField object
-	 * @param position
-	 *            DataGridTemplateField object position into the memory array list
-	 *            of fields to be added to a template
+	 * @param dataGridTempField DataGridTemplateField object
+	 * @param position          DataGridTemplateField object position into the
+	 *                          memory array list of fields to be added to a
+	 *                          template
 	 * @return TemplateFieldForm object
 	 */
 	private TemplateFieldForm mapDataGridTempToFieldForm(final DataGridTemplateField dataGridTempField,
@@ -726,8 +720,7 @@ public class TemplateController {
 	 * Maps a list of DataGridTemplateField objects into a list of TemplateFieldForm
 	 * objects
 	 *
-	 * @param tempFields
-	 *            list of data grid template objects
+	 * @param tempFields list of data grid template objects
 	 * @return list of TemplateFieldForm objects
 	 */
 	private List<TemplateFieldForm> mapDataGridTempToFieldForm(final List<DataGridTemplateField> tempFields) {
@@ -751,8 +744,7 @@ public class TemplateController {
 	/**
 	 * Map a Template Field form object into a DataGridTemplateField object
 	 *
-	 * @param tempFieldForm
-	 *            template field form object to be mapped
+	 * @param tempFieldForm template field form object to be mapped
 	 * @return DataGridTemplateField object
 	 * @throws DataGridTemplateAttrException
 	 * @throws DataGridTemplateValueException
