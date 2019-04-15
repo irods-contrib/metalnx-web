@@ -36,16 +36,6 @@
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>emc-metalnx-core</artifactId>
 			<version>${jargon.version}</version>
-			<!-- <exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>dom4j</groupId>
-					<artifactId>dom4j</artifactId>
-				</exclusion>
-			</exclusions>  -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -135,6 +125,13 @@
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+		<dependency>
+		    <groupId>dom4j</groupId>
+		    <artifactId>dom4j</artifactId>
+		    <version>1.6.1</version>
+		</dependency>
+		
 	</dependencies>
 
 	<!-- Profile definition -->
