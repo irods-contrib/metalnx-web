@@ -18,3 +18,4 @@ Scripts/
 /.metadata/
 **/packaging/src
 **/*.bak
+flyway.conf

@@ -26,7 +26,7 @@ var i18n = {
 	    "thousands":      ",",
 	    "lengthMenu":     "_MENU_",
 	    "loadingRecords": "Loading...",
-	    "processing":     '<img class="center-block" src="/emc-metalnx-web/images/table_loading.svg" />',
+	    "processing":     '<img class="center-block" src="/metalnx/images/table_loading.svg" />',
 	    "search":         "_INPUT_",
 	    "searchPlaceholder": "Search...",
 	    "zeroRecords":    "No matching records found",
@@ -73,7 +73,7 @@ function addCollectionActions(table_id, datatable,advancedView){
         '       </li><li><a href="#" id="applyTemplatesBtn" class="hideElement" onclick="listAllTemplates();"><span><i class="fa fa-th"></i></span> <span>Apply Template</span></a>'+
         '       </li>'+
         '       <li><a href="#" id="createTicketBtn" class="hideElement" onclick="getTicketCreationForm();"><span><i class="fa fa-list-alt"> </i></span> <span>Create Ticket</span></a></li>'+
-        '       <li> <a id="downloadBtn" href="/emc-metalnx-web/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
+        '       <li> <a id="downloadBtn" href="/metalnx/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
         '       </li>'+
         '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
         '       </li>'+
@@ -124,7 +124,7 @@ function addTemplateActionBtn(table_id, datatable){
             '</button>' +
            '  <ul class="dropdown-menu" role="menu">' +
                 '<li>'+
-                    '<a href="#" onclick="javascript:exportFilesToXML();" class=""><i class="fa fa-external-link"></i> Export</a>' +
+                    '<a href="#" onclick="javascript:exportFilesToJSON();" class=""><i class="fa fa-external-link"></i> Export</a>' +
                 '</li>' +
                 '<li>' +
 '                    <a href="#" id="removeTemplatesBtn" onclick="javascript:confirmTemplateRemoval();" class=""><i class="glyphicon glyphicon-trash"></i> Delete</a>' +
@@ -141,7 +141,7 @@ function addTemplateActionBtn(table_id, datatable){
 function resetDataTablesStart () {
 	for(var i = 0; i < localStorage.length; i++) {
 		var key = localStorage.key(i);
-		if(key.indexOf('emc-metalnx-web') > -1) {
+		if(key.indexOf('metalnx') > -1) {
 			var data = JSON.parse(localStorage.getItem(key));
 			data.start = 0;
 			localStorage.setItem(key, JSON.stringify(data));

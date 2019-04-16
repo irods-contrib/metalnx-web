@@ -252,7 +252,7 @@
 				</div>
 			</a>
 			<a role="button" class="btn btn-default icon-btn"
-				th:href="'/emc-metalnx-web/collectionInfo?path='+${encodedCurrentPath}"
+				th:href="'/metalnx/collectionInfo?path='+${encodedCurrentPath}"
 				id="infoIcon"
 				th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'"
 				title="View info"> <i class="fa fa-info-circle fa-color"></i>
@@ -283,7 +283,7 @@
 				</div>
 			</a>
 			<a role="button" class="btn btn-default icon-btn"
-				th:href="'/emc-metalnx-web/collectionInfo?path='+${encodedCurrentPath}"
+				th:href="'/metalnx/collectionInfo?path='+${encodedCurrentPath}"
 				id="infoIcon"
 				th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'"
 				title="View info"> <i class="fa fa-info-circle fa-color"></i>
@@ -417,7 +417,7 @@
         var path = null;
         var currentPermissionTab = "groups";
         var datatable;
-        var mostRestrictivePermURL = "/emc-metalnx-web/permissions/findMostRestrictive/";
+        var mostRestrictivePermURL = "/metalnx/permissions/findMostRestrictive/";
 		var advancedView = [[${dataGridUser.isAdvancedView()}]];
 
         $(document).ready(function(e){
@@ -446,7 +446,7 @@
     		    	data.search.search = "";
     		    },
     		    "ajax": {
-    		        url: '/emc-metalnx-web/browse/getPaginatedJSONObjs/',
+    		        url: '/metalnx/browse/getPaginatedJSONObjs/',
     		    },
     	        "initComplete": function(settings){
     	            $('#treeViewTable tbody td').each(function () {
@@ -552,8 +552,8 @@
                     		var encodedName = encodeURI(full.name);
                     		var encodedPath = encodeURI(full.path);
                     		var idVal = "row" + i++;
-
-                    		return '<a href="/emc-metalnx-web/collectionInfo?path='+encodedPath+'" class="btn btn-default btn-xs" name="' + idVal +
+                    		
+                    		return '<a href="/metalnx/collectionInfo?path='+encodedPath+'" class="btn btn-default btn-xs" name="' + idVal +
     						'" onclick=getCollectionSummary("'+encodedPath+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + idVal +
         						'" id="open-left-canvas" onclick=getSideCanvas("'+encodedPath+'","'+idVal+'") class="btn btn-default btn-xs"  title="Quick View" ><i class="fa fa-eye"></i> </a>';
 
@@ -778,7 +778,7 @@
         	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
 
         	if (data.downloadLimitStatus == "ok"){
-        		window.location.href = "/emc-metalnx-web/fileOperation/download/";
+        		window.location.href = "/metalnx/fileOperation/download/";
         	}
         	else {
         		toastr.warning("Download limit has been exceeded over 100MBs");
@@ -797,7 +797,7 @@
 
         function getBreadcrumb(path) {
         	ajaxEncapsulation(
-   				'/emc-metalnx-web/browse/getBreadCrumbForObject/',
+   				'/metalnx/browse/getBreadCrumbForObject/',
    				"POST",
    				{path: path},
    				function(data){
@@ -813,8 +813,8 @@
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        	//var url = "/emc-metalnx-web/permissions/getPermissionDetails/";
-        	var url = "/emc-metalnx-web/collectionInfo/collectionPermisssionDetails/";
+        	//var url = "/metalnx/permissions/getPermissionDetails/";
+        	var url = "/metalnx/collectionInfo/collectionPermisssionDetails/";
 
         	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
 		}
@@ -827,9 +827,9 @@
             $("#uploadIcon").addClass("disabled");
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
-        	//var url = "/emc-metalnx-web/collections/info/";
+        	//var url = "/metalnx/collections/info/";
 
-        	var url = "/emc-metalnx-web/collectionInfo/collectionFileInfo/";
+        	var url = "/metalnx/collectionInfo/collectionFileInfo/";
         	getBreadcrumb(path);
 			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
         }
@@ -843,8 +843,8 @@
             $("#showCollectionFormBtn").prop("disabled", true);
             $("#showCollectionFormBtn").addClass("disabled");
         	getBreadcrumb(path);
-        	//ajaxEncapsulation("/emc-metalnx-web/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
-        	ajaxEncapsulation("/emc-metalnx-web/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+        	//ajaxEncapsulation("/metalnx/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+        	ajaxEncapsulation("/metalnx/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
 		}*/
 
        /*  function displayMetadata(data){
@@ -867,7 +867,7 @@
 
         $('a[data-target="#uploadModal"]').click(function(){
         	$('#uploadDestinationPath').val([[${ currentPath }]]);
-        	ajaxEncapsulation("/emc-metalnx-web/browse/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
+        	ajaxEncapsulation("/metalnx/browse/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
         });
         function displayUploadModal(data){
         	$('#selectResourceToUpload').html(data);
@@ -875,7 +875,7 @@
         $('a[data-target="#replicateModal"]').click(function(){
             $('#selectResourceForReplication').empty();
             $('#replicate-loader').show();
-        	ajaxEncapsulation("/emc-metalnx-web/collections/getAvailableRescForPath/", "POST", {isUpload: false}, displayReplicateModal, null, null, null);
+        	ajaxEncapsulation("/metalnx/collections/getAvailableRescForPath/", "POST", {isUpload: false}, displayReplicateModal, null, null, null);
         });
         function displayReplicateModal(data){
             $('#replicate-loader').hide();
@@ -885,7 +885,7 @@
 		function emptyTrash() {
 			$("#actionsWait").show();
 			$('#actionLabel').html([[#{collections.empty.trash.status}]]);
-			var url ="/emc-metalnx-web/fileOperation/emptyTrash/";
+			var url ="/metalnx/fileOperation/emptyTrash/";
 			ajaxEncapsulation(url, "POST", null, emptyTrashSuccess, emptyTrashFailure, null, null);
 		}
 
@@ -903,7 +903,7 @@
 		}
 
         function getTicketCreationForm(){
-            ajaxEncapsulation("/emc-metalnx-web/tickets/ticketForm", "GET", null, populateTicketCreationForm, null, null, null);
+            ajaxEncapsulation("/metalnx/tickets/ticketForm", "GET", null, populateTicketCreationForm, null, null, null);
             $("#ticketCreationForm").modal("show");
 		}
 
@@ -919,7 +919,7 @@
                 $("input[name='collectionPathCheckboxes']").parent().parent().removeClass("info");
 
                 var newTicket = JSON.stringify(serializeTicketForm());
-                var url = '/emc-metalnx-web/tickets/';
+                var url = '/metalnx/tickets/';
                 var contentType = "application/json; charset=utf-8";
                 ajaxEncapsulation(url, 'POST', newTicket, createTicketSuccess, createTicketFailure, null, contentType);
 		    }

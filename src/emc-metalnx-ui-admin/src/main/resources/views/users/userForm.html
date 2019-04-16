@@ -33,32 +33,32 @@
 				}
 
     			if(permission == 'read'){
-    				url = "/emc-metalnx-web/users/addReadPermission/";
+    				url = "/metalnx/users/addReadPermission/";
     				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
     			}else if(permission == 'write'){
-    				url = "/emc-metalnx-web/users/addWritePermission/";
+    				url = "/metalnx/users/addWritePermission/";
     				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
     			}else if(permission == 'own'){
-    				url = "/emc-metalnx-web/users/addOwner/";
+    				url = "/metalnx/users/addOwner/";
     				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
     			}
 			}else{
 				//this case is for when user chooses to give none of the permissions above
 
-				url = "/emc-metalnx-web/users/removeReadPermission/";
+				url = "/metalnx/users/removeReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
 
-				url = "/emc-metalnx-web/users/removeWritePermission/";
+				url = "/metalnx/users/removeWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
 
-				url = "/emc-metalnx-web/users/removeOwner/";
+				url = "/metalnx/users/removeOwner/";
 				ajaxEncapsulation(url, "POST", {path: collectionName, recursive: recursive}, null, null, null);
 
 				bookmarkCheckbox.prop('checked', false);
 				bookmarkCheckbox.prop("disabled", true);
 
 				// Removing bookmarks for the modified item
-				ajaxEncapsulation('/emc-metalnx-web/userBookmarks/removeBookmark/', "POST", {path : collectionName},
+				ajaxEncapsulation('/metalnx/userBookmarks/removeBookmark/', "POST", {path : collectionName},
 						null, null, null);
 			}
 		}
@@ -71,16 +71,16 @@
 			var url = "";
 			var checkbox = $("#inheritance_" + collectionShortName);
 			if (checkbox.is(":checked")) {
-				url = "/emc-metalnx-web/users/addInheritance/"
+				url = "/metalnx/users/addInheritance/"
 			}
 			else {
-				url = "/emc-metalnx-web/users/removeInheritance/"
+				url = "/metalnx/users/removeInheritance/"
 			}
 
 			ajaxEncapsulation(url, "POST", {path: collectionName}, null, null, null);
 		}
 	</script>
-<title th:text="#{tab.title.users}">EMC Metalnx - Users</title>
+<title th:text="#{tab.title.users}">Metalnx - Users</title>
 </head>
 <body>
 	<!-- Page Content -->
@@ -603,7 +603,7 @@
 				$('body').on('change', '#groupListTable input[type=checkbox]', function(){
 				//$("input[type=checkbox]").change(function(){
 					if($(this).is(":checked")){
-					    ajaxEncapsulation('/emc-metalnx-web/users/addGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/users/addGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
 						var newRow = $(this).closest("tr").clone();
 						newRow.find("td:first").remove();
 						newRow.attr("id", $(this).parent().parent().attr("id") + "_attached");
@@ -612,7 +612,7 @@
 
 					}
 					else {
-					    ajaxEncapsulation('/emc-metalnx-web/users/removeGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
+					    ajaxEncapsulation('/metalnx/users/removeGroupToSaveList/', "POST", {groupId: $(this).val()}, null, null, null);
 						var elementID = $(this).parent().parent().attr("id") + "_attached";
 						var trElement = $("tr[id='" + elementID + "']");
 						datatableAttachedGroups.row(trElement).remove().draw();
@@ -623,7 +623,7 @@
 			function getSubDirectoriesForUser(path) {
 				$("#tableLoaderForCollections").show();
 				$("#collectionsViewForUser").hide();
-				var url = "/emc-metalnx-web/browse/getDirectoriesAndFilesForUser/";
+				var url = "/metalnx/browse/getDirectoriesAndFilesForUser/";
 				var retrievePermissions = !isAddAction;
 				setTimeout(function () {
 					ajaxEncapsulation(
@@ -641,7 +641,7 @@
 
 			/* Show dialog Group Info Modal */
 	        function showGroupInfoModal(groupname, additionalInfo) {
-				var url = "/emc-metalnx-web/users/getUsersInAGroup/" + groupname + "/"
+				var url = "/metalnx/users/getUsersInAGroup/" + groupname + "/"
 					+ additionalInfo;
 
 	        	$("#groupInfoModal").modal("show");

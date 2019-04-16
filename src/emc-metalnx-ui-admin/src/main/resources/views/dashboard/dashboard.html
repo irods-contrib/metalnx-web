@@ -20,7 +20,7 @@
 <!-- Dashboard Style (charts) -->
 <link rel="stylesheet" th:href="@{/css/dashboardStyle.css}" />
 
-<title th:text="#{tab.title.dashboard}">EMC Metalnx - Dashboard</title>
+	<title th:text="#{tab.title.dashboard}">Metalnx - Dashboard</title>
 
 </head>
 
@@ -248,7 +248,7 @@
 
 			$(function() {
 				$("#summaryTable").tablesorter();
-				url = "/emc-metalnx-web/dashboard/servers/";
+				url = "/metalnx/dashboard/servers/";
 
 				ajaxEncapsulation(url, "GET", "", displayServerListPanel, null,
 						null, null, [ ajaxCallForStorageGrid,
@@ -260,46 +260,40 @@
 			});
 
 			function ajaxCallForIRodsVersion() {
-				url = "/emc-metalnx-web/dashboard/irodsversion/";
-				ajaxEncapsulation(url, "GET", "", displayIRodsVersionPanel,
-						null, null);
+				url = "/metalnx/dashboard/irodsversion/";
+				ajaxEncapsulation(url, "GET", "", displayIRodsVersionPanel, null, null);
 			}
 
 			function ajaxCallForMSIAPIVersion() {
-				url = "/emc-metalnx-web/dashboard/msiPackageVersion/";
-				ajaxEncapsulation(url, "GET", "", displayMSIVersionPanel, null,
-						null);
+				url = "/metalnx/dashboard/msiPackageVersion/";
+				ajaxEncapsulation(url, "GET", "", displayMSIVersionPanel, null, null);
 			}
 
-			function ajaxCallForNonResourceServer() {
-				url = "/emc-metalnx-web/dashboard/nonResourceServers/";
-				ajaxEncapsulation(url, "GET", "",
-						displayNonResourceServersPanel, null, null);
+			function ajaxCallForNonResourceServer(){
+				url = "/metalnx/dashboard/nonResourceServers/";
+				ajaxEncapsulation(url, "GET", "", displayNonResourceServersPanel, null, null);
 			}
 
-			function ajaxCallForIsilonServer() {
-				url = "/emc-metalnx-web/dashboard/isilonServers/";
-				ajaxEncapsulation(url, "GET", "", displayIsilonServersPanel,
-						null, null);
+			function ajaxCallForIsilonServer(){
+				url = "/metalnx/dashboard/isilonServers/";
+				ajaxEncapsulation(url, "GET", "", displayIsilonServersPanel, null, null);
 			}
 
 			function ajaxCallForStorageGrid() {
 				//we need to have all servers in order to get the total grid storage
-				url = "/emc-metalnx-web/dashboard/storageGrid/";
+				url = "/metalnx/dashboard/storageGrid/";
 				ajaxEncapsulation(url, "GET", "", updateStorageInfo, null, null);
 			}
 
 			function ajaxCallForSystemHealth() {
 				//we need to have all servers in order to get the total grid storage
-				url = "/emc-metalnx-web/dashboard/systemHealth/";
-				ajaxEncapsulation(url, "GET", "", displaySystemHealthData,
-						null, null);
+				url = "/metalnx/dashboard/systemHealth/";
+				ajaxEncapsulation(url, "GET", "", displaySystemHealthData, null, null);
 			}
 
-			function ajaxCallForResourceMap() {
-				url = "/emc-metalnx-web/resources/mapForDashboard/";
-				ajaxEncapsulation(url, "GET", "", displayResourceMap, null,
-						null);
+			function ajaxCallForResourceMap(){
+			    url = "/metalnx/resources/mapForDashboard/";
+				ajaxEncapsulation(url, "GET", "", displayResourceMap, null, null);
 			}
 
 			function displayIRodsVersionPanel(data) {

@@ -81,7 +81,7 @@ $("#uploadButton").click(function(){
 });
 
 function uploadAndUpdateStatus(file, index, totalFiles){
-    var url = "/emc-metalnx-web/upload/";
+    var url = "/metalnx/upload/";
     var formData = new FormData();
     formData.append('file', file);
     formData.append('checksum', $('#inputChecksum').is(':checked'));
@@ -147,10 +147,10 @@ function uploadAndUpdateStatus(file, index, totalFiles){
         },
         statusCode: {
             408: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             },
             403: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             }
         }
     });

@@ -9,7 +9,8 @@
 
 			<div class="datacommons_title-left">
 				<span id="headerContent"></span> <a href="#"
-					class="datacommons_title-icon" id="headerContentIcon"></a>
+					class="datacommons_title-icon" id="headerContentIcon"><img  alt="Metalnx Logo" src="../static/images/logo.svg"
+                                th:src="@{/images/logo.svg}" /></a>
 			</div>
 			<div class="datacommons_title-mid">
 				<div class="datacommons_title-breadcrum"></div>
@@ -209,9 +210,9 @@
 	</div>
 	<!-- /.navbar-top-links -->
 
-	<!-- Upload notifications panel
-
-				<a  href="/emc-metalnx-web/notification/"><i class="fa fa-bell" aria-hidden="true"></i></a>
+	<!-- Upload notifications panel 
+				
+				<a  href="/metalnx/notification/"><i class="fa fa-bell" aria-hidden="true"></i></a>
 			</div>
 		</div>-->
 
@@ -226,8 +227,8 @@
 			var urlArray = altUrl.split("/", 5)
 			var header = urlArray[(urlArray.length) - 1];
 			console.log("header :: " + header);
-			url.split("emc-metalnx-web");
-
+			url.split("metalnx");
+	
 			if (header == "dashboard") {
 				$("#headerContent").text("Dashboard").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-tachometer');

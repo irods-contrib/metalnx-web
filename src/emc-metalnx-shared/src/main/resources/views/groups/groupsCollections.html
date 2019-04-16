@@ -12,7 +12,7 @@
     layout:decorator="template">
 
 <head>
-	<title th:text="#{tab.title.shared}">EMC Metalnx - Shared Links</title>
+	<title th:text="#{tab.title.shared}">Metalnx - Shared Links</title>
 </head>
 
 <body>
@@ -71,7 +71,7 @@
 					    "destroy": true,
 					    "autoWidth": false,
 					    "ajax": {
-					        url: '/emc-metalnx-web/groupBookmarks/groupsBookmarksPaginated/',
+					        url: '/metalnx/groupBookmarks/groupsBookmarksPaginated/',
 					    },
 					    "order": [[1, 'asc']],
 					    "initComplete": function(settings){
@@ -116,12 +116,12 @@
 			    });
 
 				function redirectToCollections(path){
-					var url = "/emc-metalnx-web/browse/redirectFromGroupsBookmarksToCollections/";
+					var url = "/metalnx/browse/redirectFromGroupsBookmarksToCollections/";
 					ajaxEncapsulation(url, "POST", {path: path}, showCollections, null, null, null);
 				}
 
 				function showCollections() {
-					window.location = "/emc-metalnx-web/collections/";
+					window.location = "/metalnx/collections/";
 
 				}
 			/*]]>*/

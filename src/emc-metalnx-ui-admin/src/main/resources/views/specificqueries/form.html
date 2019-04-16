@@ -103,7 +103,7 @@
 		<script type="text/javascript" th:inline="javascript">
 			$("#executeSpecQueryFormBtn").click(function() {
 					var alias = $("#inputAlias").val();
-					$.get("/emc-metalnx-web/specificqueries/execute/" + alias + "/", function(data) {
+					$.get("/metalnx/specificqueries/execute/" + alias + "/", function(data) {
 						$("#queryResults").html(data);
 					})
 			});

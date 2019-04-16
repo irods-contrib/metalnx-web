@@ -124,7 +124,7 @@ In addition, an additional profile for Metalnx is required, like this...
 
 ```
 
-Note that these config files are in the src/emc-metalnx-web/test-scripts/sample-maven-settings.xml
+Note that these config files are in the src/metalnx/test-scripts/sample-maven-settings.xml
 
 Here it's pointing to a Postgres database, pretty soon we'll show an example with a local
 database like Derby, that's probably a better plan.

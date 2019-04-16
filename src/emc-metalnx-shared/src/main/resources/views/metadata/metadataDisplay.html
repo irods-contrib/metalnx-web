@@ -325,7 +325,7 @@
 							value = $(this).find(".metadataVal").val();
 							unit = $(this).find(".metadataUnit").val();
 
-							console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
+							//console.log("attr :: " +attr + ", value :: " +value+ " , Unit :: " +unit);
 							if(attr == "" && value == "" && unit == "" && totalSearchCriteriaRows > 1) {
 								$(this).remove();
 								totalSearchCriteriaRows--;
@@ -333,6 +333,7 @@
 						});
 
 						datatable = $('#treeViewTable').DataTable( {
+							"paging": true,
 			    		    "serverSide": true,
 			    		    "dom": dtPatternForMetadata,
 			    		    "language": i18n,
@@ -345,7 +346,7 @@
 			    		    	data.search.search = "";
 			    		    },
 			    		    "ajax": {
-			    		        "url": '/emc-metalnx-web/metadata/search/',
+			    		        "url": '/metalnx/metadata/search/',
 			    		        "type": "POST",
 			    		        "data": function ( d ) {
 			    		        	//this code adds a new parameter in the request
@@ -440,7 +441,7 @@
 			    		} );
 						//Download search results as CSV file
 					    $('div.download_csv').html(
-				    		'<a href="/emc-metalnx-web/metadata/downloadCSVResults/" class="btn btn-default">'+
+				    		'<a href="/metalnx/metadata/downloadCSVResults/" class="btn btn-default">'+
 				    		'<span class="fa fa-download"> </span> CSV'+
 				    		'</a>'
 					    );
@@ -451,7 +452,8 @@
 							datatable.destroy();
 							$('#metadataSearchTableResults #treeViewTable').empty();
 						}
-						datatable = $('#treeViewTable').DataTable( {
+						datatable = $('#treeViewTable').DataTable( { 
+							"paging": true,
 			    		    "serverSide": true,
 			    		    "dom": dtPatternForMetadata,
 			    		    "language": i18n,
@@ -464,7 +466,7 @@
 			    		    	data.search.search = "";
 			    		    },
 			    		    "ajax": {
-			    		        "url": '/emc-metalnx-web/fileproperty/search/',
+			    		        "url": '/metalnx/fileproperty/search/',
 			    		        "data": function ( d ) {
 			    		            return $.extend( {}, d, {
 			    		            	"jsonFilePropertySearch": JSON.stringify($('.propertiesSearchForm').serializeObject())
@@ -530,7 +532,7 @@
 			                    	"title": [[#{collections.management.table.size.label}]],
 			                    	"width": "10%",
 			                    	"targets": 5
-			                   	},
+			                   	}/*,
 			                    {
 			                    	"data": "resourceName",
 			                    	"render": function ( data, type, full, meta ){
@@ -539,7 +541,7 @@
 			                    	"title": [[#{collections.management.table.resource.label}]],
 			                    	"width": "10%",
 			                    	"targets": 6
-			                   	}
+			                   	}*/
 			                ]
 			    		} );
 
@@ -665,7 +667,7 @@
 				*/
 				function openInCollView(path) {
 					window.open(
-							  '/emc-metalnx-web/collections?path=' + encodeURI(path),
+							  '/metalnx/collections?path=' + encodeURI(path),
 							  '_blank' // <- This is what makes it open in a new window.
 							);
 				}

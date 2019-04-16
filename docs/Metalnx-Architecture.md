@@ -209,7 +209,7 @@ Sync job responsible for synchronizing users & groups between iRODS and the Meta
 #### modelattribute
 Representation of objects that will go on the UI, but only available to admins such as group, user and resource management forms.
 
-### emc-metalnx-web
+### metalnx
 
 This is the subproject that is the actual Web application of Metalnx. All other subprojects compose the backend side of the app while this one is the application shipped to users.
 

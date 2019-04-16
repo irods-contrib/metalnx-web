@@ -216,7 +216,7 @@
 						}
 
 						function viewInfo(){
-							var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
+							var url = "/metalnx/resources/viewInfo/" + resourceName +"/";
 							ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 						}
 
@@ -259,7 +259,7 @@
 						}
 
 						function addChild() {
-							window.location = "/emc-metalnx-web/resources/add/" + resourceName +"/";
+							window.location = "/metalnx/resources/add/" + resourceName +"/";
 						}
 
 						$("g .node").bind("contextmenu", function(event){

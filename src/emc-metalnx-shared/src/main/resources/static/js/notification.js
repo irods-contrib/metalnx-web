@@ -74,7 +74,7 @@ $(document).ready(function() {
 
 	console.log("getInfoDetails()");
 	//window.location.hash = "info";
-	var url = "/emc-metalnx-web/notification/";
+	var url = "/metalnx/notification/";
 	ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 }*/
 function deleteNotificationList(){

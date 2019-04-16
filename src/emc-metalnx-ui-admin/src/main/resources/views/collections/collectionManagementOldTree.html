@@ -63,7 +63,7 @@
 			function getSubDirectoriesOldTree(directoryName) {
 				$("img[name='" + directoryName + "']").attr("src", "../images/spinner-16.gif");
 				setTimeout(function () {
-					$.post("/emc-metalnx-web/browse/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
+					$.post("/metalnx/browse/getSubDirectoriesOldTree/", {path:directoryName}, function(data) {
 						$("a[name='" + directoryName + "']").after(data);
 						$("img[name='" + directoryName + "']").attr("src", "../images/folder-open-16.png");
 						$("a[name='" + directoryName + "']").attr("onclick", "retractItem();");

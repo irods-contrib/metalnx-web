@@ -81,7 +81,7 @@ Restart the tomcat service using the commands:
 
 	systemctl restart tomcat
 
-It should be enough for you to have access to Metalnx at `http://<hostname>:8080/emc-metalnx-web/login/`.
+It should be enough for you to have access to Metalnx at `http://<hostname>:8080/metalnx/login/`.
 
 # Migrating from Metalnx 1.0.X to Metalnx 1.1.X
 

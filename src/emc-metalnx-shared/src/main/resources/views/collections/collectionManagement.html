@@ -19,7 +19,7 @@
     <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
     <!-- Copy to clipboard JS-->
     <script src="../static/js/copyToClipboard.js" th:src="@{/js/copyToClipboard.js}"></script>
-	<title th:text="#{tab.title.collections}">EMC Metalnx - Collections</title>
+	<title th:text="#{tab.title.collections}">Metalnx - Collections</title>
 </head>
 
 <body>
@@ -398,7 +398,7 @@
 						<h4 id="myReplicateModalLabel" class="modal-title" th:text="#{replicate.modal.title}"></h4>
 					</div>
 					<div class="modal-body">
-						<form action="/emc-metalnx-web/fileOperation/replicate/"
+						<form action="/metalnx/fileOperation/replicate/"
 							method="POST" role="form" enctype="multipart/form-data"
 							id="replicateForm">
 							<div class="form-group">
@@ -473,7 +473,7 @@
 
 
 						<!-- Form submitted as soon as the user selects all files to be uploaded -->
-                        <form action="/emc-metalnx-web/upload/" method="POST"
+                        <form action="/metalnx/upload/" method="POST"
                               role="form" enctype="multipart/form-data" id="uploadForm">
 
 
@@ -651,7 +651,7 @@
 
 				setTimeout(function () {
 					console.log("calling getSubDirectories");
-					ajaxEncapsulation("/emc-metalnx-web/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
+					ajaxEncapsulation("/metalnx/browse/getSubDirectories/", "POST", {path: path}, displaySubDirectories, null, null, null);
 					currentPath = path;
 					console.log("currentpath " +currentPath);
 					console.log("path " +path)
@@ -668,18 +668,18 @@
 			}
 
 	        function getSubDirectoriesOldTree(directoryName, directoryPath){
-	        	$("#moveModal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/spinner-16.gif");
+	        	$("#moveModal img[name='" + directoryPath + "']").attr("src", "/metalnx/images/spinner-16.gif");
 				var groupName = $("#collectionInfoGroupName").text();
 
 				ajaxEncapsulation(
-					"/emc-metalnx-web/browse/getSubDirectoriesOldTree/",
+					"/metalnx/browse/getSubDirectoriesOldTree/",
 					"POST",
 					{path : directoryPath, groupName : groupName},
 					function (data){
 						$(".modal a[name='" + directoryPath + "']").attr("onclick", "retractElement('" + directoryName + "', '" + directoryPath + "');");
 						$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
 						$(".modal a[name='" + directoryPath + "']").parent().after(data);
-						$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-open-16.png");
+						$(".modal img[name='" + directoryPath + "']").attr("src", "/metalnx/images/folder-open-16.png");
 
 						targetPath = directoryPath;
 						$('.targetPathInfoSpan').html(targetPath);
@@ -690,7 +690,7 @@
 	        function retractElement(directoryName, directoryPath) {
 	        	$(".modal a[name='" + directoryPath + "']").attr("onclick", "getSubDirectoriesOldTree('" + directoryName + "', '" + directoryPath + "');");
 				$(".modal a[name='" + directoryPath + "']").closest('li').children('ul').remove();
-				$(".modal img[name='" + directoryPath + "']").attr("src", "/emc-metalnx-web/images/folder-16.png");
+				$(".modal img[name='" + directoryPath + "']").attr("src", "/metalnx/images/folder-16.png");
 
 				targetPath = directoryPath;
 				$('.targetPathInfoSpan').html(targetPath);
@@ -771,7 +771,7 @@
                 $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
                     paths.push($(this).val());
                 });
-		        ajaxEncapsulation("/emc-metalnx-web/fileOperation/move/", "POST", {targetPath : targetPath, paths: paths}, callbackMoveAndCopy);
+		        ajaxEncapsulation("/metalnx/fileOperation/move/", "POST", {targetPath : targetPath, paths: paths}, callbackMoveAndCopy);
 	        });
 
 	        $("#copyBtn").click(function() {
@@ -781,7 +781,7 @@
                     paths.push($(this).val());
                 });
 	            var params = {targetPath : targetPath, copyWithMetadata : copyWithMetadata, paths: paths};
-	            var url = "/emc-metalnx-web/fileOperation/copy/";
+	            var url = "/metalnx/fileOperation/copy/";
 	        	ajaxEncapsulation(url, "POST", params, callbackMoveAndCopy, null, null, null);
 	        });
 
@@ -849,7 +849,7 @@
 			*/
 			function positionBrowserToPath(path) {
 				console.log("positionBrowserToPath()"); //FIXME: remove for testing
-				window.location.href = '/emc-metalnx-web/collections?path=' + encodeURI(path); //relative to domain
+				window.location.href = '/metalnx/collections?path=' + encodeURI(path); //relative to domain
 			}
 
 	        function deleteAction(){
@@ -863,7 +863,7 @@
 	            	$("#showCollectionFormBtn").addClass("disabled");
 
 	            	var paths = findPathsSelected();
-	            	var url = "/emc-metalnx-web/fileOperation/delete/";
+	            	var url = "/metalnx/fileOperation/delete/";
 
 		        	ajaxEncapsulation(
 		        		url,
@@ -945,13 +945,13 @@
 			}
 
 	        function listAllTemplates() {
-	        	var url = "/emc-metalnx-web/templates/listTemplatesForCollections/";
+	        	var url = "/metalnx/templates/listTemplatesForCollections/";
 				ajaxEncapsulation(url, "POST", null, displayTemplates, null, null);
 	        }
 
 	        function listTemplateFields() {
 	        	var templateIDsList = getTemplatesToBeApplied();
-				var url = "/emc-metalnx-web/templates/listTemplateFieldsForCollections/";
+				var url = "/metalnx/templates/listTemplateFieldsForCollections/";
 				ajaxEncapsulation(url, "POST", {templateIDsList : templateIDsList}, displayTemplateFields, null, null);
 	        }
 
@@ -959,10 +959,10 @@
 				$("#table-loader").show();
 				$("#table-loader").nextAll().remove();
 
-				url = "/emc-metalnx-web/browse/info/";
+				url = "/metalnx/browse/info/";
 				ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
 				ajaxEncapsulation(
-					'/emc-metalnx-web/browse/getBreadCrumbForObject/',
+					'/metalnx/browse/getBreadCrumbForObject/',
 					"POST",
 					{path: path},
 					function(data){
@@ -1026,14 +1026,14 @@
 			//tables for the move modal
 			var moveFavoritesTable;
 			var moveUserBookmarksTable;
-			modalMoveCopyFavAndUserbookmarkDatatable('moveFavoritesTable', moveFavoritesTable, '/emc-metalnx-web/favorites/favoritesPaginated/');
-			modalMoveCopyFavAndUserbookmarkDatatable('moveUserBookmarksTable', moveUserBookmarksTable, '/emc-metalnx-web/userBookmarks/bookmarksPaginated/');
+			modalMoveCopyFavAndUserbookmarkDatatable('moveFavoritesTable', moveFavoritesTable, '/metalnx/favorites/favoritesPaginated/');
+			modalMoveCopyFavAndUserbookmarkDatatable('moveUserBookmarksTable', moveUserBookmarksTable, '/metalnx/userBookmarks/bookmarksPaginated/');
 
 			//tables for the copy modal
 			var copyFavoritesTable;
 			var copyUserBookmarksTable;
-			modalMoveCopyFavAndUserbookmarkDatatable('copyFavoritesTable', copyFavoritesTable, '/emc-metalnx-web/favorites/favoritesPaginated/');
-			modalMoveCopyFavAndUserbookmarkDatatable('copyUserBookmarksTable', copyUserBookmarksTable, '/emc-metalnx-web/userBookmarks/bookmarksPaginated/');
+			modalMoveCopyFavAndUserbookmarkDatatable('copyFavoritesTable', copyFavoritesTable, '/metalnx/favorites/favoritesPaginated/');
+			modalMoveCopyFavAndUserbookmarkDatatable('copyUserBookmarksTable', copyUserBookmarksTable, '/metalnx/userBookmarks/bookmarksPaginated/');
 
 			function modalMoveCopyGroupbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {
@@ -1091,8 +1091,8 @@
 
 			var moveGroupBookmarksTable;
 			var copyGroupBookmarksTable;
-			modalMoveCopyGroupbookmarkDatatable('moveGroupBookmarksTable', moveGroupBookmarksTable, '/emc-metalnx-web/groupBookmarks/groupsBookmarksPaginated/');
-			modalMoveCopyGroupbookmarkDatatable('copyGroupBookmarksTable', copyGroupBookmarksTable, '/emc-metalnx-web/groupBookmarks/groupsBookmarksPaginated/');
+			modalMoveCopyGroupbookmarkDatatable('moveGroupBookmarksTable', moveGroupBookmarksTable, '/metalnx/groupBookmarks/groupsBookmarksPaginated/');
+			modalMoveCopyGroupbookmarkDatatable('copyGroupBookmarksTable', copyGroupBookmarksTable, '/metalnx/groupBookmarks/groupsBookmarksPaginated/');
 		/*]]>*/
 		</script>
 	</div>

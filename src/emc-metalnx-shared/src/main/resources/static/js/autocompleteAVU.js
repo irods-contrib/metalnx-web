@@ -27,7 +27,7 @@ $(document).ready(function(){
 				$.ajax({
 					dataType: "json",
 					type : 'Get',           
-					url: '/emc-metalnx-web/avuAutoComplete/getMetadataAttrs',
+					url: '/metalnx/avuAutoComplete/getMetadataAttrs',
 					success: function(data) {
 						//$('input.metadataAttr').removeClass('ui-autocomplete-loading');  
 						// hide loading image	              
@@ -55,7 +55,7 @@ $(document).ready(function(){
 				$(this).val(ui.item.label);
 				event.preventDefault();
 				var selectedObj = ui.item.label; 
-				console.log("Value selected :: " + selectedObj);
+				//console.log("Value selected :: " + selectedObj);
 				var _id = $(this).attr("id");
 				getAttributeValues(selectedObj, _id);
 			}
@@ -66,7 +66,7 @@ $(document).ready(function(){
 	var selector = 'input.metadataAttr';
 	$(document).on('keydown.autocomplete', selector, function() {
 		$(this).autocomplete(options).data('ui-autocomplete')._renderItem = function(ul, item) {
-			console.log(item.label);
+			//console.log(item.label);
 			return $('<li></li>')
 			.data("item.autocomplete", item)
 			.append('<a>' + item.label + '</a>')
@@ -83,7 +83,7 @@ function getAttributeValues(attributeName,id){
 	$.ajax({  	
 		dataType: "json",
 		type : 'Get',            
-		url: '/emc-metalnx-web/avuAutoComplete/getMetadataValues',
+		url: '/metalnx/avuAutoComplete/getMetadataValues',
 		data: {attributeName : attributeName},
 		success: function(data) {
 

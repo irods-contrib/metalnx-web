@@ -320,14 +320,14 @@
 		<script type="text/javascript" th:inline="javascript">
 			if([[${ server }]]) {
 				var serverHostname = [[${ server.hostname }]];
-				var url = "/emc-metalnx-web/dashboard/storageServer/";
+				var url = "/metalnx/dashboard/storageServer/";
 
 				ajaxEncapsulation(url, "POST", {hostname : serverHostname}, displayTotalStorageInfo, null);
 
 
 				// Requesting machine's health information to Metalnx
 				var rmdBaseScheme = "POST";
-				var rmdBaseUrl = "/emc-metalnx-web/monitor/";
+				var rmdBaseUrl = "/metalnx/monitor/";
 				var requestsInfo = [
 					{request: {host: serverHostname, infoType: "DISK_STATS"}, handler: createDiskCharts},
 					{request: {host: serverHostname, infoType: "MEMORY_STATS"}, handler: displayMemoryInfo},
@@ -345,12 +345,12 @@
 
 				$("#resourceListOfAServer a").click(function(){
 					var resourceName = $(this).text();
-					$.get("/emc-metalnx-web/dashboard/resourceDetails/" + resourceName + "/", function(data) {
+					$.get("/metalnx/dashboard/resourceDetails/" + resourceName + "/", function(data) {
 						$("#resourceOfAServerInfo").html(data);
 					});
 				});
 
-				ajaxEncapsulation("/emc-metalnx-web/dashboard/msiInstalledList", "GET", {host: serverHostname}, displayMSI);
+				ajaxEncapsulation("/metalnx/dashboard/msiInstalledList", "GET", {host: serverHostname}, displayMSI);
 			}
 
 			function displayMSI(response){
@@ -358,7 +358,7 @@
 			}
 
 			function viewInfo(resourceName){
-				var url = "/emc-metalnx-web/resources/viewInfo/" + resourceName +"/";
+				var url = "/metalnx/resources/viewInfo/" + resourceName +"/";
 				ajaxEncapsulation(url, "GET", "", displayResourceInfo, null, null);
 			}
 

@@ -198,7 +198,7 @@
     		    	data.search.search = "";
     		    },
 			    "ajax": {
-			        url: '/emc-metalnx-web/tickets/',
+			        url: '/metalnx/tickets/',
 			    },
 			    "rowId": 'ticketString',
 			    "order": [[ 3, 'desc' ], [1, 'asc']],
@@ -290,7 +290,7 @@
                     $(".popover:visible").each(function() {
                         $(this).popover("hide");
                     });
-                    var html = "<form action='/emc-metalnx-web/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
+                    var html = "<form action='/metalnx/ticketclient/' method='GET' id='ticketLoggedAccessForm'>";
                         html += "<input id='ticketLoggedAccessString' type='text' class='form-control' maxlength='15' name='ticketstring' ";
                         html += "placeholder='" + [[#{ticket.form.ticket.string.label}]] + "'/>";
                         html += "<br />";
@@ -312,8 +312,8 @@
             });
 		});
 
-        var ticketsURL = '/emc-metalnx-web/tickets/';
-        var ticketClientURL = '/emc-metalnx-web/ticketClient/';
+        var ticketsURL = '/metalnx/tickets/';
+        var ticketClientURL = '/metalnx/ticketClient/';
         var jsonContentType = "application/json; charset=utf-8";
 
         $("body").on("click", "#ticketLoggedAccessPopoverBtn", function(e){
@@ -428,7 +428,7 @@
             if(allFieldsValidated()){
 			    $("#ticketModifyForm").modal("hide");
                 var ticket = JSON.stringify(serializeTicketForm());
-                var url = '/emc-metalnx-web/tickets/';
+                var url = '/metalnx/tickets/';
                 ajaxEncapsulation(url, 'PUT', ticket, modifyTicketSuccess, modifyTicketFailure, null, jsonContentType);
 		    }
 

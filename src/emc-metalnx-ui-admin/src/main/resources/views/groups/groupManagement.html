@@ -12,7 +12,7 @@
     layout:decorator="template">
 
 <head>
-	<title th:text="#{tab.title.groups}">EMC Metalnx - Groups</title>
+	<title th:text="#{tab.title.groups}">Metalnx - Groups</title>
 </head>
 
 <body>
@@ -84,7 +84,7 @@
 
 						// Loads results in user management page
 						function loadGroupResults() {
-							var url = "/emc-metalnx-web/groups/findAll/";
+							var url = "/metalnx/groups/findAll/";
 							ajaxEncapsulation(url, "GET", "", populateGroupTableDiv, null, null);
 						}
 

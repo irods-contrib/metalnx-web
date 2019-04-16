@@ -73,7 +73,7 @@ $("#ticketUploadButton").click(function(){
 });
 
 function ticketUploadAndUpdateStatus(file, index, totalFiles){
-    var url = "/emc-metalnx-web/ticketclient/" + $('#ticketString').text();
+    var url = "/metalnx/ticketclient/" + $('#ticketString').text();
     var formData = new FormData();
     formData.append('file', file);
     formData.append('path', $('#ticketPath').text());
@@ -123,13 +123,13 @@ function ticketUploadAndUpdateStatus(file, index, totalFiles){
         },
         statusCode: {
             401: function(){
-                window.location= "/emc-metalnx-web/ticketclient/invaliduser";
+                window.location= "/metalnx/ticketclient/invaliduser";
             },
             408: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             },
             403: function(response){
-                window.location= "/emc-metalnx-web/login/";
+                window.location= "/metalnx/login/";
             }
         }
     });

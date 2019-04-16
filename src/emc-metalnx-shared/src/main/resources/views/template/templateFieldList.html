@@ -160,10 +160,10 @@
         		return $(this).val();
         	}).get().join(); 
 				
-			var url = "/emc-metalnx-web/templates/removeFieldFromTemplate/";						
+			var url = "/metalnx/templates/removeFieldFromTemplate/";						
 			ajaxEncapsulation(url, "POST", {templateFieldsPosList: templateFieldsPosList}, null, null, null);			
 			
-			url = "/emc-metalnx-web/templates/removeFieldFromDB/";							
+			url = "/metalnx/templates/removeFieldFromDB/";							
 			ajaxEncapsulation(url, "POST", {templateFieldsIDList: templateFieldsIDList}, markAsDeleted, null, null);	
 		}
 		

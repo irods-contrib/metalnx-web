@@ -60,8 +60,8 @@
 					Scheme</label> <select class="form-control" id="authScheme"
 					name="authScheme">
 					<option th:each="authType : ${authTypes}"
-						th:selected="${authType == defaultAuthType}"
-						th:value="${authType}" th:text="${authType}"></option>
+						th:selected="${authType.irodsAuthType == defaultAuthType}"
+						th:value="${authType.irodsAuthType}" th:text="${authType.userAuthType}"></option>
 				</select>
 			</div>
 
@@ -138,7 +138,7 @@
 
 		for (var i = 0; i < localStorage.length; i++) {
 			var key = localStorage.key(i);
-			if (key.indexOf('emc-metalnx-web') > -1) {
+			if (key.indexOf('metalnx') > -1) {
 				mlxKeys.push(key);
 			}
 		}

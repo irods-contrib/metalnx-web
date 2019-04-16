@@ -132,7 +132,7 @@
             });
         }
 
-        var usersSource = createBloodhoundInstance('/emc-metalnx-web/users/query/%QUERY/', filterUsers);
+        var usersSource = createBloodhoundInstance('/metalnx/users/query/%QUERY/', filterUsers);
 
         if(!$("#usersToBeAdded").val()){
             $("#usersToBeAdded").attr("placeholder", [[#{ticket.form.users.placeholder}]]);
@@ -175,7 +175,7 @@
             });
         }
 
-        var groupsSource = createBloodhoundInstance('/emc-metalnx-web/groups/query/%QUERY/', filterGroups);
+        var groupsSource = createBloodhoundInstance('/metalnx/groups/query/%QUERY/', filterGroups);
         if(!$("#groupsToBeAdded").val()){
             $("#groupsToBeAdded").attr("placeholder", [[#{ticket.form.groups.placeholder}]]);
         }

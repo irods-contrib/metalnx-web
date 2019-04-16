@@ -54,7 +54,7 @@ There are two packages used by the Metalnx setup script: `pyscopg2` for PostgreS
 	# apt-get install python-psycopg2    # PostgreSQL
 	# apt-get install python-mysqldb     # MySQL
 
-# Manual Build 
+# Manual Build
 This section describes the dependencies *only necessary* to *build* the Metalnx Web project. **If you are only installing Metalnx via `rpm` or `deb` packages, you can skip this section**.
 
 If you want to build the Metalnx Web project manually, first ensure that you installed all dependencies listed in the section above before you proceed.
@@ -66,21 +66,9 @@ You can typically install Maven via a package manager like `yum` or `apt-get`.  
 # yum install maven
 ```
 
-If you desire to build the `rpm` or `deb` package versions of Metalnx you will need the approriate build tools.   For `rpm` packages that tool is `rpm-build`.
-
-```
-# yum install rpmdevtools rpm rpm-devel rpm-build
-```
-
-For `deb` packages, the tool is `dpkg-dev`:
-```
-# apt-get install dpkg-dev
-```
-
 # Docker Container
 
 * [Docker 1.9.1](https://www.docker.com/)
 * Metalnx source code (specifically the `packaging/docker` folder), (*This is needed if you are building the container locally*)
 * Metalnx `war` file already built (refer to **Metalnx Build Guide**), (*This is needed if you are building the container locally*)
 * Access to the Internet. The container building process needs to get files from the CentOS central repository in order to get the base system running.
-
