@@ -1,10 +1,8 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: 2.0.1-SNAPSHOT
+## Version: 2.1.0-SNAPSHOT
 ## Git Tag:
 ## Date:
-
-
 
 ## Deploying Packaged Metalnx
 
