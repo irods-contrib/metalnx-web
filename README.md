@@ -58,7 +58,7 @@ From source, the package will 'just build':
 make
 ```
 
-This will result in a new Docker image named myimages/metalnx:latest on your machine.
+This will result in a new Docker image named `myimages/metalnx:latest` on your machine.
 
 ## Deploying Built Metalnx
 
