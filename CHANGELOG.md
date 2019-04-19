@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - XXXX
+## [2.0.0] - 2019-04-19
 ### Added
 
 #### Add SSL cert management support #2
