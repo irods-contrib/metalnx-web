@@ -11,9 +11,3 @@ COPY packaging/docker/runit.sh /
 COPY packaging/docker/metalnx.war /usr/local/tomcat/webapps/
 
 CMD ["/runit.sh"]
-
-
-
-# build: docker build -t myimages/metalnx:latest .
-
-# run:  docker run -d --rm -p 8080:8080 -v /etc/irods-ext:/etc/irods-ext  -v /home/mcc/webdavcert:/tmp/cert --add-host irods420.irodslocal:172.16.250.101 diceunc/metalnx:latest
