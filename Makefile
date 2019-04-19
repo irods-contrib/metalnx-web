@@ -19,8 +19,7 @@ packaging/docker/metalnx.war:
 
 # this docker command builds a local docker image
 dockerimage: packaging/docker/metalnx.war
-	cd packaging/docker && \
-		docker build -t myimages/metalnx:latest .
+	docker build -t myimages/metalnx:latest .
 
 # this removes the .war file
 # it does not clean maven's .m2 cache
