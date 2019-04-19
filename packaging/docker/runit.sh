@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -xe
 
 if [ -f /tmp/cert/server.crt ];
 then
