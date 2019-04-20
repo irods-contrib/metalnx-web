@@ -2,6 +2,7 @@
 
 Metalnx is a web application designed to work alongside [iRODS](http://www.irods.org). It is a graphical user interface and serves as a client that authenticates to an existing iRODS Zone.
 
+![Metalnx 2.0.0 Screenshot](docs/IMAGES/metalnx2.0.0.png)
 
 ## Deploying Packaged Metalnx
 
