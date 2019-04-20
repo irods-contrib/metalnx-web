@@ -70,7 +70,7 @@ docker run -d \
   -p 8080:8080 \
   -v `pwd`/mylocal-irods-ext:/etc/irods-ext \
   --add-host hostcomputer:172.17.0.1 \
-  --name metalnx
+  --name metalnx \
   myimages/metalnx:latest
 ```
 
