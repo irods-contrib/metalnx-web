@@ -327,6 +327,8 @@ public class PermissionsServiceImpl implements PermissionsService {
 	public void resolveMostPermissiveAccessForUser(DataGridCollectionAndDataObject obj, DataGridUser user)
 			throws DataGridException {
 
+		logger.info("resolveMostPermissiveAccessForUser()");
+
 		if (obj == null || user == null)
 			return;
 
@@ -334,10 +336,14 @@ public class PermissionsServiceImpl implements PermissionsService {
 		List<UserFilePermission> acl;
 
 		try {
+			logger.info("obtaining user groups for user:{}", user.getUsername());
 			userGroups = irodsServices.getGroupAO().findUserGroupsForUser(user.getUsername());
+			logger.info("obtaining acls list for object:{}", obj.getPath());
 			acl = getFilePermissionListForObject(obj.getPath());
+			logger.info("acl:{}", acl);
 		} catch (JargonException e) {
-			throw new DataGridException();
+			logger.error("jargon exception getting permission listing", e);
+			throw new DataGridException("error getting permission listing", e);
 		}
 
 		// Building set containing group names for current user
