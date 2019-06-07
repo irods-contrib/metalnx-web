@@ -39,6 +39,7 @@ import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry.ObjectTyp
 import org.irods.jargon.core.query.JargonQueryException;
 import org.irods.jargon.core.query.SpecificQuery;
 import org.irods.jargon.core.query.SpecificQueryResultSet;
+import org.irods.jargon.core.utils.MiscIRODSUtils;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerService;
@@ -890,6 +891,7 @@ public class CollectionServiceImpl implements CollectionService {
 		dgObj.setCreatedAt(entry.getCreatedAt());
 		dgObj.setModifiedAt(entry.getModifiedAt());
 		dgObj.setOwner(entry.getOwnerName());
+		dgObj.setDisplaySize(MiscIRODSUtils.humanReadableByteCount(entry.getDataSize()));
 		dgObj.setProxy(entry.getObjectType() == ObjectType.COLLECTION_HEURISTIC_STANDIN);
 		return dgObj;
 	}
@@ -953,15 +955,11 @@ public class CollectionServiceImpl implements CollectionService {
 	 * collection where the term appears in the beginning, middle, and the end of
 	 * its name will be retrieved.
 	 *
-	 * @param parentPath
-	 *            path to the parent collection where you are looking for items that
-	 *            match a search term
-	 * @param searchText
-	 *            term to be matched
-	 * @param offset
-	 *            partial start index
-	 * @param limit
-	 *            max number of items retrieved
+	 * @param parentPath path to the parent collection where you are looking for
+	 *                   items that match a search term
+	 * @param searchText term to be matched
+	 * @param offset     partial start index
+	 * @param limit      max number of items retrieved
 	 * @return list of data objects that match the given search text
 	 * @throws DataGridConnectionRefusedException
 	 */
@@ -1042,15 +1040,11 @@ public class CollectionServiceImpl implements CollectionService {
 	 * data object where the term appears in the beginning, middle, and the end of
 	 * its name will be retrieved.
 	 *
-	 * @param parentPath
-	 *            path to the parent collection where you are looking for items that
-	 *            match a search term
-	 * @param searchText
-	 *            term to be matched
-	 * @param offset
-	 *            partial start index
-	 * @param limit
-	 *            max number of items retrieved
+	 * @param parentPath path to the parent collection where you are looking for
+	 *                   items that match a search term
+	 * @param searchText term to be matched
+	 * @param offset     partial start index
+	 * @param limit      max number of items retrieved
 	 * @return list of data objects that match the given search text
 	 * @throws DataGridConnectionRefusedException
 	 */
@@ -1125,11 +1119,9 @@ public class CollectionServiceImpl implements CollectionService {
 	/**
 	 * Calculates the number of collections that match the given search term.
 	 *
-	 * @param parentPath
-	 *            path to the parent collection where you are looking for items that
-	 *            match a search term
-	 * @param searchText
-	 *            term to be matched
+	 * @param parentPath path to the parent collection where you are looking for
+	 *                   items that match a search term
+	 * @param searchText term to be matched
 	 * @return total number of collections matching the given search text
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
@@ -1196,11 +1188,9 @@ public class CollectionServiceImpl implements CollectionService {
 	/**
 	 * Calculates the number of data objects that match the given search term.
 	 *
-	 * @param parentPath
-	 *            path to the parent collection where you are looking for items that
-	 *            match a search term
-	 * @param searchText
-	 *            term to be matched
+	 * @param parentPath path to the parent collection where you are looking for
+	 *                   items that match a search term
+	 * @param searchText term to be matched
 	 * @return total number of collections matching the given search text
 	 * @throws DataGridConnectionRefusedException
 	 */
@@ -1279,15 +1269,11 @@ public class CollectionServiceImpl implements CollectionService {
 	 * Auxiliary method that filters the directories with the specified permission
 	 * level for the given entity, that can be an user or a group
 	 *
-	 * @param path
-	 *            The path for which we would like to list the objects with
-	 *            permissions
-	 * @param entityName
-	 *            The entity name
-	 * @param permissionType
-	 *            The permission stype
-	 * @param entityType
-	 *            The entity type that can be user or group
+	 * @param path           The path for which we would like to list the objects
+	 *                       with permissions
+	 * @param entityName     The entity name
+	 * @param permissionType The permission stype
+	 * @param entityType     The entity type that can be user or group
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 */
@@ -1384,8 +1370,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	/**
-	 * @param adminServices
-	 *            the adminServices to set
+	 * @param adminServices the adminServices to set
 	 */
 	public void setAdminServices(AdminServices adminServices) {
 		this.adminServices = adminServices;
@@ -1399,8 +1384,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	/**
-	 * @param irodsServices
-	 *            the irodsServices to set
+	 * @param irodsServices the irodsServices to set
 	 */
 	public void setIrodsServices(IRODSServices irodsServices) {
 		this.irodsServices = irodsServices;
@@ -1414,8 +1398,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	/**
-	 * @param resourceService
-	 *            the resourceService to set
+	 * @param resourceService the resourceService to set
 	 */
 	public void setResourceService(ResourceService resourceService) {
 		this.resourceService = resourceService;
@@ -1429,8 +1412,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	/**
-	 * @param permissionsService
-	 *            the permissionsService to set
+	 * @param permissionsService the permissionsService to set
 	 */
 	public void setPermissionsService(PermissionsService permissionsService) {
 		this.permissionsService = permissionsService;
@@ -1444,8 +1426,7 @@ public class CollectionServiceImpl implements CollectionService {
 	}
 
 	/**
-	 * @param fileOperationService
-	 *            the fileOperationService to set
+	 * @param fileOperationService the fileOperationService to set
 	 */
 	public void setFileOperationService(FileOperationService fileOperationService) {
 		this.fileOperationService = fileOperationService;

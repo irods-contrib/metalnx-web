@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>2.0.0-RELEASE</version>
+		<version>2.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>emc-metalnx-services</artifactId>
 	<dependencies>
