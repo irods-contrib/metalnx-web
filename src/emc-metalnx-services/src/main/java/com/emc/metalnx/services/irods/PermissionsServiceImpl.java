@@ -148,6 +148,8 @@ public class PermissionsServiceImpl implements PermissionsService {
 	@Override
 	public List<DataGridGroupPermission> getGroupsWithPermissions(List<DataGridFilePermission> ufps) {
 
+		logger.info("getGroupsWithPermissions()");
+
 		// Maps from data grid ID to DataGridGroupPermission object for retrieving the
 		// group names
 		HashMap<String, DataGridGroupPermission> idGroupsPermissions = new HashMap<String, DataGridGroupPermission>();
@@ -202,6 +204,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 	@Override
 	public List<DataGridUserPermission> getUsersWithPermissions(List<DataGridFilePermission> ufps) {
 
+		logger.info("getUsersWithPermissions()");
 		// List containing all the users with some kind of permissions
 		List<DataGridUserPermission> usersWithPermissions = new ArrayList<DataGridUserPermission>();
 
