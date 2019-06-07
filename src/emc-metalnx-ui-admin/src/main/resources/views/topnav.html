@@ -8,16 +8,18 @@
 		<div class="datacommons_title">
 
 			<div class="datacommons_title-left">
-			<!--	<span id="headerContent"></span> <a href="#"
+				<span id="headerContent"></span> <a href="#"
 					class="datacommons_title-icon" id="headerContentIcon"><img  alt="Metalnx Logo" src="../static/images/logo.svg"
-                                th:src="@{/images/logo.svg}" /></a>-->
+                                th:src="@{/images/logo.svg}" /></a>
 			</div>
 			<div class="datacommons_title-mid">
-				<div class="datacommons_title-breadcrum"><a href="/divisions/index.htm">Divisions</a> &nbsp;»&nbsp; <a
-				th:href="@{ ${urlMap.URL_DASHBOARD} }"> <!-- href="/emc-metalnx-web/dashboard/" -->
-				<span> Data Commons</span>
-			</a> &nbsp;»&nbsp;</div>
-			
+				<div class="datacommons_title-breadcrum"></div>
+				<!-- <div class="pull-left page-header">
+					<h1 class="pull-left" th:text="#{ ${ topnavHeader.getName() } }"
+						th:data-content="#{ ${ topnavHeader.getHint() } }"></h1>
+					<a aria-label="page help" href="#" id="page-title"
+						class="page-hint pull-left"><i class="fa fa-question-circle"></i></a>
+				</div> -->
 			</div>
 			<div class="datacommons_title-right">
 				<ul class="datacommons_title-usermenu">
@@ -46,35 +48,35 @@
 	</div>
 	<!-- /.navbar-top-links -->
 
-	<!-- Upload notifications panel
-
+	<!-- Upload notifications panel 
+				
 				<a  href="/metalnx/notification/"><i class="fa fa-bell" aria-hidden="true"></i></a>
 			</div>
 		</div>-->
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-
+	
 			var url = window.location.href;
 			var altUrl = url.replace('?', '/')
-
-			//console.log(url);
+	
+			//console.log(url); 
 			//console.log(altUrl);
 			var urlArray = altUrl.split("/", 5)
 			var header = urlArray[(urlArray.length) - 1];
 			console.log("header :: " + header);
 			url.split("metalnx");
-
+	
 			if (header == "dashboard") {
 				$("#headerContent").text("Dashboard").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-tachometer');
 			}
-
+	
 			if (header == "resources") {
 				$("#headerContent").text("Resources").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-database');
 			}
-
+	
 			if (header == "rules") {
 				$("#headerContent").text("Rules").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-file-text');
@@ -83,59 +85,59 @@
 				$("#headerContent").text("Users").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-user');
 			}
-
+	
 			if (header == "groups") {
 				$("#headerContent").text("Groups").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-group');
 			}
-
+	
 			if (header == "profiles") {
 				$("#headerContent").text("Profiles").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-user');
 			}
-
+	
 			if (header == "collections" || header == "collectionInfo") {
 				$("#headerContent").text("Collections").addClass("page-header");
 				;
 				$("#headerContentIcon").addClass('fa fa-folder');
 			}
-
+	
 			if (header == "search" || header == "metadata") {
 				$("#headerContent").text("Search").addClass("page-header");
 				;
 				$("#headerContentIcon").addClass('fa fa-search');
 			}
-
+	
 			if (header == "templates") {
 				$("#headerContent").text("Templates").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-cubes');
 			}
-
+	
 			if (header == "shared links" || header == "userBookmarks") {
 				$("#headerContent").text("Shared Links");
 				$("#headerContentIcon").addClass('fa fa-share-alt');
 			}
-
+	
 			if (header == "favorites") {
 				$("#headerContent").text("Favorites").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-star');
 			}
-
+	
 			if (header == "public") {
 				$("#headerContent").text("Public").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-globe');
 			}
-
+	
 			if (header == "trash") {
 				$("#headerContent").text("Trash").addClass("page-header");
 				$("#headerContentIcon").addClass('fa fa-trash');
 			}
-
-
-
-
+	
+	
+	
+	
 		});
-
+	
 		function capitalize(string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
 		}
