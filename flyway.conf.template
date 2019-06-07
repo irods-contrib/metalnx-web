@@ -1,4 +1,0 @@
-flyway.url=jdbc:postgresql://databasehostname:5432/IRODS-EXT
-flyway.user=metalnx
-flyway.password=changeme
-flyway.schemas=public
