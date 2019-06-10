@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University
-	of North Carolina at Chapel Hill -->
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -18,19 +15,29 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>com.emc.metalnx</groupId>
-			<artifactId>emc-metalnx-ui-admin</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-extensions-if</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-profiler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>irodsext-data-typer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-data-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>emc-metalnx-services</artifactId>
+			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
@@ -104,16 +111,6 @@
 			<artifactId>guava</artifactId>
 			<version>23.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.irods.jargon</groupId>
-			<artifactId>jargon-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jglobus</groupId>
-					<artifactId>gss</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -130,6 +127,39 @@
 		    <groupId>dom4j</groupId>
 		    <artifactId>dom4j</artifactId>
 		    <version>1.6.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jettison/jettison -->
+		<dependency>
+		    <groupId>org.codehaus.jettison</groupId>
+		    <artifactId>jettison</artifactId>
+		    <version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.clerezza.ext/org.json.simple -->
+		<dependency>
+		    <groupId>org.apache.clerezza.ext</groupId>
+		    <artifactId>org.json.simple</artifactId>
+		    <version>0.4</version>
+		</dependency>
+		<!-- Files Upload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -163,9 +193,6 @@
 		<finalName>metalnx</finalName>
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
 				<directory>src/main/conf/${env}</directory>
 			</resource>
 			<resource>
@@ -179,6 +206,10 @@
 				<includes>
 					<include>**/*.xml</include>
 					<include>*.properties</include>
+					<include>static/**</include>
+					<include>**/*.html</include>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
 				</includes>
 			</resource>
 		</resources>
@@ -205,7 +236,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<packagingExcludes>WEB-INF/web.xml</packagingExcludes>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 				</configuration>
 			</plugin>
 			<plugin>

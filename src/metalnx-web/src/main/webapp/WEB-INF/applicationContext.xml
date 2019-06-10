@@ -19,13 +19,13 @@
 	    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<import
-		resource="classpath:META-INF/emc-metalnx-ui-admin/emc-metalnx-ui-admin-context.xml" />
+		resource="classpath:/emc-metalnx-ui-admin-context.xml" />
 
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>file:/etc/irods-ext/metalnx.properties</value> 
+				<value>file:/etc/irods-ext/metalnx.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
@@ -34,7 +34,7 @@
 	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md
 		doc at the top of the repo, -->
 
-	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />  
+	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->

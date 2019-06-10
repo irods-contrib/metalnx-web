@@ -12,11 +12,11 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-	<import resource="classpath:META-INF/emc-metalnx-services/emc-metalnx-services-context.xml" />
-	<import resource="classpath:META-INF/emc-metalnx-jobs/emc-metalnx-jobs-context.xml" />
-	<import resource="classpath:META-INF/emc-metalnx-shared/emc-metalnx-shared-context.xml" />
-	
+	<import resource="classpath:/META-INF/emc-metalnx-services/emc-metalnx-services-context.xml" />
+	<import resource="classpath:/emc-metalnx-jobs-context.xml" />
+	<import resource="classpath:/emc-metalnx-shared-context.xml" />
+
 	<context:annotation-config />
 	<context:component-scan base-package="com.emc.metalnx.controller" />
-	
+
 </beans>
