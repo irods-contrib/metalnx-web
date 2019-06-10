@@ -138,16 +138,6 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.datacommons</groupId>
-			<artifactId>notification-client</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<!--  <dependency>
-			<groupId>org.datacommons</groupId>
-			<artifactId>notification-server</artifactId>
-			<version>1.0.0</version>
-		</dependency>  -->
 
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
