@@ -5,6 +5,9 @@
 * Spring 4.1.9 Ref https://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/
 * Spring 4.1.9 API https://docs.spring.io/spring/docs/4.1.9.RELEASE/javadoc-api/
 
+* maven/node/vue build integration: https://github.com/eirslett/frontend-maven-plugin
+* example maven/node project: https://github.com/eirslett/frontend-maven-plugin/tree/master/frontend-maven-plugin/src/it/example%20project
+
 ## Testing setup
 Metalnx has been updated to use the same testing.properties setup and settings.xml from jargon
 tests.  See https://github.com/DICE-UNC/jargon/wiki/Setting-up-unit-tests for some orientation.
