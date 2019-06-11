@@ -1,1 +1,7 @@
 test*.properties
+node_modules
+target
+bower_components
+node
+node_modules
+package-lock.json

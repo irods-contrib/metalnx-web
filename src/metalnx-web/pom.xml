@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University 
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University
 	of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
@@ -219,9 +219,9 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<!-- NB! Set <version> to the latest released version of frontend-maven-plugin, 
+				<!-- NB! Set <version> to the latest released version of frontend-maven-plugin,
 					like in README.md -->
-				<version>@project.version@</version>
+				<version>1.7.6</version>
 
 				<executions>
 
@@ -231,7 +231,7 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<!-- See https://nodejs.org/en/download/ for latest node and npm (lts) 
+							<!-- See https://nodejs.org/en/download/ for latest node and npm (lts)
 								versions -->
 							<nodeVersion>v8.11.1</nodeVersion>
 							<npmVersion>5.6.0</npmVersion>
