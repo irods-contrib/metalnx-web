@@ -7,6 +7,8 @@
 
 * maven/node/vue build integration: https://github.com/eirslett/frontend-maven-plugin
 * example maven/node project: https://github.com/eirslett/frontend-maven-plugin/tree/master/frontend-maven-plugin/src/it/example%20project
+* multi-page mode for vue apps: https://webpack.js.org/concepts/entry-points/#multi-page-application
+* AND https://cli.vuejs.org/guide/html-and-static-assets.html#building-a-multi-page-app
 
 ## Testing setup
 Metalnx has been updated to use the same testing.properties setup and settings.xml from jargon
