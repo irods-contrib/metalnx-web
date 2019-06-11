@@ -163,9 +163,7 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-
 	</dependencies>
-
 	<!-- Profile definition -->
 	<profiles>
 		<profile>
@@ -190,7 +188,6 @@
 			</properties>
 		</profile>
 	</profiles>
-
 	<build>
 		<finalName>metalnx</finalName>
 		<resources>
@@ -207,12 +204,13 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*.xml</include>
-					<include>*.properties</include>
 					<include>static/**</include>
 					<include>**/*.html</include>
-					<include>**/*.xml</include>
 					<include>**/*.properties</include>
 				</includes>
+			</resource>
+			<resource>
+				<directory>target/dist</directory>
 			</resource>
 		</resources>
 		<plugins>
@@ -222,9 +220,7 @@
 				<!-- NB! Set <version> to the latest released version of frontend-maven-plugin,
 					like in README.md -->
 				<version>1.7.6</version>
-
 				<executions>
-
 					<execution>
 						<id>install node and npm</id>
 						<goals>
@@ -237,7 +233,6 @@
 							<npmVersion>5.6.0</npmVersion>
 						</configuration>
 					</execution>
-
 					<execution>
 						<id>npm install</id>
 						<goals>
@@ -248,7 +243,6 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
-
 					<execution>
 						<id>npm run build</id>
 						<goals>
@@ -258,7 +252,6 @@
 							<arguments>run build</arguments>
 						</configuration>
 					</execution>
-				
 				</executions>
 			</plugin>
 			<plugin>
@@ -302,7 +295,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.20.1</version>
 				<configuration />
-
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -473,7 +465,6 @@
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
 
-
 								</echo>
 							</tasks>
 						</configuration>
@@ -483,7 +474,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>
