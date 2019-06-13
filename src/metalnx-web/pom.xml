@@ -164,30 +164,7 @@
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
 	</dependencies>
-	<!-- Profile definition -->
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<env>dev</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>preprod</id>
-			<properties>
-				<env>preprod</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>integration-tests</id>
-			<properties>
-				<env>integration-tests</env>
-			</properties>
-		</profile>
-	</profiles>
+
 	<build>
 		<finalName>metalnx</finalName>
 		<resources>
