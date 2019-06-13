@@ -3,9 +3,8 @@
   <div id="container">
 
     <b-navbar  type="dark" variant="info">
-      <b-navbar-brand href="#">Epigenomics Commons Search</b-navbar-brand>
+      <b-navbar-brand href="#">Collections Browser Component</b-navbar-brand>
     </b-navbar>
-
     <router-view></router-view>
   </div>
 </template>
@@ -13,7 +12,7 @@
 <script>
   import Vue from 'vue'
   import BootstrapVue from 'bootstrap-vue'
-  import App from './App'
+  //import App from './App'
 
   Vue.use(BootstrapVue)
 

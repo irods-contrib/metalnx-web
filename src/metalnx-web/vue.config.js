@@ -2,7 +2,17 @@
 module.exports = {
   outputDir: 'target/dist/static',
   filenameHashing: false,
-  publicPath: '/metalnx/static/',
+  publicPath: '/metalnx/',
+  devServer: {
+	  port:8888,
+    proxy: {
+      '/metalnx': {
+        target: 'http://localhost:8080',
+        ws: true,
+        changeOrigin: true
+      }
+    }
+  },
   pages: {
    collections: {
      entry: 'src/main/javascript/collections/main.js'

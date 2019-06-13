@@ -9,6 +9,9 @@
 * example maven/node project: https://github.com/eirslett/frontend-maven-plugin/tree/master/frontend-maven-plugin/src/it/example%20project
 * multi-page mode for vue apps: https://webpack.js.org/concepts/entry-points/#multi-page-application
 * AND https://cli.vuejs.org/guide/html-and-static-assets.html#building-a-multi-page-app
+* Notes on webpack proxy for dev: https://blog.codecentric.de/en/2018/04/spring-boot-vuejs/
+* Notes on env switching dev|prod: https://www.inmensys.com/spring-boot-and-vuejs
+* Proxying in dev mode: https://cli.vuejs.org/config/#devserver-proxy
 
 ## Testing setup
 Metalnx has been updated to use the same testing.properties setup and settings.xml from jargon
