@@ -165,8 +165,8 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<packagingExcludes>WEB-INF/web.xml</packagingExcludes>
-				</configuration>
+	 				<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+ 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
@@ -347,8 +347,6 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-
-
 								</echo>
 							</tasks>
 						</configuration>
@@ -358,7 +356,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>
