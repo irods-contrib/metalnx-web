@@ -223,7 +223,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>run ${metalnx.env.mode}</arguments>
+							<arguments>run build</arguments>
 						</configuration>
 					</execution>
 				</executions>
