@@ -234,6 +234,42 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<property name="src.dir" value="${project.build.sourceDirectory}" />
+								<property name="package.dir.version" value="com/emc/metalnx/utils" />
+								<property name="package.name.version" value="com.emc.metalnx.utils" />
+								<property name="buildtime" value="${maven.build.timestamp}" />
+
+								<echo message="Generating file EmcMetalnxVersion..." />
+								<echo message=" - File path: ${src.dir}/${package.dir.version}" />
+								<echo message=" - File package: ${package.name.version}" />
+
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									message="package ${package.name.version};${line.separator}" />
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									append="true"
+									message="public final class EmcMetalnxVersion {${line.separator}" />
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									append="true"
+									message=" public static String VERSION=&quot;${project.version}&quot;;${line.separator}" />
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									append="true"
+									message=" public static String BUILD_NUMBER=&quot;${build.number}&quot;;${line.separator}" />
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									append="true"
+									message=" public static String BUILD_TIME=&quot;${buildtime}&quot;;${line.separator}" />
+								<echo file="${src.dir}/${package.dir.version}/EmcMetalnxVersion.java"
+									append="true" message="}${line.separator}" />
+								<echo message="BUILD ${buildtime}" />
+							</tasks>
+						</configuration>
+					</execution>
+					<execution>
 						<!-- generate jargon test properties as standard -->
 						<id>0</id>
 						<phase>validate</phase>
