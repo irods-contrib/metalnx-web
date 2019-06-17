@@ -210,8 +210,8 @@ public class CollectionController {
 
 		logger.info("displaying collections/collectionManagement");
 
-		// return "collections/collectionManagement";
-		return "collections/v-index";
+		return "collections/collectionManagement";
+		// return "collections/v-index";
 
 	}
 
