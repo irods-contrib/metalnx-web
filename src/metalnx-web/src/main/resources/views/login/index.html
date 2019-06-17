@@ -84,7 +84,7 @@
 
 
 		<form action="#" th:action="@{/ticketclient/}" method="GET"
-			id="anonymousLogin" class="hidden">
+			id="anonymousLogin" class="invisible">
 			<div class="login_fields_user">
 				<div class="icon">
 					<i class="fa fa-ticket" aria-hidden="true"></i>
@@ -115,13 +115,13 @@
 
 		<div class="login_msgs">
 			<i class="fa fa-exclamation-triangle"
-				th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? hidden"
+				th:classappend="${usernameOrPasswordInvalid == null and serverNotResponding == null and databaseNotResponding == null} ? invisible"
 				aria-hidden="true"></i> <span th:if="${usernameOrPasswordInvalid}"
 				class="invalidLogin" th:text="#{login.invalid.username.password}"></span>
 			<span th:if="${serverNotResponding}" class="invalidLogin"
 				th:text="#{login.irods.no.response}"></span> <span
 				th:if="${databaseNotResponding}" class="invalidLogin"
-				th:text="#{login.databse.no.response}"></span> <span class="hidden"
+				th:text="#{login.databse.no.response}"></span> <span class="invisible"
 				id="invalidTicketMsg" th:text="#{login.invalid.ticket}"></span>
 		</div>
 
@@ -155,10 +155,10 @@
 			var inputCheck = input.next("div.icon-input-check");
 
 			if (input.val() != '') {
-				inputCheck.removeClass("hidden");
+				inputCheck.removeClass("invisible");
 				inputCheck.addClass("visible");
 			} else {
-				inputCheck.addClass("hidden");
+				inputCheck.addClass("invisible");
 				inputCheck.removeClass("visible");
 			}
 		});
@@ -183,40 +183,40 @@
 	}
 
 	function showInvalidTicketMsg() {
-		$("#invalidTicketMsg").removeClass("hidden");
-		$(".login_msgs i").removeClass("hidden");
+		$("#invalidTicketMsg").removeClass("invisible");
+		$(".login_msgs i").removeClass("invisible");
 	}
 
 	function hideInvalidTicketMsg() {
-		$("#invalidTicketMsg").addClass("hidden");
-		$(".login_msgs i").addClass("hidden");
+		$("#invalidTicketMsg").addClass("invisible");
+		$(".login_msgs i").addClass("invisible");
 	}
 
 	function hideInvalidLoginMsg() {
-		$(".invalidLogin").addClass("hidden");
-		$(".login_msgs i").addClass("hidden");
+		$(".invalidLogin").addClass("invisible");
+		$(".login_msgs i").addClass("invisible");
 	}
 
 	function showAnonymousLogin() {
-		$(".login_msgs span").addClass("hidden");
-		$(".login_msgs i").addClass("hidden");
+		$(".login_msgs span").addClass("invisible");
+		$(".login_msgs i").addClass("invisible");
 
-		$("#authLogin").addClass("hidden");
-		$("#anonymousLogin").removeClass("hidden");
-		$("#ticket-link").addClass("hidden");
-		$("#login-link").removeClass("hidden");
+		$("#authLogin").addClass("invisible");
+		$("#anonymousLogin").removeClass("invisible");
+		$("#ticket-link").addClass("invisible");
+		$("#login-link").removeClass("invisible");
 	}
 
 	function showAuthLogin() {
-		$(".login_msgs span").addClass("hidden");
-		$(".login_msgs i").addClass("hidden");
+		$(".login_msgs span").addClass("invisible");
+		$(".login_msgs i").addClass("invisible");
 
-		$("#authLogin").removeClass("hidden");
-		$("#anonymousLogin").addClass("hidden");
-		$("#ticket-link").removeClass("hidden");
-		$("#login-link").addClass("hidden");
-		$("#loginBtn").removeClass("hidden");
-		$("#ticketAccessBtn").addClass("hidden");
+		$("#authLogin").removeClass("invisible");
+		$("#anonymousLogin").addClass("invisible");
+		$("#ticket-link").removeClass("invisible");
+		$("#login-link").addClass("invisible");
+		$("#loginBtn").removeClass("invisible");
+		$("#ticketAccessBtn").addClass("invisible");
 	}
 	/*]]>*/
 </script>
