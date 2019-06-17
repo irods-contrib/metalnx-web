@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
+<!-- Copyright (c) 2015-2017, Dell EMC -->
+
+
+
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+
+<link rel="shortcut icon" href="../static/images/favicon-16.png"
+	th:href="@{/images/favicon-16.png}" type="image/png" />
+
+<title th:if="${userDetails.isAdmin()}">iRODS Admin UI</title>
+<title th:unless="${userDetails.isAdmin()}">iRODS User Interface</title>
+
+<!-- jQuery Version 1.11.0 
+<script src="../static/js/jquery-1.11.0.js"
+    th:src="@{/js/jquery.min.js}"></script>
+-->
+<!-- Bootstrap Core CSS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	crossorigin="anonymous" type="text/javascript"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous" type="text/javascript"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous" type="text/javascript"></script>
+
+<!-- Custom Fonts -->
+<link href="../static/css/bootstrap.min.css" rel="stylesheet"
+	type="text/css" th:href="@{/css/bootstrap.min.css}" />
+<link href="../static/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css" th:href="@{/css/font-awesome.min.css}" />
+<link href="../static/css/fontawesome-5.0.13.min.css" rel="stylesheet"
+	type="text/css" th:href="@{/css/fontawesome-5.0.13.min.css}" />
+
+<link href="../static/css/toastr.css" rel="stylesheet"
+	th:href="@{/css/toastr.css}" />
+
+<link href="../static/css/styles.css" rel="stylesheet"
+	th:href="@{/css/styles.css}" />
+
+<link href="../static/css/global.css" rel="stylesheet"
+	th:href="@{/css/global.css}" />
+
+<!-- Tags input -->
+<link href="../static/css/bootstrap-tagsinput.css" rel="stylesheet"
+	th:href="@{/css/bootstrap-tagsinput.css}" />
+
+<!-- Tagsinput -->
+
+<!--  script src="../static/js/bootstrap-tagsinput.min.js" th:src="@{/js/bootstrap-tagsinput.min.js}"></script>-->
+
+<!-- Typeahead jQuery Plugin -->
+<script src="../static/js/typeahead.js" th:src="@{/js/typeahead.js}"
+	type="text/javascript"></script>
+
+<!-- Ajax Encapsulation -->
+<script src="../static/js/ajax.js" th:src="@{/js/ajax.js}"
+	type="text/javascript"></script>
+
+<!-- Clipboard -->
+<script src="../static/js/clipboard.min.js"
+	th:src="@{/js/clipboard.min.js}" type="text/javascript"></script>
+
+
+<!-- Toastr -->
+<script src="../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"
+	type="text/javascript"></script>
+
+
+<!-- Nano scroll -->
+<script src="../static/js/jquery.nanoscroller.min.js"
+	th:src="@{/js/jquery.nanoscroller.min.js}" type="text/javascript"></script>
+<link href="../static/css/nanoscroller.css" rel="stylesheet"
+	th:href="@{/css/nanoscroller.css}" />
+
+<!-- Datatables component -->
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css"
+	th:href="@{/css/dataTables.bootstrap.min.css}" />
+<script src="../static/js/jquery.dataTables.min.js"
+	th:src="@{/js/dataTables.bootstrap4.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/dataTables.bootstrap4.min.js}"
+	type="text/javascript"></script>
+
+<!-- Our customization on datatables jquery plugin 
+<script src="../static/js/dataTable.customize.js" th:src="@{/js/dataTable.customize.js}"></script>-->
+
+</head>
+
+<body>
+	<div id="wrapper">
+		<th:block th:include="topnav :: topnav">
+		</th:block>
+
+		<div class="page-nav-wrapper" id="page-nav-wrapper">
+			<aside class="navbar-default sidebar" role="navigation">
+				<th:block th:include="sidenav :: sidenav">
+				</th:block>
+				<!-- sidenav extracted out to fragment -->
+			</aside>
+
+			<!-- Page Content -->
+			<div id="page-wrapper">
+				<!-- SKIPNAV ANCHOR -->
+				<a name="skipnav-anchor"></a>
+
+				<div class="row">
+					<div class="col-sm-12" layout:fragment="content">
+						<h1 class="page-header">Title here</h1>
+					</div>
+					<!-- /.col-sm-12 -->
+				</div>
+				<!-- /.row -->
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="row"> &copy; 2018-2019 University of North
+			Carolina at Chapel Hill; 2015-2017 DELL EMC. All rights reserved. </footer>
+	</div>
+
+	<!-- About modal -->
+	<th:block th:include="misc/about">
+	</th:block>
+
+
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="../static/js/metisMenu.min.js"
+		th:src="@{/js/metisMenu.min.js}" type="text/javascript"></script>
+
+	<!-- Custom Theme JavaScript -->
+	<script src="../static/js/sb-admin-2.js" th:src="@{/js/sb-admin-2.js}"
+		type="text/javascript"></script>
+
+	<!-- Template switch -->
+	<script src="../static/js/switchTemplate.js"
+		th:src="@{/js/switchTemplate.js}" type="text/javascript"></script>
+
+	<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+		function showAboutModal() {
+			$("#aboutModal").modal("show");
+		}
+		//$(".sidebar").nanoScroller();
+
+		var current_url = window.location.href;
+		$("#side-menu li a").each(function(){
+		    var set_active_class = false;
+
+	        //making only trash side-menu link active and not collections
+		    if(current_url.indexOf([[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]) >= 0){
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
+		        set_active_class = true;
+	        //making only public colleciton side-menu link active
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }]]) >= 0){
+		       $("#side-menu a[href='"+[[@{${urlMap.URL_PUBLIC_COLLECTION_USER}}]]+"']").addClass("active");
+		        set_active_class = true;
+	        // making only profile side-menu active
+	        }else if(current_url.indexOf([[@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }]]) >= 0){
+	            $("#side-menu a[href='"+[[@{${urlMap.URL_USER_PROFILE_MANAGEMENT}}]]+"']").addClass("active");
+		        set_active_class = true;
+	        //making shared links side-menu option active if user is in group bookmarks page
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_GROUPS_BOOKMARKS} }]]) >= 0){
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_USER_BOOKMARKS}}]]+"']").addClass("active");
+		        set_active_class = true;
+		    //making trash side-menu option active
+		    }else if(current_url.indexOf([[@{ ${urlMap.URL_TRASH_COLLECTION_USER} }]]) >= 0){
+		    	console.log("issue 145 trash block passed")
+		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
+		        set_active_class = true;
+	        //every other link
+		    }else if((current_url.indexOf($(this).attr('href')) >= 0)){
+				$(this).addClass("active");
+			}
+		});
+	/*]]>*/
+	</script>
+</body>
+</html>
