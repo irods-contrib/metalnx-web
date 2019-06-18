@@ -6,20 +6,19 @@
 <html lang="en" layout:decorator="template">
 
 <head>
-	<!-- Cusom DragnDrop CSS -->
-	<link href="../static/css/dragDrop.css" rel="stylesheet" th:href="@{/css/dragDrop.css}"/>
+<!-- Cusom DragnDrop CSS -->
+<link href="../static/css/dragDrop.css" rel="stylesheet"
+	th:href="@{/css/dragDrop.css}" />
 
-	<!-- JQuery UI CSS -->
-	<link href="../static/css/jquery-ui.min.css" rel="stylesheet" th:href="@{/css/jquery-ui.min.css}"/>
-	<!-- jQuery UI Version 1.11.4 -->
-	<script src="../static/js/jquery-1.11.4.js" th:src="@{/js/jquery-ui.min.js}"></script>
-    <!-- Bootstrap Validator -->
-    <link href="../static/css/bootstrapValidator.min.css" rel="stylesheet" th:href="@{/css/bootstrapValidator.min.css}"/>
-    <!-- Bootstrap Validator JS -->
-    <script src="../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
-    <!-- Copy to clipboard JS-->
-    <script src="../static/js/copyToClipboard.js" th:src="@{/js/copyToClipboard.js}"></script>
-	<title th:text="#{tab.title.collections}">Metalnx - Collections</title>
+<!-- jQuery UI Version 1.11.4 -->
+<script src="../static/js/jquery-1.11.4.js"
+	th:src="@{/js/jquery-ui.min.js}"></script>
+<!-- JQuery UI CSS -->
+<link href="../static/css/jquery-ui.min.css" rel="stylesheet"
+	th:href="@{/css/jquery-ui.min.css}" />
+
+
+<title th:text="#{tab.title.collections}">Metalnx - Collections</title>
 </head>
 
 <body>
@@ -31,28 +30,37 @@
 		class="page-hint pull-left"><i class="fa fa-question-circle"></i></a> -->
 
 
-        <div th:if="${unexpectedError}">
-            <div class="alert alert-danger alert-dismissible text-center" role="alert">
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span> <span class="sr-only" th:text="#{text.close}">Close</span>
-                </button>
-                <span th:text="${'An unexpected error has happened. Please, contact your system administrator.'}"></span>
-            </div>
-        </div>
+		<div th:if="${unexpectedError}">
+			<div class="alert alert-danger alert-dismissible text-center"
+				role="alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span> <span class="sr-only"
+						th:text="#{text.close}">Close</span>
+				</button>
+				<span
+					th:text="${'An unexpected error has happened. Please, contact your system administrator.'}"></span>
+			</div>
+		</div>
 
 		<div class="row" th:unless="${unexpectedError}">
 			<!-- Ticket creation success message -->
 			<div class="col-sm-12 hideElement" id="ticketCreationSuccessMessage">
 
 				<div class="alert alert-success text-center" role="alert">
-                    <span id="newTicketInfoCopy"></span>
-					<span th:text="#{ticket.feedback.message.creation.success}"></span>
-                    <span id= "newTicketInfoMsg"  class="newTicketInfo"></span>
-                    <button type="button" class="close pull-right" id="closeTicketCreationSuccessMessage" >
+					<span id="newTicketInfoCopy"></span> <span
+						th:text="#{ticket.feedback.message.creation.success}"></span> <span
+						id="newTicketInfoMsg" class="newTicketInfo"></span>
+					<button type="button" class="close pull-right"
+						id="closeTicketCreationSuccessMessage">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-                    <a href="#" id="copyTicketStringBtn" class="btn btn-link btn-xs copyTicketBtn"><i class="fa fa-clone" aria-hidden="true"></i><span th:text="#{ticket.feedback.message.creation.success.copy}"></span></a>
-                    <a href="#" id="sendTicketStringBtn" class=" btn btn-link btn-xs"><i class="fa fa-envelope-o" aria-hidden="true"></i><span th:text="#{ticket.feedback.message.creation.success.email}"></span></a>
+					<a href="#" id="copyTicketStringBtn"
+						class="btn btn-link btn-xs copyTicketBtn"><i
+						class="fa fa-clone" aria-hidden="true"></i><span
+						th:text="#{ticket.feedback.message.creation.success.copy}"></span></a>
+					<a href="#" id="sendTicketStringBtn" class=" btn btn-link btn-xs"><i
+						class="fa fa-envelope-o" aria-hidden="true"></i><span
+						th:text="#{ticket.feedback.message.creation.success.email}"></span></a>
 				</div>
 			</div>
 			<div class="col-sm-12 hideElement" id="ticketCreationFailureMessage">
@@ -60,40 +68,44 @@
 					<span th:text="#{ticket.feedback.message.creation.failure}"></span>
 				</div>
 			</div>
-            <!-- Upload Status Information -->
-            <div th:if="${uploadNewTab}" class="col-sm-12" id="">
-                <div class="alert alert-info alert-dismissible text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-                    </button>
-                    <span th:text="#{collection.management.upload.status}"></span>
-                </div>
-            </div>
+			<!-- Upload Status Information -->
+			<div th:if="${uploadNewTab}" class="col-sm-12" id="">
+				<div class="alert alert-info alert-dismissible text-center"
+					role="alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<span th:text="#{collection.management.upload.status}"></span>
+				</div>
+			</div>
 
-            <!-- Empty trash succeed -->
-            <div class="col-sm-12 hideElement" id="trashEmptiedSuccessfully">
-                <div class="alert alert-success alert-dismissible text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-                    </button>
-                    <span th:text="#{empty.trash.success}"></span>
-                </div>
-            </div>
+			<!-- Empty trash succeed -->
+			<div class="col-sm-12 hideElement" id="trashEmptiedSuccessfully">
+				<div class="alert alert-success alert-dismissible text-center"
+					role="alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<span th:text="#{empty.trash.success}"></span>
+				</div>
+			</div>
 
-            <!-- Empty trash fail -->
-            <div class="col-sm-12 hideElement" id="trashNotEmptiedSuccessfully">
-                <div class="alert alert-danger alert-dismissible text-center"
-                    role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-                    </button>
-                    <span th:text="#{empty.trash.failure}"></span>
-                </div>
-            </div>
+			<!-- Empty trash fail -->
+			<div class="col-sm-12 hideElement" id="trashNotEmptiedSuccessfully">
+				<div class="alert alert-danger alert-dismissible text-center"
+					role="alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<span th:text="#{empty.trash.failure}"></span>
+				</div>
+			</div>
 
 			<!-- Apply templates succeed -->
-			<div th:if="${templatesAppliedSuccessfully}" class="col-sm-12" id="applyTemplateSuccess">
-				<div class="alert alert-success alert-dismissible text-center" role="alert">
+			<div th:if="${templatesAppliedSuccessfully}" class="col-sm-12"
+				id="applyTemplateSuccess">
+				<div class="alert alert-success alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
@@ -102,8 +114,10 @@
 			</div>
 
 			<!-- Apply templates fail -->
-			<div th:if="${templatesAppliedSuccessfully == false}" class="col-sm-12" id="applyTemplateFailure">
-				<div class="alert alert-danger alert-dismissible text-center" role="alert">
+			<div th:if="${templatesAppliedSuccessfully == false}"
+				class="col-sm-12" id="applyTemplateFailure">
+				<div class="alert alert-danger alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
@@ -112,8 +126,10 @@
 			</div>
 
 			<!-- Collection creation fail message -->
-			<div th:if="${missingPermissionError}" class="col-sm-12" id="creationErrorMessages">
-				<div class="alert alert-danger alert-dismissible text-center" role="alert">
+			<div th:if="${missingPermissionError}" class="col-sm-12"
+				id="creationErrorMessages">
+				<div class="alert alert-danger alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
@@ -122,21 +138,30 @@
 			</div>
 
 			<div class="col-sm-12">
-				<div th:if="${ collectionAddedSuccessfully != null or collectionModifiedSuccessfully != null }"
-					class="alert alert-success alert-dismissible text-center" role="alert">
+				<div
+					th:if="${ collectionAddedSuccessfully != null or collectionModifiedSuccessfully != null }"
+					class="alert alert-success alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
-					<b>	<span th:if="${ collectionAddedSuccessfully }" th:text="${ collectionAddedSuccessfully }"></span></b>
-					<b>	<span th:if="${ collectionModifiedSuccessfully }" th:text="${ collectionModifiedSuccessfully }"></span></b>
-						<span th:if="${ collectionAddedSuccessfully }" th:text="#{ confirmation.add.successfully }"></span>
-						<span th:if="${ collectionModifiedSuccessfully }" th:text="#{ confirmation.modify.successfully }"></span>
+					<b> <span th:if="${ collectionAddedSuccessfully }"
+						th:text="${ collectionAddedSuccessfully }"></span></b> <b> <span
+						th:if="${ collectionModifiedSuccessfully }"
+						th:text="${ collectionModifiedSuccessfully }"></span></b> <span
+						th:if="${ collectionAddedSuccessfully }"
+						th:text="#{ confirmation.add.successfully }"></span> <span
+						th:if="${ collectionModifiedSuccessfully }"
+						th:text="#{ confirmation.modify.successfully }"></span>
 				</div>
 			</div>
 
 			<!-- All items replicated successfully -->
 			<div class="col-sm-12">
-				<div th:if="${failedReplicas != null and #lists.isEmpty(failedReplicas)}" class="alert alert-success alert-dismissible text-center" role="alert">
+				<div
+					th:if="${failedReplicas != null and #lists.isEmpty(failedReplicas)}"
+					class="alert alert-success alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
@@ -146,13 +171,15 @@
 
 			<!-- Some items didn't get replicated -->
 			<div class="col-sm-12">
-				<div th:if="${not #lists.isEmpty(failedReplicas)}" class="alert alert-danger alert-dismissible text-center" role="alert">
+				<div th:if="${not #lists.isEmpty(failedReplicas)}"
+					class="alert alert-danger alert-dismissible text-center"
+					role="alert">
 					<button type="button" class="close" data-dismiss="alert">
 						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 					</button>
 					<span th:text="#{items.some.replicated.failure}"> </span> <span
-						th:text="${#strings.toString(failedReplicas)}"></span>
-					<span th:text="#{items.some.replicated.failure.permission}"></span>
+						th:text="${#strings.toString(failedReplicas)}"></span> <span
+						th:text="#{items.some.replicated.failure.permission}"></span>
 				</div>
 			</div>
 
@@ -183,18 +210,19 @@
 					</div>
 					<div class="modal-body">
 						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active">
-								<a href="#copyCollections" aria-controls="copyCollections" role="tab" data-toggle="tab"><i class="fa fa-folder"></i> Collections</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#copyShared" aria-controls="copyShared" role="tab" data-toggle="tab"><i class="fa fa-share-alt"></i> Shared</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#copyGroups" aria-controls="copyGroups" role="tab" data-toggle="tab"><i class="fa fa-users"></i> Groups</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#copyFavorites" aria-controls="copyFavorites" role="tab" data-toggle="tab"><i class="fa fa-star"></i> Favorites</a>
-							</li>
+							<li role="presentation" class="active"><a
+								href="#copyCollections" aria-controls="copyCollections"
+								role="tab" data-toggle="tab"><i class="fa fa-folder"></i>
+									Collections</a></li>
+							<li role="presentation" class=""><a href="#copyShared"
+								aria-controls="copyShared" role="tab" data-toggle="tab"><i
+									class="fa fa-share-alt"></i> Shared</a></li>
+							<li role="presentation" class=""><a href="#copyGroups"
+								aria-controls="copyGroups" role="tab" data-toggle="tab"><i
+									class="fa fa-users"></i> Groups</a></li>
+							<li role="presentation" class=""><a href="#copyFavorites"
+								aria-controls="copyFavorites" role="tab" data-toggle="tab"><i
+									class="fa fa-star"></i> Favorites</a></li>
 						</ul>
 						<div class="tab-content col-md-12 col-sm-12">
 							<div role="tabpanel" class="tab-pane active" id="copyCollections">
@@ -202,8 +230,8 @@
 									<p>
 										<a aria-label="copy collection" href="#" name="/" title="/"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="copy collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
-											name="/" /> <span>iRods</span>
+											alt="copy collection" class="folder-icon"
+											th:src="@{ /images/folder-16.png }" name="/" /> <span>iRods</span>
 										</a>
 									</p>
 								</th:block>
@@ -227,49 +255,54 @@
 								</th:block>
 							</div>
 							<div role="tabpanel" class="tab-pane" id="copyShared">
-			                	<table class="table table-hover" id="copyUserBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
+								<table class="table table-hover" id="copyUserBookmarksTable">
+									<thead>
+										<tr>
+											<th th:text="#{bookmarks.table.file.name.label}"></th>
+											<th th:text="#{bookmarks.table.file.path.label}"></th>
+										</tr>
+									</thead>
+								</table>
 							</div>
-						    <div role="tabpanel" class="tab-pane" id="copyGroups">
-						    	<table class="table table-hover" id="copyGroupBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                                <th th:text="#{bookmarks.table.group.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="copyFavorites">
-						    	<table class="table table-hover" id="copyFavoritesTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{favorites.table.name.label}"></th>
-			                                <th th:text="#{favorites.table.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
+							<div role="tabpanel" class="tab-pane" id="copyGroups">
+								<table class="table table-hover" id="copyGroupBookmarksTable">
+									<thead>
+										<tr>
+											<th th:text="#{bookmarks.table.file.name.label}"></th>
+											<th th:text="#{bookmarks.table.file.path.label}"></th>
+											<th th:text="#{bookmarks.table.group.label}"></th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+							<div role="tabpanel" class="tab-pane" id="copyFavorites">
+								<table class="table table-hover" id="copyFavoritesTable">
+									<thead>
+										<tr>
+											<th th:text="#{favorites.table.name.label}"></th>
+											<th th:text="#{favorites.table.path.label}"></th>
+										</tr>
+									</thead>
+								</table>
+							</div>
 						</div>
-                        <div class="col-xs-12">
-                            <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked" title="Copy with Metadata"/>
-                            <label for="inputCopyWithMetadata" th:text="#{copy.with.metadata.label}">Copy with metadata</label>
+						<div class="col-xs-12">
+							<input type="checkbox" id="inputCopyWithMetadata" name="replica"
+								value="1" checked="checked" title="Copy with Metadata" /> <label
+								for="inputCopyWithMetadata"
+								th:text="#{copy.with.metadata.label}">Copy with metadata</label>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<div class="row">
-							<div class="col-md-12 pull-right targetPathInfoDiv">Copy to: <i class="fa fa-folder-o"></i> <span class="targetPathInfoSpan">/</span></div>
+							<div class="col-md-12 pull-right targetPathInfoDiv">
+								Copy to: <i class="fa fa-folder-o"></i> <span
+									class="targetPathInfoSpan">/</span>
+							</div>
 							<div class="col-md-12">
 								<button type="button" class="btn btn-default cancelBtn"
-									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}" title="Cancel">
-								</button>
+									id="cancelCopyBtn" th:text="#{forms.cancel.action.button}"
+									title="Cancel"></button>
 								<button type="button" class="btn btn-primary" id="copyBtn"
 									th:text="#{copy.label}" title="Copy"></button>
 							</div>
@@ -289,22 +322,23 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4  class="modal-title" id="myMoveModalLabel">Move item to</h4>
+						<h4 class="modal-title" id="myMoveModalLabel">Move item to</h4>
 					</div>
 					<div class="modal-body">
 						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active">
-								<a href="#moveCollections" aria-controls="moveCollections" role="tab" data-toggle="tab"><i class="fa fa-folder"></i> Collections</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#moveShared" aria-controls="moveShared" role="tab" data-toggle="tab"><i class="fa fa-share-alt"></i> Shared</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#moveGroups" aria-controls="moveGroups" role="tab" data-toggle="tab"><i class="fa fa-users"></i> Groups</a>
-							</li>
-							<li role="presentation" class="">
-								<a href="#moveFavorites" aria-controls="moveFavorites" role="tab" data-toggle="tab"><i class="fa fa-star"></i> Favorites</a>
-							</li>
+							<li role="presentation" class="active"><a
+								href="#moveCollections" aria-controls="moveCollections"
+								role="tab" data-toggle="tab"><i class="fa fa-folder"></i>
+									Collections</a></li>
+							<li role="presentation" class=""><a href="#moveShared"
+								aria-controls="moveShared" role="tab" data-toggle="tab"><i
+									class="fa fa-share-alt"></i> Shared</a></li>
+							<li role="presentation" class=""><a href="#moveGroups"
+								aria-controls="moveGroups" role="tab" data-toggle="tab"><i
+									class="fa fa-users"></i> Groups</a></li>
+							<li role="presentation" class=""><a href="#moveFavorites"
+								aria-controls="moveFavorites" role="tab" data-toggle="tab"><i
+									class="fa fa-star"></i> Favorites</a></li>
 						</ul>
 						<div class="tab-content col-md-12 col-sm-12">
 							<div role="tabpanel" class="tab-pane active" id="moveCollections">
@@ -312,8 +346,8 @@
 									<p>
 										<a name="/" title="/" aria-label="Move collection"
 											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
-											alt="Move collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
-											name="/" /> <span>iRods</span>
+											alt="Move collection" class="folder-icon"
+											th:src="@{ /images/folder-16.png }" name="/" /> <span>iRods</span>
 										</a>
 									</p>
 								</th:block>
@@ -337,41 +371,44 @@
 								</th:block>
 							</div>
 							<div role="tabpanel" class="tab-pane" id="moveShared">
-			                	<table class="table table-hover" id="moveUserBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
+								<table class="table table-hover" id="moveUserBookmarksTable">
+									<thead>
+										<tr>
+											<th th:text="#{bookmarks.table.file.name.label}"></th>
+											<th th:text="#{bookmarks.table.file.path.label}"></th>
+										</tr>
+									</thead>
+								</table>
 							</div>
-						    <div role="tabpanel" class="tab-pane" id="moveGroups">
-						    	<table class="table table-hover" id="moveGroupBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                                <th th:text="#{bookmarks.table.group.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="moveFavorites">
-						    	<table class="table table-hover" id="moveFavoritesTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{favorites.table.name.label}"></th>
-			                                <th th:text="#{favorites.table.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
+							<div role="tabpanel" class="tab-pane" id="moveGroups">
+								<table class="table table-hover" id="moveGroupBookmarksTable">
+									<thead>
+										<tr>
+											<th th:text="#{bookmarks.table.file.name.label}"></th>
+											<th th:text="#{bookmarks.table.file.path.label}"></th>
+											<th th:text="#{bookmarks.table.group.label}"></th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+							<div role="tabpanel" class="tab-pane" id="moveFavorites">
+								<table class="table table-hover" id="moveFavoritesTable">
+									<thead>
+										<tr>
+											<th th:text="#{favorites.table.name.label}"></th>
+											<th th:text="#{favorites.table.path.label}"></th>
+										</tr>
+									</thead>
+								</table>
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<div class="row">
-							<div class="col-md-12 pull-right targetPathInfoDiv">Move to: <i class="fa fa-folder-o"></i> <span class="targetPathInfoSpan">/</span></div>
+							<div class="col-md-12 pull-right targetPathInfoDiv">
+								Move to: <i class="fa fa-folder-o"></i> <span
+									class="targetPathInfoSpan">/</span>
+							</div>
 							<div class="col-md-12">
 								<button type="button" class="btn btn-default" id="cancelMoveBtn"
 									th:text="#{forms.cancel.action.button}"></button>
@@ -395,18 +432,19 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 id="myReplicateModalLabel" class="modal-title" th:text="#{replicate.modal.title}"></h4>
+						<h4 id="myReplicateModalLabel" class="modal-title"
+							th:text="#{replicate.modal.title}"></h4>
 					</div>
 					<div class="modal-body">
-						<form action="/metalnx/fileOperation/replicate/"
-							method="POST" role="form" enctype="multipart/form-data"
-							id="replicateForm">
+						<form action="/metalnx/fileOperation/replicate/" method="POST"
+							role="form" enctype="multipart/form-data" id="replicateForm">
 							<div class="form-group">
 								<label for="selectResourceForReplication"
 									th:text="#{resource.label}"> </label>
 								<div id="replicate-loader" class="table-loader hideElement">
 									<img class="center-block" th:src="@{/images/ajax_loader.gif}" />
-									<p class="text-center" th:text="#{loading.list.label}" alt="table loader"></p>
+									<p class="text-center" th:text="#{loading.list.label}"
+										alt="table loader"></p>
 								</div>
 								<div id="selectResourceForReplication"></div>
 							</div>
@@ -432,7 +470,8 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 id="deleteModalLabel" class="modal-title" th:text="#{confirmation.deletion.title}"></h4>
+						<h4 id="deleteModalLabel" class="modal-title"
+							th:text="#{confirmation.deletion.title}"></h4>
 					</div>
 					<div class="modal-body">
 						<span th:text="#{confirmation.deletion.label}"></span> <span
@@ -458,7 +497,8 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 						</button>
-						<h4 id="uploadModalLabel" class="modal-title" th:text="#{upload.label}"></h4>
+						<h4 id="uploadModalLabel" class="modal-title"
+							th:text="#{upload.label}"></h4>
 					</div>
 					<div class="modal-body">
 						<div class="hideElement" id="uploadMinMessage">
@@ -473,67 +513,71 @@
 
 
 						<!-- Form submitted as soon as the user selects all files to be uploaded -->
-                        <form action="/metalnx/upload/" method="POST"
-                              role="form" enctype="multipart/form-data" id="uploadForm">
+						<form action="/metalnx/upload/" method="POST" role="form"
+							enctype="multipart/form-data" id="uploadForm">
 
 
 							<p class="text-right">
-								<label id="numberFilesUpload"># file(s)
-									selected</label>
+								<label id="numberFilesUpload"># file(s) selected</label>
 							</p>
 							<div class="well" id="dropArea">
 								<!-- <div class="col-sm-4 col-sm-offset-4" style="align-items: center; display: flex; min-height: 100%;"> -->
-									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
-										<span th:text="#{select.files.upload}"></span>
-									</button>
-									<span id="advancedUploadMessage">Or Drag and drop them here.</span>
+								<button type="button" class="btn btn-primary btn-sm"
+									id="browseButton" title="Browse" style="margin: 10% auto;">
+									<span th:text="#{select.files.upload}"></span>
+								</button>
+								<span id="advancedUploadMessage">Or Drag and drop them
+									here.</span>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
-									id="inputFiles" class="form-control" title="Input File"/>
-								<div id="filesList">
-								</div>
+									id="inputFiles" class="form-control" title="Input File" />
+								<div id="filesList"></div>
 							</div>
 
 							<div id="uploadControlOptions">
-								<input type="hidden" id="uploadDestinationPath" th:value="${currentPath}" title="Hidden upload path"/>
+								<input type="hidden" id="uploadDestinationPath"
+									th:value="${currentPath}" title="Hidden upload path" />
 
-									<div class="row form-group">
-										<th:block th:if="${dataGridUser.isAdvancedView()}">
+								<div class="row form-group">
+									<th:block th:if="${dataGridUser.isAdvancedView()}">
 										<div class="col-md-6" th:text="#{text.resource.name}">Resource</div>
 										<div class="col-md-6">
-												<input type="checkbox" id="inputReplica" name="replica"
-													value="1"  title="Replica" />
-													<label for="inputReplica" th:text="#{text.replica}">Replica</label>
+											<input type="checkbox" id="inputReplica" name="replica"
+												value="1" title="Replica" /> <label for="inputReplica"
+												th:text="#{text.replica}">Replica</label>
 										</div>
 
 										<div class="col-md-6">
-											<select class="form-control" name="resourceToUpload" aria-label="Resource to upload"
-												id="selectResourceToUpload">
+											<select class="form-control" name="resourceToUpload"
+												aria-label="Resource to upload" id="selectResourceToUpload">
 											</select>
 										</div>
 
 										<div class="col-md-6">
-											<select class="form-control" name="resources" disabled="disabled"
-												id="selectResource">
+											<select class="form-control" name="resources"
+												disabled="disabled" id="selectResource">
 											</select>
 										</div>
 									</th:block>
-									</div>
+								</div>
 
- 								<div class="row form-group">
+								<div class="row form-group">
 									<div class="col-md-6">
-										<input type="checkbox" id="inputOverwriteDuplicateFiles" aria-label="overwrite on upload"
-											name="inputOverwriteDuplicateFiles" title="overwrite on upload"
+										<input type="checkbox" id="inputOverwriteDuplicateFiles"
+											aria-label="overwrite on upload"
+											name="inputOverwriteDuplicateFiles"
+											title="overwrite on upload"
 											th:checked="${overwriteFileOption}" /> &nbsp;&nbsp;<span>Overwrite
 											duplicate files</span>
 									</div>
 									<th:block th:if="${dataGridUser.isAdvancedView()}">
-									<div class="col-md-6">
-										<input type="checkbox" id="inputChecksum" name="checksum" aria-label="compute checksum"
-										title="compute checksum" value="1" /> &nbsp;&nbsp;<span>Checksum</span>
-									</div>
+										<div class="col-md-6">
+											<input type="checkbox" id="inputChecksum" name="checksum"
+												aria-label="compute checksum" title="compute checksum"
+												value="1" /> &nbsp;&nbsp;<span>Checksum</span>
+										</div>
 									</th:block>
- 								</div>
+								</div>
 
 							</div>
 
@@ -541,17 +585,18 @@
 						<div class="hideElement" id="afterUpload">
 							<!-- Upload notifications panel -->
 							<ul class="nav navbar-top-links navbar-right pull-left"
-															id="uploadStatusIcon">
+								id="uploadStatusIcon">
 
-									<a class="dropdown-toggle" href="#">
-										<i class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
-									</a>
-									<div style="width: 100%; max-height: 400px; overflow: auto">
+								<a class="dropdown-toggle" href="#"> <i
+									class="fa fa-tasks grey-icon"></i> <span class="badge"></span>
+								</a>
+								<div style="width: 100%; max-height: 400px; overflow: auto">
 									<table class="table">
 										<thead>
 											<tr>
 												<th th:text="#{text.file.name}">File Name</th>
-												<th th:text="#{collections.management.upload.upload.status}">Upload Status</th>
+												<th th:text="#{collections.management.upload.upload.status}">Upload
+													Status</th>
 											</tr>
 										</thead>
 										<tbody class="upload-window">
@@ -568,15 +613,16 @@
 					</div>
 					<div class="modal-footer">
 						<div class="beforeUpload" id="beforeUpload">
-							<button type="button" class="btn btn-default" data-dismiss="modal"
-								th:text="#{forms.cancel.action.button}"></button>
-								<a type="button" class="btn btn-primary" id="uploadButton">
-									<i class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
-								</a>
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal" th:text="#{forms.cancel.action.button}"></button>
+							<a type="button" class="btn btn-primary" id="uploadButton"> <i
+								class="fa fa-upload"></i> <span th:text="#{upload.label}"></span>
+							</a>
 						</div>
 						<div class="hideElement" id="afterUploadCancel">
-						<button type="button" class="btn btn-default" id="afterUploadButton" data-dismiss="modal"
-							th:text="#{forms.cancel.action.button}"></button>
+							<button type="button" class="btn btn-default"
+								id="afterUploadButton" data-dismiss="modal"
+								th:text="#{forms.cancel.action.button}"></button>
 						</div>
 					</div>
 				</div>
@@ -584,12 +630,12 @@
 		</div>
 
 		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-        <script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
+		<script type="text/javascript" th:src="@{/js/mlxUpload.js}"></script>
 		<script type="text/javascript" th:src="@{/js/formValidator.js}"></script>
 		<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
 
 		<!-- Cusom DragnDrop JS -->
-		<script type="text/javascript" th:src="@{/js/dragDrop.js}"/>
+		<script type="text/javascript" th:src="@{/js/dragDrop.js}" />
 
 		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/

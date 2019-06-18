@@ -562,7 +562,7 @@ div.dataTables_wrapper.dt-bootstrap div.dataTables_paginate ul.pagination{
 .table.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
     border-bottom: 0 none;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing{
 	position:absolute;
     top:50%;
     left:50%;
@@ -582,51 +582,51 @@ div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing{
     background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)
 }
 
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-xs{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-xs{
     top: 85px;
     margin-top:-33px;
     height: 30px;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-sm{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-sm{
     margin-top:-10px;
     height: 70px;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-md{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-md{
     height: 80px;
 }
 
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing > img{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing > img{
     width: 35px;
     margin-top: 5px;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-xs > img{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-xs > img{
     width: 30px;
     margin-top: -6px;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-sm > img{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-sm > img{
     width: 35px;
 }
-div.dataTables_wrapper .row .col-md-12:first-child > div.dataTables_processing.loading-md > img{
+div.dataTables_wrapper .row .col-12:first-child > div.dataTables_processing.loading-md > img{
     width: 55px;
     margin-top: 10px;
 }
 
-div.dataTables_wrapper .row .col-md-12:first-child > div{
+div.dataTables_wrapper .row .col-12:first-child > div{
 	background-color: #6c6c63;
 	height: 50px;
 	padding-top: 10px;
 	color:white;
 }
 
-div.dataTables_wrapper .row:first-child .col-md-12:first-child > div:first-child {
+div.dataTables_wrapper .row:first-child .col-12:first-child > div:first-child {
 	border-top-left-radius:3px;
 }
 
-div.dataTables_wrapper .row:first-child .col-md-12:first-child > div:last-child {
+div.dataTables_wrapper .row:first-child .col-12:first-child > div:last-child {
 	border-top-right-radius:3px;
 }
 
-div.dataTables_wrapper div.col-md-12 > .dataTables_info {
+div.dataTables_wrapper div.col-12 > .dataTables_info {
 	text-align: right;
 	font-size: 1em;
 	background-color: #333333;
@@ -2033,7 +2033,7 @@ form.registerForm .panel-default > .panel-body table.dataTable{
 form.registerForm .panel-default > .panel-body .table.dataTable thead tr{
 	background-color: #fff
 }
-form.registerForm .panel-default > .panel-body div.dataTables_wrapper .row .col-md-12:first-child > div {
+form.registerForm .panel-default > .panel-body div.dataTables_wrapper .row .col-12:first-child > div {
 	background-color: #f2f6f9;
 }
 form.registerForm .panel-default > .panel-body div.dataTables_wrapper .dataTables_info {
