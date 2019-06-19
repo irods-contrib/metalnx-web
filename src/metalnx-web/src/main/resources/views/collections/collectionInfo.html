@@ -10,7 +10,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
-	<div class="row">
+	<!-- collection info container -->
+	<div class="container">
+		<div class="row">
+			<div class="col-12" aria-labelledby="collInfoManagement"
+				layout:fragment="content">
+				<div class="row">
+					<div class="col-12">
+						<th:block th:include="collections/summary :: summaryView"></th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="row">
 		<div class="col-sm-12" aria-labelledby="collInfoManagement"
 			layout:fragment="content">
 
@@ -53,39 +66,38 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
-	
+
 
 </body>
 
 
-	<script type="text/javascript" th:src="@{/js/collection.js}"></script>
-	<script th:inline="javascript" type="text/javascript">
-		$(document).ready(function(e) {
-	
-			$('.nav-tabs a').click(function(e) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				$(this).tab('show');
+<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+	$(document).ready(function(e) {
+
+		$('.nav-tabs a').click(function(e) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			$(this).tab('show');
 			//history.replaceState(null, null, $(this).attr('href'));
-			});
-	
-			// navigate to a tab when the history changes
-			/* window.addEventListener("popstate", function(e) {					   
-			var activeTab = $('[href=' + location.hash + ']');
-			 if (activeTab.length) {					    	
-				 e.stopImmediatePropagation();
-				 activeTab.tab('show');	 
-					 
-			} else {					    	
-				 $('.nav-tabs a:first').tab('show');
-				
-			} 
-					  });    */
-	
-	
 		});
-	</script>
+
+		// navigate to a tab when the history changes
+		/* window.addEventListener("popstate", function(e) {					   
+		var activeTab = $('[href=' + location.hash + ']');
+		 if (activeTab.length) {					    	
+			 e.stopImmediatePropagation();
+			 activeTab.tab('show');	 
+				 
+		} else {					    	
+			 $('.nav-tabs a:first').tab('show');
+			
+		} 
+				  });    */
+
+	});
+</script>
 
 </html>

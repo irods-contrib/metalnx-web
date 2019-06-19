@@ -4,7 +4,38 @@
 
 
 <th:block th:fragment="summaryView">
-
+	<!-- summary container -->
+	<div class="container">
+		<div class="row justify-content-end">
+			<div class="col-4">
+				<div class="dropdown">
+					<button class="btn btn-outline-primary dropdown-toggle"
+						type="button" id="dropdownMenuButton" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">Action</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<a href="#" id="renameBtn" data-target="#renameModal"
+							data-toggle="modal"> <span><i
+								class="fa fa-pencil-square-o"> </i></span> <span>Rename</span></a>
+						<div class="dropdown-divider"></div>
+						<a href="#" id="deleteBtn" data-toggle="modal"
+							data-target="#deleteModal"><span><i
+								class="fa fa-trash-o"></i> </span> <span>Delete</span></a>
+					</div>
+					<a id="breadcrumbStar" class="btn btn-default icon-btn"
+						th:onclick="${dataProfile.starred}? 'javascript:unstarPath(\'' + ${dataProfile.getAbsolutePath()} + '\');' : 'javascript:starPath(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						data-toggle="popover" data-trigger="manual" data-content=""
+						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+						<i
+						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+						aria-hidden="true"></i>
+					</a> <a id="breadcrumDownloadBtn" class="btn btn-default icon-btn"
+						th:onclick="'javascript:fileDownload(\'' + ${dataProfile.getAbsolutePath()} + '\');'">
+						<i class="fa fa-download fa-color" aria-hidden="true"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div id="summary" class="container-fluid">
 
@@ -186,6 +217,7 @@
 
 	</div>
 
+
 	<!-- Delete Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
 		aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -308,7 +340,7 @@
 	</div>
 	<!-- /Add Modal -->
 
-		<!-- Update inheritance modal -->
+	<!-- Update inheritance modal -->
 	<div class="modal fade" id="updateInheritanceModal" tabindex="-1"
 		role="dialog" aria-labelledby="updateInheritanceModalLabel"
 		aria-hidden="true">
@@ -332,28 +364,30 @@
 					</div>
 					<div class="row pb-3">
 						<div class="col">
-								<label for="inheritCollectionAbsolutePath"
-
-											th:text="#{collections.management.table.absolute.path.label}" class="text-center"></label>
+							<label for="inheritCollectionAbsolutePath"
+								th:text="#{collections.management.table.absolute.path.label}"
+								class="text-center"></label>
 						</div>
 					</div>
 					<div class="row pb-5">
 
 						<div class="col">
-								<span id="inheritCollectionAbsolutePath"
-									th:text="${dataProfile.getAbsolutePath()}"></span>
+							<span id="inheritCollectionAbsolutePath"
+								th:text="${dataProfile.getAbsolutePath()}"></span>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal"
-						th:text="#{confirmation.message.cancel}" title="Cancel" th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
+						th:text="#{confirmation.message.cancel}" title="Cancel"
+						th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
 					<button type="button" class="btn btn-primary"
 						th:onclick="'javascript:updateInheritanceNonRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						th:text="#{text.apply}" title="Apply"></button>
-						<button type="button" class="btn btn-primary"
+					<button type="button" class="btn btn-primary"
 						th:onclick="'javascript:updateInheritanceRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
-						th:text="#{confirmation.message.yes.recursively}" title="Confirm recursively"></button>
+						th:text="#{confirmation.message.yes.recursively}"
+						title="Confirm recursively"></button>
 				</div>
 			</div>
 		</div>
@@ -371,13 +405,18 @@
 	<div id="summary" class="container-fluid">
 
 		<div class="row nopadding">
-			<div th:if="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
-				<h4 class="errorMsg">You do not have access on this page.To view the full page please request an access.</h4>
+			<div th:if="${isMailEnabled}"
+				class="col-sm-12 col-md-12 col-xs-12 text-left">
+				<h4 class="errorMsg">You do not have access on this page.To
+					view the full page please request an access.</h4>
 				<button class="btn btn-primary btn-sm pull-right" type="button"
-				th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'" title="Request Access">Access Request</button>
+					th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'"
+					title="Request Access">Access Request</button>
 			</div>
-			<div th:unless="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
-				<h4 class="errorMsg">You do not have access on this page.Please contact your administrator.</h4>
+			<div th:unless="${isMailEnabled}"
+				class="col-sm-12 col-md-12 col-xs-12 text-left">
+				<h4 class="errorMsg">You do not have access on this page.Please
+					contact your administrator.</h4>
 			</div>
 		</div>
 		<div class="row nopadding">
