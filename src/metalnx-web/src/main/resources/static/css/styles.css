@@ -586,7 +586,7 @@ div.dataTables_wrapper.dt-bootstrap div.dataTables_paginate ul.pagination
 	border-bottom: 0 none;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing
 	{
 	position: absolute;
 	top: 50%;
@@ -620,66 +620,65 @@ div.dataTables_wrapper .row:first-child>div.dataTables_processing
 		rgba(255, 255, 255, 0) 100%)
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-xs
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-xs
 	{
 	top: 85px;
 	margin-top: -33px;
 	height: 30px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-sm
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-sm
 	{
 	margin-top: -10px;
 	height: 70px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-md
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-md
 	{
 	height: 80px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing>img
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing>img
 	{
 	width: 35px;
 	margin-top: 5px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-xs>img
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-xs>img
 	{
 	width: 30px;
 	margin-top: -6px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-sm>img
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-sm>img
 	{
 	width: 35px;
 }
 
-div.dataTables_wrapper .row:first-child>div.dataTables_processing.loading-md>img
+div.dataTables_wrapper .row .col-md-12:first-child>div.dataTables_processing.loading-md>img
 	{
 	width: 55px;
 	margin-top: 10px;
 }
 
-
-div.dataTables_wrapper .row:first-child>div {
+div.dataTables_wrapper .row .col-md-12:first-child>div {
 	background-color: #6c6c63;
 	height: 50px;
 	padding-top: 10px;
 	color: white;
 }
 
-div.dataTables_wrapper .row:first-child .col-8:first-child>div:first-child
+div.dataTables_wrapper .row:first-child .col-md-12:first-child>div:first-child
 	{
 	border-top-left-radius: 3px;
 }
 
-div.dataTables_wrapper .row:first-child .col-8:first-child>div:last-child
+div.dataTables_wrapper .row:first-child .col-md-12:first-child>div:last-child
 	{
 	border-top-right-radius: 3px;
 }
 
-div.dataTables_wrapper .row:nth-child(2) .col-12 {
+div.dataTables_wrapper div.col-md-12>.dataTables_info {
 	text-align: right;
 	font-size: 1em;
 	background-color: #333333;
@@ -1275,7 +1274,7 @@ ul {
 a.page-hint {
 	/*font-size:1.3em;
 	margin-top:30px; */
-
+	
 }
 
 .page-hint i {
@@ -1371,12 +1370,12 @@ a.page-hint {
 	border-radius: 5px;
 }
 
-.panel-info-header{
-    padding: 15px;
-    background-color: #f2f6f9;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    margin-top: 10px;
+.panel-info-header {
+	padding: 15px;
+	background-color: #f2f6f9;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .panel-info span {
@@ -1516,39 +1515,57 @@ alert-dialog {
 
 .nav
 
+
+
 .open
 >
 a
 ,
 .nav
 
+
+
 .open
 >
 a
+
+
 :hover
 ,
 .nav
 
+
+
 .open
 >
 a
+
+
 :focus
 ,
 {
 background-color
+
+
 :
 
+
+
 #2786c6
+
+
 ;
-
-
 border-color
+
+
 :
 
+
+
 #2786c6
+
+
 ;
-
-
 }
 .subtitle {
 	color: #777;
@@ -1914,7 +1931,7 @@ button.btn-default>i, a.btn-default>i, button.btn-primary>i, a.btn-primary>i
 }
 
 #tree-view-panel-body .tab-pane {
-
+	
 }
 
 #emptyMetadataTable {
@@ -2058,7 +2075,7 @@ footer {
 }
 
 .resourceMapDashboardWrapper {
-
+	
 }
 
 .resourceMapDashboardWrapper .panel {
@@ -2068,7 +2085,7 @@ footer {
 }
 
 .resourceMapDashboardWrapper .panel-body {
-
+	
 }
 
 .resourceMapDashboardWrapper #resourceInfo {
@@ -2817,7 +2834,7 @@ td a {
 
 .datacommons_title .navbar-top-links-text {
 	/*white-space: pre-wrap;*/
-
+	
 }
 
 @media ( max-width : 1440px) {
@@ -3132,9 +3149,9 @@ legend.scheduler-border {
 	font-family: FontAwesome;
 	width: 22px;
 	height: 22px;
-	color:blue;
-	padding-top:2px;
-	text-align:center;
+	color: blue;
+	padding-top: 2px;
+	text-align: center;
 }
 
 /* THE POPULAR RED NOTIFICATIONS COUNTER. */
