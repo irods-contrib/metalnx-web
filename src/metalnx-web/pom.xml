@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- Copyright (c) 2018, University 
-	of North Carolina at Chapel Hill -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 
+	2018, University of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -163,7 +164,6 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -182,16 +182,74 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*.xml</include>
-					<include>*.properties</include>
 					<include>static/**</include>
 					<include>**/*.html</include>
-					<include>**/*.xml</include>
 					<include>**/*.properties</include>
 				</includes>
+			</resource>
+			<resource>
+				<directory>target/dist</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+
+							<nodeVersion>v8.11.1</nodeVersion>
+							<npmVersion>5.6.0</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm run</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<echo message="copying war file up to docker" />
+								<copy file="target/metalnx.war"
+									todir="../../packaging/docker" />
+								<echo message="war file copied " />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
@@ -429,7 +487,6 @@
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
 
-
 								</echo>
 							</tasks>
 						</configuration>
@@ -439,6 +496,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -458,7 +516,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>
