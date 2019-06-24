@@ -249,7 +249,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
@@ -273,11 +272,10 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
+				 <version>1.8</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>run</goal>
-						</goals>
+						<id>1</id>
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
@@ -320,6 +318,9 @@
 								<echo message="BUILD ${buildtime}" />
 							</tasks>
 						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
@@ -494,12 +495,6 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
 					<execution>
 						<phase>package</phase>
 						<configuration>
@@ -516,6 +511,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
