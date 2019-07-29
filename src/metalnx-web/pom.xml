@@ -163,6 +163,11 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -217,10 +222,11 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>0</id>
 						<goals>
 							<goal>run</goal>
 						</goals>
-						<phase>generate-sources</phase>
+						<phase>validate</phase>
 						<configuration>
 							<tasks>
 								<property name="src.dir"
@@ -265,7 +271,7 @@
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
-						<id>0</id>
+						<id>1</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
