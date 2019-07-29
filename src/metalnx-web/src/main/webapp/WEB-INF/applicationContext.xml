@@ -96,6 +96,8 @@
 			access="ROLE_ADMIN, ROLE_USER" />
 		<sec:intercept-url pattern="/collections/**"
 			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/notifications/**"
+			access="ROLE_ADMIN,ROLE_USER" />	
 		<sec:intercept-url pattern="/collectionInfo/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/browse/**"
