@@ -164,6 +164,13 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -275,8 +282,12 @@
 				 <version>1.8</version>
 				<executions>
 					<execution>
-						<id>1</id>
-						<phase>generate-sources</phase>
+
+						<id>0</id>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>validate</phase>
 						<configuration>
 							<tasks>
 								<property name="src.dir"
@@ -318,13 +329,10 @@
 								<echo message="BUILD ${buildtime}" />
 							</tasks>
 						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
-						<id>0</id>
+						<id>1</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>

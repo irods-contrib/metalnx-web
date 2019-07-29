@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.interceptors;
 
@@ -57,6 +55,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 			if (urlMap == null) {
 				urlMap = new URLMap();
 			}
+
 			if (emcmetalnxVersion == null) {
 				emcmetalnxVersion = new EmcMetalnxVersion();
 			}
