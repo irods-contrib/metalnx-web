@@ -1,0 +1,985 @@
+<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
+<!-- Copyright (c) 2015-2017, Dell EMC -->
+
+
+
+<!-- Invalid path provided -->
+<div class="col-xs-12" id="invalidPathErrorMsg">
+	<div class="alert alert-danger" role="alert"
+		th:if="${invalidPath != null}">
+		<p class="text-center">
+			<b th:text="${invalidPath}"></b> does not exist or user lacks access
+			permission.
+		</p>
+	</div>
+</div>
+
+<!-- Current Collections Table -->
+<div class="col-xs-12">
+	<div class="alert alert-danger" role="alert"
+		th:if="${noResultsFoundForSearchText}">
+		<p class="text-center">
+			<span th:text="#{search.results.not.found.label}"></span> "<b><span
+				th:text="${searchText}"></span></b>".
+		</p>
+	</div>
+</div>
+
+<!-- Download fail -->
+<div class="col-sm-12 hideElement" id="downloadFailureMessage">
+	<div class="alert alert-danger alert-dismissible text-center"
+		role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.download.fail}"></span>
+	</div>
+</div>
+
+<!-- Upload fail message -->
+<div class="col-sm-12" id="uploadFailMessage">
+	<div th:if="${allFilesUploaded == false}"
+		class="alert alert-danger alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.upload.fail}"></span>
+	</div>
+</div>
+
+<!-- Upload success message -->
+<div class="col-sm-12" id="uploadSuccessMessage">
+	<div th:if="${allFilesUploaded == true}"
+		class="alert alert-success alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:if="${fileUploaded != null}"
+			th:text="|The file ${fileUploaded} was successfully uploaded.|"></span>
+		<span th:unless="${fileUploaded != null}"
+			th:text="#{collection.browser.upload.success}"></span>
+	</div>
+</div>
+
+
+<!-- All items moved -->
+<div class="col-sm-12">
+	<div th:if="${failedMoves != null and #lists.isEmpty(failedMoves)}"
+		class="alert alert-success alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:if="${fileMoved !=null}"
+			th:text="|The file ${fileMoved} was moved to ${currentPath}.|"></span>
+		<span th:unless="${fileMoved !=null}"
+			th:text="|The selected files were moved to ${currentPath}.|"></span>
+	</div>
+</div>
+
+<!-- Some items were not moved -->
+<div class="col-sm-12">
+	<div th:if="${not #lists.isEmpty(failedMoves)}"
+		class="alert alert-danger alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.item.not.moved}"></span> <b
+			th:text="${#strings.replace(#strings.replace(#strings.toString(failedMoves), '[', ''), ']', '')}"></b>
+	</div>
+</div>
+
+<!-- All items copied -->
+<div class="col-sm-12">
+	<div th:if="${failedCopies != null and #lists.isEmpty(failedCopies)}"
+		class="alert alert-success alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:if="${fileCopied != null}"
+			th:text="|The file ${fileCopied} was copied to ${currentPath}.|"></span>
+		<span th:unless="${fileCopied != null}"
+			th:text="|The selected files were copied to ${currentPath}.|"></span>
+	</div>
+</div>
+
+<!-- Some items were not copied -->
+<div class="col-sm-12">
+	<div th:if="${not #lists.isEmpty(failedCopies)}"
+		class="alert alert-danger alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.item.not.copied}"></span> <b
+			th:text="${#strings.replace(#strings.replace(#strings.toString(failedCopies), '[', ''), ']', '')}"></b>
+	</div>
+</div>
+
+<!-- All items deleted -->
+<div class="col-sm-12">
+	<div
+		th:if="${failedDeletions != null and #lists.isEmpty(failedDeletions)}"
+		class="alert alert-success alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:if="${fileDeleted != null}"
+			th:text="|The file ${fileDeleted} was successfully deleted.|"></span>
+		<span th:unless="${fileDeleted != null}"
+			th:text="#{collection.browser.files.deleted.success}"></span>
+	</div>
+</div>
+
+<!-- Some items were not deleted -->
+<div class="col-sm-12">
+	<div th:if="${not #lists.isEmpty(failedDeletions)}"
+		class="alert alert-danger alert-dismissible text-center" role="alert">
+		<button type="button" class="close" data-dismiss="alert" title="Close">
+			<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+		</button>
+		<span th:text="#{collection.browser.files.deleted.fail}"></span> <b
+			th:text="${#strings.replace(#strings.replace(#strings.toString(failedDeletions), '[', ''), ']', '')}"></b>
+	</div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addAndModifyModal" tabindex="-1"
+	role="dialog" aria-labelledby="myAddAndModifyModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-form-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						title="Close">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myAddAndModifyModalLabel"
+						th:text="#{collections.add.form.title}"></h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="row">
+						<form role="form" class="container-fluid registerForm"
+							method="POST" th:object="${collection}"
+							th:action="@{/browse/add/action}">
+
+							<input type="hidden" id="inputCollectionPath" th:field="*{path}"
+								title="collection path" /> <input type="hidden"
+								id="inputCollectionParentPath" th:field="*{parentPath}"
+								title="collection parent path" />
+
+							<div class="form-group">
+								<b><span
+									th:text="#{collections.add.form.current.path.alternate}"></span></b><br />
+								<span th:text="${currentPath}"></span>
+							</div>
+
+							<div class="form-group">
+								<label for="inputCollectionName"
+									th:text="#{collections.add.form.collectionname.label}"></label>
+								<input type="text" class="form-control" id="inputCollectionName"
+									th:placeholder="#{collections.add.form.collectionname.placeholder}"
+									th:field="*{collectionName}" style="width: 66%" /> <i
+									class="form-control-feedback glyphicon glyphicon-remove hideElement"
+									id="invalidCollectionNameIcon" style="right: 33%"></i> <small
+									class="help-block hideElement" id="invalidCollectionNameMsg"
+									th:text="#{collections.validation.name.duplicated}"></small> <small
+									class="help-block hideElement" id="emptyCollectionNameMsg"
+									th:text="#{collections.validation.name.blank}"></small>
+							</div>
+
+							<input aria-label="permission inheritance option"
+								title="permission inheritance option" type="checkbox"
+								id="inputInheritanceOption" th:field="*{inheritOption}"
+								th:disabled="${inheritanceDisabled}" /> &nbsp;&nbsp; <span
+								th:unless="${inheritanceDisabled}"> <span
+								th:text="#{collections.add.form.collectionname.checkbox.inherit}"></span>
+								[<a href="#" data-toggle="tooltip"
+								th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							</span> <span th:if="${inheritanceDisabled}"> <span>iRods
+									Inheritance</span> [<a href="#" data-toggle="tooltip"
+								th:title="#{collections.management.table.inheritance.tooltip}">?</a>]
+							</span>
+						</form>
+
+					</div>
+					<script>
+						$(function(){
+							$('[data-toggle="tooltip"]').tooltip();
+						});
+					</script>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default cancelBtn"
+					data-dismiss="modal" th:text="#{forms.cancel.action.button}"
+					title="Cancel"></button>
+				<button type="button" class="btn btn-primary"
+					id="submitCollectionFormBtn" th:text="#{forms.save.action.button}"
+					title="Save"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Add Modal -->
+
+<!-- Bread Crumb -->
+<div id="directoryPath" class="col-md-10 col-sm-9 col-xs-12"
+	th:include="${'collections/collectionsBreadCrumb'}"></div>
+<div class="col-md-2 col-sm-3 col-xs-12">
+	<a aria-label="empty trash" title="empty trash" href="#"
+		th:if="${isTrash}" id="emptyTrashBtn"
+		th:title="#{collections.empty.trash.button.tooltip}"
+		class="pull-right btn btn-default" data-toggle="modal"
+		data-target="#emptyTrashModal"> <span
+		class="glyphicon glyphicon-trash"></span> <span
+		th:text="#{empty.trash.label}"></span>
+	</a>
+
+	<div id="actionUpload">
+		<th:block
+			th:if="${permissionType != 'none' and permissionType != 'read' and #bools.isFalse(isTrash)}">
+
+			<a role="button" href="#" class="btn btn-default icon-btn"
+				data-toggle="modal" data-target="#addAndModifyModal"
+				id="showCollectionFormBtn" aria-label="add collection"
+				title="add collection"
+				th:title="#{collections.management.add.button}"> <i
+				class="fa fa-folder"></i>
+
+				<div class="btnLabel">
+					<span th:text="#{collections.add.button.label}"></span>
+				</div>
+			</a>
+			<a role="button" class="btn btn-default icon-btn"
+				th:href="'/metalnx/collectionInfo?path='+${encodedCurrentPath}"
+				id="infoIcon"
+				th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'"
+				title="View info"> <i class="fa fa-info-circle fa-color"></i>
+			</a>
+			<a role="button" href="#" class="btn btn-default icon-btn"
+				data-toggle="modal" aria-label="upload files"
+				data-target="#uploadModal" data-backdrop="static"
+				data-keyboard="false" id="uploadIcon"
+				title="Upload file(s) to iRods"> <i
+				class="fa fa-cloud-upload fa-color"></i>
+				<div class="btnLabel">
+					<span th:text="#{collections.upload.button.label}"></span>
+				</div>
+			</a>
+
+		</th:block>
+		<th:block
+			th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
+			<a disabled="true" role="button" href="#"
+				class="btn btn-default icon-btn" data-toggle="modal"
+				data-target="#addAndModifyModal" id="showCollectionFormBtn"
+				aria-label="add collection" title="add collection"
+				th:title="#{collections.management.add.button}"> <i
+				class="fa fa-folder"></i>
+
+				<div class="btnLabel">
+					<span th:text="#{collections.add.button.label}"></span>
+				</div>
+			</a>
+			<a role="button" class="btn btn-default icon-btn"
+				th:href="'/metalnx/collectionInfo?path='+${encodedCurrentPath}"
+				id="infoIcon"
+				th:onclick="'javascript:getCollectionSummary(\'' + ${encodedCurrentPath} + '\');'"
+				title="View info"> <i class="fa fa-info-circle fa-color"></i>
+			</a>
+			<a disabled="true" role="button" href="#"
+				class="btn btn-default icon-btn" data-toggle="modal"
+				aria-label="add collection" data-target="#uploadModal"
+				id="uploadIcon" title="Upload file(s) to iRods"> <i
+				class="fa fa-cloud-upload fa-color"></i>
+				<div class="btnLabel">
+					<span th:text="#{collections.upload.button.label}"></span>
+				</div>
+			</a>
+		</th:block>
+	</div>
+</div>
+
+
+<div class="col-xs-12">
+	<!--  th:if="${permissionType != 'none' or user.isAdmin()}">-->
+	<div class="row browse-collection-files-content">
+		<div id="table-loader" class="table-loader col-sm-12 hideElement">
+			<div class="panel loading">
+				<img alt="table loading" class="center-block"
+					th:src="@{/images/table_loading.svg}" />
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<table class="table table-hover" id="treeViewTable"
+				summary="Collection list">
+				<thead>
+					<tr>
+						<th class="tableCheckBoxCol"><input type="checkbox"
+							name="selectAllCheckboxes" value="1"
+							th:disabled="${currentPath == '/'}" aria-label="select all items"
+							title="select all items" /></th>
+						<!-- <th th:text="#{collections.management.table.collection.name.label}"></th>
+                        <th th:text="#{collections.management.table.owner.label}"></th> -->
+						<th th:text="#{collections.management.table.kind.label}"></th>
+						<th th:text="#{collections.management.table.modified.label}"></th>
+						<th th:text="#{collections.management.table.size.label}"></th>
+						<th th:text="#{collections.management.table.action.label}"></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<!-- Some items were not deleted -->
+<div class="col-xs-12"
+	th:unless="${permissionType != 'none' or user.isAdmin()}">
+	<div class="text-center" role="alert">
+		<span th:text="#{collections.management.msg.access.denied}"></span>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#"
+			onclick="javascript:goBackHistory('1');" aria-label="back"
+			th:text="#{text.back}"> <span>Back</span>
+		</a>
+	</div>
+</div>
+
+<!-- Empty Trash Modal -->
+<div class="modal fade" id="emptyTrashModal" tabindex="-1" role="dialog"
+	aria-labelledby="emptyTrashModalTitle" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					title="Close">
+					<span aria-hidden="true">&times;</span><span class="sr-only"
+						th:text="#{text.close}">Close</span>
+				</button>
+				<h4 id="emptyTrashModalTitle" class="modal-title"
+					th:text="${'Empty Trash'}"></h4>
+			</div>
+			<div class="modal-body">
+				<span th:text="#{trash.deletion.confirmation(${trashColl})}"></span>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+					th:text="#{confirmation.message.cancel}" title="Cancel"></button>
+				<button id="emptyTrashConfBtn" onclick="emptyTrash();" type="button"
+					class="btn btn-primary" data-dismiss="modal"
+					th:text="#{confirmation.message.yes}" title="Confirm"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Ticket Form -->
+<div class="col-md-10 col-sm-9 col-xs-12">
+	<div class="modal fade" id="ticketCreationForm" tabindex="-1"
+		role="dialog" aria-labelledby="ticketCreateFormTitle"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						title="Close">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 id="ticketCreateFormTitle" class="modal-title"
+						th:text="#{ticket.form.title.create}"></h4>
+				</div>
+				<div class="modal-body">
+					<div id="ticketFormPanel"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						th:text="#{ticket.form.button.cancel}" title="Cancel"></button>
+					<button id="createTicketFormBtn" onclick="createTicket();"
+						type="button" class="btn btn-primary" data-dismiss="modal"
+						th:text="#{ticket.form.button.create}" title="Create"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
+<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+		var path;
+		var url;
+
+		var permission = null;
+        var groupsToHavePermissionsGranted = null;
+        var usersToHavePermissionsGranted = null;
+        var path = null;
+        var currentPermissionTab = "groups";
+        var datatable;
+        var mostRestrictivePermURL = "/metalnx/permissions/findMostRestrictive/";
+		var advancedView = [[${dataGridUser.isAdvancedView()}]];
+
+        $(document).ready(function(e){
+        	if(![[${isCurrentPathCollection}]]){
+        		console.log([[${isCurrentPathCollection}]]);
+        		console.log("collectionBrowser - getting info details...not a collection ");
+        		getInfoDetails([[${currentPath}]]);
+        		return;
+        	}
+
+        	var i = 0;
+
+        	datatable = $('#treeViewTable').DataTable( {
+    		    "serverSide": true,
+    		    "dom": dtPatternMlxCollections,
+    		    "language": i18n,
+    		    "destroy": true,
+    		    "stateSave": true,
+    		    "autoWidth": false,
+    		    "processing": true,
+						"searching": false,
+						"paging": false,
+					//	"pagingType": "full_numbers",
+					//	"lengthMenu": [10, 25, 50, 75, 100],
+    		    "stateSaveParams": function (settings, data) {
+    		    	data.search.search = "";
+    		    },
+    		    "ajax": {
+    		        url: '/metalnx/browse/getPaginatedJSONObjs/',
+    		    },
+    	        "initComplete": function(settings){
+    	            $('#treeViewTable tbody td').each(function () {
+    	               $(this).attr('title', $(this).text().trim());
+    	            });
+
+    	            if(datatable.data().length == 0) {
+    	            	$("#emptyTrashBtn").addClass("disabled");
+    	            	$("#emptyTrashBtn").prop("disabled", true);
+    	            	$("#actions button").prop("disabled", true);
+    	            	$("#actionsWait").hide();
+    	            	$('input[name=selectAllCheckboxes]').prop("disabled", true);
+    	            }
+    	            else {
+    	                $("#emptyTrashBtn").removeClass("hideElement");
+    	            	$("#emptyTrashBtn").removeClass("disabled");
+    	            	$("#emptyTrashBtn").prop("disabled", false);
+    	            	$('input[name=selectAllCheckboxes]').prop("disabled", false);
+    	            	if (datatable.data().length == 1){
+    	            	    $("#treeViewTable_processing").removeClass("loading-md");
+    	            	    $("#treeViewTable_processing").removeClass("loading-sm");
+    	            	    $("#treeViewTable_processing").addClass("loading-xs");
+    	            	}
+    	            	else if (datatable.data().length == 2){
+                            $("#treeViewTable_processing").removeClass("loading-xs");
+                            $("#treeViewTable_processing").removeClass("loading-md");
+                            $("#treeViewTable_processing").addClass("loading-sm");
+    	            	}
+    	            	else {
+                            $("#treeViewTable_processing").removeClass("loading-xs");
+    	            	    $("#treeViewTable_processing").removeClass("loading-sm");
+    	            	    $("#treeViewTable_processing").addClass("loading-md");
+    	            	}
+    	            }
+    	        },
+    	        "drawCallback": function(){
+    	           /* $(".dataTables_paginate.paging_simple_numbers .pagination").addClass("pagination-sm");
+    	            $('.dataTables_paginate.paging_simple_numbers')
+    	            .css( 'display', this.api().data().length <= 0 ?
+    	                 'none' :
+    	                 'block'
+    	            )*/
+    	            $('input[name=selectAllCheckboxes]').prop("checked", false);
+    	        },
+  		    	"columnDefs": [
+                    {
+                    	"render": function ( data, type, full, meta ) {
+    						return '<input type="checkbox" onclick="treeViewTableItemOnClick();" name="collectionPathCheckboxes" value="'+full.path+'" id="'+full.name+'" collection="'+full.collection+'"/>';
+    					},
+    					"className": "dt-center",
+    					"width": "25px",
+    					"targets": 0,
+    					"orderable": false
+                    },
+                    /* {
+                    	"render": function ( data, type, full, meta ) {
+    						return '<a href="#" name="' + full.path +
+								'" onclick="'+(full.collection?'getSubDirectories(\'':'getMetadata(\'')+full.path+'\')" title="' + full.path +
+						//		'" onclick="'+(full.collection?'getSubDirectories(\'':'getInfoTest(\'')+full.path+'\')" title="' + full.path +
+								'"><i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>';
+    					},
+    					"width": "50%",
+    					"targets": 1
+                    }, */
+                    {
+                    	"render": function ( data, type, full, meta ) {
+    						return +full.collection?'<a  onclick=positionBrowserToPath("'+encodeURI(full.path)+'") title="' + full.path+
+    						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
+    					},
+    					"width": "50%",
+    					"targets": 1
+                    },
+
+                    /* {
+                    	"data": "owner",
+                    	"width": "10%",
+                    	"targets": 2
+                   	},
+                    {
+                    	"render": function ( data, type, full, meta ){
+                    		return full.collection?[[#{collections.management.table.kind.collection}]]:[[#{collections.management.table.kind.dataobject}]];
+                    	},
+                    	"width": "10%",
+                    	"targets": 3,
+                    	"orderable": false
+                   	}, */
+                    {
+                    	"data": "modifiedAtFormatted",
+                    	"width": "15%",
+                    	"targets": 2
+                   	},
+                    {
+                    	"render": function ( data, type, full, meta ){
+                    		return full.collection? "-" : full.displaySize
+                    	},
+                    	"width": "13%",
+                    	"targets": 3
+                   	},
+                   	{
+                    	"render": function ( data, type, full, meta ) {
+
+
+                    		var encodedName = encodeURI(full.name);
+                    		var encodedPath = encodeURI(full.path);
+                    		var idVal = "row" + i++;
+                    		
+                    		return '<a href="/metalnx/collectionInfo?path='+encodedPath+'" class="btn btn-default btn-xs" name="' + idVal +
+    						'" onclick=getCollectionSummary("'+encodedPath+'") title="View info" ><i class="fa fa-info-circle"></i> <span>View Info</span> </a> <a href="#" name="' + idVal +
+        						'" id="open-left-canvas" onclick=getSideCanvas("'+encodedPath+'","'+idVal+'") class="btn btn-default btn-xs"  title="Quick View" ><i class="fa fa-eye"></i> </a>';
+
+    					},
+    					"width": "20%",
+    					"targets": 4
+                    }
+
+                ]
+    		} );
+        	addCollectionActions('treeViewTable', datatable, advancedView);
+            $("input[type=checkbox]").prop("disabled", false);
+
+
+        });
+
+		$('#treeViewTable').on('page.dt', function (){
+		    $("#actions button").prop("disabled", true);
+            $("#actionsWait").hide();
+		});
+
+		$('#treeViewTable').on( 'length.dt', function ( e, settings, len ) {
+            $("#actions button").prop("disabled", true);
+            $("#actionsWait").hide();
+        });
+
+
+
+        function selectAllCheckboxes() {
+            $("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
+                $(this).prop("checked", true);
+                $(this).parent().parent().addClass("info");
+            });
+        }
+
+		$("input[type='checkbox'][name='selectAllCheckboxes']").on("change", function(){
+			if($(this).is(":checked")){
+				$("#actions button").prop("disabled", true);
+				$("#actionsWait").show();
+				$('#actionLabel').html([[#{collections.management.progress.label.permissions}]]);
+
+                selectAllCheckboxes();
+				var paths = findPathsSelected();
+
+				ajaxEncapsulation(mostRestrictivePermURL, "POST", {paths: paths}, handleActionPermissionsWhenAddingPaths);
+
+				$("#actions #modifyBtn").hide();
+				$("#actions #createTicketBtn").hide();
+			}
+			else {
+				$("#treeViewTable tbody input[name=collectionPathCheckboxes]").each(function(){
+					$(this).prop("checked", false);
+					$(this).parent().parent().removeClass("info");
+				});
+
+				$("#actions button").prop("disabled", true);
+				$("#actionsWait").hide();
+			}
+		});
+
+
+
+		function treeViewTableItemOnClick() {
+            var totalCheckboxesChecked = $("#treeViewTable tbody input[type=checkbox]:checked").length;
+            var totalItemsDisplayed = $("#treeViewTable tbody input[type=checkbox]").length;
+
+            $("input[name=selectAllCheckboxes]").prop("checked", totalCheckboxesChecked == totalItemsDisplayed);
+
+            var anyCollections = $('#treeViewTable tbody input[collection="true"]:checked').length != 0;
+
+			if(!anyCollections) $('#replicateBtn').show();
+
+            var paths = findPathsSelected();
+            if(paths.length != 0) ajaxEncapsulation(mostRestrictivePermURL, "POST", {paths: paths}, handleActionPermissionsWhenAddingPaths);
+		    else handleActionPermissionsWhenRemovingPaths("none");
+		};
+
+		function handleActionPermissionsWhenAddingPaths(permissionType) {
+			$("#actionsWait").hide();
+			$("#actions").show();
+			if(0 >= $("#treeViewTable tbody input[type=checkbox]:checked").length){
+				$("#actions button").prop("disabled", true);
+			}
+			else {
+				$("#actions ul.dropdown-menu li").removeClass("hideElement");
+				switch(permissionType.toLowerCase()) {
+					case "none":
+						if(!$("#actions button").is(":disabled")) {
+							$("#actions button").prop("disabled", true);
+						}
+						break;
+					case "admin":
+						$("#actions button").prop("disabled", false);
+						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
+						$("#moveBtn").parent("li").addClass("hideElement");
+						$("#copyBtn").parent("li").addClass("hideElement");
+						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#downloadBtn").parent("li").addClass("hideElement");
+						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
+						break;
+					case "read":
+						$("#actions button").prop("disabled", false);
+						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
+						$("#moveBtn").parent("li").addClass("hideElement");
+						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#createTicketBtn").parent("li").addClass("hideElement");
+                        $("#actions .dropdown-menu .divider").addClass("hideElement");
+						break;
+					case "write":
+						//write permissions let users download, copy, replicate and apply templates
+						$("#actions button").prop("disabled", false);
+						$("#moveBtn").parent("li").addClass("hideElement");
+						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
+						break;
+					case "own":
+						$("#actions button").prop("disabled", false);
+						break;
+				}
+			}
+		}
+
+		function handleActionPermissionsWhenRemovingPaths(mostRestrictivePermission) {
+			$("#actionsWait").hide();
+			$("#actions").show();
+
+			if(0 >= $("#treeViewTable tbody input[type=checkbox]:checked").length){
+				$("#actions button").prop("disabled", true);
+			}
+			else {
+				switch(mostRestrictivePermission.toLowerCase()) {
+					case "none":
+						$("#actions button").prop("disabled", true);
+						break;
+					case "read": //read permissions let users download, copy, replicate
+						$("#actions button").prop("disabled", false);
+						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
+						$("#moveBtn").parent("li").addClass("hideElement");
+						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#deleteBtn").parent("li").addClass("hideElement");
+                        $("#actions .dropdown-menu .divider").addClass("hideElement");
+						break;
+					case "write": //write permissions let users download, copy, replicate and apply templates
+						$("#actions button").prop("disabled", false);
+						$("#actions li").removeClass("hideElement");
+						$("#moveBtn").parent("li").addClass("hideElement");
+						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#deleteBtn").parent("li").addClass("hideElement");
+						$("#actions .dropdown-menu .divider").addClass("hideElement");
+						break;
+					case "own":
+						$("#actions button").prop("disabled", false);
+						$("#actions li").removeClass("hideElement");
+						break;
+				}
+			}
+		}
+
+
+        $("#downloadBtn").click(function(e) {
+        	e.preventDefault();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("input[name=selectAllCheckboxes]").prop("disabled", true);
+            $("input[type=checkbox]").prop("disabled", true);
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	$("#actionsWait").show();
+        	$('#actionLabel').html([[#{collections.management.progress.label.download}]]);
+        	var prepareDownloadURL = $("#downloadBtn").attr("href");
+
+			var paths = [];
+        	$("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+				paths.push($(this).val());
+
+			});
+
+        	ajaxEncapsulation(prepareDownloadURL, "GET", {paths: paths}, handleDownload, null);
+
+			$("#actions button").prop("disabled", true);
+        });
+
+        $("#submitCollectionFormBtn").click(function(){
+			var newCollOrDataObjectName = $('#inputCollectionName').val();
+			var parentPath = $('#inputCollectionParentPath').val();
+			var collPath = $('#inputCollectionPath').val();
+
+			if (collPath != "") {
+				var oldCollName = collPath.substring(parentPath.length + 1, collPath.length);
+
+			}
+
+			if(collPath == "" || oldCollName != newCollOrDataObjectName) {
+				validateCollectionNameAjax([[${urlMap.URL_COLLECTION_VALIDATE_NAME}]] + newCollOrDataObjectName, submitForm);
+
+			}
+			else {
+				submitForm();
+			}
+		});
+
+        function handleDownload(data) {
+        	console.log("collectionBrowser.html:: success call :: handleDownload()")
+
+        	console.log(data)
+        	$("#actionsWait").hide();
+        	$("#uploadIcon").prop("disabled", false);
+            $("#uploadIcon").removeClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", false);
+            $("#showCollectionFormBtn").removeClass("disabled");
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("checked", false);
+        	$("#treeViewTable input[name=selectAllCheckboxes]").prop("checked", false);
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").prop("disabled", false);
+        	$("#treeViewTable input[name=selectAllCheckboxes]").prop("disabled", false);
+        	$("#treeViewTable tbody input[name=collectionPathCheckboxes]").parent().parent().removeClass("info");
+
+        	if (data.downloadLimitStatus == "ok"){
+        		window.location.href = "/metalnx/fileOperation/download/";
+        	}
+        	else {
+        		toastr.warning("Download limit has been exceeded over 100MBs");
+        		$("#actionsWait").hide();
+        	}
+        }
+
+		/*function handleDownloadFailure() {
+			console.log("collectionBrowser.html:: failure call :: handleDownloadFailure()")
+        	$("#actionsWait").hide();
+        	$("#downloadFailureMessage").show();
+        	$("input[name=selectAllCheckboxes]").prop('checked', false);
+        	$("input[name=collectionPathCheckboxes]").prop('checked', false);
+        }*/
+
+
+        function getBreadcrumb(path) {
+        	ajaxEncapsulation(
+   				'/metalnx/browse/getBreadCrumbForObject/',
+   				"POST",
+   				{path: path},
+   				function(data){
+   					$("#directoryPath").html(data);
+   				}, null, null, null
+   			);
+        }
+
+/*         function getPermDetails(path){
+            $('#table-loader').nextAll().remove();
+        	$('#table-loader').show();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	//var url = "/metalnx/permissions/getPermissionDetails/";
+        	var url = "/metalnx/collectionInfo/collectionPermisssionDetails/";
+
+        	ajaxEncapsulation(url, "POST", {path: path}, displayPermDetails, null, null);
+		}
+
+        function getInfoDetails(path){
+        	console.log("Collection Browser - getInfoDetails()");
+        	$("#table-loader").show();
+        	$("#table-loader").nextAll().remove();
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	//var url = "/metalnx/collections/info/";
+
+        	var url = "/metalnx/collectionInfo/collectionFileInfo/";
+        	getBreadcrumb(path);
+			ajaxEncapsulation(url, "POST", {path: path}, displayInfoDetails, null, null, null);
+        }
+
+        function getMetadata(path){
+        	console.log("Getting metadata");
+        	$('#table-loader').show();
+        	$('#table-loader').nextAll().remove();
+        	$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        	getBreadcrumb(path);
+        	//ajaxEncapsulation("/metalnx/metadata/getMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+        	ajaxEncapsulation("/metalnx/collectionInfo/collectionMetadata/", "POST", {path: path}, displayMetadata, null, null, null);
+		}*/
+
+       /*  function displayMetadata(data){
+			$('#table-loader').hide();
+			$('#table-loader').after(data);
+			$("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+		}
+
+        function displayPermDetails(data){
+            $('#table-loader').hide();
+            $("#table-loader").after(data);
+            $("#uploadIcon").prop("disabled", true);
+            $("#uploadIcon").addClass("disabled");
+            $("#showCollectionFormBtn").prop("disabled", true);
+            $("#showCollectionFormBtn").addClass("disabled");
+        } */
+
+        $('a[data-target="#uploadModal"]').click(function(){
+        	$('#uploadDestinationPath').val([[${ currentPath }]]);
+        	ajaxEncapsulation("/metalnx/browse/getAvailableRescForPath/", "POST", {isUpload: true}, displayUploadModal, null, null, null);
+        });
+        function displayUploadModal(data){
+        	$('#selectResourceToUpload').html(data);
+        }
+        $('a[data-target="#replicateModal"]').click(function(){
+            $('#selectResourceForReplication').empty();
+            $('#replicate-loader').show();
+        	ajaxEncapsulation("/metalnx/collections/getAvailableRescForPath/", "POST", {isUpload: false}, displayReplicateModal, null, null, null);
+        });
+        function displayReplicateModal(data){
+            $('#replicate-loader').hide();
+        	$('#selectResourceForReplication').html(data);
+        }
+
+		function emptyTrash() {
+			$("#actionsWait").show();
+			$('#actionLabel').html([[#{collections.empty.trash.status}]]);
+			var url ="/metalnx/fileOperation/emptyTrash/";
+			ajaxEncapsulation(url, "POST", null, emptyTrashSuccess, emptyTrashFailure, null, null);
+		}
+
+		function emptyTrashSuccess() {
+			$("#actionsWait").hide();
+			$("#trashNotEmptiedSuccessfully").addClass("hideElement");
+			$("#trashEmptiedSuccessfully").removeClass("hideElement");
+			getSubDirectories([[${ trashColl }]]);
+		}
+
+		function emptyTrashFailure() {
+			$("#trashEmptiedSuccessfully").addClass("hideElement");
+			$("#trashNotEmptiedSuccessfully").removeClass("hideElement");
+			getSubDirectories([[${ currentPath }]]);
+		}
+
+        function getTicketCreationForm(){
+            ajaxEncapsulation("/metalnx/tickets/ticketForm", "GET", null, populateTicketCreationForm, null, null, null);
+            $("#ticketCreationForm").modal("show");
+		}
+
+		function populateTicketCreationForm(ticketForm){
+		    $("#ticketFormPanel").html(ticketForm);
+		    $("#selectedPath").text($("input[name='collectionPathCheckboxes']:checked").val());
+		    $("#inputPath").val($("input[name='collectionPathCheckboxes']:checked").val());
+		}
+
+		function createTicket(){
+		    if(allFieldsValidated()){
+                $("input[name='collectionPathCheckboxes']").prop('checked', false);
+                $("input[name='collectionPathCheckboxes']").parent().parent().removeClass("info");
+
+                var newTicket = JSON.stringify(serializeTicketForm());
+                var url = '/metalnx/tickets/';
+                var contentType = "application/json; charset=utf-8";
+                ajaxEncapsulation(url, 'POST', newTicket, createTicketSuccess, createTicketFailure, null, contentType);
+		    }
+		}
+
+		function createTicketSuccess(ticket){     
+			var ticketStringMail = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created" + "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20"+ ticket.ticketString + "%0D%0APath:%20"+ ticket.path;
+			var newTicketInfo = " "+ ticket.ticketString;
+			var newTicketInfoCopy = " Ticket String: "+ ticket.ticketString + " | Path: " + ticket.path;
+			$("#ticketCreationSuccessMessage").css("display", "block");
+			$("#ticketCreationSuccessMessage .alert").css("display", "block");
+			$("#actions button").prop("disabled", true);
+			$("#newTicketInfoMsg").html(newTicketInfo);
+			$("#sendTicketStringBtn").attr("href", ticketStringMail);
+			$("#newTicketInfoCopy").html(newTicketInfoCopy);
+			setCopyTicketBtn(newTicketInfo);
+		}
+
+        $("#closeTicketCreationSuccessMessage").click(function(){
+            $("#ticketCreationSuccessMessage").css("display", "none");
+			$("#ticketCreationSuccessMessage .alert").css("display", "none");
+        });
+
+		function createTicketFailure(err){
+			$("#ticketCreationFailureMessage").css("display", "block");
+			$("#ticketCreationFailureMessage .alert").css("display", "block");
+			$("#actions button").prop("disabled", true);
+		}      
+
+		function serializeTicketForm(){
+            if ($("#inputUsesLimit").val()==''){
+                $("#inputUsesLimit").val(0);
+            }
+            if ($("#inputWriteByteLimit").val()==''){
+                $("#inputWriteByteLimit").val(0);
+            }
+            if ($("#inputWriteFileLimit").val()==''){
+                $("#inputWriteFileLimit").val(0);
+            }
+
+            var form = $("#ticketFormPanel form").serializeArray();
+            var ticket = {};
+            ticket['hosts'] = []
+            for (var i = 0; i < form.length; i++) {
+                var name = form[i]['name'];
+                var values = form[i]['value'].split(',');
+                if (name == 'users' || name == 'groups') {
+                    ticket[name] = [];
+                    for (var v = 0; v < values.length; v++) {
+                        ticket[name].push(values[v]);
+                    }
+                }
+                else if(name == 'hosts'){
+                    ticket[name].push(values[0]);
+                }
+                else {
+                    ticket[name] = values[0];
+                }
+            }
+            return ticket;
+		}
+    /*]]>*/
+</script>

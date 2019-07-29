@@ -1,0 +1,458 @@
+<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
+<!-- Copyright (c) 2015-2017, Dell EMC -->
+
+
+
+<th:block th:fragment="summaryView">
+
+
+	<div id="summary" class="container-fluid">
+
+		<div class="row nopadding">
+
+			<div class="col-sm-4 col-md-4 col-xs-4 pull-right">
+				<div id="actionmenu" class="pull-right">
+					<div class="btn-group">
+						<button type="button"
+							class="btn btn-default dropdown-toggle text-btn"
+							data-toggle="dropdown" aria-expanded="false">
+							<span>Action</span> <span class="caret" /> <span class="sr-only">Toggle
+								Dropdown</span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" id="renameBtn" class="hideElement"
+								data-target="#renameModal" data-toggle="modal"> <span><i
+										class="fa fa-pencil-square-o"> </i></span> <span>Rename</span></a></li>
+							<li class="divider"></li>
+							<li><a href="#" id="deleteBtn" class="hideElement"
+								data-toggle="modal" data-target="#deleteModal"><span><i
+										class="fa fa-trash-o"></i> </span> <span>Delete</span></a></li>
+						</ul>
+					</div>
+					<!-- <button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown" aria-expanded="false">
+						<span class="fa fa-share-alt" /> <span class="caret" /> <span
+							class="sr-only">Toggle Dropdown</span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#"> <span>option1</span>
+						</a></li>
+						<li><a href="#"> <span>option2</span>
+						</a></li>
+					</ul> -->
+					<a id="breadcrumbStar" class="btn btn-default icon-btn"
+						th:onclick="${dataProfile.starred}? 'javascript:unstarPath(\'' + ${dataProfile.getAbsolutePath()} + '\');' : 'javascript:starPath(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						data-toggle="popover" data-trigger="manual" data-content=""
+						th:title="${dataProfile.starred}?#{collections.favorite.unmark.button.tooltip}:#{collections.favorite.button.tooltip}">
+						<i
+						th:class="${dataProfile.starred}? 'fa fa-star bm-checked' : 'fa fa-star bm-unchecked'"
+						aria-hidden="true"></i>
+					</a> <a id="breadcrumDownloadBtn" class="btn btn-default icon-btn"
+						th:onclick="'javascript:fileDownload(\'' + ${dataProfile.getAbsolutePath()} + '\');'">
+						<i class="fa fa-download fa-color" aria-hidden="true"></i>
+					</a>
+					<!--  <a id="breadcrumbShared" role="button" class="btn btn-default"
+					href="#" data-toggle="popover" data-trigger="manual"
+					data-content=""> <i
+					th:class="${dataProfile.shared}? 'fa fa-share-alt bm-checked' : 'fa fa-share-alt bm-unchecked'"
+					aria-hidden="true"></i>
+				</a>-->
+				</div>
+
+			</div>
+
+
+			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
+				<ol class="breadcrumb">
+					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+							class="fa fa-home fa-color"></i></a></li>
+					<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+							<li><a href="#"
+								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+								th:text="${breadcrumbItem.name}"
+								th:title="${breadcrumbItem.path}"
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+							</a></li>
+						</th:block>
+						<th:block
+							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
+						</th:block>
+
+					</th:block>
+				</ol>
+				<!-- <ol class="breadcrumb">
+					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+							class="fa fa-home fa-color"></i></a></li>
+					<th:block th:if="${breadcrumb.items.size()} le 4"
+						th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+							<li><a href="#"
+								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+								th:text="${breadcrumbItem.name}"
+								th:title="${breadcrumbItem.path}"
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+							</a></li>
+						</th:block>
+						<th:block
+							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
+						</th:block>
+
+					</th:block>
+
+					<th:block th:if="${breadcrumb.items.size()} gt 4">
+						<li>...</li>
+						<li><a href="#"
+							aria-label="'path breadcrumb for:' + ${breadcrumb.items[breadcrumb.items.size()-3].name}"
+							th:text="${breadcrumb.items[breadcrumb.items.size()-3].name}"
+							th:title="${breadcrumb.items[breadcrumb.items.size()-3].path}"
+							th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-3].encPath}')|">
+						</a></li>
+						<li><a href="#"
+							th:text="${breadcrumb.items[breadcrumb.items.size()-2].name}"
+							th:title="${breadcrumb.items[breadcrumb.items.size()-2].path}"
+							th:onclick="|positionBrowserToPath('${ breadcrumb.items[breadcrumb.items.size()-2].encPath}')|">
+						</a></li>
+						<li class="collections-view"><span
+							th:text="${ dataProfile.getChildName() }"
+							th:title="${ dataProfile.getChildName() }"> </span></li>
+					</th:block>
+				</ol> -->
+
+				<div class="collection-title">
+					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
+				</div>
+			</div>
+
+			<div id="container"
+				th:attr="data-msg-txt=#{collections.management.progress.label.download}"></div>
+
+			<div id="actionsWait" class="col-xs-12 hideElement">
+				<div id="panelWait">
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped active"
+							role="progressbar" aria-valuenow="100" aria-valuemin="0"
+							aria-valuemax="100" style="width: 100%">
+							<span id="actionLabel"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="row box box-default">
+			<div class="col-sm-6 col-md-3 col-xs-12 text-left">
+				<div class="mime-icon">
+					<a href="#" class="fas-icon"><i
+						th:class="${ icon.getMimeIcon() }"></i></a>
+				</div>
+				<div class="mime-info">
+					<div class="mime-desc">
+
+						<i><span class="mime-object"
+							th:text="${ dataProfile.dataType.mimeType }"></span></i>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+		<!-- <div class="col-xs-12 col-md-10 col-sm-9 ">
+			 <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+
+		</div> -->
+		<!-- <div class="row box box-default">
+			<div class="col-xs-12 col-md-3 col-sm-3 text-left">
+				<span><b>Collection Name</b></span> <br /> <span
+					th:text="${ dataProfile.getChildName() }"></span>
+			</div>
+			<div class="col-xs-12 col-md-3 col-sm-3">
+				<span><b>Root</b></span> <br /> <span
+					th:text="${ dataProfile.getParentPath() }"></span>
+				 <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
+			</div>
+		</div> -->
+
+
+	</div>
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						title="Close">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 id="deleteModalLabel" class="modal-title"
+						th:text="#{confirmation.deletion.title}"></h4>
+				</div>
+				<div class="modal-body">
+					<span th:text="#{confirmation.deletion.label}"></span> <span
+						id="itemsToBeRemoved" style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						th:text="#{confirmation.message.cancel}" title="Cancel"></button>
+					<button type="button" class="btn btn-primary"
+						th:onclick="'javascript:deleteInfoAction(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						th:text="#{confirmation.message.yes}" title="Confirm"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Delete Confirmation -->
+
+	<div id="deleteConfirmationModal" class="modal fade" tabindex="-1"
+		role="dialog" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body text-cente">
+					<strong>Success!</strong> The file was successfully deleted.<a
+						href="/metalnx/browse/home"> Go Back to Collection Home.</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- success Confirmation -->
+
+	<div id="successConfirmationModal" class="modal hide" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body text-cente  alert alert-success">
+					<strong>Success!</strong> The file was successfully Edited.
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Rename Modal -->
+
+	<div class="modal fade" id="renameModal" tabindex="-1" role="dialog"
+		aria-labelledby="myRenameModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-form-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							title="Close">
+							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myRenameModalLabel"
+							th:text="#{collections.add.form.title}"></h4>
+					</div>
+					<div class="modal-body">
+
+						<div class="row">
+							<form role="form" class="container-fluid registerForm"
+								method="POST" action="/metalnx/browse/modify/action/">
+
+								<input type="hidden" id="inputCollectionPath" name="path"
+									th:value="${ dataProfile.getAbsolutePath() }" title="path" />
+								<input type="hidden" id="inputCollectionParentPath"
+									name="parentPath" th:value="${ dataProfile.getParentPath() }"
+									title="parentpath" />
+
+								<div class="form-group">
+									<label for="inputCollectionName"
+										th:text="#{collections.add.form.collectionname.label}"></label>
+									<input type="text" class="form-control" name="collectionName"
+										th:value="${dataProfile.getChildName()}"
+										id="inputCollectionName"
+										th:placeholder="#{collections.add.form.collectionname.placeholder}"
+										style="width: 66%" /> <i
+										class="form-control-feedback glyphicon glyphicon-remove hideElement"
+										id="invalidCollectionNameIcon" style="right: 33%"></i> <small
+										class="help-block hideElement" id="invalidCollectionNameMsg"
+										th:text="#{collections.validation.name.duplicated}"></small> <small
+										class="help-block hideElement" id="emptyCollectionNameMsg"
+										th:text="#{collections.validation.name.blank}"></small>
+								</div>
+							</form>
+
+						</div>
+						<script>
+							$(function() {
+								$('[data-toggle="tooltip"]').tooltip();
+							});
+						</script>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default cancelBtn"
+						data-dismiss="modal" th:text="#{forms.cancel.action.button}"
+						title="Cancel"></button>
+					<button type="button" class="btn btn-primary"
+						th:onclick="'javascript:submitForm();'"
+						th:text="#{forms.save.action.button}" title="Save"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Add Modal -->
+
+		<!-- Update inheritance modal -->
+	<div class="modal fade" id="updateInheritanceModal" tabindex="-1"
+		role="dialog" aria-labelledby="updateInheritanceModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						title="Close">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 id="updateInheritanceModalLabel" class="modal-title"
+						th:text="#{collections.management.inheritance.modal.title}"></h4>
+				</div>
+				<div class="modal-body container">
+
+					<div class="row">
+						<div class="col">
+							<span
+								th:text="#{collections.management.inheritance.modal.prompt}"></span>
+						</div>
+					</div>
+					<div class="row pb-3">
+						<div class="col">
+								<label for="inheritCollectionAbsolutePath"
+
+											th:text="#{collections.management.table.absolute.path.label}" class="text-center"></label>
+						</div>
+					</div>
+					<div class="row pb-5">
+
+						<div class="col">
+								<span id="inheritCollectionAbsolutePath"
+									th:text="${dataProfile.getAbsolutePath()}"></span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						th:text="#{confirmation.message.cancel}" title="Cancel" th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
+					<button type="button" class="btn btn-primary"
+						th:onclick="'javascript:updateInheritanceNonRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						th:text="#{text.apply}" title="Apply"></button>
+						<button type="button" class="btn btn-primary"
+						th:onclick="'javascript:updateInheritanceRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
+						th:text="#{confirmation.message.yes.recursively}" title="Confirm recursively"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function submitForm() {
+			$(".registerForm").submit();
+		}
+	</script>
+</th:block>
+
+<th:block th:fragment="readOnlySummaryView">
+
+	<div id="summary" class="container-fluid">
+
+		<div class="row nopadding">
+			<div th:if="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
+				<h4 class="errorMsg">You do not have access on this page.To view the full page please request an access.</h4>
+				<button class="btn btn-primary btn-sm pull-right" type="button"
+				th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'" title="Request Access">Access Request</button>
+			</div>
+			<div th:unless="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
+				<h4 class="errorMsg">You do not have access on this page.Please contact your administrator.</h4>
+			</div>
+		</div>
+		<div class="row nopadding">
+
+			<div class="col-sm-8 col-md-8 col-xs-8 text-left">
+				<ol class="breadcrumb">
+					<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+							class="fa fa-home fa-color"></i></a></li>
+					<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+						<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+							<li><a href="#"
+								aria-label="'path breadcrumb for:' + ${ breadcrumbItem.path }"
+								th:text="${breadcrumbItem.name}"
+								th:title="${breadcrumbItem.path}"
+								th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+							</a></li>
+						</th:block>
+						<th:block
+							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+							<li class="collections-view"><span
+								th:text="${ dataProfile.getChildName() }"
+								th:title="${ dataProfile.getChildName() }"> </span></li>
+						</th:block>
+
+					</th:block>
+				</ol>
+
+
+				<div class="collection-title">
+					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
+				</div>
+			</div>
+
+			<div id="container"
+				th:attr="data-msg-txt=#{collections.management.progress.label.download}"></div>
+
+			<div id="actionsWait" class="col-xs-12 hideElement">
+				<div id="panelWait">
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped active"
+							role="progressbar" aria-valuenow="100" aria-valuemin="0"
+							aria-valuemax="100" style="width: 100%">
+							<span id="actionLabel"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="row box box-default">
+			<div class="col-sm-6 col-md-3 col-xs-12 text-left">
+				<div class="mime-icon">
+					<a href="#" class="fas-icon"><i
+						th:class="${ icon.getMimeIcon() }"></i></a>
+				</div>
+				<div class="mime-info">
+					<div class="mime-desc">
+
+						<i><span class="mime-object"
+							th:text="${ dataProfile.dataType.mimeType }"></span></i>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+
+
+
+
+
+</th:block>
+
