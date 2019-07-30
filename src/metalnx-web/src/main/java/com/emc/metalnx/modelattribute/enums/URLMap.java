@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.modelattribute.enums;
 
@@ -74,10 +72,10 @@ public class URLMap {
 	public static final String URL_DELETE_SPECIFIC_QUERY = "/metalnx/specificqueries/remove/";
 	public static final String URL_SPECIFIC_QUERY_VALIDATE = "/metalnx/specificqueries/validate/";
 
-	public static final String URL_TRASH_COLLECTION_USER = "/trash/getTrash/";	
+	public static final String URL_TRASH_COLLECTION_USER = "/trash/getTrash/";
 	public static final String URL_PUBLIC_COLLECTION_USER = "/public/getPublic/";
-	
-	public static final String URL_HOME_COLLECTION_USER = "/browse/home/";	
+
+	public static final String URL_HOME_COLLECTION_USER = "/browse/home/";
 	public static final String URL_ADD_COLLECTION_USER = "/metalnx/browse/add/";
 	public static final String URL_MODIFY_COLLECTION_USER = "/metalnx/fileOperation/modify/";
 	public static final String URL_DELETE_COLLECTION_USER = "/fileOperation/delete/";
