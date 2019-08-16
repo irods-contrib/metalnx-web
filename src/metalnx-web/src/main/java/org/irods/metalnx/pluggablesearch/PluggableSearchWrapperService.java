@@ -6,6 +6,10 @@ package org.irods.metalnx.pluggablesearch;
 import javax.annotation.PostConstruct;
 
 import org.irods.jargon.extensions.searchplugin.SearchIndexInventory;
+import org.irods.jargon.extensions.searchplugin.SearchPluginDiscoveryService;
+import org.irods.jargon.extensions.searchplugin.SearchPluginRegistrationConfig;
+import org.irods.jargon.extensions.searchplugin.exception.SearchPluginUnavailableException;
+import org.irods.metalnx.jwt.JwtManagementWrapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,9 @@ public class PluggableSearchWrapperService {
 	@Autowired
 	private ConfigService configService;
 
+	@Autowired
+	private JwtManagementWrapperService jwtManagementWrapperService;
+
 	/**
 	 * This is an application-level registry of registered search endpoints and
 	 * schemas/attributes. These endpoint metadata are acquired by Metalnx polling
@@ -41,6 +48,12 @@ public class PluggableSearchWrapperService {
 	 * inventory
 	 */
 	private final SearchIndexInventory searchIndexInventory = new SearchIndexInventory();
+
+	/**
+	 * Wrapped {@link SearchPluginDiscoveryService} is wired up in this component
+	 * with configuration and JWT processing
+	 */
+	private SearchPluginDiscoveryService searchPluginDiscoveryService;
 
 	@Value("${pluggablesearch.enabled}")
 	private boolean pluggableSearchEnabled = false;
@@ -64,6 +77,25 @@ public class PluggableSearchWrapperService {
 	@PostConstruct
 	public void init() {
 		log.info("init()");
+		SearchPluginRegistrationConfig config = new SearchPluginRegistrationConfig();
+		config.setEndpointAccessSubject(pluggableSearchEndpointAccessSubject);
+		config.setEndpointAccessTimeout(getPluggableSearchInfoTimeout());
+		config.setEndpointRegistryList(
+				SearchPluginRegistrationConfig.convertEndpointListToArray(pluggableSearchEndpoints));
+		config.setEndpointSearchAccessTimeout(pluggableSearchSearchTimeout);
+		config.setJwtAlgo(configService.getJwtAlgo());
+		config.setJwtIssuer(configService.getJwtIssuer());
+		config.setJwtSecret(configService.getJwtSecret());
+		this.searchPluginDiscoveryService = new SearchPluginDiscoveryService(config,
+				this.jwtManagementWrapperService.getJwtIssueService());
+		try {
+			searchPluginDiscoveryService.queryEndpoints(config.getEndpointRegistryList(), searchIndexInventory);
+		} catch (SearchPluginUnavailableException e) {
+			// log and continue, don't hold startup and treat as a soft failure
+			log.warn("search plugins not available:{}", config.getEndpointRegistryList(), e);
+		}
+		log.info("service init-ed");
+		log.debug("registry:{}", this.getSearchIndexInventory());
 
 	}
 
@@ -126,6 +158,18 @@ public class PluggableSearchWrapperService {
 
 	public SearchIndexInventory getSearchIndexInventory() {
 		return searchIndexInventory;
+	}
+
+	public JwtManagementWrapperService getJwtManagementWrapperService() {
+		return jwtManagementWrapperService;
+	}
+
+	public SearchPluginDiscoveryService getSearchPluginDiscoveryService() {
+		return searchPluginDiscoveryService;
+	}
+
+	public void setJwtManagementWrapperService(JwtManagementWrapperService jwtManagementWrapperService) {
+		this.jwtManagementWrapperService = jwtManagementWrapperService;
 	}
 
 }

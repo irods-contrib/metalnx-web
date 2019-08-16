@@ -25,7 +25,7 @@ public class JwtManagementWrapperService {
 	 * {@link JwtIssueService} implementation that will be initialized based on
 	 * provided configuration in this service wrapper
 	 */
-	private JwtIssueServiceImpl jwtIssueService = null;
+	private JwtIssueService jwtIssueService;
 
 	@Autowired(required = true)
 	private ConfigService configService;
@@ -64,6 +64,10 @@ public class JwtManagementWrapperService {
 	public String encodeJwtForUser(final String subject) {
 		log.info("encoding jwt for user:{}", subject);
 		return jwtIssueService.issueJwtToken(subject);
+	}
+
+	public JwtIssueService getJwtIssueService() {
+		return jwtIssueService;
 	}
 
 }
