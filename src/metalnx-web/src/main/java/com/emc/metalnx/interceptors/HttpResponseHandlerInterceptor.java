@@ -55,6 +55,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 			if (urlMap == null) {
 				urlMap = new URLMap();
 			}
+
 			if (emcmetalnxVersion == null) {
 				emcmetalnxVersion = new EmcMetalnxVersion();
 			}

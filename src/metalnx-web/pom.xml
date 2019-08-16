@@ -284,8 +284,12 @@
 				<version>1.8</version>
 				<executions>
 					<execution>
-						<id>1</id>
-						<phase>generate-sources</phase>
+
+						<id>0</id>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>validate</phase>
 						<configuration>
 							<tasks>
 								<property name="src.dir"
@@ -327,13 +331,10 @@
 								<echo message="BUILD ${buildtime}" />
 							</tasks>
 						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
-						<id>0</id>
+						<id>1</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
@@ -496,7 +497,7 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-									
+
 									metalnx.authtype.mappings=PAM:PAM|STANDARD:Standard
 									metalnx.enable.dashboard=false
 									access.proxy=true
@@ -513,7 +514,7 @@
 									irodsext.datatyper.persist.data.types=false
 									# perform a detailed versus a lightweight data typing, which may involve processing the file contents
 									irodsext.datatyper.detailed.determination=false
-																		
+
 									jwt.issuer=${jargon.search.jwtIssuer}
 									jwt.secret=${jargon.search.jwtSecret}
 									jwt.algo=${jargon.search.jwtAlgo}

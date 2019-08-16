@@ -1,29 +1,18 @@
 <template>
-
-  <div id="container">
-
-    <b-navbar  type="dark" variant="info">
-      <b-navbar-brand href="#">Epigenomics Commons Search</b-navbar-brand>
-    </b-navbar>
-
-    <router-view></router-view>
+  <div id="app">
+    <div class="container-fluid">
+      <Notifications></Notifications>
+    </div>
   </div>
 </template>
 
 <script>
-  import Vue from 'vue'
-  import BootstrapVue from 'bootstrap-vue'
-  import App from './App'
+import Notifications from './components/Notifications'
 
-  Vue.use(BootstrapVue)
-
-  import 'bootstrap/dist/css/bootstrap.css'
-  import 'bootstrap-vue/dist/bootstrap-vue.css'
-  import router from './router'
-
-  Vue.config.productionTip = false
-  export default {
-    router,
-    el: '#app'
+export default {
+  name: 'App',
+  components: {
+    Notifications
   }
+}
 </script>

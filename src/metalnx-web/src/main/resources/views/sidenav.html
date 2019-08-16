@@ -3,7 +3,7 @@
       xmlns:layout="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <div class="sidebar-nav navbar-collapse nano-content" th:fragment="sidenav">
-	<ul class="nav" id="side-menu">
+	<ul class="nav d-flex flex-column" id="side-menu">
 		<!-- If user typer currently logged in is an admin, the items below are available otherwise the user cannot use them -->
 		<th:block th:if="${userDetails.isAdmin()}">
 			<th:block th:if="${globalConfig.isDashboardEnabled()}">
