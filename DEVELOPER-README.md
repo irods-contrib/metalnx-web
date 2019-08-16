@@ -105,9 +105,9 @@ In addition, an additional profile for Metalnx is required, like this...
 				<selenium.test.hostname>localhost</selenium.test.hostname>
 				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
 				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>
-        <metalnx.enable.tickets>true</metalnx.enable.tickets>
-        <metalnx.enable.upload.rules>false</metalnx.enable.upload.rules>
-        <metalnx.download.limit>100</metalnx.download.limit>
+	        		<metalnx.enable.tickets>true</metalnx.enable.tickets>
+	       		 <metalnx.enable.upload.rules>false</metalnx.enable.upload.rules>
+	        		<metalnx.download.limit>100</metalnx.download.limit>
 				<metalnx.mail.enabled>false</metalnx.mail.enabled>
 				<metalnx.mail.host></metalnx.mail.host>
 				<metalnx.mail.user></metalnx.mail.user>
@@ -118,7 +118,10 @@ In addition, an additional profile for Metalnx is required, like this...
 				<metalnx.transport.protocol>smtp</metalnx.transport.protocol>
 				<metalnx.mail.debug>true</metalnx.mail.debug>
 				<metalnx.mail.from></metalnx.mail.from>
-        <metalnx.mail.to></metalnx.mail.to>
+        			<metalnx.mail.to></metalnx.mail.to>
+        			<metalnx.jwt.issuer>gov.nih.niehs</metalnx.jwt.issuer>
+				<metalnx.jwt.algo>HS256</metalnx.jwt.algo>
+				<metalnx.jwt.algo>thisisasecret</metalnx.jwt.algo>
 			</properties>
 		</profile>
 
@@ -130,6 +133,8 @@ Here it's pointing to a Postgres database, pretty soon we'll show an example wit
 database like Derby, that's probably a better plan.
 
 For selenium automation testing we need to download browser specific drivers refer to http://www.seleniumhq.org/download/
+
+JWT configuration is optional if one is utilizing the search and notification, along with other supporting microservices
 
 
 ### custom metalnx template for master page
@@ -147,7 +152,6 @@ If this behavior is wanted, then the following should be added to settings.xml, 
 <metalnx.custom.template>/Users/conwaymc/Documents/workspace-niehs-dev/metalnx-niehs-plugins/web-assets/opt/irods-ext/metalnx/template.html</metalnx.custom.template>
 
 ```
-
 
 ### Generating test properties and running tests
 

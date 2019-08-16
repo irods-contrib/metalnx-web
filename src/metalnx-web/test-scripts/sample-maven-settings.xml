@@ -85,15 +85,24 @@
 
 		</profile>
 
-
-
+		<profile>
+			<id>searchFunctionalTest</id>
+			<properties>
+				<jargon.search.endpointRegistryList>http://endpoint.com:8080/v1,http://endpoint2.com:8080/v1</jargon.search.endpointRegistryList>
+				<jargon.search.endpointAccessSubject>testsubject</jargon.search.endpointAccessSubject>
+				<jargon.search.jwtAlgo />
+				<jargon.search.jwtIssuer>org.irods</jargon.search.jwtIssuer>
+				<jargon.search.jwtSecret>abigsecret</jargon.search.jwtSecret>
+				<jargon.search.enabled>true</jargon.search.enabled>
+			</properties>
+		</profile>
 	</profiles>
 
-
+	<!-- duplicates the search settings found in jargon-extenstions-if for optional testing of pluggable search -->
 	<activeProfiles>
 		<activeProfile>jargonTest</activeProfile>
 		<activeProfile>metalnx-local</activeProfile>
-
+		<activeProfile>searchFunctionalTest</activeProfile>
 	</activeProfiles>
 
 </settings>

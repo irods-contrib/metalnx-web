@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Add pluggable search #110
+
+Added the ability to plugin standard search endpoints (see docs/PluggableSearch.md) for configuration details. This allows the provisioning of standard
+REST endpoints that provide the ability to plug in custom search services. This is a microservice that can advertise multiple search schema, including search attributes and their meaning. These endpoints can take free text, free text with XXX:term attribute tags, and builder type attribute|operator|value (AND|OR) type queries.
+
+These endpoints can return standard search results that can be highly customizable, or they can return standard virtual collection type listings. This capability will be eventually surfaced as a type of virtual collection.
+
+The entire pluggable search framework is off by default, and can be enabled and configured via metalnx.properties. See the etc/irods-ext/metalnx.properties sample
+
 ### Changed
 
 #### size not displayed in collection listing #106

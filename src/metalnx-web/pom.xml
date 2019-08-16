@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 
-	2018, University of North Carolina at Chapel Hill -->
+<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -46,6 +45,10 @@
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>emc-metalnx-core</artifactId>
 			<version>${jargon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.irods</groupId>
+			<artifactId>irodsext-jwt-service</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -164,6 +167,12 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -272,7 +281,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				 <version>1.8</version>
+				<version>1.8</version>
 				<executions>
 					<execution>
 						<id>1</id>
@@ -487,6 +496,33 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
+									
+									metalnx.authtype.mappings=PAM:PAM|STANDARD:Standard
+									metalnx.enable.dashboard=false
+									access.proxy=true
+									irodsext.dataprofiler.retrieve.tickets=false
+									# process starred or favorites
+									irodsext.dataprofiler.retrieve.starred=true
+									# process shared
+									irodsext.dataprofiler.retrieve.shared=false
+									# tags and comments
+									irodsext.dataprofiler.retrieve.tags.and.comments=false
+									# metadata templates (currently not implemented)
+									irodsext.dataprofiler.retrieve.metadata.templates=false
+									# save data type information for later use
+									irodsext.datatyper.persist.data.types=false
+									# perform a detailed versus a lightweight data typing, which may involve processing the file contents
+									irodsext.datatyper.detailed.determination=false
+																		
+									jwt.issuer=${jargon.search.jwtIssuer}
+									jwt.secret=${jargon.search.jwtSecret}
+									jwt.algo=${jargon.search.jwtAlgo}
+
+									pluggablesearch.enabled=${jargon.search.enabled}
+									pluggablesearch.endpointAccessSubject=${jargon.search.endpointAccessSubject}
+									pluggablesearch.info.timeout=0
+									pluggablesearch.search.timeout=0
+									pluggablesearch.endpointRegistryList=${jargon.search.endpointRegistryList}
 
 								</echo>
 							</tasks>
