@@ -6,8 +6,8 @@ module.exports = {
   devServer: {
 	  port:8888,
     proxy: {
-      '/metalnx': {
-        target: 'http://localhost:8080',
+      '/metalnx/api/': {
+        target: 'http://localhost:8082',
         ws: true,
         changeOrigin: true
       }
@@ -17,8 +17,8 @@ module.exports = {
    collections: {
      entry: 'src/main/javascript/collections/main.js'
    },
-   home: {
-     entry: 'src/main/javascript/home/main.js'
+   search: {
+     entry: 'src/main/javascript/search/main.js'
    },
    notifications: {
      entry: 'src/main/javascript/notifications/main.js'

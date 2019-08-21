@@ -9,6 +9,7 @@ import org.irods.jargon.extensions.searchplugin.SearchIndexInventory;
 import org.irods.jargon.extensions.searchplugin.SearchPluginDiscoveryService;
 import org.irods.jargon.extensions.searchplugin.SearchPluginRegistrationConfig;
 import org.irods.jargon.extensions.searchplugin.exception.SearchPluginUnavailableException;
+import org.irods.jargon.extensions.searchplugin.model.SearchAttributes;
 import org.irods.metalnx.jwt.JwtManagementWrapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 
 /**
@@ -96,6 +98,41 @@ public class PluggableSearchWrapperService {
 		}
 		log.info("service init-ed");
 		log.debug("registry:{}", this.getSearchIndexInventory());
+
+	}
+
+	/**
+	 * Get the available search attributes for a given schema (this will cache
+	 * schema attribs as they are requested)
+	 * 
+	 * @param endpointUrl {@code String} with the url for the endpoint
+	 * @param schemaId    {@code String} with the schema
+	 * @return {@link SearchAttributes} that list the attributes for the given
+	 *         schema
+	 * @throws DataGridException {@link DataGridException} for general errors
+	 */
+	public SearchAttributes listAttributes(final String endpointUrl, final String schemaId) throws DataGridException {
+		log.info("searchAttributes()");
+
+		if (endpointUrl == null || endpointUrl.isEmpty()) {
+			throw new IllegalArgumentException("null or empty endpointUrl");
+		}
+
+		if (schemaId == null || schemaId.isEmpty()) {
+			throw new IllegalArgumentException("null or empty schemaId");
+		}
+
+		log.info("endpointUrl:{}", endpointUrl);
+		log.info("schemaId:{}", schemaId);
+
+		try {
+			SearchAttributes searchAttributes = searchPluginDiscoveryService.queryAttributes(endpointUrl, schemaId,
+					searchIndexInventory);
+			return searchAttributes;
+		} catch (SearchPluginUnavailableException e) {
+			log.error("error searching for attributes for schema:{}", schemaId);
+			throw new DataGridException("Unable to find attributes for the given search schema");
+		}
 
 	}
 

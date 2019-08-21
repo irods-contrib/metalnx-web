@@ -1,6 +1,7 @@
 package org.irods.metalnx.pluggablesearch;
 
 import org.irods.jargon.extensions.searchplugin.SearchIndexInventory;
+import org.irods.jargon.extensions.searchplugin.model.SearchAttributes;
 import org.irods.metalnx.jwt.JwtManagementWrapperService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,16 @@ public class PluggableSearchWrapperServiceTest {
 	public void testEncodeAJwt() {
 		SearchIndexInventory inventory = pluggableSearchWrapperService.getSearchIndexInventory();
 		Assert.assertNotNull("no inventory found", inventory);
+	}
 
+	@Test
+	public void testListSchemaAttributes() throws Exception {
+		String testEndpoint = pluggableSearchWrapperService.getSearchPluginDiscoveryService()
+				.getSearchPluginRegistrationConfig().getEndpointRegistryList().get(0);
+		String testSchema = pluggableSearchWrapperService.getSearchIndexInventory().getIndexInventoryEntries()
+				.get(testEndpoint).getIndexInformation().getIndexes().get(0).getId();
+		SearchAttributes attribs = pluggableSearchWrapperService.listAttributes(testEndpoint, testSchema);
+		Assert.assertNotNull("attribs null", attribs);
 	}
 
 }

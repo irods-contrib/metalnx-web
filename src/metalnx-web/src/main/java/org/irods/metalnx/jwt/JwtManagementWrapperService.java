@@ -25,7 +25,7 @@ public class JwtManagementWrapperService {
 	 * {@link JwtIssueService} implementation that will be initialized based on
 	 * provided configuration in this service wrapper
 	 */
-	private JwtIssueService jwtIssueService;
+	private JwtIssueServiceImpl jwtIssueService;
 
 	@Autowired(required = true)
 	private ConfigService configService;
@@ -67,7 +67,8 @@ public class JwtManagementWrapperService {
 	}
 
 	public JwtIssueService getJwtIssueService() {
-		return jwtIssueService;
+		JwtIssueService myService = (JwtIssueService) jwtIssueService;
+		return myService;
 	}
 
 }
