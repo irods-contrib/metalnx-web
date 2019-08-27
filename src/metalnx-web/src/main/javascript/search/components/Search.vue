@@ -7,7 +7,7 @@
 <script>
 
 export default {
-  name: 'Collections'
+  name: 'Search'
 }
 </script>
 <style>

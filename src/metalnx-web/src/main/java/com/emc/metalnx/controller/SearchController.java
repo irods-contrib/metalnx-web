@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.emc.metalnx.controller.api.SearchApiController;
+
 /**
  * Support for thymeleaf page handling for search. Actual api used is in the
  * {@link SearchApiController}
