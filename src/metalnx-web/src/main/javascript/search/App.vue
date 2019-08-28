@@ -1,11 +1,6 @@
 <template>
 
   <div id="container">
-
-    <b-navbar  type="dark" variant="info">
-      <b-navbar-brand href="#">Vue based search page</b-navbar-brand>
-    </b-navbar>
-
     <router-view></router-view>
   </div>
 </template>
@@ -24,6 +19,6 @@
   Vue.config.productionTip = false
   export default {
     router,
-    el: '#app'
+    //el: '#app'
   }
 </script>

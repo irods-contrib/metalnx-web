@@ -2,7 +2,7 @@ package org.irods.metalnx.jwt;
 
 import javax.annotation.PostConstruct;
 
-import org.irods.jargon.irodsext.jwt.JwtIssueService;
+import org.irods.jargon.irodsext.jwt.AbstractJwtIssueService;
 import org.irods.jargon.irodsext.jwt.JwtIssueServiceImpl;
 import org.irods.jargon.irodsext.jwt.JwtServiceConfig;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class JwtManagementWrapperService {
 	 * {@link JwtIssueService} implementation that will be initialized based on
 	 * provided configuration in this service wrapper
 	 */
-	private JwtIssueServiceImpl jwtIssueService;
+	private AbstractJwtIssueService jwtIssueService;
 
 	@Autowired(required = true)
 	private ConfigService configService;
@@ -66,9 +66,8 @@ public class JwtManagementWrapperService {
 		return jwtIssueService.issueJwtToken(subject);
 	}
 
-	public JwtIssueService getJwtIssueService() {
-		JwtIssueService myService = (JwtIssueService) jwtIssueService;
-		return myService;
+	public AbstractJwtIssueService getJwtIssueService() {
+		return jwtIssueService;
 	}
 
 }

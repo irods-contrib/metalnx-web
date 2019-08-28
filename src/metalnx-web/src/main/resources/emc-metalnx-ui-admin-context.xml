@@ -17,6 +17,6 @@
 	<import resource="classpath:/emc-metalnx-shared-context.xml" />
 
 	<context:annotation-config />
-	<context:component-scan base-package="com.emc.metalnx.controller" />
+	<context:component-scan base-package="com.emc.metalnx.controller, com.emc.metalnx.controller.api" />
 
 </beans>
