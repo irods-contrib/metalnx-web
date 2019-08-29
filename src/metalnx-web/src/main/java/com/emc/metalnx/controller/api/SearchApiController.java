@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emc.metalnx.controller.api.model.SearchSchemaEntry;
@@ -81,6 +82,56 @@ public class SearchApiController {
 		}
 
 		return jsonString;
+	}
+
+	@RequestMapping(value = "textSearch")
+	@ResponseBody
+	public String textSearch(@RequestParam("endpointUrl") final String endpointUrl,
+			@RequestParam("searchQuery") final String searchQuery, @RequestParam("indexName") final String indexName)
+			throws DataGridException {
+		log.info("testSearch()");
+
+		if (endpointUrl == null || endpointUrl.isEmpty()) {
+			throw new IllegalArgumentException("null endpointUrl");
+		}
+
+		if (searchQuery == null || searchQuery.isEmpty()) {
+			throw new IllegalArgumentException("null searchQuery");
+		}
+
+		if (indexName == null || indexName.isEmpty()) {
+			throw new IllegalArgumentException("null indexName");
+		}
+
+		log.info("endpointUrl:{}", endpointUrl);
+		log.info("searchQuery:{}", searchQuery);
+		log.info("indexName:{}", indexName);
+
+		/*
+		 * Look for the indepoint and index, big trouble if I don't find it
+		 */
+
+		SearchIndexInventory searchIndexInventory = pluggableSearchWrapperService.getSearchIndexInventory();
+		SearchIndexInventoryEntry indexInventoryEntry = searchIndexInventory.getIndexInventoryEntries()
+				.get(endpointUrl);
+
+		if (indexInventoryEntry == null) {
+			log.error("cannot find inventory entry for search endpoint:{}", endpointUrl);
+			throw new DataGridException("Search endpoint unavailable");
+		}
+
+		boolean foundit = false;
+
+		for (IndexSchemaDescription indexSchemaDescription : indexInventoryEntry.getIndexInformation().getIndexes()) {
+			if (indexSchemaDescription.getId().equals(indexName)) {
+				foundit = true;
+				log.info("found search schema and endpoint for the query:{}", indexSchemaDescription);
+
+			}
+		}
+
+		return null;
+
 	}
 
 	public PluggableSearchWrapperService getPluggableSearchWrapperService() {
