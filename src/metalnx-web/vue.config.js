@@ -7,7 +7,7 @@ module.exports = {
 	  port:8888,
     proxy: {
       '/metalnx/api/': {
-        target: 'http://localhost:8082',
+        target: 'http://localhost:8083',
         ws: true,
         changeOrigin: true
       }

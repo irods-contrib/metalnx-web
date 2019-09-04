@@ -12,22 +12,32 @@
         
       </b-input-group>
     </div>
+    <div class="row">
+       <div v-if="searchResult">
+      <SearchStyleResult v-bind:searchResult="searchResult"></SearchStyleResult>
+    </div>
+    </div>
     
-  selected:{{selectedSearchSchema}}
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import SearchStyleResult  from './SearchStyleResult'
 
 export default {
   name: "Search",
+  components: {
+    SearchStyleResult
+    
+  },
   data() {
     return {
       searchLabel: 'Select Schema',
       selectedSearchSchema: '',
       availableSearchSchema:[],
       searchText: '',
+      searchResult: ''
     }
   },
  
@@ -42,11 +52,13 @@ export default {
         this.searchLabel = selected.schemaName;
       },
       search: function() {
-          axios.post('/metalnx/api/search', {
+          axios.post('/metalnx/api/search/textSearch', {
             endpointUrl: this.selectedSearchSchema.endpointUrl,
-            index_name: this.selectedSearchSchema.schemaId,
-            search_query: this.searchText}
-            ).then(response => (console.log("response:" + response)))
+            indexId: this.selectedSearchSchema.schemaId,
+            searchQuery: this.searchText,
+            length: 0,
+            offset: 0}
+            ).then(response => this.searchResult = response.data)
       },
 }
 }

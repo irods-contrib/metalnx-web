@@ -136,6 +136,54 @@ public class PluggableSearchWrapperService {
 
 	}
 
+	/**
+	 * Wrapper calls a simple text search
+	 * 
+	 * @param endpointUrl {@code String} with the endpointUrl
+	 * @param schemaId    {@code String} with the search schema id
+	 * @param queryText   {@code String} with the query text
+	 * @param offset      {@code int} with the offset, if supported, otherwise 0
+	 * @param length      {@code int} with the result length, if supported,
+	 *                    otherwise 0
+	 * @return {@code String} with the result json as a string
+	 * @throws DataGridException {@link DataGridException}
+	 */
+	public String simpleTextSearch(final String endpointUrl, final String schemaId, final String queryText,
+			final int offset, final int length) throws DataGridException {
+
+		log.info("simpleTextSearch()");
+
+		if (endpointUrl == null || endpointUrl.isEmpty()) {
+			throw new IllegalArgumentException("null or empty endpointUrl");
+		}
+
+		if (schemaId == null || schemaId.isEmpty()) {
+			throw new IllegalArgumentException("null or empty schemaId");
+		}
+
+		if (queryText == null || queryText.isEmpty()) {
+			throw new IllegalArgumentException("null or empty queryText");
+		}
+
+		log.info("endpointUrl:{}", endpointUrl);
+		log.info("schemaId:{}", schemaId);
+		log.info("queryText:{}", queryText);
+		log.info("length:{}", length);
+		log.info("offset:{}", offset);
+
+		try {
+			log.info("doing search...");
+			String jsonResultString = searchPluginDiscoveryService.textSearch(queryText, endpointUrl, schemaId, offset,
+					length);
+			log.debug("searchResult:{}", jsonResultString);
+			return jsonResultString;
+		} catch (SearchPluginUnavailableException e) {
+			log.error("error querying schema:{}", schemaId);
+			throw new DataGridException("Unable to query with given search schema");
+		}
+
+	}
+
 	public void setConfigService(ConfigService configService) {
 		this.configService = configService;
 	}

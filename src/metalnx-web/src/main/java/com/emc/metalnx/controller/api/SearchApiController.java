@@ -13,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emc.metalnx.controller.api.model.SearchSchemaEntry;
 import com.emc.metalnx.controller.api.model.SearchSchemaListing;
+import com.emc.metalnx.controller.api.model.TextSearchFormData;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +51,7 @@ public class SearchApiController {
 	 * @return {@code String} with json
 	 * @throws DataGridException {@link DataGridException}
 	 */
-	@RequestMapping(value = "indexes")
+	@RequestMapping(value = "/indexes")
 	@ResponseBody
 	public String retrieveIndexes(final HttpServletRequest request) throws DataGridException {
 
@@ -84,28 +86,16 @@ public class SearchApiController {
 		return jsonString;
 	}
 
-	@RequestMapping(value = "textSearch")
+	@RequestMapping(value = "/textSearch", method = RequestMethod.POST)
 	@ResponseBody
-	public String textSearch(@RequestParam("endpointUrl") final String endpointUrl,
-			@RequestParam("searchQuery") final String searchQuery, @RequestParam("indexName") final String indexName)
-			throws DataGridException {
+	public String textSearch(@RequestBody TextSearchFormData textSearchFormData) throws DataGridException {
 		log.info("testSearch()");
 
-		if (endpointUrl == null || endpointUrl.isEmpty()) {
-			throw new IllegalArgumentException("null endpointUrl");
+		if (textSearchFormData == null) {
+			throw new IllegalArgumentException("null textSearchFormData");
 		}
 
-		if (searchQuery == null || searchQuery.isEmpty()) {
-			throw new IllegalArgumentException("null searchQuery");
-		}
-
-		if (indexName == null || indexName.isEmpty()) {
-			throw new IllegalArgumentException("null indexName");
-		}
-
-		log.info("endpointUrl:{}", endpointUrl);
-		log.info("searchQuery:{}", searchQuery);
-		log.info("indexName:{}", indexName);
+		log.info("textSearchFormData:{}", textSearchFormData);
 
 		/*
 		 * Look for the indepoint and index, big trouble if I don't find it
@@ -113,24 +103,33 @@ public class SearchApiController {
 
 		SearchIndexInventory searchIndexInventory = pluggableSearchWrapperService.getSearchIndexInventory();
 		SearchIndexInventoryEntry indexInventoryEntry = searchIndexInventory.getIndexInventoryEntries()
-				.get(endpointUrl);
+				.get(textSearchFormData.getEndpointUrl());
 
 		if (indexInventoryEntry == null) {
-			log.error("cannot find inventory entry for search endpoint:{}", endpointUrl);
+			log.error("cannot find inventory entry for search endpoint:{}", textSearchFormData.getEndpointUrl());
 			throw new DataGridException("Search endpoint unavailable");
 		}
 
 		boolean foundit = false;
 
 		for (IndexSchemaDescription indexSchemaDescription : indexInventoryEntry.getIndexInformation().getIndexes()) {
-			if (indexSchemaDescription.getId().equals(indexName)) {
+			if (indexSchemaDescription.getId().equals(textSearchFormData.getIndexId())) {
 				foundit = true;
 				log.info("found search schema and endpoint for the query:{}", indexSchemaDescription);
-
+				break;
 			}
 		}
 
-		return null;
+		// see if I found the schema, if I did, do the query
+
+		if (!foundit) {
+			log.error("did not find search index:{}", textSearchFormData.getIndexId());
+			throw new DataGridException("unable to search, cannot find index id");
+		}
+
+		return this.pluggableSearchWrapperService.simpleTextSearch(textSearchFormData.getEndpointUrl(),
+				textSearchFormData.getIndexId(), textSearchFormData.getSearchQuery(), textSearchFormData.getOffset(),
+				textSearchFormData.getLength());
 
 	}
 
