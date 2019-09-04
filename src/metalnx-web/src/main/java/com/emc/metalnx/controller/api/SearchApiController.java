@@ -22,6 +22,7 @@ import com.emc.metalnx.controller.api.model.SearchSchemaEntry;
 import com.emc.metalnx.controller.api.model.SearchSchemaListing;
 import com.emc.metalnx.controller.api.model.TextSearchFormData;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,6 +44,9 @@ public class SearchApiController {
 	private PluggableSearchWrapperService pluggableSearchWrapperService;
 
 	private ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	IRODSServices irodsServices;
 
 	/**
 	 * Return an inventory of the available indexes
@@ -129,7 +133,7 @@ public class SearchApiController {
 
 		return this.pluggableSearchWrapperService.simpleTextSearch(textSearchFormData.getEndpointUrl(),
 				textSearchFormData.getIndexId(), textSearchFormData.getSearchQuery(), textSearchFormData.getOffset(),
-				textSearchFormData.getLength());
+				textSearchFormData.getLength(), irodsServices.getCurrentUser());
 
 	}
 
@@ -139,6 +143,14 @@ public class SearchApiController {
 
 	public void setPluggableSearchWrapperService(PluggableSearchWrapperService pluggableSearchWrapperService) {
 		this.pluggableSearchWrapperService = pluggableSearchWrapperService;
+	}
+
+	public IRODSServices getIrodsServices() {
+		return irodsServices;
+	}
+
+	public void setIrodsServices(IRODSServices irodsServices) {
+		this.irodsServices = irodsServices;
 	}
 
 }

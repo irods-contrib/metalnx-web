@@ -145,11 +145,13 @@ public class PluggableSearchWrapperService {
 	 * @param offset      {@code int} with the offset, if supported, otherwise 0
 	 * @param length      {@code int} with the result length, if supported,
 	 *                    otherwise 0
+	 * @param principal   {@code String} with the identity of the individual doing
+	 *                    the search
 	 * @return {@code String} with the result json as a string
 	 * @throws DataGridException {@link DataGridException}
 	 */
 	public String simpleTextSearch(final String endpointUrl, final String schemaId, final String queryText,
-			final int offset, final int length) throws DataGridException {
+			final int offset, final int length, final String principal) throws DataGridException {
 
 		log.info("simpleTextSearch()");
 
@@ -165,16 +167,21 @@ public class PluggableSearchWrapperService {
 			throw new IllegalArgumentException("null or empty queryText");
 		}
 
+		if (principal == null || principal.isEmpty()) {
+			throw new IllegalArgumentException("null or empty principal");
+		}
+
 		log.info("endpointUrl:{}", endpointUrl);
 		log.info("schemaId:{}", schemaId);
 		log.info("queryText:{}", queryText);
 		log.info("length:{}", length);
 		log.info("offset:{}", offset);
+		log.info("principal:{}", principal);
 
 		try {
 			log.info("doing search...");
 			String jsonResultString = searchPluginDiscoveryService.textSearch(queryText, endpointUrl, schemaId, offset,
-					length);
+					length, principal);
 			log.debug("searchResult:{}", jsonResultString);
 			return jsonResultString;
 		} catch (SearchPluginUnavailableException e) {
