@@ -55,6 +55,7 @@ export default {
       this.searchLabel = selected.schemaName;
     },
     search: function() {
+      
       axios.post('/metalnx/api/search/textSearch', {
       endpointUrl: this.selectedSearchSchema.endpointUrl,
       indexId: this.selectedSearchSchema.schemaId,

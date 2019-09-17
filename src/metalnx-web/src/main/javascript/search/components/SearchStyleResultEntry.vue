@@ -6,7 +6,7 @@
       <div class="row">
         {{searchResultEntry.content_text}}
       </div>
-    <b-button variant="link" v-on:click="isActive = !isActive">Similar articles</b-button>
+    <b-button variant="link" v-on:click="isActive = !isActive" v-bind:id="searchResultEntry.title" v-bind:title="searchResultEntry.links.linkset_description">{{ searchResultEntry.links.linkset_title }} </b-button>
     <div v-if="isActive">
       <div v-for="item in searchResultEntry.links.links" v-bind:key="item.link_url">
           <h8><b-link v-bind:href="item.link_url" target="_blank">{{ item.link_text }}</b-link></h8>
