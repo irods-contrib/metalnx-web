@@ -112,7 +112,7 @@ public class PluggableSearchWrapperService {
 	 * @throws DataGridException {@link DataGridException} for general errors
 	 */
 	public SearchAttributes listAttributes(final String endpointUrl, final String schemaId) throws DataGridException {
-		log.info("searchAttributes()");
+		log.info("listAttributes()");
 
 		if (endpointUrl == null || endpointUrl.isEmpty()) {
 			throw new IllegalArgumentException("null or empty endpointUrl");
