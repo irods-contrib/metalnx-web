@@ -19,20 +19,25 @@
     </div>
     
     <div v-if="availableSearchAttributes.length">
-      <table id="firstTable">
-        <thead>
-          <tr>
-            <th>Attribute Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in availableSearchAttributes" :key="item.shortcutText">
-            <td>{{item.attribName}}</td>
-            <td>{{item.info}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <b-button v-b-toggle.collapse-1 class="mt-2" variant="info">Search Terms</b-button>
+      <b-collapse id="collapse-1" class="mt-2">
+        <b-card>
+          <table id="firstTable">
+            <thead>
+              <tr>
+                <th>Attribute Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in availableSearchAttributes" :key="item.shortcutText">
+                <td>{{item.attribName}}</td>
+                <td>{{item.info}}</td>
+              </tr>
+            </tbody>
+            </table>
+          </b-card>
+        </b-collapse>
     </div>
 
     <div class="row">
