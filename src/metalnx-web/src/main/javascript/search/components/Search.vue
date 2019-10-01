@@ -1,4 +1,5 @@
 <template>
+  <!-- Search -->
   <div class="container">
     <div class="row">
       <b-input-group>
@@ -17,17 +18,32 @@
         <b-button variant="success" slot="append" v-on:click="search()">Search</b-button>
       </b-input-group>
     </div>
-    
-    <div v-if="availableSearchAttributes.length">
-      <b-button v-b-toggle.collapse-1 class="mt-2" variant="info">Search Terms</b-button>
-      <b-collapse id="collapse-1" class="mt-2">
-        <b-card>
-          <table id="firstTable">
+
+    <!-- Search hint -->
+    <div class="mt-2">
+      <b-link @click=toggle() variant="info">
+      {{ showSearchHint ? 'Hide Hint' : 'Show Search Hint' }}</b-link>
+      <b-alert
+        variant="info"
+        dismissible
+        fade
+        :show="showSearchHint"
+        @dismissed="showSearchHint=false">
+        <div>
+          <h5>Valid options:</h5>
+          <ol>
+            <li>Text Search <b>Example =></b> FSHD2</li>
+            <li>Include search fields for advanced search. <b>Example =></b> ProjectID: RNASeq* Hypothesis: sci-RNAseq</li>
+          </ol>
+          <p> Wrap text search with double-quotes for exact search. Default operator is OR, use AND explicitly if needed. </p>
+        </div>
+        <div v-if="availableSearchAttributes.length">
+          <table id="searchFieldTable">
             <thead>
-              <tr>
-                <th>Attribute Name</th>
-                <th>Description</th>
-              </tr>
+               <tr>
+                 <th>Available Fields</th>
+                 <th>Description</th>
+               </tr>
             </thead>
             <tbody>
               <tr v-for="item in availableSearchAttributes" :key="item.shortcutText">
@@ -36,10 +52,11 @@
               </tr>
             </tbody>
             </table>
-          </b-card>
-        </b-collapse>
+          </div>
+      </b-alert>
     </div>
 
+    <!-- Search Results -->
     <div class="row">
         <div v-if="searchResult">
           <SearchStyleResult v-bind:searchResult="searchResult"></SearchStyleResult>
@@ -59,12 +76,17 @@ export default {
   },
   data() {
     return {
+      showSearchHint: false,
       searchLabel: 'Select Schema',
       selectedSearchSchema: '',
       availableSearchSchema:[],
       availableSearchAttributes: [],
       searchText: '',
-      searchResult: ''
+      searchResult: '',
+      patt: /[a-zA-Z]*:/g,
+      matchAll: [],
+      searchTerms: [],
+      validation: true
     }
   },
  
@@ -74,7 +96,6 @@ export default {
 
   methods: {
     selectSchema: function(selected) {
-      //console.log("eventData:" + eventData);
       this.selectedSearchSchema = selected;
       this.searchLabel = selected.schemaName;
       axios.get('/metalnx/api/search/attributes/', {
@@ -84,20 +105,62 @@ export default {
         }
       }).then(response => (this.availableSearchAttributes = response.data.attributes))
     },
+    toggle: function(){
+            this.showSearchHint = !this.showSearchHint
+        },
+
     search: function() {
-      
-      axios.post('/metalnx/api/search/textSearch', {
-      endpointUrl: this.selectedSearchSchema.endpointUrl,
-      indexId: this.selectedSearchSchema.schemaId,
-      searchQuery: this.searchText,
-      length: 0,
-      offset: 0}
-      ).then(response => this.searchResult = response.data)
-      this.availableSearchAttributes = []
+      if (this.selectedSearchSchema.schemaId == null) {
+        this.$bvToast.toast('Schema not selected!', {
+          title: `Error`,
+          variant: 'danger',
+          solid: true
+        })
+      } else if (this.searchText == "") {
+        this.$bvToast.toast('Search text cannot be empty!', {
+          title: `Error`,
+          variant: 'danger',
+          solid: true
+        })
+      } else {
+        this.matchAll = this.searchText.match(this.patt)
+        if (this.matchAll != null) {
+          var i;
+          var j;
+          var temp;
+          for (j = 0; j < this.availableSearchAttributes.length; j++) {
+            this.searchTerms.push(this.availableSearchAttributes[j].attribName)
+          }
+          for (i = 0; i < this.matchAll.length; i++){
+            temp = this.matchAll[i]
+            temp = temp.substring(0, temp.length-1)
+            if (!this.searchTerms.includes(temp)){
+              this.validation = false
+              break
+            }
+          }
+        }
+        if (this.validation){
+          axios.post('/metalnx/api/search/textSearch', {
+          endpointUrl: this.selectedSearchSchema.endpointUrl,
+          indexId: this.selectedSearchSchema.schemaId,
+          searchQuery: this.searchText,
+          length: 0,
+          offset: 0}
+          ).then(response => this.searchResult = response.data)
+        } else {
+          this.$bvToast.toast('Invalid search term in search text!', {
+          title: `Error`,
+          variant: 'danger',
+          solid: true
+        })
+        this.validation = true
+        }
+      }  
     },
   }
 }
-
 </script>
+
 <style>
 </style>
