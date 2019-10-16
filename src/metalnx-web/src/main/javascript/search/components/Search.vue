@@ -38,20 +38,7 @@
           <p> Wrap text search with double-quotes for exact search. Default operator is OR, use AND explicitly if needed. </p>
         </div>
         <div v-if="availableSearchAttributes.length">
-          <table id="searchFieldTable">
-            <thead>
-               <tr>
-                 <th>Available Fields</th>
-                 <th>Description</th>
-               </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in availableSearchAttributes" :key="item.shortcutText">
-                <td>{{item.attribName}}</td>
-                <td>{{item.info}}</td>
-              </tr>
-            </tbody>
-            </table>
+          <b-table striped small hover :items="availableSearchAttributes" :fields="fields" tdClass="searchFieldTable"></b-table>
           </div>
       </b-alert>
     </div>
@@ -76,6 +63,23 @@ export default {
   },
   data() {
     return {
+      fields: [
+          {
+            key: 'attribName',
+            label: 'Available Fields',
+            sortable: true
+          },
+          {
+            key: 'info',
+            label: 'Description',
+            sortable: false,
+            tdClass: 'searchFieldsDescription'
+          },
+          {
+            key: 'attribExample',
+            label: 'Example'
+          }
+        ],
       showSearchHint: false,
       searchLabel: 'Select Schema',
       selectedSearchSchema: '',
@@ -83,7 +87,7 @@ export default {
       availableSearchAttributes: [],
       searchText: '',
       searchResult: '',
-      patt: /[a-zA-Z]*:/g,
+      patt: /[a-zA-Z0-9]*:/g,
       matchAll: [],
       searchTerms: [],
       validation: true
@@ -148,6 +152,9 @@ export default {
           length: 0,
           offset: 0}
           ).then(response => this.searchResult = response.data)
+          if (this.showSearchHint){
+            this.showSearchHint = false
+          }
         } else {
           this.$bvToast.toast('Invalid search term in search text!', {
           title: `Error`,
@@ -160,7 +167,6 @@ export default {
     },
   }
 }
-</script>
-
+</script> 
 <style>
 </style>

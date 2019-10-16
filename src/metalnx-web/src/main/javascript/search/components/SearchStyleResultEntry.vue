@@ -4,7 +4,7 @@
        <h3><b-link v-bind:href="searchResultEntry.url_link" target="_blank">{{ searchResultEntry.title }}</b-link></h3>
       </div>
       <div class="row">
-        {{searchResultEntry.content_text}}
+        <p><span v-html="searchResultEntry.content_text"></span></p> 
       </div>
     <b-button variant="link" v-on:click="isActive = !isActive" v-bind:id="searchResultEntry.title" v-bind:title="searchResultEntry.links.linkset_description">{{ searchResultEntry.links.linkset_title }} </b-button>
     <div v-if="isActive">
