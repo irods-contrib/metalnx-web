@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.domain.UserGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridFilePermission;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
-import com.emc.metalnx.core.domain.entity.DataGridGroupBookmark;
 import com.emc.metalnx.core.domain.entity.DataGridGroupPermission;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridUserBookmark;
@@ -34,7 +33,6 @@ import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.UserBookmarkService;
@@ -50,9 +48,6 @@ public class PermissionsController {
 
 	@Autowired
 	private GroupService gs;
-
-	@Autowired
-	private GroupBookmarkService gBMS;
 
 	@Autowired
 	private UserBookmarkService uBMS;
@@ -83,8 +78,8 @@ public class PermissionsController {
 	 *
 	 * @return string containing the most restrictive permission ("none", "read",
 	 *         "write", or "own")
-	 * @throws DataGridConnectionRefusedException
-	 *             if Metalnx cannot connect to the grid
+	 * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the
+	 *                                            grid
 	 */
 	@RequestMapping(value = "/findMostRestrictive/", method = RequestMethod.POST, produces = { "text/plain" })
 	@ResponseBody
@@ -124,7 +119,6 @@ public class PermissionsController {
 		List<DataGridFilePermission> permissions;
 		List<DataGridGroupPermission> groupPermissions;
 		List<DataGridUserPermission> userPermissions;
-		List<DataGridGroupBookmark> bookmarks;
 		List<DataGridUserBookmark> userBookmarks;
 		Set<String> groupsWithBookmarks;
 		Set<String> usersWithBookmarks;
@@ -138,14 +132,10 @@ public class PermissionsController {
 			groupPermissions = ps.getGroupsWithPermissions(permissions);
 			userPermissions = ps.getUsersWithPermissions(permissions);
 
-			bookmarks = gBMS.findBookmarksOnPath(path);
 			userBookmarks = uBMS.findBookmarksOnPath(path);
 			userCanModify = loggedUser.isAdmin() || ps.canLoggedUserModifyPermissionOnPath(path);
 
 			groupsWithBookmarks = new HashSet<>();
-			for (DataGridGroupBookmark bookmark : bookmarks) {
-				groupsWithBookmarks.add(bookmark.getGroup().getGroupname());
-			}
 
 			usersWithBookmarks = new HashSet<>();
 			for (DataGridUserBookmark userBookmark : userBookmarks) {
@@ -199,7 +189,7 @@ public class PermissionsController {
 	 */
 	@RequestMapping(value = "/getListOfGroupsForPermissionsCreation/")
 	public String getListOfGroupsForPermissionsCreation(final Model model) {
-		List<DataGridGroup> groups = gs.findAll();
+		List<UserGroup> groups = gs.findAll();
 
 		model.addAttribute("groups", groups);
 		model.addAttribute("groupsToAdd", groupsToAdd);
@@ -251,12 +241,6 @@ public class PermissionsController {
 		if (bookmark) {
 			Set<String> bookmarks = new HashSet<String>();
 			bookmarks.add(path);
-
-			// Getting list of groups and updating bookmarks
-			List<DataGridGroup> groupObjects = gs.findByGroupNameList(groupParts);
-			for (DataGridGroup g : groupObjects) {
-				gBMS.updateBookmarks(g, bookmarks, null);
-			}
 		}
 
 		return operationResult ? REQUEST_OK : REQUEST_ERROR;
