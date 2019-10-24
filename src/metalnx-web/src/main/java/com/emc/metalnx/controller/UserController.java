@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -24,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.domain.UserGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridZone;
 import com.emc.metalnx.core.domain.entity.UserProfile;
@@ -236,8 +234,8 @@ public class UserController {
 		groupsToBeAdded = new ArrayList<String>();
 
 		String currentZone = irodsServices.getCurrentUserZone();
-		DataGridGroup publicGroup = groupService.findByGroupnameAndZone("public", currentZone);
-		groupsList[0] = String.valueOf(publicGroup.getDataGridId());
+		UserGroup publicGroup = groupService.findByGroupnameAndZone("public", currentZone);
+		groupsList[0] = String.valueOf(publicGroup.getUserGroupName());
 
 		model.addAttribute("addReadPermissionsOnDirs", addReadPermissionsOnDirs);
 		model.addAttribute("addWritePermissionsOnDirs", addWritePermissionsOnDirs);
@@ -284,7 +282,7 @@ public class UserController {
 
 		String selectedProfile = request.getParameter("selectedProfile");
 		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
-		List<DataGridGroup> groups = new ArrayList<DataGridGroup>();
+		List<UserGroup> groups = new ArrayList<UserGroup>();
 		if (groupList != null && groupList.length != 0) {
 			groups = groupService.findByDataGridIdList(groupList);
 		}
@@ -375,7 +373,7 @@ public class UserController {
 			throws DataGridConnectionRefusedException {
 
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, additionalInfo);
-		List<DataGridGroup> groups = groupService.findAll();
+		List<UserGroup> groups = groupService.findAll();
 		List<DataGridZone> zones = zoneService.findAll();
 
 		if (user != null) {
@@ -443,7 +441,7 @@ public class UserController {
 			RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
 
 		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
-		List<DataGridGroup> groups = new ArrayList<DataGridGroup>();
+		List<UserGroup> groups = new ArrayList<UserGroup>();
 		if (groupList != null && groupList.length != 0) {
 			groups = groupService.findByDataGridIdList(groupList);
 		}
@@ -506,15 +504,15 @@ public class UserController {
 	 * Finds all users existing in a group
 	 *
 	 * @param groupname
-	 * @param additionalInfo
+	 * @param zone
 	 * @param model
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "getUsersInAGroup/{groupname}/{additionalInfo}", method = RequestMethod.GET)
-	public String getGroupInfo(@PathVariable String groupname, @PathVariable String additionalInfo, Model model)
+	public String getGroupInfo(@PathVariable String groupname, @PathVariable String zone, Model model)
 			throws DataGridConnectionRefusedException {
-		DataGridGroup dataGridGroup = groupService.findByGroupnameAndZone(groupname, additionalInfo);
+		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupname, zone);
 
 		if (dataGridGroup == null) {
 			model.addAttribute("users", new ArrayList<DataGridUser>());
