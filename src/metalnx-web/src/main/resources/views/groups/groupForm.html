@@ -33,25 +33,19 @@
 
 				url = "/metalnx/groups/addReadPermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
-				    checkGroupBookmark(bookmarkCheckbox);
 				}, null, null);
-				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path, recursive}, null, null, null);
 
 			} else if(permission == 'write'){
 
 				url = "/metalnx/groups/addWritePermission/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
-                    checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 
 			} else if(permission == 'own'){
 
 				url = "/metalnx/groups/addOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, function (data) {
-                    checkGroupBookmark(bookmarkCheckbox);
                 }, null, null);
-				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
 
 			} else {
 				//this case is for when user chooses to give none of the permissions above
@@ -64,18 +58,9 @@
 				url = "/metalnx/groups/removeOwner/";
 				ajaxEncapsulation(url, "POST", {path: path, recursive: recursive}, null, null, null);
 
-				bookmarkCheckbox.prop('checked', false);
-				bookmarkCheckbox.attr("disabled", true);
-
-				// Removing bookmarks for the modified item
-				ajaxEncapsulation('/metalnx/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
-			}
+					}
 		}
 
-		function checkGroupBookmark(bookmarkCheckbox) {
-		    bookmarkCheckbox.prop("disabled", false);
-		    bookmarkCheckbox.prop('checked', true);
-		}
 
 		// Toggles the inheritance of a given directory
 		function toggleInheritance(collectionName, recursive) {

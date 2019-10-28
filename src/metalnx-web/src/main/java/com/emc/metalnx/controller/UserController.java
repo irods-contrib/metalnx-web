@@ -53,7 +53,6 @@ import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserBookmarkService;
-import com.emc.metalnx.services.interfaces.UserProfileService;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.emc.metalnx.services.interfaces.ZoneService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,9 +73,6 @@ public class UserController {
 
 	@Autowired
 	GroupService groupService;
-
-	@Autowired
-	UserProfileService userProfileService;
 
 	@Autowired
 	IRODSServices irodsServices;
@@ -247,7 +243,6 @@ public class UserController {
 		model.addAttribute("userZone", "");
 		model.addAttribute("groupList", groupsList);
 		model.addAttribute("requestMapping", "/users/add/action/");
-		model.addAttribute("profiles", userProfileService.findAll());
 		model.addAttribute("userTypes", userService.listUserTypes());
 		return "users/userForm";
 	}
@@ -413,7 +408,6 @@ public class UserController {
 			model.addAttribute("addOwnerOnDirs", addOwnerOnDirs);
 		}
 
-		model.addAttribute("profiles", userProfileService.findAll());
 		model.addAttribute("groups", groups);
 		model.addAttribute("zones", zones);
 		model.addAttribute("userZone", additionalInfo);

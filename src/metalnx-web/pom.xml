@@ -190,7 +190,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include>
 					<include>*.properties</include>
 					<include>static/**</include>
 					<include>**/*.html</include>
