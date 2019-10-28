@@ -17,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.domain.UserGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.group.GroupForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
@@ -92,9 +94,10 @@ public class GroupController {
 	 *
 	 * @param model
 	 * @return the user-management template
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String listGroups(Model model) {
+	public String listGroups(Model model) throws DataGridException {
 
 		List<UserGroup> groups = groupService.findAll();
 		model.addAttribute("groups", groups);
@@ -103,15 +106,17 @@ public class GroupController {
 	}
 
 	/**
-	 * Retrieves groups matching 'query' and return JSON format
+	 * Retrieves groups matching 'query' which is the group name search prefix and
+	 * return JSON format
 	 *
 	 * @param model
 	 * @return {@link String}
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/query/{query}/")
 	@ResponseBody
-	public String listGroupsByQueryAsString(Model model, @PathVariable String query) {
-		List<UserGroup> groups = groupService.findByQueryString(query);
+	public String listGroupsByQueryAsString(Model model, @PathVariable String query) throws DataGridException {
+		List<UserGroup> groups = groupService.findByGroupname(query);
 		StringBuilder groupsResults = new StringBuilder();
 		groupsResults.append("[");
 
@@ -132,10 +137,11 @@ public class GroupController {
 	 *
 	 * @param model
 	 * @return
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/find/{query}/")
-	public String listGroupsByQuery(Model model, @PathVariable String query) {
-		List<UserGroup> groups = groupService.findByQueryString(query);
+	public String listGroupsByQuery(Model model, @PathVariable String query) throws DataGridException {
+		List<UserGroup> groups = groupService.findByGroupname(query);
 		model.addAttribute("groups", groups);
 		model.addAttribute("queryString", query);
 		return "groups/groupList :: groupList";
@@ -146,9 +152,10 @@ public class GroupController {
 	 *
 	 * @param model
 	 * @return
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/findAll/")
-	public String listAllGroups(Model model) {
+	public String listAllGroups(Model model) throws DataGridException {
 		List<UserGroup> groups = groupService.findAll();
 		model.addAttribute("groups", groups);
 		return "groups/groupList :: groupList";
@@ -193,11 +200,11 @@ public class GroupController {
 	 *
 	 * @param user
 	 * @return the name of the template to render
-	 * @throws DataGridConnectionRefusedException
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "add/action/", method = RequestMethod.POST)
 	public String addGroup(@ModelAttribute GroupForm groupForm, HttpServletRequest httpServletRequest,
-			RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+			RedirectAttributes redirectAttributes) throws DataGridException {
 		UserGroup newGroup = new UserGroup();
 		newGroup.setUserGroupName(groupForm.getGroupname()); // FIXME: zone?
 
@@ -232,19 +239,36 @@ public class GroupController {
 	/**
 	 * Controller method that deletes a group
 	 *
-	 * @param groupname
+	 * @param groupName
 	 * @param model
 	 * @return the name of the template to render
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "delete/{groupname}/", method = RequestMethod.GET)
-	public String deleteGroup(@PathVariable String groupname, Model model, RedirectAttributes redirectAttributes)
+	public String deleteGroup(@PathVariable String groupName, Model model, RedirectAttributes redirectAttributes)
 			throws DataGridConnectionRefusedException {
 
-		if (groupService.deleteGroupByGroupname(groupname)) {
-			redirectAttributes.addFlashAttribute("groupRemovedSuccessfully", groupname);
-		} else {
-			redirectAttributes.addFlashAttribute("groupNotRemovedSuccessfully", groupname);
+		logger.info("deleteGroup()");
+
+		if (groupName == null || groupName.isEmpty()) {
+			throw new IllegalArgumentException("null or empty groupName");
+		}
+
+		if (model == null) {
+			throw new IllegalArgumentException("null model");
+		}
+
+		logger.info("groupName:{}", groupName);
+		logger.info("model:{}", model);
+
+		UserGroup userGroup = UserGroupAO.splitGroupIntoNameAndZone(groupName);
+
+		try {
+			groupService.deleteGroup(userGroup);
+			redirectAttributes.addFlashAttribute("groupRemovedSuccessfully", groupName);
+		} catch (DataGridException e) {
+			logger.info("unable to delete group:{}", userGroup, e);
+			redirectAttributes.addFlashAttribute("groupNotRemovedSuccessfully", groupName);
 		}
 
 		return "redirect:/groups/";
@@ -279,18 +303,18 @@ public class GroupController {
 	 * @param additionalInfo
 	 * @param model
 	 * @return
-	 * @throws DataGridConnectionRefusedException
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "modify/{groupname}/{additionalInfo}/", method = RequestMethod.GET)
 	public String showModifyGroupForm(@PathVariable String groupname, @PathVariable String additionalInfo, Model model)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException {
 
 		List<DataGridUser> users = userService.findAll();
 		currentGroup = groupService.findByGroupnameAndZone(groupname, additionalInfo);
 
 		String[] membersList;
 		if (currentGroup != null) {
-			membersList = groupService.getMemberList(currentGroup);
+			membersList = groupService.getMemberList(currentGroup.getUserGroupName(), currentGroup.getZone());
 		} else {
 			membersList = new String[0];
 		}
@@ -329,7 +353,7 @@ public class GroupController {
 	 */
 	@RequestMapping(value = "modify/action/", method = RequestMethod.POST)
 	public String modifyGroup(@ModelAttribute GroupForm groupForm, HttpServletRequest request,
-			RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+			RedirectAttributes redirectAttributes) throws DataGridException {
 
 		String[] userList = usersToBeAdded.toArray(new String[usersToBeAdded.size()]);
 		List<DataGridUser> users = new ArrayList<DataGridUser>();
@@ -337,33 +361,28 @@ public class GroupController {
 			users = userService.findByDataGridIds(userList);
 		}
 
-		boolean modificationSucessful = true;
-
 		if (currentGroup != null) {
-			modificationSucessful = groupService.updateMemberList(currentGroup, users);
-
-			if (modificationSucessful) {
-				redirectAttributes.addFlashAttribute("groupModifiedSuccessfully", groupForm.getGroupname());
-			}
+			groupService.updateMemberList(currentGroup, users);
 		}
 
-		String redirectUrl = "redirect:/groups/modify/" + currentGroup.getUserGroupName() + "/";
+		// String redirectUrl = "redirect:/groups/modify/" +
+		// currentGroup.getNameWithZone() + "/";
 
 		// Updating permissions on collections
 		groupService.updateReadPermissions(currentGroup, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
 		groupService.updateWritePermissions(currentGroup, addWritePermissionsOnDirs, removeWritePermissionsOnDirs);
 		groupService.updateOwnership(currentGroup, addOwnerOnDirs, removeOwnerOnDirs);
-		collectionService.updateInheritanceOptions(addInheritanceOnDirs, removeInheritanceOnDirs, ""); // FIXME: add'l
+		collectionService.updateInheritanceOptions(addInheritanceOnDirs, removeInheritanceOnDirs, ""); // FIXME:
+																										// add'l //
 																										// info?
-
 		cleanModificationSets();
 
 		currentGroup = null;
-		return modificationSucessful ? "redirect:/groups/" : redirectUrl;
+		return "redirect:/groups/";
 	}
 
 	@RequestMapping(value = "/groupsToCSVFile/")
-	public void groupsToCSVFile(HttpServletResponse response) {
+	public void groupsToCSVFile(HttpServletResponse response) throws DataGridException {
 		String loggedUser = loggedUserUtils.getLoggedDataGridUser().getUsername();
 		String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
@@ -500,10 +519,11 @@ public class GroupController {
 	 * @param model
 	 * @param groupname
 	 * @return true, if the groupname can be used. False, otherwise.
+	 * @throws DataGridException
 	 */
 	@ResponseBody
 	@RequestMapping(value = "isValidGroupname/{groupname}/", method = RequestMethod.GET)
-	public String isValidGroupname(@PathVariable String groupname) {
+	public String isValidGroupname(@PathVariable String groupname) throws DataGridException {
 
 		if (groupname.compareTo("") != 0) {
 			// if no users are found with this groupname, it means this groupname can be
