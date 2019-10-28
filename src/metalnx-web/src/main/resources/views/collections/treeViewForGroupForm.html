@@ -132,17 +132,6 @@
 						<span class="resulting-permission" th:if="${#sets.contains(inheritPermissions, collPath)}" th:text="#{collections.management.table.inherited.label}"></span>
 					</td>
 
-					<td th:with="collPath = ${collectionAndDataObject.getPath()}">
-						<input
-							title="bookmark"
-							th:name='${collPath}'
-							type="checkbox"
-							class="bookmarkCheckbox"
-							aria-label="bookmarkCheckbox"
-							th:checked="${ (#lists.contains(groupBookmarks, collPath) or #sets.contains(addBookmark, collPath)) and !#sets.contains(removeBookmark, collPath) ? 'checked' : 'false' }"
-						/>
-					</td>
-
 				</tr>
 			</tbody>
 		</table>
@@ -168,16 +157,6 @@
 
 		});
 
-		// Updating the list of bookmarks to add or remove
-		$(".bookmarkCheckbox").click(function () {
-			var path = $(this).attr('name');
-			if( $(this).is(":checked") ) {
-				ajaxEncapsulation('/metalnx/groupBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
-			}
-			else {
-				ajaxEncapsulation('/metalnx/groupBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
-			}
-		});
 
 	</script>
 

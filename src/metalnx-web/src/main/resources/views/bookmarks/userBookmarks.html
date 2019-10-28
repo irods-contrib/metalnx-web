@@ -28,10 +28,7 @@
 				<a id="bookmarks-page-title"  href="#" class="page-hint pull-left"><i class="fa fa-question-circle"></i></a> -->
 			</div>
 			<div class="col-sm-12 btn-shared">
-				<a th:href="@{ ${urlMap.URL_GROUPS_BOOKMARKS} }" class="btn btn-default btn-sm" style="margin-right: 5px;">
-                   <i class="fa fa-users"></i>
-                   	&nbsp; <span th:text="#{collections.management.shared.links.list.by.group}"></span>
-                 </a>
+				
 				<a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }" disabled="" class="btn btn-default btn-sm" style="margin-right: 5px;">
                    <i class="fa fa-user"></i>
                    	&nbsp; <span th:text="#{collections.management.shared.links.list.by.user}"></span>
