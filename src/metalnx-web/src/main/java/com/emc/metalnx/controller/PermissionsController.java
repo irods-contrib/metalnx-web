@@ -186,9 +186,10 @@ public class PermissionsController {
 	 * permissions to.
 	 *
 	 * @return
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "/getListOfGroupsForPermissionsCreation/")
-	public String getListOfGroupsForPermissionsCreation(final Model model) {
+	public String getListOfGroupsForPermissionsCreation(final Model model) throws DataGridException {
 		List<UserGroup> groups = gs.findAll();
 
 		model.addAttribute("groups", groups);
@@ -220,7 +221,7 @@ public class PermissionsController {
 	public String addGroupToCreationList(@RequestParam("permission") final String permission,
 			@RequestParam("groups") final String groups, @RequestParam("path") final String path,
 			@RequestParam("bookmark") final boolean bookmark, @RequestParam("recursive") final boolean recursive)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException {
 
 		boolean operationResult = true;
 		String[] groupParts = groups.split(",");

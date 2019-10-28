@@ -44,8 +44,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.DataGridZone;
-import com.emc.metalnx.core.domain.entity.UserProfile;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.enums.ExceptionEnum;
 import com.emc.metalnx.modelattribute.enums.URLMap;
 import com.emc.metalnx.modelattribute.user.UserForm;
@@ -226,10 +226,10 @@ public class UserController {
 	 *
 	 * @param model
 	 * @return the userForm template
-	 * @throws DataGridConnectionRefusedException
+	 * @throws DataGridException
 	 */
 	@RequestMapping(value = "add/", method = RequestMethod.GET)
-	public String showAddUserForm(Model model) throws DataGridConnectionRefusedException {
+	public String showAddUserForm(Model model) throws DataGridException {
 		String[] groupsList = new String[1];
 		groupsToBeAdded = new ArrayList<String>();
 
@@ -261,7 +261,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "add/action/", method = RequestMethod.POST)
 	public String addUser(@ModelAttribute UserForm user, HttpServletRequest request,
-			RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+			RedirectAttributes redirectAttributes) throws DataGridException {
 
 		logger.info("addUser()");
 		if (user == null) {
@@ -280,51 +280,44 @@ public class UserController {
 		newUser.setDepartment(user.getDepartment() != null ? user.getDepartment() : "");
 		logger.info("adding user:{}", newUser);
 
-		String selectedProfile = request.getParameter("selectedProfile");
 		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
 		List<UserGroup> groups = new ArrayList<UserGroup>();
 		if (groupList != null && groupList.length != 0) {
-			groups = groupService.findByDataGridIdList(groupList);
+			for (String groupId : groupList) {
+				UserGroup userGroup = groupService.findById(groupId);
+				if (groupId == null) {
+					logger.warn("unable to find group for id:{}", groupId);
+				} else {
+					groups.add(userGroup);
+				}
+			}
 		}
-
-		boolean groupsUpdateSuccessful = false;
-		boolean creationSucessful = false;
 
 		try {
 			logger.info("creating the user...");
-			creationSucessful = userService.createUser(newUser, user.getPassword());
+			boolean creationSucessful = userService.createUser(newUser, user.getPassword());
 
-			logger.info("creation successful? {}", creationSucessful);
+			if (!creationSucessful) {
+				logger.warn("unable to create the user");
+				throw new DataGridException("User creation failed");
+			}
 
 			// Updating the group list for the recently-created user
-			if (creationSucessful) {
 
-				// adding read, write and ownership permissions to a set of collections
-				userService.updateReadPermissions(newUser, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
-				userService.updateWritePermissions(newUser, addWritePermissionsOnDirs, removeWritePermissionsOnDirs);
-				userService.updateOwnership(newUser, addOwnerOnDirs, removeOwnerOnDirs);
+			// adding read, write and ownership permissions to a set of collections
+			userService.updateReadPermissions(newUser, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
+			userService.updateWritePermissions(newUser, addWritePermissionsOnDirs, removeWritePermissionsOnDirs);
+			userService.updateOwnership(newUser, addOwnerOnDirs, removeOwnerOnDirs);
 
-				cleanPermissionsSets();
+			cleanPermissionsSets();
 
-				DataGridUser userForGroups = userService.findByUsernameAndAdditionalInfo(newUser.getUsername(),
-						newUser.getAdditionalInfo());
-				groupsUpdateSuccessful = userService.updateGroupList(userForGroups, groups);
+			DataGridUser userForGroups = userService.findByUsernameAndAdditionalInfo(newUser.getUsername(),
+					newUser.getAdditionalInfo());
+			// User bookmarks
+			updateBookmarksList(newUser.getUsername(), newUser.getAdditionalInfo());
 
-				if (selectedProfile != null && selectedProfile != "") {
-					UserProfile userProfile = userProfileService.findById(Long.valueOf(selectedProfile));
-					userService.applyProfileToUser(userProfile, userForGroups);
-
-					userForGroups.setUserProfile(userProfile);
-				} else {
-					user.setUserProfile(null);
-				}
-
-				// User bookmarks
-				updateBookmarksList(newUser.getUsername(), newUser.getAdditionalInfo());
-
-				userService.modifyUser(userForGroups);
-				redirectAttributes.addFlashAttribute("userAddedSuccessfully", user.getUsername());
-			}
+			userService.modifyUser(userForGroups);
+			redirectAttributes.addFlashAttribute("userAddedSuccessfully", user.getUsername());
 
 		} catch (DuplicateDataException e) {
 			redirectAttributes.addFlashAttribute("duplicateUser",
@@ -335,7 +328,7 @@ public class UserController {
 			logger.error("Could not create user: ", e);
 		}
 
-		return creationSucessful && groupsUpdateSuccessful ? "redirect:/users/" : "redirect:/users/add/";
+		return "redirect:/users/";
 	}
 
 	/**
@@ -370,7 +363,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "modify/{username}/{additionalInfo}/", method = RequestMethod.GET)
 	public String showModifyUserForm(@PathVariable String username, @PathVariable String additionalInfo, Model model)
-			throws DataGridConnectionRefusedException {
+			throws DataGridException {
 
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, additionalInfo);
 		List<UserGroup> groups = groupService.findAll();
@@ -438,12 +431,19 @@ public class UserController {
 	 */
 	@RequestMapping(value = "modify/action/", method = RequestMethod.POST)
 	public String modifyUser(@ModelAttribute UserForm userForm, HttpServletRequest request,
-			RedirectAttributes redirectAttributes) throws DataGridConnectionRefusedException {
+			RedirectAttributes redirectAttributes) throws DataGridException {
 
 		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
 		List<UserGroup> groups = new ArrayList<UserGroup>();
 		if (groupList != null && groupList.length != 0) {
-			groups = groupService.findByDataGridIdList(groupList);
+			for (String groupId : groupList) {
+				UserGroup userGroup = groupService.findById(groupId);
+				if (groupId == null) {
+					logger.warn("unable to find group for id:{}", groupId);
+				} else {
+					groups.add(userGroup);
+				}
+			}
 		}
 
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(userForm.getUsername(),
@@ -481,17 +481,6 @@ public class UserController {
 			}
 		}
 
-		// Applying selected profile to the user
-		String selectedProfile = request.getParameter("selectedProfile");
-		if (selectedProfile != null && selectedProfile != "") {
-			UserProfile userProfile = userProfileService.findById(Long.valueOf(selectedProfile));
-			userService.applyProfileToUser(userProfile, user);
-
-			user.setUserProfile(userProfile);
-		} else {
-			user.setUserProfile(null);
-		}
-
 		userService.modifyUser(user);
 
 		cleanPermissionsSets();
@@ -503,16 +492,16 @@ public class UserController {
 	/**
 	 * Finds all users existing in a group
 	 *
-	 * @param groupname
+	 * @param groupName
 	 * @param zone
 	 * @param model
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 */
 	@RequestMapping(value = "getUsersInAGroup/{groupname}/{additionalInfo}", method = RequestMethod.GET)
-	public String getGroupInfo(@PathVariable String groupname, @PathVariable String zone, Model model)
-			throws DataGridConnectionRefusedException {
-		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupname, zone);
+	public String getGroupInfo(@PathVariable String groupName, @PathVariable String zone, Model model)
+			throws DataGridException {
+		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupName, zone);
 
 		if (dataGridGroup == null) {
 			model.addAttribute("users", new ArrayList<DataGridUser>());
@@ -523,7 +512,7 @@ public class UserController {
 
 		else {
 			List<DataGridUser> usersListOfAGroup = userService
-					.findByDataGridIds(groupService.getMemberList(dataGridGroup));
+					.findByDataGridIds(groupService.getMemberList(groupName, zone));
 
 			model.addAttribute("users", usersListOfAGroup);
 			model.addAttribute("foundUsers", usersListOfAGroup.size() > 0);
