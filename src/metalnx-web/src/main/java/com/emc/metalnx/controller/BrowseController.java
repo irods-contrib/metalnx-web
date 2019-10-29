@@ -436,6 +436,7 @@ public class BrowseController {
 		model.addAttribute("addBookmark", new ArrayList<String>());
 		model.addAttribute("removeBookmark", new ArrayList<String>());
 		model.addAttribute("userBookmarks", userBookmarks);
+		logger.info("model:{}", model);
 
 		return "collections/treeViewForUserForm :: treeView";
 	}
