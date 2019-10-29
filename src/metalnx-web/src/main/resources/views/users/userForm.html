@@ -258,10 +258,10 @@
 											</thead>
 											<tbody id="groupsListFBody">
 												<tr th:each="group : ${groups}"
-													th:id="${group.getGroupname()}">
+													th:id="${group.getUserGroupName()}">
 													<td class="col-md-1"><input type="checkbox"
-														name="groupIdsList" th:value="${group.dataGridId}"
-														th:checked="${#arrays.contains(groupList, '' + group.dataGridId)}"
+														name="groupIdsList" th:value="${group.getUserGroupId()}"
+														th:checked="${#arrays.contains(groupList, '' + group.getUserGroupId())}"
 														th:disabled="${group.getUserGroupName() == 'public'}" />
 													</td>
 													<td th:text="${group.getUserGroupName()}"></td>
@@ -318,7 +318,7 @@
 														<td th:text="${group.getZone()}"></td>
 														<td>
 															<button title="groupInfo" type="button" class="btn btn-default btn-xs"
-																th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getUserGroupName()} + '\', \'' + ${group.getZone)} + '\');'">
+																th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getUserGroupName()} + '\', \'' + ${group.getZone()} + '\');'">
 																<i title="list" class="fa fa-list"> </i>
 																<span th:text="#{users.add.view.users.in.group.button}"></span>
 															</button>
