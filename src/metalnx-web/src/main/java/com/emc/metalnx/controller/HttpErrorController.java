@@ -1,9 +1,9 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
+
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,9 +56,17 @@ public class HttpErrorController {
 	 */
 	@RequestMapping(value = "/500")
 	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
+		logger.info("show500CustomizedPage()");
 		logger.error("500 - Internal Server Error");
 		logger.info("httpRequest:{}", httpRequest);
 		logger.info("model:{}", model);
+		Enumeration<String> attribs = httpRequest.getAttributeNames();
+		String attribName = null;
+		while (attribs.hasMoreElements()) {
+			attribName = attribs.nextElement();
+			logger.info("attribName:{}", attribName);
+			logger.info("attrib:{}", httpRequest.getAttribute(attribName));
+		}
 
 		return "httpErrors/500";
 	}
