@@ -357,7 +357,11 @@ public class BrowseController {
 			readPermissions = cs.listReadPermissionsForPathAndGroup(path, groupName);
 			writePermissions = cs.listWritePermissionsForPathAndGroup(path, groupName);
 			ownershipPermissions = cs.listOwnershipForPathAndGroup(path, groupName);
-			inheritPermissions = cs.listInheritanceForPath(path);
+			try {
+				inheritPermissions = cs.listInheritanceForPath(path);
+			} catch (DataGridException dnf) {
+				// may not find based on permissions..it's ok
+			}
 		} else {
 			readPermissions = new HashSet<String>();
 			writePermissions = new HashSet<String>();
@@ -415,7 +419,11 @@ public class BrowseController {
 					readPermissions = cs.listReadPermissionsForPathAndUser(path, username);
 					writePermissions = cs.listWritePermissionsForPathAndUser(path, username);
 					ownershipPermissions = cs.listOwnershipForPathAndUser(path, username);
-					inheritPermissions = cs.listInheritanceForPath(path);
+					try {
+						inheritPermissions = cs.listInheritanceForPath(path);
+					} catch (DataGridException dnf) {
+						// may not find based on permissions..it's ok
+					}
 				}
 
 				List<DataGridUser> users = userService.findByUsername(username);
