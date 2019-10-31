@@ -492,12 +492,27 @@ public class UserController {
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "getUsersInAGroup/{groupname}/{additionalInfo}", method = RequestMethod.GET)
+	@RequestMapping(value = "getUsersInAGroup/{groupName}/{zone}", method = RequestMethod.GET)
 	public String getGroupInfo(@PathVariable String groupName, @PathVariable String zone, Model model)
 			throws DataGridException {
-		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupName, zone);
 
-		if (dataGridGroup == null) {
+		logger.info("getGroupInfo()");
+
+		if (groupName == null || groupName.isEmpty()) {
+			logger.info("null or empty groupName");
+		}
+
+		if (zone == null || zone.isEmpty()) {
+			throw new IllegalArgumentException("null or empty zone");
+		}
+
+		logger.info("groupName:{}", groupName);
+		logger.info("zone:{}", zone);
+		logger.info("model:{}", model);
+
+		UserGroup userGroup = groupService.findByGroupnameAndZone(groupName, zone);
+
+		if (userGroup == null) {
 			model.addAttribute("users", new ArrayList<DataGridUser>());
 			model.addAttribute("foundUsers", false);
 			model.addAttribute("resultSize", 0);
@@ -514,6 +529,8 @@ public class UserController {
 			model.addAttribute("queryString", "findAll");
 		}
 
+		logger.info("returned model:{}", model);
+
 		return "users/userListOfAGroup :: userList";
 	}
 
@@ -525,11 +542,21 @@ public class UserController {
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "getUsersInAGroup/{groupname}", method = RequestMethod.GET)
+	@RequestMapping(value = "getUsersInAGroup/{groupName}", method = RequestMethod.GET)
 	public String getGroupInfoHomeZone(@PathVariable String groupName, Model model) throws DataGridException {
-		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupName, irodsServices.getCurrentUserZone());
 
-		if (dataGridGroup == null) {
+		logger.info("getGroupInfo()");
+
+		if (groupName == null || groupName.isEmpty()) {
+			logger.info("null or empty groupName");
+		}
+
+		logger.info("groupName:{}", groupName);
+		logger.info("model:{}", model);
+
+		UserGroup userGroup = groupService.findByGroupnameAndZone(groupName, irodsServices.getCurrentUserZone());
+
+		if (userGroup == null) {
 			model.addAttribute("users", new ArrayList<DataGridUser>());
 			model.addAttribute("foundUsers", false);
 			model.addAttribute("resultSize", 0);
@@ -545,6 +572,8 @@ public class UserController {
 			model.addAttribute("resultSize", usersListOfAGroup.size());
 			model.addAttribute("queryString", "findAll");
 		}
+
+		logger.info("userGroup:{}", userGroup);
 
 		return "users/userListOfAGroup :: userList";
 	}
