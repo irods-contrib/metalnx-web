@@ -64,6 +64,9 @@ public class HttpErrorController {
 		String attribName = null;
 		while (attribs.hasMoreElements()) {
 			attribName = attribs.nextElement();
+			if (attribName.equals("org.springframework.core.convert.ConversionService")) {
+				continue;
+			}
 			logger.info("attribName:{}", attribName);
 			logger.info("attrib:{}", httpRequest.getAttribute(attribName));
 		}
