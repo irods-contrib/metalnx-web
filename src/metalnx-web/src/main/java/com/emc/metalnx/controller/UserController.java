@@ -517,6 +517,38 @@ public class UserController {
 		return "users/userListOfAGroup :: userList";
 	}
 
+	/**
+	 * Finds all users existing in a group in the current zone
+	 *
+	 * @param groupName
+	 * @param model
+	 * @return
+	 * @throws DataGridConnectionRefusedException
+	 */
+	@RequestMapping(value = "getUsersInAGroup/{groupname}", method = RequestMethod.GET)
+	public String getGroupInfoHomeZone(@PathVariable String groupName, Model model) throws DataGridException {
+		UserGroup dataGridGroup = groupService.findByGroupnameAndZone(groupName, irodsServices.getCurrentUserZone());
+
+		if (dataGridGroup == null) {
+			model.addAttribute("users", new ArrayList<DataGridUser>());
+			model.addAttribute("foundUsers", false);
+			model.addAttribute("resultSize", 0);
+			model.addAttribute("queryString", "");
+		}
+
+		else {
+			List<DataGridUser> usersListOfAGroup = userService
+					.findByDataGridIds(groupService.getMemberList(groupName, irodsServices.getCurrentUserZone()));
+
+			model.addAttribute("users", usersListOfAGroup);
+			model.addAttribute("foundUsers", usersListOfAGroup.size() > 0);
+			model.addAttribute("resultSize", usersListOfAGroup.size());
+			model.addAttribute("queryString", "findAll");
+		}
+
+		return "users/userListOfAGroup :: userList";
+	}
+
 	/*
 	 * *****************************************************************************
 	 * *************** ******************************** PERMISSION
