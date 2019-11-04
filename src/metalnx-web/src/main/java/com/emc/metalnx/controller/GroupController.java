@@ -43,6 +43,7 @@ import com.emc.metalnx.modelattribute.group.GroupForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.emc.metalnx.services.interfaces.ZoneService;
 
@@ -69,6 +70,9 @@ public class GroupController {
 
 	@Autowired
 	HeaderService headerService;
+
+	@Autowired
+	IRODSServices irodsServices;
 
 	private GroupForm groupForm;
 	private UserGroup currentGroup;
@@ -215,7 +219,7 @@ public class GroupController {
 
 		UserGroup newGroup = new UserGroup();
 		newGroup.setUserGroupName(groupForm.getGroupname());
-		newGroup.setZone(groupForm.getAdditionalInfo());
+		newGroup.setZone(irodsServices.getCurrentUserZone());
 
 		// Get the list of users to be attached to the group
 		String[] idsList = usersToBeAdded.toArray(new String[usersToBeAdded.size()]);
@@ -253,7 +257,7 @@ public class GroupController {
 	 * @return the name of the template to render
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "delete/{groupname}/", method = RequestMethod.GET)
+	@RequestMapping(value = "delete/{groupName}/", method = RequestMethod.GET)
 	public String deleteGroup(@PathVariable String groupName, Model model, RedirectAttributes redirectAttributes)
 			throws DataGridConnectionRefusedException {
 
