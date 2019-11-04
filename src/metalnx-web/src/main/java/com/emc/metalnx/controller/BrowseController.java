@@ -342,7 +342,7 @@ public class BrowseController {
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
 			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
-			path = "/";
+			path = MiscIRODSUtils.buildPathZoneAndHome(irodsServices.getCurrentUserZone());
 		}
 
 		List<DataGridCollectionAndDataObject> list = null;
@@ -361,6 +361,7 @@ public class BrowseController {
 				inheritPermissions = cs.listInheritanceForPath(path);
 			} catch (DataGridException dnf) {
 				// may not find based on permissions..it's ok
+				inheritPermissions = new HashSet<String>();
 			}
 		} else {
 			readPermissions = new HashSet<String>();
