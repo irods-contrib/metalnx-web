@@ -205,8 +205,17 @@ public class GroupController {
 	@RequestMapping(value = "add/action/", method = RequestMethod.POST)
 	public String addGroup(@ModelAttribute GroupForm groupForm, HttpServletRequest httpServletRequest,
 			RedirectAttributes redirectAttributes) throws DataGridException {
+
+		logger.info("addGroup()");
+		if (groupForm == null) {
+			throw new IllegalArgumentException("null groupForm");
+		}
+
+		logger.info("groupForm:{}", groupForm);
+
 		UserGroup newGroup = new UserGroup();
-		newGroup.setUserGroupName(groupForm.getGroupname()); // FIXME: zone?
+		newGroup.setUserGroupName(groupForm.getGroupname());
+		newGroup.setZone(groupForm.getAdditionalInfo());
 
 		// Get the list of users to be attached to the group
 		String[] idsList = usersToBeAdded.toArray(new String[usersToBeAdded.size()]);
