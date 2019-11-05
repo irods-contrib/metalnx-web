@@ -368,11 +368,21 @@ public class GroupController {
 	public String modifyGroup(@ModelAttribute GroupForm groupForm, HttpServletRequest request,
 			RedirectAttributes redirectAttributes) throws DataGridException {
 
+		logger.info("modifyGroup()");
+
+		if (groupForm == null) {
+			throw new IllegalArgumentException("null groupForm");
+		}
+
+		logger.info("groupForm{}", groupForm);
+
 		String[] userList = usersToBeAdded.toArray(new String[usersToBeAdded.size()]);
 		List<DataGridUser> users = new ArrayList<DataGridUser>();
 		if (userList != null && userList.length != 0) {
 			users = userService.findByDataGridIds(userList);
 		}
+
+		logger.info("modifying users:{}", users);
 
 		if (currentGroup != null) {
 			groupService.updateMemberList(currentGroup, users);

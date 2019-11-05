@@ -242,37 +242,6 @@
 					</div>
 				</div>
 				<!-- /. Attached users -->
-				<!-- Collections management section -->
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 th:text="#{permissions.label}" class="panel-title"></h3>
-							</div>
-							<div class="panel-body">
-								<!-- Search box -->
-								<div class="col-sm-6">
-									<div class="form-group input-group">
-										<input title="search" id="searchTextForCollections" type="search"
-											class="form-control" th:placeholder="#{search.placeholder}" aria-label="search text"/>
-										<span class="input-group-addon"> <i title="search"
-											class="glyphicon glyphicon-search"></i>
-										</span>
-									</div>
-								</div>
-								<!-- /.Search box -->
-								<!-- Collection tree view -->
-								<div class="row" name="collectionsViewForGroup"
-									id="collectionsViewForGroup"></div>
-								<!-- Table loader Ajax Gif -->
-								<div id="table-loader" class="table-loader col-sm-12">
-									<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
-									<p class="text-center" th:text="#{loading.table.label}"></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 				<div class="pull-right">
 					<button title="cancel" type="button" class="btn btn-default btn-md"
 						th:text="#{forms.cancel.action.button}" data-toggle="modal"
@@ -350,8 +319,6 @@
 	    	        }]
 				});
 
-				getSubDirectoriesForGroupForm([[${ currentPath }]]);
-
 				$("#usersList").hide();
 
 				var datatableAttachedUsers = $("#attachedUsersTable").DataTable({
@@ -422,29 +389,7 @@
 				});
 
 			});
-			function getSubDirectoriesForGroupForm(directoryName) {
-				$("#table-loader").show();
-				$("#collectionsViewForGroup").hide();
-
-				var url = "/metalnx/browse/getDirectoriesAndFilesForGroupForm/";
-				var retrievePermissions = !isAddAction;
-				setTimeout(function () {
-					ajaxEncapsulation(
-							url,
-							"POST",
-							{path:directoryName, groupName: groupName, retrievePermissions : retrievePermissions},
-							displaySubDirectoriesForGroupForm,
-							null,
-							null
-					);
-				}, 400);
-			}
-
-			function displaySubDirectoriesForGroupForm(data){
-				$("#table-loader").hide();
-				$("#collectionsViewForGroup").show();
-				$("#collectionsViewForGroup").html(data);
-			}
+			
 		/*]]>*/
 		</script>
 	</div>
