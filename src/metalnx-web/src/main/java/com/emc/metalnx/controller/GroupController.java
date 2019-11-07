@@ -318,12 +318,11 @@ public class GroupController {
 	 * @return
 	 * @throws DataGridException
 	 */
-	@RequestMapping(value = "modify/{groupname}/{additionalInfo}/", method = RequestMethod.GET)
-	public String showModifyGroupForm(@PathVariable String groupname, @PathVariable String additionalInfo, Model model)
-			throws DataGridException {
+	@RequestMapping(value = "modify/{groupname}", method = RequestMethod.GET)
+	public String showModifyGroupForm(@PathVariable String groupname, Model model) throws DataGridException {
 
 		List<DataGridUser> users = userService.findAll();
-		currentGroup = groupService.findByGroupnameAndZone(groupname, additionalInfo);
+		currentGroup = groupService.findByGroupnameAndZone(groupname, irodsServices.getCurrentUserZone());
 
 		String[] membersList;
 		if (currentGroup != null) {
@@ -333,7 +332,6 @@ public class GroupController {
 		}
 		usersToBeAdded = new ArrayList<String>(Arrays.asList(membersList));
 
-		currentGroup = groupService.findByGroupnameAndZone(groupname, additionalInfo);
 		GroupForm groupForm = new GroupForm();
 		if (currentGroup != null) {
 			groupForm.setGroupname(groupname);
@@ -352,7 +350,6 @@ public class GroupController {
 		model.addAttribute("resultSize", users.size());
 		model.addAttribute("foundUsers", users.size() > 0);
 		model.addAttribute("zones", zoneService.findAll());
-		model.addAttribute("groupZone", additionalInfo);
 
 		return "groups/groupForm";
 	}
