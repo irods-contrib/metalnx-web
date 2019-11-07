@@ -116,6 +116,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String listUsers(Model model) {
+		logger.info("listUsers()");
 		cleanPermissionsSets();
 		return "users/user-management";
 	}
@@ -181,6 +182,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/findAll/")
 	public String listAllUsers(Model model) {
+		logger.info("findAll()");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String usernameLogged = (String) auth.getPrincipal();
 
@@ -201,6 +203,14 @@ public class UserController {
 	@RequestMapping(value = "addGroupToSaveList/")
 	@ResponseStatus(value = HttpStatus.OK)
 	public void addGroupToSaveList(@RequestParam("groupId") String groupId) {
+		logger.info("addGroupToSaveList()");
+
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("null or empty groupId");
+		}
+
+		logger.info("groupId:{}", groupId);
+
 		groupsToBeAdded.add(groupId);
 	}
 
@@ -213,6 +223,14 @@ public class UserController {
 	@RequestMapping(value = "removeGroupToSaveList/")
 	@ResponseStatus(value = HttpStatus.OK)
 	public void removeGroupToSaveList(@RequestParam("groupId") String groupId) {
+		logger.info("removeGroupToSaveList()");
+
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("null or empty groupId");
+		}
+
+		logger.info("groupId:{}", groupId);
+
 		groupsToBeAdded.remove(groupId);
 	}
 
@@ -298,6 +316,8 @@ public class UserController {
 			}
 
 			// Updating the group list for the recently-created user
+
+			userService.updateGroupList(newUser, groups);
 
 			// adding read, write and ownership permissions to a set of collections
 			userService.updateReadPermissions(newUser, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
