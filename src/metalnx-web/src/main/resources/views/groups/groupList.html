@@ -30,7 +30,7 @@
 						<td th:text="${group.getZone()}"></td>
 						<td>
 							<a class="btn btn-default btn-xs" aria-label="#{groups.list.item.edit}"
-								th:href="${urlMap.URL_MODIFY_GROUP} + ${group.getUserGroupName()} + '/' + ${group.getZone() + '/'}">
+								th:href="${urlMap.URL_MODIFY_GROUP} + ${group.getUserGroupName()}">
 								<i class="fa fa-pencil"></i><span  th:text="#{groups.list.item.edit}"></span>
 							</a>
 							&nbsp; &nbsp;
