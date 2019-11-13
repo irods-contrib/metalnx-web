@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
+
 <beans xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns="http://www.springframework.org/schema/beans"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/context
@@ -43,12 +46,14 @@
 		class="com.emc.metalnx.handler.DataGridAuthenticationSuccessHandler" />
 	<bean id="customAuthenticationFailureHandler"
 		class="com.emc.metalnx.handler.DataGridAuthenticationFailureHandler" />
-	<bean id="logoutHandler" class="com.emc.metalnx.services.auth.IRODSLogoutSuccessHandler" />
+	<bean id="logoutHandler"
+		class="com.emc.metalnx.services.auth.IRODSLogoutSuccessHandler" />
 
 	<!-- Instead of redirecting the user to the login page when he tries to
 		access a page with an expired session id, we return an error (403). By doing
 		that, all ajax calls will be able to handle forbidden access to any page. -->
-	<bean id="ep403" class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
+	<bean id="ep403"
+		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
 	</bean>
 
 	<sec:http auto-config="true" create-session="always"
@@ -73,19 +78,26 @@
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
 		<!-- Others -->
-		<sec:intercept-url pattern="/users/query/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/users/query/**"
+			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/groups/query/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/dashboard/**" access="ROLE_ADMIN" />
-		<sec:intercept-url pattern="/preview/**" access="ROLE_ADMIN, ROLE_USER" />
+		<sec:intercept-url pattern="/dashboard/**"
+			access="ROLE_ADMIN" />
+		<sec:intercept-url pattern="/preview/**"
+			access="ROLE_ADMIN, ROLE_USER" />
 		<sec:intercept-url pattern="/previewPreparation/**"
 			access="ROLE_ADMIN, ROLE_USER" />
-		<sec:intercept-url pattern="/collections/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/collections/**"
+			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/collectionInfo/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/browse/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/trash/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/public/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/browse/**"
+			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/trash/**"
+			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/public/**"
+			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/avuAutoComplete/**"
 			access="ROLE_ADMIN, ROLE_USER" />
 
@@ -96,22 +108,27 @@
 		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/fileproperty/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/templates/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/preferences/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/groupBookmarks/**"
+		<sec:intercept-url pattern="/templates/**"
+			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/preferences/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/userBookmarks/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/permissions/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/favorites/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/tickets/**" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/permissions/**"
+			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/favorites/**"
+			access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/tickets/**"
+			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/ticketclient/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<sec:intercept-url pattern="/" access="ROLE_ADMIN,ROLE_USER" />
+		<sec:intercept-url pattern="/"
+			access="ROLE_ADMIN,ROLE_USER" />
 
 		<sec:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
-		<sec:form-login login-processing-url="/login/authenticate/"
+		<sec:form-login
+			login-processing-url="/login/authenticate/"
 			authentication-failure-url="/login/exception"
 			authentication-success-handler-ref="customAuthenticationSuccessHandler"
 			authentication-failure-handler-ref="customAuthenticationFailureHandler"
@@ -121,8 +138,6 @@
 
 		<sec:logout logout-url="/logout/" success-handler-ref="logoutHandler" />
 
-		<!--  <sec:session-management invalid-session-url="/login/invalidSession/" /> -->
-
 	</sec:http>
 	<!--
 	<bean id="exceptionFilter" class="com.emc.metalnx.services.auth.MetalnxExceptionTranslationFilter">
@@ -130,7 +145,8 @@
 	</bean>-->
 
 	<sec:authentication-manager>
-		<sec:authentication-provider ref="customAuthenticationProvider" />
+		<sec:authentication-provider
+			ref="customAuthenticationProvider" />
 	</sec:authentication-manager>
 
 	<!-- **************************************************************** -->
@@ -146,7 +162,8 @@
 		<property name="cacheable" value="false" />
 	</bean>
 
-	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+	<bean id="templateEngine"
+		class="org.thymeleaf.spring4.SpringTemplateEngine">
 		<property name="templateResolver" ref="templateResolver" />
 		<property name="additionalDialects">
 			<set>
@@ -176,7 +193,8 @@
 
 	<!-- MVC Interceptors -->
 	<mvc:interceptors>
-		<bean class="com.emc.metalnx.interceptors.HttpResponseHandlerInterceptor"
+		<bean
+			class="com.emc.metalnx.interceptors.HttpResponseHandlerInterceptor"
 			autowire="constructor" />
 		<bean id="webContentInterceptor"
 			class="org.springframework.web.servlet.mvc.WebContentInterceptor">

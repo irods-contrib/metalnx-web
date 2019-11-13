@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### size not displayed in collection listing #106
 
-Fixed collection listing display to properly display file size 
+Fixed collection listing display to properly display file size
 
-### Removed
+### Switch to war overlay development and consolidate packages currently segmented among sub-projects #76
+
+Significant refactoring to remove unnecessary segmentation into sub-projects and work to create a war overlay development option.

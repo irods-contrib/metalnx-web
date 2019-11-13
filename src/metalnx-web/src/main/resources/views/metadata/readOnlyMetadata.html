@@ -1,0 +1,86 @@
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<div th:fragment="readOnlyMetadata"
+	xmlns:th="http://www.w3.org/1999/xhtml">
+	<div id="collections-content" class="panel property-tab">
+		<th:block th:if="${dataProfile != null}">
+					
+			<th:block th:unless="${#lists.isEmpty(dataGridMetadataList)}">
+			
+				<table class="table table-hover" id="readOnlymetadaTable" summary="This Contains Metadata">
+					<thead>
+						<tr>
+							
+							<th><span th:text="#{metadata.table.header.attribute}"></span></th>
+							<th><span th:text="#{metadata.table.header.value}"></span></th>
+							<th><span th:text="#{metadata.table.header.unit}"></span></th>
+							
+						
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="dataGridMetadata : ${dataGridMetadataList}">
+							
+							<td><span th:text="${dataGridMetadata.getAvuAttribute()}"></span><input
+								class="hidden newAttrMetadataTable" type="text"
+								th:value="${dataGridMetadata.getAvuAttribute()}" title="name"/></td>
+							<td><span th:text="${dataGridMetadata.getAvuValue()}"></span><input
+								class="hidden newValMetadataTable" type="text"
+								th:value="${dataGridMetadata.getAvuValue()}" title="value"/></td>
+							<td><span th:text="${dataGridMetadata.getAvuUnit()}"></span><input
+									class="hidden newUnitMetadataTable" type="text"
+									th:value="${dataGridMetadata.getAvuUnit()}" title="unit"/></td>
+							
+						
+						</tr>
+					</tbody>
+				</table>
+			</th:block>
+		</th:block>
+
+		<script type="text/javascript" th:src="@{/js/collection.js}"></script>
+		<script th:inline="javascript">
+        /*<![CDATA[*/
+            
+
+            $(document).ready(function(){
+
+                var datatable = $("#readOnlymetadaTable").DataTable({
+                    "dom": dtPatternMlxStandard,
+                    "language": i18n,
+                    "autoWidth": false,
+                    "paging": false,                 
+                    "initComplete": function(settings){
+                        $('#readOnlymetadaTable tbody td').each(function () {
+                            $(this).attr('title', $(this).text().trim());
+                            console.log($(this).attr('title', $(this).text().trim()));
+                        });
+
+                    },
+                    "drawCallback": function(){                      
+                      
+
+                    },
+                });
+                
+            });
+
+          
+        /*]]>*/
+        </script>
+	</div>
+</div>
