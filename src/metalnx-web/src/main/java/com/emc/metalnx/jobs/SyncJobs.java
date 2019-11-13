@@ -52,7 +52,7 @@ public class SyncJobs {
 
 	@Scheduled(fixedDelay = 15000)
 	public void sync() throws JargonException {
-		if (runSyncJobs.compareTo("true") == 0) {
+		if (runSyncJobs.trim().compareTo("true") == 0) {
 			logger.debug("Starting synchronization job...");
 
 			if (this.irodsAccount == null) {
