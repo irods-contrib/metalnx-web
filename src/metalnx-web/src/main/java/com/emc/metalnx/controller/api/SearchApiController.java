@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.irods.jargon.extensions.searchplugin.SearchIndexInventory;
 import org.irods.jargon.extensions.searchplugin.SearchIndexInventoryEntry;
 import org.irods.jargon.extensions.searchplugin.model.IndexSchemaDescription;
+import org.irods.jargon.extensions.searchplugin.model.SearchAttributes;
 import org.irods.metalnx.pluggablesearch.PluggableSearchWrapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emc.metalnx.controller.api.model.SearchSchemaEntry;
@@ -87,6 +89,32 @@ public class SearchApiController {
 			throw new DataGridException("exception in json parsing", e);
 		}
 
+		return jsonString;
+	}
+
+	@RequestMapping(value = "/attributes")
+	@ResponseBody
+	public String retrieveIndexeAttributes(final HttpServletRequest request,
+			@RequestParam("index_name") final String indexName, @RequestParam("endpointUrl") final String endpointUrl)
+			throws DataGridException {
+		log.info("retrieveIndexeAttributes()");
+		String jsonString;
+		if (indexName == null || endpointUrl == null) {
+			throw new IllegalArgumentException("null indexName or endpointUrl");
+		}
+
+		log.info("indexName: {}", indexName);
+
+		SearchAttributes searchAttributes = new SearchAttributes();
+		searchAttributes = pluggableSearchWrapperService.listAttributes(endpointUrl, indexName);
+
+		try {
+			jsonString = mapper.writeValueAsString(searchAttributes);
+			log.debug("jsonString:{}", jsonString);
+		} catch (JsonProcessingException e) {
+			log.error("Could not parse index inventory: {}", e.getMessage());
+			throw new DataGridException("exception in json parsing", e);
+		}
 		return jsonString;
 	}
 

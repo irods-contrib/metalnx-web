@@ -4,7 +4,8 @@ $(document).ready(function(){
 	var code = $(".cm-textarea")[0];
   	editor = CodeMirror.fromTextArea(code,{
   		theme: "default",
-  		lineNumbers : true 		
+  		lineNumbers : true,
+  		lineWrapping: true
   	});
   	
   	editor.getDoc().markText({
@@ -32,7 +33,7 @@ $(document).ready(function(){
 			mode = "xml";
 		}
 		if (contentType.indexOf('json') > -1) {
-			dispData = JSON.stringify(data);
+			dispData = JSON.stringify(data, null, 2);
 			mode = "application/ld+json";
 		} 
 		if (contentType.indexOf('html') > -1) {

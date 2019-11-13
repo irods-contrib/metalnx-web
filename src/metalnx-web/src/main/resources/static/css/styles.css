@@ -155,6 +155,10 @@ table td {
 	width: 30px;
 }
 
+.searchFieldsDescription {
+	white-space: normal;
+	word-wrap: break-word;
+}
 #templatesToBeRemoved {
 	max-height: 250px;
 	overflow-y: auto;
