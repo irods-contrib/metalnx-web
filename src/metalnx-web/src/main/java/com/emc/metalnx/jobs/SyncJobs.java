@@ -22,15 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.emc.metalnx.core.domain.dao.GroupDao;
 import com.emc.metalnx.core.domain.dao.UserDao;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 
 @EnableScheduling
 public class SyncJobs {
-
-	@Autowired
-	GroupDao groupDao;
 
 	@Autowired
 	UserDao userDao;
@@ -56,7 +52,7 @@ public class SyncJobs {
 
 	@Scheduled(fixedDelay = 15000)
 	public void sync() throws JargonException {
-		if (runSyncJobs.compareTo("true") == 0) {
+		if (runSyncJobs.trim().compareTo("true") == 0) {
 			logger.debug("Starting synchronization job...");
 
 			if (this.irodsAccount == null) {
@@ -229,5 +225,21 @@ public class SyncJobs {
 	 */
 	public void setIrodsJobPassword(String irodsJobPassword) {
 		this.irodsJobPassword = irodsJobPassword;
+	}
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public IRODSAccessObjectFactory getIrodsAccessObjectFactory() {
+		return irodsAccessObjectFactory;
+	}
+
+	public void setIrodsAccessObjectFactory(IRODSAccessObjectFactory irodsAccessObjectFactory) {
+		this.irodsAccessObjectFactory = irodsAccessObjectFactory;
 	}
 }

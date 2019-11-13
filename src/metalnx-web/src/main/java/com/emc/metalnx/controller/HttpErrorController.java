@@ -56,21 +56,21 @@ public class HttpErrorController {
 	 * @return the error 500 custom page
 	 */
 	@RequestMapping(value = "/500")
-	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest,
-			HttpServletResponse response) {
+	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
+		logger.info("show500CustomizedPage()");
 		logger.error("500 - Internal Server Error");
 		logger.info("show500CustomizedPage()");
 		logger.info("httpRequest:{}", httpRequest);
 		logger.info("model:{}", model);
-		Enumeration<String> attribNames = httpRequest.getAttributeNames();
-
-		logger.info("dumping attribs...");
-
+		Enumeration<String> attribs = httpRequest.getAttributeNames();
 		String attribName = null;
-		while (attribNames.hasMoreElements()) {
-			attribName = attribNames.nextElement();
-			logger.warn("\tattribName:{}", attribName);
-			logger.warn("\tattrib:{}", httpRequest.getAttribute(attribName));
+		while (attribs.hasMoreElements()) {
+			attribName = attribs.nextElement();
+			if (attribName.equals("org.springframework.core.convert.ConversionService")) {
+				continue;
+			}
+			logger.info("attribName:{}", attribName);
+			logger.info("attrib:{}", httpRequest.getAttribute(attribName));
 		}
 
 		return "httpErrors/500";

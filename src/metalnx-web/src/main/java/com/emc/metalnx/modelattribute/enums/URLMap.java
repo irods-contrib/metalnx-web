@@ -34,7 +34,6 @@ public class URLMap {
 	public static final String URL_DELETE_GROUP = "delete/";
 	public static final String URL_GROUP_VALIDATE_GROUPNAME = "/metalnx/groups/isValidGroupname/";
 	public static final String URL_GROUPS_CSV_REPORT = "/groups/groupsToCSVFile/";
-	public static final String URL_GROUPS_BOOKMARKS = "/groupBookmarks/groups/";
 
 	public static final String URL_COLLECTIONS_INFO = "/info/";
 	public static final String URL_COLLECTIONS_MANAGEMENT = "/collections/";

@@ -188,27 +188,6 @@
 											</th:block>
 										</select>
 									</div>
-									<div class="form-group">
-										<label title="selectProfile" for="selectProfile"
-											th:text="#{users.add.form.profile.label}"></label>
-										<select class="form-control" id="selectProfile"
-											name="selectedProfile"
-											th:disabled="${#lists.isEmpty(profiles)}">
-											<th:block th:if="${#lists.isEmpty(profiles)}">
-												<option
-													th:text="#{users.add.form.profile.select.notavailable.label}"
-													value=""></option>
-											</th:block>
-											<th:block th:unless="${#lists.isEmpty(profiles)}">
-												<option th:text="#{users.add.form.profile.select.label}"
-													value=""></option>
-												<option th:each="profile : ${profiles}"
-													th:value="${profile.profileId}"
-													th:text="${profile.profileName}"
-													th:selected="${user.userProfile} != null and ${user.userProfile.profileId} == ${profile.profileId}"></option>
-											</th:block>
-										</select>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -279,17 +258,17 @@
 											</thead>
 											<tbody id="groupsListFBody">
 												<tr th:each="group : ${groups}"
-													th:id="${group.getGroupname()}">
+													th:id="${group.getUserGroupName()}">
 													<td class="col-md-1"><input type="checkbox"
-														name="groupIdsList" th:value="${group.dataGridId}"
-														th:checked="${#arrays.contains(groupList, '' + group.dataGridId)}"
-														th:disabled="${group.getGroupname() == 'public'}" />
+														name="groupIdsList" th:value="${group.getUserGroupId()}"
+														th:checked="${#arrays.contains(groupList, '' + group.getUserGroupId())}"
+														th:disabled="${group.getUserGroupName() == 'public'}" />
 													</td>
-													<td th:text="${group.getGroupname()}"></td>
-													<td th:text="${group.getAdditionalInfo()}"></td>
+													<td th:text="${group.getUserGroupName()}"></td>
+													<td th:text="${group.getZone()}"></td>
 													<td>
 														<button title="groupinfo" type="button" class="btn btn-default btn-xs"
-															th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getGroupname()} + '\', \'' + ${group.getAdditionalInfo()} + '\');'">
+															th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getUserGroupName()} + '\', \'' + ${group.getZone()} + '\');'">
 															<i title="list" class="fa fa-list"> </i>
 															<span th:text="#{users.add.view.users.in.group.button}"></span>
 														</button>
@@ -332,14 +311,14 @@
 											<tbody id="attachedGroupsFBody">
 												<th:block th:each="group : ${groups}">
 													<tr
-														th:if="${#arrays.contains(groupList, '' + group.dataGridId)}"
-														th:id="${group.getGroupname() + '_attached'}">
-														<td th:text="${group.getGroupname()}"
-															th:id="${group.getGroupname()}"></td>
-														<td th:text="${group.getAdditionalInfo()}"></td>
+														th:if="${#arrays.contains(groupList, '' + group.userGroupId)}"
+														th:id="${group.getUserGroupName() + '_attached'}">
+														<td th:text="${group.getUserGroupName()}"
+															th:id="${group.getUserGroupName()}"></td>
+														<td th:text="${group.getZone()}"></td>
 														<td>
 															<button title="groupInfo" type="button" class="btn btn-default btn-xs"
-																th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getGroupname()} + '\', \'' + ${group.getAdditionalInfo()} + '\');'">
+																th:onclick="'javascript:showGroupInfoModal(\'' + ${group.getUserGroupName()} + '\', \'' + ${group.getZone()} + '\');'">
 																<i title="list" class="fa fa-list"> </i>
 																<span th:text="#{users.add.view.users.in.group.button}"></span>
 															</button>
@@ -356,40 +335,6 @@
 					</div>
 				</div>
 				<!-- /. Attached groups -->
-				<!-- Collections management section -->
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 th:text="#{users.add.additional.permissions.label}"
-									class="panel-title"></h3>
-							</div>
-							<div class="panel-body">
-								<div class="col-sm-6">
-									<!-- Search box -->
-									<div class="form-group input-group">
-										<input id="searchTextForCollections" type="search"
-											class="form-control" th:placeholder="#{search.placeholder}" />
-										<span class="input-group-addon"> <i
-											class="glyphicon glyphicon-search"></i>
-										</span>
-									</div>
-									<!-- /.Search box -->
-								</div>
-								<!-- Collection tree view -->
-								<div class="row" name="collectionsViewForUser"
-									id="collectionsViewForUser"></div>
-								<!-- Table loader Ajax Gif -->
-								<div id="tableLoaderForCollections"
-									class="table-loader col-sm-12">
-									<img alt="loading" class="center-block" th:src="@{/images/ajax_loader.gif}" />
-									<p class="text-center" th:text="#{loading.table.label}"></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /.Collections management section -->
 				<div class=" pull-right">
 					<button title="cancel" type="button" class="btn btn-default btn-md"
 						th:text="#{forms.cancel.action.button}" data-toggle="modal"
@@ -496,8 +441,6 @@
 					userFormValidator([[${urlMap.URL_USER_VALIDATE_USERNAME}]]);
 				}
 
-				getSubDirectoriesForUser("/");
-
 				var datatableGroups = $("#groupListTable").DataTable({
 					"dom": dtPatternUserMgmt,
 	    		    "language": i18n,
@@ -561,12 +504,6 @@
 				filterTable("searchText", "fBody", "resultCount", "alertNoResults", "usersListTable",
 						"countDisplay", "queryString");
 
-				//filter collections
-				filterTable("collectionInfoSearchText", "collectionInfofBody",
-						"collectionInfoResultCount", "collectionInfoAlertNoResults",
-						"collectionInfoUsersListTable", "collectionInfoCountDisplay",
-						"collectionInfoQueryString");
-
 				//hide searchbox if there are no groups to be shown
 				if($('#attachedGroupsResultCount').html()=='0'){
 					$('#attachedGroupsSearchText').parent().hide();
@@ -620,25 +557,6 @@
 				});
 			});
 
-			function getSubDirectoriesForUser(path) {
-				$("#tableLoaderForCollections").show();
-				$("#collectionsViewForUser").hide();
-				var url = "/metalnx/browse/getDirectoriesAndFilesForUser/";
-				var retrievePermissions = !isAddAction;
-				setTimeout(function () {
-					ajaxEncapsulation(
-							url,
-							"POST",
-							{path : path, username : username, retrievePermissions : retrievePermissions},
-							displayCollectionsViewForUser,
-							null,
-							null
-					);
-				}, 400);
-			}
-
-
-
 			/* Show dialog Group Info Modal */
 	        function showGroupInfoModal(groupname, additionalInfo) {
 				var url = "/metalnx/users/getUsersInAGroup/" + groupname + "/"
@@ -650,13 +568,6 @@
 
 				ajaxEncapsulation(url, "GET", "", displayGroupInfoModalData, null, null);
 			}
-
-	        function displayCollectionsViewForUser(data){
-	        	$("#tableLoaderForCollections").hide();
-				$("#collectionsViewForUser").show();
-				$("#collectionsViewForUser").html(data);
-				$("#countDisplayForCollections").hide();
-	        }
 
 	        function displayGroupInfoModalData(data){
 	        	$("#groupInfoModalUserListAsync").html(data);

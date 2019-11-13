@@ -26,17 +26,17 @@
 
 				<tbody>
 					<tr th:each="group : ${groups}">
-						<td th:text="${group.getGroupname()}" class="col-groupname"></td>
-						<td th:text="${group.getAdditionalInfo()}"></td>
+						<td th:text="${group.getUserGroupName()}" class="col-groupname"></td>
+						<td th:text="${group.getZone()}"></td>
 						<td>
 							<a class="btn btn-default btn-xs" aria-label="#{groups.list.item.edit}"
-								th:href="${urlMap.URL_MODIFY_GROUP} + ${group.groupname} + '/' + ${group.getAdditionalInfo() + '/'}">
+								th:href="${urlMap.URL_MODIFY_GROUP} + ${group.getUserGroupName()}">
 								<i class="fa fa-pencil"></i><span  th:text="#{groups.list.item.edit}"></span>
 							</a>
 							&nbsp; &nbsp;
 							<button title="delete" type="button" class="btn btn-default btn-xs" aria-label="#{groups.list.item.delete}"
-								th:id="${'deleteBtn_' + group.getGroupname()}" th:disabled="${group.getGroupname() == 'public'}"
-								th:onclick="'javascript:confirmGroupRemoval(\'' + ${group.getGroupname()} + '\');'">
+								th:id="${'deleteBtn_' + group.getUserGroupName()}" th:disabled="${group.getUserGroupName() == 'public'}"
+								th:onclick="'javascript:confirmGroupRemoval(\'' + ${group.getUserGroupName()} + '\');'">
 								<i title="trash" class="fa fa-trash-o"></i><span  th:text="#{groups.list.item.delete}"></span>
 							</button>
 						</td>

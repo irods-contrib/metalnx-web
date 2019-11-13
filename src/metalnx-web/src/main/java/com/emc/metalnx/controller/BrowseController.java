@@ -45,7 +45,6 @@ import org.thymeleaf.util.StringUtils;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
@@ -56,7 +55,6 @@ import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -96,16 +94,10 @@ public class BrowseController {
 	GroupService groupService;
 
 	@Autowired
-	GroupBookmarkService groupBookmarkService;
-
-	@Autowired
 	UserBookmarkService userBookmarkService;
 
 	@Autowired
 	MetadataService metadataService;
-
-	@Autowired
-	GroupBookmarkController groupBookmarkController;
 
 	@Autowired
 	PermissionsService permissionsService;
@@ -350,7 +342,7 @@ public class BrowseController {
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
 			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
-			path = "/";
+			path = MiscIRODSUtils.buildPathZoneAndHome(irodsServices.getCurrentUserZone());
 		}
 
 		List<DataGridCollectionAndDataObject> list = null;
@@ -365,18 +357,17 @@ public class BrowseController {
 			readPermissions = cs.listReadPermissionsForPathAndGroup(path, groupName);
 			writePermissions = cs.listWritePermissionsForPathAndGroup(path, groupName);
 			ownershipPermissions = cs.listOwnershipForPathAndGroup(path, groupName);
-			inheritPermissions = cs.listInheritanceForPath(path);
+			try {
+				inheritPermissions = cs.listInheritanceForPath(path);
+			} catch (DataGridException dnf) {
+				// may not find based on permissions..it's ok
+				inheritPermissions = new HashSet<String>();
+			}
 		} else {
 			readPermissions = new HashSet<String>();
 			writePermissions = new HashSet<String>();
 			ownershipPermissions = new HashSet<String>();
 			inheritPermissions = new HashSet<String>();
-		}
-
-		List<String> groupBookmarks = new ArrayList<String>();
-		if (groupName.length() > 0) {
-			DataGridGroup group = groupService.findByGroupname(groupName).get(0);
-			groupBookmarks = groupBookmarkService.findBookmarksForGroupAsString(group);
 		}
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
@@ -387,10 +378,6 @@ public class BrowseController {
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
 		model.addAttribute("inheritPermissions", inheritPermissions);
-		model.addAttribute("addBookmark", groupBookmarkController.getAddBookmark());
-		model.addAttribute("removeBookmark", groupBookmarkController.getRemoveBookmark());
-		model.addAttribute("groupBookmarks", groupBookmarks);
-
 		return "collections/treeViewForGroupForm :: treeView";
 	}
 
@@ -456,7 +443,7 @@ public class BrowseController {
 					try {
 						inheritPermissions = cs.listInheritanceForPath(path);
 					} catch (DataGridException dnf) {
-						logger.warn("cannot find inheritance...may be permissions related", dnf);
+						// may not find based on permissions..it's ok
 					}
 				}
 
@@ -478,6 +465,7 @@ public class BrowseController {
 		model.addAttribute("addBookmark", new ArrayList<String>());
 		model.addAttribute("removeBookmark", new ArrayList<String>());
 		model.addAttribute("userBookmarks", userBookmarks);
+		logger.info("model:{}", model);
 
 		logger.info("done with processing:{}", model);
 		return "collections/treeViewForUserForm :: treeView";
@@ -592,9 +580,6 @@ public class BrowseController {
 					logger.info("Error re-adding favorite to: " + newPath);
 				}
 			}
-			userBookmarkService.updateBookmark(previousPath, newPath);
-			groupBookmarkService.updateBookmark(previousPath, newPath);
-
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
 

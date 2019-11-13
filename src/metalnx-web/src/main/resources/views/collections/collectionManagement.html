@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
 <!-- Copyright (c) 2015-2017, Dell EMC -->
 
-
+<!-- TODO: parked -->
 
 <html lang="en" layout:decorator="template">
 
@@ -236,17 +236,7 @@
 			                        </thead>
 			                    </table>
 							</div>
-						    <div role="tabpanel" class="tab-pane" id="copyGroups">
-						    	<table class="table table-hover" id="copyGroupBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                                <th th:text="#{bookmarks.table.group.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
+				
 						    <div role="tabpanel" class="tab-pane" id="copyFavorites">
 						    	<table class="table table-hover" id="copyFavoritesTable">
 			                        <thead>
@@ -346,17 +336,7 @@
 			                        </thead>
 			                    </table>
 							</div>
-						    <div role="tabpanel" class="tab-pane" id="moveGroups">
-						    	<table class="table table-hover" id="moveGroupBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                                <th th:text="#{bookmarks.table.group.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
+	
 						    <div role="tabpanel" class="tab-pane" id="moveFavorites">
 						    	<table class="table table-hover" id="moveFavoritesTable">
 			                        <thead>
@@ -1089,11 +1069,7 @@
 				});
 			}
 
-			var moveGroupBookmarksTable;
-			var copyGroupBookmarksTable;
-			modalMoveCopyGroupbookmarkDatatable('moveGroupBookmarksTable', moveGroupBookmarksTable, '/metalnx/groupBookmarks/groupsBookmarksPaginated/');
-			modalMoveCopyGroupbookmarkDatatable('copyGroupBookmarksTable', copyGroupBookmarksTable, '/metalnx/groupBookmarks/groupsBookmarksPaginated/');
-		/*]]>*/
+			/*]]>*/
 		</script>
 	</div>
 	<!-- /. content -->
