@@ -17,6 +17,10 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
+			<groupId>org.irods.jargon</groupId>
+			<artifactId>jargon-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
@@ -122,7 +126,6 @@
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
-			<version>1.4.01</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
@@ -168,9 +171,7 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
-
 	<build>
 		<finalName>metalnx</finalName>
 		<resources>
@@ -186,7 +187,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include>
 					<include>*.properties</include>
 					<include>static/**</include>
 					<include>**/*.html</include>
@@ -197,16 +197,17 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>3.2.3</version>
 				<configuration>
 					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
+				<artifactId>tomcat8-maven-plugin</artifactId>
+				<version>3.0-r1756463</version>
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>RemoteTomcatServer</server>
@@ -223,6 +224,22 @@
 				<executions>
 					<execution>
 						<id>0</id>
+						<phase>validate</phase>
+						<configuration>
+							<tasks>
+								<echo
+									message="copy template from ${metalnx.custom.template}" />
+
+								<copy overwrite="true" file="${metalnx.custom.template}"
+									tofile="${project.basedir}/src/main/resources/views/template.html" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>1</id>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -271,7 +288,7 @@
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
-						<id>1</id>
+						<id>2</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
@@ -347,7 +364,7 @@
 					</execution>
 					<execution>
 						<!-- generate metalnx test properties as standard -->
-						<id>2</id>
+						<id>3</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
@@ -434,8 +451,6 @@
 									metalnx.enable.tickets=${metalnx.enable.tickets}
 									metalnx.enable.upload.rules=${metalnx.enable.upload.rules}
 									metalnx.download.limit=${metalnx.download.limit}
-
-
 								</echo>
 							</tasks>
 						</configuration>
@@ -464,7 +479,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>

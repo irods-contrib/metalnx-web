@@ -10,12 +10,9 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
-import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.core.utils.CollectionAndPath;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
-import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irodsext.dataprofiler.favorites.FavoritesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +29,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.IconObject;
-import com.emc.metalnx.core.domain.exceptions.DataGridDataNotFoundException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
-import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.ConfigService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -69,16 +62,10 @@ public class CollectionController {
 	GroupService groupService;
 
 	@Autowired
-	GroupBookmarkService groupBookmarkService;
-
-	@Autowired
 	UserBookmarkService userBookmarkService;
 
 	@Autowired
 	MetadataService metadataService;
-
-	@Autowired
-	GroupBookmarkController groupBookmarkController;
 
 	@Autowired
 	PermissionsService permissionsService;
@@ -138,86 +125,85 @@ public class CollectionController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexViaUrl(final Model model, final HttpServletRequest request,
 			@RequestParam("path") final Optional<String> path, @ModelAttribute("requestHeader") String requestHeader)
-					throws DataGridException{
-						logger.info("indexViaUrl()");
-						String myPath = path.orElse("");
-						logger.info("dp Header requestHeader is :: " + requestHeader);
-						try {
+			throws DataGridException {
+		logger.info("indexViaUrl()");
+		String myPath = path.orElse("");
+		logger.info("dp Header requestHeader is :: " + requestHeader);
+		try {
 
-							if (myPath.isEmpty()) {
-								logger.info("no path, go to home dir");
-								myPath = cs.getHomeDirectyForCurrentUser();
-							} else {
-								logger.info("path provided...go to:{}", path);
-								myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
-																	// in filter? - MCC
-								// see
-								// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
-							}
+			if (myPath.isEmpty()) {
+				logger.info("no path, go to home dir");
+				myPath = cs.getHomeDirectyForCurrentUser();
+			} else {
+				logger.info("path provided...go to:{}", path);
+				myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
+													// in filter? - MCC
+				// see
+				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
+			}
 
-							logger.info("myPath:{}" + myPath);
-							String uiMode = "";
-							DataGridUser loggedUser = null;
-							try {
-								loggedUser = loggedUserUtils.getLoggedDataGridUser();
-								uiMode = (String) request.getSession().getAttribute("uiMode");
-								logger.info("loggedUser:{}", loggedUser);
+			logger.info("myPath:{}" + myPath);
+			String uiMode = "";
+			DataGridUser loggedUser = null;
+			try {
+				loggedUser = loggedUserUtils.getLoggedDataGridUser();
+				uiMode = (String) request.getSession().getAttribute("uiMode");
+				logger.info("loggedUser:{}", loggedUser);
 
-								sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
-								CollectionAndPath collectionAndPath = MiscIRODSUtils
-										.separateCollectionAndPathFromGivenAbsolutePath(myPath);
-								this.parentPath = collectionAndPath.getCollectionParent();
-								this.currentPath = myPath;
+				sourcePaths = MiscIRODSUtils.breakIRODSPathIntoComponents(myPath);
+				CollectionAndPath collectionAndPath = MiscIRODSUtils
+						.separateCollectionAndPathFromGivenAbsolutePath(myPath);
+				this.parentPath = collectionAndPath.getCollectionParent();
+				this.currentPath = myPath;
 
-								if (uiMode == null || uiMode.isEmpty()) {
-									logger.debug("no ui mode specified");
-									boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
-									logger.debug("isUserAdmin? {}", isUserAdmin);
-									uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
-									logger.info("as uiMode:{}", uiMode);
-								}
-							} catch (Exception je) {
-								logger.error("exception geting user and user mode info", je);
-								throw je;
-							}
+				if (uiMode == null || uiMode.isEmpty()) {
+					logger.debug("no ui mode specified");
+					boolean isUserAdmin = loggedUser != null && loggedUser.isAdmin();
+					logger.debug("isUserAdmin? {}", isUserAdmin);
+					uiMode = isUserAdmin ? UI_ADMIN_MODE : UI_USER_MODE;
+					logger.info("as uiMode:{}", uiMode);
+				}
+			} catch (Exception je) {
+				logger.error("exception geting user and user mode info", je);
+				throw je;
+			}
 
-							/*
-							 * See if it's a file or coll. A file redirects to the info page
-							 *
-							 */
+			/*
+			 * See if it's a file or coll. A file redirects to the info page
+			 *
+			 */
 
-							if (cs.isDataObject(myPath)) {
-								logger.info("redirect to info page");
-								StringBuilder sb = new StringBuilder();
-								sb.append("redirect:/collectionInfo?path=");
-								sb.append(URLEncoder.encode(myPath));
-								return sb.toString();
-							}
+			if (cs.isDataObject(myPath)) {
+				logger.info("redirect to info page");
+				StringBuilder sb = new StringBuilder();
+				sb.append("redirect:/collectionInfo?path=");
+				sb.append(URLEncoder.encode(myPath));
+				return sb.toString();
+			}
 
-							logger.info("is collection...continue to collection management");
+			logger.info("is collection...continue to collection management");
 
-							if (uiMode.equals(UI_USER_MODE)) {
-								model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
-								model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
-							}
+			if (uiMode.equals(UI_USER_MODE)) {
+				model.addAttribute("homePath", cs.getHomeDirectyForCurrentUser());
+				model.addAttribute("publicPath", cs.getHomeDirectyForPublic());
+			}
 
-							model.addAttribute("uiMode", uiMode);
-							model.addAttribute("currentPath", currentPath);
-							model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
-							model.addAttribute("parentPath", parentPath);
-							model.addAttribute("resources", resourceService.findAll());
-							model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
+			model.addAttribute("uiMode", uiMode);
+			model.addAttribute("currentPath", currentPath);
+			model.addAttribute("encodedCurrentPath", URLEncoder.encode(currentPath));
+			model.addAttribute("parentPath", parentPath);
+			model.addAttribute("resources", resourceService.findAll());
+			model.addAttribute("overwriteFileOption", loggedUser != null && loggedUser.isForceFileOverwriting());
 
-						} catch (JargonException e) {
+		} catch (JargonException e) {
 
-							logger.error("error establishing collection location", e);
-							model.addAttribute("unexpectedError", true);
-						}
+			logger.error("error establishing collection location", e);
+			model.addAttribute("unexpectedError", true);
+		}
 
-						logger.info("displaying collections/collectionManagement");
+		logger.info("displaying collections/collectionManagement");
 
-						return "collections/collectionManagement";
-
+		return "collections/collectionManagement";
 
 	}
 
@@ -300,14 +286,6 @@ public class CollectionController {
 		this.groupService = groupService;
 	}
 
-	public GroupBookmarkService getGroupBookmarkService() {
-		return groupBookmarkService;
-	}
-
-	public void setGroupBookmarkService(GroupBookmarkService groupBookmarkService) {
-		this.groupBookmarkService = groupBookmarkService;
-	}
-
 	public UserBookmarkService getUserBookmarkService() {
 		return userBookmarkService;
 	}
@@ -322,14 +300,6 @@ public class CollectionController {
 
 	public void setMetadataService(MetadataService metadataService) {
 		this.metadataService = metadataService;
-	}
-
-	public GroupBookmarkController getGroupBookmarkController() {
-		return groupBookmarkController;
-	}
-
-	public void setGroupBookmarkController(GroupBookmarkController groupBookmarkController) {
-		this.groupBookmarkController = groupBookmarkController;
 	}
 
 	public PermissionsService getPermissionsService() {

@@ -683,25 +683,6 @@ div.dataTables_wrapper .toolbar .input-group{
 #permissionTable {
 	width: auto;
 }
-#groupCollectionsList ul li, #groupCollectionsList.list div.bookmarksList {
-	padding: 0;
-	background: #f9fcfe;
-	border: 1px solid #bce8f1;
-}
-#groupCollectionsList ul li p {
-	padding: 15px 0 0 10px;
-}
-#groupCollectionsList.list div div {
-	padding: 10px 35px;
-	border-top: 1px dotted #ccc;
-}
-#groupCollectionsList.list div .table {
-	padding: 10px 30px;
-	border-top: 1px dotted #ccc;
-	margin: 0;
-	background-color: #fff;
-}
-
 .confirm-msg-table{
     padding: 3px;
     background: #f2f6f9;

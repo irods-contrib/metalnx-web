@@ -45,7 +45,6 @@ import org.thymeleaf.util.StringUtils;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridGroup;
 import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridResource;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
@@ -56,7 +55,6 @@ import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
-import com.emc.metalnx.services.interfaces.GroupBookmarkService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
@@ -96,16 +94,10 @@ public class BrowseController {
 	GroupService groupService;
 
 	@Autowired
-	GroupBookmarkService groupBookmarkService;
-
-	@Autowired
 	UserBookmarkService userBookmarkService;
 
 	@Autowired
 	MetadataService metadataService;
-
-	@Autowired
-	GroupBookmarkController groupBookmarkController;
 
 	@Autowired
 	PermissionsService permissionsService;
@@ -228,11 +220,10 @@ public class BrowseController {
 	 * that exist underneath a certain path
 	 *
 	 * @param model
-	 * @param path
-	 *            path to find all subdirectories and objects
+	 * @param path  path to find all subdirectories and objects
 	 * @return treeView template that renders all nodes of certain path (parent)
-	 * @throws DataGridException
-	 *             if Metalnx cannot find collections and objects inside the path
+	 * @throws DataGridException if Metalnx cannot find collections and objects
+	 *                           inside the path
 	 * @throws JargonException
 	 */
 	@RequestMapping(value = "/getSubDirectories/", method = RequestMethod.POST)
@@ -285,8 +276,7 @@ public class BrowseController {
 	 * data grid for a specific data object
 	 *
 	 * @param model
-	 * @param path
-	 *            path to the data object to get checksum and replica information
+	 * @param path  path to the data object to get checksum and replica information
 	 * @return the template that shows the data object information
 	 * @throws DataGridException
 	 * @throws FileNotFoundException
@@ -338,10 +328,9 @@ public class BrowseController {
 	 * group name.
 	 *
 	 * @param model
-	 * @param path
-	 *            start point to get collections and files
-	 * @param groupName
-	 *            group that all collections and files permissions will be listed
+	 * @param path      start point to get collections and files
+	 * @param groupName group that all collections and files permissions will be
+	 *                  listed
 	 * @return
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
@@ -353,7 +342,7 @@ public class BrowseController {
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
 			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 		if (path == null || path == "") {
-			path = "/";
+			path = MiscIRODSUtils.buildPathZoneAndHome(irodsServices.getCurrentUserZone());
 		}
 
 		List<DataGridCollectionAndDataObject> list = null;
@@ -368,18 +357,17 @@ public class BrowseController {
 			readPermissions = cs.listReadPermissionsForPathAndGroup(path, groupName);
 			writePermissions = cs.listWritePermissionsForPathAndGroup(path, groupName);
 			ownershipPermissions = cs.listOwnershipForPathAndGroup(path, groupName);
-			inheritPermissions = cs.listInheritanceForPath(path);
+			try {
+				inheritPermissions = cs.listInheritanceForPath(path);
+			} catch (DataGridException dnf) {
+				// may not find based on permissions..it's ok
+				inheritPermissions = new HashSet<String>();
+			}
 		} else {
 			readPermissions = new HashSet<String>();
 			writePermissions = new HashSet<String>();
 			ownershipPermissions = new HashSet<String>();
 			inheritPermissions = new HashSet<String>();
-		}
-
-		List<String> groupBookmarks = new ArrayList<String>();
-		if (groupName.length() > 0) {
-			DataGridGroup group = groupService.findByGroupname(groupName).get(0);
-			groupBookmarks = groupBookmarkService.findBookmarksForGroupAsString(group);
 		}
 
 		model.addAttribute("dataGridCollectionAndDataObjectList", list);
@@ -390,10 +378,6 @@ public class BrowseController {
 		model.addAttribute("writePermissions", writePermissions);
 		model.addAttribute("ownershipPermissions", ownershipPermissions);
 		model.addAttribute("inheritPermissions", inheritPermissions);
-		model.addAttribute("addBookmark", groupBookmarkController.getAddBookmark());
-		model.addAttribute("removeBookmark", groupBookmarkController.getRemoveBookmark());
-		model.addAttribute("groupBookmarks", groupBookmarks);
-
 		return "collections/treeViewForGroupForm :: treeView";
 	}
 
@@ -401,10 +385,8 @@ public class BrowseController {
 	 * Finds all collections existing under a certain path.
 	 *
 	 * @param model
-	 * @param path
-	 *            start point to get collections and files
-	 * @param username
-	 *            user who all collections and files permissions will be listed
+	 * @param path     start point to get collections and files
+	 * @param username user who all collections and files permissions will be listed
 	 * @return the template that will render the tree
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
@@ -438,7 +420,11 @@ public class BrowseController {
 					readPermissions = cs.listReadPermissionsForPathAndUser(path, username);
 					writePermissions = cs.listWritePermissionsForPathAndUser(path, username);
 					ownershipPermissions = cs.listOwnershipForPathAndUser(path, username);
-					inheritPermissions = cs.listInheritanceForPath(path);
+					try {
+						inheritPermissions = cs.listInheritanceForPath(path);
+					} catch (DataGridException dnf) {
+						// may not find based on permissions..it's ok
+					}
 				}
 
 				List<DataGridUser> users = userService.findByUsername(username);
@@ -459,6 +445,7 @@ public class BrowseController {
 		model.addAttribute("addBookmark", new ArrayList<String>());
 		model.addAttribute("removeBookmark", new ArrayList<String>());
 		model.addAttribute("userBookmarks", userBookmarks);
+		logger.info("model:{}", model);
 
 		return "collections/treeViewForUserForm :: treeView";
 	}
@@ -467,8 +454,7 @@ public class BrowseController {
 	 * Looks for collections or data objects that match the parameter string
 	 *
 	 * @param model
-	 * @param name
-	 *            collection name that will be searched in the data grid
+	 * @param name  collection name that will be searched in the data grid
 	 * @return the template that renders all collections and data objects matching
 	 *         the parameter string
 	 * @throws DataGridConnectionRefusedException
@@ -573,9 +559,6 @@ public class BrowseController {
 					logger.info("Error re-adding favorite to: " + newPath);
 				}
 			}
-			userBookmarkService.updateBookmark(previousPath, newPath);
-			groupBookmarkService.updateBookmark(previousPath, newPath);
-
 			redirectAttributes.addFlashAttribute("collectionModifiedSuccessfully", collForm.getCollectionName());
 		}
 
@@ -705,9 +688,8 @@ public class BrowseController {
 	/**
 	 * Finds all collections and data objects existing under a certain path
 	 *
-	 * @param request
-	 *            contains all parameters in a map, we can use it to get all
-	 *            parameters passed in request
+	 * @param request contains all parameters in a map, we can use it to get all
+	 *                parameters passed in request
 	 * @return json with collections and data objects
 	 * @throws DataGridConnectionRefusedException
 	 * @throws JargonException
@@ -807,8 +789,7 @@ public class BrowseController {
 	/**
 	 * Removes a path from the user's navigation history
 	 *
-	 * @param path
-	 *            path to be removed
+	 * @param path path to be removed
 	 */
 	public void removePathFromHistory(final String path) {
 		if (path == null || path.isEmpty()) {
@@ -828,10 +809,8 @@ public class BrowseController {
 	/**
 	 * Creates the breadcrumb based on a given path.
 	 *
-	 * @param model
-	 *            Model attribute to set variables to be used in the view
-	 * @param path
-	 *            path that will be displayed in the breadcrumb
+	 * @param model Model attribute to set variables to be used in the view
+	 * @param path  path that will be displayed in the breadcrumb
 	 * @throws DataGridException
 	 */
 	private void setBreadcrumbToModel(final Model model, final String path) throws DataGridException {
@@ -856,10 +835,8 @@ public class BrowseController {
 	/**
 	 * Creates the breadcrumb based on a given path.
 	 *
-	 * @param model
-	 *            Model attribute to set variables to be used in the view
-	 * @param obj
-	 *            {@code DataGridCollectionAndDataObject} object
+	 * @param model Model attribute to set variables to be used in the view
+	 * @param obj   {@code DataGridCollectionAndDataObject} object
 	 */
 	private void setBreadcrumbToModel(final Model model, final DataGridCollectionAndDataObject obj) {
 		logger.info("setBreadcrumbToModel()");
@@ -887,12 +864,11 @@ public class BrowseController {
 	 * Finds all collections and data objects existing under a certain path
 	 *
 	 * @param model
-	 * @param path
-	 *            path to get all directories and data objects from
+	 * @param path  path to get all directories and data objects from
 	 * @return collections browser template that renders all items of certain path
 	 *         (parent)
-	 * @throws DataGridConnectionRefusedException
-	 *             if Metalnx cannot connect to the grid.
+	 * @throws DataGridConnectionRefusedException if Metalnx cannot connect to the
+	 *                                            grid.
 	 */
 	private String getCollBrowserView(final Model model, String path) throws JargonException, DataGridException {
 		logger.info("getCollBrowserView()");
