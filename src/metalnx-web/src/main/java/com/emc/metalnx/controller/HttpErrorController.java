@@ -1,11 +1,12 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +56,22 @@ public class HttpErrorController {
 	 * @return the error 500 custom page
 	 */
 	@RequestMapping(value = "/500")
-	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
+	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest,
+			HttpServletResponse response) {
 		logger.error("500 - Internal Server Error");
+		logger.info("show500CustomizedPage()");
 		logger.info("httpRequest:{}", httpRequest);
 		logger.info("model:{}", model);
+		Enumeration<String> attribNames = httpRequest.getAttributeNames();
+
+		logger.info("dumping attribs...");
+
+		String attribName = null;
+		while (attribNames.hasMoreElements()) {
+			attribName = attribNames.nextElement();
+			logger.warn("\tattribName:{}", attribName);
+			logger.warn("\tattrib:{}", httpRequest.getAttribute(attribName));
+		}
 
 		return "httpErrors/500";
 	}
