@@ -172,6 +172,81 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+        <profiles>
+		<profile>
+			<id>default-metalnx-template</id>
+
+			<activation>
+				<property>
+					<name>!metalnx.custom.template</name>
+				</property>
+
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>0</id>
+								<phase>validate</phase>
+								<configuration>
+									<tasks>
+									<echo message="copy template from local default" />
+										<copy overwrite="true"
+											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
+											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>custom-metalnx-template</id>
+
+			<activation>
+				<property>
+					<name>metalnx.custom.template</name>
+				</property>
+
+			</activation>
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>1</id>
+								<phase>validate</phase>
+								<configuration>
+									<tasks>
+									  <echo message="copy template from ${metalnx.custom.template}" />
+
+										<copy  overwrite="true" file="${metalnx.custom.template}"
+											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 	<build>
 		<finalName>metalnx</finalName>
 		<resources>
@@ -223,23 +298,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>0</id>
-						<phase>validate</phase>
-						<configuration>
-							<tasks>
-								<echo
-									message="copy template from ${metalnx.custom.template}" />
-
-								<copy overwrite="true" file="${metalnx.custom.template}"
-									tofile="${project.basedir}/src/main/resources/views/template.html" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>1</id>
+						<id>2</id>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -288,7 +347,7 @@
 					</execution>
 					<execution>
 						<!-- generate jargon test properties as standard -->
-						<id>2</id>
+						<id>3</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
@@ -364,7 +423,7 @@
 					</execution>
 					<execution>
 						<!-- generate metalnx test properties as standard -->
-						<id>3</id>
+						<id>4</id>
 						<phase>validate</phase>
 						<configuration>
 							<tasks>
@@ -464,6 +523,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>5</id>
 						<phase>package</phase>
 						<configuration>
 							<tasks>
