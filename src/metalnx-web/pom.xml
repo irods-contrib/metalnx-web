@@ -219,6 +219,10 @@
 										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									
+									<copy overwrite="true"
+											file="${project.basedir}/src/main/resources/views/defaultTemplatev.html"
+											tofile="${project.basedir}/src/main/resources/views/templatev.html" />
 									</tasks>
 								</configuration>
 								<goals>
@@ -254,6 +258,11 @@
 
 										<copy  overwrite="true" file="${metalnx.custom.template}"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
+									
+										<echo message="copy templatev from ${metalnx.custom.template.vue}" />
+										<copy  overwrite="true" file="${metalnx.custom.template.vue}"
+											tofile="${project.basedir}/src/main/resources/views/templatev.html" />
+								
 									</tasks>
 								</configuration>
 								<goals>
