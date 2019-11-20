@@ -20,3 +20,8 @@ Significant refactoring to remove unnecessary segmentation into sub-projects and
 
 Added default of false for use dashboard property
 
+### file type in collection listing heading is incorrect, should be file name #126
+
+Fixed headers in collection listingø
+
+
