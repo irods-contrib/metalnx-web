@@ -51,6 +51,14 @@
 			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
@@ -173,7 +181,7 @@
 		</dependency>
 	</dependencies>
 
-        <profiles>
+	<profiles>
 		<profile>
 			<id>default-metalnx-template</id>
 
@@ -193,7 +201,7 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									<echo message="copy template from local default" />
+										<echo message="copy template from local default" />
 										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
@@ -228,9 +236,10 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									  <echo message="copy template from ${metalnx.custom.template}" />
+										<echo
+											message="copy template from ${metalnx.custom.template}" />
 
-										<copy  overwrite="true" file="${metalnx.custom.template}"
+										<copy overwrite="true" file="${metalnx.custom.template}"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
 									</tasks>
 								</configuration>

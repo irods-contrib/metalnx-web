@@ -35,6 +35,19 @@
 			
 
 		</th:block>
+		<!-- If user typer currently logged in is an groupadmin, the items below are available otherwise the user cannot use them -->
+		<th:block th:if="${userDetails.isGroupAdmin()}">
+			<!-- Users sidebar item -->
+			<li><a th:href="@{ ${urlMap.URL_USERS_MANAGEMENT} }"> <i
+					class="fa fa-user"></i> &nbsp; <span th:text="#{users.menu.title}"></span>
+			</a></li>
+			<!-- Group sidebar item -->
+			<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"> <i
+					class="fa fa-group"></i> &nbsp; <span
+					th:text="#{groups.management.menu.title}"></span></a></li>
+			
+
+		</th:block>
 		<!-- Collection sidebar item -->
 		<li><a th:href="@{ ${urlMap.URL_HOME_COLLECTION_USER} }" onclick="setHeader('Collections','fa fa-folder')"> <i
 				class="fa fa-folder"></i>&nbsp;<span

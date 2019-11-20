@@ -509,23 +509,7 @@ function validatePassword(){
 	if(password == ""){
 		return true;
 	}
-	//password length less than 5 characters
-	else if(password.length < 5) {
-		$("#inputPassword").parent().addClass("has-feedback has-error");
-
-		$("#invalidPasswordMsg").show();
-		$("#invalidPasswordIcon").show();
-		$("#emptyPasswordMsg").hide();
-		return false;
-	}
-	//valid password
-	else {
-		$("#inputPassword").parent().removeClass("has-feedback has-error");
-
-		$("#invalidPasswordMsg").hide();
-		$("#invalidPasswordIcon").hide();
-		$("#emptyPasswordMsg").hide();
-	}
+	
 	return true;
 }
 
@@ -621,10 +605,10 @@ function userFormValidator(urlValidateUsername) {
 	$("#inputPasswordConfirmation").focusout(function() {
 		validatePasswordConf();
 	});
-
+	/*
 	$("#inputEmail").focusout(function() {
 		validateEmail();
-	});
+	});*/
 }
 
 /*
@@ -641,9 +625,9 @@ function userFormCanBeSubmitted(urlValidateUsername, isAddAction){
 		isValidPasswordConf = validatePasswordConf();
 	}
 
-	var isValidEmail = validateEmail();
+	//var isValidEmail = validateEmail();
 
-	if(isValidUsername && isValidPassword && isValidPasswordConf && isValidEmail){
+	if(isValidUsername && isValidPassword && isValidPasswordConf){
 		return true;
 	}
 

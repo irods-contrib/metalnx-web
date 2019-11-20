@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -17,12 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.preferences.UserPreferences;
 import com.emc.metalnx.services.interfaces.HeaderService;
 import com.emc.metalnx.services.interfaces.UserService;
@@ -83,8 +80,7 @@ public class PreferencesController {
 
 	@RequestMapping(value = "/action/")
 	public String action(final Model model, @ModelAttribute final UserPreferences preferences,
-			final HttpServletRequest request, final HttpServletResponse response)
-			throws DataGridConnectionRefusedException {
+			final HttpServletRequest request, final HttpServletResponse response) throws DataGridException {
 
 		logger.info("action()");
 		logger.info("preferences:{}", preferences);
