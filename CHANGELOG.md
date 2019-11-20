@@ -15,3 +15,7 @@ Fixed collection listing display to properly display file size
 ### Switch to war overlay development and consolidate packages currently segmented among sub-projects #76
 
 Significant refactoring to remove unnecessary segmentation into sub-projects and work to create a war overlay development option.
+
+### strong default for metalnx.enable.dashboard=false #103
+
+Added default of false for use dashboard property
