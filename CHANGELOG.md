@@ -24,4 +24,6 @@ Added default of false for use dashboard property
 
 Fixed headers in collection listingø
 
+### remove popup when clicking metadata line, add an 'expand' button #127
 
+Improve meta view interaction to avoid unwanted popups when copying metadata values
