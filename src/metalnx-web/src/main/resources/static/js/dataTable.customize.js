@@ -18,7 +18,7 @@ var dtPatternUserMgmt = '<"row"<"col-sm-12 col-md-12"<"col-xs-4"l><"col-xs-4"i><
 //hash containing messages to be translated
 var i18n = {
 	    "decimal":        "",
-	    "emptyTable":     "No data available in table",
+	    "emptyTable":     "No data available",
 	    "info":           "Showing _START_ to _END_ of _TOTAL_ entries",
 	    "infoEmpty":      "Showing 0 to 0 of 0 entries",
 	    "infoFiltered":   "(filtered from _MAX_ total entries)",
