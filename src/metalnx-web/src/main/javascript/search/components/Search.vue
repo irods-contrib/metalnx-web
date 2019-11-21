@@ -145,7 +145,6 @@ export default {
           }
         }
         if (this.validation){
-          this.searchResult = null
           axios.post('/metalnx/api/search/textSearch', {
           endpointUrl: this.selectedSearchSchema.endpointUrl,
           indexId: this.selectedSearchSchema.schemaId,
@@ -153,12 +152,10 @@ export default {
           length: 0,
           offset: 0}
           ).then(response => this.searchResult = response.data)
-          if(this.searchResult.length == 0) this.searchResult = null;
           if (this.showSearchHint){
             this.showSearchHint = false
           }
         } else {
-          this.searchResult = null
           this.$bvToast.toast('Invalid search term in search text!', {
           title: `Error`,
           variant: 'danger',
