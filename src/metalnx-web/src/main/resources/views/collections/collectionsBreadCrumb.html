@@ -3,28 +3,53 @@
 
 
 <div class="breadcrumb-wrapper">
-	<ol class="breadcrumb">
-		<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
-				class="fa fa-home"></i></a></li>
+
+	<ol id="navigationBreadcrumbBar" class="breadcrumb">
+
+		<!--  <li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+				class="fa fa-home"></i></a></li>-->
+		<li><button id="historyBtn" onclick="navToggle();"
+				th:title="#{collections.history.button.tooltip}" type="button"
+				class="btn btn-link dropdown-toggle" data-toggle="navigationBar"
+				aria-haspopup="true" aria-expanded="false">
+				<span class="caret"></span> <span class="sr-only">Toggle
+					Dropdown</span>
+			</button></li>
 		<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
-		
-				<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
-					<li><a href="#" aria-label="'path breadcrumb for:"
-						th:text="${breadcrumbItem.name}" th:title="${breadcrumbItem.path}"
-						th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
-					</a></li>
-				</th:block>
-				<th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
-					<li class="collections-view"><span
-						th:if="${collectionAndDataObject.path != '/'}"
-						th:text="${ collectionAndDataObject.name }"
-						th:title="${ collectionAndDataObject.path }"> </span></li>
-				</th:block>
-		
+
+			<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+				<li><a href="#" aria-label="'path breadcrumb for:"
+					th:text="${breadcrumbItem.name}" th:title="${breadcrumbItem.path}"
+					th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+				</a></li>
+			</th:block>
+			<th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
+				<li class="collections-view"><span
+					th:if="${collectionAndDataObject.path != '/'}"
+					th:text="${ collectionAndDataObject.name }"
+					th:title="${ collectionAndDataObject.path }"> </span></li>
+			</th:block>
+
 		</th:block>
 	</ol>
 
+	<nav id="navigationBar" class="hidden navbar navbar-expand-lg navbar navbar-dark bg-dark">	
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<input type="text" id="navigationInput"
+						th:value="${collectionAndDataObject.path}"
+						placeholder="Enter a non-empty valid path" />
+			<div class="btn-group" role="group" aria-label="navigation buttons">
+				<button class="btn btn-default" onclick="navGo();">Go</button>
+				<button class="btn btn-default" onclick="navGoHome();">Go Home</button>
+				<button class="btn btn-default" onclick="navGoRoot();">Go /</button>
+				<button class="btn btn-default" onclick="closeNav();">Cancel</button>
+			</div>	
+		</div>
+	</nav>
+
 	<!--
+	
+
          <ol class="breadcrumb">
          		<li>
          			<a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i class="fa fa-home"></i></a>
@@ -89,6 +114,40 @@
 
 </div>
 <script th:inline="javascript">
+	var navOpen = false;
+	
+	function navToggle() {
+		if (!navOpen) {
+			$('#navigationBar').removeClass("hidden");
+			$('#navigationInput').focus().select();
+			navOpen = true;
+		} else {
+			closeNav();
+		}
+	}
+	
+	function closeNav() {
+		$('#navigationBar').addClass("hidden");
+		navOpen = false;
+	}
+	
+	function navGoRoot() {
+		positionBrowserToPath('/');
+		closeNav();
+	}
+	
+	function navGo() {
+		var path=$('#navigationInput').val();
+		positionBrowserToPath(path);
+		closeNav();
+	}
+	
+	function navGoHome() {
+		window.location.href = '/metalnx/browse/home';
+		closeNav();
+	}
+	
+	
 /*<![CDATA[*/
     $(document).ready(function(){
     	// Add tooltip on Favorite button
@@ -102,90 +161,8 @@
     		content:[[#{collections.menu.options.tooltip}]],
    			trigger: 'hover',
        		placement: 'top',
-   		});
-     	// Add tooltip on History button
-        $('#historyBtn').tooltip({
-   			trigger: 'hover',
-       		placement: 'top',
-   		});
-     	// Add tooltip on Back button
-        $('#backBtn').tooltip({
-   			trigger: 'hover',
-       		placement: 'top',
-       		container: 'body'
-   		});
-     	// Add tooltip on Forward button
-        $('#forwardBtn').tooltip({
-   			trigger: 'hover',
-       		placement: 'top',
-       		container: 'body'
-   		});
+   		});       
     });
-
-	/* $(document).click(function(e){
-		if(!$(e.target).is('.breadcrumb i.fa.fa-star')){
-			//$('#breadcrumbStar').popover("hide");
-		}else{
-			e.stopPropagation();
-			e.preventDefault();
-		}
-	}); */
-	/* $('.breadcrumb').click(function(e){
-		if(!$(e.target).is('ol.breadcrumb li a') && !$(e.target).is('i.fa.fa-star') && !$(e.target).is('i.fa.fa-home') && !$(e.target).parents('#breadcrumbOptions').length){
-			$('#current-path').addClass("hidden");
-			//$('#breadcrumbStar').addClass("hidden");
-			$('#breadcrumbOptionsMenu').addClass("hidden");
-			$('#navigationBar').removeClass("hidden");
-			$('#navigationBarGo').removeClass("hidden");
-			$('#navigationBarCancel').removeClass("hidden");
-			$('#navigationInput').focus().select();
-		}
-	}); */
-	/* $('#navigationInput').keyup(function(e){
-		if(e.keyCode == 13){
-			if($('#navigationInput').val().trim() == '') return;
-			getSubDirectories($('#navigationInput').val());
-		}
-		if(e.keyCode == 27){
-			$('#navigationInput').val([[${collectionAndDataObject.path}]]);
-			$('#current-path').removeClass("hidden");
-			$('#navigationBar').addClass("hidden");
-			$('#navigationBarCancel').addClass("hidden");
-			$('#navigationBarGo').addClass("hidden");
-			//$('#breadcrumbStar').removeClass("hidden").addClass("visible");
-			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
-
-		}
-	}); */
-
-	/* $('#navigationBarGo').click(function(e){
-		e.stopPropagation();
-		e.preventDefault();
-		if($('#navigationInput').val().trim() == '') return;
-		getSubDirectories($('#navigationInput').val());
-	});
-	$('#navigationBarCancel').click(function(e){
-		e.stopPropagation();
-		e.preventDefault();
-		$('#navigationInput').val([[${collectionAndDataObject.path}]]);
-			$('#current-path').removeClass("hidden");
-			$('#navigationBar').addClass("hidden");
-			$('#navigationBarGo').addClass("hidden");
-			$('#navigationBarCancel').addClass("hidden");
-			$(".current-path .breadcrumb").css("background-color", "#ffffff");
-			//$('#breadcrumbStar').removeClass("hidden").addClass("visible");
-			$('#breadcrumbOptionsMenu').removeClass("hidden").addClass("visible");
-	});
-	$("#editable-path").mouseover(function(e) {
-        if (!$(e.target).is('a')) {
-            $("#current-path .breadcrumb").css("background-color", "#f7fafe");
-        }
-    });
-    $("#editable-path").mouseout(function(e) {
-       if (!$(e.target).is('a')) {
-         $("#current-path .breadcrumb").css("background-color", "#ffffff");
-      }
-    }); */
 
 /*]]>*/
 </script>
