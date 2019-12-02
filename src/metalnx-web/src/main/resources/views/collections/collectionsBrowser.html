@@ -513,7 +513,7 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a  onclick=positionBrowserToPath("'+encodeURI(full.path)+'") title="' + full.path+
+    						return +full.collection?'<a  onclick=positionBrowserToPath("'+encodeURIComponent(full.path)+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
@@ -549,8 +549,8 @@
                     	"render": function ( data, type, full, meta ) {
 
 
-                    		var encodedName = encodeURI(full.name);
-                    		var encodedPath = encodeURI(full.path);
+                    		var encodedName = encodeURIComponent(full.name);
+                    		var encodedPath = encodeURIComponent(full.path);
                     		var idVal = "row" + i++;
                     		
                     		return '<a href="/metalnx/collectionInfo?path='+encodedPath+'" class="btn btn-default btn-xs" name="' + idVal +

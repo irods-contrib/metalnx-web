@@ -58,12 +58,12 @@ function starPath(path){
 			function(data){
 		if(data.indexOf("OK") >= 0){
 			$('#breadcrumbStar i').removeClass('bm-unchecked').addClass('bm-checked');
-			$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURI(path)+'")');
+			$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURIComponent(path)+'")');
 			//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.unmark.button.tooltip}]]);
 		}else{
 			$('#breadcrumbStar').attr('data-content', 'Could not add path to favorites.')
 			$('#breadcrumbStar').popover("show");
-			$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURI(path)+'")');
+			$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURIComponent(path)+'")');
 		}
 
 	}, null, null, null);
@@ -78,12 +78,12 @@ function unstarPath(path){
 		function(data){
 			if(data.indexOf("OK") >= 0){
 				$('#breadcrumbStar i').removeClass('bm-checked').addClass('bm-unchecked');
-				$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURI(path)+'")');
+				$('#breadcrumbStar').attr('onclick', 'starPath("'+encodeURIComponent(path)+'")');
 				//$('#breadcrumbStar').tooltip('hide').attr('data-original-title',[[#{collections.favorite.button.tooltip}]]);
 			}else{
 				$('#breadcrumbStar').attr('data-content', 'Could not remove path from favorites.')
 				$('#breadcrumbStar').popover("show");
-				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURI(path)+'")');
+				$('#breadcrumbStar').attr('onclick', 'unstarPath("'+encodeURIComponent(path)+'")');
 			}
 		}, null, null, null);
 	console.log("UnstarPath() ends");
@@ -94,7 +94,7 @@ path should be urlencoded already
 */
 function positionBrowserToPath(path) {
 	console.log("positionBrowserToPath()");
-	window.location.href = '/metalnx/collections?path=' + encodeURI(path); //relative to domain
+	window.location.href = '/metalnx/collections?path=' + encodeURIComponent(path); //relative to domain
 }
 
 function fileDownload(path){
