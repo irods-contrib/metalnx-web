@@ -8,42 +8,75 @@
 
 		<!--  <li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
 				class="fa fa-home"></i></a></li>-->
-		<li><button id="historyBtn" onclick="navToggle();"
-				th:title="#{collections.history.button.tooltip}" type="button"
-				class="btn btn-link dropdown-toggle" data-toggle="navigationBar"
-				aria-haspopup="true" aria-expanded="false">
-				<span class="caret"></span> <span class="sr-only">Toggle
-					Dropdown</span>
-			</button></li>
-		<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
 
-			<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
-				<li><a href="#" aria-label="'path breadcrumb for:"
-					th:text="${breadcrumbItem.name}" th:title="${breadcrumbItem.path}"
-					th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
-				</a></li>
-			</th:block>
-			<th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
-				<li class="collections-view"><span
-					th:if="${collectionAndDataObject.path != '/'}"
-					th:text="${ collectionAndDataObject.name }"
-					th:title="${ collectionAndDataObject.path }"> </span></li>
-			</th:block>
+		<!-- If not advanced view, only show folders after 'home' which is the second item in /zone/home/foo -->
 
+		<th:block th:if="${dataGridUser.isAdvancedView()}">
+			<li><button id="historyBtn" onclick="navToggle();"
+					th:title="#{collections.navigate.tooltip}" type="button"
+					class="btn btn-link dropdown-toggle" data-toggle="navigationBar"
+					aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span> <span class="sr-only">Toggle
+						Dropdown</span>
+				</button></li>
+			<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+
+				<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+					<li><a href="#" aria-label="'path breadcrumb for:"
+						th:text="${breadcrumbItem.name}" th:title="${breadcrumbItem.path}"
+						th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+					</a></li>
+				</th:block>
+				<th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
+					<li class="collections-view"><span
+						th:if="${collectionAndDataObject.path != '/'}"
+						th:text="${ collectionAndDataObject.name }"
+						th:title="${ collectionAndDataObject.path }"> </span></li>
+				</th:block>
+
+			</th:block>
 		</th:block>
+		<th:block th:if="${!dataGridUser.isAdvancedView()}">
+
+			<li><a th:href="@{${urlMap.URL_HOME_COLLECTION_USER}}"><i
+				class="fa fa-home"></i></a>
+			</li>
+
+			<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
+				<th:block th:if="${iterStat.index gt 2}">
+					<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
+						<li><a href="#" aria-label="'path breadcrumb for:"
+							th:text="${breadcrumbItem.name}"
+							th:title="${breadcrumbItem.path}"
+							th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|">
+						</a></li>
+					</th:block>
+					<th:block th:if="${iterStat.index eq (breadcrumb.items.size()-1)}">
+						<li class="collections-view"><span
+							th:if="${collectionAndDataObject.path != '/'}"
+							th:text="${ collectionAndDataObject.name }"
+							th:title="${ collectionAndDataObject.path }"> </span></li>
+					</th:block>
+				</th:block>
+			</th:block>
+		</th:block>
+
+
 	</ol>
 
-	<nav id="navigationBar" class="hidden navbar navbar-expand-lg navbar navbar-dark bg-dark">	
+	<nav id="navigationBar"
+		class="hidden navbar navbar-expand-lg navbar navbar-dark bg-dark">
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<input type="text" id="navigationInput"
-						th:value="${collectionAndDataObject.path}"
-						placeholder="Enter a non-empty valid path" />
+				th:value="${collectionAndDataObject.path}"
+				placeholder="Enter a non-empty valid path" />
 			<div class="btn-group" role="group" aria-label="navigation buttons">
 				<button class="btn btn-default" onclick="navGo();">Go</button>
-				<button class="btn btn-default" onclick="navGoHome();">Go Home</button>
+				<button class="btn btn-default" onclick="navGoHome();">Go
+					Home</button>
 				<button class="btn btn-default" onclick="navGoRoot();">Go /</button>
 				<button class="btn btn-default" onclick="closeNav();">Cancel</button>
-			</div>	
+			</div>
 		</div>
 	</nav>
 
@@ -115,7 +148,8 @@
 </div>
 <script th:inline="javascript">
 	var navOpen = false;
-	
+	var advancedView = [[${ dataGridUser.isAdvancedView() }]];
+
 	function navToggle() {
 		if (!navOpen) {
 			$('#navigationBar').removeClass("hidden");
@@ -125,44 +159,44 @@
 			closeNav();
 		}
 	}
-	
+
 	function closeNav() {
 		$('#navigationBar').addClass("hidden");
 		navOpen = false;
 	}
-	
+
 	function navGoRoot() {
 		positionBrowserToPath('/');
 		closeNav();
 	}
-	
+
 	function navGo() {
-		var path=$('#navigationInput').val();
+		var path = $('#navigationInput').val();
 		positionBrowserToPath(path);
 		closeNav();
 	}
-	
+
 	function navGoHome() {
 		window.location.href = '/metalnx/browse/home';
 		closeNav();
 	}
-	
-	
-/*<![CDATA[*/
-    $(document).ready(function(){
-    	// Add tooltip on Favorite button
-       /*  $('#breadcrumbStar').tooltip({
-   			trigger: 'hover',
-       		placement:'top',
-   		}); */
-        $('#breadcrumbHome').tooltip();
-     	// Add tooltip on Options menu
-        $('#breadcrumbOptionsMenu').tooltip({
-    		content:[[#{collections.menu.options.tooltip}]],
-   			trigger: 'hover',
-       		placement: 'top',
-   		});       
-    });
 
-/*]]>*/
+
+	/*<![CDATA[*/
+	$(document).ready(function () {
+		// Add tooltip on Favorite button
+		/*  $('#breadcrumbStar').tooltip({
+					 trigger: 'hover',
+					 placement:'top',
+				 }); */
+		$('#breadcrumbHome').tooltip();
+		// Add tooltip on Options menu
+		$('#breadcrumbOptionsMenu').tooltip({
+			content: [[#{ collections.menu.options.tooltip }]],
+			trigger: 'hover',
+			placement: 'top',
+		});
+	});
+
+	/*]]>*/
 </script>
