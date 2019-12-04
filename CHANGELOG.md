@@ -27,3 +27,7 @@ Fixed headers in collection listingø
 ### remove popup when clicking metadata line, add an 'expand' button #127
 
 Improve meta view interaction to avoid unwanted popups when copying metadata values
+
+### Metalnx and iRODS federations, configurable breadcrumbs #22
+
+Improve navigation and initial work on viewing resources across federations
