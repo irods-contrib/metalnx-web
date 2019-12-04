@@ -4,11 +4,10 @@
 
 <div class="breadcrumb-wrapper">
 
-	<th:block th:if="${dataGridUser.isAdvancedView()}">
+	<!--  <th:block th:if="${dataGridUser.isAdvancedView()}"> -->
 
 			<ol id="navigationBreadcrumbBar" class="breadcrumb">
 
-				<!-- If not advanced view, only show folders after 'home' which is the second item in /zone/home/foo -->
 				<th:block th:each="breadcrumbItem, iterStat: ${breadcrumb.items}">
 					<th:block th:if="${iterStat.index lt (breadcrumb.items.size()-1)}">
 						<li><a href="#" aria-label="'path breadcrumb for:"
@@ -33,7 +32,7 @@
 						</span><span class="caret"></span></button>
 			
 
-	</th:block>
+<!-- 	</th:block>
 	<th:block th:if="${!dataGridUser.isAdvancedView()}">
 
 		<ol id="navigationBreadcrumbBar" class="breadcrumb">
@@ -59,7 +58,7 @@
 				</th:block>
 			</th:block>
 		</ol>
-	</th:block>
+	</th:block> -->
 
 	<nav id="navigationBar"
 		class="hidden navbar navbar-expand-lg navbar navbar-dark bg-dark">
@@ -78,7 +77,6 @@
 		</div>
 	</nav>
 
-	
 	<div id="current-path-property" class="hidden">
 		<ol class="breadcrumb info">
 			<th:block th:if="${collectionAndDataObject.isCollection()}">
