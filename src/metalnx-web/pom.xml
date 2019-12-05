@@ -73,6 +73,14 @@
 			<artifactId>irodsext-jwt-service</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
@@ -195,7 +203,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-        <profiles>
+	<profiles>
 		<profile>
 			<id>default-metalnx-template</id>
 
@@ -215,12 +223,12 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									<echo message="copy template from local default" />
+										<echo message="copy template from local default" />
 										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplate.html"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
-									
-									<copy overwrite="true"
+
+										<copy overwrite="true"
 											file="${project.basedir}/src/main/resources/views/defaultTemplatev.html"
 											tofile="${project.basedir}/src/main/resources/views/templatev.html" />
 									</tasks>
@@ -254,15 +262,18 @@
 								<phase>validate</phase>
 								<configuration>
 									<tasks>
-									  <echo message="copy template from ${metalnx.custom.template}" />
+										<echo
+											message="copy template from ${metalnx.custom.template}" />
 
-										<copy  overwrite="true" file="${metalnx.custom.template}"
+										<copy overwrite="true" file="${metalnx.custom.template}"
 											tofile="${project.basedir}/src/main/resources/views/template.html" />
-									
-										<echo message="copy templatev from ${metalnx.custom.template.vue}" />
-										<copy  overwrite="true" file="${metalnx.custom.template.vue}"
+
+										<echo
+											message="copy templatev from ${metalnx.custom.template.vue}" />
+										<copy overwrite="true"
+											file="${metalnx.custom.template.vue}"
 											tofile="${project.basedir}/src/main/resources/views/templatev.html" />
-								
+
 									</tasks>
 								</configuration>
 								<goals>

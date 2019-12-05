@@ -62,7 +62,6 @@
 		<!-- Login pages -->
 		<sec:intercept-url pattern="/login/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-
 		<!-- Static Resources -->
 		<sec:intercept-url pattern="/images/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -76,63 +75,64 @@
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:intercept-url pattern="/httpError/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-
 		<!-- Others -->
 		<sec:intercept-url pattern="/users/query/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/groups/query/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/dashboard/**"
 			access="ROLE_ADMIN" />
 		<sec:intercept-url pattern="/preview/**"
-			access="ROLE_ADMIN, ROLE_USER" />
+			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/previewPreparation/**"
-			access="ROLE_ADMIN, ROLE_USER" />
+			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/collections/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/notifications/**"
-			access="ROLE_ADMIN,ROLE_USER" />	
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/collectionInfo/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/browse/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/trash/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/public/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/avuAutoComplete/**"
-			access="ROLE_ADMIN, ROLE_USER" />
-
+			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/fileOperation/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/inheritance/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/upload/**" access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/inheritance/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/upload/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/fileproperty/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/templates/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/preferences/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/userBookmarks/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/permissions/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/favorites/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/tickets/**"
-			access="ROLE_ADMIN,ROLE_USER" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/home/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/search/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/api/search/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/groups/**"
+			access="ROLE_ADMIN,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/users/**"
+			access="ROLE_ADMIN,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/ticketclient/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:intercept-url pattern="/"
-			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/home/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/search/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/api/search/**"
-			access="ROLE_ADMIN,ROLE_USER" />
-
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
 		<sec:form-login
@@ -220,5 +220,4 @@
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 		
-
 </beans>
