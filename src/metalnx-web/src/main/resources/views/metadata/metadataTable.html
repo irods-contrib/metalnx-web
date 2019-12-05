@@ -204,6 +204,7 @@
 							<th:block th:if="${dataGridUser.isMetadataUnitView()}">
 								<th><span th:text="#{metadata.table.header.unit}"></span></th>
 							</th:block>
+							<th></th>
 							<th
 								th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
 								<span th:text="#{metadata.table.header.actions}"></span>
@@ -236,8 +237,16 @@
 									class="hidden newUnitMetadataTable" type="text"
 									th:value="${dataGridMetadata.getUnit()}" title="unit" /></td>
 							</th:block>
+							<td>
+								<button title="View" 
+									th:onclick="'javascript:showViewMetadataModal(\'' + ${dataGridMetadata.getAttribute()} +'\',' + '\'' + ${dataGridMetadata.getValue()} +'\');'"
+									class="btn btn-default btn-xs">
+									<i class="fa fa-eye"></i> View
+								</button>
+							</td>
 							<td
 								th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
+								
 								<button title="Edit"
 									class="btn btn-default btn-xs enableEditAVUActionColumn">
 									<i class="fa fa-pencil"></i> Edit
@@ -392,6 +401,12 @@
             function exportMetadataToCSV(path) {
             	window.location = '/emc-metalnx-web/metadata/exportToCSV/?path=' + path;
             }
+            
+           function showViewMetadataModal(attr, value) {
+       			$('#viewMetadataModal').modal();
+               	$("#attrModal").text(attr);
+               	$("#valueModal").text(value);
+            }
 
             $(document).ready(function(){
 
@@ -441,6 +456,7 @@
                     console.log("removed hidden from cancel btn");
                 });
 
+                /*
             	$("tr.currentRow").on("click",function(event){
             		if (!($(event.target).is('input')) && !($(event.target).is('button'))
             				&& !($(event.target).is('button span')) && !($(event.target).is('i'))){
@@ -450,6 +466,7 @@
             		}
 
                 });
+                */
 
             	/* $('tr.currentRow input button i').click(function(e) {
             	    e.stopPropagation();

@@ -21,6 +21,22 @@ The entire pluggable search framework is off by default, and can be enabled and 
 
 Fixed collection listing display to properly display file size
 
-### Switch to war overlay development and consolidate packages currently segmented among sub-projects #76
+### Consolidate packages currently segmented among sub-projects #76
 
 Significant refactoring to remove unnecessary segmentation into sub-projects and work to create a war overlay development option.
+
+### strong default for metalnx.enable.dashboard=false #103
+
+Added default of false for use dashboard property
+
+### file type in collection listing heading is incorrect, should be file name #126
+
+Fixed headers in collection listingø
+
+### remove popup when clicking metadata line, add an 'expand' button #127
+
+Improve meta view interaction to avoid unwanted popups when copying metadata values
+
+### Metalnx and iRODS federations, configurable breadcrumbs #22
+
+Improve navigation and initial work on viewing resources across federations

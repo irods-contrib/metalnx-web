@@ -447,7 +447,12 @@ public class UserController {
 	public String modifyUser(@ModelAttribute UserForm userForm, HttpServletRequest request,
 			RedirectAttributes redirectAttributes) throws DataGridException {
 
+		logger.info("modifyUser()");
+
 		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
+
+		logger.info("groupList to be added:{}", groupList);
+
 		List<UserGroup> groups = new ArrayList<UserGroup>();
 		if (groupList != null && groupList.length != 0) {
 			for (String groupId : groupList) {
@@ -460,11 +465,15 @@ public class UserController {
 			}
 		}
 
+		logger.info("groupsToBeAdded:{}", groups);
+
 		DataGridUser user = userService.findByUsernameAndAdditionalInfo(userForm.getUsername(),
 				userForm.getAdditionalInfo());
 
-		boolean modificationSucessful = false;
-		boolean updateGroupsSuccessful = false;
+		if (user == null) {
+			logger.warn("user:{} not found:", userForm.getUsername());
+			throw new DataGridException("user is not found");
+		}
 
 		if (user != null) {
 			user.setAdditionalInfo(userForm.getAdditionalInfo());
@@ -482,25 +491,20 @@ public class UserController {
 			// User bookmarks
 			updateBookmarksList(user.getUsername(), user.getAdditionalInfo());
 
-			modificationSucessful = userService.modifyUser(user);
-			updateGroupsSuccessful = userService.updateGroupList(user, groups);
+			userService.modifyUser(user);
+			userService.updateGroupList(user, groups);
 
-			if (modificationSucessful && updateGroupsSuccessful) {
-				redirectAttributes.addFlashAttribute("userModifiedSuccessfully", userForm.getUsername());
+			redirectAttributes.addFlashAttribute("userModifiedSuccessfully", userForm.getUsername());
 
-				// Updating permissions on collections
-				userService.updateOwnership(user, addOwnerOnDirs, removeOwnerOnDirs);
-				userService.updateWritePermissions(user, addWritePermissionsOnDirs, removeWritePermissionsOnDirs);
-				userService.updateReadPermissions(user, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
-			}
+			// Updating permissions on collections
+			userService.updateOwnership(user, addOwnerOnDirs, removeOwnerOnDirs);
+			userService.updateWritePermissions(user, addWritePermissionsOnDirs, removeWritePermissionsOnDirs);
+			userService.updateReadPermissions(user, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
+
 		}
 
-		userService.modifyUser(user);
-
 		cleanPermissionsSets();
-
-		return modificationSucessful && updateGroupsSuccessful ? "redirect:/users/"
-				: "redirect:/users/modify/" + user.getUsername() + "/" + user.getAdditionalInfo() + "/";
+		return "redirect:/users/";
 	}
 
 	/**
