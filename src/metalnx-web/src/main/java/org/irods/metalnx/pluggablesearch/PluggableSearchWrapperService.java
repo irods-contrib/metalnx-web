@@ -56,6 +56,8 @@ public class PluggableSearchWrapperService {
 	 * with configuration and JWT processing
 	 */
 	private SearchPluginDiscoveryService searchPluginDiscoveryService;
+	@Value("${pluggablesearch.enabled}")
+	String searchStuff = "";
 
 	@Value("${pluggablesearch.enabled}")
 	private boolean pluggableSearchEnabled = false;
@@ -69,7 +71,7 @@ public class PluggableSearchWrapperService {
 	@Value("${pluggablesearch.search.timeout}")
 	private int pluggableSearchSearchTimeout = 0;
 
-	@Value("${pluggablesearch.search.endpointAccessSubject}")
+	@Value("${pluggablesearch.endpointAccessSubject}")
 	private String pluggableSearchEndpointAccessSubject = "";
 
 	public ConfigService getConfigService() {
@@ -79,6 +81,12 @@ public class PluggableSearchWrapperService {
 	@PostConstruct
 	public void init() {
 		log.info("init()");
+
+		if (!pluggableSearchEnabled) {
+			log.warn("search service not enabled, will bypass init. This is normal when search is not configured");
+			return;
+		}
+
 		SearchPluginRegistrationConfig config = new SearchPluginRegistrationConfig();
 		config.setEndpointAccessSubject(pluggableSearchEndpointAccessSubject);
 		config.setEndpointAccessTimeout(getPluggableSearchInfoTimeout());

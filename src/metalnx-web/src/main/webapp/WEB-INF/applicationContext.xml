@@ -54,7 +54,6 @@
 	<bean id="ep403"
 		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint" />
 
-
 	<sec:http auto-config="true" create-session="always"
 		entry-point-ref="ep403">
 
