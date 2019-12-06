@@ -56,8 +56,6 @@ public class PluggableSearchWrapperService {
 	 * with configuration and JWT processing
 	 */
 	private SearchPluginDiscoveryService searchPluginDiscoveryService;
-	@Value("${pluggablesearch.enabled}")
-	String searchStuff = "";
 
 	@Value("${pluggablesearch.enabled}")
 	private boolean pluggableSearchEnabled = false;

@@ -17,7 +17,7 @@ html {
 body {
 	background-color: #f8f8f8;
 	font-family: websiteFont;
-	color: #656363;
+	color: #333;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
