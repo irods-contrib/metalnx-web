@@ -297,8 +297,8 @@ public class BrowseController {
 				dataGridObj.setChecksum(cs.getChecksum(path));
 				dataGridObj.setNumberOfReplicas(cs.getTotalNumberOfReplsForDataObject(path));
 				dataGridObj.setReplicaNumber(String.valueOf(cs.getReplicationNumber(path)));
-				permissionsService.resolveMostPermissiveAccessForUser(dataGridObj,
-						loggedUserUtils.getLoggedDataGridUser());
+				dataGridObj.setMostPermissiveAccessForCurrentUser(permissionsService.resolveMostPermissiveAccessForUser(
+						dataGridObj.getPath(), loggedUserUtils.getLoggedDataGridUser().getUsername()));
 
 			}
 
@@ -917,7 +917,8 @@ public class BrowseController {
 
 			permissionType = cs.getPermissionsForPath(path);
 			collectionForm.setInheritOption(cs.getInheritanceOptionForCollection(currentPath));
-			permissionsService.resolveMostPermissiveAccessForUser(dataGridObj, user);
+			dataGridObj.setMostPermissiveAccessForCurrentUser(
+					permissionsService.resolveMostPermissiveAccessForUser(dataGridObj.getPath(), user.getUsername()));
 		}
 
 		logger.debug("permission options are set");

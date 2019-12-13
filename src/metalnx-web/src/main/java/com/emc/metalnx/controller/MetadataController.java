@@ -259,7 +259,8 @@ public class MetadataController {
 
 		try {
 			dgColObj = collectionService.findByName(path);
-			permissionsService.resolveMostPermissiveAccessForUser(dgColObj, loggedUserUtils.getLoggedDataGridUser());
+			dgColObj.setMostPermissiveAccessForCurrentUser(permissionsService.resolveMostPermissiveAccessForUser(
+					dgColObj.getPath(), loggedUserUtils.getLoggedDataGridUser().getUsername()));
 		} catch (DataGridException e) {
 			logger.error("Could not retrieve collection/dataobject from path: {}", path);
 		}
@@ -332,9 +333,8 @@ public class MetadataController {
 		String filePath = collectionController.getCurrentPath();
 
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(filePath);
-		setReponseHeaderForCSVExport(response);		
-		
-		
+		setReponseHeaderForCSVExport(response);
+
 		ServletOutputStream outputStream = response.getOutputStream();
 
 		outputStream.print("File path\n");
@@ -343,7 +343,8 @@ public class MetadataController {
 
 		outputStream.print("Attribute Name,Value,Unit\n");
 		for (DataGridMetadata m : metadataList) {
-			outputStream.print(String.format("%s,%s,%s\n", m.getAttribute(), m.getValue().replace(',', ' '), m.getUnit()));
+			outputStream
+					.print(String.format("%s,%s,%s\n", m.getAttribute(), m.getValue().replace(',', ' '), m.getUnit()));
 			logger.info("response metadataList:: {}", m.getValue().replace(',', ' '));
 		}
 		outputStream.flush();

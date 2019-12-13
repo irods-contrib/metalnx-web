@@ -143,7 +143,8 @@ public class PermissionsController {
 			}
 
 			obj = cs.findByName(path);
-			ps.resolveMostPermissiveAccessForUser(obj, loggedUser);
+			obj.setMostPermissiveAccessForCurrentUser(
+					ps.resolveMostPermissiveAccessForUser(obj.getPath(), loggedUser.getUsername()));
 		} catch (Exception e) {
 			logger.error("Could not get permission details: {}", path, e);
 			throw new DataGridException("error getting permissions", e);
