@@ -31,7 +31,7 @@ public class PluggableSearchTestConfig {
 	@Value("${pluggablesearch.search.timeout}")
 	private int pluggableSearchSearchTimeout = 0;
 
-	@Value("${pluggablesearch.search.endpointAccessSubject}")
+	@Value("${pluggablesearch.endpointAccessSubject}")
 	private String pluggableSearchEndpointAccessSubject = "";
 
 	@Bean
@@ -52,7 +52,7 @@ public class PluggableSearchTestConfig {
 			JwtManagementWrapperService jwtManagementWrapperService) {
 		PluggableSearchWrapperService pluggableSearchWrapperService = new PluggableSearchWrapperService();
 		pluggableSearchWrapperService.setConfigService(configService);
-		pluggableSearchWrapperService.setPluggableSearchEnabled(true);
+		pluggableSearchWrapperService.setPluggableSearchEnabled(pluggableSearchEnabled);
 		pluggableSearchWrapperService.setPluggableSearchEndpointAccessSubject(pluggableSearchEndpointAccessSubject);
 		pluggableSearchWrapperService.setPluggableSearchEndpoints(pluggableSearchEndpoints);
 		pluggableSearchWrapperService.setPluggableSearchInfoTimeout(pluggableSearchInfoTimeout);

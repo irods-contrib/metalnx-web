@@ -829,7 +829,7 @@
 			*/
 			function positionBrowserToPath(path) {
 				console.log("positionBrowserToPath()"); //FIXME: remove for testing
-				window.location.href = '/metalnx/collections?path=' + encodeURI(path); //relative to domain
+				window.location.href = '/metalnx/collections?path=' + encodeURIComponent(path); //relative to domain
 			}
 
 	        function deleteAction(){

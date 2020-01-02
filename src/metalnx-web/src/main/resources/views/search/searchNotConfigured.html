@@ -20,6 +20,8 @@
     <link href="../static/css/styles.css" rel="stylesheet"
     	th:href="@{/css/styles.css}"/>
 
+   	<link rel="shortcut icon" href="../static/images/favicon-16.png" th:href="@{/images/favicon-16.png}" type="image/png" />
+
 	</head>
 
 	<body>
@@ -28,7 +30,7 @@
         	style="margin-bottom: 0;">
             <div class="navbar-header col-sm-12" style="margin-bottom: 0;">
                 <a class="navbar-brand" href="#">
-                        <img  alt="Metalnx Logo" src="../static/images/logo.svg"
+                                <img  alt="Metalnx Logo" src="../static/images/logo.svg"
                 		th:src="@{/images/logo.svg}" />
 				</a>
 			</div>
@@ -36,15 +38,15 @@
 
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-xs-4 col-xs-offset-4" style="margin-top: 5%;color:#333;">
-					<h1 th:text="#{403.page.title}"></h1>
+				<div class="col-xs-3 col-xs-offset-4" style="margin-top: 5%;">
+					<h1 th:text="#{search.not.configured.page.title}"></h1>
 
 					<p>
-            <th:block th:text="#{httperror.403.message}"/>						
+            <th:block th:text="#{search.not.configured.message}"/>		
 					</p>
 
 					<p>
-						<a class="btn btn-primary" href="/metalnx/login/">Go back</a>
+						<a class="btn btn-primary" href="/metalnx/">  <th:block th:text="#{text.go.back}"/>	</a>
 					</p>
 				</div> <!-- End row  -->
 			</div> <!-- End row  -->

@@ -90,11 +90,12 @@ public class PermissionsController {
 
 		boolean isAdmin = luu.getLoggedDataGridUser().isAdmin();
 		boolean isPermNone = mostRestrictivePermission.equals(DataGridPermType.NONE);
-
+		
+		/* ignore admin privilege
 		if (isPermNone && isAdmin) {
 			mostRestrictivePermission = DataGridPermType.IRODS_ADMIN;
-		}
-
+		} */
+		
 		return mostRestrictivePermission.toString().toLowerCase();
 	}
 
@@ -143,7 +144,8 @@ public class PermissionsController {
 			}
 
 			obj = cs.findByName(path);
-			ps.resolveMostPermissiveAccessForUser(obj, loggedUser);
+			obj.setMostPermissiveAccessForCurrentUser(
+					ps.resolveMostPermissiveAccessForUser(obj.getPath(), loggedUser.getUsername()));
 		} catch (Exception e) {
 			logger.error("Could not get permission details: {}", path, e);
 			throw new DataGridException("error getting permissions", e);

@@ -16,6 +16,7 @@
 	<artifactId>metalnx-web</artifactId>
 	<packaging>war</packaging>
 	<dependencies>
+	<!--  
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -37,7 +38,7 @@
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-core</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -201,6 +202,11 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.10.19</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
 		</dependency>
 	</dependencies>
 	<profiles>
@@ -545,14 +551,12 @@
 									default.storage.resource=${jargon.test.irods.resource}
 									ssl.negotiation.policy=${metalnx.ssl.policy}
 
-									##########################################################
+								
 
 									utilize.packing.streams=${metalnx.packing.streams}
 
 
 									compute.checksum=${metalnx.compute.checksum}
-
-									##########################################################
 
 									db.driverClassName=${metalnx.jdbc.driver}
 									db.url=${metalnx.jdbc.url}
@@ -570,7 +574,6 @@
 
 									connection.pool_size=5
 
-									######################################
 
 									jobs.irods.username=${jargon.test.irods.admin}
 									jobs.irods.password=${jargon.test.irods.admin.password}
@@ -583,8 +586,7 @@
 
 									reverse.dns.lookup=false
 
-									######################################
-
+								
 									populate.msi.enabled=false
 									illumina.msi.enabled=true
 
@@ -614,24 +616,17 @@
 									metalnx.enable.dashboard=false
 									access.proxy=true
 									irodsext.dataprofiler.retrieve.tickets=false
-									# process starred
-									or favorites
+									
 									irodsext.dataprofiler.retrieve.starred=true
-									#
-									process shared
+								
 									irodsext.dataprofiler.retrieve.shared=false
-									# tags
-									and comments
+									
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
-									#
-									metadata templates (currently not implemented)
+									
 									irodsext.dataprofiler.retrieve.metadata.templates=false
-									# save
-									data type information for later use
+									
 									irodsext.datatyper.persist.data.types=false
-									# perform a detailed
-									versus a lightweight data typing, which may involve processing
-									the file contents
+									
 									irodsext.datatyper.detailed.determination=false
 
 									jwt.issuer=${jargon.search.jwtIssuer}
