@@ -59,9 +59,9 @@
 				class="fa fa-search"></i> &nbsp; <span
 				th:text="#{metadata.search.menu.title}"></span></a></li>
 		<th:block th:if="${globalConfig.isPluggableSearchEnabled()}">
-			<li>a th:href="@{ ${urlMap.URL_GLOBAL_SEARCH} }"> <i
+			<li><a th:href="@{ ${urlMap.URL_GLOBAL_SEARCH} }"> <i
 				class="fa fa-search"></i> &nbsp; <span
-				th:text="#{metadata.pluggable.search.menu.title}"></span><a></a>
+				th:text="#{metadata.pluggable.search.menu.title}"></span></a>
 			</li>
 		</th:block>
 		<!-- Metadata template sidebar item -->
