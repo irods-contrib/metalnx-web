@@ -43,6 +43,7 @@ public class URLMap {
 	public static final String URL_COLLECTION_VALIDATE_NAME = "/metalnx/browse/isValidCollectionName/";
 
 	public static final String URL_METADATA_SEARCH = "/metadata/";
+	public static final String URL_GLOBAL_SEARCH = "/search/";
 
 	public static final String URL_TEMPLATE_MANAGEMENT = "/templates/";
 	public static final String URL_ADD_TEMPLATE = "add/";

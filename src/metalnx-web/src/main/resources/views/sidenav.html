@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<div class="sidebar-nav navbar-collapse nano-content" th:fragment="sidenav">
+	xmlns:layout="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<div class="sidebar-nav navbar-collapse nano-content"
+	th:fragment="sidenav">
 	<ul class="nav d-flex flex-column" id="side-menu">
 		<!-- If user typer currently logged in is an admin, the items below are available otherwise the user cannot use them -->
 		<th:block th:if="${userDetails.isAdmin()}">
 			<th:block th:if="${globalConfig.isDashboardEnabled()}">
 				<li>
-					<!-- Dashboard sidebar item--> <a th:href="@{ ${urlMap.URL_DASHBOARD} }"> 
-						<i class="fa fa-tachometer"></i> &nbsp; <span
+					<!-- Dashboard sidebar item--> <a
+					th:href="@{ ${urlMap.URL_DASHBOARD} }"> <i
+						class="fa fa-tachometer"></i> &nbsp; <span
 						th:text="#{dashboard.menu.title}"></span>
 				</a>
 				</li>
@@ -17,8 +19,7 @@
 			<!-- Resource sidebar item -->
 			<li><a th:href="@{ ${urlMap.URL_RESOURCES_MANAGEMENT} }"> <i
 					class="fa fa-database"></i> &nbsp; <span
-					th:text="#{resources.menu.title}"></span>
-				<!--  <span class="fa arrow"></span> -->
+					th:text="#{resources.menu.title}"></span> <!--  <span class="fa arrow"></span> -->
 			</a></li>
 			<!-- Rules -->
 			<li><a th:href="@{ ${urlMap.URL_RULES} }"> <i
@@ -32,7 +33,7 @@
 			<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"> <i
 					class="fa fa-group"></i> &nbsp; <span
 					th:text="#{groups.management.menu.title}"></span></a></li>
-			
+
 
 		</th:block>
 		<!-- If user typer currently logged in is an groupadmin, the items below are available otherwise the user cannot use them -->
@@ -45,17 +46,24 @@
 			<li><a th:href="@{ ${urlMap.URL_GROUPS_MANAGEMENT} }"> <i
 					class="fa fa-group"></i> &nbsp; <span
 					th:text="#{groups.management.menu.title}"></span></a></li>
-			
+
 
 		</th:block>
 		<!-- Collection sidebar item -->
-		<li><a th:href="@{ ${urlMap.URL_HOME_COLLECTION_USER} }" onclick="setHeader('Collections','fa fa-folder')"> <i
+		<li><a th:href="@{ ${urlMap.URL_HOME_COLLECTION_USER} }"
+			onclick="setHeader('Collections','fa fa-folder')"> <i
 				class="fa fa-folder"></i>&nbsp;<span
 				th:text="#{collections.menu.title}"></span></a></li>
 		<!-- Metadata search sidebar item -->
 		<li><a th:href="@{ ${urlMap.URL_METADATA_SEARCH} }"> <i
 				class="fa fa-search"></i> &nbsp; <span
 				th:text="#{metadata.search.menu.title}"></span></a></li>
+		<th:block th:if="${globalConfig.isPluggableSearchEnabled()}">
+			<li>a th:href="@{ ${urlMap.URL_GLOBAL_SEARCH} }"> <i
+				class="fa fa-search"></i> &nbsp; <span
+				th:text="#{metadata.pluggable.search.menu.title}"></span><a></a>
+			</li>
+		</th:block>
 		<!-- Metadata template sidebar item -->
 		<li><a th:href="@{ ${urlMap.URL_TEMPLATE_MANAGEMENT} }"> <i
 				class="fa fa-cubes"></i> &nbsp; <span
