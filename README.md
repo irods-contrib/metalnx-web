@@ -1,9 +1,5 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: 2.1.0-RELEASE
-## Git Tag: 2.1.0-RELEASE
-## Date: 01/27/2020
-
 Metalnx is a web application designed to work alongside [iRODS](http://www.irods.org). It is a graphical user interface and serves as a client that authenticates to an existing iRODS Zone.
 
 ![Metalnx 2.0.0 Screenshot](docs/IMAGES/metalnx2.0.0.png)
@@ -85,10 +81,6 @@ More documentation can be found in the [Docs](docs) directory.
 
 ### Copyright and License
 
-Copyright © 2018-2019 University of North Carolina at Chapel Hill; 2015-2017, Dell EMC.
+Copyright © 2018-2020 University of North Carolina at Chapel Hill; 2015-2017, Dell EMC.
 
 This software is provided under the [BSD-3 License](LICENSE.md).
-
-### Changes
-
-Refer to the [CHANGELOG file](CHANGELOG.md) for the latest changes
