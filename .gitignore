@@ -26,3 +26,4 @@ bower_components
 node
 node_modules
 dist
+package-lock.json 
