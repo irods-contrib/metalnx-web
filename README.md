@@ -1,8 +1,8 @@
 ![Metalnx Logo](docs/IMAGES/mlx_logo_blue.png)
 
-## Version: 2.1.0-SNAPSHOT
-## Git Tag:
-## Date:
+## Version: 2.1.0-RELEASE
+## Git Tag: 2.1.0-RELEASE
+## Date: 01/27/2020
 
 Metalnx is a web application designed to work alongside [iRODS](http://www.irods.org). It is a graphical user interface and serves as a client that authenticates to an existing iRODS Zone.
 
