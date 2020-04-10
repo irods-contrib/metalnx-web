@@ -19,3 +19,11 @@ Scripts/
 **/packaging/src
 **/*.bak
 flyway.conf
+test*.properties
+node_modules
+target
+bower_components
+node
+node_modules
+dist
+package-lock.json 

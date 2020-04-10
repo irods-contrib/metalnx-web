@@ -6,6 +6,7 @@ package com.emc.metalnx.controller;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class HttpErrorController {
 	public String show500CustomizedPage(final Model model, HttpServletRequest httpRequest) {
 		logger.info("show500CustomizedPage()");
 		logger.error("500 - Internal Server Error");
+		logger.info("show500CustomizedPage()");
 		logger.info("httpRequest:{}", httpRequest);
 		logger.info("model:{}", model);
 		Enumeration<String> attribs = httpRequest.getAttributeNames();

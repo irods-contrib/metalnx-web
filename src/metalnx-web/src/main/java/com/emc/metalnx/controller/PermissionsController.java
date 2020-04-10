@@ -90,11 +90,12 @@ public class PermissionsController {
 
 		boolean isAdmin = luu.getLoggedDataGridUser().isAdmin();
 		boolean isPermNone = mostRestrictivePermission.equals(DataGridPermType.NONE);
-
+		
+		/* ignore admin privilege
 		if (isPermNone && isAdmin) {
 			mostRestrictivePermission = DataGridPermType.IRODS_ADMIN;
-		}
-
+		} */
+		
 		return mostRestrictivePermission.toString().toLowerCase();
 	}
 

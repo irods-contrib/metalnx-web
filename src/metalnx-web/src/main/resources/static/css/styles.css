@@ -17,7 +17,7 @@ html {
 body {
 	background-color: #f8f8f8;
 	font-family: websiteFont;
-	color: #656363;
+	color: #333;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
@@ -155,6 +155,10 @@ table td {
 	width: 30px;
 }
 
+.searchFieldsDescription {
+	white-space: normal;
+	word-wrap: break-word;
+}
 #templatesToBeRemoved {
 	max-height: 250px;
 	overflow-y: auto;
@@ -1819,7 +1823,7 @@ ul.navbar-top-links>li.dropdown>.dropdown-toggle:hover, ul.navbar-top-links>li.d
 	text-align: right;
 	width: 100%;
 	bottom: -6px;
-	font-size: 1em;
+	font-size: 13px;
 	order: 1;
 	padding-right: 14px;
 }

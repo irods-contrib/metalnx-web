@@ -398,6 +398,25 @@ public class BrowseController {
 			@RequestParam("retrievePermissions") final boolean retrievePermissions)
 			throws DataGridConnectionRefusedException, FileNotFoundException, JargonException {
 
+		logger.info("getDirectoriesAndFilesForUser()");
+
+		if (model == null) {
+			throw new IllegalArgumentException("null model");
+		}
+
+		if (path == null) {
+			throw new IllegalArgumentException("null path");
+		}
+
+		if (username == null) {
+			throw new IllegalArgumentException("null username");
+		}
+
+		logger.info("model:{}", model);
+		logger.info("path:{}", path);
+		logger.info("username:{}", username);
+		logger.info("retrievePermissions:{}", retrievePermissions);
+
 		List<DataGridCollectionAndDataObject> list = new ArrayList<DataGridCollectionAndDataObject>();
 		Set<String> readPermissions = new HashSet<String>();
 		Set<String> writePermissions = new HashSet<String>();
@@ -411,6 +430,7 @@ public class BrowseController {
 		boolean isUsernameEmpty = StringUtils.isEmptyOrWhitespace(username);
 
 		if (!isPathEmpty) {
+			logger.info("path not empty");
 			// When adding a user (there is no username), we still need to be
 			// able to walk through the iRODS tree
 			list = cs.getSubCollectionsAndDataObjectsUnderPath(path);
@@ -447,6 +467,7 @@ public class BrowseController {
 		model.addAttribute("userBookmarks", userBookmarks);
 		logger.info("model:{}", model);
 
+		logger.info("done with processing:{}", model);
 		return "collections/treeViewForUserForm :: treeView";
 	}
 

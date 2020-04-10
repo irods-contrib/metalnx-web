@@ -12,8 +12,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/context
 	    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<import
-		resource="classpath:emc-metalnx-ui-admin-context.xml" />
+	<import resource="classpath:emc-metalnx-ui-admin-context.xml" />
 
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -25,10 +24,10 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md
+	<!-- this resource must be in the /etc/irods-ext directory, see the CONFIGURATION.md 
 		doc at the top of the repo, -->
 
-	 <import resource="file:/etc/irods-ext/metalnxConfig.xml" />
+	<import resource="file:/etc/irods-ext/metalnxConfig.xml" />
 
 	<!-- **************************************************************** -->
 	<!-- SPRING SECURITY-SPECIFIC ARTIFACTS -->
@@ -49,12 +48,11 @@
 	<bean id="logoutHandler"
 		class="com.emc.metalnx.services.auth.IRODSLogoutSuccessHandler" />
 
-	<!-- Instead of redirecting the user to the login page when he tries to
-		access a page with an expired session id, we return an error (403). By doing
+	<!-- Instead of redirecting the user to the login page when he tries to 
+		access a page with an expired session id, we return an error (403). By doing 
 		that, all ajax calls will be able to handle forbidden access to any page. -->
 	<bean id="ep403"
-		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
-	</bean>
+		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint" />
 
 	<sec:http auto-config="true" create-session="always"
 		entry-point-ref="ep403">
@@ -62,7 +60,6 @@
 		<!-- Login pages -->
 		<sec:intercept-url pattern="/login/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-
 		<!-- Static Resources -->
 		<sec:intercept-url pattern="/images/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -76,7 +73,6 @@
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:intercept-url pattern="/httpError/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-
 		<!-- Others -->
 		<sec:intercept-url pattern="/users/query/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
@@ -85,10 +81,12 @@
 		<sec:intercept-url pattern="/dashboard/**"
 			access="ROLE_ADMIN" />
 		<sec:intercept-url pattern="/preview/**"
-			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/previewPreparation/**"
 			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/collections/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/notifications/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/collectionInfo/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
@@ -100,12 +98,14 @@
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/avuAutoComplete/**"
 			access="ROLE_ADMIN, ROLE_USER,ROLE_GROUPADMIN" />
-
 		<sec:intercept-url pattern="/fileOperation/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/inheritance/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/upload/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/metadata/**" access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/inheritance/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/upload/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/metadata/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/fileproperty/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/templates/**"
@@ -122,12 +122,18 @@
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/ticketclient/**"
 			access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<sec:intercept-url pattern="/"
+		<sec:intercept-url pattern="/home/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/search/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/api/search/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/groups/**"
 			access="ROLE_ADMIN,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/users/**"
 			access="ROLE_ADMIN,ROLE_GROUPADMIN" />
+				<sec:intercept-url pattern="/"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 
 		<sec:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
@@ -140,13 +146,12 @@
 			password-parameter="password" username-parameter="username"
 			always-use-default-target="false" />
 
-		<sec:logout logout-url="/logout/" success-handler-ref="logoutHandler" />
+		<sec:logout logout-url="/logout/"
+			success-handler-ref="logoutHandler" />
 
 	</sec:http>
-	<!--
-	<bean id="exceptionFilter" class="com.emc.metalnx.services.auth.MetalnxExceptionTranslationFilter">
-	 <constructor-arg ref="ep403"/>
-	</bean>-->
+	<!-- <bean id="exceptionFilter" class="com.emc.metalnx.services.auth.MetalnxExceptionTranslationFilter"> 
+		<constructor-arg ref="ep403"/> </bean> -->
 
 	<sec:authentication-manager>
 		<sec:authentication-provider
@@ -215,5 +220,4 @@
 
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
-
 </beans>
