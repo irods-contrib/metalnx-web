@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This settings.xml file is meant to be loaded into the jargon build/test docker container
+as the operative profile to be used in building and testing jargon against a chosen docker test framework. -->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+	<profiles>    
+
+    
+    
+    <profile>
+			<id>flyway-docker</id>
+			<properties>
+				<flyway.jdbc.url>jdbc:postgresql://metalnx-database:5432/irods-ext</flyway.jdbc.url>
+				<flyway.db.user>irods</flyway.db.user>
+				<flyway.db.password>irods</flyway.db.password>
+				<flyway.db.schema>irods-ext</flyway.db.schema>
+			</properties>
+		</profile>
+		
+    </profiles>
+
+	<activeProfiles>
+		<activeProfile>flyway-docker</activeProfile>
+	</activeProfiles>
+
+</settings>
+

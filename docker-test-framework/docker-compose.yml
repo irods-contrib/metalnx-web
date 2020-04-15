@@ -1,7 +1,7 @@
 version: '3'
 # requires the METALNX_ETC_DIR environment to 
 services:
-  database:
+  metalnx-database:
       container_name: metalnx-database
       image: "postgres" # use latest official postgres version
       env_file:
@@ -15,11 +15,23 @@ services:
   metalnx:
       image: "metalnx" # 
       container_name: metalnx
+      build:
+        context: ../
+        dockerfile: Dockerfile
       volumes:
         - ${METALNX_ETC_DIR}:/etc/irods-ext
       ports:
         - "8080:8080" 
       networks:
+        - 4-2_irodsnet
+  database-init:
+    container_name: database-init
+    build:
+        context: .
+        dockerfile: Dockerfile.databaseinit
+    volumes:
+      - ..:/usr/src/metalnx-web
+    networks:
         - 4-2_irodsnet
 
 volumes:
