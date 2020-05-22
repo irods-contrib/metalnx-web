@@ -3,11 +3,19 @@ version: '3'
 services:
   metalnx-database:
       container_name: metalnx-database
-      image: "postgres" # use latest official postgres version
-      env_file:
-        - database.env # configure postgres
-      volumes:
-        - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      image: postgres:9.6
+      restart: always
+      environment:
+        POSTGRES_PASSWORD: irods 
+        POSTGRES_USER: irods 
+        POSTGRES_DB: irods-ext  
+        POSTGRES_HOST_AUTH_METHOD: md5  
+      #image: "metalnx-database" 
+      #build:
+      #  context: .
+      #  dockerfile: Dockerfile.postgresinit
+      #volumes:
+      #  - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
       ports:
         - "5432:5432" 
       networks:
@@ -16,7 +24,7 @@ services:
       image: "metalnx" # 
       container_name: metalnx
       build:
-        context: ../
+        context: .
         dockerfile: Dockerfile
       volumes:
         - ${METALNX_ETC_DIR}:/etc/irods-ext
