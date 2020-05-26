@@ -21,3 +21,7 @@ The entire pluggable search framework is off by default, and can be enabled and 
 Refer to the README.md file in the docker-test-framework for instructions. This adds a docker-compose framework to bootstrap a metalnx database and web container running in a standard configuration. This will eventually become a foundation for automated functional tests (e.g. Selenium tests). The framework links to the Jargon docker test framework which can bootstrap a standard iRODS grid test image.
 
 ### Changed
+
+#### bump up max upload for metalnx to 100 GB #143
+
+Updated Docker build to increase file upload sizes

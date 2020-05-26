@@ -10,12 +10,6 @@ services:
         POSTGRES_USER: irods 
         POSTGRES_DB: irods-ext  
         POSTGRES_HOST_AUTH_METHOD: md5  
-      #image: "metalnx-database" 
-      #build:
-      #  context: .
-      #  dockerfile: Dockerfile.postgresinit
-      #volumes:
-      #  - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
       ports:
         - "5432:5432" 
       networks:
@@ -24,7 +18,7 @@ services:
       image: "metalnx" # 
       container_name: metalnx
       build:
-        context: .
+        context: ..
         dockerfile: Dockerfile
       volumes:
         - ${METALNX_ETC_DIR}:/etc/irods-ext
