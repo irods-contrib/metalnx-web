@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### npm install fails in make #142
+
+Added a Docker build image (Dockerfile.testbuild). This mounts the source directory and provides a command prompt to build the Metalnx war, including providing node support
+
+See comments in Docker file, but essentially cd into the top level directory of the git repo and then, after building,  issue
+
+```
+
+docker run -it -v `pwd`/src/:/usr/src/metalnx metalnx-build /bin/bash
+
+```
+
+This will provide a command prompt and allow maven commands, mainly:
+
+```
+
+mvn package -DskipTests
+
+```
+
+
 #### Add pluggable search #110
 
 Added the ability to plugin standard search endpoints (see docs/PluggableSearch.md) for configuration details. This allows the provisioning of standard

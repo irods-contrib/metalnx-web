@@ -1,0 +1,16 @@
+#
+# Build container will build a war file from source code. 
+
+# first: docker build  -f Dockerfile.testbuild -t metalnx-build .
+# second: docker run -it -v `pwd`/src/:/usr/src/metalnx metalnx-build /bin/bash
+#
+FROM maven:3.6.3-jdk-11
+
+RUN apt-get update && \
+    apt-get install -y sudo wget nano nodejs 
+
+RUN mkdir -p /usr/src/metalnx
+
+WORKDIR /usr/src/metalnx
+
+CMD tail -f /dev/null
