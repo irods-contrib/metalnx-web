@@ -22,7 +22,7 @@
     data() {
     return {isActive: false}
     },
-    name:'SearchStyleResultEntry',
+    name:'SearchStyleResultList',
     props:['searchResultEntry']
   }
 </script>

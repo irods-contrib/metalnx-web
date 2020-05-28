@@ -31,7 +31,7 @@ psql> GRANT ALL PRIVILEGES ON DATABASE "IRODS-EXT" TO metalnx;
  - Configuration of Zone information, and features to display
  - Theming with custom CSS/Logo
 
-Create a copy of the default `etc/irods-ext` directory and update `metalnx.properties` and `metalnxConfig.xml`, and then run a container with the new configuration, probably with `--add-host` information due to Docker:
+Create a copy of the default `/docker-test-framework/etc/irods-ext` directory and update `metalnx.properties` and `metalnxConfig.xml`, and then run a container with the new configuration, probably with `--add-host` information due to Docker:
 ```
 docker run -d \
   -p 8080:8080 \
