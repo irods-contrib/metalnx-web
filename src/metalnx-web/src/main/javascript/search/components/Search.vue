@@ -153,7 +153,7 @@ export default {
           length: 0,
           offset: 0}
           ).then(response => this.searchResult = response.data)
-          if(this.searchResult.length == 0) this.searchResult = null;
+          if(this.searchResult === 0 || this.searchResult === '') this.searchResult = null;
           if (this.showSearchHint){
             this.showSearchHint = false
           }
