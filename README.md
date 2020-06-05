@@ -66,6 +66,14 @@ make
 
 This will result in a new Docker image named `myimages/metalnx:latest` on your machine.
 
+## Building Metalnx Docker image by using multistage approach
+
+```
+docker build --rm --no-cache -t myimages/metalnx:latest -f Dockerfile.multisage .
+```
+
+This will result in a new Docker image named `myimages/metalnx:latest` on your machine.
+
 ## Deploying Built Metalnx
 
 If you're deploying your own image (built just above):
