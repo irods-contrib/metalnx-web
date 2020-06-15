@@ -69,7 +69,7 @@ This will result in a new Docker image named `myimages/metalnx:latest` on your m
 ## Building Metalnx Docker image by using multistage approach
 
 ```
-docker build --rm --no-cache -t myimages/metalnx:latest -f Dockerfile.multisage .
+docker build --rm --no-cache -t myimages/metalnx:latest -f Dockerfile.multistage .
 ```
 
 This will result in a new Docker image named `myimages/metalnx:latest` on your machine.
