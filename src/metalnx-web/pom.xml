@@ -634,6 +634,7 @@
 									jwt.algo=${jargon.search.jwtAlgo}
 
 									pluggablesearch.enabled=${jargon.search.enabled}
+									classicsearch.enabled=true
 									pluggablesearch.endpointAccessSubject=${jargon.search.endpointAccessSubject}
 									pluggablesearch.info.timeout=0
 									pluggablesearch.search.timeout=0

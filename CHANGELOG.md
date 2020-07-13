@@ -36,6 +36,10 @@ These endpoints can return standard search results that can be highly customizab
 
 The entire pluggable search framework is off by default, and can be enabled and configured via metalnx.properties. See the etc/irods-ext/metalnx.properties sample
 
+#### Add list/grid display option for search plugin results #141
+
+Added a grid display for search results as well as an option in irods-ext/metalnx.properties to turn off the old GenQuery based file/avu search 
+
 
 #### Add test framework for docker-compose #140
 

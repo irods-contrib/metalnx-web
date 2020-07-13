@@ -55,9 +55,11 @@
 				class="fa fa-folder"></i>&nbsp;<span
 				th:text="#{collections.menu.title}"></span></a></li>
 		<!-- Metadata search sidebar item -->
+		<th:block th:if="${globalConfig.isClassicSearchEnabled()}">
 		<li><a th:href="@{ ${urlMap.URL_METADATA_SEARCH} }"> <i
 				class="fa fa-search"></i> &nbsp; <span
 				th:text="#{metadata.search.menu.title}"></span></a></li>
+		</th:block>
 		<th:block th:if="${globalConfig.isPluggableSearchEnabled()}">
 			<li><a th:href="@{ ${urlMap.URL_GLOBAL_SEARCH} }"> <i
 				class="fa fa-search"></i> &nbsp; <span
