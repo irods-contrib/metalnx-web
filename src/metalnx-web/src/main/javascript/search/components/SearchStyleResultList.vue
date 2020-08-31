@@ -1,7 +1,11 @@
 <template>
   <div class="container mb-3">
-     <div class="row">
-       <h3><b-link v-bind:href="searchResultEntry.url_link" target="_blank">{{ searchResultEntry.title }}</b-link></h3>
+    <h4> Showing {{ (currentPage - 1) * 10 + 1 }}-{{ currentPage * 10 }} of {{ totalHits }} entries </h4>
+    <div v-for="searchResultEntry in getResultList"
+        v-bind:key="searchResultEntry.url_link"
+        v-bind:searchResultEntry="searchResultEntry">
+      <div class="row">
+        <h3><b-link v-bind:href="searchResultEntry.url_link" target="_blank">{{ searchResultEntry.title }}</b-link></h3>
       </div>
       <div class="row">
         <p><span v-html="searchResultEntry.content_text"></span></p> 
@@ -14,15 +18,35 @@
             </div>
         </div>
       </div>
+    </div>
+    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="my-table"></b-pagination>
   </div>
 </template>
 
 <script>
   export default {
     data() {
-    return {isActive: false}
+    return {
+      isActive: false,
+      perPage: 10,
+      currentPage: 1,
+      totalHits: this.searchResult.total_hits
+      }
     },
     name:'SearchStyleResultList',
-    props:['searchResultEntry']
+    props:['searchResult'],
+    computed: {
+      getResultList () {
+      const items = this.searchResult.search_result
+      // Return just page of items needed
+      return items.slice(
+        (this.currentPage - 1) * this.perPage,
+        this.currentPage * this.perPage
+      )
+    },
+      rows: function () {
+        return this.searchResult.search_result.length
+      }
+    }
   }
 </script>

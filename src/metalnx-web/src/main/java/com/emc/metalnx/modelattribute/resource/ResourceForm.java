@@ -5,10 +5,10 @@
 
 package com.emc.metalnx.modelattribute.resource;
 
-import com.emc.metalnx.core.domain.entity.DataGridResource;
-
 import java.util.Date;
 import java.util.List;
+
+import com.emc.metalnx.core.domain.entity.DataGridResource;
 
 public class ResourceForm {
 

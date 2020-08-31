@@ -9,36 +9,35 @@
         </b-button-group>
      </b-button-toolbar>
     </div>
-	<div class="tool-bar">
-		<!-- These link buttons use Vue.js to bind click events to change the "layout" variable and bind an active class -->
-		<a class="" v-on:click="layout = 'list'" v-bind:class="{ 'active': layout == 'list'}" title="List"></a>
-		<a class="" v-on:click="layout = 'grid'" v-bind:class="{ 'active': layout == 'grid'}" title="Grid"></a>
-	</div>
 
-	<!-- Vue.js lets us choose which UL to show depending on the "layout" variable -->
-	
-	<div v-if="layout === 'grid'" class="grid">
-    <div v-if="searchResult.search_result.length > 0">
-      <SearchStyleResultGrid 
-        v-bind:searchResult="searchResult">
-      </SearchStyleResultGrid>
+    <div class="tool-bar">
+      <!-- These link buttons use Vue.js to bind click events to change the "layout" variable and bind an active class -->
+      <a class="" v-on:click="layout = 'list'" v-bind:class="{ 'active': layout == 'list'}" title="List"></a>
+      <a class="" v-on:click="layout = 'grid'" v-bind:class="{ 'active': layout == 'grid'}" title="Grid"></a>
     </div>
-	</div>
 
-	<div v-if="layout === 'list'" class="list">
-		<div v-if="searchResult.search_result.length > 0">
-      <SearchStyleResultList
-        v-for="searchResultEntry in searchResult.search_result"
-        v-bind:key="searchResultEntry.url_link"
-        v-bind:searchResultEntry="searchResultEntry">
-      </SearchStyleResultList>
+    <!-- Vue.js lets us choose which UL to show depending on the "layout" variable -->
+    <div v-if="layout === 'grid'" class="grid">
+      <div v-if="searchResult.search_result.length > 0">
+        <SearchStyleResultGrid 
+          v-bind:searchResult="searchResult">
+        </SearchStyleResultGrid>
+      </div>
+      <div v-else>
+        No match found
+      </div>
     </div>
-    <div v-else>
-      No match found
-    </div>
-	</div>
 
-    
+    <div v-if="layout === 'list'" class="list">
+      <div v-if="searchResult.search_result.length > 0">
+        <SearchStyleResultList
+          v-bind:searchResult="searchResult">
+        </SearchStyleResultList>
+      </div>
+      <div v-else>
+        No match found
+      </div>
+    </div>
   </div>
 </template>
 

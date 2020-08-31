@@ -1,15 +1,15 @@
 package com.emc.metalnx.controller;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService.AvuTypeEnum;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService.AvuTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
+
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.services.interfaces.AvuAutoCompleteDelegateService;
 import com.emc.metalnx.services.interfaces.IRODSServices;

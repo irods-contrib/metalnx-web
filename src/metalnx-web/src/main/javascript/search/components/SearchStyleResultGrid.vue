@@ -1,6 +1,8 @@
 <template>
 <div>
-<b-table striped head-variant="dark" hover :items="getGridData.items" :fields="getGridData.fields">
+<h4> Showing {{ (currentPage - 1) * 10 + 1 }}-{{ currentPage * 10 }} of {{ totalHits }} entries </h4>
+<b-table id="my-table" striped head-variant="dark" hover :items="getGridData.items" :fields="getGridData.fields"
+      :per-page="perPage" :current-page="currentPage">
   <template v-slot:cell(customTitle)="data">
     <div v-if="data.item.propertyDict.isFile" class="listFile">
       <b-link v-bind:href="data.item.url_link" target="_blank">{{ data.item.title}}</b-link>
@@ -18,6 +20,8 @@
     </div>
   </template>
 </b-table>
+
+<b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="my-table"></b-pagination>
 </div>
 </template>
 
@@ -32,23 +36,27 @@
     data() {
     return {
       isActive: false,
-      faFolder
-    }
+      faFolder,
+      perPage: 10,
+      currentPage: 1,
+      totalHits: this.searchResult.total_hits
+      }
     },
     name:'SearchStyleResultGrid',
     props:['searchResult'],
     computed: {
       getGridData:  function () {
         var resultData = [];
-        for (var entry in this.searchResult.search_result) {
+        var computed_searchResult = this.searchResult
+        for (var entry in computed_searchResult.search_result) {
           // Converting properties array to dictionary
-          var propertySet = this.searchResult.search_result[entry].properties.propertySet
+          var propertySet = computed_searchResult.search_result[entry].properties.propertySet
           var propertyDict = {};
           for (var propertyEntry in propertySet){
             propertyDict[propertySet[propertyEntry].name] = propertySet[propertyEntry].value
           }
-          this.searchResult.search_result[entry]['propertyDict'] = propertyDict
-          resultData.push(this.searchResult.search_result[entry])
+          computed_searchResult.search_result[entry]['propertyDict'] = propertyDict
+          resultData.push(computed_searchResult.search_result[entry])
         }
         
         var data = {
@@ -78,6 +86,9 @@
         items: resultData
         }
         return data;
+      },
+      rows: function () {
+        return this.searchResult.search_result.length
       }
     }
   }

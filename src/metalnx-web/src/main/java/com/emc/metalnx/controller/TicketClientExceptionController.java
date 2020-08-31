@@ -5,13 +5,6 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.controller.utils.LoggedUserUtils;
-import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
-import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
-import com.emc.metalnx.services.auth.UserTokenDetails;
-import com.emc.metalnx.services.interfaces.TicketClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +16,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketDownloadException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException;
+import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
+import com.emc.metalnx.services.auth.UserTokenDetails;
+import com.emc.metalnx.services.interfaces.TicketClientService;
 
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {

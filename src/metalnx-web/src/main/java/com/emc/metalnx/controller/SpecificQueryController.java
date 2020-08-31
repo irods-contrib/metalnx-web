@@ -5,10 +5,8 @@
 
 package com.emc.metalnx.controller;
 
-import com.emc.metalnx.core.domain.entity.DataGridSpecificQuery;
-import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
-import com.emc.metalnx.modelattribute.enums.URLMap;
-import com.emc.metalnx.services.interfaces.SpecificQueryService;
+import java.util.List;
+
 import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
+import com.emc.metalnx.core.domain.entity.DataGridSpecificQuery;
+import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
+import com.emc.metalnx.modelattribute.enums.URLMap;
+import com.emc.metalnx.services.interfaces.SpecificQueryService;
 
 @Controller
 @RequestMapping(value = "/specificqueries")
