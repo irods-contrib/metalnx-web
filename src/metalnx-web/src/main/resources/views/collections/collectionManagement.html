@@ -831,6 +831,27 @@
 				console.log("positionBrowserToPath()"); //FIXME: remove for testing
 				window.location.href = '/metalnx/collections?path=' + encodeURIComponent(path); //relative to domain
 			}
+			
+			function addToCart() {
+	        	alert("This is add to cart funtion");
+	        	/* var paths = [];
+                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
+                    paths.push($(this).val());
+                }); */
+                
+                var paths = findPathsSelected();
+                console.log(paths);
+            	var url = "/metalnx/shoppingCart/updateCart/";
+
+	        	ajaxEncapsulation(
+	        		url,
+	        		"POST",
+	        		{paths: paths},
+	        		function (data) {
+		        		$("#tree-view-panel-body").html(data);
+					}
+				);
+	        }
 
 	        function deleteAction(){
 		        	setOperationInProgress();
