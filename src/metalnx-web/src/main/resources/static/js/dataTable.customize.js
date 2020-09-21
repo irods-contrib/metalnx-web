@@ -75,6 +75,8 @@ function addCollectionActions(table_id, datatable,advancedView){
         '       <li><a href="#" id="createTicketBtn" class="hideElement" onclick="getTicketCreationForm();"><span><i class="fa fa-list-alt"> </i></span> <span>Create Ticket</span></a></li>'+
         '       <li> <a id="downloadBtn" href="/metalnx/fileOperation/prepareFilesForDownload/" class="hideElement"><span><i class="fa fa-cloud-download"></i></span> <span>Download</span> </a>'+
         '       </li>'+
+        '       <li> <a id="addToCart" onclick="addToCart();"><span><i class="fa fa-shopping-cart"></i></span> <span>Add To Cart</span> </a>'+
+        '       </li>'+
         '       <li class="divider"></li><li><a href="#" id="deleteBtn" class="hideElement" data-toggle="modal" data-target="#deleteModal"><span><i class="fa fa-trash-o"></i> </span> <span>Delete</span></a>'+
         '       </li>'+
         '   </ul>'+

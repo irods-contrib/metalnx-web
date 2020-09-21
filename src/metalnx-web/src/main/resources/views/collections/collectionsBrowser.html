@@ -222,9 +222,9 @@
 <!-- /Add Modal -->
 
 <!-- Bread Crumb -->
-<div id="directoryPath" class="col-md-9 col-sm-8 col-xs-12"
+<div id="directoryPath" class="col-md-9 col-sm-9 col-xs-12"
 	th:include="${'collections/collectionsBreadCrumb'}"></div>
-<div class="col-md-3 col-sm-4 col-xs-12">
+<div class="col-md-3 col-sm-3 col-xs-12">
 	<a aria-label="empty trash" title="empty trash" href="#"
 		th:if="${isTrash}" id="emptyTrashBtn"
 		th:title="#{collections.empty.trash.button.tooltip}"
@@ -266,12 +266,17 @@
 				</div>
 			</a>
 			<a role="button" class="btn btn-default icon-btn"
-			id="galleryIcon"
-			th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
-			title="Gallery View">
-			<i class="fa fa-th" aria-hidden="true"></i>
+				id="galleryIcon"
+				th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
+				title="Gallery View">
+				<i class="fa fa-th" aria-hidden="true"></i>
 			</a>
-
+			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
+				<a role="button" class="btn btn-default icon-btn" id="cartIcon"
+					title="Cart" aria-label="Cart" th:href="'/metalnx/shoppingCart/'">
+					<i class="fa fa-shopping-cart fa-color"></i>
+				</a>
+			</th:block>
 		</th:block>
 		<th:block
 			th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
@@ -302,11 +307,17 @@
 				</div>
 			</a>
 			<a role="button" class="btn btn-default icon-btn"
-			id="galleryIcon"
-			th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
-			title="Gallery View">
-			<i class="fa fa-th" aria-hidden="true"></i>
+				id="galleryIcon"
+				th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
+				title="Gallery View">
+				<i class="fa fa-th" aria-hidden="true"></i>
 			</a>
+			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
+				<a role="button" class="btn btn-default icon-btn" id="cartIcon"
+					title="Cart" aria-label="Cart" th:href="'/metalnx/shoppingCart/'">
+					<i class="fa fa-shopping-cart fa-color"></i>
+				</a>
+			</th:block>
 		</th:block>
 	</div>
 </div>
@@ -332,7 +343,8 @@
 							title="select all items" /></th>
 						<!-- <th th:text="#{collections.management.table.collection.name.label}"></th>
                         <th th:text="#{collections.management.table.owner.label}"></th> -->
-						<th th:text="#{collections.management.table.collection.name.label}"></th>
+						<th
+							th:text="#{collections.management.table.collection.name.label}"></th>
 						<th th:text="#{collections.management.table.modified.label}"></th>
 						<th th:text="#{collections.management.table.size.label}"></th>
 						<th th:text="#{collections.management.table.action.label}"></th>
@@ -666,6 +678,7 @@
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#downloadBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#addToCartBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
 						$("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
@@ -674,6 +687,7 @@
 						$("#applyTemplatesBtn").parent("li").addClass("hideElement");
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#addToCartBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
                         $("#actions .dropdown-menu .divider").addClass("hideElement");
@@ -683,6 +697,7 @@
 						$("#actions button").prop("disabled", false);
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
+						$("#addToCartBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
 						$("#actions .dropdown-menu .divider").addClass("hideElement");
@@ -712,6 +727,7 @@
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#addToCartBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
                         $("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
@@ -721,6 +737,7 @@
 						$("#moveBtn").parent("li").addClass("hideElement");
 						$("#modifyBtn").parent("li").addClass("hideElement");
 						$("#createTicketBtn").parent("li").addClass("hideElement");
+						$("#addToCartBtn").parent("li").addClass("hideElement");
 						$("#deleteBtn").parent("li").addClass("hideElement");
 						$("#actions .dropdown-menu .divider").addClass("hideElement");
 						break;
