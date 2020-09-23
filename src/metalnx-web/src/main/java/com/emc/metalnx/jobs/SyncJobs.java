@@ -50,7 +50,7 @@ public class SyncJobs {
 
 	private static final Logger logger = LoggerFactory.getLogger(SyncJobs.class);
 
-	@Scheduled(fixedDelay = 15000)
+	@Scheduled(fixedDelay = 1500000)
 	public void sync() throws JargonException {
 		if (runSyncJobs.trim().compareTo("true") == 0) {
 			logger.debug("Starting synchronization job...");
@@ -99,8 +99,9 @@ public class SyncJobs {
 
 					userDao.deleteByDataGridId(id);
 
-					logger.info("[DELETE] User " + usernameDeleted + " (iRODS id: " + userID + ") " + " (DataGrid id: "
-							+ dataGridID + ") " + " was deleted from database.");
+					// logger.info("[DELETE] User " + usernameDeleted + " (iRODS id: " + userID + ")
+					// " + " (DataGrid id: "
+					// + dataGridID + ") " + " was deleted from database.");
 				}
 			}
 
@@ -119,8 +120,8 @@ public class SyncJobs {
 
 					userDao.save(userMissingInDB);
 
-					logger.info("[INSERT] User " + userMissingInDB.getUsername() + " (iRODS id: "
-							+ userMissingInDB.getDataGridId() + ") " + " was added to database.");
+					// logger.info("[INSERT] User " + userMissingInDB.getUsername() + " (iRODS id: "
+					// + userMissingInDB.getDataGridId() + ") " + " was added to database.");
 				}
 			}
 

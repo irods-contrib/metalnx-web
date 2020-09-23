@@ -49,6 +49,8 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
 			final ModelAndView modelAndView) throws Exception {
+		logger.info("postHandle()");
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (modelAndView != null && auth != null) {
@@ -67,7 +69,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 
 			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
 
-			logger.debug("added user prefs to model as 'dataGridUser':{}", loggedUser);
+			logger.debug("dataGridUser:{}", loggedUser);
 
 			modelAndView.getModelMap().addAttribute("dataGridUser", loggedUser);
 
