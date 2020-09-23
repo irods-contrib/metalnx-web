@@ -833,15 +833,10 @@
 			}
 			
 			function addToCart() {
-	        	alert("This is add to cart funtion");
-	        	/* var paths = [];
-                $("input:checkbox[name='collectionPathCheckboxes']:checked").each(function(){
-                    paths.push($(this).val());
-                }); */
-                
+	        	alert("This is add to cart funtion");               
                 var paths = findPathsSelected();
                 console.log(paths);
-            	var url = "/metalnx/shoppingCart/updateCart/";
+            	var url = "/metalnx/api/shoppingCart/updateCart/";
 
 	        	ajaxEncapsulation(
 	        		url,

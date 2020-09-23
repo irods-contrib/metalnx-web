@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org" lang="en"
+	layout:decorator="templatev">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<!-- Radial Progress Library -->
+<script th:src="@{/js/chunk-vendors.js}"></script>
+<script th:src="@{/js/shoppingCart.js}"></script>
+
+<link rel="stylesheet" th:href="@{/css/chunk-vendors.css}" />
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-sm-12" aria-labelledby="searchHome"
+			layout:fragment="content">
+			<div id='app'></div>
+	<script th:src="@{/js/chunk-vendors.js}"></script>
+	<script th:src="@{/js/shoppingCart.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

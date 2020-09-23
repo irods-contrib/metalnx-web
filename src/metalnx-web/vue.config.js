@@ -22,6 +22,9 @@ module.exports = {
    },
    notifications: {
      entry: 'src/main/javascript/notifications/main.js'
+   },
+   shoppingCart: {
+    entry: 'src/main/javascript/shoppingCart/main.js'
    }
  }
 }
