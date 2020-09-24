@@ -1,7 +1,5 @@
 package com.emc.metalnx.controller.api;
 
-import java.util.List;
-
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.datautils.shoppingcart.FileShoppingCart;
 import org.irods.jargon.datautils.shoppingcart.ShoppingCartEntry;
@@ -33,7 +31,7 @@ public class ShoppingCartApiController {
 
 	@Autowired
 	private BrowseController browseController;
-	
+
 	@Autowired
 	IRODSServices irodsServices;
 
@@ -42,14 +40,12 @@ public class ShoppingCartApiController {
 	@ResponseBody
 	public String showCart(final Model model) throws DataGridException, JargonException {
 		logger.info("showCart()");
-		String key = "key";
-		
+		String key = "metalnx-cart";
+
 		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
-		FileShoppingCart fileShoppingCart = FileShoppingCart.instance();
-		String serialized = shoppingCartService.serializeShoppingCartAsLoggedInUser(fileShoppingCart, key);
-		logger.info("cart content serialized :: " + serialized);
-		
-		return serialized;
+		FileShoppingCart fileShoppingCart = shoppingCartService.retreiveShoppingCartAsLoggedInUser(key);
+		logger.info("cart retrieved:() ", fileShoppingCart);
+		return fileShoppingCart.serializeShoppingCartContentsToStringOneItemPerLine();
 	}
 
 	@RequestMapping(value = "/updateCart/", method = RequestMethod.POST)
@@ -57,18 +53,18 @@ public class ShoppingCartApiController {
 	public String updateCart(final Model model, @RequestParam("paths[]") final String[] paths)
 			throws DataGridException, JargonException {
 		logger.info("initiating updateCart()");
-		
-		String key = "key";
+
+		String key = "metalnx-cart";
 		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 		FileShoppingCart fileShoppingCart = FileShoppingCart.instance();
-				
+
 		for (String path : paths) {
 			logger.info("Adding path to cart:: " + path.toString());
 			fileShoppingCart.addAnItem(ShoppingCartEntry.instance(path.toString()));
 		}
 		String cartPath = shoppingCartService.serializeShoppingCartAsLoggedInUser(fileShoppingCart, key);
-		logger.info("Path to the cart: " + cartPath );
-		
+		logger.info("Path to the cart: " + cartPath);
+
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
 	}
 }
