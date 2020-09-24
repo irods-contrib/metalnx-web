@@ -5,6 +5,7 @@ import java.util.List;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.datautils.shoppingcart.FileShoppingCart;
 import org.irods.jargon.datautils.shoppingcart.ShoppingCartEntry;
+import org.irods.jargon.datautils.shoppingcart.ShoppingCartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.BrowseController;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -31,15 +33,22 @@ public class ShoppingCartApiController {
 
 	@Autowired
 	private BrowseController browseController;
+	
+	@Autowired
+	IRODSServices irodsServices;
 
 	@RequestMapping(value = "/getCart/", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public String showCart(final Model model) throws DataGridException, JargonException {
 		logger.info("showCart()");
+		String key = "key";
+		
+		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 		FileShoppingCart fileShoppingCart = FileShoppingCart.instance();
-		String serialized = fileShoppingCart.serializeShoppingCartContentsToStringOneItemPerLine();
+		String serialized = shoppingCartService.serializeShoppingCartAsLoggedInUser(fileShoppingCart, key);
 		logger.info("cart content serialized :: " + serialized);
+		
 		return serialized;
 	}
 
@@ -48,17 +57,18 @@ public class ShoppingCartApiController {
 	public String updateCart(final Model model, @RequestParam("paths[]") final String[] paths)
 			throws DataGridException, JargonException {
 		logger.info("initiating updateCart()");
+		
+		String key = "key";
+		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 		FileShoppingCart fileShoppingCart = FileShoppingCart.instance();
-
+				
 		for (String path : paths) {
 			logger.info("Adding path to cart:: " + path.toString());
 			fileShoppingCart.addAnItem(ShoppingCartEntry.instance(path.toString()));
 		}
-
-		List<String> fileNames = fileShoppingCart.getShoppingCartFileList();
-		logger.info("Items in cart :: " + fileShoppingCart.hasItems());
-		logger.info("Files in cart:: " + fileNames);
-
+		String cartPath = shoppingCartService.serializeShoppingCartAsLoggedInUser(fileShoppingCart, key);
+		logger.info("Path to the cart: " + cartPath );
+		
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
 	}
 }
