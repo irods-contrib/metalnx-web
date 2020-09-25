@@ -1,5 +1,7 @@
 package com.emc.metalnx.controller.api;
 
+import java.util.List;
+
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.datautils.shoppingcart.FileShoppingCart;
 import org.irods.jargon.datautils.shoppingcart.ShoppingCartEntry;
@@ -38,14 +40,14 @@ public class ShoppingCartApiController {
 	@RequestMapping(value = "/getCart/", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public String showCart(final Model model) throws DataGridException, JargonException {
+	public List<String> showCart(final Model model) throws DataGridException, JargonException {
 		logger.info("showCart()");
 		String key = "metalnx-cart";
 
 		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 		FileShoppingCart fileShoppingCart = shoppingCartService.retreiveShoppingCartAsLoggedInUser(key);
 		logger.info("cart retrieved:() ", fileShoppingCart);
-		return fileShoppingCart.serializeShoppingCartContentsToStringOneItemPerLine();
+		return fileShoppingCart.getShoppingCartFileList();
 	}
 
 	@RequestMapping(value = "/updateCart/", method = RequestMethod.POST)
