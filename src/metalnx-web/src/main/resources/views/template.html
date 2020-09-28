@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
-<!-- Copyright (c) 2015-2017, Dell EMC -->
-
-
+<!--
+  ~ Copyright (c) 2015-2017, Dell EMC
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
 
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	xmlns:layout="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
 <head>
 
@@ -16,13 +27,15 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 
-<link rel="shortcut icon" href="../static/images/favicon-16.png" th:href="@{/images/favicon-16.png}" type="image/png" />
+<link rel="shortcut icon" href="../static/images/favicon-16.png"
+	th:href="@{/images/favicon-16.png}" type="image/png" />
 
-<title>iRODS User Interface</title>
+<title th:if="${userDetails.isAdmin()}">iRODS Admin UI</title>
+<title th:unless="${userDetails.isAdmin()}">iRODS User Interface</title>
 
 <!-- jQuery Version 1.11.0 -->
 <script src="../static/js/jquery-1.11.0.js"
-    th:src="@{/js/jquery.min.js}"></script>
+	th:src="@{/js/jquery.min.js}"></script>
 
 <!-- Bootstrap Core CSS -->
 <link href="../static/css/bootstrap.min.css" rel="stylesheet"
@@ -31,25 +44,76 @@
 <!-- Custom Fonts -->
 <link href="../static/css/font-awesome.min.css" rel="stylesheet"
 	type="text/css" th:href="@{/css/font-awesome.min.css}" />
-	<!-- Custom Fonts -->
-<link href="../static/css/fontawesome-5.0.13.min.css" rel="stylesheet"
-	type="text/css" th:href="@{/css/fontawesome-5.0.13.min.css}" />
-	
-	<link href="../static/css/toastr.css" rel="stylesheet"
-	th:href="@{/css/toastr.css}" />
 
 <link href="../static/css/styles.css" rel="stylesheet"
 	th:href="@{/css/styles.css}" />
 
-	<link href="../static/css/styles.css" rel="stylesheet"
-	th:href="@{/css/global.css}" />
-
 <!-- Tags input -->
 <link href="../static/css/bootstrap-tagsinput.css" rel="stylesheet"
-	th:href="@{/css/bootstrap-tagsinput.css}"/>
+	th:href="@{/css/bootstrap-tagsinput.css}" />
+
+<!-- global css -->
+<link href="../static/css/global.css" rel="stylesheet"
+	th:href="@{/css/global.css}" />
+	<!-- toastr css -->
+	<link href="../static/css/toastr.css" rel="stylesheet"
+		th:href="@{/css/toastr.css}" />
+
+<!-- junction header asset block -->
+<script type="text/javascript">var currentSection = "divisions";</script>
+<!-- ~~~Start of headerassets (DO NOT DELETE)~~~-->
+<link
+	href="https://www.niehs.nih.gov/resources/stylesheets/semantic/semantic.css"
+	rel="stylesheet" type="text/css" />
+<link
+	href="https://junction.niehs.nih.gov/resources/stylesheets/styles-standard.min.css?version=08302017"
+	rel="stylesheet" type="text/css" />
+<link
+	href="https://junction.niehs.nih.gov/resources/stylesheets/print.min.css?version=08302017"
+	rel="stylesheet" type="text/css" media="print" />
+
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script> -->
+<!-- ~~~End of headerassets (DO NOT DELETE)~~~-->
+<!-- ~~~Start of headerassets (DO NOT DELETE)~~~-->
+<script type="text/javascript"
+	src="https://junction.niehs.nih.gov/resources/javascript/semanticTopNav.js?version=08302017"></script>
+<!-- ~~~End of headerassets (DO NOT DELETE)~~~-->
+<!-- ~~~Start of headerassets (DO NOT DELETE)~~~-->
+<script type="text/javascript"
+	src="https://junction.niehs.nih.gov/resources/javascript/hoverIntent.js"></script>
+<script type="text/javascript"
+	src="https://www.niehs.nih.gov/resources/javascripts/libraries/ilightbox/ilightbox.js"></script>
+<script type="text/javascript"
+	src="https://www.niehs.nih.gov/resources/javascripts/libraries/semantic_menu/transition.min.js"></script>
+<script type="text/javascript"
+	src="https://www.niehs.nih.gov/resources/javascripts/libraries/semantic_menu/dropdown.min.js"></script>
+<!-- ~~~End of headerassets (DO NOT DELETE)~~~-->
+<script type="text/javascript"
+	src="//junction.niehs.nih.gov/resources/javascript/apps.onload.js"></script>
+<!-- end junction header asset block -->
+
+<!-- Datatables component -->
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css"
+	th:href="@{/css/dataTables.bootstrap.min.css}" />
+<script src="../static/js/jquery.dataTables.min.js"
+	th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script src="../static/js/jquery.dataTables.min.js"
+	th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+
+<!-- Our customization on datatables jquery plugin -->
+<script src="../static/js/dataTable.customize.js"
+	th:src="@{/js/dataTable.customize.js}"></script>
+
+<!-- Nano scroll -->
+<script src="../static/js/jquery.nanoscroller.min.js"
+	th:src="@{/js/jquery.nanoscroller.min.js}"></script>
+<link href="../static/css/nanoscroller.css" rel="stylesheet"
+	th:href="@{/css/nanoscroller.css}" />
+
 
 <!-- Tagsinput -->
-<script src="../static/js/bootstrap-tagsinput.min.js" th:src="@{/js/bootstrap-tagsinput.min.js}"></script>
+<script src="../static/js/bootstrap-tagsinput.min.js"
+	th:src="@{/js/bootstrap-tagsinput.min.js}"></script>
 
 <!-- Typeahead jQuery Plugin -->
 <script src="../static/js/typeahead.js" th:src="@{/js/typeahead.js}"></script>
@@ -60,28 +124,459 @@
 <!-- Clipboard -->
 <script src="../static/js/clipboard.min.js" th:src="@{/js/clipboard.min.js}"></script>
 
-
-<!-- Toastr -->
+<!-- toastr notification -->
 <script src="../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
-
-<!-- Nano scroll -->
-<script src="../static/js/jquery.nanoscroller.min.js" th:src="@{/js/jquery.nanoscroller.min.js}"></script>
-<link href="../static/css/nanoscroller.css" rel="stylesheet"
-	th:href="@{/css/nanoscroller.css}" />
-
-<!-- Datatables component -->
-<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" th:href="@{/css/dataTables.bootstrap.min.css}" />
-<script  src="../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
-<script  src="../static/js/jquery.dataTables.min.js" th:src="@{/js/dataTables.bootstrap.min.js}"></script>
-
-<!-- Our customization on datatables jquery plugin -->
-<script src="../static/js/dataTable.customize.js" th:src="@{/js/dataTable.customize.js}"></script>
-
+<script src="../static/js/toastr.options.js" th:src="@{/js/toastr.options.js}"></script>
 </head>
-
 <body>
 
 	<div id="wrapper">
+
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0;">
+			<div id="skipnav">
+				<a href="#skipnav-anchor">Skip to Main Content</a><a name="top"
+					id="top"></a>
+			</div>
+			<!-- ~~~Start of headertag (DO NOT DELETE)~~~-->
+			<div class="fifty-banner">
+				<div id="hdr-parentlinks">
+					<a href="https://www.nih.gov" onClick="target='newwindow'">National
+						Institutes of Health</a> <span>&nbsp;-&nbsp;&nbsp;</span> <a
+						href="https://www.hhs.gov" onClick="target='newwindow'">U.S.
+						Department of Health and Human Services</a>
+				</div>
+			</div>
+
+			<!-- HEADER START -->
+			<div id="header">
+				<div id="header-fixed">
+					<h1 id="hdr-junctiontitle">
+						<a href="https://junction.niehs.nih.gov/"
+							title="Go to The Junction Home">The Junction</a>
+					</h1>
+					<h2 id="hdr-niehstitle">
+						<a href="https://www.niehs.nih.gov"
+							title="Go to the NIEHS Public Web Site">Go to NIEHS Public
+							Site</a>
+					</h2>
+					<!-- Search start -->
+					<form method="get" id="searchform"
+						action="https://seek.niehs.nih.gov/texis/search">
+						<div>
+							<input type="hidden" name="pr" value="intranet-all"
+								title="intranet-all" />
+							<fieldset class="search">
+								<label for="sitesearch" id="sitesearch-label">Search</label> <input
+									class="box" id="sitesearch" name="query"
+									value="Search here ..."
+									onfocus="if(this.value==this.defaultValue) this.value='';"
+									onblur="if(this.value=='') this.value=this.defaultValue;"
+									type="text" />
+								<button class="btn" title="Submit Search">Search</button>
+							</fieldset>
+						</div>
+					</form>
+					<!-- Search end -->
+				</div>
+				<!-- Closing header-fixed -->
+			</div>
+			<!-- Closing header -->
+			<!-- HEADER END -->
+			<!-- ~~~End of headertag (DO NOT DELETE)~~~-->
+		</nav>
+		<!-- junction navigation block -->
+
+		<div id="topnav">
+			<div id="topnav-fixed">
+				<div class="ui menu semantic-nav">
+					<a href='https://junction.niehs.nih.gov/lab/index.htm'
+						class='semantic-nav_link--1 item level1 forlabstaff lab'><span>For
+							Lab Staff</span></a> <a
+						href='https://junction.niehs.nih.gov/office/index.htm'
+						class='semantic-nav_link--1 item level1 forofficestaff office'><span>For
+							Office Staff</span></a> <a
+						href='https://junction.niehs.nih.gov/managers/index.htm'
+						class='semantic-nav_link--1 item level1 formanagers managers'><span>For
+							Managers</span></a> <a
+						href='https://junction.niehs.nih.gov/working/index.htm'
+						class='semantic-nav_link--1 item level1 workinghere working'><span>Working
+							Here</span></a> <a href='https://junction.niehs.nih.gov/computer/index.htm'
+						class='semantic-nav_link--1 item level1 computersupport computer'><span>Computer
+							Support</span></a> <a
+						href='https://junction.niehs.nih.gov/library/index.htm'
+						class='semantic-nav_link--1 item level1 library library'><span>Library</span></a>
+
+
+
+					<a href='https://junction.niehs.nih.gov/news/index.htm'
+						class='semantic-nav_link--1 item level1 news news'><span>News</span></a>
+
+
+
+					<a href='https://junction.niehs.nih.gov/policies/index.htm'
+						class='semantic-nav_link--1 item level1 policiesandethics policies'><span>Policies
+							&amp; Ethics</span></a> <a
+						href='https://junction.niehs.nih.gov/purchasing/index.htm'
+						class='semantic-nav_link--1 item level1 purchasing purchasing'><span>Purchasing</span></a>
+
+
+
+					<a href='https://junction.niehs.nih.gov/safety/index.htm'
+						class='semantic-nav_link--1 item level1 safetyandsecurity safety'><span>Safety
+							&amp; Security</span></a> <a
+						href='https://junction.niehs.nih.gov/training/index.htm'
+						class='semantic-nav_link--1 item level1 training training'><span>Training</span></a>
+
+
+
+					<div class='ui dropdown item semantic-nav_main-dropdown'>
+						<a href='https://junction.niehs.nih.gov/divisions/index.htm'
+							class='semantic-nav_link--1 level1 item divisions divisions'><span>Divisions</span></a>
+						<div class="menu semantic-nav_dropdown1">
+
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/admin/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 administrativeoffices divisions'><span>Administrative
+										Offices</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/admin/acronym/index.htm'
+										class='semantic-nav_link--3 item level3 acronymsandabbreviations divisions'><span>Acronyms
+											&amp; Abbreviations</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/admin_forms/index.htm'
+										class='semantic-nav_link--3 item level3 administrativeforms divisions'><span>Administrative
+											Forms</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/efficient/index.htm'
+										class='semantic-nav_link--3 item level3 efficientspending divisions'><span>Efficient
+											Spending</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/hr/index.htm'
+										class='semantic-nav_link--3 item level3 hiringandrecruitment divisions'><span>Hiring
+											and Recruitment</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/id_badge/index.htm'
+										class='semantic-nav_link--3 item level3 idbadging divisions'><span>ID
+											Badging</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/other/index.htm'
+										class='semantic-nav_link--3 item level3 otherservices divisions'><span>Other
+											Services</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/admin/procurement/index.htm'
+										class='semantic-nav_link--3 item level3 procurement divisions'><span>Procurement</span></a>
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/admin/travel/index.htm'
+										class='semantic-nav_link--3 item level3 travelpoliciesandprocedures divisions'><span>Travel
+											Policies and Procedures</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/director/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 director(od) divisions'><span>Director
+										(OD)</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/director/strategicplan/index.htm'
+										class='semantic-nav_link--3 item level3 2012-2017strategicplan divisions'><span>2012-2017
+											Strategic Plan</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/director/communications/index.htm'
+										class='semantic-nav_link--3 item level3 communications divisions'><span>Communications</span></a>
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/director/ehp/index.htm'
+										class='semantic-nav_link--3 item level3 environmentalhealthperspectives divisions'><span>Environmental
+											Health Perspectives</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/director/ethics/index.htm'
+										class='semantic-nav_link--3 item level3 ethics divisions'><span>Ethics</span></a>
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/director/secretary/index.htm'
+										class='semantic-nav_link--3 item level3 executivesecretariat divisions'><span>Executive
+											Secretariat</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/director/library/index.htm'
+										class='semantic-nav_link--3 item level3 library divisions'><span>Library</span></a>
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/director/policy/index.htm'
+										class='semantic-nav_link--3 item level3 policy,planning,andevaluation divisions'><span>Policy,
+											Planning, &amp; Evaluation</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/director/education/index.htm'
+										class='semantic-nav_link--3 item level3 scienceeducationanddiversity divisions'><span>Science
+											Education &amp; Diversity</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/extramural/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 extramuralresearchandtraining divisions'><span>Extramural
+										Research &amp; Training</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/extramural/council/index.htm'
+										class='semantic-nav_link--3 item level3 councildocuments divisions'><span>Council
+											Documents</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/extramural/ao/index.htm'
+										class='semantic-nav_link--3 item level3 dertadministrativeoffice divisions'><span>DERT
+											Administrative Office</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/extramural/nih/index.htm'
+										class='semantic-nav_link--3 item level3 nihextramuralpolicies divisions'><span>NIH
+											Extramural Policies</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/extramural/resources/index.htm'
+										class='semantic-nav_link--3 item level3 resourcesfordertstaff divisions'><span>Resources
+											for DERT Staff</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/extramural/sharepoint/index.htm'
+										class='semantic-nav_link--3 item level3 sharepointsites divisions'><span>SharePoint
+											Sites</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a href='https://junction.niehs.nih.gov/divisions/dir/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 intramuralresearch divisions'><span>Intramural
+										Research</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/dir/arsb/index.htm'
+										class='semantic-nav_link--3 item level3 administrativeandresearchservicesbranch divisions'><span>Administrative
+											and Research Services Branch</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/resources/index.htm'
+										class='semantic-nav_link--3 item level3 coresandintramuralresources divisions'><span>Cores
+											&amp; Intramural Resources</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/dircouncil/index.htm'
+										class='semantic-nav_link--3 item level3 dircouncil divisions'><span>DIR
+											Council</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/urgent/index.cfm'
+										class='semantic-nav_link--3 item level3 formforurgentlabneeds divisions'><span>Form
+											for Urgent Lab Needs</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/career/index.htm'
+										class='semantic-nav_link--3 item level3 intramuralcareerdevelopment divisions'><span>Intramural
+											Career Development</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/labs/index.htm'
+										class='semantic-nav_link--3 item level3 labsandbranches divisions'><span>Labs
+											and Branches</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/ott/index.htm'
+										class='semantic-nav_link--3 item level3 officeoftechnologytransfer divisions'><span>Office
+											of Technology Transfer</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/policies/index.htm'
+										class='semantic-nav_link--3 item level3 policiesandprocedures divisions'><span>Policies
+											and Procedures</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dir/seminar/index.htm'
+										class='semantic-nav_link--3 item level3 seminarseries divisions'><span>Seminar
+											Series</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/management/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 management(om) divisions'><span>Management
+										(OM)</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/management/services/index.htm'
+										class='semantic-nav_link--3 item level3 administrativeservicesandanalysis divisions'><span>Administrative
+											Services &amp; Analysis</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/acquisitions/index.htm'
+										class='semantic-nav_link--3 item level3 acquisitionsoffice divisions'><span>Acquisitions
+											Office</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/computer/index.cfm'
+										class='semantic-nav_link--3 item level3 computertechnologybranch(ctb) divisions'><span>Computer
+											Technology Branch (CTB)</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/facilities/index.htm'
+										class='semantic-nav_link--3 item level3 facilitiesservices divisions'><span>Facilities
+											Services</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/financial/index.htm'
+										class='semantic-nav_link--3 item level3 financialmanagementbranch divisions'><span>Financial
+											Management Branch</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/safety/index.htm'
+										class='semantic-nav_link--3 item level3 healthandsafetybranch divisions'><span>Health
+											&amp; Safety Branch</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/hr/index.htm'
+										class='semantic-nav_link--3 item level3 humanresources divisions'><span>Human
+											Resources</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/ao/index.htm'
+										class='semantic-nav_link--3 item level3 od/omadministrativeoffice divisions'><span>OD/OM
+											Administrative Office</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/security/index.htm'
+										class='semantic-nav_link--3 item level3 operationsandsecuritybranch divisions'><span>Operations
+											&amp; Security Branch</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/management/references/index.htm'
+										class='semantic-nav_link--3 item level3 references divisions'><span>References</span></a>
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/management/theconnection/index.cfm'
+										class='semantic-nav_link--3 item level3 theconnection divisions'><span>The
+											Connection</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/dntp/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 nationaltoxicologyprogram divisions'><span>National
+										Toxicology Program</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/dntp/clin_path/index.htm'
+										class='semantic-nav_link--3 item level3 clinicalpathology divisions'><span>Clinical
+											Pathology</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/laser/index.htm'
+										class='semantic-nav_link--3 item level3 lasermicrodissection divisions'><span>Laser
+											Microdissection</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/phenotyping/index.htm'
+										class='semantic-nav_link--3 item level3 mouseembryophenotypingsupport divisions'><span>Mouse
+											Embryo Phenotyping Support</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/admin/index.htm'
+										class='semantic-nav_link--3 item level3 ntpadministrativesupport divisions'><span>NTP
+											Administrative Support</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/logos/index.htm'
+										class='semantic-nav_link--3 item level3 ntptemplatesandlogos divisions'><span>NTP
+											Templates and Logos</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/osim/index.htm'
+										class='semantic-nav_link--3 item level3 officeofdatascience divisions'><span>Office
+											of Data Science</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/pathology/index.htm'
+										class='semantic-nav_link--3 item level3 pathologysupport divisions'><span>Pathology
+											Support</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/dntp/seminarseries/index.htm'
+										class='semantic-nav_link--3 item level3 seminarseries divisions'><span>Seminar
+											Series</span></a>
+								</div>
+							</div>
+
+
+							<div class='semantic-nav_link_container item'>
+								<a
+									href='https://junction.niehs.nih.gov/divisions/committees/index.htm'
+									class='semantic-nav_link--2 sf-with-ul level2 niehscommittees divisions'><span>NIEHS
+										Committees</span></a>
+								<div class="menu semantic-nav_dropdown2">
+
+
+
+									<a
+										href='https://junction.niehs.nih.gov/divisions/committees/aols/index.htm'
+										class='semantic-nav_link--3 item level3 assemblyoflaboratorystaff divisions'><span>Assembly
+											of Laboratory Staff</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/aos/index.htm'
+										class='semantic-nav_link--3 item level3 assemblyofscientists divisions'><span>Assembly
+											of Scientists</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/bsc/index.htm'
+										class='semantic-nav_link--3 item level3 boardofscientificcounselors divisions'><span>Board
+											of Scientific Counselors</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/eaac/index.htm'
+										class='semantic-nav_link--3 item level3 environmentalawarenessadvisorycommittee divisions'><span>Environmental
+											Awareness Advisory Committee</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/ems/index.htm'
+										class='semantic-nav_link--3 item level3 environmentalmanagementsystem divisions'><span>Environmental
+											Management System</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/evs/index.htm'
+										class='semantic-nav_link--3 item level3 employeeviewpointsurvey(evs) divisions'><span>Employee
+											Viewpoint Survey (EVS)</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/qualitylife/index.htm'
+										class='semantic-nav_link--3 item level3 qualityworklifecouncil divisions'><span>Quality
+											Work Life Council</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/supply/index.htm'
+										class='semantic-nav_link--3 item level3 supplymanagementadvisorycommittee divisions'><span>Supply
+											Management Advisory Committee</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/tac/index.htm'
+										class='semantic-nav_link--3 item level3 trainingadvisorycommittee divisions'><span>Training
+											Advisory Committee</span></a> <a
+										href='https://junction.niehs.nih.gov/divisions/committees/wsa/index.htm'
+										class='semantic-nav_link--3 item level3 womenscientistassembly divisions'><span>Women
+											Scientist Assembly</span></a>
+								</div>
+							</div>
+
+
+							<a
+								href='https://junction.niehs.nih.gov/divisions/orgcharts/index.htm'
+								class='semantic-nav_link--2 item level2 organizationalcharts divisions'><span>Organizational
+									Charts</span></a> <a
+								href='https://junction.niehs.nih.gov/computer/help/people/index.cfm'
+								class='semantic-nav_link--2 item level2 staffdirectory divisions'><span>Staff
+									Directory</span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<!-- end junction navigation block -->
+
+		<!--   <ul id="metalnx-topnav" class="nav navbar-right pull-right">
+           <li id="uploadStatusIcon" class="dropdown hide"><a class="dropdown-toggle" href="#">
+                <i class="fa fa-tasks white-icon"></i> <span class="badge"></span>
+            </a>
+                          <ul class="dropdown-menu upload-window" style="width: 50vw; max-height: 80vh; overflow: auto">
+              </ul></li>
+  					<li class="dropdown">
+  						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+  							<i class="fa fa-user"></i>
+  							<span class="navbar-top-links-text" th:text="${userDetails.getUsername()}"></span> &nbsp;
+  							<i class="fa fa-caret-down white-icon"></i>
+  						</a>
+  						<ul class="dropdown-menu dropdown-user">
+  							<li><a th:href="@{/preferences/}"><i
+  									class="fa fa-gear fa-fw"></i> <span
+  									th:text="#{user.preferences.label}"></span></a></li>
+  							<li class="divider"></li>
+  							<li><a href="#" data-toggle="modal"
+  								data-target="#al"><i class="fa fa-info-circle"></i>
+  									<span>About</span></a></li>
+  							<li class="divider"></li>
+  							<li><a th:href="@{/logout/}"><i
+  									class="fa fa-sign-out"></i> <span
+  									th:text="#{user.logout.label}"></span></a></li>
+  						</ul> /.dropdown-user</li>
+  					/.dropdown
+  				</ul> -->
+		<!-- /.navbar-top-links -->
+
+		<!-- Upload notifications panel -->
+
+
+
+
 
 		<th:block th:include="topnav :: topnav">
 		</th:block>
@@ -107,14 +602,93 @@
 				<!-- /.row -->
 			</div>
 		</div>
-
+		<!-- /#page-wrapper -->
 		<!-- Footer -->
-		<footer class="row"> &copy; 2018-2019 University of North Carolina at Chapel Hill; 2015-2017 DELL EMC. All rights reserved. </footer>
+		<footer class="row">
+
+			<!-- junction footer block -->
+			<div id="footer">
+				<div class="footer_top-links">
+					<p class="ftr-emergency">
+						<a href="https://junction.niehs.nih.gov/safety/badges/emergency/"><strong>For
+								Emergencies:</strong></a> call 1-2800
+					</p>
+					<p class="site-map">
+						<a
+							href="https://junction.niehs.nih.gov/computer/webtools/site_map/sitemap.htm">Site
+							Map</a>
+					</p>
+					<p class="a-z">
+						<a
+							href="https://junction.niehs.nih.gov/computer/webtools/a-z/a-z-abstracts.cfm">Junction:
+							A to Z</a>
+					</p>
+				</div>
+				<div class="footer_buttons">
+					<a href="#" id="junction-feedback" data-type="ajax"
+						title="Junction Feedback" class="fixedAjaxDOMWindow">Junction
+						Feedback</a> <a href="#" id="junction-request"
+						title="Update This Page" target="_blank">Update This Page</a>
+				</div>
+				<p class="footer_bottom-links">
+					Other Websites: <a href="https://www.niehs.nih.gov/"
+						target="_blank">NIEHS</a><span class="ftr-divider">|</span> <a
+						href="https://ntp.niehs.nih.gov/" target="_blank">NTP</a><span
+						class="ftr-divider"> |</span> <a href="https://ehp.niehs.nih.gov/"
+						target="_blank">EHP</a><span class="ftr-divider"> |</span> <a
+						href="https://kids.niehs.nih.gov/" target="_blank">Kids</a><span
+						class="ftr-divider"> |</span> <a
+						href="https://partners.niehs.nih.gov/" target="_blank">NIEHS
+						Extranet</a><span class="ftr-divider"> |</span> <a
+						href="https://www.nih.gov/" target="_blank">NIH</a><span
+						class="ftr-divider"> |</span> <a href="https://employees.nih.gov/"
+						target="_blank">NIH Intranet</a><span class="ftr-divider">
+						|</span> <a href="https://www.hhs.gov/" target="_blank">HHS</a><span
+						class="ftr-divider"> |</span> <a href="https://www.opm.gov/"
+						target="_blank">OPM</a><span class="ftr-divider"> |</span> <a
+						href="https://www.niehs.nih.gov/about/od/ocpl/policies/index.cfm#a6581"
+						target="_blank">Accessibility</a>
+				</p>
+			</div>
+			<!--  end junction footer block -->
+		</footer>
 	</div>
 
-  <!-- About modal -->
-  <th:block th:include="misc/about"> </th:block>
 
+	<!-- About modal -->
+	<th:block th:include="misc/about"> </th:block>
+
+	<!-- About modal
+	<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						About EMC MetaLnx UI <span th:text="${emcmetalnxVersion.VERSION}"></span>-<span
+							th:text="${emcmetalnxVersion.BUILD_NUMBER}"></span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<i> This software contains the intellectual property of EMC
+							Corporation or is licensed to DELL EMC Corporation from third
+							parties. Use of this software and the intellectual property
+							contained therein is expressly limited to the terms and
+							conditions of the License Agreement under which it is provided by
+							or on behalf of EMC. </i>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">
+						Ok</button>
+				</div>
+			</div>
+		</div>
+	</div> -->
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="../static/js/bootstrap.min.js"
@@ -141,30 +715,36 @@
 		var current_url = window.location.href;
 		$("#side-menu li a").each(function(){
 		    var set_active_class = false;
-
-	        //making only trash side-menu link active and not collections
-		    if(current_url.indexOf([[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]) >= 0){
-		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
-		        set_active_class = true;
-	        //making only public colleciton side-menu link active
-		    }else if(current_url.indexOf([[@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }]]) >= 0){
-		       $("#side-menu a[href='"+[[@{${urlMap.URL_PUBLIC_COLLECTION_USER}}]]+"']").addClass("active");
-		        set_active_class = true;
-	        // making only profile side-menu active
-	        }else if(current_url.indexOf([[@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }]]) >= 0){
-	            $("#side-menu a[href='"+[[@{${urlMap.URL_USER_PROFILE_MANAGEMENT}}]]+"']").addClass("active");
-		        set_active_class = true;		   
-		    //making trash side-menu option active
-		    }else if(current_url.indexOf([[@{ ${urlMap.URL_TRASH_COLLECTION_USER} }]]) >= 0){
-		    	console.log("issue 145 trash block passed")
-		        $("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
-		        set_active_class = true;
-	        //every other link
-		    }else if((current_url.indexOf($(this).attr('href')) >= 0)){
-				$(this).addClass("active");
-			}
+				// FIXME: remove hardcode
+				//making only trash side-menu link active and not collections
+		    if(current_url.indexOf("/trash/") >= 0){
+					$("#side-menu a[href='"+[[@{${urlMap.URL_TRASH_COLLECTION_USER}}]]+"']").addClass("active");
+		      set_active_class = true;
+				}
+				//making only public colleciton side-menu link active
+		    else if(current_url.indexOf("/public") >= 0){
+					$("#side-menu a[href='"+[[@{${urlMap.URL_PUBLIC_COLLECTION_USER}}]]+"']").addClass("active");
+		      set_active_class = true;
+				}
+				//making only colleciton side-menu link active
+		    else if(current_url.indexOf("=collections") >= 0){
+					$("#side-menu a[href='"+[[@{${urlMap.URL_HOME_COLLECTION_USER}}]]+"']").addClass("active");
+		      set_active_class = true;
+				}
+				// making only profile side-menu active
+	      else if(current_url.indexOf([[@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }]]) >= 0){
+					$("#side-menu a[href='"+[[@{${urlMap.URL_USER_PROFILE_MANAGEMENT}}]]+"']").addClass("active");
+		      set_active_class = true;
+	      }
+				//every other link
+		    else if((current_url.indexOf($(this).attr('href')) >= 0)){
+					$(this).addClass("active");
+				}
 		});
 	/*]]>*/
 	</script>
+
+
 </body>
+
 </html>
