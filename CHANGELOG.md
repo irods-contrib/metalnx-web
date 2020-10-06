@@ -50,3 +50,7 @@ Refer to the README.md file in the docker-test-framework for instructions. This 
 #### bump up max upload for metalnx to 100 GB #143
 
 Updated Docker build to increase file upload sizes
+
+#### backtick issues and related testing, accentuated characters in metadata editing and avu search #161
+
+Fix metadata special character handling and some auth issues that cropped up in testing.
