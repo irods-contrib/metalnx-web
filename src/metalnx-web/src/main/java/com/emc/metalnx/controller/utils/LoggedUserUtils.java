@@ -29,6 +29,11 @@ public class LoggedUserUtils {
 		logger.info("getLoggedDataGridUser()");
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			logger.warn("no user available");
+			return null;
+		}
+
 		String username = (String) auth.getPrincipal();
 		logger.info("auth:{}", auth);
 

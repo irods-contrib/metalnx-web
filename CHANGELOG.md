@@ -54,3 +54,8 @@ Updated Docker build to increase file upload sizes
 #### backtick issues and related testing, accentuated characters in metadata editing and avu search #161
 
 Fix metadata special character handling and some auth issues that cropped up in testing.
+
+#### URL rewrite on failed auth #162
+
+Made a provisional fix that will intercept a saved /login/exception url and redirect to the main page if there is a logged
+in user in the context.
