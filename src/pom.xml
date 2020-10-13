@@ -58,7 +58,7 @@
 		<mockito.version>2.25.1</mockito.version>
 
 		<!-- Junit version -->
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 
 		<maven.surefire.plugin.version>3.0.0-M3</maven.surefire.plugin.version>
 
