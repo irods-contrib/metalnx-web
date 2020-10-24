@@ -32,3 +32,10 @@ dockerimage: packaging/docker/metalnx.war
 # it does not remove the docker image
 clean:
 	rm -f packaging/docker/metalnx.war
+	docker run -it --rm \
+		-v "$$PWD":/usr/src \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-v "$$HOME/.m2":/root/.m2 \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		mvn clean
