@@ -22,6 +22,9 @@ module.exports = {
    },
    notifications: {
      entry: 'src/main/javascript/notifications/main.js'
+   },
+   gallery: {
+     entry: 'src/main/javascript/gallery/main.js'
    }
  }
 }
