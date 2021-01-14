@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-//import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +35,6 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.mail.Mail;
 import com.emc.metalnx.services.interfaces.mail.MailService;
 //import com.service.mail.config.ApplicationConfig;
-//import com.service.mail.entity.Mail;
-//import com.service.mail.services.MailService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -128,7 +125,7 @@ public class CollectionInfoController {
 			if (dataProfile != null && dataProfile.isFile()) {
 				mimeType = dataProfile.getDataType().getMimeType();
 			}
-			
+
 			collectionController.setCurrentPath(myPath);
 
 			icon = collectionService.getIcon(mimeType);
@@ -230,16 +227,6 @@ public class CollectionInfoController {
 		sb.append(" is requesting access to resource:");
 		sb.append(path);
 		mail.setMailContent(sb.toString());
-
-		try {
-			mailService.sendEmail(mail);
-			response = "Your request has been sent successfully.";
-		} catch (Exception e) {
-			response = "Sorry, Email sending fail.Try again later!!";
-			logger.error("mail exception occured");
-			e.printStackTrace();
-
-		}
 
 		return response;
 	}
