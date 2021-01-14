@@ -3137,3 +3137,93 @@ legend.scheduler-border {
 	-webkit-border-radius: 2px;
 	z-index: 1;
 }
+
+/* ------------------------------------ Gallery View -------------------------------------------------- */
+
+.large {
+	width: 125px;
+	height: 125px;
+  }
+  
+  .galleryContainer {
+	max-width: 100%;
+	margin-left: 20px;
+	margin-top: 40px;
+	margin-right: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: flex-start;
+  }
+  
+  .medium {
+	width: 100px;
+	height: 100px;
+  }
+  
+  .small {
+	width: 75px;
+	height: 75px;
+  }
+  
+  .thumbnail_select {
+	width: 100px;
+	margin: 20px 10px auto 40px;
+  }
+  
+  .gallery {
+	margin: 10px 20px 10px 20px;
+	text-align: center;
+  }
+  
+  .gallery-nav{
+	margin: 10px 10px 10px 30px;
+  }
+  
+  .thumbnail_name {
+	margin: 5px auto 5px auto;
+  }
+  
+  .collection_view {
+	float: right;
+	margin-top: 25px;
+	margin-right: 140px;
+  }
+  
+  .paginationContainer{
+	display: flex;
+	flex-direction: row;
+  }
+  
+  .widgetsContainer {
+	margin-top: 20px;
+	margin-left: 20px;
+	display: "flex";
+	flex-direction: column;
+  }
+  .thumbnail-size-select{
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 100px;
+  }
+  
+  .thumbnail-items-select{
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 300px;
+  }
+  
+  .widgets {
+	margin-left: 35%;
+  }
+
+  .path {
+	color: #287EA1;
+	font-size: 14px;
+  }
+  
+  .right-shift {
+	padding-left: 0.5px;
+	padding-right: 0.5px;
+  }
