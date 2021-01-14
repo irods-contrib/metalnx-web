@@ -225,15 +225,15 @@ public class CollectionInfoController {
 		sb.append(path);
 		mail.setMailContent(sb.toString());
 
-		try {
-			mailService.sendEmail(mail);
-			response = "Your request has been sent successfully.";
-		} catch (Exception e) {
-			response = "Sorry, Email sending fail.Try again later!!";
-			logger.error("mail exception occured");
-			e.printStackTrace();
+		// try {
+		// 	mailService.sendEmail(mail);
+		// 	response = "Your request has been sent successfully.";
+		// } catch (Exception e) {
+		// 	response = "Sorry, Email sending fail.Try again later!!";
+		// 	logger.error("mail exception occured");
+		// 	e.printStackTrace();
 
-		}
+		// }
 
 		return response;
 	}

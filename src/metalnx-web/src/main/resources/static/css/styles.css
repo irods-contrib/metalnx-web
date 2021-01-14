@@ -3131,3 +3131,64 @@ legend.scheduler-border {
 	-webkit-border-radius: 2px;
 	z-index: 1;
 }
+
+/* ------------------------------------ Gallery View -------------------------------------------------- */
+
+.large {
+	width: 125px;
+	height: 125px;
+  }
+  
+  .galleryContainer {
+	max-width: 100%;
+	margin-left: 20px;
+	margin-top: 40px;
+	margin-right: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: flex-start;
+  }
+  
+  
+  .medium {
+	width: 100px;
+	height: 100px;
+  }
+  
+  .small{
+	width: 75px;
+	height: 75px;
+  }
+  
+  .thumbnail_select{
+	width: 100px;
+	margin: 20px 10px auto 40px;
+  }
+  
+  .gallery{
+	margin: 10px 20px 10px 20px;
+	text-align: center;
+  }
+  
+  .thumbnail_name{
+	margin:5px auto 5px auto;
+  }
+
+  .collection_view{
+    float: right;
+    margin-top: 25px;
+    margin-right: 140px;
+  }
+
+  .widgetsContainer{
+    margin-top: 20px;
+    margin-left: 20px;
+    display:'flex';
+    flex-direction: column;
+  }
+
+  .widgets{
+    margin-left: 35%;
+  }
