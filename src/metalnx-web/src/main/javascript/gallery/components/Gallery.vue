@@ -33,7 +33,8 @@
         <div class="thumbnail_name">{{ item.name }}</div>
         </a>
         <b-tooltip :target="'thumbnail'+item.id" triggers="hover">
-          File Size:
+          <div>File Size: {{ item.fileSize }}</div>
+          <div>File Type: {{ item.fileType }}</div>
         </b-tooltip>
       </div>
     </div>
@@ -69,61 +70,81 @@ export default {
           id: 1,
           name: "sample1.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample1.jpg",
+          thumbnails: "./img/sample1.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 2,
           name: "sample2.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample2.jpg",
+          thumbnails: "./img/sample2.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 3,
           name: "sample3.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample3.jpg",
+          thumbnails: "./img/sample3.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 4,
           name: "sample4.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample7.jpg",
+          thumbnails: "./img/sample7.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 5,
           name: "sample5.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample5.jpg",
+          thumbnails: "./img/sample5.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 6,
           name: "sample6.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample6.jpg",
+          thumbnails: "./img/sample6.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 7,
           name: "sample7.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample7.jpg",
+          thumbnails: "./img/sample7.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 8,
           name: "sample8.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample8.jpg",
+          thumbnails: "./img/sample8.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 9,
           name: "sample9.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample9.jpg",
+          thumbnails: "./img/sample9.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
         {
           id: 10,
           name: "sample10.png",
           lastModified: "2020-12-14",
-          thumbnails: "./img/sample10.jpg",
+          thumbnails: "./img/sample10.png",
+          fileSize: "10 MB",
+          fileType: "Portable Network Graphics"
         },
       ],
     };
