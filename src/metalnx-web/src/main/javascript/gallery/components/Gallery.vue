@@ -28,10 +28,13 @@
   </div>
     <div class="galleryContainer">
       <div class="gallery" v-for="item in demo.items">
-        <a :href="`/metalnx/collectionInfo${url}%2F${item.name}`">
+        <a :id="'thumbnail'+item.id" :href="`/metalnx/collectionInfo${url}%2F${item.name}`">
         <img v-bind:class="[selected]" :src="item.thumbnails" />
         <div class="thumbnail_name">{{ item.name }}</div>
         </a>
+        <b-tooltip :target="'thumbnail'+item.id" triggers="hover">
+          File Size:
+        </b-tooltip>
       </div>
     </div>
   </div>
@@ -111,13 +114,13 @@ export default {
           thumbnails: "./img/sample8.jpg",
         },
         {
-          id: 7,
+          id: 9,
           name: "sample9.png",
           lastModified: "2020-12-14",
           thumbnails: "./img/sample9.jpg",
         },
         {
-          id: 8,
+          id: 10,
           name: "sample10.png",
           lastModified: "2020-12-14",
           thumbnails: "./img/sample10.jpg",
