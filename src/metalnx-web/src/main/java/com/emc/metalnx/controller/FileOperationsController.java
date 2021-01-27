@@ -1,7 +1,5 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
@@ -164,14 +162,10 @@ public class FileOperationsController {
 	/**
 	 * Delete a replica of a data object
 	 *
-	 * @param model
-	 *            MVC model
-	 * @param path
-	 *            path to the parent of the data object to be deleted
-	 * @param fileName
-	 *            name of the data object to be deleted
-	 * @param replicaNumber
-	 *            number of the replica that is going to be deleted
+	 * @param model         MVC model
+	 * @param path          path to the parent of the data object to be deleted
+	 * @param fileName      name of the data object to be deleted
+	 * @param replicaNumber number of the replica that is going to be deleted
 	 * @return the template that shows the data object information with the replica
 	 *         table refreshed
 	 * @throws DataGridException
@@ -226,7 +220,7 @@ public class FileOperationsController {
 	@RequestMapping(value = "/prepareFilesForDownload/", method = RequestMethod.GET)
 	public @ResponseBody JSONObject prepareFilesForDownload(final HttpServletResponse response,
 			@RequestParam("paths[]") final String[] paths) throws DataGridConnectionRefusedException {
-
+		logger.info("prepareFilesForDownload()");
 		JSONObject prepareFileStatusJSONobj = new JSONObject();
 		CollectionAndDataObjectListAndSearchAO collectionAndDataObjectListAndSearchAO = this.irodsServices
 				.getCollectionAndDataObjectListAndSearchAO();
@@ -236,15 +230,16 @@ public class FileOperationsController {
 		long length = 0;
 
 		try {
-			logger.debug("Download limit in MBs:{}", configService.getDownloadLimit());
+			logger.info("Download limit in MBs:{}", configService.getDownloadLimit());
 
 			if (paths.length > 1 || !collectionService.isDataObject(paths[0])) {
+				logger.info("multiple paths or download of collection");
 				filePathToDownload = collectionService.prepareFilesForDownload(paths);
 				removeTempCollection = true;
 
 				ObjStat objStat = collectionAndDataObjectListAndSearchAO.retrieveObjectStatForPath(filePathToDownload);
 				length = objStat.getObjSize();
-				logger.debug("Collection/object size in bytes: {}", length);
+				logger.info("Collection/object size in bytes: {}", length);
 
 				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
@@ -263,6 +258,7 @@ public class FileOperationsController {
 			} else {
 				// if a single file was selected, it will be transferred directly through the
 				// HTTP response
+				logger.info("single file download");
 				removeTempCollection = false;
 				filePathToDownload = paths[0];
 				String permissionType = collectionService.getPermissionsForPath(filePathToDownload);
@@ -372,11 +368,9 @@ public class FileOperationsController {
 	/**
 	 * Displays the modify user form with all fields set to the selected collection
 	 *
-	 * @param model
-	 *            MVC model
+	 * @param model MVC model
 	 * @return collectionForm with fields set
-	 * @throws DataGridException
-	 *             if item cannot be modified
+	 * @throws DataGridException if item cannot be modified
 	 * @throws JargonException
 	 */
 	@RequestMapping(value = "modify/", method = RequestMethod.GET)

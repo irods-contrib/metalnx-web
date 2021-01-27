@@ -5,9 +5,45 @@ Metalnx is a web application designed to work alongside [iRODS](https://irods.or
 ![Metalnx 2.0.0 Screenshot](docs/IMAGES/metalnx2.0.0.png)
 
 
-## Deploying Packaged Metalnx
+The preferred method of deployment is via Docker.
 
-The preferred method of deployment is via Docker.  You can deploy Metalnx directly from Docker Hub.
+## Deploying Packaged Metalnx via docker-compose
+
+docker-compose.yml
+```
+version: '3'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: superdupersecret
+      POSTGRES_USER: metalnxuser
+      POSTGRES_DB: metalnxdb
+
+  metalnx:
+    image: irods/metalnx:latest
+    restart: always
+    volumes:
+      - ./metalnx-configuration:/etc/irods-ext
+    ports:
+      - 80:8080
+```
+
+and then the `./metalnx-configuration/metalnx.properties` file requires rodsadmin iRODS connection credentials and points to the docker-compose database (alias db) with:
+```
+db.url=jdbc:postgresql://db:5432/metalnxdb
+db.username=metalnxuser
+db.password=superdupersecret
+```
+
+Metalnx will be available on port 80 of the docker host machine at `/metalnx`.
+
+This configuration could be supplemented with an nginx (or other) reverse-proxy to put Metalnx port 80 (and the subpath `/metalnx`) behind https on 443.
+
+## Deploying Packaged Metalnx via Docker Hub directly
 
 ### Prepare the database
 
@@ -50,7 +86,6 @@ http://x.x.x.x:8080/metalnx
 
 
 
-
 Or...
 
 ## Building Metalnx
@@ -58,14 +93,6 @@ Or...
 From source, the package will 'just build':
 ```
 make
-```
-
-This will result in a new Docker image named `myimages/metalnx:latest` on your machine.
-
-## Building Metalnx Docker image by using multistage approach
-
-```
-docker build --rm --no-cache -t myimages/metalnx:latest -f Dockerfile.multistage .
 ```
 
 This will result in a new Docker image named `myimages/metalnx:latest` on your machine.

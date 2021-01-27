@@ -168,3 +168,24 @@ metalnx database are then reflected in the above metalnx profile.
 
 This involves some plsql to create the database, and the running a tool to initialize or migrate the database.
 This is covered in the README.md in the src/metalnx-tools subproject.
+
+### Docker support for a build container
+
+A Docker build image (Dockerfile.testbuild) has been added in docker-test-framework. This mounts the source directory and provides a command prompt to build the Metalnx war, including providing node support
+
+See comments in Docker file, but essentially cd into the top level directory of the git repo and then, after building,  issue
+
+```
+
+docker run -it -v `pwd`/src/:/usr/src/metalnx metalnx-build /bin/bash
+
+```
+
+This will provide a command prompt and allow maven commands, mainly:
+
+```
+
+mvn package -DskipTests
+
+```
+

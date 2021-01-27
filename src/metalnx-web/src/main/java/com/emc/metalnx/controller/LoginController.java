@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.emc.metalnx.controller.utils.LoggedUserUtils;
+import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.ConfigService;
 
@@ -38,6 +40,9 @@ public class LoginController {
 
 	@Autowired
 	private ConfigService configService;
+
+	@Autowired
+	private LoggedUserUtils loggedUserUtils;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView loginView(final Model inModel, final HttpServletRequest request,
@@ -134,6 +139,18 @@ public class LoginController {
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
 	public ModelAndView loginErrorHandler(final Exception e) {
 		logger.info("LoginContoller loginErrorHandler()");
+		/*
+		 * see if I'm really logged in as a hacky way of getting around this bug
+		 * https://github.com/irods-contrib/metalnx-web/issues/162
+		 */
+		DataGridUser loggedInUser = loggedUserUtils.getLoggedDataGridUser();
+		if (loggedInUser != null) {
+			logger.warn("is already logged in go ahead and just hit the main page...");
+			String redirect = "redirect:/browse/home";
+			ModelAndView model = new ModelAndView(redirect);
+			return model;
+		}
+
 		ModelAndView model = new ModelAndView("login/index");
 		model.addObject("usernameOrPasswordInvalid", true);
 		addAuthTypesAndDefaultAuthToModel(model);
