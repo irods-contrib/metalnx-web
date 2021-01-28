@@ -265,13 +265,16 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
-			<a role="button" class="btn btn-default icon-btn"
-				id="cartIcon"
-				title="Cart"
-				aria-label="Cart"
-				th:href="'/metalnx/shoppingCart/'"> 
-				<i class="fa fa-shopping-cart fa-color"></i>
-			</a>
+			
+			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
+				<a role="button" class="btn btn-default icon-btn"
+					id="cartIcon"
+					title="Cart"
+					aria-label="Cart"
+					th:href="'/metalnx/shoppingCart/'"> 
+					<i class="fa fa-shopping-cart fa-color"></i>
+				</a>
+			</th:block>
 
 		</th:block>
 		<th:block
@@ -302,13 +305,15 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
-			<a role="button" class="btn btn-default icon-btn"
-				id="cartIcon"
-				title="Cart"
-				aria-label="Cart"
-				th:href="'/metalnx/shoppingCart/'"> 
-				<i class="fa fa-shopping-cart fa-color"></i>
-			</a>
+			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
+				<a role="button" class="btn btn-default icon-btn"
+					id="cartIcon"
+					title="Cart"
+					aria-label="Cart"
+					th:href="'/metalnx/shoppingCart/'"> 
+					<i class="fa fa-shopping-cart fa-color"></i>
+				</a>
+			</th:block>
 		</th:block>
 	</div>
 </div>
