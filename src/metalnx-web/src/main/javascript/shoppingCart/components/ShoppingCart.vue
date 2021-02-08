@@ -1,6 +1,7 @@
 <template>
 <div class="container">
     <h1>Cart List</h1>
+    <h2> {{availableSearchSchema}} </h2>
     <div v-if="cartList.length > 0">
       <nav class="navbar navbar-dark bg-secondary">
        <div>
@@ -49,11 +50,13 @@ export default {
     return {
       cartList: [],
       selected: [],
-      selectAll: false
+      selectAll: false,
+      availableSearchSchema: []
     }
   },
   created: function () {  
     axios.get('/metalnx/api/shoppingCart/getCart/').then(response => (this.cartList = response.data))
+    //axios.get('/metalnx/api/shoppingCart/indexes/').then(response => (this.availableSearchSchema = response.data))
   },
   computed: {
     getGridData:  function () {

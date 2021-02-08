@@ -265,17 +265,13 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
-			
+
 			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
-				<a role="button" class="btn btn-default icon-btn"
-					id="cartIcon"
-					title="Cart"
-					aria-label="Cart"
-					th:href="'/metalnx/shoppingCart/'"> 
+				<a role="button" class="btn btn-default icon-btn" id="cartIcon"
+					title="Cart" aria-label="Cart" th:href="'/metalnx/shoppingCart/'">
 					<i class="fa fa-shopping-cart fa-color"></i>
 				</a>
 			</th:block>
-
 		</th:block>
 		<th:block
 			th:if="${(permissionType == 'none' or permissionType == 'read') and #bools.isFalse(isTrash)}">
@@ -305,12 +301,10 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
+
 			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
-				<a role="button" class="btn btn-default icon-btn"
-					id="cartIcon"
-					title="Cart"
-					aria-label="Cart"
-					th:href="'/metalnx/shoppingCart/'"> 
+				<a role="button" class="btn btn-default icon-btn" id="cartIcon"
+					title="Cart" aria-label="Cart" th:href="'/metalnx/shoppingCart/'">
 					<i class="fa fa-shopping-cart fa-color"></i>
 				</a>
 			</th:block>
@@ -339,7 +333,8 @@
 							title="select all items" /></th>
 						<!-- <th th:text="#{collections.management.table.collection.name.label}"></th>
                         <th th:text="#{collections.management.table.owner.label}"></th> -->
-						<th th:text="#{collections.management.table.collection.name.label}"></th>
+						<th
+							th:text="#{collections.management.table.collection.name.label}"></th>
 						<th th:text="#{collections.management.table.modified.label}"></th>
 						<th th:text="#{collections.management.table.size.label}"></th>
 						<th th:text="#{collections.management.table.action.label}"></th>

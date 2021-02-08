@@ -1,11 +1,12 @@
 package com.emc.metalnx.controller.api.model;
 
-public class ExportSchemaEntry {
+public class PlublishingSchemaEntry {
 	
 	private String endpointUrl = "";
 	private String schemaId = "";
 	private String schemaName = "";
 	private String schemaDescription = "";
+	private String responseType = "";
 	
 	public String getEndpointUrl() {
 		return endpointUrl;
@@ -30,5 +31,11 @@ public class ExportSchemaEntry {
 	}
 	public void setSchemaDescription(String schemaDescription) {
 		this.schemaDescription = schemaDescription;
+	}
+	public String getResponseType() {
+		return responseType;
+	}
+	public void setResponseType(String responseType) {
+		this.responseType = responseType;
 	}
 }

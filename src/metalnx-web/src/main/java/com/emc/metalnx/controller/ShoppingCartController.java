@@ -7,6 +7,7 @@ package com.emc.metalnx.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +17,27 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 
+import jdk.internal.org.jline.utils.Log;
+
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/shoppingCart")
 public class ShoppingCartController {
-	private static final Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
+	private static final Logger log = LoggerFactory.getLogger(ShoppingCartController.class);
+	
+	@Value("${pluggableshoppingcart.enabled}")
+	private boolean pluggableShoppingcartEnabled = false;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String getCart(Model model) throws DataGridException {
-		logger.info("getCart()");
-		logger.info("Get shopping cart");
-		return "shoppingCart/shoppingCart";	
+	public String shoppingCartMain(Model model) throws DataGridException {
+		log.info("shoppingCartMain()");
+		
+		if (!pluggableShoppingcartEnabled) {
+			log.error("Shopping cart is not configured for this grid");
+			return "shoppingCart/shoppingCartNotConfigured";
+		}
+		
+		return "shoppingCart/shoppingCartMain";	
 	}
 }
