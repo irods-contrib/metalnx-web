@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.ConfigService;
 
 /*
@@ -137,14 +138,53 @@ public class PluggablePublishingWrapperService {
 
 		this.publishingPluginDiscoveryService = new PublishingPluginDiscoveryService(config,
 				this.jwtManagementWrapperService.getJwtIssueService());
-		
+
 		try {
 			publishingPluginDiscoveryService.queryEndpoints(config.getEndpointRegistryList(), publishingIndexInventory);
 		} catch (PublishingPluginUnavailableException e) {
 			// log and continue, don't hold startup and treat as a soft failure
-			log.warn("Publishing plugins not available:{}",config.getEndpointRegistryList(), e);
+			log.warn("Publishing plugins not available:{}", config.getEndpointRegistryList(), e);
 		}
 		log.info("service init-ed");
 		log.debug("registry:{}", this.getPublishingIndexInventory());
+	}
+
+	/**
+	 * Wrapper calls to download publish spreadsheet
+	 * 
+	 * @param endpointUrl {@code String} with the endpointUrl
+	 * @param schemaId    {@code String} with the publish schema id
+	 * @param principal   {@code String} with the identity of the individual doing
+	 *                    the search
+	 * @return {@code String} with the result json as a string
+	 * @throws DataGridException {@link DataGridException}
+	 */
+	public String executePublish(final String endpointUrl, final String schemaId, final String principal,
+			final String cartId) throws DataGridException {
+
+		log.info("executePublish()");
+
+		if (endpointUrl == null || endpointUrl.isEmpty()) {
+			throw new IllegalArgumentException("null or empty endpointUrl");
+		}
+
+		if (schemaId == null || schemaId.isEmpty()) {
+			throw new IllegalArgumentException("null or empty schemaId");
+		}
+
+		if (principal == null || principal.isEmpty()) {
+			throw new IllegalArgumentException("null or empty principal");
+		}
+
+		try {
+			log.info("initiate publish download");
+			String jsonResultString = publishingPluginDiscoveryService.downloadpublishSpreadSheet(endpointUrl, schemaId,
+					principal, cartId);
+			return jsonResultString;
+		} catch (PublishingPluginUnavailableException e) {
+			// log and continue, don't hold startup and treat as a soft failure
+			log.error("error querying schema: {}", schemaId);
+			throw new DataGridException("Unable to publish with given schema");
+		}
 	}
 }

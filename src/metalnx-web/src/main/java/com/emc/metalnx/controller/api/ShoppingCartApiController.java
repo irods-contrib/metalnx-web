@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.emc.metalnx.controller.BrowseController;
 import com.emc.metalnx.controller.api.model.PlublishingSchemaEntry;
 import com.emc.metalnx.controller.api.model.PlublishingSchemaListing;
+import com.emc.metalnx.controller.api.model.PublishActionData;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,7 +62,7 @@ public class ShoppingCartApiController {
 
 		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 		FileShoppingCart fileShoppingCart = shoppingCartService.retreiveShoppingCartAsLoggedInUser(key);
-		log.info("cart retrieved:() ", fileShoppingCart);
+		log.info("cart retrieved:() ", fileShoppingCart.toString());
 		return fileShoppingCart.getShoppingCartFileList();
 	}
 
@@ -128,4 +130,31 @@ public class ShoppingCartApiController {
 		return jsonString;
 	}
 
+	@RequestMapping(value = "/publisher", method = RequestMethod.POST)
+	@ResponseBody
+	public String executePublisher(@RequestBody PublishActionData publishActionData) throws DataGridException {
+		log.info("executePublisher()");
+
+		/*
+		 * TODO: use additional publish request body properties to be used later for
+		 * more added functionality
+		 */
+		log.info("publishActionData: {}", publishActionData.toString());
+		PublishingIndexInventory publishingIndexInventory = pluggablePublishingWrapperService
+				.getPublishingIndexInventory();
+		PublishingInventoryEntry publishInventoryEntry = publishingIndexInventory.getPublishingInventoryEntries()
+				.get(publishActionData.getEndpointUrl());
+
+		if (publishInventoryEntry == null) {
+			log.error("Cannot find publish inventory");
+			throw new DataGridException("publish endpoint unavailable");
+		}
+
+		String userName = irodsServices.getCurrentUser();
+		String cartId = irodsServices.getCurrentUser() + "-metalnx-cart.dat";
+		String schemaId = publishInventoryEntry.getPublishingEndpointDescription().getId();
+		String endpointUrl = publishInventoryEntry.getEndpointUrl();
+
+		return this.pluggablePublishingWrapperService.executePublish(endpointUrl, schemaId, userName, cartId);
+	}
 }
