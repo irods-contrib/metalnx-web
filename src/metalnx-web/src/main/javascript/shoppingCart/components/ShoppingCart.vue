@@ -1,56 +1,60 @@
 <template>
   <div class="container">
     <h1>Cart List</h1>
-    <div v-if="cartList.length > 0">
-      <nav class="navbar navbar-dark bg-secondary">
-        <div>
-          <b-dropdown text="Actions" variant="light">
-            <b-dropdown-item href="#">Clear Cart</b-dropdown-item>
-            <b-dropdown-item href="#">Remove item(s)</b-dropdown-item>
-          </b-dropdown>
-        </div>
-        <form class="form-inline">
-          <b-dropdown
-            id="schemaSelection"
-            slot="prepend"
-            v-bind:text="publishLabel"
-            variant="light"
-          >
-            <b-dropdown-item
-              v-for="i in availablePublishSchema"
-              :key="i.schemaId"
-              v-on:click="selectSchema(i)"
-            >{{i.schemaName}}</b-dropdown-item>
-          </b-dropdown>
-          <b-button variant="primary" slot="append" v-on:click="exportSelected()">Export</b-button>
-        </form>
-      </nav>
-      <b-table
-        selectable
-        striped
-        head-variant="dark"
-        hover
-        :items="getGridData.items"
-        :fields="getGridData.fields"
-        responsive="sm"
-      >
-        <!-- A custom formatted header cell for field 'name' -->
-        <template v-slot:head(selected)="data">
-          <input type="checkbox" v-model="selectAll" @click="select" />
-        </template>
-        <template v-slot:cell(selected)="row">
-          <b-form-group>
-            <input type="checkbox" :value="row.item.path" v-model="selected" />
-          </b-form-group>
-        </template>
-        <template v-slot:table-colgroup="scope">
-          <col
-            v-for="field in scope.fields"
-            :key="field.key"
-            :style="{ width: field.key === 'selected' ? '20px' : '180px' }"
-          />
-        </template>
-      </b-table>
+    <nav class="navbar navbar-dark bg-secondary">
+      <div>
+        <b-dropdown id="cartActions" slot="prepend" text="Actions" variant="info">
+          <b-dropdown-item v-on:click="clearCartItems()">Clear cart</b-dropdown-item>
+          <!-- <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item> -->
+        </b-dropdown>
+      </div>
+      <form class="form-inline">
+        <b-dropdown
+          id="schemaSelection"
+          slot="prepend"
+          v-bind:text="publishSchemaName"
+          variant="light"
+        >
+          <b-dropdown-item
+            v-for="i in availablePublishSchema"
+            :key="i.schemaId"
+            v-on:click="selectSchema(i)"
+          >{{i.schemaName}}</b-dropdown-item>
+        </b-dropdown>
+        <b-button variant="primary" slot="append" v-on:click="exportSelected()">Export</b-button>
+      </form>
+    </nav>
+    <div v-if="getGridData.items.length > 0">
+    <b-table
+      selectable
+      striped
+      head-variant="dark"
+      hover
+      :items="getGridData.items"
+      :fields="getGridData.fields"
+      responsive="sm"
+    >
+    
+      <!-- A custom formatted header cell for field 'name' -->
+      <template v-slot:head(selectedCartItems)="data">
+        <input type="checkbox" v-model="isSelectAllCartItems" @click="updateCartItemList" />
+      </template>
+      <template v-slot:cell(selectedCartItems)="row">
+        <b-form-group>
+          <input type="checkbox" :value="row.item.path" v-model="selectedCartItems" />
+        </b-form-group>
+      </template>
+      <template v-slot:table-colgroup="scope">
+        <col
+          v-for="field in scope.fields"
+          :key="field.key"
+          :style="{ width: field.key === 'selectedCartItems' ? '20px' : '180px' }"
+        />
+      </template>
+    </b-table>
+    </div>
+    <div v-else>
+      Shopping cart is empty
     </div>
   </div>
 </template>
@@ -61,10 +65,10 @@ export default {
   name: "ShoppingCart",
   data() {
     return {
-      cartList: [],
-      selected: [],
-      selectAll: false,
-      publishLabel: "Select Schema",
+      cartItems: [],
+      selectedCartItems: [],
+      isSelectAllCartItems: false,
+      publishSchemaName: "Select Schema",
       selectedPublishSchema: "",
       availablePublishSchema: [],
       publishResult: ""
@@ -74,7 +78,7 @@ export default {
     axios({
       method: "get",
       url: "/metalnx/api/shoppingCart/getCart/"
-    }).then(response => (this.cartList = response.data));
+    }).then(response => (this.cartItems = response.data));
 
     axios({
       method: "get",
@@ -87,18 +91,18 @@ export default {
     getGridData: function() {
       var resultData = [];
       var pathDict = {};
-      pathDict["path"] = this.cartList;
-      for (var entry in this.cartList) {
+      pathDict["path"] = this.cartItems;
+      for (var entry in this.cartItems) {
         var temp = {};
-        temp["path"] = this.cartList[entry];
-        var pathSplit = this.cartList[entry].split("/");
+        temp["path"] = this.cartItems[entry];
+        var pathSplit = this.cartItems[entry].split("/");
         temp["name"] = pathSplit[pathSplit.length - 1];
         resultData.push(temp);
       }
       var data = {
         fields: [
           {
-            key: "selected",
+            key: "selectedCartItems",
             label: ""
           },
           {
@@ -122,16 +126,23 @@ export default {
     }
   },
   methods: {
-    selectSchema: function(selected) {
-      this.selectedPublishSchema = selected;
-      this.publishLabel = selected.schemaName;
+    selectSchema: function(selectedCartItems) {
+      this.selectedPublishSchema = selectedCartItems;
+      this.publishSchemaName = selectedCartItems.schemaName;
     },
-    select: function() {
-      this.selected = [];
+    clearCartItems: function() {
+      this.cartItems = [];
+      axios.post("/metalnx/api/shoppingCart/clearCart");
+    },
+    removeSelectedCartItems: function() {
+      alert("remove cart items: " + this.selectedCartItems);
+    },
+    updateCartItemList: function() {
+      this.selectedCartItems = [];
       this.publishResult = null;
-      if (!this.selectAll) {
-        for (let i in this.cartList) {
-          this.selected.push(this.getGridData.items[i].path);
+      if (!this.isSelectAllCartItems) {
+        for (let i in this.cartItems) {
+          this.selectedCartItems.push(this.getGridData.items[i].path);
         }
       }
     },
@@ -141,7 +152,6 @@ export default {
         id: ""
       };
       var publishRequestData = JSON.stringify(jsonData);
-
       axios({
         method: "post",
         url: "/metalnx/api/shoppingCart/publisher/",
