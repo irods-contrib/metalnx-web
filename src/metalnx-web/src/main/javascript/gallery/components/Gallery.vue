@@ -99,7 +99,7 @@ export default {
 
     let response = axios({
       method: "GET",
-      url: "http://localhost/metalnx/api/gallery",
+      url: "/metalnx/api/gallery",
       params: {
         path: "/tempZone/home/test1",
         offset: 0,
