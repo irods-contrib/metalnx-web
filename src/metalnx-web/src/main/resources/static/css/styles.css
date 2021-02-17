@@ -3151,44 +3151,73 @@ legend.scheduler-border {
 	align-content: flex-start;
   }
   
-  
   .medium {
 	width: 100px;
 	height: 100px;
   }
   
-  .small{
+  .small {
 	width: 75px;
 	height: 75px;
   }
   
-  .thumbnail_select{
+  .thumbnail_select {
 	width: 100px;
 	margin: 20px 10px auto 40px;
   }
   
-  .gallery{
+  .gallery {
 	margin: 10px 20px 10px 20px;
 	text-align: center;
   }
   
-  .thumbnail_name{
-	margin:5px auto 5px auto;
+  .gallery-nav{
+	margin: 10px 10px 10px 30px;
+  }
+  
+  .thumbnail_name {
+	margin: 5px auto 5px auto;
+  }
+  
+  .collection_view {
+	float: right;
+	margin-top: 25px;
+	margin-right: 140px;
+  }
+  
+  .paginationContainer{
+	display: flex;
+	flex-direction: row;
+  }
+  
+  .widgetsContainer {
+	margin-top: 20px;
+	margin-left: 20px;
+	display: "flex";
+	flex-direction: column;
+  }
+  .thumbnail-size-select{
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 100px;
+  }
+  
+  .thumbnail-items-select{
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 300px;
+  }
+  
+  .widgets {
+	margin-left: 35%;
   }
 
-  .collection_view{
-    float: right;
-    margin-top: 25px;
-    margin-right: 140px;
+  .path {
+	color: #287EA1;
+	font-size: 14px;
   }
-
-  .widgetsContainer{
-    margin-top: 20px;
-    margin-left: 20px;
-    display:'flex';
-    flex-direction: column;
-  }
-
-  .widgets{
-    margin-left: 35%;
+  
+  .right-shift {
+	padding-left: 0.5px;
+	padding-right: 0.5px;
   }
