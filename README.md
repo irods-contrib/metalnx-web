@@ -16,7 +16,7 @@ version: '3'
 services:
 
   db:
-    image: postgres
+    image: postgres:11
     restart: always
     environment:
       POSTGRES_PASSWORD: superdupersecret
