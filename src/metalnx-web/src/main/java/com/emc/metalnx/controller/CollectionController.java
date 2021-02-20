@@ -142,7 +142,7 @@ public class CollectionController {
 				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
 			}
 
-			logger.info("myPath:{}" + myPath);
+			logger.info("myPath:{}", myPath);
 			String uiMode = "";
 			DataGridUser loggedUser = null;
 			try {

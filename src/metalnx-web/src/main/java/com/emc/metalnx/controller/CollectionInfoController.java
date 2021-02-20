@@ -49,6 +49,9 @@ public class CollectionInfoController {
 	CollectionService collectionService;
 
 	@Autowired
+	CollectionController collectionController;
+
+	@Autowired
 	PermissionsService permissionsService;
 
 	@Autowired
@@ -121,9 +124,12 @@ public class CollectionInfoController {
 					model.addAttribute("isMailEnabled", mailService.isMailEnabled());
 				}
 			}
+
 			if (dataProfile != null && dataProfile.isFile()) {
 				mimeType = dataProfile.getDataType().getMimeType();
 			}
+			
+			collectionController.setCurrentPath(myPath);
 
 			icon = collectionService.getIcon(mimeType);
 			model.addAttribute("icon", icon);
