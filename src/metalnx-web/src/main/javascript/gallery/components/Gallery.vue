@@ -68,7 +68,8 @@
           :id="'thumbnail' + item.id"
           :href="`/metalnx/collectionInfo${url}%2F${item.name}`"
         >
-          <img v-bind:class="[size_selected]" :src="item.thumbnails" />
+          <i v-if="item.collection" class="fas fa-folder-open"></i>
+          <img v-else v-bind:class="[size_selected]" :src="item.thumbnails" />
           <div class="thumbnail_name">{{ item.name }}</div>
         </a>
         <b-tooltip :target="'thumbnail' + item.id" triggers="hover">
