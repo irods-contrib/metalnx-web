@@ -86,7 +86,7 @@ public class MetadataController {
 	// CSV constants
 	private static final String METADATA_CSV_FILENAME_FORMAT = "metadata-search-result_%s_%s.csv";
 	private static final String METADATA_CSV_DATE_FORMAT = "yyyyMMdd_HHmmss";
-	private static final String METADATA_CSV_HEADER = "Filename;Path;Owner;Kind;Modified;Size;Matches\n";
+	private static final String METADATA_CSV_HEADER = "Filename,Path,Owner,Kind,Modified,Size,Matches\n";
 
 	@Value("${irods.zoneName}")
 	private String zoneName;
@@ -211,12 +211,12 @@ public class MetadataController {
 		ServletOutputStream outputStream = response.getOutputStream();
 
 		// Building search parameters lines
-		outputStream.print("Search condition #;Condition\n");
+		outputStream.print("Search condition #,Condition\n");
 
 		ListIterator<DataGridMetadataSearch> resultEnumeration = currSearch.listIterator();
 		while (resultEnumeration.hasNext()) {
 			String condition = resultEnumeration.next().toString();
-			outputStream.print(String.format("%d;%s\n", resultEnumeration.nextIndex() + 1, condition));
+			outputStream.print(String.format("%d,%s\n", resultEnumeration.nextIndex() + 1, condition));
 		}
 		outputStream.print("\n");
 		outputStream.flush();
@@ -239,12 +239,12 @@ public class MetadataController {
 			String kind = obj.isCollection() ? "collection" : "data object";
 
 			StringBuilder row = new StringBuilder();
-			row.append(obj.getName() + ";");
-			row.append(obj.getPath() + ";");
-			row.append(obj.getOwner() + ";");
-			row.append(kind + ";");
-			row.append(obj.getModifiedAtFormattedForCSVReport() + ";");
-			row.append(String.valueOf(obj.getSize()) + ";");
+			row.append(obj.getName() + ",");
+			row.append(obj.getPath() + ",");
+			row.append(obj.getOwner() + ",");
+			row.append(kind + ",");
+			row.append(obj.getModifiedAtFormattedForCSVReport() + ",");
+			row.append(String.valueOf(obj.getSize()) + ",");
 			row.append(String.valueOf(obj.getNumberOfMatches()));
 			row.append("\n");
 			outputStream.print(row.toString());
