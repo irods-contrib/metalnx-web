@@ -224,7 +224,8 @@ public class MetadataController {
 		// Executing query
 		DataGridPageContext pageContext = new DataGridPageContext();
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = metadataService
-				.findByMetadata(currSearch, pageContext, 1, Integer.MAX_VALUE);
+				.findByMetadata(currSearch, pageContext, 1, 5000); // TODO: temp fix for
+																	// https://github.com/irods-contrib/metalnx-web/issues/195
 
 		// Printing number of results
 		outputStream.print("Number of results\n");

@@ -10,3 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 #### #183 Temporarily remove non-functional drag and drop to the upload dialog, to be addressed in collection browser re-facing as a single page app
+
+#### #195 downloading CSV of metadata search results fails w/ SYS_MALLOC_ERR 
+
+Added unit tests and interim patch to csv download of metadata query results (set at 5000 result limit currently)
