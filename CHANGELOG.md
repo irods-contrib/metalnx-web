@@ -25,3 +25,5 @@ Added unit tests and interim patch to csv download of metadata query results (se
 #### #204 use comma as CSV delimiter
 
 #### #36  clean up pluggable search default configuration
+
+#### #164 bump hibernate-validator to 5.3.6
