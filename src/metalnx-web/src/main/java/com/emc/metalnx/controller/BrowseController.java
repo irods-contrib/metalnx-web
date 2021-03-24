@@ -641,8 +641,15 @@ public class BrowseController {
 		// cleaning session variables
 		logger.info("homeCollection()");
 		sourcePaths.clear();
-		currentPath = cs.getHomeDirectyForCurrentUser();
+
+		DataGridUser user = loggedUserUtils.getLoggedDataGridUser();
+
+		currentPath = "anonymous".equals(user.getUsername())
+			? cs.getHomeDirectyForPublic()
+			: cs.getHomeDirectyForCurrentUser();
+
 		parentPath = currentPath;
+
 		return "redirect:/collections?path=" + URLEncoder.encode(currentPath);
 	}
 
