@@ -1,7 +1,10 @@
 package com.emc.metalnx.controller.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -59,15 +62,24 @@ public class GalleryApiController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public String list(@RequestParam("path")   String path,
+    public String list(@RequestParam("path") String path,
                        @RequestParam("offset") int offset,
-                       @RequestParam("limit")  int limit)
+                       @RequestParam("limit") int limit,
+                       @RequestParam("policyComposed") Optional<Boolean> policyComposed)
         throws JargonException
     {
         log.info("list()");
         log.info("path:{}", path);
         log.info("offset:{}", offset);
         log.info("limit:{}", limit);
+        log.info("policyComposed:{}", policyComposed);
+
+        // TODO This function returns an error object as JSON when the rule
+        // encounters execution issues. Exceptions are thrown if invalid inputs
+        // are provided or missing.
+        //
+        // Q. How are callers expected to deal with multiple ways of failing?
+        // Q. Shouldn't there be only one true way to report errors?
 
         if (null == path || path.isEmpty()) {
             throw new IllegalArgumentException("null or empty logical path");
@@ -81,6 +93,10 @@ public class GalleryApiController {
             throw new IllegalArgumentException("limit is less than zero");
         }
 
+        if (policyComposed.orElse(false)) {
+            return listThumbnailInfoPolicyComposed(path, offset, limit);
+        }
+        
         return listThumbnailInfo(path, offset, limit);
     }
     
@@ -124,6 +140,62 @@ public class GalleryApiController {
         }
     }
 
+    private String listThumbnailInfoPolicyComposed(String _path, int _offset, int _limit)
+        throws DataGridConnectionRefusedException, JargonException
+    {
+        IRODSAccessObjectFactory aof = irodsServices.getIrodsAccessObjectFactory();
+        
+        // TODO The rule name could be configurable as well.
+        StringBuilder sb = new StringBuilder();
+        sb.append("gallery_view { irods_policy_composed_list_thumbnails_for_logical_path(*params, *config, *out); }\n");
+        sb.append("INPUT *params=,*config=\n");
+        sb.append("OUTPUT *out");
+
+        List<IRODSRuleParameter> params = new ArrayList<>();
+
+        try {
+            class JsonParams
+            {
+                @JsonProperty("logical_path") String logicalPath = _path;
+                @JsonProperty("offset") int offset = _offset;
+                @JsonProperty("limit") int limit = _limit;
+            }
+
+            Map<String, String> jsonConfig = new HashMap<>();
+            jsonConfig.put("version", "4.2.9");
+            jsonConfig.put("zone_hint", "tempZone");
+
+            params.add(new IRODSRuleParameter("*params", objectMapper.writeValueAsString(new JsonParams())));
+            params.add(new IRODSRuleParameter("*config", objectMapper.writeValueAsString(jsonConfig)));
+        }
+        catch (JsonProcessingException e) {
+            throw new JargonException("unable to serialize error object", e);
+        }
+
+        // TODO There is probably a better way to get the underlying iRODS account.
+        RuleProcessingAO rpao = aof.getRuleProcessingAO(irodsServices.getCollectionAO().getIRODSAccount());
+        RuleInvocationConfiguration ctx = new RuleInvocationConfiguration();
+        ctx.setIrodsRuleInvocationTypeEnum(IrodsRuleInvocationTypeEnum.OTHER);
+        ctx.setRuleEngineSpecifier(ruleEnginePluginInstanceName);
+
+        try {
+            // This will throw if the rule does not exist.
+            IRODSRuleExecResult execRes = rpao.executeRule(sb.toString(), params, ctx);
+            IRODSRuleExecResultOutputParameter outParam = execRes.getOutputParameterResults().get("*out");
+
+            if (null == outParam) {
+                log.error("*out parameter not found in rule execution results");
+                return newErrorObjectAsJson();
+            }
+
+            return (String) outParam.getResultObject();
+        }
+        catch (JargonException e) {
+            log.error("error executing rule", e);
+            return newErrorObjectAsJson();
+        }
+    }
+    
     private String newErrorObjectAsJson() throws JargonException
     {
         // The presence of this property is an indicator to the caller that
