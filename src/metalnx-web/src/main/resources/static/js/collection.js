@@ -196,7 +196,7 @@ function handleDownload(data) {
 		$("#actionsWait").hide();
 	}
 	else {
-		toastr.warning("Download limit has been exceeded over 100MBs");
+		toastr.warning("Download size exceeds the limit (" + data.downloadLimitInMB + "MB)");
 		$("#actionsWait").hide();
 	}
 }
