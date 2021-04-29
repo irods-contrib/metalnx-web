@@ -3139,91 +3139,77 @@ legend.scheduler-border {
 }
 
 /* ------------------------------------ Gallery View -------------------------------------------------- */
-
-.large {
-	width: 125px;
-	height: 125px;
-  }
-  
-  .galleryContainer {
+.gallery-widgets-container {
 	max-width: 100%;
-	margin-left: 20px;
-	margin-top: 40px;
-	margin-right: 20px;
-	padding-left: 15px;
-	padding-right: 15px;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: space-between;
+  }
+
+.gallery-loading-spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+  .gallery-widgets {
+	position: absolute;
+	right: 5px;
+  }
+
+.gallery-notification {
+	text-align: center;
+}
+
+.gallery-item-container {
+	max-width: 100%;
 	display: flex;
 	flex-flow: row wrap;
 	align-content: flex-start;
   }
-  
-  .medium {
-	width: 100px;
-	height: 100px;
+
+.gallery-path-container {
+	width: 60%;
   }
-  
-  .small {
-	width: 75px;
-	height: 75px;
+
+.gallery-right-shift {
+	padding-left: 5px;
+	padding-right: 5px;
   }
-  
-  .thumbnail_select {
-	width: 100px;
-	margin: 20px 10px auto 40px;
+
+.gallery-path {
+	color: #287ea1;
   }
+
   
-  .gallery {
-	margin: 10px 20px 10px 20px;
+.gallery-item {
+	display: flex;
+	flex-direction: column;
+	width: 150px;
+	height: 200px;
+	margin: 5px;
+	justify-content: center;
+	align-items: center;
 	text-align: center;
   }
   
-  .gallery-nav{
-	margin: 10px 10px 10px 30px;
+  .gallery-item_name {
+	padding: 0px 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 150px;
   }
   
-  .thumbnail_name {
-	margin: 5px auto 5px auto;
-  }
-  
-  .collection_view {
-	float: right;
-	margin-top: 25px;
-	margin-right: 140px;
-  }
-  
-  .paginationContainer{
-	display: flex;
-	flex-direction: row;
-  }
-  
-  .widgetsContainer {
-	margin-top: 20px;
-	margin-left: 20px;
-	display: "flex";
-	flex-direction: column;
-  }
-  .thumbnail-size-select{
-	margin-top: 10px;
-	margin-left: 10px;
-	width: 100px;
-  }
-  
-  .thumbnail-items-select{
-	margin-top: 10px;
-	margin-left: 10px;
-	width: 300px;
-  }
-  
-  .widgets {
-	margin-left: 35%;
+  .gallery-item_anchor:hover {
+	text-decoration: none;
   }
 
-  .path {
-	color: #287EA1;
-	font-size: 14px;
-  }
-  
-  .right-shift {
-	padding-left: 0.5px;
-	padding-right: 0.5px;
+  .gallery-thumbnail {
+	height: 150px;
+	width: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	object-fit: scale-down;
   }
