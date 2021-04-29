@@ -281,6 +281,7 @@ public class FileOperationsController {
 			prepareFileStatusJSONobj.put("filePathToDownload", "");
 			prepareFileStatusJSONobj.put("length", 0);
 			prepareFileStatusJSONobj.put("downloadLimitStatus", "warn");
+			prepareFileStatusJSONobj.put("downloadLimitInMB", configService.getDownloadLimit());
 			prepareFileStatusJSONobj.put("message", "File bundle size too large"); // TODO: internationalize message
 
 		} catch (IOException | JargonException e) {
@@ -291,6 +292,7 @@ public class FileOperationsController {
 		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
 		prepareFileStatusJSONobj.put("length", length);
 		prepareFileStatusJSONobj.put("downloadLimitStatus", downloadLimitStatus);
+		prepareFileStatusJSONobj.put("downloadLimitInMB", configService.getDownloadLimit());
 		prepareFileStatusJSONobj.put("message", message);
 
 		return prepareFileStatusJSONobj;
