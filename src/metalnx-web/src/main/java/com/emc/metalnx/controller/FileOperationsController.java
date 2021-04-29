@@ -350,7 +350,25 @@ public class FileOperationsController {
 		// return template;
 
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
+	}
 
+	@RequestMapping(value = "/deleteNoRedirect/", method = RequestMethod.POST)
+	@ResponseBody
+	public List<String> deleteCollectionAndDataObjectNoRedirect(@RequestParam("paths[]") final String[] paths)
+	    throws DataGridConnectionRefusedException
+	{
+		List<String> failedDeletions = new ArrayList<>();
+
+		for (String path : paths) {
+			boolean forceRemove = path.startsWith(TRASH_PATH);
+
+			if (!fileOperationService.deleteItem(path, forceRemove)) {
+				String item = path.substring(path.lastIndexOf("/") + 1, path.length());
+				failedDeletions.add(item);
+			}
+		}
+		
+		return failedDeletions;
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
