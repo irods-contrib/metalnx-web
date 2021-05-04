@@ -7,11 +7,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 
@@ -117,6 +119,30 @@ public class BrowseController {
 	@Autowired
 	HeaderService headerService;
 
+	private static final Logger logger = LoggerFactory.getLogger(BrowseController.class);
+
+	// ui mode that will be shown when the rods user switches mode from admin to
+	// user and vice-versa
+	public static final String UI_USER_MODE = "user";
+	public static final String UI_ADMIN_MODE = "admin";
+
+	public static final int MAX_HISTORY_SIZE = 10;
+
+    private static final Map<SortingComparatorKey, Comparator<DataGridCollectionAndDataObject>>
+        sortingComparators = new HashMap<>();
+
+    static
+    {
+	    sortingComparators.put(new SortingComparatorKey("1", "asc"),  Comparator.comparing(DataGridCollectionAndDataObject::getName));
+        sortingComparators.put(new SortingComparatorKey("1", "desc"), Comparator.comparing(DataGridCollectionAndDataObject::getName).reversed());
+
+        sortingComparators.put(new SortingComparatorKey("2", "asc"),  Comparator.comparing(DataGridCollectionAndDataObject::getModifiedAt));
+        sortingComparators.put(new SortingComparatorKey("2", "desc"), Comparator.comparing(DataGridCollectionAndDataObject::getModifiedAt).reversed());
+
+        sortingComparators.put(new SortingComparatorKey("3", "asc"),  Comparator.comparing(DataGridCollectionAndDataObject::getSize));
+        sortingComparators.put(new SortingComparatorKey("3", "desc"), Comparator.comparing(DataGridCollectionAndDataObject::getSize).reversed());
+    }
+        
 	// parent path of the current directory in the tree view
 	private String parentPath;
 
@@ -132,13 +158,6 @@ public class BrowseController {
 	// Auxiliary structure to manage download, upload, copy and move operations
 	private List<String> sourcePaths;
 
-	// ui mode that will be shown when the rods user switches mode from admin to
-	// user and vice-versa
-	public static final String UI_USER_MODE = "user";
-	public static final String UI_ADMIN_MODE = "admin";
-
-	public static final int MAX_HISTORY_SIZE = 10;
-
 	private Stack<String> collectionHistoryBack;
 	private Stack<String> collectionHistoryForward;
 
@@ -146,8 +165,6 @@ public class BrowseController {
 	private String userTrashPath = "";
 	// saves the trash under the zone
 	private String zoneTrashPath = "";
-
-	private static final Logger logger = LoggerFactory.getLogger(BrowseController.class);
 
 	@PostConstruct
 	public void init() throws DataGridException {
@@ -712,6 +729,70 @@ public class BrowseController {
 	 * ******************************** UTILS **********************************
 	 * *************************************************************************
 	 */
+	
+	private static class SortingComparatorKey
+	{
+	    final String columnIndex;
+	    final String direction;
+	    final int hashCode;
+	    
+	    public SortingComparatorKey(String _columnIndex, String _direction)
+	    {
+	        if (null == _columnIndex || _columnIndex.isEmpty()) {
+	            throw new IllegalArgumentException("column index is null or empty");
+	        }
+
+	        if (null == _direction || _direction.isEmpty()) {
+	            throw new IllegalArgumentException("direction is null or empty");
+	        }
+
+	        columnIndex = _columnIndex;
+	        direction = _direction;
+	        hashCode = Objects.hash(columnIndex, direction);
+	    }
+	    
+	    @Override
+	    public int hashCode()
+	    {
+	        return hashCode;
+	    }
+	    
+	    @Override
+	    public boolean equals(Object _other)
+	    {
+	        if (this == _other) return true;
+	        if (null == _other) return false;
+	        if (this.getClass() != _other.getClass()) return false;
+	        
+	        SortingComparatorKey that = (SortingComparatorKey) _other;
+	        
+	        return columnIndex.equals(that.columnIndex) && direction.equals(that.direction);
+	    }
+	}
+	
+	private static void sort(List<DataGridCollectionAndDataObject> _objects,
+	                         String _columnToSortBy,
+	                         String _sortDirection)
+	{
+	    logger.info("sort()");
+	    logger.info("_columnToSortBy: {}", _columnToSortBy);
+	    logger.info("_sortDirection: {}", _sortDirection);
+
+	    if (_columnToSortBy == null || _columnToSortBy.isEmpty() || _sortDirection == null || _sortDirection.isEmpty()) {
+	        logger.info("Not enough information to sort collections and data objects.");
+	        return;
+	    }
+
+	    SortingComparatorKey key = new SortingComparatorKey(_columnToSortBy, _sortDirection);
+	    Comparator<DataGridCollectionAndDataObject> comp = sortingComparators.get(key);
+
+	    if (null == comp) {
+	        logger.info("No comparator matched sorting criteria.");
+	        return;
+	    }
+
+	    _objects.sort(comp);
+	}
 
 	/**
 	 * Finds all collections and data objects existing under a certain path
@@ -724,8 +805,8 @@ public class BrowseController {
 	 */
 	@RequestMapping(value = "getPaginatedJSONObjs/")
 	@ResponseBody
-	public String getPaginatedJSONObjs(final HttpServletRequest request) throws DataGridException {
-
+	public String getPaginatedJSONObjs(final HttpServletRequest request) throws DataGridException
+	{
 		logger.info("getPaginatedJSONObjs()");
 
 		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects;
@@ -750,11 +831,13 @@ public class BrowseController {
 			logger.info("using path of:{}", currentPath);
 			logger.debug("deployRule:{}", deployRule);
 			String path = currentPath;
+
 			if (deployRule) {
 				logger.debug("getting rule cache path");
 				path = ruleDeploymentService.getRuleCachePath();
 				currentPath = path;
 				logger.info("rule cache path:{}", path);
+
 				if (!ruleDeploymentService.ruleCacheExists()) {
 					logger.warn("no rule cache in place, create zone/.ruleCache directory");
 					ruleDeploymentService.createRuleCache();
@@ -763,10 +846,15 @@ public class BrowseController {
 
 			Math.floor(start / length);
 			logger.info("getting subcollections under path:{}", path);
-			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPath(path); // TODO: temporary add
-			// paging service
+			dataGridCollectionAndDataObjects = cs.getSubCollectionsAndDataObjectsUnderPath(path); // TODO: temporary add paging service
 
 			logger.debug("dataGridCollectionAndDataObjects:{}", dataGridCollectionAndDataObjects);
+			
+			// Sort based on the column selected by the user.
+			sort(dataGridCollectionAndDataObjects,
+			     request.getParameter("order[0][column]"),
+			     request.getParameter("order[0][dir]"));
+
 			/*
 			 * cs.getSubCollectionsAndDataObjectsUnderPathThatMatchSearchTextPaginated(
 			 * path, searchString, startPage.intValue(), length, orderColumn, orderDir,
@@ -778,17 +866,20 @@ public class BrowseController {
 			jsonResponse.put("recordsTotal", String.valueOf(totalObjsForCurrentPath));
 			jsonResponse.put("recordsFiltered", String.valueOf(totalObjsForCurrentSearch));
 			jsonResponse.put("data", dataGridCollectionAndDataObjects);
-		} catch (DataGridConnectionRefusedException e) {
+		}
+		catch (DataGridConnectionRefusedException e) {
 			logger.error("connection refused", e);
 			throw e;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			logger.error("Could not get collections/data objs under path {}: {}", currentPath, e.getMessage());
 			throw new DataGridException("exception getting paginated objects", e);
 		}
 
 		try {
 			jsonString = mapper.writeValueAsString(jsonResponse);
-		} catch (JsonProcessingException e) {
+		}
+		catch (JsonProcessingException e) {
 			logger.error("Could not parse hashmap in collections to json: {}", e.getMessage());
 			throw new DataGridException("exception in json parsing", e);
 		}
@@ -1006,4 +1097,5 @@ public class BrowseController {
 			return "httpErrors/noAccess";
 		}
 	}
+
 }
