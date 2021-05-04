@@ -545,8 +545,6 @@
                    	},
                    	{
                     	"render": function ( data, type, full, meta ) {
-
-
                     		var encodedName = encodeURIComponent(full.name);
                     		var encodedPath = encodeURIComponent(full.path);
                     		var idVal = "row" + i++;
@@ -557,7 +555,8 @@
 
     					},
     					"width": "20%",
-    					"targets": 4
+    					"targets": 4,
+    					"orderable": false
                     }
 
                 ]
