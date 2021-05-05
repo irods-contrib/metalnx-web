@@ -25,7 +25,7 @@
           class="btn btn-default icon-btn"
           aria-label="upload files"
           id="uploadIcon"
-          title="Upload file(s) to iRods"
+          title="Upload file(s) to iRODS"
         >
           <i class="fa fa-cloud-upload fa-color"></i>
         </b-link>
