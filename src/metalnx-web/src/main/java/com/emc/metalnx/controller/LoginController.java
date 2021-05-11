@@ -134,6 +134,24 @@ public class LoginController {
 		 */
 		model.addObject("authTypes", configService.listAuthTypeMappings());
 		model.addObject("defaultAuthType", configService.getDefaultIrodsAuthScheme());
+
+		/*
+		 * 1- check if anon is permitted in props - we may consider adding an
+		 * allow.anonymous or something in metalnx.properties mike can wire that in if
+		 * need be
+		 * 
+		 * 2- propogate the property in global config and turn on anon login box in
+		 * index.html under src/main/resources/login for that html block (add a 'login
+		 * as guest button there')
+		 * 
+		 * 3- in IRODSAuthenticationProvider hoist up add'l attributes and look for auth
+		 * login request attribute
+		 * 
+		 * 4- process normal anon account
+		 * 
+		 * 
+		 */
+
 	}
 
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
