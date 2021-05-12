@@ -192,6 +192,12 @@ table td {
 	font-size: 1.5rem;
 }
 
+#deleteFailureModal .modal-content {
+	background-color: #f2dede;
+	border-color: #ebccd1;
+	color: #a94442;
+}
+
 #deleteConfirmationModal .modal-content {
 	background-color: #51A351;
 	color: #ffffff;

@@ -220,11 +220,20 @@
 		role="dialog" data-backdrop="static" data-keyboard="false">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-body text-cente">
-					<strong>Success!</strong> The file was successfully deleted.<a
+				<div class="modal-body text-center">
+					<strong>Success!</strong> The collection was successfully deleted.<a
 						href="/metalnx/browse/home"> Go Back to Collection Home.</a>
 				</div>
+			</div>
+		</div>
+	</div>
 
+	<div id="deleteFailureModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body text-center">
+					<strong>Failure!</strong> The collection was not deleted.
+				</div>
 			</div>
 		</div>
 	</div>
@@ -234,10 +243,9 @@
 	<div id="successConfirmationModal" class="modal hide" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-body text-cente  alert alert-success">
+				<div class="modal-body text-center  alert alert-success">
 					<strong>Success!</strong> The file was successfully Edited.
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -287,6 +295,7 @@
 							</form>
 
 						</div>
+
 						<script>
 							$(function() {
 								$('[data-toggle="tooltip"]').tooltip();

@@ -146,16 +146,25 @@ function deleteInfoAction(path){
 
 	var paths = [];
 	paths.push(path);
-	var url = "/metalnx/fileOperation/delete/";
+	var url = "/metalnx/fileOperation/deleteNoRedirect/";
 
 	ajaxEncapsulation(
 			url,
 			"POST",
 			{paths: paths},
-			function (data) {
+			function (failedDeletions) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
-				$('#deleteConfirmationModal').modal();
+				
+				// The delete operation failed if the array is not empty.
+				// The failure is likely permissions related.
+				if (failedDeletions.length > 0) {
+					$('#deleteFailureModal').modal();
+					$("#actionmenu button").prop("disabled", false);
+				}
+				else {
+					$('#deleteConfirmationModal').modal();
+				}
 			}
 	);
 	$("#deleteModal").modal("hide");
@@ -187,7 +196,7 @@ function handleDownload(data) {
 		$("#actionsWait").hide();
 	}
 	else {
-		toastr.warning("Download limit has been exceeded over 100MBs");
+		toastr.warning("Download size exceeds the limit (" + data.downloadLimitInMB + "MB)");
 		$("#actionsWait").hide();
 	}
 }

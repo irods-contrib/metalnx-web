@@ -281,6 +281,7 @@ public class FileOperationsController {
 			prepareFileStatusJSONobj.put("filePathToDownload", "");
 			prepareFileStatusJSONobj.put("length", 0);
 			prepareFileStatusJSONobj.put("downloadLimitStatus", "warn");
+			prepareFileStatusJSONobj.put("downloadLimitInMB", configService.getDownloadLimit());
 			prepareFileStatusJSONobj.put("message", "File bundle size too large"); // TODO: internationalize message
 
 		} catch (IOException | JargonException e) {
@@ -291,6 +292,7 @@ public class FileOperationsController {
 		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
 		prepareFileStatusJSONobj.put("length", length);
 		prepareFileStatusJSONobj.put("downloadLimitStatus", downloadLimitStatus);
+		prepareFileStatusJSONobj.put("downloadLimitInMB", configService.getDownloadLimit());
 		prepareFileStatusJSONobj.put("message", message);
 
 		return prepareFileStatusJSONobj;
@@ -350,7 +352,25 @@ public class FileOperationsController {
 		// return template;
 
 		return browseController.getSubDirectories(model, browseController.getCurrentPath());
+	}
 
+	@RequestMapping(value = "/deleteNoRedirect/", method = RequestMethod.POST)
+	@ResponseBody
+	public List<String> deleteCollectionAndDataObjectNoRedirect(@RequestParam("paths[]") final String[] paths)
+	    throws DataGridConnectionRefusedException
+	{
+		List<String> failedDeletions = new ArrayList<>();
+
+		for (String path : paths) {
+			boolean forceRemove = path.startsWith(TRASH_PATH);
+
+			if (!fileOperationService.deleteItem(path, forceRemove)) {
+				String item = path.substring(path.lastIndexOf("/") + 1, path.length());
+				failedDeletions.add(item);
+			}
+		}
+		
+		return failedDeletions;
 	}
 
 	@RequestMapping(value = "emptyTrash/", method = RequestMethod.POST)
