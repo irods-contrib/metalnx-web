@@ -18,7 +18,9 @@ if (isAdvancedUpload) {
 	})
   .on('drop', function(e) {
 		droppedFiles = e.originalEvent.dataTransfer.files;
-    $('input[type="file"]').prop('files', droppedFiles);
+		
+    $('#inputFiles').prop('files', droppedFiles);
+    e.stopPropagation();
 	});
 
 	$dropArea.on('dragover dragenter', function() {

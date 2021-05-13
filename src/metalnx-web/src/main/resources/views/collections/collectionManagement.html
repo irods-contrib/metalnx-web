@@ -201,9 +201,9 @@
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
 										<a aria-label="copy collection" href="#" name="/" title="/"
-											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
+											onclick="getSubDirectoriesOldTree('iRODS', '/');"> <img
 											alt="copy collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
-											name="/" /> <span>iRods</span>
+											name="/" /> <span>iRODS</span>
 										</a>
 									</p>
 								</th:block>
@@ -301,9 +301,9 @@
 								<th:block th:if="${userDetails.isAdmin()}">
 									<p>
 										<a name="/" title="/" aria-label="Move collection"
-											onclick="getSubDirectoriesOldTree('iRods', '/');"> <img
+											onclick="getSubDirectoriesOldTree('iRODS', '/');"> <img
 											alt="Move collection" class="folder-icon" th:src="@{ /images/folder-16.png }"
-											name="/" /> <span>iRods</span>
+											name="/" /> <span>iRODS</span>
 										</a>
 									</p>
 								</th:block>
@@ -466,7 +466,7 @@
 									<button type="button" class="btn btn-primary btn-sm" id="browseButton" title="Browse" style="margin: 10% auto;">
 										<span th:text="#{select.files.upload}"></span>
 									</button>
-									<span id="advancedUploadMessage">Or Drag and drop them here.</span>
+									<span id="advancedUploadMessage"></span>
 								<!-- </div> -->
 								<input type="file" multiple="multiple" name="files"
 									id="inputFiles" class="form-control" title="Input File"/>
@@ -569,7 +569,7 @@
 		<script type="text/javascript" th:src="@{/js/filterTable.js}"></script>
 
 		<!-- Cusom DragnDrop JS -->
-		<script type="text/javascript" th:src="@{/js/dragDrop.js}"/>
+		<!-- <script type="text/javascript" th:src="@{/js/dragDrop.js}"/> -->
 
 		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/

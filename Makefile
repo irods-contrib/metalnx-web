@@ -21,7 +21,7 @@ packaging/docker/metalnx.war: warbuilderimage
 		-v "$$HOME/.m2":/root/.m2 \
 		-w /usr/src/mymaven \
 		myimages/metalnx-warbuilder \
-		mvn package -Dmaven.test.skip=true
+		mvn clean package -Dmaven.test.skip=true
 
 # this docker command builds a local docker image
 dockerimage: packaging/docker/metalnx.war
