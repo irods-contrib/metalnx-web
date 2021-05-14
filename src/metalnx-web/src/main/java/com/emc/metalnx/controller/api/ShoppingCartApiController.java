@@ -1,10 +1,12 @@
 package com.emc.metalnx.controller.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.datautils.shoppingcart.FileShoppingCart;
-import org.irods.jargon.datautils.shoppingcart.ShoppingCartEntry;
 import org.irods.jargon.datautils.shoppingcart.ShoppingCartService;
 import org.irods.jargon.extensions.publishingplugin.PublishingIndexInventory;
 import org.irods.jargon.extensions.publishingplugin.PublishingInventoryEntry;
@@ -106,24 +108,13 @@ public class ShoppingCartApiController {
 		log.info("initiating updateCart()");
 
 		String key = "metalnx-cart";
-		try {
+		if (paths.length > 0) {
 			ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
-			FileShoppingCart fileShoppingCart = FileShoppingCart.instance();
-
-			for (String path : paths) {
-				log.info("Adding path to cart:: " + path.toString());
-				fileShoppingCart.addAnItem(ShoppingCartEntry.instance(path.toString()));
-			}
-			String cartPath = shoppingCartService.serializeShoppingCartAsLoggedInUser(fileShoppingCart, key);
-			log.info("Path to the cart: " + cartPath);
-
-			return browseController.getSubDirectories(model, browseController.getCurrentPath());
-		} catch (DataGridException e) {
-			log.error("DataGridExceptiony: {}", e.getMessage());
-		} catch (JargonException e) {
-			log.error("JargonException: {}", e.getMessage());
+			shoppingCartService.appendToShoppingCart(key, new ArrayList<String>(Arrays.asList(paths)));
 		}
-		return null;
+
+		return browseController.getSubDirectories(model, browseController.getCurrentPath());
+
 	}
 
 	/**
