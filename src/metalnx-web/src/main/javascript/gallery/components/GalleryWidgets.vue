@@ -1,6 +1,6 @@
 <template>
-  <span>
-    <b-link
+  <span class="gallery-widgets">
+    <!-- <b-link
       href="#"
       class="btn btn-default icon-btn"
       id="showCollectionFormBtn"
@@ -8,7 +8,7 @@
       title="add collection"
     >
       <i class="fa fa-folder"></i>
-    </b-link>
+    </b-link> -->
     <b-link
       class="btn btn-default icon-btn"
       :href="`/metalnx/collectionInfo${url}`"
@@ -16,7 +16,7 @@
       title="View info"
       ><i class="fa fa-info-circle fa-color"></i>
     </b-link>
-    <b-link
+    <!-- <b-link
       href="#"
       class="btn btn-default icon-btn"
       aria-label="upload files"
@@ -24,7 +24,7 @@
       title="Upload file(s) to iRods"
     >
       <i class="fa fa-cloud-upload fa-color"></i>
-    </b-link>
+    </b-link> -->
     <b-link
       :href="`/metalnx/collections${url}`"
       class="btn btn-default icon-btn"
@@ -39,11 +39,15 @@
 export default {
   name: "GalleryWidgets",
   components: {},
-  props: ['url'],
+  props: ["url"],
   data() {
     return {};
   },
 };
 </script> 
 <style>
+.gallery-widgets {
+  position: absolute;
+  right: 5px;
+}
 </style>

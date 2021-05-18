@@ -3140,6 +3140,11 @@ legend.scheduler-border {
 	align-content: space-between;
   }
 
+  .gallery-widgets {
+	position: absolute;
+	right: 5px;
+  }
+
 .gallery-notification {
 	text-align: center;
 }
@@ -3168,15 +3173,31 @@ legend.scheduler-border {
 .gallery-item {
 	display: flex;
 	flex-direction: column;
-	width: 200px;
+	width: 150px;
 	height: 200px;
+	margin: 5px;
 	justify-content: center;
+	align-items: center;
 	text-align: center;
   }
   
-.gallery-item_name {
-	width: 180px;
+  .gallery-item_name {
+	padding: 0px 10px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	width: 150px;
+  }
+  
+  .gallery-item_anchor:hover {
+	text-decoration: none;
+  }
+
+  .gallery-thumbnail {
+	height: 150px;
+	width: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	object-fit: scale-down;
   }
