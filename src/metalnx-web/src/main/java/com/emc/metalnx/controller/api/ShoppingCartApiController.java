@@ -192,7 +192,7 @@ public class ShoppingCartApiController {
 			return this.pluggablePublishingWrapperService.executePublish(endpointUrl, schemaId, userName, cartId);
 		} catch (DataGridException e) {
 			log.error("DataGridExceptiony: {}", e.getMessage());
+			throw e;
 		}
-		return null;
 	}
 }
