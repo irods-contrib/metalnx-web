@@ -180,6 +180,7 @@ public class PluggablePublishingWrapperService {
 			log.info("initiate publish download");
 			String jsonResultString = publishingPluginDiscoveryService.downloadpublishSpreadSheet(endpointUrl, schemaId,
 					principal, cartId);
+			log.info("publish result:{}", jsonResultString);
 			return jsonResultString;
 		} catch (PublishingPluginUnavailableException e) {
 			// log and continue, don't hold startup and treat as a soft failure

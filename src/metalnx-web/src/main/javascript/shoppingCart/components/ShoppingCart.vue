@@ -171,6 +171,17 @@ export default {
             ) {
               responseType = this.publishResult.response_type;
               switch (responseType) {
+                case "error":
+                   this.$bvToast.toast(
+                    this.publishResult.response_message,
+                    {
+                      title: `Error publishing failed`,
+                      variant: "danger",
+                      solid: true,
+                      noAutoHide: true
+                    }
+                  );
+                  break;
                 case "download":
                   this.prepareFilesForDownload(
                     this.publishResult.response_path_or_link
@@ -183,7 +194,8 @@ export default {
                     {
                       title: `Error publishing failed`,
                       variant: "danger",
-                      solid: true
+                      solid: true,
+                      noAutoHide: true
                     }
                   );
                   break;
@@ -191,7 +203,8 @@ export default {
                   this.$bvToast.toast("Response type not supported: ", {
                     title: `Error publishing failed`,
                     variant: "danger",
-                    solid: true
+                    solid: true,
+                    noAutoHide: true
                   });
               }
             } else {
@@ -200,7 +213,8 @@ export default {
                 {
                   title: `Error publishing failed`,
                   variant: "danger",
-                  solid: true
+                  solid: true,
+                  noAutoHide: true
                 }
               );
             }
@@ -208,7 +222,8 @@ export default {
             this.$bvToast.toast("Publish service returned empty result: ", {
               title: `Error publishing failed`,
               variant: "danger",
-              solid: true
+              solid: true,
+              noAutoHide: true
             });
           }
         })
@@ -220,7 +235,8 @@ export default {
               {
                 title: `Error publishing failed`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           } else if (error.request) {
@@ -228,7 +244,8 @@ export default {
             this.$bvToast.toast("Service not responding: " + error.request, {
               title: `Error publishing failed`,
               variant: "danger",
-              solid: true
+              solid: true,
+              noAutoHide: true
             });
           } else {
             // error in setting up the request
@@ -237,14 +254,16 @@ export default {
               {
                 title: `Error publishing failed`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           }
           this.$bvToast.toast("Configuration error: " + error.config, {
             title: `Error publishing failed`,
             variant: "danger",
-            solid: true
+            solid: true,
+            noAutoHide: true
           });
         });
     },
@@ -270,7 +289,8 @@ export default {
               {
                 title: `Error preparing file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           } else if (error.request) {
@@ -279,7 +299,8 @@ export default {
               {
                 title: `Error preparing file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           } else {
@@ -289,14 +310,16 @@ export default {
               {
                 title: `Error preparing file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           }
           this.$bvToast.toast("Configuration error: " + error.config, {
             title: `Error preparing file download`,
             variant: "danger",
-            solid: true
+            solid: true,
+            noAutoHide: true
           });
         });
     },
@@ -333,7 +356,8 @@ export default {
               {
                 title: `Error file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           } else if (error.request) {
@@ -343,7 +367,8 @@ export default {
               {
                 title: `Error file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           } else {
@@ -353,14 +378,16 @@ export default {
               {
                 title: `Error file download`,
                 variant: "danger",
-                solid: true
+                solid: true,
+                noAutoHide: true
               }
             );
           }
           this.$bvToast.toast("Configuration error: " + error.config, {
             title: `Error file download`,
             variant: "danger",
-            solid: true
+            solid: true,
+            noAutoHide: true
           });
         });
     }
