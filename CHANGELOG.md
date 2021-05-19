@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Added unit tests and interim patch to csv download of metadata query results (set at 5000 result limit currently)
 
+#### improve validation error messages and 'working' messages in cart 
+
+Added an error response type to publishing plugin that can propagate error messages back to the user 'toaster' messages
+
 #### #204 use comma as CSV delimiter
 
 #### #36  clean up pluggable search default configuration
