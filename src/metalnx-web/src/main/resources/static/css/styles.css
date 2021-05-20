@@ -3140,6 +3140,12 @@ legend.scheduler-border {
 	align-content: space-between;
   }
 
+.gallery-loading-spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
   .gallery-widgets {
 	position: absolute;
 	right: 5px;

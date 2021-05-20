@@ -6,6 +6,13 @@
       <GalleryWidgets v-bind:url="url" />
     </div>
     <!-- <GalleryPagination v-bind:url="url" /> -->
+    <div class="gallery-loading-spinner">
+      <b-spinner
+        v-if="isLoading"
+        variant="primary"
+        label="Spinning"
+      ></b-spinner>
+    </div>
     <div v-if="!thumbnails || thumbnails['error']">
       <b-alert show variant="danger" class="gallery-notification"
         >{{ thumbnail_error_message }} Please click
@@ -56,11 +63,13 @@ export default {
       thumbnails: {},
       thumbnail_error_message:
         "An error has occurred while fetching thumbnail data from iRODS.",
+      isLoading: false,
     };
   },
   methods: {
     async fetchThumbnails() {
       try {
+        this.isLoading = true;
         let response = await axios({
           method: "GET",
           url: "/metalnx/api/gallery",
@@ -70,7 +79,49 @@ export default {
             limit: this.currPerPage,
           },
         });
-        this.thumbnails = response.data;
+        let gallery = response.data;
+
+      // Note: This will iterate through each gallery item and load its thunbmail based on the path rule engine provided
+        for (let i = 0; i < gallery.items.length; i++) {
+          try {
+            if (gallery.items[i].collection) continue;
+            // call the previewPreparation in collection browser to fetch the raw image data
+            let preview_prep_response = await axios({
+              method: "GET",
+              url: "/metalnx/previewPreparation/",
+              params: {
+                path: `${gallery.items[i].thumbnail}`,
+              },
+            });
+            // parse the response from previewPreparation to an html element
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(
+              preview_prep_response.data,
+              "text/html"
+            );
+            // check whether the thumbnail path provided is valid, if invalid, a broken image will be displayed
+            if (
+              doc.children[0].children[1].children[0].children[0].children[0]
+                .tagName === "IMG"
+            ) {
+              gallery.items[i]["previewSrc"] = './';
+            } else {
+              // if the path is valid, call dataObjectPreview endpoint to fetch blog image
+              let preview_response = await axios({
+                method: "GET",
+                url: "/metalnx/preview/dataObjectPreview/",
+                responseType: "blob",
+              });
+              let previewSrc = URL.createObjectURL(preview_response.data);
+              gallery.items[i]["previewSrc"] = previewSrc;
+            }
+          } catch (e) {
+            console.log(e);
+            continue;
+          }
+        }
+        this.thumbnails = gallery;
+        this.isLoading = false;
       } catch (err) {
         if (err.response) {
           this.thumbnail_error_message += err.response;
@@ -82,7 +133,7 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     this.fetchThumbnails();
   },
 };

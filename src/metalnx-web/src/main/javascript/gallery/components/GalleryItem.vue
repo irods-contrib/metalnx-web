@@ -18,7 +18,7 @@
       <div class="gallery-thumbnail">
         <img
           alt="Thumbnail Image"
-          :src="item.thumbnail"
+          :src="item.previewSrc"
           class="gallery-thumbnail"
         />
       </div>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "GalleryItem",
   components: {},
@@ -39,6 +41,28 @@ export default {
   data() {
     return {};
   },
+  // methods: {
+  //   async fetchPreview() {
+  //     let preview_prep_response = await axios({
+  //       method: "GET",
+  //       url: "/metalnx/previewPreparation/",
+  //       params: {
+  //         path: `${this.item.thumbnail}`,
+  //       },
+  //     });
+  //     let preview_response = await axios({
+  //       method: "GET",
+  //       url: "/metalnx/preview/dataObjectPreview/",
+  //       responseType: 'blob'
+  //     });
+  //     this.preview_response = preview_response;
+  //     console.log(preview_response);
+  //     this.previewSrc = URL.createObjectURL(preview_response.data);
+  //   },
+  // },
+  // mounted() {
+  //   this.fetchPreview();
+  // },
 };
 </script> 
 <style>
@@ -72,5 +96,4 @@ export default {
   justify-content: center;
   object-fit: scale-down;
 }
-
 </style>
