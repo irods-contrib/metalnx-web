@@ -1,11 +1,12 @@
 <template>
   <div class="container">
+    <b-overlay :show="show" rounded="sm">
     <h1>Cart List</h1>
     <nav class="navbar navbar-dark bg-secondary">
       <div>
         <b-dropdown id="cartActions" slot="prepend" text="Actions" variant="info">
           <b-dropdown-item v-on:click="clearCartItems()">Clear cart</b-dropdown-item>
-          <!-- <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item> -->
+          <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item>
         </b-dropdown>
       </div>
       <form class="form-inline">
@@ -56,6 +57,7 @@
     <div v-else>
       Shopping cart is empty
     </div>
+    </b-overlay>
   </div>
 </template>
 {{ row.item.chkCol }}
@@ -71,7 +73,9 @@ export default {
       publishSchemaName: "Select Schema",
       selectedPublishSchema: "",
       availablePublishSchema: [],
-      publishResult: ""
+      publishResult: "",
+      show: false
+
     };
   },
   created: function() {
@@ -136,6 +140,10 @@ export default {
     },
     removeSelectedCartItems: function() {
       alert("remove cart items: " + this.selectedCartItems);
+      axios.post("/metalnx/api/shoppingCart/removeFromCart/",{
+        paths: this.selectedCartItems
+    }).then(response => (this.cartItems = response.data));
+
     },
     updateCartItemList: function() {
       this.selectedCartItems = [];
@@ -147,6 +155,7 @@ export default {
       }
     },
     exportSelected: function() {
+      this.show=true;
       var jsonData = {
         additionalProperties: {},
         id: ""
@@ -172,6 +181,7 @@ export default {
               responseType = this.publishResult.response_type;
               switch (responseType) {
                 case "error":
+                   this.show=false;
                    this.$bvToast.toast(
                     this.publishResult.response_message,
                     {
@@ -189,6 +199,7 @@ export default {
                   break;
                 case "redirect":
                   // add redirect code here
+                  this.show=false;
                   this.$bvToast.toast(
                     "Response type redirect not supported: ",
                     {
@@ -200,6 +211,7 @@ export default {
                   );
                   break;
                 default:
+                  this.show=false;
                   this.$bvToast.toast("Response type not supported: ", {
                     title: `Error publishing failed`,
                     variant: "danger",
@@ -208,6 +220,7 @@ export default {
                   });
               }
             } else {
+              this.show=false;
               this.$bvToast.toast(
                 "response_type or response_path_or_link property missing: ",
                 {
@@ -219,6 +232,7 @@ export default {
               );
             }
           } else {
+            this.show=false;
             this.$bvToast.toast("Publish service returned empty result: ", {
               title: `Error publishing failed`,
               variant: "danger",
@@ -229,6 +243,7 @@ export default {
         })
         .catch(error => {
           // status code that is not in range of 2xx
+          this.show=false;
           if (error.response) {
             this.$bvToast.toast(
               "Publisher returned error: " + error.response.status,
@@ -281,6 +296,7 @@ export default {
           this.handleDownload(path.split("/").pop());
         })
         .catch(error => {
+          this.show=false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
@@ -334,11 +350,13 @@ export default {
         .then(response => {
           console.log("successful: download call");
           console.log(response.data);
-          this.$bvToast.toast(response.data.response_message, {
+          this.$bvToast.toast(this.publishResult.response_message, {   
             title: `File download`,
             variant: "success",
-            solid: true
+            solid: true,
+            noAutoHide: true
           });
+          this.show=false;
           var fileURL = window.URL.createObjectURL(new Blob([response.data]));
           var fileLink = document.createElement("a");
 
@@ -349,6 +367,7 @@ export default {
           fileLink.click();
         })
         .catch(error => {
+          this.show=false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
