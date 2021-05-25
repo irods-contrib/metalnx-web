@@ -334,7 +334,7 @@ export default {
         .then(response => {
           console.log("successful: download call");
           console.log(response.data);
-          this.$bvToast.toast("Downloading export file", {
+          this.$bvToast.toast(response.data.response_message, {
             title: `File download`,
             variant: "success",
             solid: true
