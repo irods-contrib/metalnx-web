@@ -334,10 +334,11 @@ export default {
         .then(response => {
           console.log("successful: download call");
           console.log(response.data);
-          this.$bvToast.toast(response.data.response_message, {
+          this.$bvToast.toast(this.publishResult.response_message, {   
             title: `File download`,
             variant: "success",
-            solid: true
+            solid: true,
+            noAutoHide: true
           });
           var fileURL = window.URL.createObjectURL(new Blob([response.data]));
           var fileLink = document.createElement("a");
