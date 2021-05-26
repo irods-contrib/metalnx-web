@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <b-overlay :show="show" rounded="sm">
     <h1>Cart List</h1>
     <nav class="navbar navbar-dark bg-secondary">
       <div>
@@ -56,6 +57,7 @@
     <div v-else>
       Shopping cart is empty
     </div>
+    </b-overlay>
   </div>
 </template>
 {{ row.item.chkCol }}
@@ -71,7 +73,9 @@ export default {
       publishSchemaName: "Select Schema",
       selectedPublishSchema: "",
       availablePublishSchema: [],
-      publishResult: ""
+      publishResult: "",
+      show: false
+
     };
   },
   created: function() {
@@ -147,6 +151,7 @@ export default {
       }
     },
     exportSelected: function() {
+      this.show=true;
       var jsonData = {
         additionalProperties: {},
         id: ""
@@ -172,6 +177,7 @@ export default {
               responseType = this.publishResult.response_type;
               switch (responseType) {
                 case "error":
+                   this.show=false;
                    this.$bvToast.toast(
                     this.publishResult.response_message,
                     {
@@ -189,6 +195,7 @@ export default {
                   break;
                 case "redirect":
                   // add redirect code here
+                  this.show=false;
                   this.$bvToast.toast(
                     "Response type redirect not supported: ",
                     {
@@ -200,6 +207,7 @@ export default {
                   );
                   break;
                 default:
+                  this.show=false;
                   this.$bvToast.toast("Response type not supported: ", {
                     title: `Error publishing failed`,
                     variant: "danger",
@@ -208,6 +216,7 @@ export default {
                   });
               }
             } else {
+              this.show=false;
               this.$bvToast.toast(
                 "response_type or response_path_or_link property missing: ",
                 {
@@ -219,6 +228,7 @@ export default {
               );
             }
           } else {
+            this.show=false;
             this.$bvToast.toast("Publish service returned empty result: ", {
               title: `Error publishing failed`,
               variant: "danger",
@@ -229,6 +239,7 @@ export default {
         })
         .catch(error => {
           // status code that is not in range of 2xx
+          this.show=false;
           if (error.response) {
             this.$bvToast.toast(
               "Publisher returned error: " + error.response.status,
@@ -281,6 +292,7 @@ export default {
           this.handleDownload(path.split("/").pop());
         })
         .catch(error => {
+          this.show=false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
@@ -340,6 +352,7 @@ export default {
             solid: true,
             noAutoHide: true
           });
+          this.show=false;
           var fileURL = window.URL.createObjectURL(new Blob([response.data]));
           var fileLink = document.createElement("a");
 
@@ -350,6 +363,7 @@ export default {
           fileLink.click();
         })
         .catch(error => {
+          this.show=false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
