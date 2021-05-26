@@ -6,7 +6,7 @@
       <div>
         <b-dropdown id="cartActions" slot="prepend" text="Actions" variant="info">
           <b-dropdown-item v-on:click="clearCartItems()">Clear cart</b-dropdown-item>
-          <!-- <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item> -->
+          <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item>
         </b-dropdown>
       </div>
       <form class="form-inline">
@@ -140,6 +140,10 @@ export default {
     },
     removeSelectedCartItems: function() {
       alert("remove cart items: " + this.selectedCartItems);
+      axios.post("/metalnx/api/shoppingCart/removeFromCart",{
+        paths: this.selectedCartItems
+    }).then(response => (this.cartItems = response.data));
+
     },
     updateCartItemList: function() {
       this.selectedCartItems = [];

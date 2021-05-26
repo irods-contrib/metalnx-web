@@ -117,6 +117,28 @@ public class ShoppingCartApiController {
 
 	}
 
+	@RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
+	@ResponseBody
+	public String removeFromCart(final Model model, @RequestParam("paths[]") final String[] paths)
+			throws DataGridException, JargonException {
+		log.info("initiating updateCart()");
+
+		String key = "metalnx-cart";
+		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
+
+		FileShoppingCart newCart = shoppingCartService.removeSpecifiedItemsFromShoppingCart(key,
+				new ArrayList<String>(Arrays.asList(paths)));
+		String jsonString;
+		try {
+			jsonString = mapper.writeValueAsString(newCart);
+		} catch (JsonProcessingException e) {
+			log.error("error serializing cart", e);
+			throw new JargonException("shopping cart error", e);
+		}
+		log.debug("jsonString:{}", jsonString);
+		return jsonString;
+	}
+
 	/**
 	 * Return information of the available publishing plugin
 	 * 
