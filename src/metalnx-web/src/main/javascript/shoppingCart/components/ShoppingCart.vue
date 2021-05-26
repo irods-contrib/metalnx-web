@@ -140,7 +140,7 @@ export default {
     },
     removeSelectedCartItems: function() {
       alert("remove cart items: " + this.selectedCartItems);
-      axios.post("/metalnx/api/shoppingCart/removeFromCart",{
+      axios.post("/metalnx/api/shoppingCart/removeFromCart/",{
         paths: this.selectedCartItems
     }).then(response => (this.cartItems = response.data));
 
