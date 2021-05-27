@@ -67,6 +67,10 @@
               />
             </b-form-group>
           </template>
+          <!-- A custom formatted column -->
+          <template #cell(path)="path">
+            <b-link v-bind:href="'/metalnx/collectionInfo?path=' + path.item.path">{{ path.item.path }}</b-link>
+          </template>
           <template v-slot:table-colgroup="scope">
             <col
               v-for="field in scope.fields"
@@ -170,8 +174,7 @@ export default {
         this.cartItems = response.data;
         this.selectedCartItems = [];
         //this.updateCartItemList();
-
-      })
+      });
     },
     updateCartItemList: function () {
       this.selectedCartItems = [];
