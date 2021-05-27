@@ -138,7 +138,7 @@
 				</ol> -->
 
 				<div class="collection-title">
-					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
+					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }" th:onclick="|positionBrowserToPath('${ dataProfile.domainObject.absolutePath }')|"></h2>
 				</div>
 			</div>
 
