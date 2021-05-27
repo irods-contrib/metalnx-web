@@ -73,7 +73,12 @@
 				</ol>
 
 				<div class="collection-title">
-					<h2 class="word-wrap" th:text="${ dataProfile.getChildName() }"></h2>
+					<a href="#" class="word-wrap"
+								aria-label="'path breadcrumb for:' + ${ dataProfile.domainObject.absolutePath }"
+								th:text="${dataProfile.getChildName()}"
+								th:title="${dataProfile.getChildName()}"
+								th:onclick="|positionBrowserToPath('${ dataProfile.domainObject.absolutePath }')|">
+							</a>
 				</div>
 			</div>
 
