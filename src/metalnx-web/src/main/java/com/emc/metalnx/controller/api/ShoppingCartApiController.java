@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.emc.metalnx.controller.BrowseController;
+import com.emc.metalnx.controller.api.model.CartActionData;
 import com.emc.metalnx.controller.api.model.PlublishingSchemaEntry;
 import com.emc.metalnx.controller.api.model.PlublishingSchemaListing;
 import com.emc.metalnx.controller.api.model.PublishActionData;
@@ -119,7 +120,7 @@ public class ShoppingCartApiController {
 
 	@RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
 	@ResponseBody
-	public String removeFromCart(final Model model, @RequestParam("paths[]") final String[] paths)
+	public ResponseEntity<?> removeFromCart(@RequestBody CartActionData cartActionData)
 			throws DataGridException, JargonException {
 		log.info("initiating updateCart()");
 
@@ -127,16 +128,9 @@ public class ShoppingCartApiController {
 		ShoppingCartService shoppingCartService = irodsServices.getShoppingCartService();
 
 		FileShoppingCart newCart = shoppingCartService.removeSpecifiedItemsFromShoppingCart(key,
-				new ArrayList<String>(Arrays.asList(paths)));
-		String jsonString;
-		try {
-			jsonString = mapper.writeValueAsString(newCart);
-		} catch (JsonProcessingException e) {
-			log.error("error serializing cart", e);
-			throw new JargonException("shopping cart error", e);
-		}
-		log.debug("jsonString:{}", jsonString);
-		return jsonString;
+				new ArrayList<String>(Arrays.asList(cartActionData.getPaths())));
+		return new ResponseEntity<>(newCart.getShoppingCartFileList(), HttpStatus.OK);
+
 	}
 
 	/**

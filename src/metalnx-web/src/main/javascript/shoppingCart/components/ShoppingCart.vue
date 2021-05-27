@@ -1,62 +1,88 @@
 <template>
   <div class="container">
     <b-overlay :show="show" rounded="sm">
-    <h1>Cart List</h1>
-    <nav class="navbar navbar-dark bg-secondary">
-      <div>
-        <b-dropdown id="cartActions" slot="prepend" text="Actions" variant="info">
-          <b-dropdown-item v-on:click="clearCartItems()">Clear cart</b-dropdown-item>
-          <b-dropdown-item v-on:click="removeSelectedCartItems()">Remove items(s)</b-dropdown-item>
-        </b-dropdown>
-      </div>
-      <form class="form-inline">
-        <b-dropdown
-          id="schemaSelection"
-          slot="prepend"
-          v-bind:text="publishSchemaName"
-          variant="light"
+      <h1>Cart List</h1>
+      <nav class="navbar navbar-dark bg-secondary">
+        <div>
+          <b-dropdown
+            id="cartActions"
+            slot="prepend"
+            text="Actions"
+            variant="info"
+          >
+            <b-dropdown-item v-on:click="clearCartItems()"
+              >Clear cart</b-dropdown-item
+            >
+            <b-dropdown-item v-on:click="removeSelectedCartItems()"
+              >Remove items(s)</b-dropdown-item
+            >
+          </b-dropdown>
+        </div>
+        <form class="form-inline">
+          <b-dropdown
+            id="schemaSelection"
+            slot="prepend"
+            v-bind:text="publishSchemaName"
+            variant="light"
+          >
+            <b-dropdown-item
+              v-for="i in availablePublishSchema"
+              :key="i.schemaId"
+              v-on:click="selectSchema(i)"
+              >{{ i.schemaName }}</b-dropdown-item
+            >
+          </b-dropdown>
+          <b-button
+            variant="primary"
+            slot="append"
+            v-on:click="exportSelected()"
+            >Export</b-button
+          >
+        </form>
+      </nav>
+      <div v-if="getGridData.items.length > 0">
+        <b-table
+          selectable
+          striped
+          head-variant="dark"
+          hover
+          :items="getGridData.items"
+          :fields="getGridData.fields"
+          responsive="sm"
         >
-          <b-dropdown-item
-            v-for="i in availablePublishSchema"
-            :key="i.schemaId"
-            v-on:click="selectSchema(i)"
-          >{{i.schemaName}}</b-dropdown-item>
-        </b-dropdown>
-        <b-button variant="primary" slot="append" v-on:click="exportSelected()">Export</b-button>
-      </form>
-    </nav>
-    <div v-if="getGridData.items.length > 0">
-    <b-table
-      selectable
-      striped
-      head-variant="dark"
-      hover
-      :items="getGridData.items"
-      :fields="getGridData.fields"
-      responsive="sm"
-    >
-    
-      <!-- A custom formatted header cell for field 'name' -->
-      <template v-slot:head(selectedCartItems)="data">
-        <input type="checkbox" v-model="isSelectAllCartItems" @click="updateCartItemList" />
-      </template>
-      <template v-slot:cell(selectedCartItems)="row">
-        <b-form-group>
-          <input type="checkbox" :value="row.item.path" v-model="selectedCartItems" />
-        </b-form-group>
-      </template>
-      <template v-slot:table-colgroup="scope">
-        <col
-          v-for="field in scope.fields"
-          :key="field.key"
-          :style="{ width: field.key === 'selectedCartItems' ? '20px' : '180px' }"
-        />
-      </template>
-    </b-table>
-    </div>
-    <div v-else>
-      Shopping cart is empty
-    </div>
+          <!-- A custom formatted header cell for field 'name' -->
+          <template v-slot:head(selectedCartItems)="data">
+            <input
+              type="checkbox"
+              v-model="isSelectAllCartItems"
+              @click="updateCartItemList"
+            />
+          </template>
+          <template v-slot:cell(selectedCartItems)="row">
+            <b-form-group>
+              <input
+                type="checkbox"
+                :value="row.item.path"
+                v-model="selectedCartItems"
+              />
+            </b-form-group>
+          </template>
+          <!-- A custom formatted column -->
+          <template #cell(path)="path">
+            <b-link v-bind:href="'/metalnx/collectionInfo?path=' + path.item.path">{{ path.item.path }}</b-link>
+          </template>
+          <template v-slot:table-colgroup="scope">
+            <col
+              v-for="field in scope.fields"
+              :key="field.key"
+              :style="{
+                width: field.key === 'selectedCartItems' ? '20px' : '180px',
+              }"
+            />
+          </template>
+        </b-table>
+      </div>
+      <div v-else>Shopping cart is empty</div>
     </b-overlay>
   </div>
 </template>
@@ -74,25 +100,24 @@ export default {
       selectedPublishSchema: "",
       availablePublishSchema: [],
       publishResult: "",
-      show: false
-
+      show: false,
     };
   },
-  created: function() {
+  created: function () {
     axios({
       method: "get",
-      url: "/metalnx/api/shoppingCart/getCart/"
-    }).then(response => (this.cartItems = response.data));
+      url: "/metalnx/api/shoppingCart/getCart/",
+    }).then((response) => (this.cartItems = response.data));
 
     axios({
       method: "get",
-      url: "/metalnx/api/shoppingCart/info/"
-    }).then(response => {
+      url: "/metalnx/api/shoppingCart/info/",
+    }).then((response) => {
       this.availablePublishSchema = response.data.publishingSchemaEntry;
     });
   },
   computed: {
-    getGridData: function() {
+    getGridData: function () {
       var resultData = [];
       var pathDict = {};
       pathDict["path"] = this.cartItems;
@@ -107,45 +132,51 @@ export default {
         fields: [
           {
             key: "selectedCartItems",
-            label: ""
+            label: "",
           },
           {
             key: "name",
             label: "Name",
-            formatter: value => {
+            formatter: (value) => {
               return value;
-            }
+            },
           },
           {
             key: "path",
             label: "Absolute Path",
-            formatter: value => {
+            formatter: (value) => {
               return value;
-            }
-          }
+            },
+          },
         ],
-        items: resultData
+        items: resultData,
       };
       return data;
-    }
+    },
   },
   methods: {
-    selectSchema: function(selectedCartItems) {
+    selectSchema: function (selectedCartItems) {
       this.selectedPublishSchema = selectedCartItems;
       this.publishSchemaName = selectedCartItems.schemaName;
     },
-    clearCartItems: function() {
+    clearCartItems: function () {
       this.cartItems = [];
       axios.post("/metalnx/api/shoppingCart/clearCart");
     },
-    removeSelectedCartItems: function() {
-      alert("remove cart items: " + this.selectedCartItems);
-      axios.post("/metalnx/api/shoppingCart/removeFromCart/",{
-        paths: this.selectedCartItems
-    }).then(response => (this.cartItems = response.data));
-
+    removeSelectedCartItems: function () {
+      axios({
+        method: "post",
+        url: "/metalnx/api/shoppingCart/removeFromCart/",
+        data: {
+          paths: this.selectedCartItems,
+        },
+      }).then((response) => {
+        this.cartItems = response.data;
+        this.selectedCartItems = [];
+        //this.updateCartItemList();
+      });
     },
-    updateCartItemList: function() {
+    updateCartItemList: function () {
       this.selectedCartItems = [];
       this.publishResult = null;
       if (!this.isSelectAllCartItems) {
@@ -154,11 +185,11 @@ export default {
         }
       }
     },
-    exportSelected: function() {
-      this.show=true;
+    exportSelected: function () {
+      this.show = true;
       var jsonData = {
         additionalProperties: {},
-        id: ""
+        id: "",
       };
       var publishRequestData = JSON.stringify(jsonData);
       axios({
@@ -167,10 +198,10 @@ export default {
         data: {
           endpointUrl: this.selectedPublishSchema.endpointUrl,
           indexId: this.selectedPublishSchema.schemaId,
-          publishRequestData: publishRequestData
-        }
+          publishRequestData: publishRequestData,
+        },
       })
-        .then(response => {
+        .then((response) => {
           this.publishResult = response.data;
           var responseType = "";
           if (this.publishResult) {
@@ -181,16 +212,13 @@ export default {
               responseType = this.publishResult.response_type;
               switch (responseType) {
                 case "error":
-                   this.show=false;
-                   this.$bvToast.toast(
-                    this.publishResult.response_message,
-                    {
-                      title: `Error publishing failed`,
-                      variant: "danger",
-                      solid: true,
-                      noAutoHide: true
-                    }
-                  );
+                  this.show = false;
+                  this.$bvToast.toast(this.publishResult.response_message, {
+                    title: `Error publishing failed`,
+                    variant: "danger",
+                    solid: true,
+                    noAutoHide: true,
+                  });
                   break;
                 case "download":
                   this.prepareFilesForDownload(
@@ -199,51 +227,51 @@ export default {
                   break;
                 case "redirect":
                   // add redirect code here
-                  this.show=false;
+                  this.show = false;
                   this.$bvToast.toast(
                     "Response type redirect not supported: ",
                     {
                       title: `Error publishing failed`,
                       variant: "danger",
                       solid: true,
-                      noAutoHide: true
+                      noAutoHide: true,
                     }
                   );
                   break;
                 default:
-                  this.show=false;
+                  this.show = false;
                   this.$bvToast.toast("Response type not supported: ", {
                     title: `Error publishing failed`,
                     variant: "danger",
                     solid: true,
-                    noAutoHide: true
+                    noAutoHide: true,
                   });
               }
             } else {
-              this.show=false;
+              this.show = false;
               this.$bvToast.toast(
                 "response_type or response_path_or_link property missing: ",
                 {
                   title: `Error publishing failed`,
                   variant: "danger",
                   solid: true,
-                  noAutoHide: true
+                  noAutoHide: true,
                 }
               );
             }
           } else {
-            this.show=false;
+            this.show = false;
             this.$bvToast.toast("Publish service returned empty result: ", {
               title: `Error publishing failed`,
               variant: "danger",
               solid: true,
-              noAutoHide: true
+              noAutoHide: true,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           // status code that is not in range of 2xx
-          this.show=false;
+          this.show = false;
           if (error.response) {
             this.$bvToast.toast(
               "Publisher returned error: " + error.response.status,
@@ -251,7 +279,7 @@ export default {
                 title: `Error publishing failed`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           } else if (error.request) {
@@ -260,7 +288,7 @@ export default {
               title: `Error publishing failed`,
               variant: "danger",
               solid: true,
-              noAutoHide: true
+              noAutoHide: true,
             });
           } else {
             // error in setting up the request
@@ -270,7 +298,7 @@ export default {
                 title: `Error publishing failed`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           }
@@ -278,11 +306,11 @@ export default {
             title: `Error publishing failed`,
             variant: "danger",
             solid: true,
-            noAutoHide: true
+            noAutoHide: true,
           });
         });
     },
-    prepareFilesForDownload: function(path) {
+    prepareFilesForDownload: function (path) {
       var url =
         "/metalnx/fileOperation/prepareFilesForDownload/?paths" +
         encodeURIComponent("[]") +
@@ -290,13 +318,13 @@ export default {
         encodeURIComponent(path);
       axios({
         method: "get",
-        url: url
+        url: url,
       })
         .then(() => {
           this.handleDownload(path.split("/").pop());
         })
-        .catch(error => {
-          this.show=false;
+        .catch((error) => {
+          this.show = false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
@@ -306,7 +334,7 @@ export default {
                 title: `Error preparing file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           } else if (error.request) {
@@ -316,7 +344,7 @@ export default {
                 title: `Error preparing file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           } else {
@@ -327,7 +355,7 @@ export default {
                 title: `Error preparing file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           }
@@ -335,28 +363,28 @@ export default {
             title: `Error preparing file download`,
             variant: "danger",
             solid: true,
-            noAutoHide: true
+            noAutoHide: true,
           });
         });
     },
 
-    handleDownload: function(filename) {
+    handleDownload: function (filename) {
       console.log("handleDownload()");
       axios({
         url: "/metalnx/fileOperation/download/",
         method: "GET",
-        responseType: "blob"
+        responseType: "blob",
       })
-        .then(response => {
+        .then((response) => {
           console.log("successful: download call");
           console.log(response.data);
-          this.$bvToast.toast(this.publishResult.response_message, {   
+          this.$bvToast.toast(this.publishResult.response_message, {
             title: `File download`,
             variant: "success",
             solid: true,
-            noAutoHide: true
+            noAutoHide: true,
           });
-          this.show=false;
+          this.show = false;
           var fileURL = window.URL.createObjectURL(new Blob([response.data]));
           var fileLink = document.createElement("a");
 
@@ -366,8 +394,8 @@ export default {
 
           fileLink.click();
         })
-        .catch(error => {
-          this.show=false;
+        .catch((error) => {
+          this.show = false;
           if (error.response) {
             // status code that is not in range of 2xx
             this.$bvToast.toast(
@@ -376,7 +404,7 @@ export default {
                 title: `Error file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           } else if (error.request) {
@@ -387,7 +415,7 @@ export default {
                 title: `Error file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           } else {
@@ -398,7 +426,7 @@ export default {
                 title: `Error file download`,
                 variant: "danger",
                 solid: true,
-                noAutoHide: true
+                noAutoHide: true,
               }
             );
           }
@@ -406,11 +434,11 @@ export default {
             title: `Error file download`,
             variant: "danger",
             solid: true,
-            noAutoHide: true
+            noAutoHide: true,
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

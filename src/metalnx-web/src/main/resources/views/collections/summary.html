@@ -49,12 +49,25 @@
 								th:onclick="|positionBrowserToPath('${ breadcrumbItem.path }')|">
 							</a></li>
 						</th:block>
-						<th:block
-							th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
-							<li class="collections-view"><span
-								th:text="${ dataProfile.getChildName() }"
-								th:title="${ dataProfile.getChildName() }"> </span></li>
+						<!-- for collections, provide a link to the browse view -->
+						<th:block th:if="${ dataProfile.isFile() }">
+							<th:block
+								th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+								<li class="collections-view"><span
+									th:text="${ dataProfile.getChildName() }"
+									th:title="${ dataProfile.getChildName() }"> </span></li>
+							</th:block>
 						</th:block>
+						<th:block th:unless="${ dataProfile.isFile() }">
+							<th:block
+								th:if="${iterStat.index eq (dataProfile.pathComponents.size()-1)}">
+								<li class="collections-view"><span
+									th:onclick="|positionBrowserToPath('${ breadcrumbItem.encPath }')|"
+									th:text="${ dataProfile.getChildName() }"
+									th:title="${ dataProfile.getChildName() }"> </span></li>
+							</th:block>
+						</th:block>
+						
 
 					</th:block>
 				</ol>
@@ -142,7 +155,8 @@
 		</div>
 	</div>
 
-	<div id="deleteFailureModal" class="modal fade" tabindex="-1" role="dialog">
+	<div id="deleteFailureModal" class="modal fade" tabindex="-1"
+		role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body text-center">
@@ -251,29 +265,30 @@
 					</div>
 					<div class="pb-3">
 						<div class="col">
-								<label for="inheritCollectionAbsolutePath"
-								       th:text="#{collections.management.table.absolute.path.label}"
-                                                                       class="text-center">
-                                                                </label>
+							<label for="inheritCollectionAbsolutePath"
+								th:text="#{collections.management.table.absolute.path.label}"
+								class="text-center"></label>
 						</div>
 					</div>
 					<div class="pb-5">
 
 						<div class="col">
-								<span id="inheritCollectionAbsolutePath"
-									th:text="${dataProfile.getAbsolutePath()}"></span>
+							<span id="inheritCollectionAbsolutePath"
+								th:text="${dataProfile.getAbsolutePath()}"></span>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal"
-						th:text="#{confirmation.message.cancel}" title="Cancel" th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
+						th:text="#{confirmation.message.cancel}" title="Cancel"
+						th:onclick="'javascript:cancelInheritanceModal(\'' + ${dataProfile.getAbsolutePath()} + '\');'"></button>
 					<button type="button" class="btn btn-primary"
 						th:onclick="'javascript:updateInheritanceNonRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
 						th:text="#{text.apply}" title="Apply"></button>
-						<button type="button" class="btn btn-primary"
+					<button type="button" class="btn btn-primary"
 						th:onclick="'javascript:updateInheritanceRecursive(\'' + ${dataProfile.getAbsolutePath()} + '\');'"
-						th:text="#{confirmation.message.yes.recursively}" title="Confirm recursively"></button>
+						th:text="#{confirmation.message.yes.recursively}"
+						title="Confirm recursively"></button>
 				</div>
 			</div>
 		</div>
@@ -292,7 +307,8 @@
 			<div th:if="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
 				<h4 class="errorMsg">You do not have access on this page. To view the full page please request an access.</h4>
 				<button class="btn btn-primary btn-sm pull-right" type="button"
-				th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'" title="Request Access">Access Request</button>
+					th:onclick="'javascript:accessRequest(\'' + ${dataProfile.absolutePath} + '\');'"
+					title="Request Access">Access Request</button>
 			</div>
 			<div th:unless="${isMailEnabled}" class="col-sm-12 col-md-12 col-xs-12 text-left">
 				<h4 class="errorMsg">You do not have access on this page. Please contact your administrator.</h4>
