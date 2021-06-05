@@ -7,6 +7,9 @@ Metalnx asks the connected iRODS server to run a rule named:
 irods_policy_list_thumbnails_for_logical_path(*logical_path, *offset, *limit, *out){}
 ```
 
+![Gallery View Screenshot](IMAGES/metalnx_galleryview.png)
+
+
 An example iRODS rule language rule that provides fullpaths to thumbnails in a direct subcollection named `thumbnails`:
 
 ```
@@ -58,3 +61,27 @@ irods_policy_list_thumbnails_for_logical_path(*logical_path, *offset, *limit, *o
 ```
 
 Metalnx will use the returned JSON payload to render the thumbnails with designated name, size, last modified date, and hover text.
+
+```
+{
+  "location": "/tempZone/home/rods",
+  "items": [
+    {
+      "id": 10027,
+      "name": "thumbnails",
+      "collection": true,
+      "lastModified": "01622853658",
+      "hover": "thumbnails"
+    },
+    {
+      "id": 10026,
+      "name": "irods.png",
+      "size": "224",
+      "collection": false,
+      "lastModified": "01621015799",
+      "hover": "224 bytes",
+      "thumbnail": "/tempZone/home/rods/thumbnails/irods.png"
+    }
+  ]
+}
+```
