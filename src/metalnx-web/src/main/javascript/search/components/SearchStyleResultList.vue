@@ -6,7 +6,7 @@
       <div class="row">
         <p><span v-html="searchResultEntry.content_text"></span></p> 
       </div>
-      <div v-if="searchResultEntry.links.links.length > 0">
+      <div v-if="searchResultEntry.links.links && searchResultEntry.links.links.length > 0">
          <b-button variant="link" size="lg" v-on:click="isActive = !isActive" v-bind:id="searchResultEntry.title" v-bind:title="searchResultEntry.links.linkset_description">{{ searchResultEntry.links.linkset_title }} </b-button>
           <div v-if="isActive">
             <div v-for="item in searchResultEntry.links.links" v-bind:key="item.link_url">
