@@ -43,7 +43,3 @@ volumes:
 networks:
    4-2_irodsnet:
     external: true
-     
-
-
-  
