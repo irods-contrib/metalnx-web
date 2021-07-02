@@ -13,6 +13,7 @@ import org.irods.jargon.core.exception.JargonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,9 @@ public class UploadController {
 
 	@Autowired
 	private RuleDeploymentService ruleDeploymentService;
+
+	@Value("${default.storage.resource}")
+	private String defaultStorageResc;
 
 	/**
 	 * Sets the HTTP response text and status for an upload request.
@@ -110,6 +114,14 @@ public class UploadController {
 		String resources = multipartRequest.getParameter("resources");
 		String resourcesToUpload = multipartRequest.getParameter("resourcesToUpload");
 		String destPath = multipartRequest.getParameter("uploadDestinationPath");
+
+		if ("undefined".equalsIgnoreCase(resourcesToUpload)) {
+			if (defaultStorageResc == null || defaultStorageResc.isEmpty()) {
+				return getUploadResponse("No default storage resource defined in configuration file", FATAL);
+			}
+
+			resourcesToUpload = defaultStorageResc;
+		}
 
 		logger.info("parsed parameters...");
 
