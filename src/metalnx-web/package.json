@@ -6,12 +6,12 @@
     "serve": "vue-cli-service serve",
     "buildx": "npm -v",
     "build": "vue-cli-service build --mode production",
-    "build-dev": "vue-cli-service build --mode development",
+    "build-dev": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
-    "axios": "^0.18.0",
+    "axios": ">=0.21.1",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "cors": "^2.8.5",
@@ -19,6 +19,7 @@
     "popper.js": "^1.16.1",
     "view-router": "^0.2.3",
     "vue": "^2.6.11",
+    "vue-axios": "^2.1.5",
     "vue-cli": "^2.9.6",
     "vue-fa": "^2.0.1",
     "vue-router": "^3.3.2",
