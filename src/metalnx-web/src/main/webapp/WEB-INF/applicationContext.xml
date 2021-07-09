@@ -93,6 +93,7 @@
 		<sec:intercept-url pattern="/shoppingCart/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/api/shoppingCart/**"
+		<sec:intercept-url pattern="/gallery/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/browse/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
@@ -131,6 +132,8 @@
 		<sec:intercept-url pattern="/search/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/api/search/**"
+			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
+		<sec:intercept-url pattern="/api/gallery/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/groups/**"
 			access="ROLE_ADMIN,ROLE_GROUPADMIN" />

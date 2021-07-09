@@ -3137,3 +3137,79 @@ legend.scheduler-border {
 	-webkit-border-radius: 2px;
 	z-index: 1;
 }
+
+/* ------------------------------------ Gallery View -------------------------------------------------- */
+.gallery-widgets-container {
+	max-width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: space-between;
+  }
+
+.gallery-loading-spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+  .gallery-widgets {
+	position: absolute;
+	right: 5px;
+  }
+
+.gallery-notification {
+	text-align: center;
+}
+
+.gallery-item-container {
+	max-width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: flex-start;
+  }
+
+.gallery-path-container {
+	width: 60%;
+  }
+
+.gallery-right-shift {
+	padding-left: 5px;
+	padding-right: 5px;
+  }
+
+.gallery-path {
+	color: #287ea1;
+  }
+
+  
+.gallery-item {
+	display: flex;
+	flex-direction: column;
+	width: 150px;
+	height: 200px;
+	margin: 5px;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+  }
+  
+  .gallery-item_name {
+	padding: 0px 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 150px;
+  }
+  
+  .gallery-item_anchor:hover {
+	text-decoration: none;
+  }
+
+  .gallery-thumbnail {
+	height: 150px;
+	width: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	object-fit: scale-down;
+  }
