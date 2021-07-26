@@ -229,13 +229,14 @@
 								type="text" th:value="${dataGridMetadata.getValue()}"
 								title="value" /></td>
 							<th:block th:if="${dataGridUser.isMetadataUnitView()}">
-								<td th:if="${#strings.isEmpty(dataGridMetadata.getUnit())}"><span>-</span><input
-									class="hidden newUnitMetadataTable" type="text"
-									th:value="${dataGridMetadata.getUnit()}" title="unit" /></td>
-								<td th:unless="${#strings.isEmpty(dataGridMetadata.getUnit())}"><span
-									th:text="${dataGridMetadata.getUnit()}"></span><input
-									class="hidden newUnitMetadataTable" type="text"
-									th:value="${dataGridMetadata.getUnit()}" title="unit" /></td>
+								<td th:if="${#strings.isEmpty(dataGridMetadata.getUnit())}">
+									<span></span>
+									<input class="hidden newUnitMetadataTable" type="text" th:value="${dataGridMetadata.getUnit()}" title="unit" />
+								</td>
+								<td th:unless="${#strings.isEmpty(dataGridMetadata.getUnit())}">
+									<span th:text="${dataGridMetadata.getUnit()}"></span>
+									<input class="hidden newUnitMetadataTable" type="text" th:value="${dataGridMetadata.getUnit()}" title="unit" />
+								</td>
 							</th:block>
 							<td>
 								<button title="View" 
