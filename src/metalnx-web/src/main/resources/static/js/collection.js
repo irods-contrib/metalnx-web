@@ -152,7 +152,7 @@ function deleteInfoAction(path){
 			url,
 			"POST",
 			{paths: paths},
-			function (failedDeletions) {
+			function(failedDeletions) {
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
 				
@@ -163,7 +163,7 @@ function deleteInfoAction(path){
 					$("#actionmenu button").prop("disabled", false);
 				}
 				else {
-					$('#deleteConfirmationModal').modal();
+					window.location.href = "browse/home";
 				}
 			}
 	);
