@@ -102,9 +102,7 @@
 								th:text="${ dataProfile.getChildName() }"
 								th:title="${ dataProfile.getChildName() }"> </span></li>
 						</th:block>
-
 					</th:block>
-
 					<th:block th:if="${breadcrumb.items.size()} gt 4">
 						<li>...</li>
 						<li><a href="#"
@@ -168,7 +166,6 @@
 
 		<!-- <div class="col-xs-12 col-md-10 col-sm-9 ">
 			 <span class="resulting-permission" th:text="${ '[' + collectionAndDataObject.getMostPermissiveAccessForCurrentUser() + ' access]'}"></span>
-
 		</div> -->
 		<!-- <div class="row box box-default">
 			<div class="col-xs-12 col-md-3 col-sm-3 text-left">
@@ -263,7 +260,7 @@
 							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 						</button>
 						<h4 class="modal-title" id="myRenameModalLabel"
-							th:text="#{collections.add.form.title}"></h4>
+							th:text="#{collections.rename.form.title}"></h4>
 					</div>
 					<div class="modal-body">
 
@@ -276,6 +273,11 @@
 								<input type="hidden" id="inputCollectionParentPath"
 									name="parentPath" th:value="${ dataProfile.getParentPath() }"
 									title="parentpath" />
+                                
+                                <div class="form-group">
+                                    <b><span th:text="#{collections.add.form.current.path}"></span></b><br />
+                                    <span th:text="${dataProfile.getAbsolutePath()}"></span>
+                                </div>
 
 								<div class="form-group">
 									<label for="inputCollectionName"
@@ -332,20 +334,20 @@
 				</div>
 				<div class="modal-body container">
 
-					<div class="row">
+					<div >
 						<div class="col">
 							<span
 								th:text="#{collections.management.inheritance.modal.prompt}"></span>
 						</div>
 					</div>
-					<div class="row pb-3">
+					<div class="pb-3">
 						<div class="col">
 								<label for="inheritCollectionAbsolutePath"
 
 											th:text="#{collections.management.table.absolute.path.label}" class="text-center"></label>
 						</div>
 					</div>
-					<div class="row pb-5">
+					<div class="pb-5">
 
 						<div class="col">
 								<span id="inheritCollectionAbsolutePath"
@@ -463,4 +465,3 @@
 
 
 </th:block>
-
