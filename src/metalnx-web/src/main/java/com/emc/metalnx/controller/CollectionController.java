@@ -3,7 +3,6 @@
 
 package com.emc.metalnx.controller;
 
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
@@ -136,10 +135,6 @@ public class CollectionController {
 				myPath = cs.getHomeDirectyForCurrentUser();
 			} else {
 				logger.info("path provided...go to:{}", path);
-				myPath = URLDecoder.decode(myPath); // TODO: do I need to worry about decoding, versus configure
-													// in filter? - MCC
-				// see
-				// https://stackoverflow.com/questions/25944964/where-and-how-to-decode-pathvariable
 			}
 
 			logger.info("myPath:{}", myPath);
