@@ -85,8 +85,11 @@ public class CollectionInfoController {
 		IconObject icon = null;
 		String mimeType = "";
 		String template = "";
-
+		
+     	String permissionType = collectionService.getPermissionsForPath(myPath);
+		model.addAttribute("permissionType", permissionType);
 		boolean access = collectionService.canUserAccessThisPath(path);
+		model.addAttribute("access", access);
 		logger.info("Has Access :: {}", access);
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = null;
