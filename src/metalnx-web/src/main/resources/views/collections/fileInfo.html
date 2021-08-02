@@ -40,8 +40,8 @@
 								title="Permissions">Permissions</span>
 						</a></li>
 
-						<li><a href="#preview" data-toggle="tab" role="tab"
-							th:onclick="'javascript:getPerview(\'' + ${dataProfile.absolutePath} + '\');'">
+						<li th:if="${permissionType == 'read' or permissionType == 'write' or permissionType == 'own'}"><a href="#preview" data-toggle="tab" role="tab"
+							th:onclick="'javascript:getPreview(\'' + ${dataProfile.absolutePath} + '\');'">
 								<span><i class="fa fa-eye"></i></span> <span title="preview">Preview</span>
 						</a></li>
 					</ul>
@@ -52,7 +52,7 @@
 						</div>
 						<div id="metadata" class="tab-pane fade" role="tabpanel"></div>
 						<div id="permission" class="tab-pane fade" role="tabpanel"></div>
-						<div id="preview" class="tab-pane fade" role="tabpanel">
+						<div id="preview" class="tab-pane fade" role="tabpanel" th:if="${permissionType == 'read' or permissionType == 'write' or permissionType == 'own'}">
 						</div>
 
 					</div>

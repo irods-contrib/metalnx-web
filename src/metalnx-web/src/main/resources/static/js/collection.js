@@ -23,7 +23,7 @@ function getPermissionDetails(path){
 	ajaxEncapsulation(url, "POST", {path: path}, displayPermissionDetails, null, null);
 }
 
-function getPerview(path){
+function getPreview(path){
 	console.log("Collection getPreview() :: " + path)
 	var url = "/metalnx/previewPreparation/";
 	ajaxEncapsulation(url, "GET", {path:path}, displayPreviewImage, null, null);

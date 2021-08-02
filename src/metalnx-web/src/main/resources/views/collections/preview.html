@@ -8,6 +8,7 @@
 			<div class="preview-img-container">
 				<img src="/metalnx/preview/dataObjectPreview/"
 					alt="imagePreview" />
+				<span th:text="${permissionType}"></span>
 			</div>
 		</div>
 	</div>
@@ -39,9 +40,9 @@
 			</textarea>
 		</div>
 		<div id="collectionPreviewSearchButtons" class="col-sm-12">
-			<button class="btn btn-primary btn-sm pull-right" type="button"
+			<button th:if="${permissionType == 'own' or permissionType == 'write'}" class="btn btn-primary btn-sm pull-right" type="button"
 				th:onclick="'javascript:save();'" title="Save">Save</button>
-			<button class="btn btn-default btn-sm pull-right" type="button"
+			<button th:if="${permissionType == 'own' or permissionType == 'write'}" class="btn btn-default btn-sm pull-right" type="button"
 				th:onclick="'javascript:cancel();'" title="Cancel">Cancel</button>
 		</div>
 
@@ -55,8 +56,8 @@
 			CSV File Preview....
 			<div id="csv" class="preview"></div>
 
-			<button th:onclick="'javascript:save();'">Save</button>
-			<button th:onclick="'javascript:cancel();'">Cancel</button>
+			<button th:if="${permissionType == 'own' or permissionType == 'write'}" th:onclick="'javascript:save();'">Save</button>
+			<button th:if="${permissionType == 'own' or permissionType == 'write'}" th:onclick="'javascript:cancel();'">Cancel</button>
 
 			
 			<script type="text/javascript" th:src="@{/js/csvPreview.js}"></script>
