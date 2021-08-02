@@ -12,7 +12,7 @@
 
 			<div class="col-sm-4 col-md-4 col-xs-4 pull-right">
 				<div id="actionmenu" class="pull-right">
-					<div class="btn-group">
+					<div class="btn-group" th:if="${permissionType == 'write' or permissionType == 'own'}">
 						<button type="button"
 							class="btn btn-default dropdown-toggle text-btn"
 							data-toggle="dropdown" aria-expanded="false">
