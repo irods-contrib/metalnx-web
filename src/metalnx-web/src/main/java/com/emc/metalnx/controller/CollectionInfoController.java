@@ -86,7 +86,7 @@ public class CollectionInfoController {
 		String mimeType = "";
 		String template = "";
 		
-     	String permissionType = collectionService.getPermissionsForPath(myPath);
+     	        String permissionType = collectionService.getPermissionsForPath(path);
 		model.addAttribute("permissionType", permissionType);
 		boolean access = collectionService.canUserAccessThisPath(path);
 		model.addAttribute("access", access);
