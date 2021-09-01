@@ -523,7 +523,7 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a  onclick=positionBrowserToPath("'+encodeURIComponent(full.path)+'") title="' + full.path+
+    						return +full.collection?'<a  onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
