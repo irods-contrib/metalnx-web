@@ -138,7 +138,7 @@ function inheritanceSuccessful() {
 }
 
 
-function deleteInfoAction(path){
+function deleteInfoAction(path) {
 	setOperationInProgress();
 	console.log("Ready for deletion");
 	$("#actionmenu button").prop("disabled", true);
@@ -156,15 +156,20 @@ function deleteInfoAction(path){
 				unsetOperationInProgress();
 				$('#actionsWait').hide();
 				
-				// The delete operation failed if the array is not empty.
-				// The failure is likely permissions related.
-				if (failedDeletions.length > 0) {
-					$('#deleteFailureModal').modal();
-					$("#actionmenu button").prop("disabled", false);
-				}
-				else {
-					window.location.href = "browse/home";
-				}
+                                // The delete operation failed if the array is not empty.
+                                // The failure is likely permissions related.
+                                if (failedDeletions.length > 0) {
+                                    $('#deleteFailureModal').modal();
+                                    $("#actionmenu button").prop("disabled", false);
+                                }
+                                // At this point, we can assume that the data object or collection
+                                // was successfully deleted.
+                                else if (1 === paths.length) {
+                                    positionBrowserToPath(path.substring(0, path.lastIndexOf("/")));
+                                }
+                                else {
+                                    window.location.href = "browse/home";
+                                }
 			}
 	);
 	$("#deleteModal").modal("hide");
