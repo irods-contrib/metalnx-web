@@ -6,26 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### #157 add shopping cart configuration
-
-#### #175 added thumbnail view, requires a rule on the connected iRODS server
-
-#### #207 created roadmap.md
-
-#### #212 added support for anonymous logins
+- [#259] Merged AVU and Property search together
 
 ### Changed
 
-#### #36 cleanup, disable sorting on Action column
-
-#### #210 show failure message when collection cannot be deleted
-
-#### #217 add clean to mvn package
-
-#### #220 fix download limit warning to match configured value
-
-#### #223 collection browsing is now sortable
-
-#### #230 capitalize iRODS correctly
-
-#### #233 modify layout of gallery button
+- [#276] manipulate search results, add metalnx_relative_url field
+- [#271] Fixed path encoding/decoding issues in collection view and breadcrumbs navigation
+- [#268] Table headers and data use iRODS terminology
+- [#265] Fixed compilation issue
+- [#261] Server now handles "+" special character
+- [#259] Cleaned up formatting.
+- [#257] Conditional rendering for preview functionality
+- [#256] Redirect to parent collection following deletion
+- [#254] Conditional rendering based on permissionType
+- [#253] Modify dialog header and layout
+- [#251] Fix naming issue
+- [#246] Use configured default resource for uploads
+- [#78] Empty AVU unit is not represented as "-" anymore
