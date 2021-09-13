@@ -16,7 +16,7 @@
 		<!-- Spring -->
 		<spring.version>4.3.18.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
-		<spring.batch.version>3.0.10.RELEASE</spring.batch.version>
+		<spring.batch.version>4.0.0.RELEASE</spring.batch.version>
 
 		<!-- Hibernate -->
 		<hibernate.version>4.3.11.Final</hibernate.version>
