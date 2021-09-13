@@ -3,10 +3,10 @@
 <b-table striped head-variant="dark" hover :items="getGridData.items" :fields="getGridData.fields">
   <template v-slot:cell(customTitle)="data">
     <div v-if="data.item.propertyDict.isFile" class="listFile">
-      <b-link v-bind:href="data.item.url_link" target="_blank">{{ data.item.title}}</b-link>
+      <b-link v-bind:href="data.item.metalnx_relative_url" target="_blank">{{ data.item.title}}</b-link>
     </div>
     <div v-else>
-      <b-link v-bind:href="data.item.url_link" target="_blank"><Fa :icon="faFolder"/>  {{ data.item.title}}</b-link>
+      <b-link v-bind:href="data.item.metalnx_relative_url" target="_blank"><Fa :icon="faFolder"/>  {{ data.item.title}}</b-link>
     </div>
   </template>
   <template v-slot:cell(propertyDict.dataSize)="data">
