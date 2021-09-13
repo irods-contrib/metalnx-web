@@ -28,6 +28,9 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * Backend API support for search operations
  * 
@@ -39,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //@Scope(WebApplicationContext.SCOPE_SESSION)
 @RequestMapping(value = "/api/search")
 public class SearchApiController {
+
 
 	public static final Logger log = LoggerFactory.getLogger(SearchApiController.class);
 
@@ -118,6 +122,19 @@ public class SearchApiController {
 		return jsonString;
 	}
 
+	private void populateMetalnxRelativeUrls (JsonNode rootNode) {
+		for (JsonNode searchResultsNode : rootNode.get("search_result")) {
+			for (JsonNode property : searchResultsNode.get("properties").get("propertySet")) {
+				if ("absolutePath".equals(property.get("name").asText())) {
+					((ObjectNode)searchResultsNode).put(
+						"metalnx_relative_url", 
+						"/metalnx/collections?path=" + property.get("value").asText());
+					break;
+				}
+			}
+		}
+	}
+
 	@RequestMapping(value = "/textSearch", method = RequestMethod.POST)
 	@ResponseBody
 	public String textSearch(@RequestBody TextSearchFormData textSearchFormData) throws DataGridException {
@@ -159,9 +176,23 @@ public class SearchApiController {
 			throw new DataGridException("unable to search, cannot find index id");
 		}
 
-		return this.pluggableSearchWrapperService.simpleTextSearch(textSearchFormData.getEndpointUrl(),
-				textSearchFormData.getIndexId(), textSearchFormData.getSearchQuery(), textSearchFormData.getOffset(),
-				textSearchFormData.getLength(), irodsServices.getCurrentUser());
+		String searchServiceResult = this.pluggableSearchWrapperService.simpleTextSearch(textSearchFormData.getEndpointUrl(),
+				            textSearchFormData.getIndexId(), textSearchFormData.getSearchQuery(), textSearchFormData.getOffset(),
+				            textSearchFormData.getLength(), irodsServices.getCurrentUser());
+
+
+		try {
+			JsonNode metalnxJSON = mapper.readTree(searchServiceResult); 
+			populateMetalnxRelativeUrls(metalnxJSON);
+			searchServiceResult = mapper.writeValueAsString(metalnxJSON);
+		}
+		catch (JsonProcessingException e) 
+		{
+			log.error("Search result JSON did not parse correctly - {}",e.getMessage());
+			throw new DataGridException("Search result JSON did not parse correctly");
+		}
+
+		return searchServiceResult;
 
 	}
 
