@@ -118,6 +118,6 @@ More documentation can be found in the [Docs](docs) directory.
 
 ### Copyright and License
 
-Copyright © 2018-2020 University of North Carolina at Chapel Hill; 2015-2017, Dell EMC.
+Copyright © 2018-2021 University of North Carolina at Chapel Hill; 2015-2017, Dell EMC.
 
 This software is provided under the [BSD-3 License](LICENSE.md).
