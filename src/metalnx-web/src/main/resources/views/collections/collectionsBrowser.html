@@ -430,6 +430,10 @@
         var mostRestrictivePermURL = "/metalnx/permissions/findMostRestrictive/";
 		var advancedView = [[${dataGridUser.isAdvancedView()}]];
 
+		function positionBrowserToEncodedPath(path) {
+        	window.location.href = '/metalnx/collections?path=' + path;
+    	}
+
         $(document).ready(function(e){
         	if(![[${isCurrentPathCollection}]]){
         		console.log([[${isCurrentPathCollection}]]);
@@ -523,7 +527,7 @@
                     }, */
                     {
                     	"render": function ( data, type, full, meta ) {
-    						return +full.collection?'<a  onclick=positionBrowserToPath("'+full.path+'") title="' + full.path+
+    						return +full.collection?'<a  onclick=positionBrowserToEncodedPath("' + encodeURIComponent(full.path) + '") title="' + encodeURIComponent(full.path)+
     						'"> <i class="'+full.iconToDisplay+'"></i>  <span>'+full.name+'</span></a>' : '<span>'+full.name+'</span>';
     					},
     					"width": "50%",
