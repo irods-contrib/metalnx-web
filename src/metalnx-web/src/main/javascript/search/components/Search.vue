@@ -14,7 +14,8 @@
             required
             autofocus
             placeholder="Enter a search"
-            v-model="searchText"></b-form-input>
+            v-model="searchText"
+            v-on:keyup.enter="search()"></b-form-input>
         <b-button variant="success" slot="append" v-on:click="search()">Search</b-button>
       </b-input-group>
     </div>
