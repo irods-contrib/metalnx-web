@@ -129,6 +129,10 @@
                 <span th:text="#{login.copyright}"></span>
             </div> -->
 	</div>
+	<div class="login-popup" th:if="${popupText != null and #strings.length(popupText)>0}">
+		<span class="login-popup-msg" th:text="${popupText}"></span>
+		<a class="login-popup-btn"><i class="fa fa-times"></i></a>
+	</div>
 </body>
 
 <script>
@@ -144,7 +148,13 @@
 		}
 
 		for (var i = 0; i < mlxKeys.length; i++) {
-			localStorage.removeItem(mlxKeys[i]);
+			if(mlxKeys[i] !== 'metalnx-popup-read') localStorage.removeItem(mlxKeys[i]);
+		}
+
+		var renderRestrictedMsgPopup = localStorage.getItem('metalnx-popup-read')
+
+		if(renderRestrictedMsgPopup === 'true') {
+			$(".login-popup").hide();
 		}
 
 		$(".login form input").keyup(function() {
@@ -176,6 +186,11 @@
 		hideInvalidTicketMsg();
 		var url = $(this).attr('action') + ticketString;
 		$(this).submit();
+	});
+
+	$(".login-popup-btn").click(function () {
+		$(".login-popup").hide();
+		localStorage.setItem('metalnx-popup-read', 'true')
 	});
 
 	function isValidPath(path) {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,9 @@ public class LoginController {
 
 	@Autowired
 	private LoggedUserUtils loggedUserUtils;
+
+	@Value("${login.popup.text}")
+	private String popupText;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView loginView(final Model inModel, final HttpServletRequest request,
@@ -100,6 +104,8 @@ public class LoginController {
 			model = new ModelAndView("login/index");
 			addAuthTypesAndDefaultAuthToModel(model);
 		}
+
+		model.addObject("popupText", popupText);
 
 		return model;
 	}
