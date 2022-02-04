@@ -247,7 +247,7 @@ img {
     left: 50%;
     display: block;
     margin-top: -185px;
-    margin-left: -235px;
+    margin-left: -260px;
     padding: 25px;
     width: 520px;
     height: 500px;
@@ -290,4 +290,29 @@ input, textarea, .uneditable-input {
 
 input[type="button"], input[type="radio"], input[type="checkbox"] {
     width: auto;
+}
+
+
+.login-popup {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    padding: 10px;
+    background-color: #e6a153;
+    width: 500px;
+    margin-left: -250px;
+    border-radius: 10px;
+}
+  
+.login-popup-btn {
+    position: absolute;
+    right: 1px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.3;
+    cursor: pointer;
+}
+    
+.login-popup-btn:hover {
+    opacity: 1;
 }
