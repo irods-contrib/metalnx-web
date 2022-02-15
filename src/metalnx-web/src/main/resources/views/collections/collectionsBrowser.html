@@ -159,7 +159,7 @@
 					<div class="row">
 						<form role="form" class="container-fluid registerForm"
 							method="POST" th:object="${collection}"
-							th:action="@{/browse/add/action}">
+							th:action="@{/browse/add/action}" action="">
 
 							<input type="hidden" id="inputCollectionPath" th:field="*{path}"
 								title="collection path" /> <input type="hidden"
@@ -201,7 +201,7 @@
 						</form>
 
 					</div>
-					<script>
+					<script type="text/javascript">
 						$(function(){
 							$('[data-toggle="tooltip"]').tooltip();
 						});
@@ -222,15 +222,9 @@
 <!-- /Add Modal -->
 
 <!-- Bread Crumb -->
-<<<<<<< HEAD
 <div id="directoryPath" class="col-md-9 col-sm-9 col-xs-12"
 	th:include="${'collections/collectionsBreadCrumb'}"></div>
 <div class="col-md-3 col-sm-3 col-xs-12">
-=======
-<div id="directoryPath" class="col-md-9 col-sm-8 col-xs-12"
-	th:include="${'collections/collectionsBreadCrumb'}"></div>
-<div class="col-md-3 col-sm-4 col-xs-12">
->>>>>>> 6de26e42d4839af07326ee387f2c991e9107e467
 	<a aria-label="empty trash" title="empty trash" href="#"
 		th:if="${isTrash}" id="emptyTrashBtn"
 		th:title="#{collections.empty.trash.button.tooltip}"
@@ -271,11 +265,9 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
-			<a role="button" class="btn btn-default icon-btn"
-			id="galleryIcon"
-			th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
-			title="Gallery View">
-			<i class="fa fa-th" aria-hidden="true"></i>
+			<a role="button" class="btn btn-default icon-btn" id="galleryIcon"
+				th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
+				title="Gallery View"> <i class="fa fa-th" aria-hidden="true"></i>
 			</a>
 
 			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
@@ -313,11 +305,9 @@
 					<span th:text="#{collections.upload.button.label}"></span>
 				</div>
 			</a>
-			<a role="button" class="btn btn-default icon-btn"
-			id="galleryIcon"
-			th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
-			title="Gallery View">
-			<i class="fa fa-th" aria-hidden="true"></i>
+			<a role="button" class="btn btn-default icon-btn" id="galleryIcon"
+				th:href="'/metalnx/gallery?path='+${encodedCurrentPath}"
+				title="Gallery View"> <i class="fa fa-th" aria-hidden="true"></i>
 			</a>
 
 			<th:block th:if="${globalConfig.isPluggableShoppingCartEnabled()}">
@@ -326,7 +316,7 @@
 					<i class="fa fa-shopping-cart fa-color"></i>
 				</a>
 			</th:block>
-			
+
 		</th:block>
 	</div>
 </div>
@@ -338,7 +328,7 @@
 		<div id="table-loader" class="table-loader col-sm-12 hideElement">
 			<div class="panel loading">
 				<img alt="table loading" class="center-block"
-					th:src="@{/images/table_loading.svg}" />
+					th:src="@{/images/table_loading.svg}" src="" />
 			</div>
 		</div>
 		<div class="col-xs-12">
@@ -437,7 +427,7 @@
 
 <script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
 <script type="text/javascript" th:src="@{/js/collection.js}"></script>
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
 		var path;
 		var url;
