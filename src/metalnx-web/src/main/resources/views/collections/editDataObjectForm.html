@@ -8,7 +8,7 @@
 		<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 	</button>
 	<h4 class="modal-title" id="myAddAndModifyModalLabel"
-		th:text="#{dataobject.add.form.title}"></h4>
+		th:text="#{dataobject.rename.form.title}"></h4>
 </div>
 <div class="modal-body">
 
@@ -23,11 +23,11 @@
 			<input type="hidden" id="inputCollectionParentPath" th:field="*{parentPath}" title="collection parent path"/>
 
 			<div class="form-group">
-				<b><span th:text="#{collections.add.form.current.path}"></span></b><br/>
-				<span th:text="${currentPath}"></span>
+				<b><span th:text="#{collections.edit.form.parentname.label}"></span></b><br/>
+				<span th:text="*{parentPath}"></span>
 			</div>
 			<div class="form-group">
-				<label for="inputCollectionName" th:text="#{collections.add.form.collectionname.label}"></label>
+				<label for="inputCollectionName" th:text="#{dataobject.add.form.collectionname.label}"></label>
 				<input type="text" class="form-control" id="inputCollectionName" th:placeholder="#{collections.add.form.dataobject.placeholder}" th:field="*{collectionName}" style="width:66%" />
 				<i class="form-control-feedback glyphicon glyphicon-remove hideElement" id="invalidCollectionNameIcon" style="right:33%"></i>
 				<small class="help-block hideElement" id="invalidCollectionNameMsg" th:text="#{dataobject.validation.name.duplicated}"></small>

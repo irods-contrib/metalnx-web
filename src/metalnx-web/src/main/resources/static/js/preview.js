@@ -41,13 +41,17 @@ $(document).ready(function(){
 			mode = "htmlmixed";
 			
 		} 
-		
+
 		console.log("mode ::" +mode);
 		editor.setOption("mode" , mode);
 		editor.getDoc().setValue(dispData);
 		
     });		
 	
+	$.get("/metalnx/preview/permissionType/", function(data, status, jqXHR) {
+		if(data === 'own' || data === 'write') $("#collectionPreviewSaveButton").show()
+		if(data === 'own' || data === 'write') $("#collectionPreviewCancelButton").show()
+	})
 });
 
 /*function looksLikeScheme(code) {

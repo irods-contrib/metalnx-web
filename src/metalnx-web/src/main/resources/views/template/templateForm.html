@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<div layout:fragment="content" th:with="readonly = ${metadataTemplateForm != null and metadataTemplateForm.owner != userDetails.username}" aria-labelledby="templateFormTitle">
+		<div layout:fragment="content" th:with="readonly = ${metadataTemplateForm != null and metadataTemplateForm.owner != userDetails.username and userDetails.isAdmin() == false and userDetails.isGroupAdmin() == false}" aria-labelledby="templateFormTitle">
 			<!-- <h1 class="page-header pull-left" th:text="#{metadata.template.management.page.title}" id="templateFormTitle"></h1> -->
 			<div class="row">
                 <div th:if="${templateNotAddedSuccessfully}" 
@@ -48,7 +48,7 @@
 										type="text" value="" 
 										th:field="*{templateName}" 
 										placeholder="Inform a name for the new template."
-										th:readonly="${readonly ? 'readonly' : 'false'}" 
+										th:disabled="${readonly ? 'readonly' : 'false'}" 
 										maxlength="100"/>
                                     <i class="form-control-feedback glyphicon glyphicon-remove hideElement"
                                         id="invalidTemplateNameIcon"></i>
@@ -66,7 +66,7 @@
 										value="" 
 										th:field="*{description}"
 										placeholder="Add a description to help users select an item from a list of templates."
-										th:readonly="${readonly ? 'readonly' : 'false'}"
+										th:disabled="${readonly ? 'readonly' : 'false'}"
 										required="required"
 										maxlength="100"  >
 									</textarea>
@@ -78,7 +78,7 @@
 								<label class="" for="templateAccessType">*Access</label>
 									<div class="row">
 										<div class="col-xs-5 col-md-6 col-lg-3">
-											<select class="form-control" id="templateAccessType" th:field="*{accessType}" th:readonly="${readonly ? 'readonly' : 'false'}">
+											<select class="form-control" id="templateAccessType" th:field="*{accessType}" th:disabled="${readonly ? 'readonly' : 'false'}">
 												<option th:each="accessType : ${accessTypes}" th:value="${accessType}" th:text="#{${'template.metadata.access_type.' + accessType}}" /> 
 											</select>
 										</div>
@@ -225,9 +225,9 @@
 				function createAccessTypeTooltip() {
 					var accessType = $("#templateAccessType").val();
 					var username = [[${ userDetails.getUsername() }]];
-					
+
 					var icon = '<span class="fa fa-lock"></span>';
-					var message = [[#{templates.metadata.access_type.private.label(${ userDetails.getUsername() })}]];
+					var message = [[#{templates.metadata.access_type.private.label( ${metadataTemplateForm.owner} )}]]
 					
 					if (accessType == 'system') {
 						icon = '<span class="fa fa-globe"></span>';

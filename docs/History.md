@@ -50,9 +50,9 @@ We assembled a team of four design developers in Brazil with our development par
 * All tools / libraries used should be open source with BSD or GPL2 type licenses to have minimal risk should this tool also be put into open source.
 
 The development team of 
-Henrique Nogeira, 
+Henrique Nogueira, 
 Arthur Guerra,
-Mileine Assto,
+Mileine Assato,
 & Ng Yen
 worked in late 2015 & 2016 define and build the user application using an agile approach based on user usage scenarios which were developed from interviews with genomics researchers.
 

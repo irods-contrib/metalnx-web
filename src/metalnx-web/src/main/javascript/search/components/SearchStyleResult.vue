@@ -29,7 +29,7 @@
 		<div v-if="searchResult.search_result.length > 0">
       <SearchStyleResultList
         v-for="searchResultEntry in searchResult.search_result"
-        v-bind:key="searchResultEntry.url_link"
+        v-bind:key="searchResultEntry.metalnx_relative_url"
         v-bind:searchResultEntry="searchResultEntry">
       </SearchStyleResultList>
     </div>

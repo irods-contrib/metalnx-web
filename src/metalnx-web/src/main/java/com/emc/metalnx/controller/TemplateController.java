@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,7 @@ import com.emc.metalnx.services.interfaces.MetadataTemplateException;
 import com.emc.metalnx.services.interfaces.TemplateFieldService;
 import com.emc.metalnx.services.interfaces.TemplateService;
 import com.emc.metalnx.services.interfaces.UserService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -74,6 +76,9 @@ public class TemplateController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	IRODSServices irodsServices;
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
@@ -301,8 +306,24 @@ public class TemplateController {
 				throw new Exception("Cannot modify a non-existent template");
 			}
 			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-			if (!template.getOwner().equalsIgnoreCase(loggedUser.getUsername())) {
-				throw new Exception("Cannot modify a template beloging to another user");
+
+			// throw error if user is not the template owner, rodsadmin or groupadmin
+ 			if (!(template.getOwner().equalsIgnoreCase(loggedUser.getUsername())) && loggedUser.isAdmin() == false && loggedUser.isGroupAdmin() == false) {
+				throw new Exception("Cannot modify a template belonging to another user");
+			}
+			// throw error if logged user is not the groupadmin of the template owner's group	
+			if (loggedUser.isGroupAdmin()){
+				boolean groupAdminEditPermission = false;
+				String[] templateOwnerGroupList = userService.getGroupIdsForUser(template.getOwner(), irodsServices.getCurrentUserZone());
+				Set<String> groupAdminGroupList = new HashSet<>(Arrays.asList(userService.getGroupIdsForUser(loggedUser.getUsername(), irodsServices.getCurrentUserZone())));
+				for(int i = 0; i< templateOwnerGroupList.length && !groupAdminEditPermission; i++){
+					if (groupAdminGroupList.contains(templateOwnerGroupList[i])) {
+						groupAdminEditPermission = true;
+					}
+				}
+				if (!groupAdminEditPermission) {
+					throw new Exception("Cannot modify a template belonging to a user of other group");
+				}
 			}
 
 			template.setTemplateName(templateForm.getTemplateName());

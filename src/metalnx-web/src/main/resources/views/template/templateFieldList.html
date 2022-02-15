@@ -4,7 +4,7 @@
 
 
 
-<div class="row" th:with="readonly = ${metadataTemplate != null and metadataTemplate.owner != userDetails.username}">
+<div class="row" th:with="readonly = ${metadataTemplate != null and metadataTemplate.owner != userDetails.username and userDetails.isAdmin() == false and userDetails.isGroupAdmin() == false}">
 	
 	<div class="col-sm-12 table-responsive">
 			
