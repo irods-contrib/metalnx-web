@@ -159,7 +159,7 @@
 					<div class="row">
 						<form role="form" class="container-fluid registerForm"
 							method="POST" th:object="${collection}"
-							th:action="@{/browse/add/action}">
+							th:action="@{/browse/add/action}" action="">
 
 							<input type="hidden" id="inputCollectionPath" th:field="*{path}"
 								title="collection path" /> <input type="hidden"
@@ -201,7 +201,7 @@
 						</form>
 
 					</div>
-					<script>
+					<script type="text/javascript">
 						$(function(){
 							$('[data-toggle="tooltip"]').tooltip();
 						});
@@ -329,7 +329,7 @@
 		<div id="table-loader" class="table-loader col-sm-12 hideElement">
 			<div class="panel loading">
 				<img alt="table loading" class="center-block"
-					th:src="@{/images/table_loading.svg}" />
+					th:src="@{/images/table_loading.svg}" src="" />
 			</div>
 		</div>
 		<div class="col-xs-12">
@@ -428,7 +428,7 @@
 
 <script type="text/javascript" th:src="@{/js/canvasMenu.js}"></script>
 <script type="text/javascript" th:src="@{/js/collection.js}"></script>
-<script th:inline="javascript">
+<script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
 		var path;
 		var url;
