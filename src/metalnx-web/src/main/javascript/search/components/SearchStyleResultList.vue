@@ -1,7 +1,7 @@
 <template>
   <div class="container mb-3">
      <div class="row">
-       <h3><b-link v-bind:href="searchResultEntry.url_link" target="_blank">{{ searchResultEntry.title }}</b-link></h3>
+       <h3><b-link v-bind:href="searchResultEntry.metalnx_relative_url" target="_blank">{{ searchResultEntry.title }}</b-link></h3>
       </div>
       <div class="row">
         <p><span v-html="searchResultEntry.content_text"></span></p> 

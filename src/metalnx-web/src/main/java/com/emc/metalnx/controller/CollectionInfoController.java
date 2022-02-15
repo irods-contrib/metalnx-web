@@ -82,22 +82,21 @@ public class CollectionInfoController {
 
 		logger.info("path:{}", path);
 
-		String myPath = URLDecoder.decode(path);
-
-		logger.info("decoded myPath:{}", myPath);
-
 		IconObject icon = null;
 		String mimeType = "";
 		String template = "";
-
+		
+     	        String permissionType = collectionService.getPermissionsForPath(path);
+		model.addAttribute("permissionType", permissionType);
 		boolean access = collectionService.canUserAccessThisPath(path);
+		model.addAttribute("access", access);
 		logger.info("Has Access :: {}", access);
 		@SuppressWarnings("rawtypes")
 		DataProfile dataProfile = null;
 		try {
 			if (access) {
 
-				dataProfile = collectionService.getCollectionDataProfile(myPath);
+				dataProfile = collectionService.getCollectionDataProfile(path);
 				if (!dataProfile.isFile())
 					template = "collections/collectionInfo";
 				if (dataProfile.isFile())
@@ -113,7 +112,7 @@ public class CollectionInfoController {
 					logger.info("collection/file read only view");
 					logger.info("email service enabled :: {} ", mailService.isMailEnabled());
 
-					dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(myPath);
+					dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(path);
 					template = "collections/readOnlyCollectionInfo";
 
 					List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
@@ -126,7 +125,7 @@ public class CollectionInfoController {
 				mimeType = dataProfile.getDataType().getMimeType();
 			}
 
-			collectionController.setCurrentPath(myPath);
+			collectionController.setCurrentPath(path);
 
 			icon = collectionService.getIcon(mimeType);
 			model.addAttribute("icon", icon);

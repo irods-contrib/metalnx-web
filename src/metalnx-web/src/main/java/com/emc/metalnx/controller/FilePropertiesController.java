@@ -1,17 +1,13 @@
- /* Copyright (c) 2018, University of North Carolina at Chapel Hill */
- /* Copyright (c) 2015-2017, Dell EMC */
- 
-
+/* Copyright (c) 2018-2021, University of North Carolina at Chapel Hill */
+/* Copyright (c) 2015-2017, Dell EMC */
 
 package com.emc.metalnx.controller;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -19,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.query.GenQueryBuilderException;
+import org.irods.jargon.core.query.JargonQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +29,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.emc.metalnx.controller.utils.GenQuerySearchUtil;
 import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
-import com.emc.metalnx.core.domain.entity.DataGridFilePropertySearch;
-import com.emc.metalnx.core.domain.entity.DataGridPageContext;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.enums.DataGridSearchOperatorEnum;
-import com.emc.metalnx.core.domain.entity.enums.FilePropertyField;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.FilePropertyService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,185 +46,223 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(value = "/fileproperty")
 public class FilePropertiesController {
 
-	@Autowired
-	FilePropertyService filePropertyService;
+    @Autowired
+    IRODSServices irodsServices;
 
-	@Autowired
-	CollectionService collectionService;
+    @Autowired
+    FilePropertyService filePropertyService;
 
-	@Autowired
-	UserService userService;
+    @Autowired
+    CollectionService collectionService;
 
-	@Autowired
-	LoggedUserUtils loggedUserUtils;
+    @Autowired
+    UserService userService;
 
-	@Value("${irods.zoneName}")
-	private String zoneName;
+    @Autowired
+    LoggedUserUtils loggedUserUtils;
 
-	// ui mode that will be shown when the rods user switches mode from admin to
-	// user and vice-versa
-	public static final String UI_USER_MODE = "user";
-	public static final String UI_ADMIN_MODE = "admin";
+    @Value("${irods.zoneName}")
+    private String zoneName;
 
-	// current page the user currently is (pagination)
-	private int currentPage = 1;
+    // ui mode that will be shown when the rods user switches mode from admin to
+    // user and vice-versa
+    public static final String UI_USER_MODE = "user";
+    public static final String UI_ADMIN_MODE = "admin";
 
-	// current metadata search
-	List<DataGridFilePropertySearch> currentFilePropertySearch;
+    // current search criteria
+    private GenQuerySearchUtil.SearchInput currentSearchInput;
 
-	private String jsonFilePropertySearch;
+    private String jsonFilePropertySearch;
 
-	private static final Logger logger = LoggerFactory.getLogger(FilePropertiesController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FilePropertiesController.class);
 
-	@RequestMapping(value = "/")
-	public String index(final Model model, final HttpServletRequest request,
-			@RequestParam(value = "backFromCollections", required = false) final boolean backFromCollections) {
+    @RequestMapping(value = "/")
+    public String index(final Model model,
+                        final HttpServletRequest request,
+                        @RequestParam(value = "backFromCollections", required = false) final boolean backFromCollections)
+    {
+        DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+        String uiMode = (String) request.getSession().getAttribute("uiMode");
+        if (uiMode == null || uiMode.isEmpty()) {
+            if (loggedUser.isAdmin()) {
+                uiMode = UI_ADMIN_MODE;
+            } else {
+                uiMode = UI_USER_MODE;
+            }
+        }
 
-		DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-		String uiMode = (String) request.getSession().getAttribute("uiMode");
-		if (uiMode == null || uiMode.isEmpty()) {
-			if (loggedUser.isAdmin()) {
-				uiMode = UI_ADMIN_MODE;
-			} else {
-				uiMode = UI_USER_MODE;
-			}
-		}
+        if (backFromCollections) {
+            model.addAttribute("jsonFilePropertySearch", jsonFilePropertySearch);
+        }
+        model.addAttribute("uiMode", uiMode);
+        return "metadata/metadataDisplay";
+    }
 
-		if (backFromCollections) {
-			model.addAttribute("jsonFilePropertySearch", jsonFilePropertySearch);
-		}
-		model.addAttribute("uiMode", uiMode);
-		return "metadata/metadataDisplay";
-	}
+    @RequestMapping(value = "/search")
+    @ResponseBody
+    public String search(@RequestParam(value = "jsonFilePropertySearch", required = false) final String jsonFilePropertySearch,
+                         @RequestParam("draw") final int draw,
+                         @RequestParam("start") final int start,
+                         @RequestParam("length") final int length)
+        throws DataGridConnectionRefusedException, JargonException
+    {
+        if (jsonFilePropertySearch != null) {
+            this.jsonFilePropertySearch = jsonFilePropertySearch;
+        }
 
-	@RequestMapping(value = "/search")
-	@ResponseBody
-	public String search(
-			@RequestParam(value = "jsonFilePropertySearch", required = false) final String jsonFilePropertySearch,
-			@RequestParam("draw") final int draw, @RequestParam("start") final int start,
-			@RequestParam("length") final int length) throws DataGridConnectionRefusedException, JargonException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> jsonResponse = new HashMap<String, Object>();
+        jsonResponse.put("draw", String.valueOf(draw));
+        jsonResponse.put("recordsTotal", String.valueOf(0));
+        jsonResponse.put("recordsFiltered", String.valueOf(0));
+        jsonResponse.put("data", new ArrayList<String>());
+        String jsonString = "";
 
-		if (jsonFilePropertySearch != null) {
-			currentPage = (int) (Math.floor(start / length) + 1);
-			this.jsonFilePropertySearch = jsonFilePropertySearch;
-		}
+        try {
+            JsonNode jsonNode = mapper.readTree(this.jsonFilePropertySearch);
+            JsonNode attributes = jsonNode.get("attribute");
+            JsonNode operators = jsonNode.get("operator");
+            JsonNode values = jsonNode.get("value");
 
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> jsonResponse = new HashMap<String, Object>();
-		jsonResponse.put("draw", String.valueOf(draw));
-		jsonResponse.put("recordsTotal", String.valueOf(0));
-		jsonResponse.put("recordsFiltered", String.valueOf(0));
-		jsonResponse.put("data", new ArrayList<String>());
-		String jsonString = "";
+            GenQuerySearchUtil.SearchInput searchInput = new GenQuerySearchUtil.SearchInput();
 
-		try {
-			JsonNode jsonNode = mapper.readTree(this.jsonFilePropertySearch);
+            searchInput.account = irodsServices.getCollectionAO().getIRODSAccount();
+            searchInput.offset = start;
+            searchInput.count = length;
+            searchInput.attributes = attributes;
+            searchInput.operators = operators;
+            searchInput.values = values;
 
-			currentFilePropertySearch = new ArrayList<>();
+            currentSearchInput = new GenQuerySearchUtil.SearchInput(searchInput);
 
-			JsonNode attributes = jsonNode.get("attribute");
-			JsonNode operators = jsonNode.get("operator");
-			JsonNode values = jsonNode.get("value");
-			for (int i = 0; i < attributes.size(); i++) {
-				DataGridFilePropertySearch ms = new DataGridFilePropertySearch(
-						FilePropertyField.valueOf(attributes.get(i).textValue()),
-						DataGridSearchOperatorEnum.valueOf(operators.get(i).textValue()), values.get(i).textValue());
-				currentFilePropertySearch.add(ms);
-			}
+            GenQuerySearchUtil.SearchOutput searchOutput = GenQuerySearchUtil.search(searchInput);
 
-			DataGridPageContext pageContext = new DataGridPageContext();
+            jsonResponse.put("recordsTotal", String.valueOf(searchOutput.matches));
+            jsonResponse.put("recordsFiltered", String.valueOf(searchOutput.matches));
+            jsonResponse.put("data", searchOutput.objects);
+        }
+        catch (DataGridConnectionRefusedException e) {
+            logger.error("data grid error in search", e);
+            throw e;
+        }
+        catch (JargonException e) {
+            logger.error("Could not search by metadata: ", e);
+            throw e;
+        }
+        catch (JsonProcessingException e) {
+            logger.error("Could not search by metadata: ", e);
+            throw new JargonException(e);
+        }
+        catch (GenQueryBuilderException e)
+        {
+            logger.error("Could not search by metadata: ", e);
+            throw new JargonException(e);
+        }
+        catch (JargonQueryException e)
+        {
+            logger.error("Could not search by metadata: ", e);
+            throw new JargonException(e);
+        }
+        catch (ParseException e)
+        {
+            logger.error("Could not search by metadata: ", e);
+            throw new JargonException(e);
+        }
 
-			List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = filePropertyService
-					.findByFileProperties(currentFilePropertySearch, pageContext, currentPage, length);
+        try {
+            jsonString = mapper.writeValueAsString(jsonResponse);
+        }
+        catch (JsonProcessingException e) {
+            logger.error("Could not parse hashmap in file properties search to json: {}", e.getMessage());
+            throw new JargonException(e);
+        }
 
-			jsonResponse.put("recordsTotal", String.valueOf(pageContext.getTotalNumberOfItems()));
-			jsonResponse.put("recordsFiltered", String.valueOf(pageContext.getTotalNumberOfItems()));
-			jsonResponse.put("data", dataGridCollectionAndDataObjects);
+        return jsonString;
+    }
 
-		} catch (DataGridConnectionRefusedException e) {
-			logger.error("data grid error in search", e);
-			throw e;
-		} catch (JargonException e) {
-			logger.error("Could not search by metadata: ", e.getMessage());
-			throw e;
-		} catch (ParseException e) {
-			logger.error("Could not search by metadata: ", e.getMessage());
-			throw new JargonException(e);
-		} catch (JsonProcessingException e) {
-			logger.error("Could not search by metadata: ", e.getMessage());
-			throw new JargonException(e);
-		} catch (IOException e) {
-			logger.error("Could not search by metadata: ", e.getMessage());
-			throw new JargonException(e);
-		}
+    @RequestMapping(value = "/downloadCSVResults/")
+    public void searchToCSVFile(final HttpServletResponse response)
+        throws Exception
+    {
+        ServletOutputStream outputStream = response.getOutputStream();
+        String loggedUser = getLoggedDataGridUser().getUsername();
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String filename = String.format("search-result_%s_%s.csv", loggedUser, date);
 
-		try {
-			jsonString = mapper.writeValueAsString(jsonResponse);
-		} catch (JsonProcessingException e) {
-			logger.error("Could not parse hashmap in file properties search to json: {}", e.getMessage());
-			throw new JargonException(e);
+        // Setting CSV Mime type
+        response.setContentType("text/csv");
+        response.setHeader("Content-disposition", "attachment;filename=" + filename);
 
-		}
+        // Building search parameters lines
+        outputStream.print("Search condition #;Condition\n");
+        for (int i = 0; i < currentSearchInput.attributes.size(); ++i) {
+            String a = currentSearchInput.attributes.get(i).textValue();
+            String o = currentSearchInput.operators.get(i).textValue();
+            String v = currentSearchInput.values.get(i).textValue();
+            outputStream.print(String.format("%d;attribute=%s, operator=%s, value=%s\n", i, a, o, v));
+        }
+        outputStream.print("\n");
+        outputStream.flush();
 
-		return jsonString;
-	}
+        // Execute query
+        GenQuerySearchUtil.SearchInput searchInput = new GenQuerySearchUtil.SearchInput(currentSearchInput);
+        searchInput.offset = 0;
+        searchInput.count = 2048;
 
-	@RequestMapping(value = "/downloadCSVResults/")
-	public void searchToCSVFile(final HttpServletResponse response)
-			throws DataGridConnectionRefusedException, IOException, JargonException {
+        try {
+            GenQuerySearchUtil.SearchOutput searchOutput;
+            boolean printNumberOfResults = true;
 
-		ServletOutputStream outputStream = response.getOutputStream();
-		String loggedUser = getLoggedDataGridUser().getUsername();
-		String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            do {
+                searchOutput = GenQuerySearchUtil.search(searchInput);
 
-		String filename = String.format("search-result_%s_%s.csv", loggedUser, date);
+                // Print number of results
+                if (printNumberOfResults) {
+                    printNumberOfResults = false;
+                    outputStream.print("Number of Results\n");
+                    outputStream.print(String.format("%d\n", searchOutput.matches));
+                    outputStream.print("\n");
+                    outputStream.print("Filename;Path;Owner;Kind;Modified;Size\n");
+                }
 
-		// Setting CSV Mime type
-		response.setContentType("text/csv");
-		response.setHeader("Content-disposition", "attachment;filename=" + filename);
+                // Print results
+                for (DataGridCollectionAndDataObject obj : searchOutput.objects) {
+                    outputStream.print(obj.getName());
+                    outputStream.print(";");
 
-		// Building search parameters lines
-		outputStream.print("Search condition #;Condition\n");
-		int i = 1;
-		for (DataGridFilePropertySearch field : currentFilePropertySearch) {
-			String condition = field.toString();
-			outputStream.print(String.format("%d;%s\n", i, condition));
-			i++;
-		}
-		outputStream.print("\n");
-		outputStream.flush();
+                    outputStream.print(obj.getPath());
+                    outputStream.print(";");
 
-		// Executing query
-		DataGridPageContext pageContext = new DataGridPageContext();
-		List<DataGridCollectionAndDataObject> dataGridCollectionAndDataObjects = filePropertyService
-				.findByFileProperties(currentFilePropertySearch, pageContext, 1, Integer.MAX_VALUE);
+                    outputStream.print(obj.getOwner());
+                    outputStream.print(";");
 
-		// Printing number of results
-		outputStream.print("Number of results\n");
-		outputStream.print(String.format("%d\n", pageContext.getTotalNumberOfItems()));
-		outputStream.print("\n");
-		outputStream.flush();
+                    outputStream.print(obj.isCollection() ? "Collection" : "Data Object");
+                    outputStream.print(";");
 
-		// Printing results
-		outputStream.print("Filename;Path;Owner;Kind;Modified;Size;Matches\n");
-		for (DataGridCollectionAndDataObject obj : dataGridCollectionAndDataObjects) {
-			outputStream.print(obj.getName() + ";");
-			outputStream.print(obj.getPath() + ";");
-			outputStream.print(obj.getOwner() + ";");
-			outputStream.print((obj.isCollection() ? "collection" : "data object") + ";");
-			outputStream.print(obj.getModifiedAtFormattedForCSVReport() + ";");
-			outputStream.print(String.valueOf(obj.getSize()) + ";");
-			outputStream.print(String.valueOf(obj.getNumberOfMatches()));
-			outputStream.print("\n");
-			outputStream.flush();
-		}
-	}
+                    outputStream.print(obj.getModifiedAtFormattedForCSVReport());
+                    outputStream.print(";");
 
-	private DataGridUser getLoggedDataGridUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = (String) auth.getPrincipal();
+                    outputStream.print(obj.getSize());
+                    outputStream.print("\n");
+                }
 
-		return userService.findByUsernameAndAdditionalInfo(username, zoneName);
-	}
+                outputStream.flush();
+
+                searchInput.offset += searchInput.count;
+            }
+            while (!searchOutput.objects.isEmpty());
+        }
+        catch (GenQueryBuilderException | JargonException | JargonQueryException | ParseException e) {
+            logger.error("CSV export failed.", e);
+            throw e;
+        }
+    }
+
+    private DataGridUser getLoggedDataGridUser()
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        return userService.findByUsernameAndAdditionalInfo(username, zoneName);
+    }
 
 }

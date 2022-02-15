@@ -14,7 +14,8 @@
             required
             autofocus
             placeholder="Enter a search"
-            v-model="searchText"></b-form-input>
+            v-model="searchText"
+            v-on:keyup.enter="search()"></b-form-input>
         <b-button variant="success" slot="append" v-on:click="search()">Search</b-button>
       </b-input-group>
     </div>
@@ -114,6 +115,7 @@ export default {
         },
 
     search: function() {
+
       if (this.selectedSearchSchema.schemaId == null) {
         this.$bvToast.toast('Schema not selected!', {
           title: `Error`,
@@ -147,12 +149,14 @@ export default {
         if (this.validation){
           this.searchResult = null
           axios.post('/metalnx/api/search/textSearch', {
-          endpointUrl: this.selectedSearchSchema.endpointUrl,
-          indexId: this.selectedSearchSchema.schemaId,
-          searchQuery: this.searchText,
-          length: 0,
-          offset: 0}
-          ).then(response => this.searchResult = response.data)
+            endpointUrl: this.selectedSearchSchema.endpointUrl,
+            indexId: this.selectedSearchSchema.schemaId,
+            searchQuery: this.searchText,
+            length: 0,
+            offset: 0
+          }).then( response => {
+            this.searchResult = response.data
+          })
           if(this.searchResult === 0 || this.searchResult === '') this.searchResult = null;
           if (this.showSearchHint){
             this.showSearchHint = false

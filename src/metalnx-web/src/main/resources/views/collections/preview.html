@@ -39,9 +39,9 @@
 			</textarea>
 		</div>
 		<div id="collectionPreviewSearchButtons" class="col-sm-12">
-			<button class="btn btn-primary btn-sm pull-right" type="button"
+			<button id="collectionPreviewSaveButton" style="display: none;" class="btn btn-primary btn-sm pull-right" type="button"
 				th:onclick="'javascript:save();'" title="Save">Save</button>
-			<button class="btn btn-default btn-sm pull-right" type="button"
+			<button id="collectionPreviewCancelButton" style="display: none;" class="btn btn-default btn-sm pull-right" type="button"
 				th:onclick="'javascript:cancel();'" title="Cancel">Cancel</button>
 		</div>
 
@@ -55,8 +55,8 @@
 			CSV File Preview....
 			<div id="csv" class="preview"></div>
 
-			<button th:onclick="'javascript:save();'">Save</button>
-			<button th:onclick="'javascript:cancel();'">Cancel</button>
+			<button id="collectionPreviewSaveButton" style="display: none;" th:onclick="'javascript:save();'">Save</button>
+			<button id="collectionPreviewCancelButton" style="display: none;" th:onclick="'javascript:cancel();'">Cancel</button>
 
 			
 			<script type="text/javascript" th:src="@{/js/csvPreview.js}"></script>

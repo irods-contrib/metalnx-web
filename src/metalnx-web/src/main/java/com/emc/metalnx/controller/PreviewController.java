@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -96,6 +97,13 @@ public class PreviewController {
 		previewService.filePreview(previewFilePath, previewMimeType, response);
 	}
 	
+	@RequestMapping(value = "/permissionType", method = RequestMethod.GET, produces = "text/plain")
+	@ResponseBody
+	public String getPermission() throws JargonException {
+		String permissionType = cs.getPermissionsForPath(previewFilePath);
+		return permissionType;
+	}
+
 	@RequestMapping(value = "/save" , method = RequestMethod.POST)
 	public String save(final Model model , @RequestParam("data") final String data) throws JargonException, 
 	DataGridConnectionRefusedException {
