@@ -36,7 +36,7 @@
 		<selenium.version>2.45.0</selenium.version>
 
 		<!-- Misc -->
-		<mysql.connector.version>8.0.16</mysql.connector.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
 		<postgresql.version>8.4-702.jdbc4</postgresql.version>
 		<servlet.api.version>3.0.1</servlet.api.version>
 		<jackson.version>2.10.0</jackson.version>
