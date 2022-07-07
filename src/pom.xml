@@ -14,7 +14,7 @@
 		<jargon.version>4.3.2.2-RELEASE</jargon.version>
 
 		<!-- Spring -->
-		<spring.version>4.3.18.RELEASE</spring.version>
+		<spring.version>5.2.21.RELEASE</spring.version>
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
 		<spring.batch.version>3.0.10.RELEASE</spring.batch.version>
 
