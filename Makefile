@@ -10,15 +10,18 @@ default: dockerimage
 warbuilderimage:
 	docker build -f Dockerfile.warbuilder -t myimages/metalnx-warbuilder .
 
-# this docker command uses the host user's .m2 directory
+# this docker command uses the ./local_maven_repo directory
 # to cache the maven artifacts for repeated builds
+#
+# the local_maven_repo directory keeps your personal maven
+# repository (i.e. $HOME/.m2) clean and safe from the "root" user.
 #
 # it creates the .war file in packaging/docker/
 packaging/docker/metalnx.war: warbuilderimage
 	docker run -it --rm \
 		-v "$$PWD":/usr/src \
 		-v "$$PWD"/src:/usr/src/mymaven \
-		-v "$$HOME/.m2":/root/.m2 \
+		-v "$$PWD/local_maven_repo":/root/.m2 \
 		-w /usr/src/mymaven \
 		myimages/metalnx-warbuilder \
 		mvn clean package -Dmaven.test.skip=true
@@ -35,7 +38,7 @@ clean:
 	docker run -it --rm \
 		-v "$$PWD":/usr/src \
 		-v "$$PWD"/src:/usr/src/mymaven \
-		-v "$$HOME/.m2":/root/.m2 \
+		-v "$$PWD/local_maven_repo":/root/.m2 \
 		-w /usr/src/mymaven \
 		myimages/metalnx-warbuilder \
 		mvn clean
