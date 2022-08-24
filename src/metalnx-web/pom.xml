@@ -10,13 +10,13 @@
 	<parent>
 		<groupId>com.emc.metalnx</groupId>
 		<artifactId>emc-metalnx</artifactId>
-		<version>2.6.0-RELEASE</version>
+		<version>2.6.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>metalnx-web</artifactId>
 	<packaging>war</packaging>
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -534,7 +534,7 @@
 									default.storage.resource=${jargon.test.irods.resource}
 									ssl.negotiation.policy=${metalnx.ssl.policy}
 
-								
+
 
 									utilize.packing.streams=${metalnx.packing.streams}
 
@@ -569,7 +569,7 @@
 
 									reverse.dns.lookup=false
 
-								
+
 									populate.msi.enabled=false
 									illumina.msi.enabled=true
 
@@ -599,17 +599,17 @@
 									metalnx.enable.dashboard=false
 									access.proxy=true
 									irodsext.dataprofiler.retrieve.tickets=false
-									
+
 									irodsext.dataprofiler.retrieve.starred=true
-								
+
 									irodsext.dataprofiler.retrieve.shared=false
-									
+
 									irodsext.dataprofiler.retrieve.tags.and.comments=false
-									
+
 									irodsext.dataprofiler.retrieve.metadata.templates=false
-									
+
 									irodsext.datatyper.persist.data.types=false
-									
+
 									irodsext.datatyper.detailed.determination=false
 
 									jwt.issuer=${jargon.search.jwtIssuer}
