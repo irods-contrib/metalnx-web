@@ -6,11 +6,15 @@ package com.emc.metalnx.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +94,12 @@ public class MetadataController {
 
 	@Value("${irods.zoneName}")
 	private String zoneName;
+
+	@Value("${metalnx.metadata.mask.prefixes}")
+	private String metadataMaskPrefixes;
+
+	@Value("${metalnx.metadata.mask.delimiter}")
+	private String metadataMaskDelimiter;
 
 	// current metadata search
 	List<DataGridMetadataSearch> currSearch;
@@ -255,7 +265,21 @@ public class MetadataController {
 	@RequestMapping(value = "/getMetadata/", method = RequestMethod.POST)
 	public String getMetadata(final Model model, final String path) throws DataGridException, FileNotFoundException {
 		logger.info("MetadataController getMetadata() starts !!");
+		
+		Predicate<DataGridMetadata> metadataFilter = avu -> true;
+		final List<String> attributeNamePrefixes = new ArrayList<>();
+
+		if (null != metadataMaskPrefixes && !metadataMaskPrefixes.isEmpty() &&
+			null != metadataMaskDelimiter && !metadataMaskDelimiter.isEmpty())
+		{
+			final String[] elements = metadataMaskPrefixes.split(Pattern.quote(metadataMaskDelimiter));
+			attributeNamePrefixes.addAll(Arrays.asList(elements));
+			metadataFilter = avu -> attributeNamePrefixes.stream()
+					.noneMatch(prefix -> avu.getAttribute().startsWith(prefix));
+		}
+
 		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
+		metadataList = metadataList.stream().filter(metadataFilter).collect(Collectors.toList());
 		DataGridCollectionAndDataObject dgColObj = null;
 
 		try {
