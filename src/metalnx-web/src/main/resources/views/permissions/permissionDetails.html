@@ -59,19 +59,43 @@
                                         <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
                                             <span title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
                                             <div class="buttons">
-                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)"></button>
-                                                <button type="button" class="btn-xs btn btn-default" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)"></button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default"
+                                                        th:text="#{confirmation.message.no}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), false)">
+                                                </button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default"
+                                                        th:text="#{confirmation.message.yes}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForPermission'), true)">
+                                                </button>
                                             </div>
                                         </div>
                                     </th:block>
                                     <th:block th:unless="${collectionAndDataObject.isCollection()}">
-                                        <select class="userOptionForFilePermission" th:title="#{permission.table.permission.column}" aria-label="user permission option">
-                                        
+                                        <select class="userOptionForFilePermission"
+                                                th:title="#{permission.table.permission.column}"
+                                                aria-label="user permission option">
                                             <option th:each="permission : ${permissions}"
                                                     th:value="${permission + '#' + collectionAndDataObject.getPath() + '#' + userPermission.getUserName()}"
                                                     th:text="${permission}" th:title="${permission}"
                                                     th:selected="${userPermission.getPermission() == permission}"></option>
                                         </select>
+                                        <div class="confirm-msg-table hideElement" title="Are you sure?">
+                                            <span title="Are you sure?">Are you sure?</span>
+                                            <div class="buttons">
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default"
+                                                        th:text="#{confirmation.message.no}"
+                                                        onclick="closeConfirmationPopupForPermission($(this).parents('tr').find('.userOptionForFilePermission'))">
+                                                </button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default"
+                                                        th:text="#{confirmation.message.yes}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.userOptionForFilePermission'), false)">
+                                                </button>
+                                            </div>
+                                        </div>
                                     </th:block>
                                 </td>
                                 <td th:if="${userCanModify}">
@@ -102,8 +126,16 @@
                                         <div class="confirm-msg-table hideElement" title="Apply to all subcollections and files?">
                                             <span title="Apply to all subcollections and files?">Apply to all subcollections and files?</span>
                                             <div class="buttons">
-                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-no" th:text="#{confirmation.message.no}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)"></button>
-                                                <button type="button" class="btn-xs btn btn-default confirm-msg-table-yes" th:text="#{confirmation.message.yes}" onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)"></button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default confirm-msg-table-no"
+                                                        th:text="#{confirmation.message.no}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), false)">
+                                                </button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default confirm-msg-table-yes"
+                                                        th:text="#{confirmation.message.yes}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForPermission'), true)">
+                                                </button>
                                             </div>
                                         </div>
                                     </th:block>
@@ -114,6 +146,21 @@
                                                     th:text="${permission}" th:selected="${groupPermission.getPermission() == permission}"
                                                     th:title="${permission}"></option>
                                         </select>
+                                        <div class="confirm-msg-table hideElement" title="Are you sure?">
+                                            <span title="Are you sure?">Are you sure?</span>
+                                            <div class="buttons">
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default confirm-msg-table-no"
+                                                        th:text="#{confirmation.message.no}"
+                                                        onclick="closeConfirmationPopupForPermission($(this).parents('tr').find('.groupOptionForFilePermission'))">
+                                                </button>
+                                                <button type="button"
+                                                        class="btn-xs btn btn-default confirm-msg-table-yes"
+                                                        th:text="#{confirmation.message.yes}"
+                                                        onclick="setPermissionAndRecursion($(this).parents('tr').find('.groupOptionForFilePermission'), true)">
+                                                </button>
+                                            </div>
+                                        </div>
                                     </th:block>
                                 </td>
                                 <td th:if="${userCanModify}">
@@ -311,13 +358,13 @@
                 }
 
                 function highlightRecentModifications(list) {
-                   if (list !== null) {
-                       $.each(list.split(','), function(index, item) {
+                    if (list !== null) {
+                    	$.each(list.split(','), function(index, item) {
                             var optionSelector = "option[value='" + permission + "#" + path +  "#" + item + "']";
                             var selectBox = $(optionSelector).parent();
                             showNotification(selectBox, createdLabel);
                         });
-                   }
+                    }
                 }
 
                 // Emptying list of groups to be highlighted
@@ -355,50 +402,74 @@
                 /**********************************************************************/
                 /**************************** PERMISSIONS *****************************/
                 /**********************************************************************/
-                $('.userOptionForFilePermission').change(function(){
-                    var selected = $(this);
-                    setPermissionAndRecursion(selected, false);
-                });
-                $('.groupOptionForFilePermission').change(function(){
-                    var selected = $(this);
-                    setPermissionAndRecursion(selected, false);
-                });
 
-                $('.userOptionForPermission').change(function(){
-                    $(this).addClass('hideElement');
-                    $(this).siblings('.confirm-msg-table').removeClass('hideElement');
-                    $(this).parents('tr').css('background-color', '#d9edf7');
-                });
-                $('.groupOptionForPermission').change(function(){
-                    $(this).addClass('hideElement');
-                    $(this).siblings('.confirm-msg-table').removeClass('hideElement');
-                    $(this).parents('tr').css('background-color', '#d9edf7');
-                });
+                // Attach the original value of the select boxes to themselves.
+                // This allows us to restore the value when the user decides to NOT
+                // change the permissions.
+                function attachOriginalValue()
+                {
+                    $(this).data('previous_value', $(this).val());
+                }
+
+                function showConfirmationPopupForOnPermissionChange()
+                {
+                    var $selectBox = $(this);
+                    $selectBox.addClass('hideElement');
+                    $selectBox.siblings('.confirm-msg-table').removeClass('hideElement');
+                    $selectBox.parents('tr').css('background-color', '#d9edf7');
+                }
+
+                function closeConfirmationPopupForPermission(selectBox)
+                {
+                    var $selectBox = $(selectBox);
+                    $selectBox.removeClass('hideElement');
+                    $selectBox.parents('tr').css('background-color', '#fff');
+                    $selectBox.siblings('.confirm-msg-table').addClass('hideElement');
+                    $selectBox.val($selectBox.data('previous_value'));
+                }
+                
+                // For data objects.
+                $('.userOptionForFilePermission')
+                    .each(attachOriginalValue)
+                    .change(showConfirmationPopupForOnPermissionChange);
+
+                $('.groupOptionForFilePermission')
+                    .each(attachOriginalValue)
+                    .change(showConfirmationPopupForOnPermissionChange);
+
+                // For collections.
+                $('.userOptionForPermission').change(showConfirmationPopupForOnPermissionChange);
+                $('.groupOptionForPermission').change(showConfirmationPopupForOnPermissionChange);
 
                 function setPermissionAndRecursion(selectBox, recursive){
                     var inputCheckbox = "";
                     var url = "";
+                    var isHandlerForGroup = false;
                     var data = {
                         permissionData : $(selectBox).val(),
                         recursive : recursive
                     };
-                    var isHandlerForGroup = false;
 
-                    if(selectBox.is('.groupOptionForPermission')){
+                    if (selectBox.is('.groupOptionForPermission')){
                         inputCheckbox = 'input.groupBookmarkCheckbox';
                         url = '/metalnx/permissions/changePermissionForGroup/';
                         isHandlerForGroup = true;
-                    } else {
+                    }
+                    else {
                         inputCheckbox = 'input.userBookmarkCheckbox';
                         url = '/metalnx/permissions/changePermissionForUser/';
                     }
+
                     var successHandler = function(responseData) {
                         selectBox.parent().parent().children(':first').css("text-decoration", "");
+
                         if (responseData == "OK") {
                             selectBox.addClass('hideElement');
                             selectBox.removeClass('hideElement');
                             selectBox.parents('tr').css('background-color', '#fff');
+
                             var checkBox = selectBox.parents("tr").find(inputCheckbox);
+
                             if (selectBox.val().indexOf("NONE") === 0) {
                                 showNotification(selectBox, removedLabel);
                                 selectBox.parents("tr").children(':first').css("text-decoration", "line-through");
@@ -406,14 +477,16 @@
                                 // Disabling group bookmark checkbox
                                 checkBox.prop('checked', false);
                                 checkBox.attr("disabled", true);
-                            } else {
+                            }
+                            else {
                                 checkBox.prop('checked', true);
                                 checkBox.attr("disabled", false);
                                 showNotification(selectBox, successLabel);
                             }
 
                             toggleBookmarkCheckbokAction(checkBox, isHandlerForGroup);
-                        } else {
+                        }
+                        else {
                             showNotification(selectBox, errorLabel);
                         }
                     };
