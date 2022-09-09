@@ -266,20 +266,23 @@ public class MetadataController {
 	public String getMetadata(final Model model, final String path) throws DataGridException, FileNotFoundException {
 		logger.info("MetadataController getMetadata() starts !!");
 		
-		Predicate<DataGridMetadata> metadataFilter = avu -> true;
-		final List<String> attributeNamePrefixes = new ArrayList<>();
+		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
 
-		if (null != metadataMaskPrefixes && !metadataMaskPrefixes.isEmpty() &&
-			null != metadataMaskDelimiter && !metadataMaskDelimiter.isEmpty())
-		{
-			final String[] elements = metadataMaskPrefixes.split(Pattern.quote(metadataMaskDelimiter));
-			attributeNamePrefixes.addAll(Arrays.asList(elements));
-			metadataFilter = avu -> attributeNamePrefixes.stream()
-					.noneMatch(prefix -> avu.getAttribute().startsWith(prefix));
+		if (!loggedUserUtils.getLoggedDataGridUser().isAdmin()) {
+			Predicate<DataGridMetadata> metadataFilter = avu -> true;
+			final List<String> attributeNamePrefixes = new ArrayList<>();
+
+			if (null != metadataMaskPrefixes && !metadataMaskPrefixes.isEmpty() && null != metadataMaskDelimiter
+					&& !metadataMaskDelimiter.isEmpty()) {
+				final String[] elements = metadataMaskPrefixes.split(Pattern.quote(metadataMaskDelimiter));
+				attributeNamePrefixes.addAll(Arrays.asList(elements));
+				metadataFilter = avu -> attributeNamePrefixes.stream()
+						.noneMatch(prefix -> avu.getAttribute().startsWith(prefix));
+			}
+
+			metadataList = metadataList.stream().filter(metadataFilter).collect(Collectors.toList());
 		}
 
-		List<DataGridMetadata> metadataList = metadataService.findMetadataValuesByPath(path);
-		metadataList = metadataList.stream().filter(metadataFilter).collect(Collectors.toList());
 		DataGridCollectionAndDataObject dgColObj = null;
 
 		try {
