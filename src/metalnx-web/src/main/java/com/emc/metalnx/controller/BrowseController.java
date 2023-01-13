@@ -539,7 +539,7 @@ public class BrowseController {
 
         boolean creationSucessful;
         try {
-            creationSucessful = cs.createCollection(newCollection);
+            creationSucessful = cs.createCollection(newCollection, true);
             logger.info("creationSuccessful?:{}", creationSucessful);
 
             if (creationSucessful) {
