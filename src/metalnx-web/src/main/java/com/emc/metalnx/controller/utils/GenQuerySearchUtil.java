@@ -119,15 +119,19 @@ public class GenQuerySearchUtil
     {
         SearchInput searchInput = new SearchInput(_input);
         SearchOutput output = null;
+        
+        IRODSFileSystem fsys = IRODSFileSystem.instance();
+        IRODSAccessObjectFactory factory = fsys.getIRODSAccessObjectFactory();
+        IRODSGenQueryExecutor executor = factory.getIRODSGenQueryExecutor(_input.account);
 
         if (areColumnsSupportedByCollections(searchInput)) {
-            output = findCollections(searchInput);
+            output = findCollections(executor, searchInput);
 
             if (output.matches > 0) {
                 searchInput.count -= Math.min(output.matches, output.objects.size());
             }
             else {
-                output.matches = countCollections(searchInput);
+                output.matches = countCollections(executor, searchInput);
             }
         }
         else {
@@ -141,42 +145,45 @@ public class GenQuerySearchUtil
         // Look for data objects matching the search criteria if there are empty
         // slots available.
         if (searchInput.count > 0) {
-            SearchOutput dataObjectSearchOutput = findDataObjects(searchInput);
+            SearchOutput dataObjectSearchOutput = findDataObjects(executor, searchInput);
             output.objects.addAll(dataObjectSearchOutput.objects);
             output.matches += dataObjectSearchOutput.matches;
         }
         else {
-            output.matches += countDataObjects(searchInput);
+            output.matches += countDataObjects(executor, searchInput);
         }
+        
+        factory.closeSessionAndEatExceptions();
+        fsys.closeAndEatExceptions();
         
         return output;
     }
 
-    public static SearchOutput findDataObjects(SearchInput _input)
+    public static SearchOutput findDataObjects(IRODSGenQueryExecutor executor, SearchInput _input)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
-        return findObjectsImpl(_input, false /* isCollection */);
+        return findObjectsImpl(executor, _input, false /* isCollection */);
     }
 
-    public static SearchOutput findCollections(SearchInput _input)
+    public static SearchOutput findCollections(IRODSGenQueryExecutor executor, SearchInput _input)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
-        return findObjectsImpl(_input, true /* isCollection */);
+        return findObjectsImpl(executor, _input, true /* isCollection */);
     }
 
-    public static int countDataObjects(SearchInput _input)
+    public static int countDataObjects(IRODSGenQueryExecutor executor, SearchInput _input)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
-        return countObjectsImpl(_input, RodsGenQueryEnum.COL_DATA_NAME, false /* isCollection */);
+        return countObjectsImpl(executor, _input, RodsGenQueryEnum.COL_DATA_NAME, false /* isCollection */);
     }
 
-    public static int countCollections(SearchInput _input)
+    public static int countCollections(IRODSGenQueryExecutor executor, SearchInput _input)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
-        return countObjectsImpl(_input, RodsGenQueryEnum.COL_COLL_NAME, true /* isCollection */);
+        return countObjectsImpl(executor, _input, RodsGenQueryEnum.COL_COLL_NAME, true /* isCollection */);
     }
 
-    private static SearchOutput findObjectsImpl(SearchInput _input, boolean _isCollection)
+    private static SearchOutput findObjectsImpl(IRODSGenQueryExecutor executor, SearchInput _input, boolean _isCollection)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
         final boolean distinct = true;
@@ -200,10 +207,8 @@ public class GenQuerySearchUtil
 
         addQueryConditions(gqlBuilder, _input, _isCollection);
 
-        IRODSFileSystem fsys = IRODSFileSystem.instance();
-        IRODSAccessObjectFactory factory = fsys.getIRODSAccessObjectFactory();
+
         IRODSGenQueryFromBuilder gql = gqlBuilder.exportIRODSQueryFromBuilder(_input.count);
-        IRODSGenQueryExecutor executor = factory.getIRODSGenQueryExecutor(_input.account);
         IRODSQueryResultSet resultSet = executor.executeIRODSQueryAndCloseResult(gql, _input.offset);
 
         List<DataGridCollectionAndDataObject> objects = new ArrayList<>();
@@ -219,9 +224,6 @@ public class GenQuerySearchUtil
             }
         }
 
-        factory.closeSessionAndEatExceptions();
-        fsys.closeAndEatExceptions();
-
         SearchOutput output = new SearchOutput();
 
         output.objects = objects;
@@ -230,7 +232,7 @@ public class GenQuerySearchUtil
         return output;
     }
 
-    private static int countObjectsImpl(SearchInput _input, RodsGenQueryEnum _columnToCount, boolean _isCollection)
+    private static int countObjectsImpl(IRODSGenQueryExecutor executor, SearchInput _input, RodsGenQueryEnum _columnToCount, boolean _isCollection)
         throws GenQueryBuilderException, JargonException, JargonQueryException, ParseException
     {
         final boolean distinct = true;
@@ -250,18 +252,12 @@ public class GenQuerySearchUtil
 
         addQueryConditions(gqlBuilder, _input, _isCollection);
 
-        IRODSFileSystem fsys = IRODSFileSystem.instance();
-        IRODSAccessObjectFactory factory = fsys.getIRODSAccessObjectFactory();
         IRODSGenQueryFromBuilder gql = gqlBuilder.exportIRODSQueryFromBuilder(1 /* rows to return */);
-        IRODSGenQueryExecutor executor = factory.getIRODSGenQueryExecutor(_input.account);
         IRODSQueryResultSet resultSet = executor.executeIRODSQueryAndCloseResult(gql, 0 /* offset */);
 
         final int count = _isCollection
             ? resultSet.getFirstResult().getColumnAsIntOrZero(_columnToCount.getName())
             : resultSet.getTotalRecords();
-
-        factory.closeSessionAndEatExceptions();
-        fsys.closeAndEatExceptions();
 
         return count;
     }
