@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- [#288] Support key event on pluggable search
+- [#317] Build no longer pollutes personal .m2 directory.
+- [#191] Added support for hiding metadata based on a set of prefixes.
 
 ### Changed
 
-- [#297] Gave permission to rodsadmin and groupadmin to modify metadata template
-- [#295] Render save buttons of preview tab based on permission type
-- [#290] update page title for consistency
+- [#247,#337,#343] Bumped version of Jargon for bug fixes.
+- [#294] Create IRODSFileSystem and IRODSAccessObjectFactory only once.
+- [#332] Set createParentCollections to true when calling createCollection
+- [#191] Made it so that rodsadmins can always see metadata.
+- [#321] Bumped Jargon version.
+- [#255] User is now asked to confirm changes to permissions.
