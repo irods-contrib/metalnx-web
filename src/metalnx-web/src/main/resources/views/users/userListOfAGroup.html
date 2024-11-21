@@ -19,21 +19,15 @@
 			<table class="table table-hover" id="usersListTable">
 				<thead>
 					<tr>
-						<th data-sortable="true" th:text="#{users.management.table.first.name.label}"></th>
-						<th th:text="#{users.management.table.last.name.label}"></th>
-						<th th:text="#{users.management.table.username.label}"></th>
+					    <th th:text="#{users.management.table.username.label}"></th>
 						<th th:text="#{users.management.table.zone.label}"></th>
-						<th th:text="#{users.management.table.email.label}"></th>
 					</tr>
 				</thead>
 
 				<tbody id="fBody">
 					<tr th:each="user : ${users}">
-						<td th:text="${user.firstName}"></td>
-						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.username}"></td>
 						<td th:text="${user.additionalInfo}"></td>
-						<td th:text="${user.email}"></td>
 					</tr>
 				</tbody>
 			</table>

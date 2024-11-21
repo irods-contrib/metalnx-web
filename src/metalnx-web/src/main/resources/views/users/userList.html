@@ -21,24 +21,18 @@
 			<table class="table table-hover" id="usersListTable">
 				<thead>
 					<tr>
-						<th data-sortable="true" th:text="#{users.management.table.first.name.label}" class="hidden-sm hidden-xs"></th>
-						<th th:text="#{users.management.table.last.name.label}" class="hidden-sm hidden-xs"></th>
 						<th th:text="#{users.management.table.username.label}"></th>
 						<th th:text="#{users.management.table.user.type.label}"></th>
 						<th th:text="#{users.management.table.zone.label}" class="hidden-sm hidden-xs"></th>
-						<th th:text="#{users.management.table.email.label}" class="hidden-sm hidden-xs"></th>
 						<th th:text="#{users.management.table.action.label}"></th>
 					</tr>
 				</thead>
 
 				<tbody id="fBody">
 					<tr th:each="user : ${users}">
-						<td th:text="${user.firstName}" class="hidden-sm hidden-xs"></td>
-						<td th:text="${user.lastName}" class="hidden-sm hidden-xs"></td>
 						<td th:text="${user.username}" class="col-username"></td>
 						<td th:text="${user.userType}"></td>
 						<td th:text="${user.additionalInfo}" class="col-additional-info hidden-sm hidden-xs"></td>
-						<td th:text="${user.email}" class="hidden-sm hidden-xs"></td>
 						<td>
 							<a class="btn btn-default btn-xs" th:href="@{ ${urlMap.URL_MODIFY_USER} } + ${user.username} + '/' + ${user.additionalInfo} + '/'"
 								th:id="${urlMap.URL_MODIFY_USER} + ${user.username} + '/' + ${user.additionalInfo} + '/'"

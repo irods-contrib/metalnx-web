@@ -110,15 +110,9 @@
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/fileproperty/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/templates/**"
-			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/preferences/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/userBookmarks/**"
-			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/permissions/**"
-			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/favorites/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/tickets/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />

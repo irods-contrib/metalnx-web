@@ -226,27 +226,7 @@
 									</p>
 								</th:block>
 							</div>
-							<div role="tabpanel" class="tab-pane" id="copyShared">
-			                	<table class="table table-hover" id="copyUserBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-							</div>
 				
-						    <div role="tabpanel" class="tab-pane" id="copyFavorites">
-						    	<table class="table table-hover" id="copyFavoritesTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{favorites.table.name.label}"></th>
-			                                <th th:text="#{favorites.table.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
 						</div>
                         <div class="col-xs-12">
                             <input type="checkbox" id="inputCopyWithMetadata" name="replica" value="1" checked="checked" title="Copy with Metadata"/>
@@ -326,27 +306,6 @@
 									</p>
 								</th:block>
 							</div>
-							<div role="tabpanel" class="tab-pane" id="moveShared">
-			                	<table class="table table-hover" id="moveUserBookmarksTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{bookmarks.table.file.name.label}"></th>
-			                                <th th:text="#{bookmarks.table.file.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-							</div>
-	
-						    <div role="tabpanel" class="tab-pane" id="moveFavorites">
-						    	<table class="table table-hover" id="moveFavoritesTable">
-			                        <thead>
-			                            <tr>
-			                                <th th:text="#{favorites.table.name.label}"></th>
-			                                <th th:text="#{favorites.table.path.label}"></th>
-			                            </tr>
-			                        </thead>
-			                    </table>
-						    </div>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -1002,18 +961,6 @@
 		            ]
 				});
 			}
-
-			//tables for the move modal
-			var moveFavoritesTable;
-			var moveUserBookmarksTable;
-			modalMoveCopyFavAndUserbookmarkDatatable('moveFavoritesTable', moveFavoritesTable, '/metalnx/favorites/favoritesPaginated/');
-			modalMoveCopyFavAndUserbookmarkDatatable('moveUserBookmarksTable', moveUserBookmarksTable, '/metalnx/userBookmarks/bookmarksPaginated/');
-
-			//tables for the copy modal
-			var copyFavoritesTable;
-			var copyUserBookmarksTable;
-			modalMoveCopyFavAndUserbookmarkDatatable('copyFavoritesTable', copyFavoritesTable, '/metalnx/favorites/favoritesPaginated/');
-			modalMoveCopyFavAndUserbookmarkDatatable('copyUserBookmarksTable', copyUserBookmarksTable, '/metalnx/userBookmarks/bookmarksPaginated/');
 
 			function modalMoveCopyGroupbookmarkDatatable(datatableId, datatableVar, urlService){
 			    datatableVar = $('#'+datatableId).DataTable( {

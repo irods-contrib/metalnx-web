@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.utils.CollectionAndPath;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
-import org.irodsext.dataprofiler.favorites.FavoritesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,6 @@ import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleDeploymentService;
-import com.emc.metalnx.services.interfaces.UserBookmarkService;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.emc.metalnx.services.interfaces.mail.MailService;
 
@@ -61,9 +59,6 @@ public class CollectionController {
 	GroupService groupService;
 
 	@Autowired
-	UserBookmarkService userBookmarkService;
-
-	@Autowired
 	MetadataService metadataService;
 
 	@Autowired
@@ -71,9 +66,6 @@ public class CollectionController {
 
 	@Autowired
 	IRODSServices irodsServices;
-
-	@Autowired
-	FavoritesService favoritesService;
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
@@ -281,14 +273,6 @@ public class CollectionController {
 		this.groupService = groupService;
 	}
 
-	public UserBookmarkService getUserBookmarkService() {
-		return userBookmarkService;
-	}
-
-	public void setUserBookmarkService(UserBookmarkService userBookmarkService) {
-		this.userBookmarkService = userBookmarkService;
-	}
-
 	public MetadataService getMetadataService() {
 		return metadataService;
 	}
@@ -311,14 +295,6 @@ public class CollectionController {
 
 	public void setIrodsServices(IRODSServices irodsServices) {
 		this.irodsServices = irodsServices;
-	}
-
-	public FavoritesService getFavoritesService() {
-		return favoritesService;
-	}
-
-	public void setFavoritesService(FavoritesService favoritesService) {
-		this.favoritesService = favoritesService;
 	}
 
 	public LoggedUserUtils getLoggedUserUtils() {

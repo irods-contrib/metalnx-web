@@ -40,7 +40,6 @@
                                 <th th:text="#{permissions.table.user.group.column}"></th>
                                 <th th:text="#{permissions.table.systemrole.column}"></th>
                                 <th th:text="#{permission.table.permission.column}"></th>
-                                <th th:text="#{collections.management.table.bookmark.label}"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,13 +96,6 @@
                                             </div>
                                         </div>
                                     </th:block>
-                                </td>
-                                <td th:if="${userCanModify}">
-                                    <input
-                                        type="checkbox"
-                                        class="userBookmarkCheckbox"
-                                        th:checked="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'checked' : 'false' }" aria-label="user bookmark" title
-                                        ="user bookmark"/>
                                 </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"
@@ -163,12 +155,6 @@
                                         </div>
                                     </th:block>
                                 </td>
-                                <td th:if="${userCanModify}">
-                                    <input
-                                        type="checkbox"
-                                        class="groupBookmarkCheckbox"
-                                        th:checked="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'checked' : 'false' }" aria-label="group bookmark checkbox" title="group bookmark checkbox"/>
-                                </td>
                                 <td th:unless="${userCanModify}">
                                     <span aria-hidden="true"
                                         th:class="${#sets.contains(groupsWithBookmark, groupPermission.getGroupName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
@@ -224,12 +210,6 @@
                             </div>
                         </div>
 
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="isBookmarkToBeSet" />
-                                <label for="isBookmarkToBeSet" th:text="#{collections.management.table.bookmark.label}"></label>
-                            </label>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{permissions.modal.group.close.label}"></button>
@@ -283,12 +263,6 @@
                             </div>
                         </div>
 
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="isUserBookmarkToBeSet" checked="true"/>
-                                <span th:text="#{collections.management.table.bookmark.label}"></span>
-                            </label>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{permissions.modal.group.close.label}"></button>

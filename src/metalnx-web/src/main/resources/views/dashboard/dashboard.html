@@ -176,34 +176,6 @@
 							</div>
 						</div>
 					</div>
-					<!-- profiles -->
-					<div class="col-xs-12 col-md-12 col-sm-12 dashboardCard">
-						<div class="panel panel-default">
-							<div class="panel-body">
-								<div class="cardIconWrapper col-xs-3"></div>
-								<span class="fa-stack fa-lg col-xs-3 cardIcon"> <i
-									title="profiles" class="fa fa-square-o fa-stack-2x"></i> <i
-									title="profiles" class="fa fa-user fa-stack-1x"></i>
-								</span>
-								<div class="col-xs-7 col-md-6">
-									<a th:href="@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }"
-										aria-label="user profile management">
-										<h5>
-											<span th:text="#{ card.profiles.title }"></span> (<span
-												th:text="${ totalNumberOfProfiles }"></span>)
-										</h5>
-
-									</a>
-								</div>
-								<a type="button" class="col-xs-1 btn btn-link pull-right"
-									aria-label="add user profile"
-									th:href="@{ ${urlMap.URL_ADD_USER_PROFILE} }"> <i
-									class="fa fa-plus" data-toggle="tooltip" data-placement="top"
-									th:title="#{dashboard.card.add.profile}"></i>
-								</a>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 

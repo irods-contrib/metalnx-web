@@ -392,15 +392,6 @@ function groupFormCanBeSubmitted(urlValidateGroupname, isAddAction){
 
 
 /*
- * Validates add/modify user profile form
- */
-function userProfileFormValidator(urlValidateProfileName) {
-	$("#inputProfileName").focusout(function() {
-		validateProfileNameAjax(urlValidateProfileName);
-	});
-}
-
-/*
  * Function that goes to the server and checks if the profile name entered is valid or not
  */
 function validateProfileNameAjax(urlValidateProfileName) {
@@ -447,19 +438,6 @@ function validateProfileDescription(){
 	//valid additional info
 	$("#inputDescription").parent().removeClass("has-feedback has-error");
 	return true;
-}
-
-/*
- * Validates the user profile form before submit it
- */
-function userProfileFormCanBeSubmitted(urlValidateProfileName){
-	var isValidProfileName = validateProfileNameAjax(urlValidateProfileName);
-	var isValidProfileDescription = validateProfileDescription();
-
-	if(isValidProfileName && isValidProfileDescription)
-		return true
-
-	return false;
 }
 
 /*

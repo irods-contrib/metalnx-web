@@ -136,16 +136,6 @@
 						<span class="resulting-permission" th:if="${#sets.contains(inheritPermissions, collPath)}" th:text="#{collections.management.table.inherited.label}"></span>
 					</td>
 
-                    <!-- Bookmarks  -->
-                    <td th:with="collPath = ${collectionAndDataObject.getPath()}">
-                        <input
-														title="bookmark"
-                            th:name='${collPath}'
-                            type="checkbox"
-                            class="userBookmarkCheckbox"
-                            th:checked="${ (#lists.contains(userBookmarks, collPath) or #sets.contains(addBookmark, collPath)) and !#sets.contains(removeBookmark, collPath) ? 'checked' : 'false' }"
-                        />
-                    </td>
 				</tr>
 			</tbody>
 		</table>
@@ -160,23 +150,10 @@
 		$(document).ready(function(){
 			$("select option:selected").each(function() {
 				if ( $(this).val() == "none" ) {
-					$(this).parents("tr").find("input[type='checkbox'].userBookmarkCheckbox").prop('checked', false);
-					$(this).parents("tr").find("input[type='checkbox'].userBookmarkCheckbox").prop("disabled", true);
-				}
 			});
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 
-		// Updating the list of bookmarks to add or remove
-		$(".userBookmarkCheckbox").change(function () {
-			var path = $(this).attr('name');
-			if( $(this).is(":checked") ) {
-				ajaxEncapsulation('/metalnx/userBookmarks/addBookmark/', "POST", {path:path}, null, null, null);
-			}
-			else {
-				ajaxEncapsulation('/metalnx/userBookmarks/removeBookmark/', "POST", {path:path}, null, null, null);
-			}
-		});
 	</script>
 
 </div>

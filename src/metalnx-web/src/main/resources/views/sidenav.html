@@ -66,20 +66,6 @@
 				th:text="#{metadata.pluggable.search.menu.title}"></span></a>
 			</li>
 		</th:block>
-		<!-- Metadata template sidebar item -->
-		<li><a th:href="@{ ${urlMap.URL_TEMPLATE_MANAGEMENT} }"> <i
-				class="fa fa-cubes"></i> &nbsp; <span
-				th:text="#{metadata.template.management.menu.title}"></span></a></li>
-		<!-- Bookmarks sidebar item -->
-		<li><a th:href="@{ ${urlMap.URL_USER_BOOKMARKS} }"> <i
-				class="fa fa-share-alt"></i> &nbsp; <span
-				th:text="#{sidebar.user.bookmarks}"></span>
-		</a></li>
-		<!-- Favorites -->
-		<li><a th:href="@{ ${urlMap.URL_STARRED_ITEMS} }"> <i
-				class="fa fa-star"></i> &nbsp; <span
-				th:text="#{sidebar.user.favorites}"></span>
-		</a></li>
 		<!-- Tickets -->
 		<th:block th:if="${globalConfig.isTicketsEnabled()}">
 			<li><a th:href="@{ ${urlMap.URL_TICKETS} }"> <i

@@ -164,10 +164,6 @@
 		    }else if(current_url.indexOf([[@{ ${urlMap.URL_PUBLIC_COLLECTION_USER} }]]) >= 0){
 		       $("#side-menu a[href='"+[[@{${urlMap.URL_PUBLIC_COLLECTION_USER}}]]+"']").addClass("active");
 		        set_active_class = true;
-	        // making only profile side-menu active
-	        }else if(current_url.indexOf([[@{ ${urlMap.URL_USER_PROFILE_MANAGEMENT} }]]) >= 0){
-	            $("#side-menu a[href='"+[[@{${urlMap.URL_USER_PROFILE_MANAGEMENT}}]]+"']").addClass("active");
-		        set_active_class = true;
 	        //making shared links side-menu option active if user is in group bookmarks page
 		    }else if(current_url.indexOf([[@{ ${urlMap.URL_TRASH_COLLECTION_USER} }]]) >= 0){
 		    	console.log("issue 145 trash block passed")
