@@ -124,8 +124,6 @@
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/permissions/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/favorites/**"
-			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/tickets/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/ticketclient/**"

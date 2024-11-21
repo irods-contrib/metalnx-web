@@ -27,7 +27,6 @@ import com.emc.metalnx.core.domain.entity.DataGridCollectionAndDataObject;
 import com.emc.metalnx.core.domain.entity.DataGridFilePermission;
 import com.emc.metalnx.core.domain.entity.DataGridGroupPermission;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
-import com.emc.metalnx.core.domain.entity.DataGridUserBookmark;
 import com.emc.metalnx.core.domain.entity.DataGridUserPermission;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
@@ -35,7 +34,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.UserBookmarkService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
@@ -48,9 +46,6 @@ public class PermissionsController {
 
 	@Autowired
 	private GroupService gs;
-
-	@Autowired
-	private UserBookmarkService uBMS;
 
 	@Autowired
 	private PermissionsService ps;
@@ -120,9 +115,6 @@ public class PermissionsController {
 		List<DataGridFilePermission> permissions;
 		List<DataGridGroupPermission> groupPermissions;
 		List<DataGridUserPermission> userPermissions;
-		List<DataGridUserBookmark> userBookmarks;
-		Set<String> groupsWithBookmarks;
-		Set<String> usersWithBookmarks;
 		boolean userCanModify = false;
 		boolean isCollection = false;
 
@@ -133,15 +125,7 @@ public class PermissionsController {
 			groupPermissions = ps.getGroupsWithPermissions(permissions);
 			userPermissions = ps.getUsersWithPermissions(permissions);
 
-			userBookmarks = uBMS.findBookmarksOnPath(path);
 			userCanModify = loggedUser.isAdmin() || ps.canLoggedUserModifyPermissionOnPath(path);
-
-			groupsWithBookmarks = new HashSet<>();
-
-			usersWithBookmarks = new HashSet<>();
-			for (DataGridUserBookmark userBookmark : userBookmarks) {
-				usersWithBookmarks.add(userBookmark.getUser().getUsername());
-			}
 
 			obj = cs.findByName(path);
 			obj.setMostPermissiveAccessForCurrentUser(
@@ -151,8 +135,6 @@ public class PermissionsController {
 			throw new DataGridException("error getting permissions", e);
 		}
 
-		model.addAttribute("usersWithBookmarks", usersWithBookmarks);
-		model.addAttribute("groupsWithBookmark", groupsWithBookmarks);
 		model.addAttribute("groupPermissions", groupPermissions);
 		model.addAttribute("userPermissions", userPermissions);
 		model.addAttribute("userCanModify", userCanModify);
@@ -240,12 +222,6 @@ public class PermissionsController {
 			operationResult &= ps.setPermissionOnPath(permType, group, recursive, loggedUser.isAdmin(), path);
 		}
 
-		// Updating bookmarks for the recently-created permissions
-		if (bookmark) {
-			Set<String> bookmarks = new HashSet<String>();
-			bookmarks.add(path);
-		}
-
 		return operationResult ? REQUEST_OK : REQUEST_ERROR;
 	}
 
@@ -270,18 +246,6 @@ public class PermissionsController {
 
 		for (String username : usernames) {
 			operationResult &= ps.setPermissionOnPath(permType, username, recursive, loggedUser.isAdmin(), path);
-
-			// Updating bookmarks for the recently-created permissions
-			if (bookmark) {
-				Set<String> bookmarks = new HashSet<String>();
-				bookmarks.add(path);
-
-				// Getting list of users and updating bookmarks
-				List<DataGridUser> dataGridUsers = us.findByUsername(username);
-				if (dataGridUsers != null && !dataGridUsers.isEmpty()) {
-					uBMS.updateBookmarks(dataGridUsers.get(0), bookmarks, null);
-				}
-			}
 		}
 
 		return operationResult ? REQUEST_OK : REQUEST_ERROR;

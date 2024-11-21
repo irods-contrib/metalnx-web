@@ -193,44 +193,6 @@
 						</div>
 					</div>
 					<!-- /. Account Settings -->
-					<!-- Personal Info -->
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title"
-									th:text="#{users.add.form.personal.settings}"></h3>
-							</div>
-							<div class="panel-body">
-								<div class="col-xs-8">
-									<div class="form-group">
-										<label title="inputFirstName" for="inputFirstName"
-											th:text="#{users.add.form.first.name.label}"></label>
-										<input title="inputFirstName" type="text" class="form-control" id="inputFirstName"
-											th:placeholder="#{users.add.form.first.name.placeholder}"
-											th:field="*{firstName}" />
-									</div>
-									<div class="form-group">
-										<label title="inputLastName" for="inputLastName"
-											th:text="#{users.add.form.last.name.label}"></label>
-										<input title="inputLastName" type="text" class="form-control" id="inputLastName"
-											th:placeholder="#{users.add.form.last.name.placeholder}"
-											th:field="*{lastName}" />
-									</div>
-									<div class="form-group">
-										<label title="inputEmail" for="inputEmail" th:text="#{users.add.form.email.label}"></label>
-										<input title="inputEmail" type="text" class="form-control" id="inputEmail"
-											th:placeholder="#{users.add.form.email.placeholder}"
-											th:field="*{email}" /> <i title="invalidEmailIcon"
-											class="form-control-feedback glyphicon glyphicon-remove hideElement"
-											id="invalidEmailIcon"></i>
-										<small class="help-block hideElement" id="invalidEmailMsg">The
-											email is not valid</small>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- /. Personal Info -->
 				</div>
 				<!-- Available groups -->
 				<div class="row" id="groupsList">

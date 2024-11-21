@@ -5,8 +5,6 @@
 
 package com.emc.metalnx.modelattribute.user;
 
-import com.emc.metalnx.core.domain.entity.UserProfile;
-
 public class UserForm {
 
 	private String username;
@@ -20,8 +18,6 @@ public class UserForm {
 	private String organizationalRole;
 	private String company;
 	private String department;
-	
-	private UserProfile userProfile;
 	
 	/**
 	 * @return the username
@@ -106,18 +102,6 @@ public class UserForm {
 	 */
 	public void setDataGridId(long dataGridId) {
 		this.dataGridId = dataGridId;
-	}
-	/**
-	 * @return the userProfile
-	 */
-	public UserProfile getUserProfile() {
-		return userProfile;
-	}
-	/**
-	 * @param userProfile the userProfile to set
-	 */
-	public void setUserProfile(UserProfile userProfile) {
-		this.userProfile = userProfile;
 	}
 	/**
 	 * @return the userType

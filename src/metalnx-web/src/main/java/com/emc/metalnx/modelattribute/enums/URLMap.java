@@ -16,16 +16,7 @@ public class URLMap {
 	public static final String URL_FIND_USER = "/users/find/";
 	public static final String URL_FIND_ALL_USER = "/users/findAll/";
 	public static final String URL_USERS_CSV_REPORT = "/users/usersToCSVFile/";
-	public static final String URL_USER_BOOKMARKS = "/userBookmarks/";
-	public static final String URL_STARRED_ITEMS = "/favorites/";
 
-	public static final String URL_USER_PROFILE_MANAGEMENT = "/users/profile/";
-	public static final String URL_ADD_USER_PROFILE = "/users/profile/create/";
-	public static final String URL_USER_PROFILE_VALIDATE_PROFILE_NAME = "/metalnx/users/profile/isValidProfileName/";
-	public static final String URL_USER_PROFILES_CSV_REPORT = "/users/profile/profilesToCSVFile/";
-
-	public static final String URL_REMOVE_USER_PROFILE = "/metalnx/users/profile/remove/";
-	public static final String URL_MODIFY_USER_PROFILE = "/metalnx/users/profile/modify/";
 	public static final String URL_USER_VALIDATE_USERNAME = "/metalnx/users/isValidUsername/";
 
 	public static final String URL_GROUPS_MANAGEMENT = "/groups/";
@@ -44,15 +35,6 @@ public class URLMap {
 
 	public static final String URL_METADATA_SEARCH = "/metadata/";
 	public static final String URL_GLOBAL_SEARCH = "/search/";
-
-	public static final String URL_TEMPLATE_MANAGEMENT = "/templates/";
-	public static final String URL_ADD_TEMPLATE = "add/";
-	public static final String URL_MODIFY_TEMPLATE = "modify/";
-	public static final String URL_DELETE_TEMPLATE = "delete/";
-	public static final String URL_DELETE_TEMPLATE_FIELD_FROM_DB = "/metalnx/templates/removeFieldFromDB";
-	public static final String URL_DELETE_TEMPLATE_FIELD = "/metalnx/templates/removeFieldFromTemplate";
-	public static final String URL_TEMPLATE_VALIDATE_NAME = "/metalnx/templates/isValidTemplateName/";
-	public static final String URL_EXPORT_TEMPLATE_XML = "exportTemplatesToXMLFile/";
 
 	public static final String URL_RESOURCES_MANAGEMENT = "/resources/";
 	public static final String URL_ADD_RESOURCE = "/resources/add/";

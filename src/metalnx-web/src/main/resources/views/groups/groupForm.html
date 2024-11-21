@@ -170,8 +170,6 @@
 											<thead>
 												<tr>
 													<th th:text="#{groups.add.form.table.select.label}"></th>
-													<th th:text="#{users.management.table.first.name.label}"></th>
-													<th th:text="#{users.management.table.last.name.label}"></th>
 													<th th:text="#{users.management.table.username.label}"></th>
 													<th th:text="#{users.management.table.zone.label}"></th>
 												</tr>
@@ -182,8 +180,6 @@
 														th:value="${user.dataGridId}"
 														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
 													</td>
-													<td th:text="${user.firstName}"></td>
-													<td th:text="${user.lastName}"></td>
 													<td th:text="${user.username}"></td>
 													<td th:text="${user.additionalInfo}"></td>
 												</tr>
@@ -217,8 +213,6 @@
 										<table class="table table-hover" id="attachedUsersTable">
 											<thead>
 												<tr>
-													<th th:text="#{users.management.table.first.name.label}"></th>
-													<th th:text="#{users.management.table.last.name.label}"></th>
 													<th th:text="#{users.management.table.username.label}"></th>
 													<th th:text="#{users.management.table.zone.label}"></th>
 												</tr>
@@ -227,8 +221,6 @@
 												<tr th:each="user : ${users}"
 													th:if="${#arrays.contains(membersList, '' + user.dataGridId)}"
 													th:id="${user.username + '_attached'}">
-													<td th:text="${user.firstName}"></td>
-													<td th:text="${user.lastName}"></td>
 													<td th:text="${user.username}"></td>
 													<td th:text="${user.additionalInfo}"></td>
 												</tr>

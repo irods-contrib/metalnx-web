@@ -18,12 +18,4 @@
 	<context:annotation-config />
 	<context:component-scan base-package="com.emc.metalnx.jobs"/>
 	
-	<bean id="runScheduler" class="com.emc.metalnx.jobs.SyncJobs">
-		<property name="irodsHost" value="${irods.host}"/>
-		<property name="irodsPort" value="${irods.port}"/>
-		<property name="irodsZone" value="${irods.zoneName}"/>
-		<property name="irodsJobUser" value="${jobs.irods.username}"/>
-		<property name="irodsJobPassword" value="${jobs.irods.password}"/>
-	</bean>
-
 </beans>
