@@ -10,7 +10,7 @@ public class GroupForm {
 
 	private String groupname;
 	private Long dataGridId;
-	private String additionalInfo;
+	private String zone;
 
 	public String getGroupname() {
 		return groupname;
@@ -20,12 +20,12 @@ public class GroupForm {
 		this.groupname = groupname;
 	}
 
-	public String getAdditionalInfo() {
-		return additionalInfo;
+	public String getZone() {
+		return zone;
 	}
 
-	public void setAdditionalInfo(String additionalInfo) {
-		this.additionalInfo = additionalInfo;
+	public void setZone(String zone) {
+		this.zone = zone;
 	}
 
 	public Long getDataGridId() {

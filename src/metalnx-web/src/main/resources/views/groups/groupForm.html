@@ -105,7 +105,7 @@
 					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
 					type="hidden" th:field="*{groupname}" /> <input
 					th:if="${#strings.containsIgnoreCase(requestMapping,'modify')}"
-					type="hidden" th:field="${groupForm.additionalInfo}" />
+					type="hidden" th:field="${groupForm.zone}" />
 				<div class="col-sm-6">
 					<div class="row">
 						<div class="panel panel-default">
@@ -133,7 +133,7 @@
 								<div class="form-group">
 									<label title="selectZone" for="selectZone" th:text="#{groups.add.form.zone}"></label>
 									<select class="form-control" name="zones" id="selectZone"
-										th:field="${groupForm.additionalInfo}"
+										th:field="${groupForm.zone}"
 										th:disabled="${#strings.containsIgnoreCase(requestMapping,'modify') ? 'disabled' : 'false'}">
 										<th:block th:each="zone : ${zones}">
 											<option th:value="${zone.getName()}"
@@ -181,7 +181,7 @@
 														th:checked="${#arrays.contains(membersList, '' + user.dataGridId)}" />
 													</td>
 													<td th:text="${user.username}"></td>
-													<td th:text="${user.additionalInfo}"></td>
+													<td th:text="${user.zone}"></td>
 												</tr>
 											</tbody>
 										</table>
@@ -222,7 +222,7 @@
 													th:if="${#arrays.contains(membersList, '' + user.dataGridId)}"
 													th:id="${user.username + '_attached'}">
 													<td th:text="${user.username}"></td>
-													<td th:text="${user.additionalInfo}"></td>
+													<td th:text="${user.zone}"></td>
 												</tr>
 											</tbody>
 										</table>

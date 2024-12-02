@@ -262,7 +262,7 @@ public class FilePropertiesController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
-        return userService.findByUsernameAndAdditionalInfo(username, zoneName);
+        return userService.findByUsernameAndZone(username, zoneName);
     }
 
 }

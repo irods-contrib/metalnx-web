@@ -37,6 +37,6 @@ public class LoggedUserUtils {
 		String username = (String) auth.getPrincipal();
 		logger.info("auth:{}", auth);
 
-		return userService.findByUsernameAndAdditionalInfo(username, zoneName);
+		return userService.findByUsernameAndZone(username, zoneName);
 	}
 }
