@@ -273,7 +273,7 @@ public class UserController {
 		}
 
 		DataGridUser newUser = new DataGridUser();
-		newUser.setAdditionalInfo(user.getAdditionalInfo());
+		newUser.setZone(user.getZone());
 		newUser.setUsername(user.getUsername());
 		newUser.setUserType(user.getUserType());
 		logger.info("adding user:{}", newUser);
@@ -311,8 +311,8 @@ public class UserController {
 
 			cleanPermissionsSets();
 
-			DataGridUser userForGroups = userService.findByUsernameAndAdditionalInfo(newUser.getUsername(),
-					newUser.getAdditionalInfo());
+			DataGridUser userForGroups = userService.findByUsernameAndZone(newUser.getUsername(),
+					newUser.getZone());
 
 			userService.modifyUser(userForGroups);
 			redirectAttributes.addFlashAttribute("userAddedSuccessfully", user.getUsername());
@@ -354,16 +354,16 @@ public class UserController {
 	 * Controller that shows the modification of user view.
 	 *
 	 * @param username
-	 * @param additionalInfo
+	 * @param zone
 	 * @param model
 	 * @return the template name to render the modify user form
 	 * @throws DataGridConnectionRefusedException
 	 */
-	@RequestMapping(value = "modify/{username}/{additionalInfo}/", method = RequestMethod.GET)
-	public String showModifyUserForm(@PathVariable String username, @PathVariable String additionalInfo, Model model)
+	@RequestMapping(value = "modify/{username}/{zone}/", method = RequestMethod.GET)
+	public String showModifyUserForm(@PathVariable String username, @PathVariable String zone, Model model)
 			throws DataGridException {
 
-		DataGridUser user = userService.findByUsernameAndAdditionalInfo(username, additionalInfo);
+		DataGridUser user = userService.findByUsernameAndZone(username, zone);
 		List<UserGroup> groups = groupService.findAll();
 		List<DataGridZone> zones = zoneService.findAll();
 
@@ -372,7 +372,7 @@ public class UserController {
 			// iRODS data
 			userForm.setDataGridId(user.getDataGridId());
 			userForm.setUsername(user.getUsername());
-			userForm.setAdditionalInfo(user.getAdditionalInfo());
+			userForm.setZone(user.getZone());
 			userForm.setUserType(user.getUserType());
 
 
@@ -391,7 +391,7 @@ public class UserController {
 
 		model.addAttribute("groups", groups);
 		model.addAttribute("zones", zones);
-		model.addAttribute("userZone", additionalInfo);
+		model.addAttribute("userZone", zone);
 		model.addAttribute("userTypes", userService.listUserTypes());
 
 		return "users/userForm";
@@ -428,8 +428,8 @@ public class UserController {
 
 		logger.info("groupsToBeAdded:{}", groups);
 
-		DataGridUser user = userService.findByUsernameAndAdditionalInfo(userForm.getUsername(),
-				userForm.getAdditionalInfo());
+		DataGridUser user = userService.findByUsernameAndZone(userForm.getUsername(),
+				userForm.getZone());
 
 		if (user == null) {
 			logger.warn("user:{} not found:", userForm.getUsername());
@@ -437,7 +437,7 @@ public class UserController {
 		}
 
 		if (user != null) {
-			user.setAdditionalInfo(userForm.getAdditionalInfo());
+			user.setZone(userForm.getZone());
 			user.setUsername(userForm.getUsername());
 			user.setPassword(userForm.getPassword());
 			user.setUserType(userForm.getUserType());
@@ -656,7 +656,7 @@ public class UserController {
 
 		for (DataGridUser user : users) {
 			rows.add(user.getUsername() + ";");
-			rows.add(user.getAdditionalInfo() + ";");
+			rows.add(user.getZone() + ";");
 			rows.add(user.getUserType() + ";");
 			rows.add("\n");
 		}

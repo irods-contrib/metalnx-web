@@ -12,7 +12,7 @@ public class UserForm {
 	private String lastName;
 	private String password;
 	private String email;
-	private String additionalInfo;
+	private String zone;
 	private long dataGridId;
 	private String userType;
 	private String organizationalRole;
@@ -44,16 +44,16 @@ public class UserForm {
 		this.password = password;
 	}
 	/**
-	 * @return the additionalInfo
+	 * @return the zone 
 	 */
-	public String getAdditionalInfo() {
-		return additionalInfo;
+	public String getZone() {
+		return zone;
 	}
 	/**
-	 * @param additionalInfo the additionalInfo to set
+	 * @param zone the zone to set
 	 */
-	public void setAdditionalInfo(String additionalInfo) {
-		this.additionalInfo = additionalInfo;
+	public void setZone(String zone) {
+		this.zone = zone;
 	}
 	/**
 	 * @return the firstName

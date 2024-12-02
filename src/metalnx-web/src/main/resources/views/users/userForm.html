@@ -166,7 +166,7 @@
 										<label title="selectZone" class="required" for="selectZone"
 											th:text="#{users.add.form.zone.label}"></label>
 										<select class="form-control" name="zones" id="selectZone"
-											th:field="${user.additionalInfo}">
+											th:field="${user.zone}">
 											<th:block th:each="zone : ${zones}">
 												<option th:value="${zone.getName()}"
 													th:selected="${userZone != null and userZone == zone.getName() ? 'selected' : 'false'}">
@@ -520,9 +520,9 @@
 			});
 
 			/* Show dialog Group Info Modal */
-	        function showGroupInfoModal(groupname, additionalInfo) {
+	        function showGroupInfoModal(groupname, zone) {
 				var url = "/metalnx/users/getUsersInAGroup/" + groupname + "/"
-					+ additionalInfo;
+					+ zone;
 
 	        	$("#groupInfoModal").modal("show");
 	        	$("#groupInfoModalTitle").html([[#{users.add.group.info.modal.title}]]);

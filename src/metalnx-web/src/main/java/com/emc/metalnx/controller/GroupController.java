@@ -312,8 +312,7 @@ public class GroupController {
 	/**
 	 * Controller that shows the modification of group view.
 	 *
-	 * @param username
-	 * @param additionalInfo
+	 * @param groupname
 	 * @param model
 	 * @return
 	 * @throws DataGridException
