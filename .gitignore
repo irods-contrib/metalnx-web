@@ -18,7 +18,6 @@ Scripts/
 /.metadata/
 **/packaging/src
 **/*.bak
-flyway.conf
 test*.properties
 node_modules
 target

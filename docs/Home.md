@@ -19,7 +19,6 @@ For **rodsuser** users:
 - **Collection Management:** Add, edit, upload, download, copy, move, and delete objects / collections as needed.
 - **Metadata Extraction:** Automatically extracts and embedded metadata for .jpeg, .bam, .cram, & .vcf files into the ICAT.
 - **Metadata Management:** Add, edit, & remove metadata tags in via the collection management page.
-- **Metadata Templates:** Define templates with multiple metadata tags and default values.  Apply the template across one or many files from the Collection Management page.
 
 ### Do you want to install Metalnx?
 Check out [Getting Started](https://github.com/Metalnx/metalnx-web/wiki/Getting-Started).
