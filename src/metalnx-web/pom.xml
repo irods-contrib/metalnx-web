@@ -537,28 +537,7 @@
 
 									compute.checksum=${metalnx.compute.checksum}
 
-									db.driverClassName=${metalnx.jdbc.driver}
-									db.url=${metalnx.jdbc.url}
-									db.username=${metalnx.jdbc.user}
-									db.password=${metalnx.jdbc.password}
-									hibernate.dialect=${metalnx.jdbc.dialect}
-
-
-									hibernate.show_sql=true
-									hibernate.format_sql=false
-
-
-									hibernate.hbm2ddl.auto=update
-
-
 									connection.pool_size=5
-
-
-									jobs.irods.username=${jargon.test.irods.admin}
-									jobs.irods.password=${jargon.test.irods.admin.password}
-									jobs.irods.auth.scheme=${metalnx.auth.scheme}
-									runSyncJobs=true
-
 
 									rmd.connection.timeout=500
 									rmd.connection.port=8000

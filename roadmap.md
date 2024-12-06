@@ -35,10 +35,6 @@ Along with some refactoring of existing features, the following functionality wi
  
    This should be completely handled by ZMT.
 
- - Removal of separate database
-
-   The database was originally included to serve as a local cache for information from the iRODS catalog as well as to store Metalnx-specific information from its daemons running on other servers as well as 'Shares' and 'Stars'.  Any information worth keeping should be stored in the iRODS Catalog (for future use by Metalnx or other iRODS Clients).
-
  - Removal of rodsadmin requirement
 
    Originally required for inserting specific queries into the iRODS Catalog, running them, and then removing them, this requirement can be removed if the Specific Queries themselves are made unnecessary.  GenQuery replacements will be provided where possible (GenQuery is limited with regards to boolean 'OR' searches, etc.).  As GenQuery itself gets smarter in the iRODS Server (using a new flex/bison parser), any missing Metalnx functionality can be re-included.

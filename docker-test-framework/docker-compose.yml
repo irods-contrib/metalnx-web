@@ -1,19 +1,5 @@
-version: '3'
 # requires the METALNX_ETC_DIR environment to 
 services:
-  metalnx-database:
-      container_name: metalnx-database
-      image: postgres:9.6
-      restart: always
-      environment:
-        POSTGRES_PASSWORD: irods 
-        POSTGRES_USER: irods 
-        POSTGRES_DB: irods-ext  
-        POSTGRES_HOST_AUTH_METHOD: md5  
-      ports:
-        - "5432:5432" 
-      networks:
-        - 4-2_irodsnet
   metalnx:
       image: "metalnx" # 
       container_name: metalnx
@@ -26,18 +12,6 @@ services:
         - "8080:8080" 
       networks:
         - 4-2_irodsnet
-  database-init:
-    container_name: database-init
-    build:
-        context: .
-        dockerfile: Dockerfile.databaseinit
-    volumes:
-      - ..:/usr/src/metalnx-web
-    networks:
-        - 4-2_irodsnet
-
-volumes:
-  database-data: # named volumes can be managed easier using docker-compose
 
 networks:
    4-2_irodsnet:

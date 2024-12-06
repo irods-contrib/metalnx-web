@@ -17,43 +17,6 @@ Tomcat 7 or higher
     $ sudo yum -y install tomcat
     $ sudo apt-get -y install tomcat7
 
-### Database
-
-#### MySQL
-MySQL 5.6 or higher
-
-#### PostgreSQL
-PostgreSQL 9.2 or higher
-
-    $ sudo yum install postgresql-server postgresql-contrib
-    $ sudo postgresql-setup initdb
-    $ sudo vi /var/lib/pgsql/data/pg_hba.conf
-
-Find the following lines:
-
-    host    all             all             127.0.0.1/32            ident
-    host    all             all             ::1/128                 ident
-
-Replace `ident` with `md5` or `trust`:
-
-    host    all             all             127.0.0.1/32            md5
-    host    all             all             ::1/128                 md5
-
-Save `pg_hba.conf` and exit. After this configuration, Postgres is now configured to allow password authentication. Now start and enable PostgreSQL:
-
-    $ sudo systemctl start postgresql
-    $ sudo systemctl enable postgresql
-
-There are two packages used by the Metalnx setup script: `pyscopg2` for PostgreSQL and `mysqldv` for MySQL. They are used to check whether or not the credentials entered are correct and Metalnx has access to the database. To install those packages, please run the following commands according to your OS distribuition:
-
-### `RPM`
-	# yum install python-psycopg2	     # PostgreSQL
-	# yum install MySQL-python           # MySQL
-
-### `DEB`
-	# apt-get install python-psycopg2    # PostgreSQL
-	# apt-get install python-mysqldb     # MySQL
-
 # Manual Build
 This section describes the dependencies *only necessary* to *build* the Metalnx Web project. **If you are only installing Metalnx via `rpm` or `deb` packages, you can skip this section**.
 

@@ -6,67 +6,6 @@ If you want to know what is new in each release, check out all releases of this 
 
 # Install Metalnx
 
-## Configure Database
-The command to setup the database will vary between whether you will use MySQL or PostgreSQL as the Metalnx database. The steps are logically similar.
-
-### PostgreSQL
-
-Become the user `postgres` using the command:
-```
-# su – postgres
-```
-
-Start the utility `psql` using the command:
-```
-# psql
-```
-
-Create the database user `metalnx` for communication with the database.
-
-    Postgres=# CREATE USER metalnx WITH PASSWORD 'metalnx';
-
-Create the database called `metalnx` for the Metalnx application to use.
-
-    Postgres=# CREATE DATABASE "metalnx";
-
-Grant the user `metalnx` access rights on the `metalnx` database:
-
-    Postgres=# GRANT ALL PRIVILEGES ON DATABASE "metalnx" TO metalnx;
-
-Exit the `psql` utility with the command:
-
-    Postgres=# \q
-    $ exit
-
-Some extra configuration may be needed for Metalnx to be able to authenticate correctly against Postgres. Make sure you configured PostgreSQL as described in the [Database Dependency](https://github.com/Metalnx/metalnx-web/wiki/Dependencies#postgresql) section.
-
-### MySQL
-
-Become the mysql `root` user using the command:
-```
-# mysql – u root -p
-```
-
-Create the database user `metalnx` for communication with the database.
-
-    mysql> CREATE USER ‘metalnx’@’<HOSTNAME>’ IDENTIFIED BY ‘metalnx’;
-
-Create the database called `metalnx` for the Metalnx application to use.
-
-    mysql> CREATE DATABASE metalnx;
-
-Grant the user `metalnx` access rights on the `metalnx` database:
-
-    mysql> GRANT ALL PRIVILEGES ON * . * TO ‘metalnx’@’<HOSTNAME>’;
-
-Now, reload the privileges so they take effect:
-
-    mysql> FLUSH PRIVILIGES:
-
-Exit the `mysql` utility with the command:
-
-    mysql> quit;
-
 ## Setup iRODS Negotiation
 
 Before running the Metalnx setup script, make sure your iRODS negotiation parameters are correct.

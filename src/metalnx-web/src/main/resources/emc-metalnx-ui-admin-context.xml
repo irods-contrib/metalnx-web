@@ -13,7 +13,6 @@
 		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<import resource="classpath:/META-INF/emc-metalnx-services/emc-metalnx-services-context.xml" />
-	<import resource="classpath:/emc-metalnx-jobs-context.xml" />
 	<import resource="classpath:/emc-metalnx-shared-context.xml" />
 
 	<context:annotation-config />
