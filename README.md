@@ -15,14 +15,6 @@ version: '3'
 
 services:
 
-  db:
-    image: postgres:11
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: superdupersecret
-      POSTGRES_USER: metalnxuser
-      POSTGRES_DB: metalnxdb
-
   metalnx:
     image: irods/metalnx:latest
     restart: always
@@ -32,12 +24,7 @@ services:
       - 80:8080
 ```
 
-and then the `./metalnx-configuration/metalnx.properties` file requires rodsadmin iRODS connection credentials and points to the docker-compose database (alias db) with:
-```
-db.url=jdbc:postgresql://db:5432/metalnxdb
-db.username=metalnxuser
-db.password=superdupersecret
-```
+and then the `./metalnx-configuration/metalnx.properties` file requires rodsadmin iRODS connection credentials.
 
 Metalnx will be available on port 80 of the docker host machine at `/metalnx`.
 
@@ -46,18 +33,6 @@ This configuration could be supplemented with an nginx (or other) reverse-proxy 
 Examples of the metalnx-configuration can be found in [docker-test-framework/etc/irods-ext](./docker-test-framework/etc/irods-ext).
 
 ## Deploying Packaged Metalnx via Docker Hub directly
-
-### Prepare the database
-
-First, create and configure a database for Metalnx's use (this is for caching and other local information).
-
-```
-$ (sudo) su - postgres
-postgres$ psql
-psql> CREATE USER metalnx WITH PASSWORD 'changeme';
-psql> CREATE DATABASE "IRODS-EXT";
-psql> GRANT ALL PRIVILEGES ON DATABASE "IRODS-EXT" TO metalnx;
-```
 
 ### Prepare the application
 

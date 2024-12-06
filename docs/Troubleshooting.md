@@ -25,8 +25,6 @@ If you are using CentOS 7+ you should be using `firewall-cmd` to configure firew
     firewall-cmd --zone=public --add-port=1248/tcp --permanent          # iRODS configuration
     firewall-cmd --zone=public --permanent --add-port=20000-20199/tcp   # iRODS configuration
     firewall-cmd --zone=public --permanent --add-port=20000-20199/udp   # iRODS configuration
-    firewall-cmd --zone=public --add-port=5432/tcp --permanent          # For PostgreSQL
-    firewall-cmd --zone=public --add-port=3306/tcp --permanent          # For MySQL
     firewall-cmd --zone=public --add-service=http --permanent           # Web server
     firewall-cmd --zone=public --add-service=https --permanent          # Web server
     firewall-cmd --reload

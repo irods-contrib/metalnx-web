@@ -73,11 +73,6 @@
 				<metalnx.ssl.policy>CS_NEG_REFUSE</metalnx.ssl.policy>
 				<metalnx.packing.streams>true</metalnx.packing.streams>
 				<metalnx.compute.checksum>true</metalnx.compute.checksum>
-				<metalnx.jdbc.driver>org.postgresql.Driver</metalnx.jdbc.driver>
-				<metalnx.jdbc.url>jdbc:postgresql://localhost:5432/metalnx</metalnx.jdbc.url>
-				<metalnx.jdbc.user>metalnx</metalnx.jdbc.user>
-				<metalnx.jdbc.password>metalnx</metalnx.jdbc.password>
-				<metalnx.jdbc.dialect>org.hibernate.dialect.PostgreSQLDialect</metalnx.jdbc.dialect>
 				<selenium.test.hostname>localhost</selenium.test.hostname>
 				<selenium.test.chrome.driver>webdriver.chrome.driver</selenium.test.chrome.driver>
 				<selenium.test.chrome.driver.loaction>C:/Users/pateldes/driver/chromedriver.exe</selenium.test.chrome.driver.loaction>

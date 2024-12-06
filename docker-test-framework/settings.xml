@@ -11,12 +11,6 @@ as the operative profile to be used in building and testing jargon against a cho
 
     <profile>
 			<id>flyway-docker</id>
-			<properties>
-				<flyway.jdbc.url>jdbc:postgresql://metalnx-database:5432/irods-ext</flyway.jdbc.url>
-				<flyway.db.user>irods</flyway.db.user>
-				<flyway.db.password>irods</flyway.db.password>
-				<flyway.db.schema>public</flyway.db.schema>
-			</properties>
 		</profile>
 		
     </profiles>

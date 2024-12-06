@@ -4,10 +4,6 @@ Metalnx has a bias towards deployment as a Docker image, and will continue to ev
 and scaled horizontally using an orchestration tool such as Kubernetes, as
 part of a suite of mid-tier components that can work together to create a complete CI environment.
 
-## Initial database configuration
-
-See the [DEVELOPER-README.md](DEVELOPER-README.md) and [src/metalnx-tools/README.md](src/metalnx-tools/README.md) for information on configuring the metalnx database.
-
 ## /etc/irods-ext
 
 This project contains a sample `/etc/irods-ext` directory with a `metalnx.properties` and `metalnxConfig.xml` examples.

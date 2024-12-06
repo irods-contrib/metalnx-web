@@ -54,7 +54,6 @@ import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
 import com.emc.metalnx.modelattribute.breadcrumb.DataGridBreadcrumb;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
-import com.emc.metalnx.modelattribute.metadatatemplate.MetadataTemplateForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.GroupService;
 import com.emc.metalnx.services.interfaces.HeaderService;
@@ -567,40 +566,6 @@ public class BrowseController {
         logger.info("Returning after renaming :: " + template);
 
         return "redirect:/collections?path=" + URLEncoder.encode(parentPath);
-    }
-
-    @RequestMapping(value = "applyTemplatesToCollections/", method = RequestMethod.POST)
-    public String applyTemplatesToCollections(final RedirectAttributes redirectAttributes,
-            @ModelAttribute final MetadataTemplateForm template) throws DataGridConnectionRefusedException {
-        boolean templatesAppliedSuccessfully = applyTemplatesToPath(template);
-        redirectAttributes.addFlashAttribute("templatesAppliedSuccessfully", templatesAppliedSuccessfully);
-        return "redirect:/collections";
-    }
-
-    private boolean applyTemplatesToPath(final MetadataTemplateForm template)
-            throws DataGridConnectionRefusedException {
-        boolean allMetadataAdded = true;
-        List<String> attributes = template.getAvuAttributes();
-        List<String> values = template.getAvuValues();
-        List<String> units = template.getAvuUnits();
-
-        if (attributes == null || values == null || units == null) {
-            return false;
-        }
-
-        for (int i = 0; i < attributes.size(); i++) {
-            String attr = attributes.isEmpty() ? "" : attributes.get(i);
-            String val = values.isEmpty() ? "" : values.get(i);
-            String unit = units.isEmpty() ? "" : units.get(i);
-            for (String path : template.getPaths()) {
-                boolean isMetadadaAdded = metadataService.addMetadataToPath(path, attr, val, unit);
-                if (!isMetadadaAdded) {
-                    allMetadataAdded = false;
-                }
-            }
-        }
-
-        return allMetadataAdded;
     }
 
     /*

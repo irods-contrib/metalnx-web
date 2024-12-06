@@ -56,7 +56,7 @@ You can check all Metalnx containers at [DockerHub](https://hub.docker.com/r/met
 ## Building and Running the Container Locally
 In order to build the Metalnx container, you need to **cd** to your `packaging/docker` directory:
 
-    $ cd <Metalnx_source_code_root>/packaging/docker
+    $ cd /path/to/metalnx/repo 
 
 Finally, execute the build
 

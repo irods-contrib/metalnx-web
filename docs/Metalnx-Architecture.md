@@ -9,8 +9,6 @@ In Metalnx, there are some key components in the architecure:
    The service layer is responsible for abstracting the database and grid layer from other components. In Metalnx, all functionalities are encapsulated as services
 - **Jargon**:
    Open source library used to interact with iRODS. For more information, check out its [repository](https://github.com/DICE-UNC/jargon/wiki/Jargon-overview)
-- **DAO**:
-   Data Access Object layer. Responsible for interacting with the Metalnx database
 
 ![Metalnx Architecture](https://github.com/Metalnx/metalnx-web/blob/master/docs/IMAGES/metalnx_arch.png)
 
@@ -49,21 +47,6 @@ What is happening behind the scenes:
 6. The user is removed from the iRODS catalog, Jargon comes back with with a successful deletion, then `UserService` returns to `UserController` saying that **bob** was removed successfully
 7. Knowing that **bob** was removed with no issues, `UserController` returns a `HTML` document with a positive feedback message for the delete operation
 8. The client (browser) gets this `HTML` document as the response for the `/delete/bob` call and displays it to the user
-
-### List Templates
-The idea in this example is to show how requests that do not go to iRODS are handled. Templates is a feature created by Metalnx and it is not supported by iRODS yet. Templates are stored in the Metalnx database instead, but the service layer makes it transparent to the controller.
-
-![List Templates HTTP request](https://github.com/Metalnx/metalnx-web/blob/master/docs/IMAGES/metalnx_list_templates_call.png)
-
-1. The client makes a request to `/templates/` asking Metalnx for all templates
-2. The Metalnx server gets the request. Request handling is done by the Controller layer - in this case, `TemplateController`
-3. `TemplateController` calls the service layer (more specifically, `TemplateService`) to get the list of all existing templates
-4. `TemplateService` asks the `DAO` layer to find all *public* and *private* templates (more specifically, `TemplateDao`)
-5. `TemplateDao` queries the Metalnx database to retrieve the list of *public* templates
-5. `TemplateDao` queries the Metalnx database to retrieve the list of *private* templates that the user owns
-6. `TemplateService` gets all *public* and *private* templates and return them to `TemplateController`
-7. `TemplateController` then creates an HTML document containing a list of templates that the user can see
-8. The client (browser) gets this `HTML` document as the response for the `/templates/` call and displays it to the user
 
 ## Frontend Frameworks and Tools
 
@@ -121,9 +104,6 @@ Datatables has a feature in which we can use a custom request to retrieve data, 
 
 ### emc-metalnx-core
 
-#### dao
-Data Access Object package. If, for example, the Metalnx database schema changes, that's where thoses changes will take place. In this package, it is defined all interfaces as well as implementation for the current schema.
-
 #### entities
 User, Group, Resource, Server, Metadata and many others are examples of entities in both Metalnx and iRODS ecosystem. Note that they all start with `DataGrid`. This is the prefix we use in the project.
 
@@ -138,11 +118,11 @@ This is the package where Metalnx exceptions live. If any new exception is neces
 Comparators & Helper classes stay in this package. There are some methods that check if a file is of a certain type, for example `BAM`, `VCF`, `JPEG`, and `Illumina`. There are more like helper methods used by other classes or services.
 
 #### resources
-Under the *resources* folder, we have `xml` files where there is some spring configuration as well as hibernate configuration: DB dialect, username, password, URL and driver name, for example.
+Under the *resources* folder, we have `xml` files where there is some spring configuration.
 		
 ### emc-metalnx-services
 
-This is a Metlanx subproject containing all services that compose our service layer. The service layer is used by our controllers (it will be covered later on) to do a specific job either in iRODS or in the Metalnx database.
+This is a Metalnx subproject containing all services that compose our service layer. The service layer is used by our controllers (it will be covered later on) to do a specific job in iRODS.
 
 #### context
 This package contains a class responsible for parsing all credentials from the `*.properties`. It will decode credentials to be able to authenticate against iRODS and DBs like MySQL and PostgreSQL.
@@ -170,7 +150,7 @@ Implementation of services that talk to RMD (Remote Monitor Daemon). For more in
 Contains all unit tests corresponding to the service layer.
 
 ### emc-metalnx-shared
-Part of the application that contains functionalities shared by both a rods admin and a rods user. Collections, favorites, file operations (move, copy, etc), shared links, metadata, permission, template are all operations that both admins and users can perform. That is the reason they stay in this subproject.
+Part of the application that contains functionalities shared by both a rods admin and a rods user. Collections, file operations (move, copy, etc), shared links, metadata, and permission are all operations that both admins and users can perform. That is the reason they stay in this subproject.
 
 #### controller
 
@@ -184,7 +164,7 @@ Helper class to retrieve the user currently logged into the application.
 Very useful when it's necessary to do something before or after each request. The `HttpResponseHandlerInterceptor` will intercept all HTTP responses from the server to the client and add few params: user details, metalnx version and URL mapping.
 
 #### modelattribute
-This package contains all representation to objects that will go to the frontend. BreadCrumb, Collection forms, Template forms, Collections forms, URLs, and preferences are all things used on the UI to properly render the page.
+This package contains all representation to objects that will go to the frontend. Breadcrumbs, collections forms, user forms, group forms, resource forms, and URLs are things used on the UI to properly render the page.
 
 #### utils
 
@@ -203,9 +183,6 @@ Controllers in this package provide access to the Metalnx service layer that can
 #### handler
 Classes that handle authentication failure and success.
 	
-#### jobs
-Sync job responsible for synchronizing users & groups between iRODS and the Metalnx DB. It polls iRODS looking for new users or groups. This is necessary because Metalnx has other information about users and groups (such as first name, last name, email, etc) and they should be the same entries that exist in iRODS.
-	
 #### modelattribute
 Representation of objects that will go on the UI, but only available to admins such as group, user and resource management forms.
 
@@ -213,7 +190,8 @@ Representation of objects that will go on the UI, but only available to admins s
 
 This is the subproject that is the actual Web application of Metalnx. All other subprojects compose the backend side of the app while this one is the application shipped to users.
 
-It contains all properties files: `{irods, database, msi, security, log4j, mysql, postgresql}.properties` that can be modified by Metalnx administrators from inside aservlet container like Tomcat. 
+It contains all properties files: `{irods, msi, security, log4j}.properties` that can be modified by Metalnx administrators from inside a servlet container like Tomcat. 
+=======
 
 There are three locations for these files (all user `src/main/conf`): `dev`, `integration-tests` and `preprod`. Each location has a copy of all of them. The reason we have those three places is because the files under `dev` will be used in development, the ones under `integration-test` will be used for testing and finally the ones inside `preprod` will be the ones that will go to production.
 
