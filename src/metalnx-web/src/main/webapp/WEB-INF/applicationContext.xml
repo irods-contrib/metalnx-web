@@ -110,8 +110,6 @@
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/fileproperty/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
-		<sec:intercept-url pattern="/preferences/**"
-			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/permissions/**"
 			access="ROLE_ADMIN,ROLE_USER,ROLE_GROUPADMIN" />
 		<sec:intercept-url pattern="/tickets/**"
