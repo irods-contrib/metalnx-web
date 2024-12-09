@@ -116,8 +116,6 @@
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/templates/**"
 			access="ROLE_ADMIN,ROLE_USER" />
-		<sec:intercept-url pattern="/preferences/**"
-			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/groupBookmarks/**"
 			access="ROLE_ADMIN,ROLE_USER" />
 		<sec:intercept-url pattern="/userBookmarks/**"
