@@ -278,19 +278,6 @@ public class UserController {
 		newUser.setUserType(user.getUserType());
 		logger.info("adding user:{}", newUser);
 
-		String[] groupList = groupsToBeAdded.toArray(new String[groupsToBeAdded.size()]);
-		List<UserGroup> groups = new ArrayList<UserGroup>();
-		if (groupList != null && groupList.length != 0) {
-			for (String groupId : groupList) {
-				UserGroup userGroup = groupService.findById(groupId);
-				if (groupId == null) {
-					logger.warn("unable to find group for id:{}", groupId);
-				} else {
-					groups.add(userGroup);
-				}
-			}
-		}
-
 		try {
 			logger.info("creating the user...");
 			boolean creationSucessful = userService.createUser(newUser, user.getPassword());
@@ -299,10 +286,6 @@ public class UserController {
 				logger.warn("unable to create the user");
 				throw new DataGridException("User creation failed");
 			}
-
-			// Updating the group list for the recently-created user
-
-			userService.updateGroupList(newUser, groups);
 
 			// adding read, write and ownership permissions to a set of collections
 			userService.updateReadPermissions(newUser, addReadPermissionsOnDirs, removeReadPermissionsOnDirs);
