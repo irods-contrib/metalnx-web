@@ -11,8 +11,6 @@ as the operative profile to be used in building and testing jargon against a cho
 
     <profile>
 			<id>flyway-docker</id>
-			<properties>
-			</properties>
 		</profile>
 		
     </profiles>

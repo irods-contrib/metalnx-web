@@ -12,8 +12,6 @@
 	<profiles>
         <profile>
             <id>flyway-local</id>
-            <properties>
-            </properties>
         </profile>
     </profiles>
 

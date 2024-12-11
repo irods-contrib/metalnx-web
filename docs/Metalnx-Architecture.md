@@ -122,7 +122,7 @@ Under the *resources* folder, we have `xml` files where there is some spring con
 		
 ### emc-metalnx-services
 
-This is a Metlanx subproject containing all services that compose our service layer. The service layer is used by our controllers (it will be covered later on) to do a specific job in iRODS.
+This is a Metalnx subproject containing all services that compose our service layer. The service layer is used by our controllers (it will be covered later on) to do a specific job in iRODS.
 
 #### context
 This package contains a class responsible for parsing all credentials from the `*.properties`. It will decode credentials to be able to authenticate against iRODS and DBs like MySQL and PostgreSQL.
@@ -150,7 +150,7 @@ Implementation of services that talk to RMD (Remote Monitor Daemon). For more in
 Contains all unit tests corresponding to the service layer.
 
 ### emc-metalnx-shared
-Part of the application that contains functionalities shared by both a rods admin and a rods user. Collections, favorites, file operations (move, copy, etc), shared links, metadata, and permission are all operations that both admins and users can perform. That is the reason they stay in this subproject.
+Part of the application that contains functionalities shared by both a rods admin and a rods user. Collections, file operations (move, copy, etc), shared links, metadata, and permission are all operations that both admins and users can perform. That is the reason they stay in this subproject.
 
 #### controller
 
@@ -190,7 +190,7 @@ Representation of objects that will go on the UI, but only available to admins s
 
 This is the subproject that is the actual Web application of Metalnx. All other subprojects compose the backend side of the app while this one is the application shipped to users.
 
-It contains all properties files: `{irods, msi, security, log4j, mysql, postgresql}.properties` that can be modified by Metalnx administrators from inside aservlet container like Tomcat. 
+It contains all properties files: `{irods, msi, security, log4j, mysql, postgresql}.properties` that can be modified by Metalnx administrators from inside a servlet container like Tomcat. 
 
 There are three locations for these files (all user `src/main/conf`): `dev`, `integration-tests` and `preprod`. Each location has a copy of all of them. The reason we have those three places is because the files under `dev` will be used in development, the ones under `integration-test` will be used for testing and finally the ones inside `preprod` will be the ones that will go to production.
 
