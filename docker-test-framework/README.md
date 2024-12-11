@@ -16,7 +16,7 @@ This will place the .war file in the proper location for Docker to pick up
 
 ### run iRODS
 
-Follow steps in [Jargon Docker Testing Framework] (https://github.com/DICE-UNC/jargon/blob/master/DOCKERTEST.md) to start up an iRODS instance
+Follow steps in [Jargon Docker Testing Framework] (https://github.com/DICE-UNC/jargon/blob/master/docker-test-framework/DOCKERTEST.md) to start up an iRODS instance
 
 You should be able to issue a docker ps command and see these services running
 
