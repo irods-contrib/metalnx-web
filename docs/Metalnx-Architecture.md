@@ -164,7 +164,7 @@ Helper class to retrieve the user currently logged into the application.
 Very useful when it's necessary to do something before or after each request. The `HttpResponseHandlerInterceptor` will intercept all HTTP responses from the server to the client and add few params: user details, metalnx version and URL mapping.
 
 #### modelattribute
-This package contains all representation to objects that will go to the frontend. Collections forms and URLs are things used on the UI to properly render the page.
+This package contains all representation to objects that will go to the frontend. Collections and URLs are things used on the UI to properly render the page.
 
 #### utils
 
@@ -190,7 +190,7 @@ Representation of objects that will go on the UI, but only available to admins s
 
 This is the subproject that is the actual Web application of Metalnx. All other subprojects compose the backend side of the app while this one is the application shipped to users.
 
-It contains all properties files: `{irods, msi, security, log4j, mysql, postgresql}.properties` that can be modified by Metalnx administrators from inside a servlet container like Tomcat. 
+It contains all properties files: `{irods, msi, security, log4j}.properties` that can be modified by Metalnx administrators from inside a servlet container like Tomcat. 
 
 There are three locations for these files (all user `src/main/conf`): `dev`, `integration-tests` and `preprod`. Each location has a copy of all of them. The reason we have those three places is because the files under `dev` will be used in development, the ones under `integration-test` will be used for testing and finally the ones inside `preprod` will be the ones that will go to production.
 
