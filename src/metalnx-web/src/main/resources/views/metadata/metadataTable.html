@@ -201,9 +201,7 @@
 							</th>
 							<th><span th:text="#{metadata.table.header.attribute}"></span></th>
 							<th><span th:text="#{metadata.table.header.value}"></span></th>
-							<th:block th:if="${dataGridUser.isMetadataUnitView()}">
-								<th><span th:text="#{metadata.table.header.unit}"></span></th>
-							</th:block>
+							<th><span th:text="#{metadata.table.header.unit}"></span></th>
 							<th></th>
 							<th
 								th:if="${#strings.containsIgnoreCase(permissionOnCurrentPath, 'write') or #strings.containsIgnoreCase(permissionOnCurrentPath, 'own')}">
@@ -228,19 +226,13 @@
 								class="value"></span><input class="hidden newValMetadataTable"
 								type="text" th:value="${dataGridMetadata.getValue()}"
 								title="value" /></td>
-							<th:block th:if="${dataGridUser.isMetadataUnitView()}">
-								<td th:if="${#strings.isEmpty(dataGridMetadata.getUnit())}">
-									<span></span>
-									<input class="hidden newUnitMetadataTable" type="text" th:value="${dataGridMetadata.getUnit()}" title="unit" />
-								</td>
-								<td th:unless="${#strings.isEmpty(dataGridMetadata.getUnit())}">
-									<span th:text="${dataGridMetadata.getUnit()}"></span>
-									<input class="hidden newUnitMetadataTable" type="text" th:value="${dataGridMetadata.getUnit()}" title="unit" />
-								</td>
-							</th:block>
+							<td class="clickable"><span th:text="${dataGridMetadata.getUnit()}"
+								class="value"></span><input class="hidden newUnitMetadataTable"
+								type="text" th:value="${dataGridMetadata.getUnit()}"
+								title="unit" /></td>
 							<td>
 								<button title="View" 
-									th:onclick="'javascript:showViewMetadataModal(\'' + ${dataGridMetadata.getAttribute()} +'\',' + '\'' + ${dataGridMetadata.getValue()} +'\');'"
+									th:onclick="'javascript:showViewMetadataModal(\'' + ${dataGridMetadata.getAttribute()} + '\',' + '\'' + ${dataGridMetadata.getValue()} + '\',' + '\'' + ${dataGridMetadata.getUnit()} +'\');'"
 									class="btn btn-default btn-xs">
 									<i class="fa fa-eye"></i> View
 								</button>
@@ -302,6 +294,14 @@
 								</div>
 								<div class="col-md-10 col-sm-10 col-xs-8">
 									<span id="valueModal"></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="text-right col-md-2 col-sm-2 col-xs-4">
+									<label>Unit</label>
+								</div>
+								<div class="col-md-10 col-sm-10 col-xs-8">
+									<span id="unitModal"></span>
 								</div>
 							</div>
 						</div>
@@ -403,10 +403,11 @@
             	window.location = '/emc-metalnx-web/metadata/exportToCSV/?path=' + path;
             }
             
-           function showViewMetadataModal(attr, value) {
+           function showViewMetadataModal(attr, value, unit) {
        			$('#viewMetadataModal').modal();
                	$("#attrModal").text(attr);
                	$("#valueModal").text(value);
+               	$("#unitModal").text(unit);
             }
 
             $(document).ready(function(){

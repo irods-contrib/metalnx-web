@@ -18,10 +18,8 @@
 		<spring.security.version>3.2.10.RELEASE</spring.security.version>
 		<spring.batch.version>3.0.10.RELEASE</spring.batch.version>
 
-		<!-- Hibernate -->
-		<hibernate.version>4.3.11.Final</hibernate.version>
+		<!-- Javassist -->
 		<javassist.version>3.12.1.GA</javassist.version>
-		<hibernate.validator.version>5.3.6.Final</hibernate.validator.version>
 
 		<!-- Thymeleaf -->
 		<thymeleaf.version>2.1.5.RELEASE</thymeleaf.version>
@@ -36,8 +34,6 @@
 		<selenium.version>2.45.0</selenium.version>
 
 		<!-- Misc -->
-		<mysql.connector.version>8.0.16</mysql.connector.version>
-		<postgresql.version>8.4-702.jdbc4</postgresql.version>
 		<servlet.api.version>3.0.1</servlet.api.version>
 		<jackson.version>2.10.0</jackson.version>
 
@@ -86,7 +82,6 @@
 
 	<modules>
 		<module>metalnx-web</module>
-		<module>metalnx-tools</module>
 	</modules>
 
 	<repositories>
@@ -245,23 +240,6 @@
 				<artifactId>spring-batch-core</artifactId>
 				<version>${spring.batch.version}</version>
 			</dependency>
-
-			<!-- Hibernate dependencies -->
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate.validator.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-envers</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
@@ -349,16 +327,6 @@
 			</dependency>
 
 			<!-- Misc -->
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql.connector.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>${postgresql.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>

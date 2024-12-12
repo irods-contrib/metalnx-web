@@ -12,12 +12,6 @@
 	<profiles>
         <profile>
             <id>flyway-local</id>
-            <properties>
-                <flyway.jdbc.url>jdbc:postgresql://server1.local:5432/IRODS-EXT</flyway.jdbc.url>
-                <flyway.db.user>irodsext</flyway.db.user>
-                <flyway.db.password>password</flyway.db.password>
-                <flyway.db.schema>public</flyway.db.schema>
-            </properties>
         </profile>
     </profiles>
 
