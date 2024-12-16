@@ -117,10 +117,10 @@ public class UploadController {
 
 		if ("undefined".equalsIgnoreCase(resourcesToUpload)) {
 			if (defaultStorageResc == null || defaultStorageResc.isEmpty()) {
-				return getUploadResponse("No default storage resource defined in configuration file", FATAL);
+				resourcesToUpload = null;
+			} else {
+				resourcesToUpload = defaultStorageResc;
 			}
-
-			resourcesToUpload = defaultStorageResc;
 		}
 
 		logger.info("parsed parameters...");
