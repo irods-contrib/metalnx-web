@@ -97,11 +97,6 @@
                                         </div>
                                     </th:block>
                                 </td>
-                                <td th:unless="${userCanModify}">
-                                    <span aria-hidden="true"
-                                        th:class="${#sets.contains(usersWithBookmarks, userPermission.getUserName()) ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}" >
-                                    </span>
-                                </td>
                             </tr>
                             <tr th:each="groupPermission : ${groupPermissions}">
                                 <td th:text="${groupPermission.getGroupName()}" th:id="${groupPermission.getGroupName()}"></td>
