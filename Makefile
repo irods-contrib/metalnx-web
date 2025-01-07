@@ -26,8 +26,17 @@ packaging/docker/metalnx.war: warbuilderimage
 		myimages/metalnx-warbuilder \
 		mvn clean package -Dmaven.test.skip=true
 
-# this docker command builds a local docker image
+# this docker command builds a local docker image. this command
+# may result in compilation of the Java source code.
 dockerimage: packaging/docker/metalnx.war
+	docker build -t myimages/metalnx:latest .
+
+# this docker command only builds a local docker image.
+# it DOES NOT compile the Java source code.
+#
+# this command exists for developers compiling the source outside
+# of a docker container, but running the WAR file in a container.
+dockerimage_only:
 	docker build -t myimages/metalnx:latest .
 
 # this removes the .war file
