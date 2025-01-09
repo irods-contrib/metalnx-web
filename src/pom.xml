@@ -14,9 +14,9 @@
 		<jargon.version>4.3.5.0-SNAPSHOT</jargon.version>
 
 		<!-- Spring -->
-		<spring.version>4.3.18.RELEASE</spring.version>
-		<spring.security.version>3.2.10.RELEASE</spring.security.version>
-		<spring.batch.version>3.0.10.RELEASE</spring.batch.version>
+		<spring.version>5.3.39</spring.version>
+		<spring.security.version>5.8.16</spring.security.version>
+		<spring.batch.version>4.3.10</spring.batch.version>
 
 		<!-- Javassist -->
 		<javassist.version>3.12.1.GA</javassist.version>
@@ -33,7 +33,7 @@
 		<selenium.version>2.45.0</selenium.version>
 
 		<!-- Misc -->
-		<servlet.api.version>3.0.1</servlet.api.version>
+		<servlet.api.version>4.0.1</servlet.api.version>
 		<jackson.version>2.10.0</jackson.version>
 
 		<!-- Default Source Encoding -->
