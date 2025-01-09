@@ -7,7 +7,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns="http://www.springframework.org/schema/beans"
-	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.8.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/context
 	    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
@@ -54,8 +54,12 @@
 	<bean id="ep403"
 		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint" />
 
-	<sec:http auto-config="true" create-session="always"
+    <!-- use-expressions set to false for backward compatibility with spring 4. -->
+	<sec:http auto-config="true" create-session="always" use-expressions="false"
 		entry-point-ref="ep403">
+
+        <!-- For backward compatability for spring security 3. -->
+        <sec:csrf disabled="true"/>
 
 		<!-- Login pages -->
 		<sec:intercept-url pattern="/login/**"

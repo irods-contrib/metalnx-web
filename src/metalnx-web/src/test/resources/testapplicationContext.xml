@@ -62,7 +62,8 @@
 		class="com.emc.metalnx.handler.Http403ForbiddenEntryPoint">
 	</bean>
 
-	<sec:http auto-config="true" create-session="always"
+    <!-- use-expressions set to false for backward compatibility with spring 4. -->
+	<sec:http auto-config="true" create-session="always" use-expressions="false"
 		entry-point-ref="ep403">
 
 		<!-- Login pages -->
