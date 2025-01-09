@@ -1,4 +1,4 @@
-FROM tomcat:jdk11-adoptopenjdk-hotspot
+FROM tomcat:9.0.98-jdk21-temurin-noble
 LABEL organization="iRODS Consortium"
 LABEL description="Metalnx iRODS Browser"
 RUN apt update 
