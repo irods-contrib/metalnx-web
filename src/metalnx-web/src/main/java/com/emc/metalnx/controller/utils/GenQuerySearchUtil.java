@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.InvalidArgumentException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
@@ -74,7 +75,7 @@ public class GenQuerySearchUtil
         public IRODSAccount account;
 
         public int offset;
-        public int count;
+        public int openSlots;
         public boolean caseInsensitive;
 
         public JsonNode attributes;
@@ -86,7 +87,7 @@ public class GenQuerySearchUtil
             account = null;
 
             offset = 0;
-            count = 0;
+            openSlots = 0;
             caseInsensitive = true;
 
             attributes = null;
@@ -99,7 +100,7 @@ public class GenQuerySearchUtil
             account = _other.account;
 
             offset = _other.offset;
-            count = _other.count;
+            openSlots = _other.openSlots;
             caseInsensitive = _other.caseInsensitive;
 
             attributes = _other.attributes.deepCopy();
@@ -128,9 +129,12 @@ public class GenQuerySearchUtil
             output = findCollections(executor, searchInput);
 
             if (output.matches > 0) {
-                searchInput.count -= Math.min(output.matches, output.objects.size());
+                searchInput.openSlots -= Math.min(output.matches, output.objects.size());
             }
             else {
+            	// If we are beyond the collections (searchInput.offset > #collections),
+            	// we must get the count so that we can calculate the appropriate offset
+            	// for data objects.
                 output.matches = countCollections(executor, searchInput);
             }
         }
@@ -139,12 +143,14 @@ public class GenQuerySearchUtil
             output.objects = new ArrayList<>();
             output.matches = 0;
         }
-
+        
+        // output.matches at this point is the number of collections so the offset
+        // into the data objects is the overall (offset - #collections).
         searchInput.offset = Math.max(searchInput.offset - output.matches, 0);
 
         // Look for data objects matching the search criteria if there are empty
         // slots available.
-        if (searchInput.count > 0) {
+        if (searchInput.openSlots > 0) {
             SearchOutput dataObjectSearchOutput = findDataObjects(executor, searchInput);
             output.objects.addAll(dataObjectSearchOutput.objects);
             output.matches += dataObjectSearchOutput.matches;
@@ -208,7 +214,7 @@ public class GenQuerySearchUtil
         addQueryConditions(gqlBuilder, _input, _isCollection);
 
 
-        IRODSGenQueryFromBuilder gql = gqlBuilder.exportIRODSQueryFromBuilder(_input.count);
+        IRODSGenQueryFromBuilder gql = gqlBuilder.exportIRODSQueryFromBuilder(_input.openSlots);
         IRODSQueryResultSet resultSet = executor.executeIRODSQueryAndCloseResult(gql, _input.offset);
 
         List<DataGridCollectionAndDataObject> objects = new ArrayList<>();
@@ -255,10 +261,17 @@ public class GenQuerySearchUtil
         IRODSGenQueryFromBuilder gql = gqlBuilder.exportIRODSQueryFromBuilder(1 /* rows to return */);
         IRODSQueryResultSet resultSet = executor.executeIRODSQueryAndCloseResult(gql, 0 /* offset */);
 
-        final int count = _isCollection
-            ? resultSet.getFirstResult().getColumnAsIntOrZero(_columnToCount.getName())
-            : resultSet.getTotalRecords();
-
+        int count = 0;
+        try {
+            count = _isCollection
+            	? resultSet.getFirstResult().getColumnAsIntOrZero(_columnToCount.getName())
+            	: resultSet.getTotalRecords();
+        } catch (DataNotFoundException e) {
+        	// The count should always return a row but because of Jargon issue #495
+        	// this will sometimes throw a DataNotFoundException if the previous getObjectImpl
+        	// returned no data.
+        	count = 0;
+        }
         return count;
     }
     

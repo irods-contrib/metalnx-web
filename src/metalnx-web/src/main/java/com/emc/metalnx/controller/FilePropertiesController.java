@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.JargonException;
+import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
+import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.irods.jargon.core.pub.IRODSGenQueryExecutor;
 import org.irods.jargon.core.query.GenQueryBuilderException;
 import org.irods.jargon.core.query.JargonQueryException;
 import org.slf4j.Logger;
@@ -128,7 +131,7 @@ public class FilePropertiesController {
 
             searchInput.account = irodsServices.getCollectionAO().getIRODSAccount();
             searchInput.offset = start;
-            searchInput.count = length;
+            searchInput.openSlots = length;
             searchInput.attributes = attributes;
             searchInput.operators = operators;
             searchInput.values = values;
@@ -201,39 +204,42 @@ public class FilePropertiesController {
             String v = currentSearchInput.values.get(i).textValue();
             outputStream.print(String.format("%d;attribute=%s, operator=%s, value=%s\n", i, a, o, v));
         }
-        outputStream.print("\n");
-        outputStream.flush();
+        
+        final int RECORDS_RETRIEVED_PER_ITERATION = 2048;
 
         // Execute query
         GenQuerySearchUtil.SearchInput searchInput = new GenQuerySearchUtil.SearchInput(currentSearchInput);
+        
+        // Get the number of records
+        IRODSFileSystem fsys = IRODSFileSystem.instance();
+        IRODSAccessObjectFactory factory = fsys.getIRODSAccessObjectFactory();
+        IRODSGenQueryExecutor executor = factory.getIRODSGenQueryExecutor(searchInput.account);
+        
+        int numberOfResults = GenQuerySearchUtil.countDataObjects(executor, searchInput) + GenQuerySearchUtil.countCollections(executor, searchInput);
+        outputStream.print("Number of Results\n");
+        outputStream.print(String.format("%d\n", numberOfResults));
+        outputStream.print("\n");
+        outputStream.print("Filename;Path;Kind;Modified;Size\n");
+        outputStream.flush();
+        
+        factory.closeSessionAndEatExceptions();
+        fsys.closeAndEatExceptions();
+        
         searchInput.offset = 0;
-        searchInput.count = 2048;
+        searchInput.openSlots = RECORDS_RETRIEVED_PER_ITERATION;
 
         try {
             GenQuerySearchUtil.SearchOutput searchOutput;
-            boolean printNumberOfResults = true;
 
             do {
                 searchOutput = GenQuerySearchUtil.search(searchInput);
-
-                // Print number of results
-                if (printNumberOfResults) {
-                    printNumberOfResults = false;
-                    outputStream.print("Number of Results\n");
-                    outputStream.print(String.format("%d\n", searchOutput.matches));
-                    outputStream.print("\n");
-                    outputStream.print("Filename;Path;Owner;Kind;Modified;Size\n");
-                }
-
+                
                 // Print results
                 for (DataGridCollectionAndDataObject obj : searchOutput.objects) {
                     outputStream.print(obj.getName());
                     outputStream.print(";");
 
                     outputStream.print(obj.getPath());
-                    outputStream.print(";");
-
-                    outputStream.print(obj.getOwner());
                     outputStream.print(";");
 
                     outputStream.print(obj.isCollection() ? "Collection" : "Data Object");
@@ -248,7 +254,8 @@ public class FilePropertiesController {
 
                 outputStream.flush();
 
-                searchInput.offset += searchInput.count;
+                searchInput.offset += RECORDS_RETRIEVED_PER_ITERATION;
+                searchInput.openSlots = RECORDS_RETRIEVED_PER_ITERATION; 
             }
             while (!searchOutput.objects.isEmpty());
         }
