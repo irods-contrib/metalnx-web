@@ -14,7 +14,7 @@
 		<jargon.version>4.3.5.0-SNAPSHOT</jargon.version>
 
 		<!-- Spring -->
-		<spring.version>5.3.39</spring.version>
+		<spring.version>6.1.14</spring.version>
 		<spring.security.version>5.8.16</spring.security.version>
 		<spring.batch.version>4.3.10</spring.batch.version>
 
