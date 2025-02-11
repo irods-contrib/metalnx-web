@@ -11,7 +11,7 @@
 	<properties>
 
 		<!-- Jargon -->
-		<jargon.version>4.3.5.0-SNAPSHOT</jargon.version>
+		<jargon.version>4.3.5.0-RELEASE</jargon.version>
 
 		<!-- Spring -->
 		<spring.version>5.3.39</spring.version>
