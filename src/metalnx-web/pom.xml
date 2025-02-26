@@ -444,8 +444,6 @@
 									file="${basedir}/src/test/resources/testing.properties"
 									append="true">
 									test.data.directory=${jargon.test.data.directory}
-									test.irods.admin=${jargon.test.irods.admin}
-									test.irods.admin.password=${jargon.test.irods.admin.password}
 									test.irods.user=${jargon.test.irods.user}
 									test.irods.password=${jargon.test.irods.password}
 									test.irods.resource=${jargon.test.irods.resource}
@@ -479,8 +477,6 @@
 									test.option.ssl.configured=${test.option.ssl.configured}
 									jargon.test.pam.user=${jargon.test.pam.user}
 									jargon.test.pam.password=${jargon.test.pam.password}
-									test.federated.irods.admin=${jargon.test.federated.irods.admin}
-									test.federated.irods.admin.password=${jargon.test.federated.irods.admin.password}
 									test.federated.irods.user=${jargon.test.federated.irods.user}
 									test.federated.irods.password=${jargon.test.federated.irods.password}
 									test.federated.irods.resource=${jargon.test.federated.irods.resource}
@@ -522,8 +518,6 @@
 									irods.host=${jargon.test.irods.host}
 									irods.port=${jargon.test.irods.port}
 									irods.zoneName=${jargon.test.irods.zone}
-									irods.admin.user=${jargon.test.irods.admin}
-									irods.admin.password=${jargon.test.irods.admin.password}
 
 
 									irods.auth.scheme=${metalnx.auth.scheme}

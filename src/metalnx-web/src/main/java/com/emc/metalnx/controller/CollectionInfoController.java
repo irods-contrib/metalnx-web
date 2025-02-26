@@ -104,21 +104,10 @@ public class CollectionInfoController {
 
 			} else {
 
-				if (!configService.getGlobalConfig().isHandleNoAccessViaProxy()) {
-					template = "httpErrors/noAccess";
-					logger.info("returning to :{}", template);
-					return template;
-				} else {
-					logger.info("collection/file read only view");
-					logger.info("email service enabled :: {} ", mailService.isMailEnabled());
+				template = "httpErrors/noAccess";
+				logger.info("returning to :{}", template);
+				return template;
 
-					dataProfile = collectionService.getCollectionDataProfileAsProxyAdmin(path);
-					template = "collections/readOnlyCollectionInfo";
-
-					List<MetaDataAndDomainData> metadataList = dataProfile.getMetadata();
-					model.addAttribute("dataGridMetadataList", metadataList);
-					model.addAttribute("isMailEnabled", mailService.isMailEnabled());
-				}
 			}
 
 			if (dataProfile != null && dataProfile.isFile()) {
