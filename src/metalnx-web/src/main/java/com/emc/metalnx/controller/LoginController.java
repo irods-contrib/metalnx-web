@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +30,7 @@ import com.emc.metalnx.controller.utils.LoggedUserUtils;
 import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.ConfigService;
+import com.emc.metalnx.services.interfaces.IRODSServices;
 
 @Controller
 @RequestMapping(value = "/login")
@@ -85,6 +87,7 @@ public class LoginController {
 			}
 		} else if (auth instanceof UsernamePasswordAuthenticationToken) {
 			boolean isUserAdmin = ((UserTokenDetails) auth.getDetails()).getUser().isAdmin();
+			
 			if (isUserAdmin) {
 				if (configService.isDashboardEnabled()) {
 					redirect = "redirect:/dashboard/";
@@ -139,16 +142,26 @@ public class LoginController {
 	@RequestMapping(value = "/exception", method = RequestMethod.GET)
 	public ModelAndView loginErrorHandler(final Exception e) {
 		logger.info("LoginContoller loginErrorHandler()");
-		/*
-		 * see if I'm really logged in as a hacky way of getting around this bug
-		 * https://github.com/irods-contrib/metalnx-web/issues/162
-		 */
-		DataGridUser loggedInUser = loggedUserUtils.getLoggedDataGridUser();
-		if (loggedInUser != null) {
-			logger.warn("is already logged in go ahead and just hit the main page...");
-			String redirect = "redirect:/browse/home";
-			ModelAndView model = new ModelAndView(redirect);
-			return model;
+		
+		// Issue 162 - This page (/metalnx/login/exception) has a login form.  If the user successfully logs into
+		// the application from this page, the application navigates back to this page.  This makes it appear that
+		// the login failed.  Make sure in that case the user is redirected to /metalnx/browse/home.
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		// If this runs before login the auth will be an instance of
+		// AnonymousAuthenticationToken. In that case we do not want to redirect to
+		// metalnx/browse/home.  In addition getLoggedDataGridUser() returns the
+		// "JargonException: IRODSAccount is null" because there is no longer an admin
+		// account logged in at startup so we need to skip that call.
+		if (auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+		    DataGridUser loggedInUser = loggedUserUtils.getLoggedDataGridUser();
+		
+		    if (loggedInUser != null) {
+			    logger.warn("is already logged in go ahead and just hit the main page...");
+			    String redirect = "redirect:/browse/home";
+			    ModelAndView model = new ModelAndView(redirect);
+			    return model;
+		    }
 		}
 
 		ModelAndView model = new ModelAndView("login/index");

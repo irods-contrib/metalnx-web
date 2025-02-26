@@ -49,6 +49,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,
 			final ModelAndView modelAndView) throws Exception {
+		
 		logger.info("postHandle()");
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -66,14 +67,15 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 			modelAndView.getModelMap().addAttribute("emcmetalnxVersion", emcmetalnxVersion);
 			modelAndView.getModelMap().addAttribute("jargonVersion", new JargonVersion());
 			modelAndView.getModelMap().addAttribute("globalConfig", configService.getGlobalConfig());
-
-			DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
-
-			logger.debug("dataGridUser:{}", loggedUser);
-
-			modelAndView.getModelMap().addAttribute("dataGridUser", loggedUser);
-
+			
+			// There is no longer an admin account in the configuration so this may run before any
+			// login to iRODS. If this runs before login the auth will be an instance of 
+			// AnonymousAuthenticationToken. In that case don't attempt to save the dataGridUser
+			// as there will be none.
 			if (auth instanceof UsernamePasswordAuthenticationToken) {
+				DataGridUser loggedUser = loggedUserUtils.getLoggedDataGridUser();
+				logger.debug("dataGridUser:{}", loggedUser);
+				modelAndView.getModelMap().addAttribute("dataGridUser", loggedUser);
 				userTokenDetails = (UserTokenDetails) auth.getDetails();
 				modelAndView.getModelMap().addAttribute("userDetails", userTokenDetails.getUser());
 			}
