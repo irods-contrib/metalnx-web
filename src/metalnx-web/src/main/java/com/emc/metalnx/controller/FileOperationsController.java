@@ -271,7 +271,7 @@ public class FileOperationsController {
 				logger.debug("Collection/object size in bytes: {}", length);
 				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
-					message = "Files to download are out of limit";
+					message = "Files to download are larger than the download size limit";
 				}
 			}
 		} catch (FileTooLargeException e) {
@@ -284,8 +284,23 @@ public class FileOperationsController {
 			prepareFileStatusJSONobj.put("message", "File bundle size too large"); // TODO: internationalize message
 
 		} catch (IOException | JargonException e) {
-			logger.error("Could not download selected items: ", e.getMessage());
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			boolean isFileSizeError = false;
+			Throwable cause = e.getCause();
+			while (null != cause) {
+				if (cause instanceof FileSizeTooLargeException) {
+					isFileSizeError = true;
+					length = ((FileSizeTooLargeException) cause).getFileSize().orElse(0L);
+					downloadLimitStatus = "warn";
+					message = "Files to download are larger than the download size limit";
+					break;
+				}
+				cause = cause.getCause();
+			}
+
+			if (!isFileSizeError) {
+				logger.error("Could not download selected items", e);
+				response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			}
 		}
 
 		prepareFileStatusJSONobj.put("filePathToDownload", filePathToDownload);
