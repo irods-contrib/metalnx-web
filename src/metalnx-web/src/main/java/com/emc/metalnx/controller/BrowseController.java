@@ -25,8 +25,8 @@ import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.utils.MiscIRODSUtils;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -110,7 +110,7 @@ public class BrowseController {
     @Autowired
     HeaderService headerService;
 
-    private static final Logger logger = LoggerFactory.getLogger(BrowseController.class);
+    private static final Logger logger = LogManager.getLogger(BrowseController.class);
 
     // ui mode that will be shown when the rods user switches mode from admin to
     // user and vice-versa

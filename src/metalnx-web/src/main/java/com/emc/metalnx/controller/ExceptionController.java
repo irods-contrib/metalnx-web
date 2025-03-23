@@ -8,8 +8,8 @@ package com.emc.metalnx.controller;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketException;
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 
 @ControllerAdvice
 public class ExceptionController {
-    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+    private static final Logger logger = LogManager.getLogger(TicketController.class);
 
 	@ExceptionHandler(DataGridConnectionRefusedException.class)
 	public String handleConnectionRefusedException(HttpServletResponse response) {

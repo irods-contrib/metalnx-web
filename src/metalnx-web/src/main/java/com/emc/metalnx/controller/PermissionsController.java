@@ -11,8 +11,8 @@ import java.util.Set;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.UserGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -78,7 +78,7 @@ public class PermissionsController {
 	
 	private static final String REQUEST_OK = "OK";
 	private static final String REQUEST_ERROR = "ERROR";
-	private static final Logger logger = LoggerFactory.getLogger(PermissionsController.class);
+	private static final Logger logger = LogManager.getLogger(PermissionsController.class);
 
 	/**
 	 * Finds the most restrictive permission on paths selected on the UI.

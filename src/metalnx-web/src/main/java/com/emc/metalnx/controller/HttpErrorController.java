@@ -8,8 +8,8 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RequestMapping(value = "/httpError")
 public class HttpErrorController {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpErrorController.class);
+	private static final Logger logger = LogManager.getLogger(HttpErrorController.class);
 
 	/**
 	 * Responds the error 404

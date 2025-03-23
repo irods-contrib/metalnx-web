@@ -11,14 +11,14 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.irods.jargon.core.exception.FileNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.CollectionAndDataObjectListAndSearchAO;
 import org.irods.jargon.core.pub.domain.ObjStat;
 import org.irods.jargon.datautils.filesampler.FileTooLargeException;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -39,6 +39,7 @@ import com.emc.metalnx.core.domain.entity.DataGridUser;
 import com.emc.metalnx.core.domain.entity.enums.DataGridPermType;
 import com.emc.metalnx.core.domain.exceptions.DataGridConnectionRefusedException;
 import com.emc.metalnx.core.domain.exceptions.DataGridException;
+import com.emc.metalnx.core.domain.exceptions.FileSizeTooLargeException;
 import com.emc.metalnx.modelattribute.collection.CollectionOrDataObjectForm;
 import com.emc.metalnx.services.interfaces.CollectionService;
 import com.emc.metalnx.services.interfaces.ConfigService;
@@ -50,7 +51,7 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 @RequestMapping(value = "/fileOperation")
 public class FileOperationsController {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileOperationsController.class);
+	private static final Logger logger = LogManager.getLogger(FileOperationsController.class);
 	private static String TRASH_PATH;
 
 	@Autowired
@@ -251,7 +252,6 @@ public class FileOperationsController {
 					logger.debug("Removing temp collection");
 					fileOperationService.deleteCollection(
 							filePathToDownload.substring(0, filePathToDownload.lastIndexOf("/")), removeTempCollection);
-
 				}
 
 			} else {
@@ -272,7 +272,6 @@ public class FileOperationsController {
 				if (objStat.getObjSize() > configService.getDownloadLimit() * 1024 * 1024) {
 					downloadLimitStatus = "warn";
 					message = "Files to download are out of limit";
-
 				}
 			}
 		} catch (FileTooLargeException e) {

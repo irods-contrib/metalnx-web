@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.utils.JargonVersion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +44,7 @@ public class HttpResponseHandlerInterceptor extends HandlerInterceptorAdapter {
 	private URLMap urlMap;
 	private EmcMetalnxVersion emcmetalnxVersion;
 
-	public final static Logger logger = LoggerFactory.getLogger(HttpResponseHandlerInterceptor.class);
+	public final static Logger logger = LogManager.getLogger(HttpResponseHandlerInterceptor.class);
 
 	@Override
 	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler,

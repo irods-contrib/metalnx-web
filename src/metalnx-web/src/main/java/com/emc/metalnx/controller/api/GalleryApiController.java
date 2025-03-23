@@ -14,8 +14,8 @@ import org.irods.jargon.core.rule.IRODSRuleExecResultOutputParameter;
 import org.irods.jargon.core.rule.IRODSRuleParameter;
 import org.irods.jargon.core.rule.IrodsRuleInvocationTypeEnum;
 import org.irods.jargon.core.rule.RuleInvocationConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(value = "/api/gallery")
 public class GalleryApiController {
 
-    public static final Logger log = LoggerFactory.getLogger(GalleryApiController.class);
+    public static final Logger log = LogManager.getLogger(GalleryApiController.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

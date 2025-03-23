@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.irods.jargon.core.exception.JargonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -38,7 +38,7 @@ public class UploadController {
 
 	private static final String WARNING = "warning";
 	private static final String FATAL = "fatal";
-	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
+	private static final Logger logger = LogManager.getLogger(UploadController.class);
 	public static final String METADATA_EXTRACTION_FAILED_MSG = "Metadata extraction failed.";
 
 	@Autowired

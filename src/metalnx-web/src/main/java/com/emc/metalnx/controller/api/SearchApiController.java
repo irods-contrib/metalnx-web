@@ -10,8 +10,8 @@ import org.irods.jargon.extensions.searchplugin.SearchIndexInventoryEntry;
 import org.irods.jargon.extensions.searchplugin.model.IndexSchemaDescription;
 import org.irods.jargon.extensions.searchplugin.model.SearchAttributes;
 import org.irods.metalnx.pluggablesearch.PluggableSearchWrapperService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class SearchApiController {
 
 
-	public static final Logger log = LoggerFactory.getLogger(SearchApiController.class);
+	public static final Logger log = LogManager.getLogger(SearchApiController.class);
 
 	@Autowired
 	private PluggableSearchWrapperService pluggableSearchWrapperService;

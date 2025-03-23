@@ -3,8 +3,8 @@
  */
 package com.emc.metalnx.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -42,7 +42,7 @@ public class DefaultController {
 	@Autowired
 	ConfigService configService;
 
-	private static final Logger logger = LoggerFactory.getLogger(DefaultController.class);
+	private static final Logger logger = LogManager.getLogger(DefaultController.class);
 
 	/**
 	 * 

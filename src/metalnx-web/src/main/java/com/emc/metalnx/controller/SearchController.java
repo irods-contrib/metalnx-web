@@ -3,8 +3,8 @@
  */
 package com.emc.metalnx.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ import com.emc.metalnx.core.domain.exceptions.DataGridException;
 @RequestMapping(value = "/search")
 public class SearchController {
 
-	private static final Logger log = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger log = LogManager.getLogger(SearchController.class);
 
 	@Value("${pluggablesearch.enabled}")
 	private boolean pluggableSearchEnabled = false;

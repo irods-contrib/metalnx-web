@@ -20,8 +20,8 @@ import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.IRODSGenQueryExecutor;
 import org.irods.jargon.core.query.GenQueryBuilderException;
 import org.irods.jargon.core.query.JargonQueryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -77,7 +77,7 @@ public class FilePropertiesController {
 
     private String jsonFilePropertySearch;
 
-    private static final Logger logger = LoggerFactory.getLogger(FilePropertiesController.class);
+    private static final Logger logger = LogManager.getLogger(FilePropertiesController.class);
 
     @RequestMapping(value = "/")
     public String index(final Model model,

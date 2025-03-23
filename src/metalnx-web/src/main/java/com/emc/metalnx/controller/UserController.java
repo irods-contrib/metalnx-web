@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.irods.jargon.core.exception.DuplicateDataException;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.pub.domain.UserGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -98,7 +98,7 @@ public class UserController {
 	private Map<String, Boolean> removeWritePermissionsOnDirs = new HashMap<String, Boolean>();
 	private Map<String, Boolean> removeOwnerOnDirs = new HashMap<String, Boolean>();
 
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static final Logger logger = LogManager.getLogger(UserController.class);
 
 	/**
 	 * It gets all users existing in iRODS and our database and add this list of

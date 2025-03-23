@@ -14,8 +14,8 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ import com.emc.metalnx.services.interfaces.TicketClientService;
 public class TicketClientController {
 	private static final String APPLICATION_OCTET_STREAM = "text/octet-stream";
 	private static final String HEADER_FORMAT = "attachment;filename=\"%s\"";
-	private static final Logger logger = LoggerFactory.getLogger(TicketClientController.class);
+	private static final Logger logger = LogManager.getLogger(TicketClientController.class);
 	private static final String IRODS_PATH_SEPARATOR = "/";
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
 
