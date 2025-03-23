@@ -12,8 +12,8 @@ import com.emc.metalnx.core.domain.exceptions.DataGridTicketInvalidUserException
 import com.emc.metalnx.core.domain.exceptions.DataGridTicketUploadException;
 import com.emc.metalnx.services.auth.UserTokenDetails;
 import com.emc.metalnx.services.interfaces.TicketClientService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice(assignableTypes = {TicketClientController.class})
 public class TicketClientExceptionController {
     private static final String IRODS_PATH_SEPARATOR = "/";
-    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+    private static final Logger logger = LogManager.getLogger(TicketController.class);
 
     @Autowired
     private TicketClientService ticketClientService;

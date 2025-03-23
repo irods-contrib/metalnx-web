@@ -10,8 +10,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.irods.jargon.datautils.avuautocomplete.AvuAutocompleteService.AvuTypeEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -47,7 +47,7 @@ public class AvuAutocompleteController {
 	@Autowired
 	AvuAutoCompleteDelegateService autoCompleteDelegateService;
 
-	private static final Logger logger = LoggerFactory.getLogger(AvuAutocompleteController.class);
+	private static final Logger logger = LogManager.getLogger(AvuAutocompleteController.class);
 
 	@RequestMapping(value = "/getMetadataAttrs", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody String getMetadataAttr(final HttpServletResponse response) throws JargonException {

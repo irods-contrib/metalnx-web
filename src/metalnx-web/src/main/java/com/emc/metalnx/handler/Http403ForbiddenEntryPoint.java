@@ -8,15 +8,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 public class Http403ForbiddenEntryPoint implements AuthenticationEntryPoint {
-	private static final Logger logger = LoggerFactory.getLogger(Http403ForbiddenEntryPoint.class);
+	private static final Logger logger = LogManager.getLogger(Http403ForbiddenEntryPoint.class);
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2)

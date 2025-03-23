@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -87,7 +87,7 @@ public class ResourceController {
 	private String zoneImagePath = "../../images/zone-48.png";
 	private String zoneImagePathForDashBoard = "../images/zone-48.png";
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
+	private static final Logger logger = LogManager.getLogger(ResourceController.class);
 
 	@RequestMapping(value = "/")
 	public String listResources(Model model) throws DataGridConnectionRefusedException {

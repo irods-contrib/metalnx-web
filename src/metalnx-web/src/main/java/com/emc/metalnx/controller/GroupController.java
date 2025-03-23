@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.pub.UserGroupAO;
 import org.irods.jargon.core.pub.domain.UserGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -90,7 +90,7 @@ public class GroupController {
 	private Map<String, Boolean> removeOwnerOnDirs = new HashMap<String, Boolean>();
 	private Map<String, Boolean> removeInheritanceOnDirs = new HashMap<String, Boolean>();
 
-	public final static Logger logger = LoggerFactory.getLogger(GroupController.class);
+	public final static Logger logger = LogManager.getLogger(GroupController.class);
 
 	/**
 	 * It gets all groups existing in iRODS and our database and add this list of

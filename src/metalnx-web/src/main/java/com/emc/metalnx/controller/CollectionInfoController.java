@@ -11,8 +11,8 @@ import org.irods.jargon.core.query.MetaDataAndDomainData;
 import org.irods.jargon.extensions.dataprofiler.DataProfile;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerFactory;
 import org.irods.jargon.extensions.dataprofiler.DataProfilerSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,7 @@ public class CollectionInfoController {
 	@Autowired
 	MailService mailService;
 
-	private static final Logger logger = LoggerFactory.getLogger(CollectionInfoController.class);
+	private static final Logger logger = LogManager.getLogger(CollectionInfoController.class);
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(final Model model, HttpServletRequest request, @RequestParam("path") final String path)

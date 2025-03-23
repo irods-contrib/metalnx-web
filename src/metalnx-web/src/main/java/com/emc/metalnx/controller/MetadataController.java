@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irods.jargon.core.exception.FileNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -104,7 +104,7 @@ public class MetadataController {
 	// current metadata search
 	List<DataGridMetadataSearch> currSearch;
 
-	private static final Logger logger = LoggerFactory.getLogger(MetadataController.class);
+	private static final Logger logger = LogManager.getLogger(MetadataController.class);
 
 	@RequestMapping(value = "/")
 	public String index(final Model model, final HttpServletRequest request,

@@ -3,8 +3,8 @@
 
 package com.emc.metalnx.controller.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,7 @@ import com.emc.metalnx.services.interfaces.UserService;
 @Service
 public class LoggedUserUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoggedUserUtils.class);
+	private static final Logger logger = LogManager.getLogger(LoggedUserUtils.class);
 
 	@Autowired
 	UserService userService;

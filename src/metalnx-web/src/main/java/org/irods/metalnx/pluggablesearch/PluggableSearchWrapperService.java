@@ -11,8 +11,8 @@ import org.irods.jargon.extensions.searchplugin.SearchPluginRegistrationConfig;
 import org.irods.jargon.extensions.searchplugin.exception.SearchPluginUnavailableException;
 import org.irods.jargon.extensions.searchplugin.model.SearchAttributes;
 import org.irods.metalnx.jwt.JwtManagementWrapperService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -33,7 +33,7 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 @Scope(value = WebApplicationContext.SCOPE_APPLICATION)
 public class PluggableSearchWrapperService {
 
-	private static final Logger log = LoggerFactory.getLogger(PluggableSearchWrapperService.class);
+	private static final Logger log = LogManager.getLogger(PluggableSearchWrapperService.class);
 
 	@Autowired
 	private ConfigService configService;

@@ -4,8 +4,8 @@ import org.irods.jargon.core.connection.IRODSAccount;
 import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.extensions.datatyper.DataTypeResolutionService;
 import org.irods.jargon.extensions.datatyper.DataTypeResolutionServiceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -41,7 +41,7 @@ public class PreviewPreparationController {
 	@Autowired
 	DataTypeResolutionServiceFactory dataTypeResolutionServiceFactory;
 
-	private static final Logger logger = LoggerFactory.getLogger(PreviewPreparationController.class);
+	private static final Logger logger = LogManager.getLogger(PreviewPreparationController.class);
 
 	/**
 	 * Responds the preview/ request

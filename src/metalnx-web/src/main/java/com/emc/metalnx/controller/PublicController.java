@@ -3,8 +3,8 @@ package com.emc.metalnx.controller;
 import java.net.URLEncoder;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -49,7 +49,7 @@ public class PublicController {
 	// variable to save trash path for the logged user
 	private String userTrashPath = "";
 
-	private static final Logger logger = LoggerFactory.getLogger(PublicController.class);
+	private static final Logger logger = LogManager.getLogger(PublicController.class);
 
 	/**
 	 * Responds the collections/public request

@@ -5,8 +5,8 @@ import javax.annotation.PostConstruct;
 import org.irods.jargon.irodsext.jwt.AbstractJwtIssueService;
 import org.irods.jargon.irodsext.jwt.JwtIssueServiceImpl;
 import org.irods.jargon.irodsext.jwt.JwtServiceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 //@Scope(value = WebApplicationContext.SCOPE_APPLICATION)
 public class JwtManagementWrapperService {
 
-	private static final Logger log = LoggerFactory.getLogger(JwtManagementWrapperService.class);
+	private static final Logger log = LogManager.getLogger(JwtManagementWrapperService.class);
 	/**
 	 * {@link JwtIssueService} implementation that will be initialized based on
 	 * provided configuration in this service wrapper
