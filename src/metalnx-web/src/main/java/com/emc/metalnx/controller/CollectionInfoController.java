@@ -32,9 +32,6 @@ import com.emc.metalnx.services.interfaces.ConfigService;
 import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.IconService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
-import com.emc.metalnx.services.interfaces.mail.Mail;
-import com.emc.metalnx.services.interfaces.mail.MailService;
-//import com.service.mail.config.ApplicationConfig;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -65,9 +62,6 @@ public class CollectionInfoController {
 
 	@Autowired
 	ConfigService configService;
-
-	@Autowired
-	MailService mailService;
 
 	private static final Logger logger = LogManager.getLogger(CollectionInfoController.class);
 
@@ -192,31 +186,6 @@ public class CollectionInfoController {
 
 	public void setDataProfilerSettings(DataProfilerSettings dataProfilerSettings) {
 		this.dataProfilerSettings = dataProfilerSettings;
-	}
-
-	@RequestMapping(value = "/accessRequest", method = RequestMethod.GET)
-	@ResponseBody
-	public String sendAccessRequest(final Model model, @RequestParam("path") final String path) {
-		logger.info("requesting access : {}", path);
-
-		if (!mailService.isMailEnabled()) {
-			logger.error("access request should not be enabled, mail is disabled");
-			throw new IllegalStateException("should not be calling sendAccessRequest with mail disabled");
-		}
-
-		String response = "";
-		Mail mail = new Mail();
-		mail.setMailTo("");
-		mail.setMailFrom("");
-		mail.setMailSubject("DataCommons Access Request - Test");
-		StringBuilder sb = new StringBuilder();
-		sb.append("user:");
-		sb.append(irodsServices.getCurrentUser());
-		sb.append(" is requesting access to resource:");
-		sb.append(path);
-		mail.setMailContent(sb.toString());
-
-		return response;
 	}
 
 	public ConfigService getConfigService() {

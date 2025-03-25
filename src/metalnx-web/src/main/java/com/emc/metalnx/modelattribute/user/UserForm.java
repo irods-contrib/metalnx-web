@@ -11,7 +11,6 @@ public class UserForm {
 	private String firstName;
 	private String lastName;
 	private String password;
-	private String email;
 	private String zone;
 	private long dataGridId;
 	private String userType;
@@ -78,18 +77,6 @@ public class UserForm {
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	/**
 	 * @return the dataGridId

@@ -21,7 +21,6 @@ public class SearchApiControllerTest {
 		PluggableSearchWrapperService searchWrapper = Mockito.mock(PluggableSearchWrapperService.class);
 
 		Indexes indexes = new Indexes();
-		indexes.setContactEmail("boo@boo.com");
 		indexes.setId("xxx");
 		indexes.setInfo("index here");
 		indexes.setMaintainer("bob");

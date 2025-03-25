@@ -38,7 +38,6 @@ import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
 import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import com.emc.metalnx.services.interfaces.UserService;
-import com.emc.metalnx.services.interfaces.mail.MailService;
 
 @Controller
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -98,9 +97,6 @@ public class CollectionController {
 	private boolean cameFromMetadataSearch;
 	private boolean cameFromFilePropertiesSearch;
 	private boolean cameFromBookmarks;
-
-	@Autowired
-	MailService mailService;
 
 	private static final Logger logger = LogManager.getLogger(CollectionController.class);
 
