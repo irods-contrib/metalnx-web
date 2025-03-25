@@ -267,7 +267,7 @@
                                 'class="btn btn-default btn-xs" ' +  disabledProp +
                                 '><i class="fa fa-trash-o"></i>Delete</a>';
 
-                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;"><i class="fa fa-mail-forward"></i>Share</a>';
+                            var shareBtn = '<a href="#" id="share' + full.ticketString + '" onclick="shareTicket(\'' + full.ticketString + '\');" class="btn btn-default btn-xs share" style="margin-right:5px;">Share</a>';
 
                             return shareBtn + modifyBtn + deleteBtn;
                         },
@@ -374,11 +374,6 @@
                             $(".popover:visible").each(function() {
                                $(this).popover("hide");
                             });
-                            var email = "mailto:?Subject=[Metalnx]%20New%20Ticket%20Created";
-                            email += "&body=Hello,%0D%0A%0D%0AYou%20have%20been%20sent%20the%20following%20ticket:%0D%0A%0D%0ATicket%20String:%20";
-                            email += ticket.ticketString;
-                            email += "%0D%0APath:%20"+ ticket.path;
-
                             var html = "<span id='newTicketInfoCopy'>";
                                 html += "Ticket String: "+ ticket.ticketString + " | Path: " + ticket.path;
                                 html += "</span>";
@@ -392,9 +387,6 @@
                                 html += ticket.path;
                                 html += "</span>";
                                 html += "</p>";
-                                html += "<a href='" + email + "' type='button' class='btn btn-primary btn-sm' id='emailBtn'>";
-                                html += "<i class='fa fa-envelope-o'></i>Email";
-                                html += "</a>";
                                 html += "<button onclick='copyTextToClipboard();' type='button' class='btn btn-primary btn-sm'>";
                                 html += "<i class='fa fa-clone'></i>Copy";
                                 html += "</button>";

@@ -543,31 +543,6 @@ else if(passwordConf == ""){
 }
 
 /*
- * Validates email
- */
-function validateEmail() {
-	var emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-	var email = $.trim($("#inputEmail").val());
-
-	if(email != "" && !emailRegex.test(email)){
-		$("#inputEmail").parent().addClass("has-feedback has-error");
-
-		$("#invalidEmailIcon").show();
-		$("#invalidEmailMsg").show();
-		return false;
-	}
-	//valid additional info
-	else {
-		$("#inputEmail").parent().removeClass("has-feedback has-error");
-
-		$("#invalidEmailIcon").hide();
-		$("#invalidEmailMsg").hide();
-	}
-	return true;
-}
-
-/*
  * Validates add/modify user form
  */
 function userFormValidator(urlValidateUsername) {
@@ -583,10 +558,6 @@ function userFormValidator(urlValidateUsername) {
 	$("#inputPasswordConfirmation").focusout(function() {
 		validatePasswordConf();
 	});
-	/*
-	$("#inputEmail").focusout(function() {
-		validateEmail();
-	});*/
 }
 
 /*
@@ -602,8 +573,6 @@ function userFormCanBeSubmitted(urlValidateUsername, isAddAction){
 		isValidPassword = validatePassword();
 		isValidPasswordConf = validatePasswordConf();
 	}
-
-	//var isValidEmail = validateEmail();
 
 	if(isValidUsername && isValidPassword && isValidPasswordConf){
 		return true;
