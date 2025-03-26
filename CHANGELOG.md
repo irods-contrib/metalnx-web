@@ -11,6 +11,28 @@ and this project **only** adheres to the following _(as defined at [Semantic Ver
 > - MINOR version when you add functionality in a backward compatible manner
 > - PATCH version when you make backward compatible bug fixes
 
+## [3.0.1] - 2025-03-26
+
+This is a bug fix release which addresses issues with multi-file downloads, logging, and the removal of rodsadmin credentials.
+
+### Security
+
+- Bump Tomcat version in Dockerfile (#395).
+
+### Changed
+
+- Bump Jargon version to 4.3.6.0-RELEASE (#398).
+
+### Removed
+
+- Remove need for rodsadmin credentials (#387).
+
+### Fixed
+
+- Correct documentation for download size limit (#36).
+- Report download limit violations to client (#392).
+- Replace slf4j usage with log4j 2 (#393).
+
 ## [3.0.0] - 2025-02-11
 
 This major release removes the need for the PostgreSQL database, improves compatibility with iRODS 4.3, and updates several dependencies.
