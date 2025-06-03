@@ -11,6 +11,19 @@ and this project **only** adheres to the following _(as defined at [Semantic Ver
 > - MINOR version when you add functionality in a backward compatible manner
 > - PATCH version when you make backward compatible bug fixes
 
+## [3.1.0] - 2025-06-04
+
+This release fixes authentication issues with iRODS 5, removes email functionality, and updates dependencies.
+
+### Removed
+
+- Remove email configuration and functionality (#389).
+
+### Fixed
+
+- Restore ability to modify tickets (#397).
+- Fix authentication issues with iRODS 5 (#402).
+
 ## [3.0.1] - 2025-03-26
 
 This is a bug fix release which addresses issues with multi-file downloads, logging, and the removal of rodsadmin credentials.
