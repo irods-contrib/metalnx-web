@@ -325,6 +325,15 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>npm install regenerator-runtime</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install regenerator-runtime --save</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>npm run</id>
 						<goals>
 							<goal>npm</goal>
