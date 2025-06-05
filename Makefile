@@ -39,8 +39,11 @@ dockerimage: packaging/docker/metalnx.war
 dockerimage_only:
 	docker build -t myimages/metalnx:latest .
 
-# this removes the .war file
-# it does not clean maven's .m2 cache
+# this removes:
+#  - the .war file
+#  - maven artifacts
+#  - node and node_modules
+#  - other build artifacts
 # it does not remove the docker image
 clean:
 	rm -f packaging/docker/metalnx.war
@@ -51,3 +54,28 @@ clean:
 		-w /usr/src/mymaven \
 		myimages/metalnx-warbuilder \
 		mvn clean
+	docker run -it --rm \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		rm -f metalnx-web/package-lock.json
+	docker run -it --rm \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		rm -rf metalnx-web/etc
+	docker run -it --rm \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		rm -rf metalnx-web/target
+	docker run -it --rm \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		rm -rf metalnx-web/node
+	docker run -it --rm \
+		-v "$$PWD"/src:/usr/src/mymaven \
+		-w /usr/src/mymaven \
+		myimages/metalnx-warbuilder \
+		rm -rf metalnx-web/node_modules

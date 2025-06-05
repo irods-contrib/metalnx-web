@@ -19,7 +19,6 @@ Scripts/
 **/packaging/src
 **/*.bak
 test*.properties
-node_modules
 target
 bower_components
 node
