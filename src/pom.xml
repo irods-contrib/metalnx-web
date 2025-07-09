@@ -40,7 +40,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Files Upload -->
-		<commons-fileupload.version>1.5</commons-fileupload.version>
+		<commons-fileupload.version>1.6.0</commons-fileupload.version>
 		<commons-io.version>2.14.0</commons-io.version>
 
 		<!-- Cargo container -->
