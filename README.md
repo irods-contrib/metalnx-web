@@ -11,8 +11,6 @@ The preferred method of deployment is via Docker.
 
 docker-compose.yml
 ```
-version: '3'
-
 services:
 
   metalnx:
@@ -24,21 +22,25 @@ services:
       - 80:8080
 ```
 
-and then the `./metalnx-configuration/metalnx.properties` file requires rodsadmin iRODS connection credentials.
-
 Metalnx will be available on port 80 of the docker host machine at `/metalnx`.
 
 This configuration could be supplemented with an nginx (or other) reverse-proxy to put Metalnx port 80 (and the subpath `/metalnx`) behind https on 443.
 
-Examples of the metalnx-configuration can be found in [docker-test-framework/etc/irods-ext](./docker-test-framework/etc/irods-ext).
+Examples of the configuration can be found in [docker-test-framework/etc/irods-ext](./docker-test-framework/etc/irods-ext).
 
 ## Deploying Packaged Metalnx via Docker Hub directly
 
 ### Prepare the application
 
-[Configuration](CONFIGURATION.md) of the default application can change many things about how Metalnx looks and behaves.
- - Configuration of Zone information, and features to display
- - Theming with custom CSS/Logo
+Configuration of the application can change many things about how Metalnx looks and behaves.
+ - Pre-defined zone information
+ - Features to display
+ - Theming with custom logo and/or CSS
+
+The majority of configuration is handled with the required `metalnx.properties` file.  It controls the optional behaviors
+and customizations with the exception of theming (custom images, banners, css, messages). 
+
+Theming via assets is controlled by the required `metalnxConfig.xml` file.  The provided file will cause the default theme and messages to be utilized.
 
 Create a copy of the default [docker-test-framework/etc/irods-ext](./docker-test-framework/etc/irods-ext) directory and update `metalnx.properties` and `metalnxConfig.xml`, and then run a container with the new configuration, probably with `--add-host` information due to Docker:
 ```
@@ -93,6 +95,6 @@ More documentation can be found in the [Docs](docs) directory.
 
 ### Copyright and License
 
-Copyright © 2018-2021 University of North Carolina at Chapel Hill; 2015-2017, Dell EMC.
+Copyright © 2018 University of North Carolina at Chapel Hill; 2015 Dell EMC.
 
 This software is provided under the [BSD-3 License](LICENSE.md).
