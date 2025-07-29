@@ -15,38 +15,6 @@ import org.irods.jargon.core.connection.ClientServerNegotiationPolicy;
 public class MidTierConfiguration {
 
 	/**
-	 * iRODS admin email, can be left blank
-	 */
-	private String irodsAdminEmail = "";
-
-	/**
-	 * iRODS admin account host
-	 */
-	private String irodsAdminAccountHost = "";
-	/**
-	 * iRODS admin account port
-	 */
-	private int irodsAdminAccountPort = 1247;
-	/**
-	 * iRODS admin account zone
-	 */
-	private String irodsAdminAccountZone = "";
-	/**
-	 * iRODS admin user id
-	 */
-	private String irodsAdminAccountUser = "";
-
-	/**
-	 * iRODS admin password
-	 */
-	private String irodsAdminAccountPassword = "";
-
-	/**
-	 * String-ified version of the auth scheme of the iRODS admin account
-	 */
-	private String irodsAdminAccountAuthScheme = "";
-
-	/**
 	 * requests, if true, that a checksum be computed on upload
 	 */
 	private boolean computeChecksum = false;
@@ -152,20 +120,6 @@ public class MidTierConfiguration {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("MidTierConfiguration [");
-		if (irodsAdminAccountHost != null) {
-			builder.append("irodsAdminAccountHost=").append(irodsAdminAccountHost).append(", ");
-		}
-		builder.append("irodsAdminAccountPort=").append(irodsAdminAccountPort).append(", ");
-
-		if (irodsAdminAccountZone != null) {
-			builder.append("irodsAdminAccountZone=").append(irodsAdminAccountZone).append(", ");
-		}
-		if (irodsAdminAccountUser != null) {
-			builder.append("irodsAdminAccountUser=").append(irodsAdminAccountUser).append(", ");
-		}
-		if (irodsAdminAccountAuthScheme != null) {
-			builder.append("irodsAdminAccountAuthScheme=").append(irodsAdminAccountAuthScheme).append(", ");
-		}
 		builder.append("computeChecksum=").append(computeChecksum).append(", ");
 		if (defaultStorageResource != null) {
 			builder.append("defaultStorageResource=").append(defaultStorageResource).append(", ");
@@ -180,68 +134,4 @@ public class MidTierConfiguration {
 		builder.append("]");
 		return builder.toString();
 	}
-
-	public String getIrodsAdminAccountHost() {
-		return irodsAdminAccountHost;
-	}
-
-	public void setIrodsAdminAccountHost(String irodsAdminAccountHost) {
-		this.irodsAdminAccountHost = irodsAdminAccountHost;
-	}
-
-	public int getIrodsAdminAccountPort() {
-		return irodsAdminAccountPort;
-	}
-
-	public void setIrodsAdminAccountPort(int irodsAdminAccountPort) {
-		this.irodsAdminAccountPort = irodsAdminAccountPort;
-	}
-
-	public String getIrodsAdminAccountZone() {
-		return irodsAdminAccountZone;
-	}
-
-	public void setIrodsAdminAccountZone(String irodsAdminAccountZone) {
-		this.irodsAdminAccountZone = irodsAdminAccountZone;
-	}
-
-	public String getIrodsAdminAccountUser() {
-		return irodsAdminAccountUser;
-	}
-
-	public void setIrodsAdminAccountUser(String irodsAdminAccountUser) {
-		this.irodsAdminAccountUser = irodsAdminAccountUser;
-	}
-
-	public String getIrodsAdminAccountPassword() {
-		return irodsAdminAccountPassword;
-	}
-
-	public void setIrodsAdminAccountPassword(String irodsAdminAccountPassword) {
-		this.irodsAdminAccountPassword = irodsAdminAccountPassword;
-	}
-
-	public String getIrodsAdminAccountAuthScheme() {
-		return irodsAdminAccountAuthScheme;
-	}
-
-	public void setIrodsAdminAccountAuthScheme(String irodsAdminAccountAuthScheme) {
-		this.irodsAdminAccountAuthScheme = irodsAdminAccountAuthScheme;
-	}
-
-	/**
-	 * @return the irodsAdminEmail
-	 */
-	public String getIrodsAdminEmail() {
-		return irodsAdminEmail;
-	}
-
-	/**
-	 * @param irodsAdminEmail
-	 *            the irodsAdminEmail to set
-	 */
-	public void setIrodsAdminEmail(String irodsAdminEmail) {
-		this.irodsAdminEmail = irodsAdminEmail;
-	}
-
 }

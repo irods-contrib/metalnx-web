@@ -1529,47 +1529,4 @@ public class CollectionServiceImpl implements CollectionService {
 			throw new DataGridException(e);
 		}
 	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path)
-			throws FileNotFoundException, DataGridException {
-
-		logger.info("getCollectionDataProfileAsProxyAdmin()");
-		IRODSAccount irodsAccount = irodsServices.getIrodsAdminAccount();
-
-		if (path == null) {
-			throw new IllegalArgumentException("null path");
-		}
-
-		logger.info("path:{}", path);
-
-		DataProfilerSettings dataProfilerSettings = new DataProfilerSettings();
-		dataProfilerSettings.setDetectMimeAndInfoType(true);
-		dataProfilerSettings.setRetrieveAcls(false);
-		dataProfilerSettings.setRetrieveMetadata(true);
-		dataProfilerSettings.setRetrieveReplicas(false);
-		dataProfilerSettings.setRetrieveShared(false);
-		dataProfilerSettings.setRetrieveStarred(false);
-		dataProfilerSettings.setRetrieveTickets(false);
-
-		DataProfilerService dataProfilerService = dataProfilerFactory.instanceDataProfilerService(irodsAccount,
-				dataProfilerSettings);
-
-		try {
-			@SuppressWarnings("rawtypes")
-			DataProfile dataProfile = dataProfilerService.retrieveDataProfile(path);
-			logger.info("------CollectionInfoController getTestCollectionInfo() ends !!");
-			logger.info("data profile retrieved:{}", dataProfile);
-			return dataProfile;
-		} catch (FileNotFoundException fnf) {
-			logger.warn("file not found for path:{}", path);
-			throw fnf;
-		} catch (JargonException e) {
-			logger.error("Could not retrieve collection/dataobject from path: {}", path, e);
-			throw new DataGridException(e.getMessage());
-		}
-
-	}
-
 }

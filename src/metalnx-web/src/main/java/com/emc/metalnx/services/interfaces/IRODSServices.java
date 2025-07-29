@@ -253,14 +253,6 @@ public interface IRODSServices {
 	JargonZipService getJargonZipService() throws JargonException;
 
 	/**
-	 * Return an iRODS admin account
-	 * 
-	 * @return {@link IRODSAccount} for the configured iRODS admin
-	 * @throws JargonException {@link JargonException}
-	 */
-	IRODSAccount getIrodsAdminAccount() throws DataGridException;
-
-	/**
 	 * Handy method to determine if the logged in user is acting in the role of
 	 * administrator
 	 * 

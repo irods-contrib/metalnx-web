@@ -95,20 +95,6 @@ public class IRODSServicesImpl implements IRODSServices {
 	}
 
 	@Override
-	public IRODSAccount getIrodsAdminAccount() throws DataGridException {
-		logger.info("getIrodsAdminAccount()");
-		try {
-			return IRODSAccount.instance(midTierConfiguration.getIrodsAdminAccountHost(),
-					midTierConfiguration.getIrodsAdminAccountPort(), midTierConfiguration.getIrodsAdminAccountUser(),
-					midTierConfiguration.getIrodsAdminAccountPassword(), "",
-					midTierConfiguration.getIrodsAdminAccountZone(), "");
-		} catch (JargonException e) {
-			logger.error("unable to build iRODS account for proxy admin", e);
-			throw new DataGridException(e);
-		}
-	}
-
-	@Override
 	public TicketAdminService getTicketAdminService() throws DataGridConnectionRefusedException {
 		TicketAdminService tas = null;
 

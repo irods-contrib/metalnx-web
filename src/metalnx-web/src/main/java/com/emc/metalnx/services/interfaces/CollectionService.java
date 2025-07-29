@@ -447,15 +447,4 @@ public interface CollectionService {
 	 */
 	boolean canUserAccessThisPath(String path) throws DataGridException;
 
-	/**
-	 * Retrieve a data profile for the path using the admin account to serve as a
-	 * metadata only proxy
-	 * 
-	 * @param path {@code String} with the path
-	 * @return {@link DataProfile}
-	 * @throws DataGridException {@link DataGridException}
-	 */
-	DataProfile<IRODSDomainObject> getCollectionDataProfileAsProxyAdmin(String path)
-			throws FileNotFoundException, DataGridException;
-
 }

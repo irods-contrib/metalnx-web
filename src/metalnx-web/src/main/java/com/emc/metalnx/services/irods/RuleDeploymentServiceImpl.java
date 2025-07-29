@@ -127,7 +127,9 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 		logger.info("createRuleCache()");
 		String ruleCachePath = getRuleCachePath();
 		logger.info("ruleCachePath:{}", ruleCachePath);
-		IRODSAccount adminAccount = irodsServices.getIrodsAdminAccount();
+		
+		// This option is only available for admin accounts
+		IRODSAccount adminAccount = irodsServices.getCollectionAO().getIRODSAccount();
 
 		try {
 			IRODSFileFactory irodsFileFactory = irodsServices.getIrodsAccessObjectFactory()
@@ -151,7 +153,8 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 	@Override
 	public boolean ruleCacheExists() throws JargonException {
 		logger.info("ruleCacheExists()");
-		IRODSAccount adminAccount = irodsServices.getIrodsAdminAccount();
+		// This option is only available for admin accounts
+		IRODSAccount adminAccount = irodsServices.getCollectionAO().getIRODSAccount();
 		String ruleCachePath = getRuleCachePath();
 
 		try {
@@ -162,7 +165,7 @@ public class RuleDeploymentServiceImpl implements RuleDeploymentService {
 			return newFile.exists();
 
 		} catch (JargonException e) {
-			logger.debug("Could not create a rule cache collection in the data grid: {}", e.getMessage());
+			logger.error("Could not create a rule cache collection in the data grid: {}", e.getMessage());
 			throw new DataGridException(e.getMessage());
 		}
 
