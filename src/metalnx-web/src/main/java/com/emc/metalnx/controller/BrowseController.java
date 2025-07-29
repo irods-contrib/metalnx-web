@@ -61,7 +61,6 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import com.emc.metalnx.services.interfaces.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -103,9 +102,6 @@ public class BrowseController {
 
     @Autowired
     LoggedUserUtils loggedUserUtils;
-
-    @Autowired
-    RuleDeploymentService ruleDeploymentService;
 
     @Autowired
     HeaderService headerService;
@@ -742,7 +738,6 @@ public class BrowseController {
         int draw = Integer.parseInt(request.getParameter("draw"));
         int start = Integer.parseInt(request.getParameter("start"));
         int length = Integer.parseInt(request.getParameter("length"));
-        boolean deployRule = request.getParameter("rulesdeployment") != null;
 
         // Pagination context to get the sequence number for the listed items
         DataGridPageContext pageContext = new DataGridPageContext();
@@ -757,20 +752,7 @@ public class BrowseController {
 
         try {
             logger.info("using path of:{}", currentPath);
-            logger.debug("deployRule:{}", deployRule);
             String path = currentPath;
-
-            if (deployRule) {
-                logger.debug("getting rule cache path");
-                path = ruleDeploymentService.getRuleCachePath();
-                currentPath = path;
-                logger.info("rule cache path:{}", path);
-
-                if (!ruleDeploymentService.ruleCacheExists()) {
-                    logger.warn("no rule cache in place, create zone/.ruleCache directory");
-                    ruleDeploymentService.createRuleCache();
-                }
-            }
 
             Math.floor(start / length);
             logger.info("getting subcollections under path:{}", path);

@@ -36,7 +36,6 @@ import com.emc.metalnx.services.interfaces.IRODSServices;
 import com.emc.metalnx.services.interfaces.MetadataService;
 import com.emc.metalnx.services.interfaces.PermissionsService;
 import com.emc.metalnx.services.interfaces.ResourceService;
-import com.emc.metalnx.services.interfaces.RuleDeploymentService;
 import com.emc.metalnx.services.interfaces.UserService;
 
 @Controller
@@ -68,10 +67,7 @@ public class CollectionController {
 
 	@Autowired
 	LoggedUserUtils loggedUserUtils;
-
-	@Autowired
-	RuleDeploymentService ruleDeploymentService;
-
+	
 	@Autowired
 	HeaderService headerService;
 
@@ -299,14 +295,6 @@ public class CollectionController {
 
 	public void setLoggedUserUtils(LoggedUserUtils loggedUserUtils) {
 		this.loggedUserUtils = loggedUserUtils;
-	}
-
-	public RuleDeploymentService getRuleDeploymentService() {
-		return ruleDeploymentService;
-	}
-
-	public void setRuleDeploymentService(RuleDeploymentService ruleDeploymentService) {
-		this.ruleDeploymentService = ruleDeploymentService;
 	}
 
 	public String getCurrentPath() {
