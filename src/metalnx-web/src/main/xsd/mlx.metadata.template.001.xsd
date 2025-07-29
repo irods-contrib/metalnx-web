@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2018, University of North Carolina at Chapel Hill -->
+<!-- Copyright (c) 2015-2017, Dell EMC -->
+
+
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.emc.com/com/emc/metalnx/core/xml"
+    xmlns:mlxns="http://www.emc.com/com/emc/metalnx/core/xml"
+    elementFormDefault="qualified">
+ 
+    <element name="mlxMetadataTemplates" type="mlxns:MlxMetadataTemplates"></element>
+	
+	<complexType name="MlxMetadataTemplates">
+		<sequence>
+			<element name="template" type="mlxns:MlxMetadataTemplate" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+ 	<complexType name="MlxMetadataTemplate">
+ 		<sequence>
+ 			<element name="name" type="string" minOccurs="1" maxOccurs="1" />
+ 			<element name="description" type="string" minOccurs="0" maxOccurs="1" />
+ 			<element name="usageInfo" type="string" minOccurs="0" maxOccurs="1" />
+ 			<element name="accessType" type="string" minOccurs="1" maxOccurs="1" />
+ 			<element name="metadata" type="mlxns:MlxMetadataAVU" minOccurs="0" maxOccurs="unbounded" />
+  		</sequence>
+ 	</complexType>
+     
+    <complexType name="MlxMetadataAVU">
+        <sequence>
+            <element name="attribute" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="value" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="unit" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="startRange" type="int" minOccurs="0" maxOccurs="1" />
+            <element name="endRange" type="int" minOccurs="0" maxOccurs="1" />
+            <element name="order" type="int" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+ 
+</schema>

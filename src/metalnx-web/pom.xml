@@ -27,24 +27,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
-			<artifactId>irodsext-data-profiler</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.irods.jargon</groupId>
-			<artifactId>irodsext-data-typer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.irods.jargon</groupId>
 			<artifactId>jargon-data-utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
-			<artifactId>emc-metalnx-services</artifactId>
+			<artifactId>jargon-zipservice</artifactId>
 			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.irods.jargon</groupId>
-			<artifactId>emc-metalnx-core</artifactId>
+			<artifactId>jargon-ticket</artifactId>
 			<version>${jargon.version}</version>
 		</dependency>
 		<dependency>
@@ -63,6 +55,14 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
