@@ -7,8 +7,6 @@ public class URLMap {
 
 	public static final String URL_DASHBOARD = "/dashboard/";
 
-	public static final String URL_RULES = "/rules/";
-
 	public static final String URL_USERS_MANAGEMENT = "/users/";
 	public static final String URL_ADD_USER = "add/";
 	public static final String URL_MODIFY_USER = "modify/";
