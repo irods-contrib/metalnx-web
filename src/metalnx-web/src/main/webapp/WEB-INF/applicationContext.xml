@@ -58,6 +58,12 @@
 	<sec:http auto-config="true" create-session="always" use-expressions="false"
 		entry-point-ref="ep403">
 
+        <!-- Issue 419 - To render PDF in a frame, the X-Frame-Options header's value needs to be updated
+             from "DENY" to "SAMEORIGIN". --> 
+        <sec:headers>
+           <sec:frame-options policy="SAMEORIGIN" />
+        </sec:headers>
+
         <!-- For backward compatability for spring security 3. -->
         <sec:csrf disabled="true"/>
 
