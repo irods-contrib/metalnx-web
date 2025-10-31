@@ -11,6 +11,22 @@ and this project **only** adheres to the following _(as defined at [Semantic Ver
 > - MINOR version when you add functionality in a backward compatible manner
 > - PATCH version when you make backward compatible bug fixes
 
+## [3.1.1] - 2025-10-31
+
+This release fixes the ability to preview PDFs and upgrades Apache Tomcat to 9.0.111.
+
+### Security
+
+- Bump Tomcat version to fix [CVE-2025-55752](https://nvd.nist.gov/vuln/detail/CVE-2025-55752) (#433).
+
+### Removed
+
+- Remove rules sidebar option and related code (#413, #422, #424).
+
+### Fixed
+
+- Fix PDF preview functionality (#419).
+
 ## [3.1.0] - 2025-06-04
 
 This release fixes authentication issues with iRODS 5, removes email functionality, and updates dependencies.
