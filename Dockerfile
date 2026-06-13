@@ -1,4 +1,4 @@
-FROM tomcat:9.0.111-jdk21-temurin-noble
+FROM tomcat:9.0.118-jdk21-temurin-noble
 
 LABEL organization="iRODS Consortium"
 LABEL description="Metalnx iRODS Browser"
