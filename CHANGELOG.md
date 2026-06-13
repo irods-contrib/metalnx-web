@@ -11,6 +11,15 @@ and this project **only** adheres to the following _(as defined at [Semantic Ver
 > - MINOR version when you add functionality in a backward compatible manner
 > - PATCH version when you make backward compatible bug fixes
 
+## [3.1.2] - 2026-06-15
+
+This release upgrades Apache Tomcat to 9.0.118.
+
+### Security
+
+- Bump Tomcat version to fix [CVE-2026-29146](https://nvd.nist.gov/vuln/detail/cve-2026-29146) (#443).
+- Bump Tomcat version to fix [CVE-2026-34487](https://nvd.nist.gov/vuln/detail/cve-2026-34487) (#443).
+
 ## [3.1.1] - 2025-10-31
 
 This release fixes the ability to preview PDFs and upgrades Apache Tomcat to 9.0.111.
