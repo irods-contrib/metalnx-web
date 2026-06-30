@@ -34,7 +34,7 @@
 
 		<!-- Misc -->
 		<servlet.api.version>4.0.1</servlet.api.version>
-		<jackson.version>2.18.6</jackson.version>
+		<jackson.version>2.22.0</jackson.version>
 
 		<!-- Default Source Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
